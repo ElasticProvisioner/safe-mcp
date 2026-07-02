@@ -5,7 +5,7 @@
 **Technique ID**: SAF-T1005
 **Severity**: Critical
 **First Observed**: June 2025 (Backslash Security NeighborJack Research)
-**Last Updated**: 2026-01-06
+**Last Updated**: 2026-07-01
 
 ## Description
 Exposed Endpoint Exploit is an attack technique where adversaries exploit misconfigured or publicly accessible MCP server endpoints to gain unauthorized access, enumerate available tools, or achieve remote code execution. This technique targets MCP servers that lack proper authentication, are bound to public network interfaces (0.0.0.0), or have debugging features enabled in production environments.
@@ -37,7 +37,7 @@ Security researchers from Backslash Security discovered this widespread issue in
 1. **Reconnaissance Stage**: Attacker scans for exposed MCP endpoints using port scanning, fingerprinting techniques, or internet-wide search engines. Research found approximately 7,000 MCP servers exposed on the web ([Backslash Security, 2025](https://authzed.com/blog/timeline-mcp-breaches)).
 2. **Discovery Stage**: Upon identifying an accessible endpoint, attacker connects and issues enumeration commands (`tools/list`, `ping`) to discover available capabilities and server configuration.
 3. **Authentication Bypass**: Attacker exploits the lack of authentication to establish unauthorized session. For localhost services, CSRF or DNS rebinding techniques are employed to bypass browser security controls.
-4. **Exploitation Stage**: Attacker leverages discovered tools to execute malicious operations—reading sensitive files, executing system commands, or manipulating connected services.
+4. **Exploitation Stage**: Attacker leverages discovered tools to execute malicious operations such as reading sensitive files, executing system commands, or manipulating connected services.
 5. **Post-Exploitation**: Attacker establishes persistence, exfiltrates data, or pivots to other systems accessible from the compromised MCP server.
 
 ```
@@ -118,15 +118,15 @@ curl -X POST "http://exposed-mcp:8080/trigger_task" \
 
 ### Advanced Attack Techniques (2025 Research)
 
-According to multiple security research teams, attackers have developed sophisticated variations exploiting exposed MCP endpoints:
+According to multiple security research teams, attackers have developed several distinct variations exploiting exposed MCP endpoints:
 
 1. **NeighborJack Attack** ([Backslash Security, June 2025](https://authzed.com/blog/timeline-mcp-breaches)): Exploits MCP servers bound to 0.0.0.0 instead of localhost. Researchers discovered hundreds of servers configured this way, exposing them to local network attackers without requiring any authentication bypass. The attack enables complete control over host systems through OS command injection.
 
-2. **0.0.0.0-Day Browser Exploitation** ([Oligo Security, 2025](https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser)): Leverages a 19-year-old browser security flaw where requests to 0.0.0.0 are treated as localhost but bypass Same-Origin Policy restrictions. Attackers craft malicious websites that send requests to victim's local MCP services, achieving RCE simply by having the victim visit a webpage.
+2. **0.0.0.0-Day Browser Exploitation** ([Oligo Security, 2025](https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser)): Leverages a 19-year-old browser security flaw where requests to 0.0.0.0 are treated as localhost but bypass Same-Origin Policy restrictions. Attackers craft malicious websites that send requests to victim's local MCP services, achieving RCE from nothing more than the victim visiting a crafted webpage.
 
 3. **WebSocket Brute-Force Discovery** ([Datadog Security Labs, 2025](https://securitylabs.datadoghq.com/articles/claude-mcp-cve-2025-52882/)): Scripts systematically attempt WebSocket connections across common port ranges to discover running MCP servers. Once discovered, the lack of authentication allows immediate command execution including file reads and tool invocations.
 
-4. **Session ID Prediction** ([JFrog Security - CVE-2025-6515](https://www.theregister.com/2025/10/21/mcp_prompt_hijacking_attack/)): Exploits predictable session ID generation in MCP implementations to hijack active sessions. Attackers rapidly create and destroy sessions, log the IDs, and wait for reassignment to legitimate client sessions.
+4. **Session ID Prediction** ([JFrog Security - CVE-2025-6515](https://jfrog.com/blog/mcp-prompt-hijacking-vulnerability/)): Exploits predictable session ID generation in oatpp-mcp (session IDs derived from a reused object-pointer value) to hijack active sessions. Attackers rapidly create and destroy sessions, log the IDs, and wait for reassignment to legitimate client sessions.
 
 5. **Internet-Wide Exposure Scanning**: Researchers from multiple organizations have conducted internet-wide scans finding thousands of exposed MCP endpoints. IONIX researchers demonstrated exploitation of publicly exposed browser automation agents to extract sensitive files from host systems ([IONIX, 2025](https://www.ionix.io/blog/exposed-ai-agents-in-the-wild-public-mcp-server-security-exposed/)).
 
@@ -151,15 +151,15 @@ Multiple critical CVEs have been issued and patched:
 
 Despite patches, the ecosystem remains at risk due to:
 - Slow adoption of updates in enterprise environments
-- Forked repositories containing vulnerable code (5,000+ forks of vulnerable Anthropic SQLite server)
-- New MCP servers launched without security review (13,000+ in 2025 alone)
+- Forked repositories containing vulnerable code (Anthropic's SQLite MCP server was forked or copied 5,000+ times before its repository was archived in May 2025, [Trend Micro, 2025](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html))
+- Rapid ecosystem growth outpacing security review (public MCP server counts reached roughly 10,000-20,000 by the end of 2025, [Astrix Security, 2025](https://astrix.security/learn/blog/state-of-mcp-server-security-2025/))
 - Protocol specification still not mandating authentication
 
 ### Real-World Incidents
 
-**Asana Privacy Breach (June 2025)**: Following deployment of an MCP-powered feature, Asana discovered a bug causing customer information to leak between different customers' MCP instances due to improper endpoint isolation.
+**Asana Privacy Breach (June 2025)**: An MCP-powered feature launched May 1, 2025 contained a flawed tenant-isolation check that could expose one organization's Asana information to other organizations using the shared MCP server. Asana pulled the feature on June 5 after discovering the bug and restored it on June 18 ([The Register, 2025](https://www.theregister.com/2025/06/18/asana_mcp_server_bug/)).
 
-**Smithery Registry Exploit (2025)**: Security researchers discovered a path-traversal vulnerability in Smithery's MCP server registry that allowed attackers to exfiltrate builder credentials including Docker config and Fly.io API tokens, potentially affecting over 3,000 applications.
+**Smithery Registry Exploit (June 2025)**: GitGuardian researchers discovered a path-traversal vulnerability in Smithery's MCP server registry (a `dockerBuildPath` set to `..`) that exposed builder credentials including the Docker config and a Fly.io API token, enabling code execution across the 3,000+ hosted MCP servers ([GitGuardian, 2025](https://blog.gitguardian.com/breaking-mcp-server-hosting/); [SC Media, 2025](https://www.scworld.com/news/smithery-ai-fixes-path-traversal-flaw-that-exposed-3000-mcp-servers)).
 
 ## Detection Methods
 
@@ -190,7 +190,7 @@ description: Detects potential unauthorized access to exposed MCP server endpoin
 author: Raju Kumar Yadav
 date: 2026-01-06
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1005
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1005
   - https://nvd.nist.gov/vuln/detail/CVE-2025-49596
   - https://nvd.nist.gov/vuln/detail/CVE-2025-52882
 logsource:
@@ -250,7 +250,7 @@ description: Detects MCP servers potentially exposed via 0.0.0.0 binding
 author: Raju Kumar Yadav
 date: 2026-01-06
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1005
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1005
 logsource:
   product: linux
   service: auditd
@@ -287,7 +287,7 @@ description: Detects rapid WebSocket connection attempts indicative of MCP serve
 author: Raju Kumar Yadav
 date: 2026-01-06
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1005
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1005
   - https://securitylabs.datadoghq.com/articles/claude-mcp-cve-2025-52882/
 logsource:
   product: network
@@ -392,22 +392,32 @@ tags:
 - [Critical RCE Vulnerability in mcp-remote: CVE-2025-6514 Threatens LLM Clients - JFrog Security](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/)
 - [Exposed AI Agents in the Wild: How a Public MCP Server Let Us Peek Inside Its Host - IONIX](https://www.ionix.io/blog/exposed-ai-agents-in-the-wild-public-mcp-server-security-exposed/)
 - [A Timeline of Model Context Protocol (MCP) Security Breaches - AuthZed](https://authzed.com/blog/timeline-mcp-breaches)
+- [0.0.0.0-Day: Exploiting Localhost APIs from the Browser - Oligo Security](https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser)
+- [oatpp-mcp Prompt Hijacking (CVE-2025-6515) - JFrog Security](https://jfrog.com/blog/mcp-prompt-hijacking-vulnerability/)
+- [Why a Classic MCP Server Vulnerability Can Undermine Your Entire AI Agent (archived SQLite MCP server, 5,000+ forks) - Trend Micro, 2025](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html)
+- [State of MCP Server Security 2025 - Astrix Security](https://astrix.security/learn/blog/state-of-mcp-server-security-2025/)
+- [Asana MCP server back online after plugging a data-leak hole - The Register, 2025](https://www.theregister.com/2025/06/18/asana_mcp_server_bug/)
+- [From Path Traversal to Supply Chain Compromise: Breaking MCP Server Hosting (Smithery) - GitGuardian, 2025](https://blog.gitguardian.com/breaking-mcp-server-hosting/)
+- [Smithery.ai fixes path traversal flaw that exposed 3,000 MCP servers - SC Media, 2025](https://www.scworld.com/news/smithery-ai-fixes-path-traversal-flaw-that-exposed-3000-mcp-servers)
+- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
+- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
+
+### Further Reading
+Broader MCP security overviews consulted for background but not cited for a specific claim above:
 - [Model Context Protocol Security: Critical Vulnerabilities Every CISO Should Address in 2025 - eSentire](https://www.esentire.com/blog/model-context-protocol-security-critical-vulnerabilities-every-ciso-should-address-in-2025)
 - [MCP (Model Context Protocol) and Its Critical Vulnerabilities - Strobes Security](https://strobes.co/blog/mcp-model-context-protocol-and-its-critical-vulnerabilities/)
 - [MCP: Untrusted Servers and Confused Clients, Plus a Sneaky Exploit - Embrace The Red](https://embracethered.com/blog/posts/2025/model-context-protocol-security-risks-and-exploits/)
 - [MCP Security: TOP 25 MCP Vulnerabilities - Adversa AI](https://adversa.ai/mcp-security-top-25-mcp-vulnerabilities/)
-- [0.0.0.0-Day: Exploiting Localhost APIs from the Browser - Oligo Security](https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser)
 - [MCP attack abuses predictable session IDs to hijack AI agents - The Register](https://www.theregister.com/2025/10/21/mcp_prompt_hijacking_attack/)
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 
 ## MITRE ATT&CK Mapping
 - [T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/)
 - [T1133 - External Remote Services](https://attack.mitre.org/techniques/T1133/)
-- [T1046 - Network Service Discovery](https://attack.mitre.org/techniques/T1046/)
+- [T1046 - Network Service Discovery](https://attack.mitre.org/techniques/T1046/) (Discovery tactic; maps the reconnaissance/enumeration phase of the attack flow, not the Initial-Access entry itself)
 
 ## Version History
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
 | 1.0 | 2026-01-06 | Initial documentation with CVE analysis and research compilation | Raju Kumar Yadav |
-| 1.1 | 2026-04-24 | Audit pass: replace two invalid Sigma rule UUIDs (non-hex characters), add SAF-M-11/SAF-M-12 references on detective controls, restore CVE-2025-66416 to References, trim non-fitting MITRE mappings (T1087, T1059), TODO marker for endpoint-exposure-specific SAF-M authoring | bishnu bista |
+| 1.1 | 2026-04-24 | Audit pass: replace two invalid Sigma rule UUIDs (non-hex characters), add SAF-M-11/SAF-M-12 references on detective controls, restore CVE-2025-66416 to References, trim non-fitting MITRE mappings (T1087, T1059), TODO marker for endpoint-exposure-specific SAF-M authoring | Bishnu Bista |
+| 1.2 | 2026-07-01 | Cited the previously uncited quantitative claims (5,000+ SQLite forks -> Trend Micro; ecosystem growth -> Astrix) and the Asana / Smithery incidents (The Register, GitGuardian, SC Media); pointed the CVE-2025-6515 reference at JFrog's primary source so the discoverer matches the link; moved four orphaned references into a Further Reading list; removed hype language ("sophisticated", "simply"); annotated the T1046 mapping as the Discovery/enumeration phase; fixed the non-resolving detection-rule references URL (saf-mcp -> secure-agentic-framework) in the shipped file and the inline copies | Frederick Kautz |

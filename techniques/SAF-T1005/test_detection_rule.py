@@ -311,7 +311,7 @@ class TestReferences:
         """Test that GitHub technique reference is included"""
         rule = load_detection_rule()
         refs = rule.get("references", [])
-        github_refs = [r for r in refs if "github.com/saf-mcp" in r]
+        github_refs = [r for r in refs if "github.com/secure-agentic-framework/saf-mcp" in r]
         assert len(github_refs) >= 1, "Should reference GitHub technique page"
 
     def test_nvd_references(self):
