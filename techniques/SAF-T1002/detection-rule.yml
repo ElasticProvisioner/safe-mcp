@@ -1,80 +1,53 @@
-# SIGMA RULE: Supply Chain Compromise Detection for MCP
+# SIGMA RULE: Supply Chain Compromise Detection for MCP (package-registry telemetry)
 # WARNING: This rule contains example patterns only. Organizations should:
 # - Regularly update patterns based on threat intelligence
 # - Implement behavioral analysis beyond pattern matching
 # - Use AI-based anomaly detection for novel attack vectors
 # - Consider context-specific false positives
+#
+# Scope: this rule only reads MCP package-registry / installer metadata
+# (package_name, package_source, package_author_age). Host-level indicators
+# (process network connections, persistence file creation) live in the
+# companion Sysmon rule detection-rule-host-telemetry.yml, because no single
+# log source emits both package metadata and endpoint telemetry.
 
-title: Suspicious MCP Package Installation Activity
+title: Suspicious MCP Package Metadata (Supply Chain Compromise)
 id: a7b4c8e9-12f3-45d6-89ab-cdef01234567
 status: experimental
-description: Detects potential supply chain compromise through suspicious MCP package installations
-author: SAF-MCP Team
+description: Detects potential supply chain compromise through suspicious MCP package metadata - typosquatted names and newly created maintainer accounts publishing from low-reputation sources.
+author: Frederick Kautz
 date: 2025-09-14
-modified: 2025-09-14
+modified: 2026-07-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1002
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1002
   - https://attack.mitre.org/techniques/T1195/
 logsource:
   product: mcp
   service: package_manager
 detection:
-  # Typosquatting detection
+  # Typosquats of well-known MCP server package names
   selection_typosquat:
     package_name|contains:
       - 'mcp-githab'      # github typosquat
       - 'mcp-slackk'      # slack typosquat
       - 'mcp-filesys'     # filesystem typosquat
       - 'mcp-googel'      # google typosquat
-      - 'anthropic-mcp'   # namespace confusion
-      - 'modelcontext'    # namespace squatting
-
-  # Suspicious package characteristics
-  selection_suspicious:
-    package_author_age: '<7'     # Recently created accounts
+  # Newly created maintainer account (weak on its own - see condition)
+  selection_new_author:
+    package_author_age|lt: 7        # account younger than 7 days
+  # Low-reputation / throwaway distribution source
+  selection_suspicious_source:
     package_source|contains:
       - 'suspicious-repo'
       - 'temp-hosting'
       - 'free-hosting'
-
-  # Network indicators during installation
-  selection_network:
-    EventID: 3  # Network connection
-    ProcessName|endswith:
-      - 'npm.exe'
-      - 'pip.exe'
-      - 'node.exe'
-      - 'python.exe'
-    DestinationHostname|endswith:
-      - '.tk'
-      - '.ml'
-      - '.ga'
-      - '.cf'
-    DestinationHostname|contains:
-      - 'pastebin'
-      - 'discord'
-      - 'telegram'
-      - 'temp-file'
-
-  # Post-installation persistence indicators
-  selection_persistence:
-    EventID: 11  # File creation
-    TargetFilename|contains:
-      - '.mcp-health'
-      - '.mcp-check'
-      - '.anthropic'
-    TargetFilename|endswith:
-      - '.mcprc'
-      - '.mcp_config'
-
-  condition: selection_typosquat or selection_suspicious or selection_network or selection_persistence
-
+  # A brand-new author or a throwaway source is individually noisy; requiring
+  # both together narrows to the high-signal "new account + throwaway host" case.
+  condition: selection_typosquat or (selection_new_author and selection_suspicious_source)
 falsepositives:
-  - Legitimate packages with similar names
-  - Development and testing environments using custom repositories
-  - Legitimate external integrations and webhooks
-  - Internal tools with similar naming conventions
-
+  - Legitimate packages with names similar to popular MCP servers
+  - Development and testing environments using custom or temporary repositories
+  - Newly published legitimate packages from first-time maintainers
 level: high
 tags:
   - attack.initial_access
