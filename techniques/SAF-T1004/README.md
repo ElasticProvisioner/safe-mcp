@@ -1,16 +1,16 @@
 # SAF-T1004: Server Impersonation / Name-Collision
 
 ## Overview
-**Tactic**: Credential Access (ATK-TA0006), Collection (ATK-TA0009)  
+**Tactic**: Initial Access (ATK-TA0001)  
 **Technique ID**: SAF-T1004  
 **Severity**: High  
 **First Observed**: DNS-spoofing threat model formalized in RFC 3833 (2004, citing earlier academic analysis); widely publicized via Kaminsky DNS cache-poisoning disclosure in 2008 (CVE-2008-1447)  
-**Last Updated**: 2026-04-23
+**Last Updated**: 2026-07-01
 
 ## Description
 Server Impersonation / Name-Collision is an adversary-in-the-middle technique where attackers register or advertise a malicious server using the same name or identifier as a trusted one. By exploiting weaknesses in naming and discovery systems (for example DNS, mDNS, or local MCP server registries), clients can be redirected to attacker-controlled endpoints.
 
-This technique is dangerous in MCP environments because trust decisions are often made before strong identity checks. If clients accept duplicated names, unsigned metadata, or weak certificates, an attacker can intercept authentication flows, alter tool responses, and capture sensitive data.
+This technique succeeds in MCP environments because trust decisions are often made before strong identity checks. If clients accept duplicated names, unsigned metadata, or weak certificates, an attacker can intercept authentication flows, alter tool responses, and capture sensitive data.
 
 ### Registry Context (ODR / Local Registry)
 In this technique, **ODR** refers to host-local discovery or registry layers used by MCP host applications to store server metadata (name, endpoint, and trust attributes). On Windows, this concept aligns with the On-Device Agent Registry tooling (`odr.exe`) for MCP server registration and discovery. Implementations vary by platform and product; if your environment does not use ODR by name, apply the same controls to its equivalent local registry/discovery mechanism.
@@ -34,22 +34,65 @@ In this technique, **ODR** refers to host-local discovery or registry layers use
 - Ability to register or advertise a malicious endpoint with legitimate-appearing metadata
 
 ### Attack Flow
+
+```mermaid
+graph TD
+    A[Attacker deploys endpoint mimicking a trusted MCP server name] --> B{Discovery-layer hijack}
+    B -->|DNS cache poisoning / hijack| C[Trusted name resolves to attacker IP]
+    B -->|Rogue DHCP points clients at attacker DNS| C
+    B -->|ARP spoofing on local segment| C
+    B -->|Duplicate local registry / ODR entry| C
+    C --> D[Client connects to attacker endpoint]
+    D --> E[Attacker presents weak or mismatched identity material]
+    E --> F[Impersonation: intercept auth, alter tool responses]
+    F --> G[Credential and token capture / data collection]
+    F --> H[Registry-poisoning persistence, then pivot with captured credentials]
+
+    style A fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
+    style F fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
+    style G fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
+    style C fill:#fee090,stroke:#000,stroke-width:2px,color:#000
+    style B fill:#fc8d59,stroke:#000,stroke-width:2px,color:#000
+```
+
 1. **Preparation**: Attacker deploys a malicious endpoint that mimics a trusted MCP server name.
 2. **Discovery Hijack**: DNS/mDNS responses or local registry entries are poisoned or duplicated.
 3. **Connection**: Client resolves the trusted name to the attacker endpoint and initiates session setup.
 4. **Impersonation**: Attacker presents weak or mismatched identity material and intercepts traffic.
 5. **Exploitation**: Credentials, tokens, and sensitive data are harvested; malicious responses may be injected.
-6. **Post-Exploitation**: Attacker persists through registry poisoning and can pivot to additional systems.
+6. **Post-Exploitation**: Attacker persists through registry poisoning and pivots to additional systems by reusing the credentials and tokens captured in stage 5 against other services the victim can reach.
 
 ### Example Scenario
+The technique turns on a **name collision**: the local ODR / MCP registry ends up
+holding two entries for the same `service_name`. The legitimate record was registered
+first; the attacker adds a duplicate pointing at their own endpoint.
+
 ```json
 {
-  "service_name": "analytics-hub.local",
-  "endpoint": "192.168.1.50",
-  "certificate_fingerprint": "untrusted-self-signed",
-  "source": "local-registry"
+  "registry": "local ODR / MCP registry (odr mcp list)",
+  "entries": [
+    {
+      "service_name": "analytics-hub.local",
+      "endpoint": "10.0.0.10:8443",
+      "certificate_fingerprint": "sha256:9c1f... (issued by trusted CA)",
+      "source": "odr:mcp",
+      "note": "legitimate, pre-existing entry"
+    },
+    {
+      "service_name": "analytics-hub.local",
+      "endpoint": "192.168.1.50",
+      "certificate_fingerprint": "untrusted-self-signed",
+      "source": "local-registry",
+      "note": "attacker-added duplicate (name collision)"
+    }
+  ]
 }
 ```
+
+**Mapping to the Attack Flow and detection:**
+- **Stage 2 (Discovery Hijack)**: the attacker writes the second entry, so two records now share `service_name` `analytics-hub.local`. This is what `selection_odr` catches (`duplicate service registration` / `name collision`).
+- **Stage 3 (Connection)**: lacking a duplicate-name or identity check, the client resolves the name and binds to the attacker's `192.168.1.50` endpoint instead of `10.0.0.10:8443`.
+- **Stage 4 (Impersonation)**: the attacker serves the `untrusted-self-signed` certificate; a client that does not pin or validate accepts it. This is what `selection_tls_untrusted_ca` catches (`self-signed certificate` / `untrusted certificate authority`).
 
 ### Advanced Attack Techniques (Research Published)
 According to public reporting and ATT&CK campaign tracking, attackers use multiple identity-hijack layers:
@@ -67,7 +110,7 @@ According to public reporting and ATT&CK campaign tracking, attackers use multip
 ### Current Status (2026)
 Organizations are increasingly prioritizing stronger discovery and identity controls, but coverage remains uneven:
 - DNSSEC adoption continues to expand, but not all enterprise resolvers and zones validate consistently.
-- The MCP roadmap's "Server Cards" initiative is developing a `.well-known` URL standard for publishing structured server metadata so browsers, crawlers, and registries can discover a server's advertised capabilities without first connecting to it. (Advertised, not verified — Server Cards describe capabilities; they do not replace server-identity authentication.)
+- The MCP roadmap's "Server Cards" initiative is developing a `.well-known` URL standard for publishing structured server metadata so browsers, crawlers, and registries can discover a server's advertised capabilities without first connecting to it. (Advertised, not verified: Server Cards describe capabilities; they do not replace server-identity authentication.)
 - Teams with mixed legacy protocols and inconsistent registry governance remain exposed to name-collision attacks.
 
 ## Detection Methods
@@ -89,9 +132,9 @@ status: experimental
 description: Detects indicators of server impersonation or name-collision attacks across DNS, ARP, TLS, and local registry events. Message-text selections are illustrative; operators should tailor them to their own telemetry pipeline. Elevate from medium to high only when correlated with expected MCP server identity, registry changes, or DHCP/ARP anomalies.
 author: Ryan Jennings
 date: 2025-11-22
-modified: 2026-04-23
+modified: 2026-07-01
 references:
-  - https://github.com/SAF-MCP/saf-mcp/tree/main/techniques/SAF-T1004
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1004
   - https://attack.mitre.org/techniques/T1557/
   - https://attack.mitre.org/techniques/T1557/002/
   - https://attack.mitre.org/techniques/T1557/003/
@@ -189,7 +232,7 @@ tags:
 
 ## References
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [Model Context Protocol Roadmap — Server Cards initiative](https://modelcontextprotocol.io/development/roadmap)
+- [Model Context Protocol Roadmap: Server Cards initiative](https://modelcontextprotocol.io/development/roadmap)
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [Sea Turtle - ATT&CK Group G1041](https://attack.mitre.org/groups/G1041/)
 - [Windows ODR Tool (odr.exe) - Microsoft Learn](https://learn.microsoft.com/en-us/windows/ai/mcp/odr-tool)
@@ -204,10 +247,13 @@ tags:
 - [T1557.002 - Adversary-in-the-Middle: ARP Cache Poisoning](https://attack.mitre.org/techniques/T1557/002/)
 - [T1557.003 - Adversary-in-the-Middle: DHCP Spoofing](https://attack.mitre.org/techniques/T1557/003/)
 
+> **SAF tactic vs. ATT&CK tactic**: In ATT&CK, T1557 (Adversary-in-the-Middle) is tagged under **Credential Access (TA0006)** and **Collection (TA0009)**, which is why the detection rule carries those tactic tags. Within the SAF-MCP framework, however, this technique is filed under **Initial Access (ATK-TA0001)** - name-collision / discovery hijack is how the attacker first interposes on an MCP client - which is the tactic named in the Overview and in the framework's technique index. The Credential Access / Collection framing above describes the ATT&CK behaviors the AiTM position enables.
+
 ## Version History
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
 | 1.0 | 2025-11-22 | Initial documentation with ODR explanation | Ryan Jennings |
 | 1.1 | 2026-02-24 | Replaced placeholder mitigations, corrected related-technique mapping, updated detection rule example, and added clearer ODR scope language | Bishnu Bista |
 | 1.2 | 2026-02-24 | Corrected ATT&CK reference for Sea Turtle, aligned DNS EventID 1014 example wording, reduced over-specific ARP event assumptions, and added ODR/APNIC references for source clarity | Bishnu Bista |
-| 1.3 | 2026-04-23 | Overview tactic line corrected to Credential Access + Collection (ATT&CK-faithful to T1557/T1557.002/T1557.003; prior "Initial Access" claim was unsupported); MITRE mapping: replaced T1565.002 (Transmitted Data Manipulation, not DNS-specific) and T1071.004 (DNS-as-C2, not DNS-is-attacked) with T1557.003 (DHCP Spoofing) to match the rogue-DHCP attack vector; Sigma rule split Schannel EventID 36882 (untrusted CA) vs 36884 (hostname mismatch) with Microsoft-faithful Message|contains text, lowered level from high to medium, tactic tags reconciled to attack.credential_access + attack.collection; synced embedded Sigma block in README to canonical detection-rule.yml; added 36882/36884 test-log coverage (12/12 pass); named "MCP Server Cards" roadmap initiative explicitly with accurate "discover advertised capabilities" wording; First Observed anchored to RFC 3833 (2004) + Kaminsky 2008 (CVE-2008-1447); used verbatim JRC report title; annotated Internet Society DNSSEC maps as a 2021 historical snapshot | bishnu bista |
+| 1.3 | 2026-04-23 | Overview tactic line corrected to Credential Access + Collection (ATT&CK-faithful to T1557/T1557.002/T1557.003; prior "Initial Access" claim was unsupported); MITRE mapping: replaced T1565.002 (Transmitted Data Manipulation, not DNS-specific) and T1071.004 (DNS-as-C2, not DNS-is-attacked) with T1557.003 (DHCP Spoofing) to match the rogue-DHCP attack vector; Sigma rule split Schannel EventID 36882 (untrusted CA) vs 36884 (hostname mismatch) with Microsoft-faithful Message|contains text, lowered level from high to medium, tactic tags reconciled to attack.credential_access + attack.collection; synced embedded Sigma block in README to canonical detection-rule.yml; added 36882/36884 test-log coverage (12/12 pass); named "MCP Server Cards" roadmap initiative explicitly with accurate "discover advertised capabilities" wording; First Observed anchored to RFC 3833 (2004) + Kaminsky 2008 (CVE-2008-1447); used verbatim JRC report title; annotated Internet Society DNSSEC maps as a 2021 historical snapshot | Bishnu Bista |
+| 1.4 | 2026-07-01 | Reconciled the Overview SAF tactic back to Initial Access (ATK-TA0001) to match the framework technique index, and moved the Credential Access / Collection framing into the MITRE ATT&CK Mapping section where T1557's tactics belong; expanded the Example Scenario to show the actual name collision (legitimate vs. attacker registry record) with mapping to Attack-Flow stages 2-4 and to the detection selections; added a discovery-hijack flow diagram; gave stage 6 a stated pivot mechanism; verified the odr.exe Microsoft Learn reference; fixed the non-resolving detection-rule references URL (SAF-MCP -> secure-agentic-framework); softened "dangerous"; normalized author-name casing | Frederick Kautz |
