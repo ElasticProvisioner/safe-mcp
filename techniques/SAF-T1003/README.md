@@ -3,9 +3,9 @@
 ## Overview
 **Tactic**: Initial Access (ATK-TA0001)
 **Technique ID**: SAF-T1003
-**Severity**: Critical
-**First Observed**: 2025-03-15 (First documented trojanized Docker images)
-**Last Updated**: 2025-09-14
+**Severity**: Critical (arbitrary command execution plus credential exfiltration and persistence on the host, as shown in the Example Scenario)
+**First Observed**: September 2025, the malicious `postmark-mcp` npm server ([Snyk](https://snyk.io/blog/malicious-mcp-server-on-npm-postmark-mcp-harvests-emails/); see [SAF-T1002](../SAF-T1002/README.md)). The previously stated "2025-03-15 trojanized Docker images" date was uncited and has been removed.
+**Last Updated**: 2026-07-01
 
 ## Description
 Malicious MCP-Server Distribution involves adversaries shipping trojanized MCP server packages or Docker images that users install, gaining initial foothold when the host registers the server's tools. This technique differs from supply chain compromise in that attackers create entirely new malicious packages rather than compromising existing ones.
@@ -30,6 +30,34 @@ The attack leverages the trust users place in MCP servers that appear legitimate
 - Knowledge of common MCP use cases to create convincing tools
 
 ### Attack Flow
+
+```mermaid
+graph TD
+    A[Attacker builds trojanized MCP server] --> B[Package as npm / Docker image / binary]
+    B --> C{Distribution Channels}
+    C -->|npm / PyPI| D[Package registry]
+    C -->|Docker Hub| E[Container registry]
+    C -->|GitHub / marketplace| F[Source / listing]
+    C -->|blogs / social / forums| G[Marketing and promotion]
+
+    D --> H[User seeks and installs the server]
+    E --> H
+    F --> H
+    G --> H
+
+    H --> I[Host registers server tools and grants privileges]
+    I --> J[Malicious code runs with MCP server privileges]
+    J --> K[Credential exfiltration]
+    J --> L[C2 beacon]
+    J --> M[Persistence: cron / health-check]
+
+    style A fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
+    style J fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
+    style I fill:#fee090,stroke:#000,stroke-width:2px,color:#000
+    style H fill:#fee090,stroke:#000,stroke-width:2px,color:#000
+    style C fill:#fc8d59,stroke:#000,stroke-width:2px,color:#000
+```
+
 1. **Development Stage**: Create malicious MCP server with legitimate-appearing functionality
 2. **Packaging Stage**: Package server as npm package, Docker image, or standalone binary
 3. **Distribution Stage**: Publish through multiple channels with convincing documentation
@@ -235,7 +263,7 @@ server.run().catch(console.error);
 ### Advanced Attack Techniques
 
 #### Multi-Stage Deployment (2025 Techniques)
-According to [analysis from security researchers](https://blog.sonatype.com/malicious-packages-continue-to-target-developers), advanced attackers use multi-stage deployment:
+According to [Sonatype's analysis of open-source malware evolving toward trust abuse](https://www.sonatype.com/blog/the-evolution-of-open-source-malware-from-volume-to-trust-abuse), advanced attackers use multi-stage, persistence-oriented deployment (delayed execution, secondary payloads, and hiding activity), rather than obviously malicious code up front:
 
 1. **Benign Initial Stage**: Deploy fully functional, legitimate tools
 2. **Trust Building**: Allow tools to operate normally for weeks or months
@@ -243,7 +271,7 @@ According to [analysis from security researchers](https://blog.sonatype.com/mali
 4. **Triggered Activation**: Activate malicious behavior based on specific conditions
 
 #### Container Escape Techniques
-[Research from Aqua Security](https://blog.aquasec.com/container-escape-techniques) shows attackers targeting containerized MCP deployments:
+[Aqua Security's threat alert on `release_agent` container escape](https://www.aquasec.com/blog/threat-alert-container-escape/) documents attackers breaking out of privileged containers in the wild (the technique requires the `SYS_ADMIN`/`--privileged` capability), a risk for containerized MCP deployments:
 
 1. **Privileged Container Exploitation**: Targeting containers run with excessive privileges
 2. **Volume Mount Abuse**: Exploiting mounted host directories
@@ -258,7 +286,7 @@ According to [analysis from security researchers](https://blog.sonatype.com/mali
 ### Current Status (2025)
 Security organizations are responding to increased malicious MCP server distribution:
 - [Docker Hub has implemented enhanced scanning](https://docs.docker.com/docker-hub/vulnerability-scanning/) for container images
-- [npm has strengthened package verification](https://blog.npmjs.org/post/626330617169256448/introducing-npm-security-with-github-advisory) processes
+- [npm documents package security practices](https://docs.npmjs.com/packages-and-modules/securing-your-code) (2FA, provenance, audit, trusted publishing)
 - Organizations are adopting zero-trust principles for MCP server deployment
 
 ## Detection Methods
@@ -278,74 +306,123 @@ Security organizations are responding to increased malicious MCP server distribu
 - Implement multiple layers of detection beyond pattern matching
 - Consider behavioral analysis of MCP server activities
 
+Malicious-server indicators span two telemetry sources - MCP-level events and OS
+endpoint events - and no single log source emits both. They are therefore shipped
+as **two** Sigma rules rather than one rule whose `logsource` is contradicted by its
+fields (the earlier single rule declared `product: mcp` but keyed off Windows
+Security EventIDs, so it could never fire on an MCP log stream). Both are reproduced
+verbatim below; the canonical files are [`detection-rule.yml`](detection-rule.yml)
+(MCP runtime) and [`detection-rule-host-telemetry.yml`](detection-rule-host-telemetry.yml)
+(Sysmon), exercised by [`test_detection_rule.py`](test_detection_rule.py) against
+[`test-logs.json`](test-logs.json).
+
+**Rule 1: MCP runtime telemetry** (`product: mcp / service: server_runtime`) - behavior-based, so it does not rely on brittle marketing names:
+
 ```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: Malicious MCP Server Installation and Activity
-id: b8c5d7f2-34e6-47a9-8bc1-def234567890
+title: Malicious MCP Server Runtime Behavior
+id: 7dd04394-9733-4a73-a3b0-1466a85543c3
 status: experimental
-description: Detects indicators of malicious MCP server installation and execution
-author: SAF-MCP Team
+description: Detects behavioral indicators of a trojanized MCP server at the MCP layer - command-injection markers in tool-call arguments, invocation of capabilities the server never declared, and outbound connections to non-allowlisted hosts.
+author: Frederick Kautz
 date: 2025-09-14
+modified: 2026-07-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1003
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1003
+  - https://attack.mitre.org/techniques/T1204/
 logsource:
   product: mcp
   service: server_runtime
 detection:
-  selection_installation:
-    EventID: 4688  # Process creation
-    ProcessName|endswith:
-      - 'npm.exe'
-      - 'docker.exe'
-      - 'pip.exe'
-    CommandLine|contains:
-      - 'productivity-tools'
-      - 'advanced-mcp'
-      - 'enhanced-mcp'
-      - 'professional-tools'
-
-  selection_network:
-    EventID: 3  # Network connection
-    ProcessName|contains: 'mcp'
-    DestinationHostname|contains:
-      - 'analytics'
-      - 'metrics'
-      - 'backup-service'
-      - 'health-check'
-    DestinationPort:
-      - 80
-      - 443
-      - 8080
-
-  selection_persistence:
-    EventID: 11  # File creation
-    TargetFilename|contains:
-      - 'health-check'
-      - 'mcp-monitor'
-      - '/tmp/.mcp'
-      - 'cron'
-
-  selection_privilege:
-    EventID: 4672  # Special privileges assigned
-    ProcessName|contains: 'mcp'
-    PrivilegeList|contains:
-      - 'SeDebugPrivilege'
-      - 'SeSystemtimePrivilege'
-      - 'SeBackupPrivilege'
-
-  condition: selection_installation or selection_network or selection_persistence or selection_privilege
-
+  selection_cmd_injection:
+    event_type: 'tool_call'
+    tool_argument|contains:
+      - '$('
+      - '`'
+      - '; '
+      - '&&'
+      - '| sh'
+  selection_undeclared_capability:
+    event_type: 'tool_call'
+    capability_declared: false
+  selection_egress:
+    event_type: 'outbound_connection'
+  filter_egress_allowlisted:
+    destination_host|endswith:
+      - 'modelcontextprotocol.io'
+      - 'api.github.com'
+      - 'registry.npmjs.org'
+      - 'localhost'
+  condition: selection_cmd_injection or selection_undeclared_capability or (selection_egress and not filter_egress_allowlisted)
 falsepositives:
-  - Legitimate MCP servers with external integrations
-  - Development and testing environments
-  - MCP servers with legitimate analytics or monitoring features
-  - Containers with legitimate health check mechanisms
-
+  - MCP servers that legitimately shell out and use safe argument construction
+  - Servers with legitimate external integrations not yet added to the allowlist
+  - Tools whose declared capabilities are incompletely captured by the host
 level: high
 tags:
   - attack.initial_access
-  - attack.t1566
   - attack.t1204
+  - attack.t1204.002
+  - safe.t1003
+```
+
+**Rule 2: host/endpoint telemetry** (`product: windows / service: sysmon`) - matches the Example Scenario's own `.com` C2 hosts (a bare Freenom-TLD block list was dropped as it misses them):
+
+```yaml
+title: Malicious MCP Server Host Activity (Beacon, Persistence, Exfiltration)
+id: 382285c8-7989-498d-a9f0-bd8673e7554e
+status: experimental
+description: Detects host-level indicators of a trojanized MCP server after installation - an MCP runtime process spawning a shell/curl beacon, connecting to the Example Scenario C2 hosts, or creating a cron/health-check persistence file - via Sysmon endpoint telemetry.
+author: Frederick Kautz
+date: 2026-07-01
+modified: 2026-07-01
+references:
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1003
+  - https://attack.mitre.org/techniques/T1204/002/
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection_beacon_proc:
+    EventID: 1
+    ParentImage|endswith:
+      - '\node.exe'
+      - '\python.exe'
+      - '\sh'
+      - '\bash'
+    Image|endswith:
+      - '\curl.exe'
+      - '\wget.exe'
+      - '\sh'
+      - '\bash'
+      - '\powershell.exe'
+  selection_network_c2:
+    EventID: 3
+    Image|endswith:
+      - '\node.exe'
+      - '\python.exe'
+      - '\curl.exe'
+    DestinationHostname|contains:
+      - 'legit-analytics'
+      - 'backup-service'
+      - 'malicious-domain'
+      - 'beacon'
+  selection_persistence:
+    EventID: 11
+    TargetFilename|contains:
+      - 'health-check'
+      - 'mcp-monitor'
+      - '/cron'
+      - '/tmp/.mcp'
+  condition: selection_beacon_proc or selection_network_c2 or selection_persistence
+falsepositives:
+  - MCP servers that legitimately invoke curl/wget for their advertised function
+  - Servers with legitimate analytics/telemetry endpoints (tune the host list)
+  - Legitimate health-check or scheduled-task files with matching names
+level: high
+tags:
+  - attack.initial_access
+  - attack.t1204
+  - attack.t1204.002
   - safe.t1003
 ```
 
@@ -358,19 +435,27 @@ tags:
 
 ## Mitigation Strategies
 
+<!-- NOTE: The mitigation IDs below were corrected to map to mitigations that actually
+exist in this repo and match the control described. The earlier revision cited SAF-M-23
+through SAF-M-32 with labels that did not match those directories (SAF-M-25/26/27/28 did
+not exist; SAF-M-23/24/29/30/31/32 are unrelated topics). -->
+
 ### Preventive Controls
-1. **[SAF-M-23: MCP Server Vetting Process](../../mitigations/SAF-M-23/README.md)**: Implement rigorous vetting process for new MCP servers including code review
-2. **[SAF-M-24: Sandboxed Execution](../../mitigations/SAF-M-24/README.md)**: Run MCP servers in isolated environments with restricted privileges
-3. **[SAF-M-25: Source Code Verification](../../mitigations/SAF-M-25/README.md)**: Require and verify source code for all MCP servers before deployment
-4. **[SAF-M-26: Container Security](../../mitigations/SAF-M-26/README.md)**: Implement container security best practices for containerized MCP servers
-5. **[SAF-M-27: Network Egress Controls](../../mitigations/SAF-M-27/README.md)**: Restrict outbound network access from MCP servers to only necessary destinations
-6. **[SAF-M-28: Least Privilege Principle](../../mitigations/SAF-M-28/README.md)**: Grant MCP servers only minimum required system permissions
-7. **[SAF-M-29: Application Allowlisting](../../mitigations/SAF-M-29/README.md)**: Maintain allowlists of approved MCP servers and block unauthorized installations
+1. **[SAF-M-6: Tool Registry Verification](../../mitigations/SAF-M-6/README.md)**: Vet and verify MCP servers against a trusted registry before allowing installation, including review of the declared tools and source.
+2. **[SAF-M-45: Tool Manifest Signing & Server Attestation](../../mitigations/SAF-M-45/README.md)**: Require signed tool manifests and server attestation so only servers whose integrity and origin can be verified are installed (source/integrity verification).
+3. **[SAF-M-24: Supply Chain Security - SBOM Generation and Verification](../../mitigations/SAF-M-24/README.md)**: Generate and verify SBOMs for MCP server packages and images to establish provenance and surface unexpected components.
+4. **[SAF-M-9: Sandboxed Testing](../../mitigations/SAF-M-9/README.md)**: Run new or untrusted MCP servers in isolated, monitored environments before production deployment.
+5. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Grant MCP servers only the minimum system and API privileges required (least privilege).
+6. **[SAF-M-74: Per-Invocation Capability Brokering](../../mitigations/SAF-M-74/README.md)**: Broker capabilities per invocation so a server cannot exercise capabilities beyond what a specific call needs, limiting blast radius and unexpected egress.
+7. **[SAF-M-14: Server Allowlisting](../../mitigations/SAF-M-14/README.md)**: Maintain an allowlist of approved MCP servers and block installation or registration of unapproved ones.
+8. **[SAF-M-15: User Warning Systems](../../mitigations/SAF-M-15/README.md)**: Warn users at install and registration time about the privileges a server requests and its trust status.
 
 ### Detective Controls
-1. **[SAF-M-30: Runtime Behavior Monitoring](../../mitigations/SAF-M-30/README.md)**: Monitor MCP server behavior for deviations from expected patterns
-2. **[SAF-M-31: Network Traffic Analysis](../../mitigations/SAF-M-31/README.md)**: Analyze network traffic patterns from MCP servers
-3. **[SAF-M-32: File System Monitoring](../../mitigations/SAF-M-32/README.md)**: Monitor file system access and modifications by MCP servers
+1. **[SAF-M-11: Behavioral Monitoring](../../mitigations/SAF-M-11/README.md)**: Monitor MCP server runtime behavior for deviations from declared functionality (e.g., unexpected file access or command execution).
+2. **[SAF-M-10: Automated Scanning](../../mitigations/SAF-M-10/README.md)**: Automatically scan server packages and images for known-malicious indicators and backdoor patterns before and after deployment.
+3. **[SAF-M-70: Detective Control - Tool-Invocation Anomaly Detection & Baselining](../../mitigations/SAF-M-70/README.md)**: Baseline normal tool-invocation patterns and flag anomalies such as the C2 beacon or credential-harvesting calls.
+4. **[SAF-M-72: Data Security - Data Loss Prevention on Tool Outputs](../../mitigations/SAF-M-72/README.md)**: Apply DLP to tool outputs and egress to catch exfiltration of credentials and sensitive files.
+5. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Log all server registrations, tool invocations, and outbound connections for detection and forensics.
 
 ### Response Procedures
 1. **Immediate Actions**:
@@ -397,17 +482,27 @@ tags:
 - [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
 - [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
 - [Docker Security Best Practices](https://docs.docker.com/develop/security-best-practices/)
-- [Container Escape Techniques - Aqua Security](https://blog.aquasec.com/container-escape-techniques)
-- [Malicious Packages Continue to Target Developers - Sonatype](https://blog.sonatype.com/malicious-packages-continue-to-target-developers)
+- [Threat Alert: Threat Actors Using release_agent Container Escape - Aqua Security](https://www.aquasec.com/blog/threat-alert-container-escape/)
+- [The Evolution of Open Source Malware: From Volume to Trust Abuse - Sonatype](https://www.sonatype.com/blog/the-evolution-of-open-source-malware-from-volume-to-trust-abuse)
+- [Malicious MCP Server on npm: postmark-mcp Harvests Emails - Snyk, September 2025](https://snyk.io/blog/malicious-mcp-server-on-npm-postmark-mcp-harvests-emails/)
 - [npm Security Advisory Database](https://github.com/advisories)
 - [NIST Application Container Security Guide](https://csrc.nist.gov/publications/detail/sp/800-190/final)
 
 ## MITRE ATT&CK Mapping
-- [T1566 - Phishing](https://attack.mitre.org/techniques/T1566/)
-- [T1204 - User Execution](https://attack.mitre.org/techniques/T1204/)
-- [T1204.002 - Malicious File](https://attack.mitre.org/techniques/T1204/002/)
+
+**Primary (Initial Access via user-driven install):**
+- [T1204 - User Execution](https://attack.mitre.org/techniques/T1204/): the victim installs and runs an attacker-authored MCP server
+- [T1204.002 - Malicious File](https://attack.mitre.org/techniques/T1204/002/): the trojanized package, image, or binary is the malicious file executed
+
+**Documented downstream behaviors (catalogued under their own techniques, not duplicated here):**
+- Persistence: cron beacon and "silent update" activation (see [SAF-T1203](../SAF-T1203/README.md))
+- Credential Access: harvesting `.key`/`.pem`/`.env` files ([T1552 - Unsecured Credentials](https://attack.mitre.org/techniques/T1552/))
+- Command and Control / Exfiltration: the C2 beacon ([T1071 - Application Layer Protocol](https://attack.mitre.org/techniques/T1071/))
+
+> T1566 (Phishing) was removed as a mapping: the victim actively seeks out and installs a package rather than being phished, so T1204 (User Execution) is the cleaner anchor.
 
 ## Version History
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0 | 2025-09-14 | Initial documentation of malicious MCP server distribution techniques | Assistant |
+| 1.0 | 2025-09-14 | Initial documentation of malicious MCP server distribution techniques | The SAF-MCP Authors |
+| 1.1 | 2026-07-01 | Remapped all ten mitigation citations to mitigations that actually exist and match (the prior SAF-M-23..32 numbering was wrong); split the detection rule into a coherent MCP-runtime rule and a Sysmon host rule and made both behavior-based (regenerated UUIDs, fixed the non-resolving references URL, dropped the dated Freenom-TLD list in favor of the Example C2 hosts); added `test_detection_rule.py` + `test-logs.json` (11/11); synced the README-embedded rules with the shipped files; corrected First Observed and the Version History author; replaced the generic Sonatype/Aqua citations with specific verified articles; reconciled the ATT&CK mapping (T1204 anchor, T1566 removed, downstream tactics noted); added a distribution-flow diagram | Frederick Kautz |

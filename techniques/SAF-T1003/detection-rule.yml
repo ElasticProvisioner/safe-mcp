@@ -1,108 +1,65 @@
-# SIGMA RULE: Malicious MCP Server Detection
+# SIGMA RULE: Malicious MCP-Server Distribution - MCP runtime telemetry
 # WARNING: This rule contains example patterns only. Organizations should:
 # - Regularly update patterns based on threat intelligence
 # - Implement behavioral analysis beyond pattern matching
 # - Use AI-based anomaly detection for novel attack vectors
-# - Consider environment-specific customizations
+# - Consider context-specific false positives
+#
+# Scope: this rule reads MCP server-runtime telemetry only (tool registrations,
+# tool calls, and the server's outbound connections as observed by an MCP host
+# or security proxy). Host/OS indicators (process, file, network from the OS)
+# live in the companion Sysmon rule detection-rule-host-telemetry.yml, because
+# no single log source emits both MCP-level events and OS endpoint telemetry.
 
-title: Malicious MCP Server Installation and Activity
-id: b8c5d7f2-34e6-47a9-8bc1-def234567890
+title: Malicious MCP Server Runtime Behavior
+id: 7dd04394-9733-4a73-a3b0-1466a85543c3
 status: experimental
-description: Detects indicators of malicious MCP server installation and execution
-author: SAF-MCP Team
+description: Detects behavioral indicators of a trojanized MCP server at the MCP layer - command-injection markers in tool-call arguments, invocation of capabilities the server never declared, and outbound connections to non-allowlisted hosts.
+author: Frederick Kautz
 date: 2025-09-14
-modified: 2025-09-14
+modified: 2026-07-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1003
-  - https://attack.mitre.org/techniques/T1566/
+  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1003
   - https://attack.mitre.org/techniques/T1204/
 logsource:
   product: mcp
   service: server_runtime
 detection:
-  # Suspicious installation patterns
-  selection_installation:
-    EventID: 4688  # Process creation
-    ProcessName|endswith:
-      - '\npm.exe'
-      - '\docker.exe'
-      - '\pip.exe'
-      - '\yarn.exe'
-    CommandLine|contains:
-      - 'productivity-tools'
-      - 'advanced-mcp'
-      - 'enhanced-mcp'
-      - 'professional-tools'
-      - 'ultimate-mcp'
-      - 'premium-tools'
-
-  # Suspicious network activity
-  selection_network:
-    EventID: 3  # Network connection
-    ProcessName|contains: 'mcp'
-    DestinationHostname|contains:
-      - 'analytics'
-      - 'metrics'
-      - 'backup-service'
-      - 'health-check'
-      - 'telemetry'
-      - 'stats'
-    DestinationHostname|endswith:
-      - '.tk'
-      - '.ml'
-      - '.ga'
-      - '.cf'
-
-  # Persistence mechanisms
-  selection_persistence:
-    EventID: 11  # File creation
-    TargetFilename|contains:
-      - 'health-check'
-      - 'mcp-monitor'
-      - '.mcp-backup'
-      - '.productivity'
-    TargetFilename|endswith:
-      - '/crontab'
-      - '/systemd/system/'
-      - '.service'
-      - '.timer'
-
-  # Privilege escalation attempts
-  selection_privilege:
-    EventID: 4672  # Special privileges assigned
-    ProcessName|contains: 'mcp'
-    PrivilegeList|contains:
-      - 'SeDebugPrivilege'
-      - 'SeSystemtimePrivilege'
-      - 'SeBackupPrivilege'
-      - 'SeRestorePrivilege'
-
-  # Suspicious file access patterns
-  selection_file_access:
-    EventID: 4663  # File access
-    ProcessName|contains: 'mcp'
-    ObjectName|contains:
-      - '.ssh/'
-      - '.aws/'
-      - '.env'
-      - 'secrets'
-      - 'credentials'
-      - 'id_rsa'
-      - 'id_dsa'
-
-  condition: selection_installation or selection_network or selection_persistence or selection_privilege or selection_file_access
-
+  # Tool-call arguments carrying shell command-injection markers (maps to the
+  # generate_report backdoor in the Example Scenario). Behavior-based, not name-based.
+  selection_cmd_injection:
+    event_type: 'tool_call'
+    tool_argument|contains:
+      - '$('
+      - '`'
+      - '; '
+      - '&&'
+      - '| sh'
+  # A tool exercises a capability the server never declared in tools/list
+  # (maps to organize_files silently reading/exfiltrating files). The MCP host
+  # emits capability_declared=false when an invoked capability was not advertised.
+  selection_undeclared_capability:
+    event_type: 'tool_call'
+    capability_declared: false
+  # Outbound connection initiated by the MCP server process.
+  selection_egress:
+    event_type: 'outbound_connection'
+  # Allowlist of expected destinations; anything else is suspicious egress
+  # (the Example Scenario beacons to legit-analytics.com / backup-service.com).
+  filter_egress_allowlisted:
+    destination_host|endswith:
+      - 'modelcontextprotocol.io'
+      - 'api.github.com'
+      - 'registry.npmjs.org'
+      - 'localhost'
+  condition: selection_cmd_injection or selection_undeclared_capability or (selection_egress and not filter_egress_allowlisted)
 falsepositives:
-  - Legitimate MCP servers with external integrations
-  - Development and testing environments
-  - MCP servers with legitimate analytics or monitoring features
-  - Containers with legitimate health check mechanisms
-  - Administrative tools that legitimately require elevated privileges
-
+  - MCP servers that legitimately shell out and use safe argument construction
+  - Servers with legitimate external integrations not yet added to the allowlist
+  - Tools whose declared capabilities are incompletely captured by the host
 level: high
 tags:
   - attack.initial_access
-  - attack.t1566
   - attack.t1204
   - attack.t1204.002
   - safe.t1003
