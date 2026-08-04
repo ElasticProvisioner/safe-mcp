@@ -22,3 +22,8 @@ This Scope does not include:
   which is licensed under the Apache License, Version 2.0
 
 Any changes of Scope are not retroactive.
+
+This Working Group is governed by the
+[Community Specification Governance Policy 1.0](../GOVERNANCE.md). Notices,
+including license acceptance, withdrawals, and patent exclusions, are recorded
+in [NOTICES.md](NOTICES.md).

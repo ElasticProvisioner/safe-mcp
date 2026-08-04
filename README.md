@@ -184,3 +184,13 @@ This project uses a multi-license structure based on the type of content:
 - **Code** (scripts, detection rules, and software) is licensed under [Apache 2.0](LICENSE-APACHE-2.0)
 
 See [LICENSE](LICENSE) for full details, [mitigations/SCOPE.md](mitigations/SCOPE.md) for the mitigation specification's scope, and [mitigations/NOTICES.md](mitigations/NOTICES.md) for Community Specification License notices.
+
+## Governance
+
+The mitigations specification is developed as a Community Specification Working Group under the [Community Specification Governance Policy 1.0](GOVERNANCE.md). See [CONTRIBUTING.md](CONTRIBUTING.md) for how to contribute.
+
+---
+
+Copyright © Secure Agentic Framework a Series of LF Projects, LLC
+
+For web site terms of use, trademark policy and other project policies please see https://lfprojects.org.

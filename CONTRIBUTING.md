@@ -4,7 +4,7 @@ Welcome to the SAF-MCP project! We appreciate your interest in contributing to t
 
 ## Code of Conduct
 
-This project follows the [CNCF Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms. Please read the full text to understand what actions will and will not be tolerated.
+This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms. Please read the full text to understand what actions will and will not be tolerated. Reporting contacts are listed in [mitigations/NOTICES.md](mitigations/NOTICES.md).
 
 ## Licensing
 
@@ -15,6 +15,10 @@ This project uses a multi-license structure:
 - **Code** (including scripts, detection rules, and software) is licensed under [Apache 2.0](LICENSE-APACHE-2.0)
 
 By contributing, you agree that your contributions will be licensed under the applicable license based on the type and location of the content. In particular, by contributing to the mitigations you agree to the terms of the Community Specification License 1.0.
+
+## Governance
+
+The mitigations specification (`mitigations/` and `MITIGATIONS.md`) is developed as a Community Specification Working Group, governed by [GOVERNANCE.md](GOVERNANCE.md). That document defines the Maintainer, Editor, and Participant roles, the consensus-based decision making and appeal process, and the Pre-Draft → Draft → Approved specification lifecycle. The Working Group's scope is defined in [mitigations/SCOPE.md](mitigations/SCOPE.md), and license acceptance, withdrawals, and patent exclusions are recorded in [mitigations/NOTICES.md](mitigations/NOTICES.md).
 
 ## Developer Certificate of Origin (DCO)
 

@@ -2,11 +2,13 @@
 
 This file applies to the SAF-MCP Mitigations specification (`mitigations/`
 and `MITIGATIONS.md`), which is developed under the
-[Community Specification License 1.0](../LICENSE-CSL-1.0).
+[Community Specification License 1.0](../LICENSE-CSL-1.0) and governed by the
+[Community Specification Governance Policy 1.0](../GOVERNANCE.md). The Working
+Group's scope is defined in [SCOPE.md](SCOPE.md).
 
 ## Code of Conduct
 
-This project follows the [CNCF Code of Conduct](../CODE_OF_CONDUCT.md).
+This project follows the [Contributor Covenant Code of Conduct](../CODE_OF_CONDUCT.md).
 
 Contact for Code of Conduct issues or inquiries:
 
