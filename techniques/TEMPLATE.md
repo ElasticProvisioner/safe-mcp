@@ -14,6 +14,7 @@ Use this template for SAF-MCP technique documentation.
 
 - **Tactic**: [Primary Tactic (ATK-TAXXXX); Secondary Tactic (ATK-TAXXXX), if applicable]
 - **Technique ID**: SAF-T[XXXX]
+- **Research Packet**: [research/techniques/SAF-TXXXX](../../research/techniques/SAF-TXXXX/)
 - **Documentation Status**: [Draft / Under Review / Stable / Deprecated]
 - **Evidence Status**: [Observed / Demonstrated / Research-Derived / Hypothesized]
 - **Severity**: [Critical / High / Medium / Low]
@@ -122,10 +123,11 @@ flowchart LR
 
 ### Evidence Summary
 
-| Claim | Evidence Status | Source | Limitations |
-| --- | --- | --- | --- |
-| [Core technique claim] | [Observed / Demonstrated / Research-Derived / Hypothesized] | [Primary source](URL) | [What the source does not establish] |
-| [Important supporting claim] | [Status] | [Source](URL) | [Uncertainty or applicability limit] |
+<!-- Claim IDs and source IDs must match the technique research packet. -->
+
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T[XXXX]-C001 | [Core technique claim] | [Observed / Demonstrated / Research-Derived / Hypothesized] | SRC-[source]: [Primary source](URL) | [What the source does not establish] |
 
 ### Current State
 
@@ -189,14 +191,15 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 - **Known Limitations**: [Blind spots, evasion opportunities, or unavailable telemetry]
 - **Tuning Guidance**: [Environment-specific thresholds, allowlists, or baselines]
 
-### Validation (Optional)
+### Validation
 
-<!-- Include when test assets exist. -->
+<!-- Include test assets when feasible. Otherwise document the approved waiver. -->
 
 - **Test Data**: [test-logs.json](test-logs.json)
 - **Validation Script**: [test_detection_rule.py](test_detection_rule.py)
 - **Expected Result**: [Number of positive and negative cases and required outcome]
 - **Last Validated**: [YYYY-MM-DD]
+- **Feasibility Waiver**: [None / Specific reason representative validation is not currently possible]
 
 ## Mitigation Strategies
 
@@ -261,9 +264,9 @@ List every source cited in the body and only sources materially used.
 Prefer stable, direct URLs. Include publication date and access date when useful.
 -->
 
-1. [Model Context Protocol Specification](https://modelcontextprotocol.io/specification) - [Relevant section and why it matters]
-2. [Primary source title - Author or Organization, Year](URL) - [Claim supported]
-3. [Additional source title - Author or Organization, Year](URL) - [Claim supported]
+1. **SRC-[source]**: [Model Context Protocol Specification](https://modelcontextprotocol.io/specification) - [Relevant section and claim supported]
+2. **SRC-[source]**: [Primary source title - Author or Organization, Year](URL) - [Claim supported]
+3. **SRC-[source]**: [Additional source title - Author or Organization, Year](URL) - [Claim supported]
 
 ## Version History
 
