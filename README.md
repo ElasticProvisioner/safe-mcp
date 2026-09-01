@@ -1,6 +1,6 @@
 # SAF-MCP: Secure Agentic Framework for Model Context Protocol
 
-| SIG-SAFE-MCP     | Details                                                                                    |
+| SIG-SAF-MCP      | Details                                                                                    |
 | ---------------- | ------------------------------------------------------------------------------------------ |
 | **Mailing List** | [openssf-sig-safe-mcp@lists.openssf.org](https://lists.openssf.org/g/openssf-sig-safe-mcp) |
 | **SIG Leads**    | Sarah Evans; Frederick Kautz                                                               |
