@@ -66,7 +66,12 @@ class NewTechniqueTests(unittest.TestCase):
             model = yaml.safe_load(
                 (root / "research" / "framework-model.yml").read_text(encoding="utf-8")
             )
-            self.assertEqual(model["techniques"][0]["technique_id"], "SAF-T9998")
+            generated_record = next(
+                record
+                for record in model["techniques"]
+                if record["technique_id"] == "SAF-T9998"
+            )
+            self.assertEqual(generated_record["name"], "Test Technique")
 
             original = generated_readme
             second = subprocess.run(

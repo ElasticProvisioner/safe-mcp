@@ -1,2 +1,31 @@
 version: 1
-issues: []
+issues:
+  - id: SAF-T1001-A001
+    triggered_by: SAF-T1001
+    affects:
+      - SAF-T1001
+    change: >-
+      Remove schema poisoning, runtime output injection, tool shadowing, rug
+      pulls, supply-chain delivery, and unrelated implementation CVEs from the
+      defining SAF-T1001 scope.
+    reason: >-
+      Primary sources and current MITRE ATLAS data distinguish these mechanisms,
+      and SAF already contains neighboring techniques for them.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, evidence table, and contract now
+      use the top-level description field as the classification boundary.
+  - id: SAF-T1001-A002
+    triggered_by: SAF-T1001
+    affects:
+      - SAF-T1001
+    change: Replace the Process Injection mapping and qualify the supply-chain mapping.
+    reason: >-
+      ATT&CK Process Injection does not describe the semantic boundary, while
+      ATLAS AML.T0110.000 directly covers model-visible definition poisoning.
+    severity: high
+    status: resolved
+    resolution: >-
+      Added direct ATLAS AML.T0110.000 mapping and retained ATT&CK T1195.001 only
+      as an analogous, conditional delivery mapping.

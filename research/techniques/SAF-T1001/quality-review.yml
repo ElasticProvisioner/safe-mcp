@@ -1,0 +1,53 @@
+version: 1
+technique_id: SAF-T1001
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: Codex evidence-led review
+
+gates:
+  contract_and_scope:
+    status: passed
+    notes: The technique is limited to top-level descriptions and names every nearest neighbor.
+  technical_accuracy:
+    status: passed
+    notes: Protocol flow, prerequisites, attack flow, and conditional outcomes match reviewed primary evidence.
+  claim_traceability:
+    status: passed
+    notes: Fifteen material claims have source relations, exact locators, limits, and inline exposure.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by controlled experiments and benchmark evidence; Observed is not claimed.
+  research_saturation:
+    status: passed
+    notes: Four research passes and two consecutive no-change challenge passes are recorded.
+  detection_quality:
+    status: passed
+    notes: The analytic is explicitly triage-only and tests positives, negatives, boundaries, Unicode, and an expected false positive.
+  mitigation_quality:
+    status: passed
+    notes: Controls address admission, visibility, integrity, privilege, execution, behavior, and audit boundaries.
+  framework_alignment:
+    status: passed
+    notes: SAF neighbors are explicit; ATLAS is direct and ATT&CK is conditional and analogous.
+  publication_rights:
+    status: passed
+    notes: Sources are paraphrased or referenced; authors are credited; no payload, figure, table, or protected expression is reproduced.
+  safe_publication:
+    status: passed
+    notes: The only scenario uses an inert canary and isolated log with no credential, network, or destructive action.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 techniques/SAF-T1001/test_detection_rule.py
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1001
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 -m pytest scripts/test_new_technique.py scripts/test_validate_technique_research.py -q
+      result: passed
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 techniques/SAF-T1001/test_detection_rule.py
+    result: 12 of 12 cases passed; 8 alerts and 4 non-alerts, including one expected false positive
+    waiver: null
+
+unresolved: []

@@ -1,0 +1,127 @@
+version: 1
+technique_id: SAF-T1001
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - MCP Tools specification description tools/list model controlled
+        - official MCP client tool description model mapping
+        - current MITRE ATLAS AI Agent Tool Poisoning
+      material_changes:
+        - Narrowed the technique to the top-level MCP tool description field.
+        - Replaced the obsolete Process Injection mapping with current ATLAS AML.T0110.000.
+    - pass: incident_and_demonstration
+      completed_on: "2026-09-01"
+      queries:
+        - original Invariant Labs tool poisoning disclosure and author footer
+        - peer-reviewed MCP tool poisoning benchmark
+        - empirical MCP client tool poisoning study
+      material_changes:
+        - Classified the technique as Demonstrated rather than Observed.
+        - Removed unrelated incidents, runtime prompt injections, and implementation vulnerabilities.
+        - Recorded all named source authors for attribution.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - MCP tool poisoning detection telemetry and tool pinning
+        - Unicode security controls legitimate join-control use
+        - official MCP sandbox consent logging guidance
+      material_changes:
+        - Recast the lexical rule as a triage analytic with an expected false-positive case.
+        - Excluded ZWJ and ZWNJ from the rule because they have legitimate language uses.
+        - Required definition baselines, full-fidelity storage, and correlated runtime telemetry.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - production MCP tool description poisoning incident
+        - evidence against static tool poisoning detection completeness
+        - description poisoning versus schema poisoning versus runtime response
+      material_changes:
+        - Found no reviewed source establishing production exploitation of this exact vector.
+        - Recorded OWASP community material as rejected because it conflates runtime responses with the narrow vector.
+        - Added explicit boundaries for FSP, runtime injection, shadowing, rug pulls, and supply-chain delivery.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - latest exact MITRE ATLAS Definition and Instructions sub-technique
+        - latest tool poisoning production incident description metadata
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - challenge SAF-T1001 evidence status and nearest-neighbor boundary
+        - challenge SAF-T1001 detection claims and false positives
+      material_changes: []
+  rationale: >-
+    The corpus includes the protocol and official client path, the original
+    disclosure, two independent empirical studies, current ATLAS data, official
+    defensive guidance, a maintained scanner, Unicode authority, the nearest
+    schema/runtime research, and an explicit challenge source. Two follow-up
+    passes changed no material claim, classification, boundary, detection, or
+    mapping.
+
+sources_consulted:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-client-guide-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-aaai-mcptox-2026
+  - SRC-huang-mcp-security-2026
+  - SRC-mcp-scan-docs
+  - SRC-mcp-security-2025-11-25
+  - SRC-cyberark-fsp-2025-05-30
+  - SRC-unicode-uts39
+  - SRC-mitre-atlas-2026-07
+  - SRC-mitre-attack-t1195.001
+  - SRC-owasp-mcp-tool-poisoning
+sources_cited:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-client-guide-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-aaai-mcptox-2026
+  - SRC-huang-mcp-security-2026
+  - SRC-mcp-scan-docs
+  - SRC-mcp-security-2025-11-25
+  - SRC-cyberark-fsp-2025-05-30
+  - SRC-unicode-uts39
+  - SRC-mitre-atlas-2026-07
+  - SRC-mitre-attack-t1195.001
+sources_rejected:
+  - source_id: SRC-owasp-mcp-tool-poisoning
+    reason: >-
+      The community page describes poisoning primarily through tool responses,
+      which belongs to SAF-T1102 in this framework; using it for SAF-T1001 would
+      erase the contract's discovery-time description boundary.
+sources_blocked: []
+
+conflicts:
+  - issue: The arXiv abstract for MCPTox reports 1,312 cases while the published AAAI paper reports 1,348.
+    resolution: The final technique uses the peer-reviewed published count and cites the publisher PDF.
+  - issue: The prior technique called the April 2025 disclosure a first real-world observation.
+    resolution: The disclosure repeatedly describes experiments; the technique now says first public demonstration and not observed in production.
+  - issue: Current ATLAS AML.T0110.000 includes schema and other static definition fields beyond the SAF-T1001 contract.
+    resolution: The mapping is direct at the mechanism level but explicitly notes that SAF-T1001 is the narrower top-level-description subset.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1001-C003
+    - SAF-T1001-C004
+    - SAF-T1001-C011
+  rationale: >-
+    The defining description-to-model-to-unintended-action chain has been
+    reproduced publicly and in controlled research, including a peer-reviewed
+    benchmark. The reviewed corpus does not document this exact vector as a
+    production adversarial incident, so Observed would overstate the evidence.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

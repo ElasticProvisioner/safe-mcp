@@ -1,0 +1,105 @@
+version: 1
+technique_id: SAF-T1001
+name: Tool Poisoning Attack
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Influence an agent model's tool selection, planning, or follow-on actions by
+  placing adversarial instructions in an MCP tool description supplied by a
+  server.
+
+scope:
+  security_boundary: >-
+    Untrusted server-supplied tool metadata crosses the MCP client or host
+    boundary into model context and is interpreted as instructions rather than
+    treated only as descriptive data.
+  in_scope:
+    - Adversarial instructions in the `description` field of an MCP tool returned
+      by `tools/list`.
+    - Model behavior influenced before or during tool selection because the
+      client or host exposes that description to the model.
+    - Hidden or visible description text; visual concealment is an optional
+      evasion property, not a defining requirement.
+  out_of_scope:
+    - Instructions in parameter names, nested input schemas, or output schemas;
+      those are SAF-T1501 Full-Schema Poisoning.
+    - Instructions in tool results, retrieved documents, user messages, or other
+      runtime content; those are SAF-T1102 Prompt Injection.
+    - Name collision or one tool altering the apparent identity or behavior of
+      another tool; those are SAF-T1008 or SAF-T1301.
+    - A previously reviewed tool definition that changes later; that lifecycle
+      behavior is SAF-T1201 MCP Rug Pull Attack.
+    - Compromise or malicious distribution of the server package itself; those
+      delivery mechanisms are SAF-T1002 or SAF-T1003.
+  affected_components:
+    - MCP server supplying the tool definition
+    - MCP client or host processing `tools/list`
+    - Agent model receiving tool descriptions in its context
+    - Tools and data reachable with the resulting agent authority
+
+nearest_neighbors:
+  - technique_id: SAF-T1008
+    distinction: >-
+      Tool Shadowing changes or imitates another tool's identity or semantics;
+      SAF-T1001 injects instructions into its own description.
+  - technique_id: SAF-T1102
+    distinction: >-
+      Prompt Injection covers adversarial runtime content such as tool results
+      and retrieved data; SAF-T1001 is limited to tool descriptions supplied
+      during tool discovery.
+  - technique_id: SAF-T1201
+    distinction: >-
+      MCP Rug Pull adds a post-review change over time; SAF-T1001 does not
+      require a formerly benign version.
+  - technique_id: SAF-T1301
+    distinction: >-
+      Cross-Server Tool Shadowing depends on collision or resolution across
+      servers; SAF-T1001 depends on instruction interpretation in a description.
+  - technique_id: SAF-T1501
+    distinction: >-
+      Full-Schema Poisoning targets schema fields beyond the top-level tool
+      description; SAF-T1001 deliberately retains the narrower original vector.
+
+required_evidence:
+  - Establish the normative MCP fields and lifecycle events that carry tool
+    descriptions from a server to a client or host.
+  - Establish a directly reviewable end-to-end demonstration in which a tool
+    description influences model behavior.
+  - Establish whether any public source documents this exact technique in a
+    production incident rather than a controlled demonstration.
+  - Establish detection limits, observable telemetry, and mitigation boundaries
+    without claiming that a pattern rule detects semantic prompt injection.
+  - Distinguish the core technique from schema poisoning, runtime prompt
+    injection, shadowing, rug pulls, and malicious distribution.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Full `tools/list` responses with server identity and a cryptographic digest
+      of each tool definition
+    - Tool-list change events and the prior approved definition for comparison
+    - Agent tool-selection and invocation records with session, server, tool,
+      arguments, result, and approval state
+    - Unicode-preserving storage of tool descriptions before rendering or
+      normalization
+
+safe_example_constraints:
+  - Use an inert example tool and a canary value rather than files, credentials,
+    external requests, or destructive operations.
+  - Demonstrate an unauthorized extra action only as a recorded synthetic event.
+  - Do not provide a deployable malicious MCP server.
+
+completion_evidence:
+  - Every material statement in the technique maps to a claim and directly
+    reviewed source with an exact locator.
+  - Four research passes and two no-change follow-up passes are recorded.
+  - The standalone detection rule passes positive, negative, boundary, and
+    expected false-positive cases.
+  - Rights, alignment, and quality reviews pass with no unresolved blocking
+    issue.

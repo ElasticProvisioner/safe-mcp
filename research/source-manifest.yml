@@ -1,2 +1,326 @@
 version: 1
-sources: []
+sources:
+  - id: SRC-mcp-tools-2025-11-25
+    title: "Model Context Protocol Specification: Tools"
+    publisher: Model Context Protocol project
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "User Interaction Model, lines 83-90"
+      - "Listing Tools, lines 119-167"
+      - "List Changed Notification, lines 209-216"
+      - "Tool data type, lines 234-254"
+      - "Security Considerations, lines 546-557"
+    review_notes: >-
+      Verified the model-controlled interaction model, the tools/list request and
+      response, the top-level description field, list-change notification, and
+      client safety guidance. The specification defines transport and metadata;
+      it does not establish that a model will obey adversarial descriptions.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The versioned canonical specification remains publicly available and only short paraphrases are used.
+      review_evidence:
+        access_method: Official versioned HTML specification
+        notes: The complete Tools page and each cited section were opened and reviewed.
+
+  - id: SRC-mcp-client-guide-2026-07-28
+    title: Build an MCP client
+    publisher: Model Context Protocol project
+    version_or_date: "Documentation current for protocol version 2026-07-28"
+    source_class: implementation_artifact
+    official_url: https://modelcontextprotocol.io/docs/develop/build-client
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Python process_query example mapping name, description, and input_schema"
+      - "TypeScript connectToServer example mapping tool.description"
+      - "How It Works, steps 1-4"
+    review_notes: >-
+      Verified in multiple language examples that clients map an MCP tool
+      description into the model-facing tool definition and send tool
+      descriptions with the user query before the model chooses a tool.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The living official guide is cited by stable heading and no code is reproduced.
+      review_evidence:
+        access_method: Official documentation page
+        notes: The Python, TypeScript, and How It Works portions were reviewed.
+
+  - id: SRC-invariant-tpa-2025-04-01
+    title: "MCP Security Notification: Tool Poisoning Attacks"
+    publisher: Invariant Labs AG
+    version_or_date: "2025-04-01"
+    source_class: official_advisory
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "What is a Tool Poisoning Attack?, lines 28-36"
+      - "How the Attack Works, lines 37-66"
+      - "Experiment 1, lines 67-75"
+      - "MCP Rug Pulls, lines 76-80"
+      - "Shadowing Tool Descriptions, lines 81-116"
+      - "Mitigation Strategies, lines 117-126"
+      - "Authors, lines 139-141"
+    review_notes: >-
+      Verified the original description-field definition, the controlled Cursor
+      demonstration, UI visibility findings, adjacent rug-pull and shadowing
+      behaviors, integrity and rendering recommendations, and the author names
+      Luca Beurer-Kellner and Marc Fischer.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The publisher page is public; only independently worded summaries and attribution are used.
+      review_evidence:
+        access_method: Publisher HTML page
+        notes: The full article, including the author footer, was reviewed.
+
+  - id: SRC-aaai-mcptox-2026
+    title: "MCPTox: A Benchmark for Tool Poisoning on Real-World MCP Servers"
+    publisher: Association for the Advancement of Artificial Intelligence
+    version_or_date: "AAAI-26, 2026"
+    source_class: research
+    official_url: https://ojs.aaai.org/index.php/AAAI/article/download/40895/44856
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser_pdf
+    locators:
+      - "Pages 1-3, definition and architecture"
+      - "Page 2, benchmark composition and headline results"
+      - "Page 5, evaluation methodology and success definition"
+      - "Pages 6-7, attack success results"
+      - "Page 7, defense recommendations and limitations"
+    review_notes: >-
+      Verified the published benchmark design, its controlled evaluation over
+      real server tool definitions, reported attack-success results, recommended
+      controls, and the limitation that payloads were semi-automated and
+      human-defined. Used the published paper's 1,348-case count rather than the
+      older arXiv abstract's 1,312-case count.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The public publisher PDF is linked directly and no table, figure, payload, or substantial expression is reproduced.
+      review_evidence:
+        access_method: Publisher PDF
+        notes: All nine pages were reviewed, with material claims checked against the specified pages.
+
+  - id: SRC-huang-mcp-security-2026
+    title: Model Context Protocol Threat Modeling and Analysis of Vulnerabilities to Prompt Injection with Tool Poisoning
+    publisher: Journal of Cybersecurity and Privacy, MDPI
+    version_or_date: "2026-05-05, 6(3), article 84"
+    source_class: research
+    official_url: https://doi.org/10.3390/jcp6030084
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser_and_reproducibility_repository
+    locators:
+      - "Abstract"
+      - "Sections 5 and 6"
+      - "Reproducibility repository README, Paper Overview and Experimental Results"
+      - "Reproducibility repository README, Citation and License"
+    review_notes: >-
+      Verified a controlled comparison of seven MCP clients, the focus on
+      client-side metadata poisoning, the authors Charoes Huang, Xin Huang,
+      Ngoc Phu Tran, and Amin Milani Fard, the reproducibility materials, and
+      the defense-in-depth recommendations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The open-access article and its public reproducibility repository remain available at canonical URLs.
+      review_evidence:
+        access_method: Publisher article and author-maintained GitHub repository
+        notes: The article metadata, relevant sections, artifacts summary, citation, authors, and license were reviewed.
+
+  - id: SRC-mcp-scan-docs
+    title: Securing MCP with Invariant
+    publisher: Invariant Labs AG
+    version_or_date: "Accessed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://invariantlabs-ai.github.io/docs/mcp-scan/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "MCP-Scan overview, lines 39-52"
+      - "Tool pinning and runtime proxy, lines 65-83"
+    review_notes: >-
+      Verified that MCP-Scan documents static tool-description scanning, tool
+      pinning, and a live proxy. The documentation does not provide a complete
+      accuracy evaluation, so no performance claim is made.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The living project documentation is used only to establish advertised capabilities.
+      review_evidence:
+        access_method: Maintainer documentation page
+        notes: The entire short page was reviewed.
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol project
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Local MCP Server Compromise, lines 367-399"
+      - "Local MCP Server Compromise mitigation, lines 404-424"
+    review_notes: >-
+      Verified official guidance to obtain consent before executing local
+      servers, show exact commands, sandbox servers, minimize default
+      privileges, and restrict file-system and network access.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The versioned official page remains public and is paraphrased with exact section locators.
+      review_evidence:
+        access_method: Official versioned documentation
+        notes: The full local-server attack and mitigation sections were reviewed.
+
+  - id: SRC-cyberark-fsp-2025-05-30
+    title: "Poison everywhere: No output from your MCP server is safe"
+    publisher: CyberArk Labs
+    version_or_date: "2025-05-30"
+    source_class: research
+    official_url: https://www.cyberark.com/resources/threat-research-blog/poison-everywhere-no-output-from-your-mcp-server-is-safe
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Tool Poisoning Attack (TPA)"
+      - "TPA lives beyond descriptions: full-schema poisoning"
+      - "Advanced Tool Poisoning Attacks"
+      - "Mitigation strategies"
+      - "Author footer"
+    review_notes: >-
+      Verified the author's distinction between description poisoning,
+      full-schema poisoning, and malicious runtime output, and credited Simcha
+      Kosman. The controlled examples support scope boundaries, not a production
+      incident for SAF-T1001.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The publisher article is used for classification and attribution only; no payload or image is reproduced.
+      review_evidence:
+        access_method: Publisher HTML page
+        notes: The complete article and author footer were reviewed.
+
+  - id: SRC-unicode-uts39
+    title: "Unicode Technical Standard #39: Unicode Security Mechanisms"
+    publisher: Unicode Consortium
+    version_or_date: "Latest version accessed 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://www.unicode.org/reports/tr39/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Section 1, Introduction"
+      - "Section 3.1.1, Joining Controls"
+      - "Section 4, Confusable Detection"
+    review_notes: >-
+      Verified that Unicode security mechanisms can identify suspicious or
+      confusable text, while join controls are necessary in some languages and
+      blanket exclusion creates false positives. Used to constrain the
+      detection rule, not to claim an MCP exploit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The stable Unicode standard is cited directly and no normative text or data table is reproduced.
+      review_evidence:
+        access_method: Unicode Consortium technical standard
+        notes: The introduction, joining-control cautions, and detection mechanisms were reviewed.
+
+  - id: SRC-mitre-atlas-2026-07
+    title: MITRE ATLAS data release 2026.07
+    publisher: The MITRE Corporation
+    version_or_date: "2026.07, commit 2306eca"
+    source_class: credible_practice
+    official_url: https://raw.githubusercontent.com/mitre-atlas/atlas-data/2306eca/dist/v6/ATLAS-2026.07.yaml
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser_raw_data
+    locators:
+      - "Lines 4333-4379, AML.T0110"
+      - "Lines 4382-4418, AML.T0110.000 Definition and Instructions"
+      - "CHANGELOG lines 1-35 in release commit 2306eca"
+    review_notes: >-
+      Verified the current AI Agent Tool Poisoning parent and Definition and
+      Instructions sub-technique, its Demonstrated maturity, its scope
+      distinctions, and the 2026.07 release provenance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: An immutable commit URL is the authoritative snapshot; only a mapping and paraphrase are used.
+      review_evidence:
+        access_method: MITRE ATLAS raw release data at immutable commit
+        notes: The complete relevant technique records and release entry were reviewed.
+
+  - id: SRC-mitre-attack-t1195.001
+    title: "MITRE ATT&CK T1195.001: Compromise Software Dependencies and Development Tools"
+    publisher: The MITRE Corporation
+    version_or_date: "Version 1.3, modified 2026-05-12"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1195/001/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Technique definition, lines 16-27"
+      - "Metadata, lines 29-47"
+    review_notes: >-
+      Verified that T1195.001 requires manipulation of dependencies or
+      development tools before consumer receipt. It is therefore only an
+      analogous, delivery-specific mapping for SAF-T1001, not a direct mapping.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The canonical live ATT&CK page is cited by technique identifier and version metadata.
+      review_evidence:
+        access_method: Official MITRE ATT&CK page
+        notes: The definition, tactic, platforms, version, and dates were reviewed.
+
+  - id: SRC-owasp-mcp-tool-poisoning
+    title: MCP Tool Poisoning
+    publisher: OWASP Foundation community content
+    version_or_date: "Accessed 2026-09-01"
+    source_class: secondary
+    official_url: https://owasp.org/www-community/attacks/MCP_Tool_Poisoning
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: browser
+    locators:
+      - "Definition and examples"
+    review_notes: >-
+      Consulted during challenge review. The page centers tool-response content
+      and combines definition and runtime vectors, so it was not used to support
+      the deliberately narrow top-level-description scope of SAF-T1001.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Consulted but rejected from citation; the canonical page is retained for auditability.
+      review_evidence:
+        access_method: OWASP community page
+        notes: The definition and examples were reviewed for scope consistency.

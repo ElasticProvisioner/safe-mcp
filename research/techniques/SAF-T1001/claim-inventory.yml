@@ -1,0 +1,398 @@
+version: 1
+technique_id: SAF-T1001
+claims:
+  - id: SAF-T1001-C001
+    statement: >-
+      MCP clients discover server-supplied tools with tools/list; each tool may
+      include a top-level human-readable description, and MCP tools are designed
+      to be model-controlled.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - "User Interaction Model, lines 83-90"
+          - "Listing Tools, lines 119-167"
+          - "Tool data type, lines 234-254"
+    corroboration: The official client guide exercises the same discovery path.
+    limitations:
+      - The protocol does not require a particular model-provider prompt representation.
+      - The specification does not establish that a model will follow malicious description text.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C002
+    statement: >-
+      The official MCP client guide maps tool.description into the model-facing
+      tool definition and sends the user's query with tool descriptions before
+      the model selects a tool.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-client-guide-2026-07-28
+        support: direct
+        exact_locators:
+          - "Python process_query example"
+          - "TypeScript connectToServer example"
+          - "How It Works, steps 1-4"
+    corroboration: The MCP Tools specification defines the description field and model-controlled use.
+    limitations:
+      - The guide is an illustrative client, not a conformance requirement for every host.
+      - Other clients may transform, filter, omit, or separately contextualize descriptions.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C003
+    statement: >-
+      Invariant Labs publicly demonstrated on 2025-04-01 that adversarial
+      instructions embedded in an MCP tool description could cause a tested
+      Cursor agent to access and pass additional sensitive data in tool input.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "What is a Tool Poisoning Attack?, lines 28-36"
+          - "Experiment 1, lines 67-75"
+      - source_id: SRC-mitre-atlas-2026-07
+        support: corroborating
+        exact_locators:
+          - "AML.T0110.000, lines 4382-4418"
+    corroboration: MITRE ATLAS classifies Definition and Instructions as Demonstrated and cites the Invariant disclosure.
+    limitations:
+      - This was a controlled experiment, not a documented adversarial production incident.
+      - The demonstrated outcome depended on the tested model, client, permissions, and available tools.
+      - The original payload is not reproduced in the technique.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C004
+    statement: >-
+      The peer-reviewed MCPTox study evaluated description-based tool poisoning
+      in a controlled benchmark constructed from 45 real MCP servers, 353 tools,
+      1,348 test cases, and 20 model settings; the highest tested attack success
+      rate exceeded 72 percent while the highest refusal rate was below 3 percent.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aaai-mcptox-2026
+        support: direct
+        exact_locators:
+          - "Page 2, benchmark composition and headline results"
+          - "Page 5, evaluation methodology and success definition"
+          - "Pages 6-7, attack success results"
+    corroboration: The independent MDPI study also reports controlled client susceptibility to metadata poisoning.
+    limitations:
+      - Real tool definitions were used in a controlled benchmark; the results are not incident prevalence.
+      - Results are specific to the tested models, prompts, tasks, and study protocol.
+      - Payload generation was semi-automated and human-defined.
+    conflicts:
+      - The older arXiv abstract reports 1,312 cases; this technique uses the published AAAI paper's 1,348-case count.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C005
+    statement: >-
+      Invariant's tested Cursor interface required confirmation but did not show
+      the complete tool input, creating a difference between the information
+      processed by the model and the information available to the approving user.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Experiment 1, lines 67-75"
+    corroboration: The independent MDPI study examines parameter visibility as a client-side defense concern.
+    limitations:
+      - The finding applies to the tested interface and date, not every current client.
+      - Confirmation can still constrain impact when it accurately presents the consequential action and arguments.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C006
+    statement: >-
+      Static lexical and Unicode checks can identify review-worthy tool
+      descriptions but cannot establish semantic maliciousness; Unicode format
+      controls also have legitimate language uses, so these checks require
+      context, allowlisting, and false-positive handling.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-unicode-uts39
+        support: direct
+        exact_locators:
+          - "Section 1, Introduction"
+          - "Section 3.1.1, Joining Controls"
+      - source_id: SRC-aaai-mcptox-2026
+        support: corroborating
+        exact_locators:
+          - "Page 7, defense recommendations and limitations"
+    corroboration: MCPTox recommends pre-execution scanning as one layer and separately recommends runtime validation and auditing.
+    limitations:
+      - UTS #39 addresses Unicode security generally, not MCP tool poisoning specifically.
+      - Natural-language instructions can evade fixed strings without using special Unicode.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Combining Unicode's documented over-inclusiveness with the open-ended
+        natural-language attack surface establishes that the supplied rule is a
+        triage analytic rather than proof of poisoning.
+    status: validated
+
+  - id: SAF-T1001-C007
+    statement: >-
+      Published research recommends layered defenses including pre-execution
+      metadata scanning, isolation of unverified servers, validation of proposed
+      calls against user intent, model-decision-path or behavioral monitoring,
+      and auditability.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aaai-mcptox-2026
+        support: direct
+        exact_locators:
+          - "Page 7, defense recommendations and limitations"
+      - source_id: SRC-huang-mcp-security-2026
+        support: corroborating
+        exact_locators:
+          - "Abstract"
+          - "Sections 5 and 6"
+    corroboration: Two independent studies recommend defense in depth rather than a single signature check.
+    limitations:
+      - The studies do not prove that any proposed control eliminates all description poisoning.
+      - Product implementations and efficacy vary.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C008
+    statement: >-
+      MCP guidance calls for human ability to deny tool invocations, clear UI
+      showing exposed and invoked tools, confirmations, input validation, access
+      controls, rate limiting, output sanitization, and tool-use logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - "User Interaction Model, lines 83-90"
+          - "Security Considerations, lines 546-557"
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators:
+          - "Mitigation Strategies, lines 117-126"
+    corroboration: Invariant specifically recommends parity between user-visible and model-visible descriptions.
+    limitations:
+      - Most MCP safety language is SHOULD-level guidance and the protocol does not mandate one UI.
+      - Confirmation is weakened if consequential arguments or description text are omitted.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C009
+    statement: >-
+      Recording an approved tool definition and comparing a cryptographic digest
+      on later discovery can reveal definition changes; MCP also defines an
+      optional tools/list_changed notification for servers that advertise it.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Mitigation Strategies, lines 117-124"
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - "Capabilities, lines 95-108"
+          - "List Changed Notification, lines 209-216"
+    corroboration: MCP-Scan documents tool pinning as an implemented defensive capability.
+    limitations:
+      - A stable digest does not establish that the initially approved definition was benign.
+      - Notifications are server-declared and must not be treated as an independent trust signal.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Comparing approved and current definitions is a defensive application of the cited pinning recommendation and protocol lifecycle event.
+    status: validated
+
+  - id: SAF-T1001-C010
+    statement: >-
+      Official MCP security guidance recommends explicit consent before local
+      server execution, exact command visibility, sandboxing, minimal default
+      privileges, and restricted file-system and network access.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - "Local MCP Server Compromise mitigation, lines 404-424"
+    corroboration: MCPTox independently recommends sandboxing unverified servers.
+    limitations:
+      - These controls constrain consequences but do not stop a model from interpreting a poisoned description.
+      - The cited section focuses on local-server compromise more broadly.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C011
+    statement: >-
+      The reviewed end-to-end evidence for the exact top-level-description
+      vector is experimental or benchmark evidence, and current MITRE ATLAS data
+      assigns the corresponding sub-technique a Demonstrated maturity.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Our experiments, lines 23-24"
+          - "Experiment 1, lines 67-75"
+      - source_id: SRC-aaai-mcptox-2026
+        support: direct
+        exact_locators:
+          - "Pages 2 and 5, benchmark and evaluation methodology"
+      - source_id: SRC-mitre-atlas-2026-07
+        support: corroborating
+        exact_locators:
+          - "AML.T0110.000, lines 4382-4418"
+    corroboration: Three independent records consistently characterize or embody controlled demonstration rather than incident observation.
+    limitations:
+      - Absence of an incident in the reviewed corpus is not proof that no unreported exploitation occurred.
+      - Production implementation-poisoning incidents belong to a different mechanism.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The evidence label is a synthesis of source study designs and ATLAS maturity.
+    status: validated
+
+  - id: SAF-T1001-C012
+    statement: >-
+      MITRE ATLAS AML.T0110.000 is a direct framework match for poisoning
+      model-visible tool definitions or operational instructions, including
+      tool descriptions, to manipulate agent interpretation, selection, or use.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-atlas-2026-07
+        support: direct
+        exact_locators:
+          - "AML.T0110.000, lines 4382-4418"
+    corroboration: The ATLAS record cites the original Invariant disclosure and MCP Tools specification.
+    limitations:
+      - The ATLAS sub-technique is broader than SAF-T1001 because it also includes schema fields and other static definition surfaces.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF-T1001 is a strict subset of the behavior defined by AML.T0110.000.
+    status: validated
+
+  - id: SAF-T1001-C013
+    statement: >-
+      CyberArk's controlled research distinguishes original description-field
+      poisoning from full-schema poisoning and from malicious runtime responses.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cyberark-fsp-2025-05-30
+        support: direct
+        exact_locators:
+          - "Tool Poisoning Attack (TPA)"
+          - "TPA lives beyond descriptions: full-schema poisoning"
+          - "Advanced Tool Poisoning Attacks"
+    corroboration: MITRE ATLAS 2026.07 separately models Definition and Instructions, Implementation, and Runtime Response.
+    limitations:
+      - The CyberArk examples are controlled research, not incident reports.
+      - SAF assigns full-schema and runtime-response behaviors to neighboring techniques.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1001-C014
+    statement: >-
+      ATT&CK T1195.001 is only an analogous mapping when a poisoned MCP server is
+      delivered through a manipulated dependency or development tool before
+      consumer receipt; description poisoning itself does not require that path.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195.001
+        support: direct
+        exact_locators:
+          - "Technique definition, lines 16-27"
+          - "Metadata, lines 29-47"
+    corroboration: The SAF-T1001 contract explicitly excludes supply-chain delivery from the defining mechanism.
+    limitations:
+      - Enterprise ATT&CK does not directly model the LLM semantic-interface boundary.
+      - Many SAF-T1001 cases will have no T1195.001 behavior.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping applies only to an optional delivery mechanism, not the core behavior.
+    status: validated
+
+  - id: SAF-T1001-C015
+    statement: >-
+      MCP-Scan documents static scans for prompt injection in tool descriptions,
+      tool pinning, and a live proxy, but its documentation does not provide
+      sufficient data to claim a detection rate.
+    class: implementation_fact
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-scan-docs
+        support: direct
+        exact_locators:
+          - "MCP-Scan overview, lines 39-52"
+          - "Tool pinning and runtime proxy, lines 65-83"
+    corroboration: The capabilities correspond to controls independently recommended by Invariant and MCPTox.
+    limitations:
+      - Advertised capability is not evidence of effectiveness in all environments.
+      - Static scanning must be invoked; the proxy is the continuous mode described by the project.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

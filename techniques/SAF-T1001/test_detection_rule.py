@@ -1,134 +1,95 @@
 #!/usr/bin/env python3
-"""Test script for SAF-T1001 detection rule validation"""
+"""Validate the SAF-T1001 triage analytic with adversarial and boundary cases."""
+
+from __future__ import annotations
 
 import json
-import re
-import yaml
 from pathlib import Path
 
-def load_sigma_rule(rule_path):
-    """Load and parse Sigma rule"""
-    with open(rule_path, 'r') as f:
-        return yaml.safe_load(f)
+import yaml
 
-def convert_sigma_pattern_to_regex(pattern):
-    """Convert Sigma wildcard pattern to regex"""
-    # Handle unicode escape sequences
-    if '\\u' in pattern:
-        # Process unicode escapes before regex escaping
-        try:
-            pattern = pattern.encode().decode('unicode-escape')
-        except:
-            pass
-    
-    # Escape special regex characters except *
-    pattern = re.escape(pattern)
-    # Replace escaped \* with .*
-    pattern = pattern.replace(r'\*', '.*')
-    return pattern
 
-def test_detection_rule():
-    """Test the detection rule against known samples"""
-    # Load rule
-    rule_path = Path(__file__).parent / 'detection-rule.yml'
-    rule = load_sigma_rule(rule_path)
-    
-    # Extract patterns
-    patterns = rule['detection']['selection']['tool_description']
-    
-    # Define expected results
-    expected_detections = {
-        "data_processor": True,  # Has <!-- SYSTEM:
-        "api_client": True,      # Has <|system|>
-        "analyzer": True,        # Has [INST]
-        "formatter": True,       # Has ### Instruction:
-        "helper": True,          # Has zero-width character
-        "file_reader": False,    # Clean
-        "validator": False,      # Normal HTML comment
-        "converter": False,      # Clean
-        "logger": False,         # Has [INFO] not [INST]
-        "scanner": False         # Has ### Features not ### Instruction
-    }
-    
-    # Load test logs
-    test_logs_path = Path(__file__).parent / 'test-logs.json'
-    results = {}
-    
-    with open(test_logs_path, 'r') as f:
-        for line in f:
-            log = json.loads(line.strip())
-            tool_name = log['tool_name']
-            description = log['tool_description']
-            
-            # Check if any pattern matches
-            detected = False
-            matched_pattern = None
-            
-            for pattern in patterns:
-                regex = convert_sigma_pattern_to_regex(pattern)
-                if re.search(regex, description, re.IGNORECASE):
-                    detected = True
-                    matched_pattern = pattern
-                    break
-            
-            results[tool_name] = {
-                'detected': detected,
-                'expected': expected_detections.get(tool_name, False),
-                'matched_pattern': matched_pattern,
-                'description': description
-            }
-    
-    # Print results
-    print("SAF-T1001 Detection Rule Test Results")
-    print("=" * 50)
-    
-    total_tests = len(results)
-    correct = 0
-    false_positives = []
-    false_negatives = []
-    
-    for tool_name, result in results.items():
-        status = "✓" if result['detected'] == result['expected'] else "✗"
-        print(f"{status} {tool_name}: Detected={result['detected']}, Expected={result['expected']}")
-        
-        if result['detected'] == result['expected']:
-            correct += 1
-        elif result['detected'] and not result['expected']:
-            false_positives.append(tool_name)
-        elif not result['detected'] and result['expected']:
-            false_negatives.append(tool_name)
-        
-        if result['matched_pattern']:
-            print(f"  Matched pattern: {result['matched_pattern']}")
-    
-    print("\n" + "=" * 50)
-    print(f"Test Summary: {correct}/{total_tests} tests passed ({correct/total_tests*100:.1f}%)")
-    
-    if false_positives:
-        print(f"\nFalse Positives ({len(false_positives)}):")
-        for fp in false_positives:
-            print(f"  - {fp}: {results[fp]['description']}")
-    
-    if false_negatives:
-        print(f"\nFalse Negatives ({len(false_negatives)}):")
-        for fn in false_negatives:
-            print(f"  - {fn}: {results[fn]['description']}")
-    
-    # Test specific patterns
-    print("\n" + "=" * 50)
-    print("Pattern Coverage Test:")
-    pattern_coverage = {pattern: False for pattern in patterns}
-    
-    for result in results.values():
-        if result['matched_pattern']:
-            pattern_coverage[result['matched_pattern']] = True
-    
-    for pattern, covered in pattern_coverage.items():
-        status = "✓" if covered else "✗"
-        print(f"{status} Pattern '{pattern}' - {'Tested' if covered else 'Not tested'}")
-    
-    return correct == total_tests
+ROOT = Path(__file__).parent
+
+
+def load_cases() -> list[dict[str, object]]:
+    return [
+        json.loads(line)
+        for line in (ROOT / "test-logs.json").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+
+def contains_any(text: str, patterns: list[str], *, casefold: bool) -> bool:
+    if casefold:
+        text = text.casefold()
+        patterns = [pattern.casefold() for pattern in patterns]
+    return any(pattern in text for pattern in patterns)
+
+
+def evaluate(rule: dict[str, object], description: str) -> bool:
+    detection = rule["detection"]
+    instructions = detection["selection_instruction"]["tool_description|contains"]
+    actions = detection["selection_sensitive_action"]["tool_description|contains"]
+    controls = detection["selection_format_control"]["tool_description|contains"]
+    lexical = contains_any(description, instructions, casefold=True) and contains_any(
+        description, actions, casefold=True
+    )
+    format_control = contains_any(description, controls, casefold=False)
+    return lexical or format_control
+
+
+def main() -> int:
+    rule = yaml.safe_load((ROOT / "detection-rule.yml").read_text(encoding="utf-8"))
+    cases = load_cases()
+    failures: list[str] = []
+    observed_alerts = 0
+    classifications = {case["classification"] for case in cases}
+
+    required_classes = {"adversarial", "benign", "boundary", "expected_false_positive"}
+    if not required_classes <= classifications:
+        failures.append(
+            f"missing case classes: {sorted(required_classes - classifications)}"
+        )
+
+    for case in cases:
+        actual = evaluate(rule, str(case["tool_description"]))
+        expected = bool(case["expected_alert"])
+        observed_alerts += int(actual)
+        outcome = "PASS" if actual == expected else "FAIL"
+        print(
+            f"{outcome} {case['case_id']}: alert={actual} "
+            f"expected={expected} class={case['classification']}"
+        )
+        if actual != expected:
+            failures.append(str(case["case_id"]))
+
+    false_positive_cases = [
+        case
+        for case in cases
+        if case["classification"] == "expected_false_positive"
+    ]
+    if not false_positive_cases or not all(
+        evaluate(rule, str(case["tool_description"])) for case in false_positive_cases
+    ):
+        failures.append("expected false-positive behavior was not exercised")
+
+    expected_alerts = sum(bool(case["expected_alert"]) for case in cases)
+    print(
+        f"SUMMARY {len(cases)} cases; {observed_alerts} alerts; "
+        f"{len(cases) - observed_alerts} non-alerts"
+    )
+    if observed_alerts != expected_alerts:
+        failures.append(
+            f"alert total {observed_alerts} did not match expected {expected_alerts}"
+        )
+
+    if failures:
+        print("FAILED: " + ", ".join(failures))
+        return 1
+    print("PASS SAF-T1001 detection validation")
+    return 0
+
 
 if __name__ == "__main__":
-    success = test_detection_rule()
-    exit(0 if success else 1)
+    raise SystemExit(main())

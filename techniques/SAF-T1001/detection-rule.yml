@@ -1,34 +1,75 @@
-title: MCP Tool Description Poisoning Detection
+title: Potential MCP Tool Description Poisoning
 id: 5894b8fe-29f0-44d8-ad9b-2266a132ec57
 status: experimental
-description: Detects potential tool poisoning through suspicious patterns in descriptions
+description: >-
+  Flags MCP tool descriptions that combine instruction-like phrases with
+  sensitive-action language, or contain selected invisible directional or tag
+  controls. This is a triage analytic, not proof that a description is
+  malicious.
 author: Frederick Kautz
 date: 2025-01-02
+modified: 2026-09-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1001
+  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - https://ojs.aaai.org/index.php/AAAI/article/download/40895/44856
+  - https://www.unicode.org/reports/tr39/
+  - https://raw.githubusercontent.com/mitre-atlas/atlas-data/2306eca/dist/v6/ATLAS-2026.07.yaml
 logsource:
+  category: application
   product: mcp
-  service: tool_registry
+  service: client_tool_catalog
 detection:
-  selection:
-    tool_description:
-      - '*<!-- SYSTEM:*'
-      - '*<|system|>*'
-      - '*[INST]*'
-      - '*### Instruction:*'
-      - '*\u200b*'  # Zero-width space
-      - '*\u200c*'  # Zero-width non-joiner
-      - '*\uE00*'   # Unicode tags (U+E0000-U+E007F)
-      - '*\u202A*'  # Left-to-right embedding
-      - '*\u202B*'  # Right-to-left embedding
-      - '*\u202D*'  # Left-to-right override
-      - '*\u202E*'  # Right-to-left override
-  condition: selection
+  selection_instruction:
+    tool_description|contains:
+      - "<IMPORTANT>"
+      - "before using this tool"
+      - "ignore previous instructions"
+      - "disregard safety"
+      - "do not mention"
+      - "without telling the user"
+      - "system:"
+  selection_sensitive_action:
+    tool_description|contains:
+      - "read"
+      - "send"
+      - "upload"
+      - "secret"
+      - "credential"
+      - "token"
+      - "private key"
+      - "call"
+      - "invoke"
+      - "without user"
+  selection_format_control:
+    tool_description|contains:
+      - "\u200b"      # ZERO WIDTH SPACE
+      - "\u202a"      # LEFT-TO-RIGHT EMBEDDING
+      - "\u202b"      # RIGHT-TO-LEFT EMBEDDING
+      - "\u202c"      # POP DIRECTIONAL FORMATTING
+      - "\u202d"      # LEFT-TO-RIGHT OVERRIDE
+      - "\u202e"      # RIGHT-TO-LEFT OVERRIDE
+      - "\u2066"      # LEFT-TO-RIGHT ISOLATE
+      - "\u2067"      # RIGHT-TO-LEFT ISOLATE
+      - "\u2068"      # FIRST STRONG ISOLATE
+      - "\u2069"      # POP DIRECTIONAL ISOLATE
+      - "\U000e0001"  # LANGUAGE TAG
+      - "\U000e0041"  # TAG LATIN CAPITAL LETTER A
+  condition: (selection_instruction and selection_sensitive_action) or selection_format_control
+fields:
+  - timestamp
+  - session_id
+  - mcp_server_id
+  - mcp_server_version
+  - tool_name
+  - tool_description
+  - tool_definition_digest
+  - prior_approved_digest
+  - approval_state
 falsepositives:
-  - Legitimate HTML comments in tool descriptions
-  - Legitimate bidirectional text for internationalization
-level: high
+  - Legitimate operational documentation that combines phrases such as "before using" with words such as "read" or "token"
+  - Bidirectional or zero-width formatting required by legitimate internationalized text
+  - Security-testing tools whose descriptions intentionally document prompt-injection strings
+level: medium
 tags:
-  - attack.initial_access
-  - attack.t1195
-  - safe.t1001
+  - saf.t1001
+  - mitre_atlas.aml.t0110.000
