@@ -1,105 +1,77 @@
 version: 1
 technique_id: SAF-T1001
 name: Tool Poisoning Attack
-status: ready_for_review
+status: complete
 created_on: "2026-09-01"
 updated_on: "2026-09-01"
+generation_mode: clean_room
 
 tactics:
   - ATK-TA0001
 
 adversary_objective: >-
-  Influence an agent model's tool selection, planning, or follow-on actions by
-  placing adversarial instructions in an MCP tool description supplied by a
-  server.
+  Cause a tool-selecting model to make an attacker-directed tool choice or
+  construct attacker-directed arguments by treating server-controlled tool
+  definition metadata as planning instructions.
 
 scope:
   security_boundary: >-
-    Untrusted server-supplied tool metadata crosses the MCP client or host
-    boundary into model context and is interpreted as instructions rather than
-    treated only as descriptive data.
+    Server-controlled MCP tool discovery metadata crosses into the host/model
+    planning context and gains decision authority not granted by the user or
+    an independently enforced owner policy.
   in_scope:
-    - Adversarial instructions in the `description` field of an MCP tool returned
-      by `tools/list`.
-    - Model behavior influenced before or during tool selection because the
-      client or host exposes that description to the model.
-    - Hidden or visible description text; visual concealment is an optional
-      evasion property, not a defining requirement.
+    - Instruction-bearing natural-language descriptions or schemas delivered by an attacker-controlled or compromised MCP server.
+    - Initial tool-definition poisoning and post-approval metadata changes.
+    - Cross-tool redirection caused by the poisoned definition, including cases where the poisoned tool is not executed.
   out_of_scope:
-    - Instructions in parameter names, nested input schemas, or output schemas;
-      those are SAF-T1501 Full-Schema Poisoning.
-    - Instructions in tool results, retrieved documents, user messages, or other
-      runtime content; those are SAF-T1102 Prompt Injection.
-    - Name collision or one tool altering the apparent identity or behavior of
-      another tool; those are SAF-T1008 or SAF-T1301.
-    - A previously reviewed tool definition that changes later; that lifecycle
-      behavior is SAF-T1201 MCP Rug Pull Attack.
-    - Compromise or malicious distribution of the server package itself; those
-      delivery mechanisms are SAF-T1002 or SAF-T1003.
+    - Instructions arriving in tool outputs, retrieved content, user prompts, images, or memory.
+    - Malicious implementation code that performs hidden actions without influencing model planning through the definition.
+    - Tool-name collision alone, server installation/configuration exploits, and ordinary authorization or input-validation defects.
+    - Follow-on collection, exfiltration, credential theft, destructive action, or persistence after planning is redirected.
   affected_components:
-    - MCP server supplying the tool definition
-    - MCP client or host processing `tools/list`
-    - Agent model receiving tool descriptions in its context
-    - Tools and data reachable with the resulting agent authority
+    - MCP server and its tool definitions
+    - MCP client or host tool registry and cache
+    - Model planning context and approval layer
+    - Other tools reachable in the same session
 
 nearest_neighbors:
-  - technique_id: SAF-T1008
-    distinction: >-
-      Tool Shadowing changes or imitates another tool's identity or semantics;
-      SAF-T1001 injects instructions into its own description.
   - technique_id: SAF-T1102
-    distinction: >-
-      Prompt Injection covers adversarial runtime content such as tool results
-      and retrieved data; SAF-T1001 is limited to tool descriptions supplied
-      during tool discovery.
-  - technique_id: SAF-T1201
-    distinction: >-
-      MCP Rug Pull adds a post-review change over time; SAF-T1001 does not
-      require a formerly benign version.
-  - technique_id: SAF-T1301
-    distinction: >-
-      Cross-Server Tool Shadowing depends on collision or resolution across
-      servers; SAF-T1001 depends on instruction interpretation in a description.
+    distinction: The adversarial instruction arrives in a user, content, or output channel rather than in discovery metadata.
+  - technique_id: SAF-T1003
+    distinction: Server or package distribution supplies control, but this technique additionally requires metadata-to-planning influence.
+  - technique_id: SAF-T1008
+    distinction: Shadowing changes identity resolution or selection; this technique requires instruction-bearing definition semantics.
+  - technique_id: SAF-T1205
+    distinction: Persistent redefinition survives refresh or restart; this technique is complete when live discovery metadata redirects planning.
+  - technique_id: SAF-T1402
+    distinction: Stenography hides or obfuscates metadata instructions; this technique also covers visible instruction-bearing semantics.
   - technique_id: SAF-T1501
-    distinction: >-
-      Full-Schema Poisoning targets schema fields beyond the top-level tool
-      description; SAF-T1001 deliberately retains the narrower original vector.
+    distinction: Full-Schema Poisoning manipulates multiple schema elements; this technique requires only decision-changing description or schema semantics.
 
 required_evidence:
-  - Establish the normative MCP fields and lifecycle events that carry tool
-    descriptions from a server to a client or host.
-  - Establish a directly reviewable end-to-end demonstration in which a tool
-    description influences model behavior.
-  - Establish whether any public source documents this exact technique in a
-    production incident rather than a controlled demonstration.
-  - Establish detection limits, observable telemetry, and mitigation boundaries
-    without claiming that a pattern rule detects semantic prompt injection.
-  - Distinguish the core technique from schema poisoning, runtime prompt
-    injection, shadowing, rug pulls, and malicious distribution.
+  - Establish that MCP tool definitions are supplied to model-controlled planning.
+  - Establish direct controlled execution where malicious definition semantics change tool choice or arguments.
+  - Establish initial-definition, changed-definition, and cross-tool variants and their prerequisites.
+  - Establish whether production incidents or direct vulnerabilities are attributable to this exact boundary.
+  - Establish telemetry feasibility, false positives, and limitations for a deterministic metadata-integrity analytic.
 
 detection:
   expectation: required
   waiver_rationale: null
   required_telemetry:
-    - Full `tools/list` responses with server identity and a cryptographic digest
-      of each tool definition
-    - Tool-list change events and the prior approved definition for comparison
-    - Agent tool-selection and invocation records with session, server, tool,
-      arguments, result, and approval state
-    - Unicode-preserving storage of tool descriptions before rendering or
-      normalization
+    - Normalized tools/list or list-change snapshots with server identity, tool name, complete description/schema, current hash, approved hash/version, approval state, and timestamp.
+    - Session-correlated approval and tool-call records with arguments, actor, destination, decision, and result.
+    - Publisher/version provenance and allowlist or policy decisions.
 
 safe_example_constraints:
-  - Use an inert example tool and a canary value rather than files, credentials,
-    external requests, or destructive operations.
-  - Demonstrate an unauthorized extra action only as a recorded synthetic event.
-  - Do not provide a deployable malicious MCP server.
+  - Use only synthetic tools, placeholder data, and example.invalid endpoints.
+  - Do not reproduce operational payloads, secrets, destructive commands, or source code from demonstrations.
+  - Make adjacent incidents and evidence limitations explicit.
 
 completion_evidence:
-  - Every material statement in the technique maps to a claim and directly
-    reviewed source with an exact locator.
-  - Four research passes and two no-change follow-up passes are recorded.
-  - The standalone detection rule passes positive, negative, boundary, and
-    expected false-positive cases.
-  - Rights, alignment, and quality reviews pass with no unresolved blocking
-    issue.
+  - Every substantive README unit exposes a validated claim ID or a declared local artifact.
+  - Every cited source was independently opened and reviewed with exact locators and rights disposition.
+  - Material but unpublishable leads are recorded in the exclusion ledger.
+  - Five research passes and two final consecutive no-material-change passes are recorded.
+  - Deterministic positive, negative, boundary, and expected-false-positive detection tests pass.
+  - Clean-room, rights, traceability, quality, framework, and repository validation gates pass.

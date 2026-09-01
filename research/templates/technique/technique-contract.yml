@@ -4,6 +4,7 @@ name: __TECHNIQUE_NAME__
 status: draft
 created_on: "__DATE__"
 updated_on: "__DATE__"
+generation_mode: standard
 
 tactics:
   - ATK-TAXXXX
@@ -35,6 +36,9 @@ required_evidence:
   - Establish the prerequisites and immediate outcome.
   - Establish whether the end-to-end behavior is observed, demonstrated,
     research-derived, or hypothesized.
+  - Search for production breaches and disclosed vulnerabilities, classify
+    their relationship to this contract, and select the highest-impact relevant
+    examples or record why none qualify.
 
 detection:
   expectation: required
@@ -47,8 +51,10 @@ safe_example_constraints:
   - Include only the detail needed to explain and validate the behavior.
 
 completion_evidence:
-  - All material claims are validated and linked to reviewed sources with exact
-    locators.
+  - Every substantive publishable unit is validated and linked to a reviewed
+    source with exact locators or a declared repository artifact.
+  - Unverified candidate claims and examples are omitted from publishable prose
+    and recorded in traceability-ledger.yml.
   - Research saturation is recorded after two consecutive no-change passes.
   - Detection tests pass, or a specific feasibility waiver is approved.
   - Rights and quality reviews pass with no unresolved blocking issue.

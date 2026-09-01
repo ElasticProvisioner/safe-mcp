@@ -73,6 +73,13 @@ def main() -> int:
         1,
     )
     readme = readme.replace(
+        "[traceability-ledger.yml]"
+        "(../../research/techniques/SAF-TXXXX/traceability-ledger.yml)",
+        f"[traceability-ledger.yml]"
+        f"(../../research/techniques/{technique_id}/traceability-ledger.yml)",
+        1,
+    )
+    readme = readme.replace(
         "- **Last Updated**: [YYYY-MM-DD]", f"- **Last Updated**: {today}", 1
     )
     readme = readme.replace("SAF-T[XXXX]-C001", f"{technique_id}-C001", 1)

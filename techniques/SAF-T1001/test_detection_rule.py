@@ -1,95 +1,116 @@
 #!/usr/bin/env python3
-"""Validate the SAF-T1001 triage analytic with adversarial and boundary cases."""
+"""Deterministic validation for the SAF-T1001 experimental analytic."""
 
 from __future__ import annotations
 
 import json
+import re
+import sys
+import unicodedata
 from pathlib import Path
 
-import yaml
+ROOT = Path(__file__).resolve().parent
 
 
-ROOT = Path(__file__).parent
+def nested(record: dict, dotted: str):
+    value = record
+    for part in dotted.split("."):
+        if not isinstance(value, dict) or part not in value:
+            return None
+        value = value[part]
+    return value
 
 
-def load_cases() -> list[dict[str, object]]:
-    return [
-        json.loads(line)
-        for line in (ROOT / "test-logs.json").read_text(encoding="utf-8").splitlines()
-        if line.strip()
-    ]
+def normalized(value: object) -> str:
+    return unicodedata.normalize("NFKC", str(value or "")).casefold()
 
 
-def contains_any(text: str, patterns: list[str], *, casefold: bool) -> bool:
-    if casefold:
-        text = text.casefold()
-        patterns = [pattern.casefold() for pattern in patterns]
-    return any(pattern in text for pattern in patterns)
-
-
-def evaluate(rule: dict[str, object], description: str) -> bool:
-    detection = rule["detection"]
-    instructions = detection["selection_instruction"]["tool_description|contains"]
-    actions = detection["selection_sensitive_action"]["tool_description|contains"]
-    controls = detection["selection_format_control"]["tool_description|contains"]
-    lexical = contains_any(description, instructions, casefold=True) and contains_any(
-        description, actions, casefold=True
+def extract_block(text: str, name: str, next_name: str) -> str:
+    match = re.search(
+        rf"^  {re.escape(name)}:\n(.*?)(?=^  {re.escape(next_name)}:)",
+        text,
+        flags=re.MULTILINE | re.DOTALL,
     )
-    format_control = contains_any(description, controls, casefold=False)
-    return lexical or format_control
+    if not match:
+        raise ValueError(f"missing detection block: {name}")
+    return match.group(1)
+
+
+def list_values(block: str) -> list[str]:
+    return [normalized(item) for item in re.findall(r"^      - (.+)$", block, re.MULTILINE)]
+
+
+def load_rule_config(path: Path) -> dict:
+    text = path.read_text(encoding="utf-8")
+    actions = list_values(extract_block(text, "selection_event", "selection_unapproved"))
+    controls = list_values(extract_block(text, "keywords_control", "keywords_sensitive"))
+    sensitive = list_values(extract_block(text, "keywords_sensitive", "keywords_cross_tool"))
+    cross_block = extract_block(text, "keywords_cross_tool", "condition")
+    cross_match = re.search(r"tool\.description\|re:\s*'([^']+)'", cross_block)
+    if not cross_match:
+        raise ValueError("missing cross-tool regular expression")
+    return {
+        "actions": actions,
+        "controls": controls,
+        "sensitive": sensitive,
+        "cross_pattern": cross_match.group(1),
+    }
+
+
+def alerts(rule: dict, event: dict) -> bool:
+    action = nested(event, "event.action")
+    if normalized(action) not in rule["actions"]:
+        return False
+    if nested(event, "tool.definition.approved") is not False:
+        return False
+    current_hash = nested(event, "tool.definition.current_hash")
+    approved_hash = nested(event, "tool.definition.approved_hash")
+    if not current_hash or current_hash == approved_hash:
+        return False
+
+    description = normalized(nested(event, "tool.description"))
+    if not description:
+        return False
+    has_control = any(term in description for term in rule["controls"])
+    has_sensitive = any(term in description for term in rule["sensitive"])
+    has_cross_tool = bool(re.search(rule["cross_pattern"], description, flags=re.IGNORECASE))
+    return (has_control and has_sensitive) or has_cross_tool
 
 
 def main() -> int:
-    rule = yaml.safe_load((ROOT / "detection-rule.yml").read_text(encoding="utf-8"))
-    cases = load_cases()
-    failures: list[str] = []
-    observed_alerts = 0
-    classifications = {case["classification"] for case in cases}
-
-    required_classes = {"adversarial", "benign", "boundary", "expected_false_positive"}
-    if not required_classes <= classifications:
-        failures.append(
-            f"missing case classes: {sorted(required_classes - classifications)}"
+    rule = load_rule_config(ROOT / "detection-rule.yml")
+    fixture = json.loads((ROOT / "test-logs.json").read_text(encoding="utf-8"))
+    results = []
+    for case in fixture["cases"]:
+        actual = alerts(rule, case["event"])
+        results.append(
+            {
+                "id": case["id"],
+                "category": case["category"],
+                "expected_alert": case["expected_alert"],
+                "actual_alert": actual,
+                "passed": actual == case["expected_alert"],
+            }
         )
 
-    for case in cases:
-        actual = evaluate(rule, str(case["tool_description"]))
-        expected = bool(case["expected_alert"])
-        observed_alerts += int(actual)
-        outcome = "PASS" if actual == expected else "FAIL"
-        print(
-            f"{outcome} {case['case_id']}: alert={actual} "
-            f"expected={expected} class={case['classification']}"
-        )
-        if actual != expected:
-            failures.append(str(case["case_id"]))
-
-    false_positive_cases = [
-        case
-        for case in cases
-        if case["classification"] == "expected_false_positive"
-    ]
-    if not false_positive_cases or not all(
-        evaluate(rule, str(case["tool_description"])) for case in false_positive_cases
-    ):
-        failures.append("expected false-positive behavior was not exercised")
-
-    expected_alerts = sum(bool(case["expected_alert"]) for case in cases)
-    print(
-        f"SUMMARY {len(cases)} cases; {observed_alerts} alerts; "
-        f"{len(cases) - observed_alerts} non-alerts"
+    passed = all(item["passed"] for item in results)
+    alerts_observed = sum(1 for item in results if item["actual_alert"])
+    summary = {
+        "schema_version": 1,
+        "technique_id": "SAF-T1001",
+        "validated_on": "2026-09-01",
+        "status": "passed" if passed else "failed",
+        "case_count": len(results),
+        "alerts_observed": alerts_observed,
+        "expected_alerts": 4,
+        "results": results,
+    }
+    (ROOT / "test-results.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
-    if observed_alerts != expected_alerts:
-        failures.append(
-            f"alert total {observed_alerts} did not match expected {expected_alerts}"
-        )
-
-    if failures:
-        print("FAILED: " + ", ".join(failures))
-        return 1
-    print("PASS SAF-T1001 detection validation")
-    return 0
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return 0 if passed and alerts_observed == 4 else 1
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())

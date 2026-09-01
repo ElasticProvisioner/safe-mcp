@@ -46,17 +46,26 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
         path.write_text(yaml.safe_dump(value, sort_keys=False), encoding="utf-8")
 
     def write_valid_fixture(self) -> None:
-        headings = "\n\n".join(VALIDATOR.REQUIRED_HEADINGS)
+        headings = "\n\n".join(
+            heading
+            for heading in VALIDATOR.REQUIRED_HEADINGS
+            if heading not in {"## Overview", "## Scope"}
+        )
         readme = f"""# {self.technique_id}: Test Technique
 
-{headings}
+## Overview
 
 - **Technique ID**: {self.technique_id}
 - **Research Packet**: [packet](../../research/techniques/{self.technique_id}/)
+- **Traceability Ledger**: [ledger](../../research/techniques/{self.technique_id}/traceability-ledger.yml)
 - **Documentation Status**: Under Review
 - **Evidence Status**: Demonstrated
 
+## Scope
+
 {self.technique_id}-C001 and SRC-test-source
+
+{headings}
 """
         (self.technique / "README.md").write_text(readme, encoding="utf-8")
         self.dump(
@@ -66,6 +75,33 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                 "id": "454ff680-8c07-4d89-9c39-507a53f35262",
                 "status": "test",
                 "description": "Detect the test behavior.",
+                "traceability": {
+                    "policy": "source_or_omit",
+                    "design_claim_ids": [f"{self.technique_id}-C001"],
+                    "telemetry_claim_ids": [f"{self.technique_id}-C001"],
+                    "limitation_claim_ids": [f"{self.technique_id}-C001"],
+                    "validation_artifacts": [
+                        f"techniques/{self.technique_id}/test-logs.json"
+                    ],
+                    "components": {
+                        "selection": {
+                            "claim_ids": [f"{self.technique_id}-C001"],
+                            "rationale": "The source supports the selection.",
+                        },
+                        "condition": {
+                            "claim_ids": [f"{self.technique_id}-C001"],
+                            "rationale": "The source supports the condition.",
+                        },
+                        "logsource": {
+                            "claim_ids": [f"{self.technique_id}-C001"],
+                            "rationale": "The source supports the event source.",
+                        },
+                        "falsepositives": {
+                            "claim_ids": [f"{self.technique_id}-C001"],
+                            "rationale": "The source bounds the result.",
+                        },
+                    },
+                },
                 "logsource": {"product": "mcp"},
                 "detection": {
                     "selection": {"event.action": "test"},
@@ -84,6 +120,7 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                 "technique_id": self.technique_id,
                 "name": "Test Technique",
                 "status": "ready_for_review",
+                "generation_mode": "standard",
                 "tactics": ["ATK-TA0001"],
                 "adversary_objective": "Test the validator.",
                 "scope": {
@@ -103,6 +140,29 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                 },
                 "safe_example_constraints": ["Inert data"],
                 "completion_evidence": ["Validator passes"],
+            },
+        )
+        self.dump(
+            self.packet / "clean-room-attestation.yml",
+            {
+                "version": 1,
+                "technique_id": self.technique_id,
+                "generation_mode": "standard",
+                "status": "not_applicable",
+                "generated_on": "2026-08-31",
+                "generator": {"type": "author", "inherited_context": None},
+                "target": {
+                    "id": self.technique_id,
+                    "neutral_name": "Test Technique",
+                },
+                "allowed_inputs": ["Standard generation."],
+                "prohibited_inputs": ["Not applicable."],
+                "independent_research": {"searches": [], "opened_source_ids": []},
+                "prior_artifact_access": {"detected": None, "details": []},
+                "draft_frozen_before_integration": None,
+                "integration_constraints": [],
+                "attestation": "Clean-room generation was not requested.",
+                "unresolved": [],
             },
         )
         self.dump(
@@ -152,7 +212,8 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                         }
                         for name in (
                             "protocol_and_authority",
-                            "incident_and_demonstration",
+                            "known_breaches_and_vulnerabilities",
+                            "demonstration_and_empirical_research",
                             "detection_and_defense",
                             "gap_and_challenge",
                             "saturation_follow_up_1",
@@ -160,6 +221,24 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                         )
                     ],
                     "rationale": "Two follow-up passes found no material changes.",
+                },
+                "breach_and_vulnerability_assessment": {
+                    "searched_on": "2026-08-31",
+                    "candidate_count": 1,
+                    "selected_examples": [],
+                    "no_qualifying_examples_rationale": "No direct example qualified.",
+                    "candidates": [
+                        {
+                            "source_id": "SRC-test-source",
+                            "identifier": "TEST-ADVISORY",
+                            "relationship": "rejected",
+                            "exploitation_status": "not observed",
+                            "impact": "No demonstrated impact.",
+                            "remediation": "Not applicable.",
+                            "selected": False,
+                            "rationale": "The source is outside the contract.",
+                        }
+                    ],
                 },
                 "sources_consulted": ["SRC-test-source"],
                 "sources_cited": ["SRC-test-source"],
@@ -209,14 +288,54 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                 "unresolved": [],
             },
         )
+        self.dump(
+            self.packet / "traceability-ledger.yml",
+            {
+                "version": 1,
+                "technique_id": self.technique_id,
+                "policy": "source_or_omit",
+                "review_status": "passed",
+                "reviewed_on": "2026-08-31",
+                "publishable_artifact": f"techniques/{self.technique_id}/README.md",
+                "coverage": "all_substantive_publishable_content",
+                "repository_sources": [
+                    {
+                        "id": "LOCAL-quality-review",
+                        "path": f"research/techniques/{self.technique_id}/quality-review.yml",
+                        "supports": "Validation results.",
+                    },
+                    {
+                        "id": "LOCAL-detection-rule",
+                        "path": f"techniques/{self.technique_id}/detection-rule.yml",
+                        "supports": "Detection logic.",
+                    },
+                    {
+                        "id": "LOCAL-detection-tests",
+                        "path": f"techniques/{self.technique_id}/test-logs.json",
+                        "supports": "Synthetic validation cases.",
+                    },
+                ],
+                "repository_history": [
+                    {
+                        "commit": "a" * 40,
+                        "supports": "Version-history provenance.",
+                    }
+                ],
+                "excluded_items": [],
+                "unresolved": [],
+            },
+        )
         gates = {
             name: {"status": "passed", "notes": "Reviewed."}
             for name in (
+                "clean_room_integrity",
                 "contract_and_scope",
                 "technical_accuracy",
                 "claim_traceability",
+                "source_or_omit",
                 "evidence_classification",
                 "research_saturation",
+                "breach_and_vulnerability_coverage",
                 "detection_quality",
                 "mitigation_quality",
                 "framework_alignment",
@@ -259,6 +378,7 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
                         "id": "SRC-test-source",
                         "title": "Test Source",
                         "publisher": "Test Publisher",
+                        "authors": ["Test Author"],
                         "version_or_date": "1.0",
                         "source_class": "implementation_artifact",
                         "official_url": "https://example.com/source",
@@ -333,6 +453,86 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
         errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
         self.assertTrue(any("statuses differ" in error for error in errors), errors)
         self.assertTrue(any("observed_incident" in error for error in errors), errors)
+
+    def test_untraced_publishable_line_fails(self) -> None:
+        readme_path = self.technique / "README.md"
+        readme = readme_path.read_text(encoding="utf-8").replace(
+            "## Scope\n\n",
+            "## Scope\n\nThis unsupported sentence has no trace.\n\n",
+            1,
+        )
+        readme_path.write_text(readme, encoding="utf-8")
+        errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
+        self.assertTrue(
+            any("substantive content without" in error for error in errors), errors
+        )
+
+    def test_excluded_wording_cannot_reappear(self) -> None:
+        ledger_path = self.packet / "traceability-ledger.yml"
+        ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
+        ledger["excluded_items"] = [
+            {
+                "id": f"{self.technique_id}-X001",
+                "candidate": "Unsupported production claim.",
+                "origin": "Prior draft.",
+                "attempted_searches": ["test incident search"],
+                "consulted_source_ids": ["SRC-test-source"],
+                "reason": "The source does not establish production use.",
+                "prohibited_publishable_text": ["unsupported production claim"],
+                "disposition": "omitted_from_publishable_technique",
+                "status": "excluded",
+            }
+        ]
+        self.dump(ledger_path, ledger)
+        readme_path = self.technique / "README.md"
+        readme = readme_path.read_text(encoding="utf-8").replace(
+            f"{self.technique_id}-C001 and SRC-test-source",
+            f"Unsupported production claim. {self.technique_id}-C001 and SRC-test-source",
+            1,
+        )
+        readme_path.write_text(readme, encoding="utf-8")
+        errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
+        self.assertTrue(any("prohibited text appears" in error for error in errors), errors)
+
+    def test_untraced_detection_component_fails(self) -> None:
+        rule_path = self.technique / "detection-rule.yml"
+        rule = yaml.safe_load(rule_path.read_text(encoding="utf-8"))
+        del rule["traceability"]["components"]["condition"]
+        self.dump(rule_path, rule)
+        errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
+        self.assertTrue(
+            any("every detection component" in error for error in errors), errors
+        )
+
+    def test_clean_room_requires_isolated_fresh_agent_attestation(self) -> None:
+        contract_path = self.packet / "technique-contract.yml"
+        contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
+        contract["generation_mode"] = "clean_room"
+        self.dump(contract_path, contract)
+        attestation_path = self.packet / "clean-room-attestation.yml"
+        attestation = yaml.safe_load(attestation_path.read_text(encoding="utf-8"))
+        attestation["generation_mode"] = "clean_room"
+        attestation["status"] = "passed"
+        attestation["generator"] = {"type": "fresh_agent", "inherited_context": True}
+        attestation["allowed_inputs"] = ["Canonical blank template."]
+        attestation["prohibited_inputs"] = [
+            f"techniques/{self.technique_id}/README.md",
+            f"research/techniques/{self.technique_id}/",
+            f"techniques/{self.technique_id}/detection-rule.yml",
+            "git history",
+            "pull request",
+            "previous conversation",
+        ]
+        attestation["independent_research"] = {
+            "searches": ["independent test query"],
+            "opened_source_ids": ["SRC-test-source"],
+        }
+        attestation["prior_artifact_access"] = {"detected": False, "details": []}
+        attestation["draft_frozen_before_integration"] = True
+        attestation["integration_constraints"] = ["Do not inspect prior prose."]
+        self.dump(attestation_path, attestation)
+        errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
+        self.assertTrue(any("must not inherit" in error for error in errors), errors)
 
 
 if __name__ == "__main__":
