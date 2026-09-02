@@ -17,8 +17,7 @@ The Secure Agentic Framework (SAF) documents adversary behavior in agentic syste
 - **Atomic, Permanent Techniques**: IDs represent distinct adversary behaviors and remain permanent even when an entry is consolidated or deprecated.
 - **Profile-Based Scope**: SAF separates general agentic mechanisms from MCP and other domain-specific profiles without duplicating technique IDs.
 - **Typed Relationships**: Technique links distinguish specializations, prerequisites, sequence, overlap, alternatives, and replacements.
-- **MITRE ATT&CK Alignment**: SAF maps agentic behaviors to established ATT&CK tactics and techniques where the relationship is defensible.
-- **Compliance Mapping**: Each SAF-MCP technique links to corresponding MITRE ATT&CK techniques where applicable, helping organizations determine compliance with existing security frameworks and controls.
+- **MITRE ATT&CK Alignment**: Where defensible, SAF techniques link to relevant MITRE ATT&CK behaviors to support threat modeling, detection engineering, and cross-framework analysis. These mappings do not establish compliance.
 - **Evidence-Led Releases**: Evidence, taxonomy, and operational gates require traceable claims, coherent placement, and tested or explicitly bounded detection.
 - **Operational Coverage Registry**: The generated [detection coverage matrix](detections/COVERAGE.md) separates technique linkage, observation modality, validation maturity, and external rule ownership.
 - **Actionable Mitigations**: Each technique includes detailed mitigation strategies and detection rules to help defenders protect their MCP deployments.
