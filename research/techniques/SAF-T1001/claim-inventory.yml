@@ -1,0 +1,403 @@
+version: 1
+technique_id: SAF-T1001
+claims:
+  - id: SAF-T1001-C001
+    statement: >-
+      MCP tool discovery returns server-authored names, descriptions, and input
+      schemas for tools that a model may select, and the protocol permits the
+      available list to change.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model
+          - Capabilities
+          - Protocol Messages > Listing Tools and List Changed Notification
+          - Data Types > Tool
+    corroboration: The main MCP specification describes the host-client-server architecture and explicit-consent principles.
+    limitations:
+      - The specification defines protocol behavior and guidance, not exploit prevalence or uniform host implementation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C002
+    statement: >-
+      In controlled demonstrations, malicious natural-language instructions in
+      an MCP tool description influenced model planning and caused data access
+      or tool behavior contrary to the user's task.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - What is a Tool Poisoning Attack?
+          - Tool Poisoning Attacks
+          - The Full Attack: From Tool Poisoning to Cross-Server Exfiltration
+      - source_id: SRC-mcptox-2508.14925
+        support: corroborating
+        exact_locators:
+          - Abstract
+          - Section 2 Threat Model
+          - Section 4 Evaluation Methodology
+    corroboration: MCPTox reproduces the mechanism across a larger set of tools and model settings.
+    limitations:
+      - The evidence is controlled and does not identify a production victim.
+      - Product behavior can change across versions and configurations.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C003
+    statement: >-
+      Controlled experiments demonstrated both changed-description rug pulls
+      and cross-server redirection in which poisoned metadata recruited a
+      separate trusted tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - Experiment 1: Data Exfiltration via Tool Poisoning
+          - Tool Poisoning via Tool Metadata
+          - Rug Pull Attacks
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators:
+          - Rug Pulls: Changing Tool Descriptions after Approval
+          - Tool Shadowing: Poisoning Other Tools
+          - The Full Attack: From Tool Poisoning to Cross-Server Exfiltration
+    corroboration: Two separately published controlled examples from the same named research team cover initial, changed, and cross-server behavior.
+    limitations:
+      - The two sources share authors and therefore are not independent corroboration.
+      - Neither establishes production exploitation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C004
+    statement: >-
+      MCPTox evaluated 1,312 malicious tests across 45 live MCP servers, 353
+      tools, and 20 model settings, reported a maximum attack success rate of
+      72.8 percent, and observed that a poisoned tool need not execute to affect
+      the model's decision.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcptox-2508.14925
+        support: direct
+        exact_locators:
+          - Abstract
+          - Section 2.1 Threat Model and Attack Scope
+          - Section 3 Benchmark Construction
+          - Section 5 Results
+          - Section 6 Limitations
+    corroboration: MCP Security Bench and MCP Pitfall Lab independently report model-dependent success under controlled metadata attacks.
+    limitations:
+      - The benchmark is single-turn, semi-automated, and not a measurement of production incidence.
+      - Maximum attack success rate is configuration-specific rather than a universal rate.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C005
+    statement: >-
+      Independent controlled benchmarks report nonzero, model-dependent tool
+      poisoning success and show that protocol traces and objective validators
+      provide stronger execution evidence than agent self-report alone.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-security-bench-2510.15994
+        support: direct
+        exact_locators:
+          - Threat Model
+          - Benchmark Construction
+          - Main Results and defense evaluation
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: direct
+        exact_locators:
+          - Section 3.2 Assets, security objectives, and validator types
+          - Section 5.2 Runner and Protocol Trace Collection
+          - Section 6.2 Benchmark-Scale Runtime ASR
+          - Section 6.3 Static and Dynamic Hardening Regression
+    corroboration: The two independent teams use different scenario sets but both validate concrete tool behavior rather than text-only model responses.
+    limitations:
+      - Both are laboratory evaluations with bounded models, prompts, and synthetic or controlled environments.
+      - Reported rates cannot be generalized to all MCP clients or production systems.
+    conflicts:
+      - MCP Pitfall Lab found a document-workflow regression after static hardening, showing static findings do not guarantee runtime improvement.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C006
+    statement: >-
+      A feasible metadata-integrity analytic requires complete tool-definition
+      snapshots, stable server identity, approved and current hashes or
+      versions, approval state, and session-correlated discovery and call
+      events.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Protocol Messages > Listing Tools
+          - Protocol Messages > List Changed Notification
+          - Security Considerations
+      - source_id: SRC-ms-gsa-mcp-logging-2026
+        support: direct
+        exact_locators:
+          - Prerequisites and limitations for remote versus local MCP traffic
+          - MCP event fields
+          - View MCP events and content payload
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: corroborating
+        exact_locators:
+          - Section 5.2 Runner and Protocol Trace Collection
+          - Section 5.4 Semantic MCP-BOM Artifact Layer
+          - Section 6.5.4 Trace-Linked Provenance
+    corroboration: Microsoft logging documentation identifies protocol payload and correlation fields; Pitfall Lab explains why semantic snapshots and runtime traces serve different evidentiary roles.
+    limitations:
+      - The exact normalized event schema and definition hash are proposed by this analytic, not mandated by MCP.
+      - Gateway visibility may exclude local stdio and traffic without authorized TLS inspection.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rule schema combines fields from protocol responses, gateway logs, and a local approval registry into a deployable analytic contract.
+    status: validated
+
+  - id: SAF-T1001-C007
+    statement: >-
+      Static instruction-like text matching is suitable only as a review signal:
+      legitimate technical descriptions can match, paraphrase or encoding can
+      evade it, and a match does not prove that metadata influenced a model.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cascade-2604.17125
+        support: direct
+        exact_locators:
+          - Section 3.1 L1 Pre-Filter Layer
+          - Section 4.3 Results and Discussion
+          - Section 4.4 Limitations
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: corroborating
+        exact_locators:
+          - Section 6.3 Static and Dynamic Hardening Regression
+          - Section 8 Discussion and Limitations
+    corroboration: CASCADE reports 59.9 percent recall for its tool-poisoning category and explicit false positives; Pitfall Lab reports a runtime regression despite static hardening.
+    limitations:
+      - CASCADE used a static, predominantly English dataset and one L2 fallback model.
+      - The repository's simpler deterministic analytic has not been benchmarked for precision or recall.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C008
+    statement: >-
+      Primary preventive controls are publisher/server provenance, explicit
+      allowlisting, canonical definition snapshots or pins, renewed review on
+      metadata change, least-privilege tool exposure, and server-side or host
+      policy outside descriptive text.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-ai-red-team-taxonomy-v2-2026
+        support: direct
+        exact_locators:
+          - Section 5.2 Supply-chain security for agentic components
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators:
+          - Tool poisoning
+          - Governance best practices
+      - source_id: SRC-google-mcp-security-2026
+        support: corroborating
+        exact_locators:
+          - Malicious or compromised MCP servers
+          - Dynamic tool changes
+          - Tool allowlisting and deny policies
+    corroboration: Independent Microsoft and Google guidance converge on provenance, review, allowlisting, and least privilege.
+    limitations:
+      - Guidance does not quantify residual risk or guarantee model resistance.
+      - Pinning and review detect change but cannot establish that an initially approved definition is benign.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered control set is synthesized from independent operational guidance and the demonstrated attack boundary.
+    status: validated
+
+  - id: SAF-T1001-C009
+    statement: >-
+      The independent review identified no attributable production incident or
+      direct CVE for tool-definition poisoning; the documented malicious
+      Postmark MCP package is adjacent because hidden implementation code, not
+      metadata-to-planning influence, performed the extra action.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-postmark-mcp-incident-2025-09-25
+        support: direct
+        exact_locators:
+          - Summary and package history
+          - Affected version 1.0.16 behavior
+          - Recommended removal, log review, and credential rotation
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: context
+        exact_locators:
+          - Attack pattern: MCP tool poisoning in a finance workflow
+          - Microsoft coordinated-disclosure limitation stating no specific affected organization is disclosed
+    corroboration: Current government catalog, vendor, incident-response, and research searches are recorded in source-coverage.yml and the clean-room attestation.
+    limitations:
+      - Absence from a bounded public review does not establish that no undisclosed incident exists.
+      - Microsoft's generalized observation lacks event-level attribution, date, victim, and incident record.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Relationship classification applies the frozen mechanism contract to the reviewed incident and the negative search result.
+    status: validated
+
+  - id: SAF-T1001-C010
+    statement: >-
+      Tool-output injection, malicious package behavior, tool-name collision,
+      and follow-on exfiltration are nearest neighbors rather than the defining
+      metadata-to-planning behavior; ATT&CK T1195.002 is analogous, not direct.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-ai-red-team-taxonomy-v2-2026
+        support: direct
+        exact_locators:
+          - Section 4.3 Agentic supply chain compromise
+          - Section 4.8 MCP / plugin abuse
+          - Section 6 Industry alignment
+      - source_id: SRC-postmark-mcp-incident-2025-09-25
+        support: context
+        exact_locators:
+          - Description of hidden BCC implementation behavior
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: corroborating
+        exact_locators:
+          - Section 2.1 MCP Agent Pipelines and Threat Surfaces
+          - Section 3.3 Attack families
+    corroboration: Microsoft taxonomy and Pitfall Lab explicitly separate tool metadata, untrusted outputs, malicious servers, and downstream effects.
+    limitations:
+      - Local SAF neighbor IDs and tactic joins are pending post-freeze mechanical framework reconciliation.
+      - The ATT&CK mapping is conceptual and does not imply exact equivalence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The boundary and mapping are reconciliation judgments derived from explicit source distinctions.
+    status: validated
+
+  - id: SAF-T1001-C011
+    statement: >-
+      Impact is high when poisoned planning can bridge sensitive sources and
+      privileged or external-action tools, while isolation, least privilege,
+      deterministic action constraints, and human approval reduce blast radius.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - Experiment 1 controlled exfiltration chain
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: direct
+        exact_locators:
+          - Section 3.2 confidentiality and integrity validators
+          - Section 3.3 scenarios
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: corroborating
+        exact_locators:
+          - The Lethal Trifecta
+          - What Annotations Can't Do
+    corroboration: Demonstrations and protocol-community guidance agree that risk depends on the combination of sources, sinks, and enforcement.
+    limitations:
+      - High is a conditional framework rating, not a measured universal impact.
+      - Availability harm is possible but not intrinsic to the mechanism.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The severity judgment combines demonstrated effects with explicit capability and control conditions.
+    status: validated
+
+  - id: SAF-T1001-C012
+    statement: >-
+      MCP recommends user visibility and confirmation for sensitive tool use,
+      but interaction patterns are implementation-defined and tool annotations
+      are untrusted hints rather than security enforcement.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model
+          - Data Types > Tool > annotations
+          - Security Considerations
+      - source_id: SRC-mcp-spec-2025-11-25
+        support: direct
+        exact_locators:
+          - Key Principles > User Consent and Control
+          - Key Principles > Tool Safety
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: corroborating
+        exact_locators:
+          - What Tool Annotations Are
+          - What Annotations Can't Do
+    corroboration: Normative specification text and protocol-maintainer analysis make the same trust and enforcement distinction.
+    limitations:
+      - Individual clients can implement stronger controls than the protocol minimum.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1001-C013
+    statement: >-
+      Response should disable the suspect server or tool, preserve definition
+      and session evidence, revoke credentials when exposure is shown, restore
+      a verified version, and add the observed sequence to regression coverage.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators:
+          - Detection and response with Microsoft security tools
+          - Containment and prevention guidance
+      - source_id: SRC-postmark-mcp-incident-2025-09-25
+        support: corroborating
+        exact_locators:
+          - Recommended removal, log review, and credential rotation
+      - source_id: SRC-mcp-pitfall-lab-2604.21477
+        support: context
+        exact_locators:
+          - Section 5.2 protocol trace collection
+          - Section 6.3 hardening regression
+    corroboration: Vendor incident guidance and trace-grounded research support containment, evidence preservation, credential response, and regression testing.
+    limitations:
+      - Exact response order depends on environment, legal obligations, and evidence of downstream actions.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The procedure adapts cited containment and investigation principles to this technique's evidence boundary.
+    status: validated

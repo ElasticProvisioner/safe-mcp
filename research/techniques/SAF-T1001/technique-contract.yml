@@ -1,0 +1,78 @@
+version: 1
+technique_id: SAF-T1001
+name: Tool Poisoning Attack
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Cause a tool-selecting model to make an attacker-directed tool choice or
+  construct attacker-directed arguments by treating server-controlled tool
+  definition metadata as planning instructions.
+
+scope:
+  security_boundary: >-
+    Server-controlled MCP tool discovery metadata crosses into the host/model
+    planning context and gains decision authority not granted by the user or
+    an independently enforced owner policy.
+  in_scope:
+    - Instruction-bearing natural-language descriptions or schemas delivered by an attacker-controlled or compromised MCP server.
+    - Initial tool-definition poisoning and post-approval metadata changes.
+    - Cross-tool redirection caused by the poisoned definition, including cases where the poisoned tool is not executed.
+  out_of_scope:
+    - Instructions arriving in tool outputs, retrieved content, user prompts, images, or memory.
+    - Malicious implementation code that performs hidden actions without influencing model planning through the definition.
+    - Tool-name collision alone, server installation/configuration exploits, and ordinary authorization or input-validation defects.
+    - Follow-on collection, exfiltration, credential theft, destructive action, or persistence after planning is redirected.
+  affected_components:
+    - MCP server and its tool definitions
+    - MCP client or host tool registry and cache
+    - Model planning context and approval layer
+    - Other tools reachable in the same session
+
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: The adversarial instruction arrives in a user, content, or output channel rather than in discovery metadata.
+  - technique_id: SAF-T1003
+    distinction: Server or package distribution supplies control, but this technique additionally requires metadata-to-planning influence.
+  - technique_id: SAF-T1008
+    distinction: Shadowing changes identity resolution or selection; this technique requires instruction-bearing definition semantics.
+  - technique_id: SAF-T1205
+    distinction: Persistent redefinition survives refresh or restart; this technique is complete when live discovery metadata redirects planning.
+  - technique_id: SAF-T1402
+    distinction: Stenography hides or obfuscates metadata instructions; this technique also covers visible instruction-bearing semantics.
+  - technique_id: SAF-T1501
+    distinction: Full-Schema Poisoning manipulates multiple schema elements; this technique requires only decision-changing description or schema semantics.
+
+required_evidence:
+  - Establish that MCP tool definitions are supplied to model-controlled planning.
+  - Establish direct controlled execution where malicious definition semantics change tool choice or arguments.
+  - Establish initial-definition, changed-definition, and cross-tool variants and their prerequisites.
+  - Establish whether production incidents or direct vulnerabilities are attributable to this exact boundary.
+  - Establish telemetry feasibility, false positives, and limitations for a deterministic metadata-integrity analytic.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Normalized tools/list or list-change snapshots with server identity, tool name, complete description/schema, current hash, approved hash/version, approval state, and timestamp.
+    - Session-correlated approval and tool-call records with arguments, actor, destination, decision, and result.
+    - Publisher/version provenance and allowlist or policy decisions.
+
+safe_example_constraints:
+  - Use only synthetic tools, placeholder data, and example.invalid endpoints.
+  - Do not reproduce operational payloads, secrets, destructive commands, or source code from demonstrations.
+  - Make adjacent incidents and evidence limitations explicit.
+
+completion_evidence:
+  - Every substantive README unit exposes a validated claim ID or a declared local artifact.
+  - Every cited source was independently opened and reviewed with exact locators and rights disposition.
+  - Material but unpublishable leads are recorded in the exclusion ledger.
+  - Five research passes and two final consecutive no-material-change passes are recorded.
+  - Deterministic positive, negative, boundary, and expected-false-positive detection tests pass.
+  - Clean-room, rights, traceability, quality, framework, and repository validation gates pass.

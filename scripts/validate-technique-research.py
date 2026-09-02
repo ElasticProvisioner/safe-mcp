@@ -20,10 +20,24 @@ TECHNIQUE_ID = re.compile(r"SAF-T[1-9][0-9]{3}$")
 CLAIM_ID = re.compile(r"SAF-T[1-9][0-9]{3}-C[0-9]{3}$")
 SOURCE_ID = re.compile(r"SRC-[a-z0-9][a-z0-9._-]*$")
 TACTIC_ID = re.compile(r"ATK-TA[0-9]{4}$")
+CLAIM_REFERENCE = re.compile(r"SAF-T[1-9][0-9]{3}-C[0-9]{3}")
+SOURCE_REFERENCE = re.compile(r"SRC-[a-z0-9][a-z0-9._-]*")
+EXCLUSION_ID = re.compile(r"SAF-T[1-9][0-9]{3}-X[0-9]{3}$")
+MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+TRACE_COMMENT_START = re.compile(r"<!--\s*SAF-TRACE:")
+TRACE_COMMENT = re.compile(
+    rf"<!--\s*SAF-TRACE:\s*"
+    rf"claims=(?P<claims>{CLAIM_REFERENCE.pattern}(?:\s*,\s*{CLAIM_REFERENCE.pattern})*)"
+    rf"\s*;\s*"
+    rf"sources=(?P<sources>{SOURCE_REFERENCE.pattern}(?:\s*,\s*{SOURCE_REFERENCE.pattern})*)"
+    rf"\s*-->"
+)
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 
 CLAIM_CLASSES = {
     "protocol_normative",
     "observed_incident",
+    "disclosed_vulnerability",
     "demonstrated_exploit",
     "research_finding",
     "implementation_fact",
@@ -47,11 +61,13 @@ ARCHIVE_STATUSES = {
     "pending",
 }
 REQUIRED_PACKET_FILES = (
+    "clean-room-attestation.yml",
     "technique-contract.yml",
     "claim-inventory.yml",
     "source-coverage.yml",
     "publication-rights.yml",
     "quality-review.yml",
+    "traceability-ledger.yml",
 )
 REQUIRED_HEADINGS = (
     "## Overview",
@@ -69,11 +85,14 @@ REQUIRED_HEADINGS = (
     "## Version History",
 )
 REQUIRED_GATES = {
+    "clean_room_integrity",
     "contract_and_scope",
     "technical_accuracy",
     "claim_traceability",
+    "source_or_omit",
     "evidence_classification",
     "research_saturation",
+    "breach_and_vulnerability_coverage",
     "detection_quality",
     "mitigation_quality",
     "framework_alignment",
@@ -82,9 +101,19 @@ REQUIRED_GATES = {
 }
 RESEARCH_PASSES = {
     "protocol_and_authority",
-    "incident_and_demonstration",
+    "known_breaches_and_vulnerabilities",
+    "demonstration_and_empirical_research",
     "detection_and_defense",
     "gap_and_challenge",
+}
+BREACH_RELATIONSHIPS = {
+    "direct_production_incident",
+    "direct_vulnerability",
+    "direct_demonstration",
+    "enabling_vulnerability",
+    "adjacent_incident_or_vulnerability",
+    "historical_analogy",
+    "rejected",
 }
 
 
@@ -116,6 +145,138 @@ def nonempty_list(value: Any) -> bool:
         and bool(value)
         and all(item not in (None, "") for item in value)
     )
+
+
+def is_table_separator(line: str) -> bool:
+    stripped = line.strip()
+    if not stripped.startswith("|") or not stripped.endswith("|"):
+        return False
+    cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
+
+
+def declared_local_link(
+    line: str, root: Path, readme_path: Path, declared_paths: set[str]
+) -> bool:
+    for target in MARKDOWN_LINK.findall(line):
+        target = target.split("#", 1)[0]
+        if not target or target.startswith(("http://", "https://", "#")):
+            continue
+        resolved = (readme_path.parent / target).resolve()
+        try:
+            repository_path = resolved.relative_to(root.resolve()).as_posix()
+        except ValueError:
+            continue
+        if repository_path in declared_paths:
+            return True
+    return False
+
+
+def visible_claim_lines_outside_evidence_summary(readme: str) -> list[int]:
+    """Find rendered claim IDs outside the intentionally visible audit table."""
+
+    without_comments = HTML_COMMENT.sub(
+        lambda match: "\n" * match.group(0).count("\n"), readme
+    )
+    failures: list[int] = []
+    current_section = ""
+    current_subsection = ""
+    for index, line in enumerate(without_comments.splitlines()):
+        stripped = line.strip()
+        if stripped.startswith("## "):
+            current_section = stripped
+            current_subsection = ""
+        elif stripped.startswith("### "):
+            current_subsection = stripped
+        in_evidence_summary = (
+            current_section == "## Evidence and Current State"
+            and current_subsection == "### Evidence Summary"
+        )
+        if not in_evidence_summary and CLAIM_REFERENCE.search(line):
+            failures.append(index + 1)
+    return failures
+
+
+def untraced_publishable_lines(
+    readme: str,
+    root: Path,
+    readme_path: Path,
+    claim_ids: set[str],
+    declared_paths: set[str],
+) -> list[int]:
+    """Return substantive README lines that expose no approved trace."""
+
+    lines = readme.splitlines()
+    failures: list[int] = []
+    in_fence = False
+    in_comment = False
+    previous_nonblank = ""
+    current_section = ""
+    internal_metadata = re.compile(
+        r"^- \*\*(?:Tactic|Technique ID|Research Packet|Traceability Ledger|"
+        r"Documentation Status|Evidence Status|Severity|Last Updated)\*\*:"
+    )
+    structural_list_label = re.compile(r"^\s*[-*]\s+\*\*[^*]+\*\*:\s*$")
+
+    def traced(line: str) -> bool:
+        references = set(CLAIM_REFERENCE.findall(line))
+        return bool(references & claim_ids) or declared_local_link(
+            line, root, readme_path, declared_paths
+        )
+
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        line_number = index + 1
+
+        if in_comment:
+            if "-->" in stripped:
+                in_comment = False
+            continue
+        if stripped.startswith("<!--"):
+            if "-->" not in stripped:
+                in_comment = True
+            continue
+        if stripped.startswith(("```", "~~~")):
+            if not in_fence and not traced(previous_nonblank):
+                failures.append(line_number)
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            if stripped.startswith("## "):
+                current_section = stripped
+            previous_nonblank = line
+            continue
+        if stripped == "---" or is_table_separator(line):
+            continue
+        if index + 1 < len(lines) and is_table_separator(lines[index + 1]):
+            previous_nonblank = line
+            continue
+        if internal_metadata.match(stripped) or structural_list_label.match(stripped):
+            previous_nonblank = line
+            continue
+        if current_section == "## Version History" and stripped.startswith("|"):
+            previous_nonblank = line
+            continue
+
+        claim_references = set(CLAIM_REFERENCE.findall(line))
+        if claim_references & claim_ids:
+            previous_nonblank = line
+            continue
+        if current_section == "## References" and SOURCE_REFERENCE.search(line):
+            previous_nonblank = line
+            continue
+        if declared_local_link(line, root, readme_path, declared_paths):
+            previous_nonblank = line
+            continue
+
+        failures.append(line_number)
+        previous_nonblank = line
+
+    return failures
 
 
 def records_by_id(
@@ -153,6 +314,7 @@ def validate_source(
         "review_notes",
     ):
         check.require(bool(source.get(field)), f"{source_id}: missing {field}")
+    check.require(nonempty_list(source.get("authors")), f"{source_id}: authors required")
     check.require(
         source.get("source_class") in SOURCE_CLASSES,
         f"{source_id}: invalid source_class",
@@ -286,17 +448,21 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
         "README has invalid Documentation Status",
     )
 
+    clean_room = load_yaml(packet_dir / "clean-room-attestation.yml", check)
     contract = load_yaml(packet_dir / "technique-contract.yml", check)
     inventory = load_yaml(packet_dir / "claim-inventory.yml", check)
     coverage = load_yaml(packet_dir / "source-coverage.yml", check)
     rights = load_yaml(packet_dir / "publication-rights.yml", check)
     review = load_yaml(packet_dir / "quality-review.yml", check)
+    traceability = load_yaml(packet_dir / "traceability-ledger.yml", check)
     for filename, data in (
+        ("clean-room-attestation.yml", clean_room),
         ("technique-contract.yml", contract),
         ("claim-inventory.yml", inventory),
         ("source-coverage.yml", coverage),
         ("publication-rights.yml", rights),
         ("quality-review.yml", review),
+        ("traceability-ledger.yml", traceability),
     ):
         check.require(
             data.get("version") == 1, f"{filename}: unsupported or missing version"
@@ -305,6 +471,111 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             data.get("technique_id") == technique_id,
             f"{filename}: technique_id mismatch",
         )
+
+    generation_mode = contract.get("generation_mode")
+    check.require(
+        generation_mode in {"standard", "clean_room"},
+        "contract: generation_mode must be standard or clean_room",
+    )
+    check.require(
+        clean_room.get("generation_mode") == generation_mode,
+        "clean-room attestation and contract generation modes differ",
+    )
+    trace_format = contract.get("trace_format", "legacy_inline")
+    check.require(
+        trace_format in {"legacy_inline", "hidden_html_v1"},
+        "contract: trace_format must be legacy_inline or hidden_html_v1",
+    )
+    target = clean_room.get("target") or {}
+    check.require(
+        isinstance(target, dict) and target.get("id") == technique_id,
+        "clean-room attestation target ID mismatch",
+    )
+    if generation_mode == "clean_room":
+        generator = clean_room.get("generator") or {}
+        independent = clean_room.get("independent_research") or {}
+        prior_access = clean_room.get("prior_artifact_access") or {}
+        check.require(
+            isinstance(generator, dict) and generator.get("type") == "fresh_agent",
+            "clean-room generation requires a fresh_agent generator",
+        )
+        check.require(
+            isinstance(generator, dict) and generator.get("inherited_context") is False,
+            "clean-room generator must not inherit conversation context",
+        )
+        check.require(
+            isinstance(target, dict) and bool(target.get("neutral_name")),
+            "clean-room attestation requires a neutral target name",
+        )
+        check.require(
+            nonempty_list(clean_room.get("allowed_inputs")),
+            "clean-room attestation requires allowed_inputs",
+        )
+        prohibited_inputs = clean_room.get("prohibited_inputs") or []
+        check.require(
+            nonempty_list(prohibited_inputs),
+            "clean-room attestation requires prohibited_inputs",
+        )
+        prohibited_text = "\n".join(str(item).casefold() for item in prohibited_inputs)
+        for required_fragment in (
+            f"techniques/{technique_id}/readme.md".casefold(),
+            f"research/techniques/{technique_id}/".casefold(),
+            f"techniques/{technique_id}/detection-rule.yml".casefold(),
+            "git history",
+            "pull request",
+            "previous conversation",
+        ):
+            check.require(
+                required_fragment in prohibited_text,
+                f"clean-room prohibited_inputs missing {required_fragment}",
+            )
+        searches = independent.get("searches") if isinstance(independent, dict) else None
+        opened_source_ids = (
+            independent.get("opened_source_ids")
+            if isinstance(independent, dict)
+            else None
+        )
+        check.require(
+            nonempty_list(searches),
+            "clean-room attestation requires independent search queries",
+        )
+        check.require(
+            nonempty_list(opened_source_ids),
+            "clean-room attestation requires independently opened source IDs",
+        )
+        check.require(
+            isinstance(prior_access, dict) and prior_access.get("detected") is False,
+            "clean-room attestation must report no prior-artifact access",
+        )
+        check.require(
+            isinstance(prior_access, dict) and prior_access.get("details") == [],
+            "clean-room prior-artifact access details must be empty",
+        )
+        check.require(
+            clean_room.get("draft_frozen_before_integration") is True,
+            "clean-room draft must be frozen before integration",
+        )
+        check.require(
+            nonempty_list(clean_room.get("integration_constraints")),
+            "clean-room attestation requires integration constraints",
+        )
+        check.require(
+            bool(clean_room.get("attestation")),
+            "clean-room attestation statement required",
+        )
+        if strict:
+            check.require(
+                clean_room.get("status") == "passed",
+                "clean-room attestation must pass",
+            )
+            check.require(
+                bool(clean_room.get("generated_on")),
+                "clean-room generation date required",
+            )
+            check.require(
+                not clean_room.get("unresolved"),
+                "clean-room attestation has unresolved concerns",
+            )
 
     tactics = contract.get("tactics")
     check.require(nonempty_list(tactics), "contract: at least one tactic is required")
@@ -391,6 +662,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
     claims = records_by_id(inventory.get("claims"), "id", check, "claim")
     check.require(bool(claims), "claim inventory must contain at least one claim")
     referenced_sources: set[str] = set()
+    claim_source_ids: dict[str, set[str]] = {}
     for claim_id, claim in claims.items():
         check.require(
             bool(CLAIM_ID.fullmatch(claim_id)), f"invalid claim ID: {claim_id}"
@@ -413,6 +685,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
         check.require(
             nonempty_list(sources), f"{claim_id}: at least one source required"
         )
+        claim_source_ids[claim_id] = set()
         for relation in sources if isinstance(sources, list) else []:
             check.require(
                 isinstance(relation, dict),
@@ -424,6 +697,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             check.require(bool(source_id), f"{claim_id}: source_id required")
             if source_id:
                 referenced_sources.add(str(source_id))
+                claim_source_ids[claim_id].add(str(source_id))
             check.require(
                 relation.get("support") in {"direct", "corroborating", "context"},
                 f"{claim_id}: invalid support classification",
@@ -463,6 +737,49 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
 
     consulted = set(coverage.get("sources_consulted") or [])
     cited = set(coverage.get("sources_cited") or [])
+    trace_comments = list(TRACE_COMMENT.finditer(readme))
+    check.require(
+        len(trace_comments) == len(TRACE_COMMENT_START.findall(readme)),
+        "README contains a malformed SAF-TRACE comment",
+    )
+    if trace_format == "hidden_html_v1" and strict:
+        check.require(
+            bool(trace_comments),
+            "hidden_html_v1 requires at least one SAF-TRACE comment",
+        )
+        for line_number in visible_claim_lines_outside_evidence_summary(readme):
+            check.errors.append(
+                f"README line {line_number} exposes a claim ID outside the "
+                "Evidence Summary; use a same-line SAF-TRACE comment"
+            )
+    for trace in trace_comments:
+        trace_claims = set(CLAIM_REFERENCE.findall(trace.group("claims")))
+        trace_sources = set(SOURCE_REFERENCE.findall(trace.group("sources")))
+        check.require(
+            trace_claims <= set(claims),
+            "SAF-TRACE comment references a claim absent from claim-inventory.yml",
+        )
+        supporting_sources: set[str] = set()
+        for claim_id in trace_claims:
+            supporting_sources.update(claim_source_ids.get(claim_id, set()))
+        check.require(
+            trace_sources <= supporting_sources,
+            "SAF-TRACE source does not support any of the comment's traced claims",
+        )
+        check.require(
+            trace_sources <= cited,
+            "SAF-TRACE comment references a source absent from sources_cited",
+        )
+    if generation_mode == "clean_room":
+        independently_opened = set(
+            (clean_room.get("independent_research") or {}).get(
+                "opened_source_ids", []
+            )
+        )
+        check.require(
+            independently_opened <= consulted,
+            "clean-room opened source IDs must be in sources_consulted",
+        )
     check.require(
         referenced_sources <= consulted,
         "all claim sources must be in sources_consulted",
@@ -513,6 +830,179 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             source_id in readme, f"README does not expose cited source ID {source_id}"
         )
 
+    check.require(
+        traceability.get("policy") == "source_or_omit",
+        "traceability ledger policy must be source_or_omit",
+    )
+    check.require(
+        traceability.get("publishable_artifact")
+        == f"techniques/{technique_id}/README.md",
+        "traceability ledger publishable_artifact mismatch",
+    )
+    check.require(
+        traceability.get("coverage") == "all_substantive_publishable_content",
+        "traceability ledger must cover all substantive publishable content",
+    )
+    repository_source_records = traceability.get("repository_sources") or []
+    check.require(
+        nonempty_list(repository_source_records),
+        "traceability ledger repository_sources required",
+    )
+    declared_paths: set[str] = set()
+    repository_source_ids: set[str] = set()
+    for item in (
+        repository_source_records if isinstance(repository_source_records, list) else []
+    ):
+        check.require(
+            isinstance(item, dict), "traceability repository source must be a mapping"
+        )
+        if not isinstance(item, dict):
+            continue
+        local_source_id = str(item.get("id", ""))
+        check.require(
+            bool(re.fullmatch(r"LOCAL-[A-Za-z0-9][A-Za-z0-9._-]*", local_source_id)),
+            f"invalid traceability repository source ID: {local_source_id}",
+        )
+        check.require(
+            local_source_id not in repository_source_ids,
+            f"duplicate traceability repository source ID: {local_source_id}",
+        )
+        repository_source_ids.add(local_source_id)
+        for field in ("id", "path", "supports"):
+            check.require(
+                bool(item.get(field)),
+                f"traceability repository source missing {field}",
+            )
+        path = str(item.get("path", ""))
+        if path:
+            declared_paths.add(path)
+            resolved_path = (root / path).resolve()
+            try:
+                resolved_path.relative_to(root.resolve())
+                inside_repository = True
+            except ValueError:
+                inside_repository = False
+            check.require(
+                inside_repository,
+                f"traceability repository source escapes the repository: {path}",
+            )
+            check.require(
+                resolved_path.is_file(),
+                f"traceability repository source does not exist: {path}",
+            )
+
+    history_records = traceability.get("repository_history") or []
+    check.require(
+        nonempty_list(history_records),
+        "traceability ledger repository_history required",
+    )
+    for item in history_records if isinstance(history_records, list) else []:
+        check.require(
+            isinstance(item, dict), "traceability history record must be a mapping"
+        )
+        if not isinstance(item, dict):
+            continue
+        commit = str(item.get("commit", ""))
+        check.require(
+            bool(re.fullmatch(r"[0-9a-f]{40}", commit)),
+            "traceability history commit must be a 40-character SHA",
+        )
+        if strict and re.fullmatch(r"[0-9a-f]{40}", commit):
+            check.require(
+                int(commit, 16) != 0,
+                "traceability history commit must not use the zero SHA",
+            )
+        check.require(
+            bool(item.get("supports")), "traceability history record needs supports"
+        )
+
+    excluded_records = traceability.get("excluded_items") or []
+    check.require(
+        isinstance(excluded_records, list),
+        "traceability excluded_items must be a list",
+    )
+    exclusion_ids: set[str] = set()
+    for item in excluded_records if isinstance(excluded_records, list) else []:
+        check.require(
+            isinstance(item, dict), "traceability excluded item must be a mapping"
+        )
+        if not isinstance(item, dict):
+            continue
+        exclusion_id = str(item.get("id", ""))
+        check.require(
+            bool(EXCLUSION_ID.fullmatch(exclusion_id)),
+            f"invalid exclusion ID: {exclusion_id}",
+        )
+        check.require(
+            exclusion_id not in exclusion_ids,
+            f"duplicate exclusion ID: {exclusion_id}",
+        )
+        exclusion_ids.add(exclusion_id)
+        for field in ("candidate", "origin", "reason"):
+            check.require(
+                bool(item.get(field)), f"{exclusion_id}: missing {field}"
+            )
+        check.require(
+            nonempty_list(item.get("attempted_searches")),
+            f"{exclusion_id}: attempted_searches required",
+        )
+        excluded_source_ids = set(item.get("consulted_source_ids") or [])
+        check.require(
+            excluded_source_ids <= consulted,
+            f"{exclusion_id}: consulted_source_ids must be in sources_consulted",
+        )
+        prohibited = item.get("prohibited_publishable_text")
+        check.require(
+            nonempty_list(prohibited),
+            f"{exclusion_id}: prohibited_publishable_text required",
+        )
+        for fragment in prohibited if isinstance(prohibited, list) else []:
+            check.require(
+                str(fragment).casefold() not in readme.casefold(),
+                f"{exclusion_id}: prohibited text appears in README: {fragment}",
+            )
+        check.require(
+            item.get("disposition") == "omitted_from_publishable_technique",
+            f"{exclusion_id}: disposition must omit the item from the technique",
+        )
+        if strict:
+            check.require(
+                item.get("status") == "excluded",
+                f"{exclusion_id}: status must be excluded",
+            )
+
+    all_readme_claim_ids = set(CLAIM_REFERENCE.findall(readme))
+    check.require(
+        all_readme_claim_ids <= set(claims),
+        "README references a claim absent from claim-inventory.yml",
+    )
+    all_readme_source_ids = set(SOURCE_REFERENCE.findall(readme))
+    check.require(
+        all_readme_source_ids <= cited,
+        "README references a source absent from sources_cited",
+    )
+    if strict:
+        check.require(
+            traceability.get("review_status") == "passed",
+            "traceability ledger review must pass",
+        )
+        check.require(
+            bool(traceability.get("reviewed_on")),
+            "traceability ledger review date required",
+        )
+        check.require(
+            not traceability.get("unresolved"),
+            "traceability ledger has unresolved items",
+        )
+        untraced_lines = untraced_publishable_lines(
+            readme, root, readme_path, set(claims), declared_paths
+        )
+        for line_number in untraced_lines:
+            check.errors.append(
+                f"README line {line_number} has substantive content without a "
+                "validated claim ID or declared repository source"
+            )
+
     saturation = coverage.get("saturation")
     check.require(
         isinstance(saturation, dict), "source coverage: saturation record required"
@@ -534,7 +1024,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             item.get("pass") for item in pass_records if isinstance(item, dict)
         }
         check.require(
-            RESEARCH_PASSES <= pass_names, "all four research passes must be recorded"
+            RESEARCH_PASSES <= pass_names, "all five research passes must be recorded"
         )
         for item in pass_records:
             if isinstance(item, dict):
@@ -555,6 +1045,74 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             coverage.get("research_status") == "saturated",
             "research_status must be saturated",
         )
+
+    breach_assessment = coverage.get("breach_and_vulnerability_assessment")
+    check.require(
+        isinstance(breach_assessment, dict),
+        "breach_and_vulnerability_assessment required",
+    )
+    if isinstance(breach_assessment, dict):
+        check.require(
+            bool(breach_assessment.get("searched_on")),
+            "breach and vulnerability search date required",
+        )
+        candidates = breach_assessment.get("candidates") or []
+        check.require(
+            nonempty_list(candidates),
+            "breach and vulnerability candidates required",
+        )
+        selected_source_ids: set[str] = set()
+        for candidate in candidates if isinstance(candidates, list) else []:
+            check.require(
+                isinstance(candidate, dict),
+                "breach and vulnerability candidate must be a mapping",
+            )
+            if not isinstance(candidate, dict):
+                continue
+            source_id = str(candidate.get("source_id", ""))
+            check.require(
+                source_id in consulted,
+                f"breach candidate references unconsulted source {source_id}",
+            )
+            check.require(
+                candidate.get("relationship") in BREACH_RELATIONSHIPS,
+                f"{source_id}: invalid breach relationship",
+            )
+            for field in (
+                "identifier",
+                "exploitation_status",
+                "impact",
+                "remediation",
+                "rationale",
+            ):
+                check.require(
+                    bool(candidate.get(field)),
+                    f"{source_id}: breach candidate missing {field}",
+                )
+            check.require(
+                candidate.get("selected") in {True, False},
+                f"{source_id}: selected must be true or false",
+            )
+            if candidate.get("selected"):
+                selected_source_ids.add(source_id)
+        declared_selected = set(breach_assessment.get("selected_examples") or [])
+        check.require(
+            declared_selected == selected_source_ids,
+            "selected breach examples must match selected candidates",
+        )
+        check.require(
+            breach_assessment.get("candidate_count") == len(candidates),
+            "breach candidate_count does not match candidates",
+        )
+        check.require(
+            len(selected_source_ids) <= 4,
+            "select no more than four breach and vulnerability examples",
+        )
+        if len(selected_source_ids) < 2:
+            check.require(
+                bool(breach_assessment.get("no_qualifying_examples_rationale")),
+                "fewer than two selected examples requires a rationale",
+            )
 
     assessment = coverage.get("evidence_assessment")
     check.require(isinstance(assessment, dict), "evidence_assessment required")
@@ -733,6 +1291,83 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
         expected_tag in (rule.get("tags") or []),
         f"detection rule missing tag {expected_tag}",
     )
+    rule_traceability = rule.get("traceability")
+    check.require(
+        isinstance(rule_traceability, dict),
+        "detection rule traceability record required",
+    )
+    if isinstance(rule_traceability, dict):
+        check.require(
+            rule_traceability.get("policy") == "source_or_omit",
+            "detection rule traceability policy must be source_or_omit",
+        )
+        for field in (
+            "design_claim_ids",
+            "telemetry_claim_ids",
+            "limitation_claim_ids",
+        ):
+            claim_references = rule_traceability.get(field)
+            check.require(
+                nonempty_list(claim_references),
+                f"detection rule traceability {field} required",
+            )
+            for claim_id in claim_references if isinstance(claim_references, list) else []:
+                check.require(
+                    claim_id in claims,
+                    f"detection rule traceability references unknown claim {claim_id}",
+                )
+        validation_artifacts = rule_traceability.get("validation_artifacts")
+        check.require(
+            nonempty_list(validation_artifacts),
+            "detection rule traceability validation_artifacts required",
+        )
+        for artifact in (
+            validation_artifacts if isinstance(validation_artifacts, list) else []
+        ):
+            check.require(
+                artifact in declared_paths,
+                f"detection traceability artifact is not ledgered: {artifact}",
+            )
+        components = rule_traceability.get("components")
+        check.require(
+            isinstance(components, dict),
+            "detection rule traceability components required",
+        )
+        required_components = set((rule.get("detection") or {}).keys()) | {
+            "logsource",
+            "falsepositives",
+        }
+        if rule.get("fields"):
+            required_components.add("fields")
+        if isinstance(components, dict):
+            check.require(
+                required_components <= set(components),
+                "every detection component must have a traceability record",
+            )
+            for component_name in required_components:
+                component = components.get(component_name)
+                check.require(
+                    isinstance(component, dict),
+                    f"detection traceability component {component_name} must be a mapping",
+                )
+                if not isinstance(component, dict):
+                    continue
+                component_claims = component.get("claim_ids")
+                check.require(
+                    nonempty_list(component_claims),
+                    f"detection component {component_name} claim_ids required",
+                )
+                for claim_id in (
+                    component_claims if isinstance(component_claims, list) else []
+                ):
+                    check.require(
+                        claim_id in claims,
+                        f"detection component {component_name} references unknown claim {claim_id}",
+                    )
+                check.require(
+                    bool(component.get("rationale")),
+                    f"detection component {component_name} rationale required",
+                )
     if strict:
         check.require(
             "replace-with" not in rule_path.read_text(encoding="utf-8").lower(),

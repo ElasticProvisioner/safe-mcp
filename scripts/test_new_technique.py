@@ -50,10 +50,15 @@ class NewTechniqueTests(unittest.TestCase):
             self.assertTrue((root / "techniques" / "SAF-T9998" / "README.md").is_file())
             packet = root / "research" / "techniques" / "SAF-T9998"
             self.assertTrue((packet / "claim-inventory.yml").is_file())
+            self.assertTrue((packet / "traceability-ledger.yml").is_file())
             generated_readme = (
                 root / "techniques" / "SAF-T9998" / "README.md"
             ).read_text(encoding="utf-8")
             self.assertIn("SAF-T9998-C001", generated_readme)
+            self.assertIn(
+                "research/techniques/SAF-T9998/traceability-ledger.yml",
+                generated_readme,
+            )
 
             rule = yaml.safe_load(
                 (root / "techniques" / "SAF-T9998" / "detection-rule.yml").read_text(
@@ -66,7 +71,12 @@ class NewTechniqueTests(unittest.TestCase):
             model = yaml.safe_load(
                 (root / "research" / "framework-model.yml").read_text(encoding="utf-8")
             )
-            self.assertEqual(model["techniques"][0]["technique_id"], "SAF-T9998")
+            generated_record = next(
+                record
+                for record in model["techniques"]
+                if record["technique_id"] == "SAF-T9998"
+            )
+            self.assertEqual(generated_record["name"], "Test Technique")
 
             original = generated_readme
             second = subprocess.run(

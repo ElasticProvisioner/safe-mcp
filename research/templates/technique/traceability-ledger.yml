@@ -1,0 +1,39 @@
+version: 1
+technique_id: __TECHNIQUE_ID__
+policy: source_or_omit
+review_status: incomplete
+reviewed_on: null
+
+publishable_artifact: techniques/__TECHNIQUE_ID__/README.md
+coverage: all_substantive_publishable_content
+
+repository_sources:
+  - id: LOCAL-contract
+    path: research/techniques/__TECHNIQUE_ID__/technique-contract.yml
+    supports: Internal scope, name, tactic, and completion metadata.
+  - id: LOCAL-quality-review
+    path: research/techniques/__TECHNIQUE_ID__/quality-review.yml
+    supports: Validation commands, results, review date, and waiver status.
+  - id: LOCAL-detection-rule
+    path: techniques/__TECHNIQUE_ID__/detection-rule.yml
+    supports: The repository's explicitly labeled detection analytic.
+
+repository_history:
+  - commit: "0000000000000000000000000000000000000000"
+    supports: Replace with the commit that supports inherited version-history records.
+
+excluded_items:
+  - id: __TECHNIQUE_ID__-X001
+    candidate: Summarize the proposition or example that could not be validated.
+    origin: Prior draft, search lead, issue, or reviewer suggestion.
+    attempted_searches:
+      - Record the exact query, catalog, or source trail checked.
+    consulted_source_ids: []
+    reason: Explain why the proposition lacks sufficient traceable support.
+    prohibited_publishable_text:
+      - Exact unsupported wording or a distinctive substring that must stay out of the README.
+    disposition: omitted_from_publishable_technique
+    status: open
+
+unresolved:
+  - Resolve or explicitly omit every open candidate before review passes.

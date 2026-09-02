@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1001
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: clean-room authoring agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh agent, inherited_context false, whitelist-only searches, prohibited target artifacts not accessed, and pre-integration freeze required.
+  contract_and_scope:
+    status: passed
+    notes: Contract isolates server-controlled tool-definition metadata influencing planning from output injection, hidden code behavior, collision, and follow-on effects.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior, prerequisites, attack flow, evidence limitations, and conditional impact are grounded in directly reviewed sources.
+  claim_traceability:
+    status: passed
+    notes: Every external claim records source support and exact stable headings or sections; hidden SAF-TRACE comments preserve publishable-unit joins without rendering audit IDs in narrative prose.
+  source_or_omit:
+    status: passed
+    notes: README units carry validated hidden claim/source joins or local artifact links; the Evidence Summary and References expose compact audit indexes, and excluded propositions remain ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by direct controlled evidence; unattributable operational language and adjacent incidents do not elevate to Observed.
+  research_saturation:
+    status: passed
+    notes: Five passes, material-lead restarts, and two final no-material-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Current catalog, vendor, incident, and research searches classify direct demonstrations and the Postmark adjacency; no direct CVE was found.
+  detection_quality:
+    status: passed
+    notes: Seven deterministic positive, negative, boundary, and expected false-positive fixtures passed with four expected alerts.
+  mitigation_quality:
+    status: passed
+    notes: Controls address provenance, definition integrity, reapproval, isolation, least privilege, deterministic action policy, and trace validation.
+  framework_alignment:
+    status: passed
+    notes: Post-freeze reconciliation maps the delivery boundary to Initial Access (ATK-TA0001), names six scope-adjacent SAF techniques, and joins six applicable local mitigations.
+  publication_rights:
+    status: passed
+    notes: Factual paraphrase only; named attribution preserved; no source payload, code, table, figure, image, or protected expression reused.
+  safe_publication:
+    status: passed
+    notes: Examples and fixtures are inert, synthetic, non-destructive, and use example.invalid endpoints.
+
+validation:
+  commands:
+    - {command: python3 techniques/SAF-T1001/test_detection_rule.py, result: passed}
+    - {command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1001, result: passed}
+    - {command: /Users/fkautz/anaconda3/bin/python3 -m unittest discover -s scripts -p test_validate_technique_research.py, result: passed}
+    - {command: /Users/fkautz/anaconda3/bin/python3 -m unittest discover -s scripts -p test_new_technique.py, result: passed}
+    - {command: /Users/fkautz/anaconda3/bin/python3 -X pycache_prefix=/private/tmp/saf-t1001-pycache -m py_compile techniques/SAF-T1001/test_detection_rule.py scripts/validate-technique-research.py scripts/new-technique.py, result: passed}
+    - {command: /Users/fkautz/anaconda3/bin/python3 /Users/fkautz/.codex/skills/.system/skill-creator/scripts/quick_validate.py .agents/skills/author-saf-technique, result: passed}
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1001/test_detection_rule.py
+    result: Seven of seven cases passed; four expected alerts were observed.
+    waiver: null
+
+unresolved: []

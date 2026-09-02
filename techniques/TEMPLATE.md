@@ -6,7 +6,14 @@ Use this template for SAF-MCP technique documentation.
 - Keep every required section, even when the current answer is "None known."
 - Remove unused optional sections and all instructional comments before review.
 - Use canonical ASCII identifiers such as SAF-T1001 and SAF-M-1.
-- Cite empirical, time-sensitive, or externally verifiable claims inline.
+- Apply source-or-omit: cite every substantive externally verifiable statement
+  inline, and link internal status or test statements to declared repository
+  artifacts.
+- Keep ordinary rendered prose free of bare claim/source IDs. Use semantic
+  citation labels and append a same-line HTML comment containing
+  `SAF-TRACE: claims=SAF-T1234-C001; sources=SRC-source-id`.
+- Keep claim IDs visible in the Evidence Summary and source IDs visible in
+  References so reviewers have a compact audit index.
 - Prefer primary sources, standards, advisories, and peer-reviewed research.
 -->
 
@@ -15,6 +22,7 @@ Use this template for SAF-MCP technique documentation.
 - **Tactic**: [Primary Tactic (ATK-TAXXXX); Secondary Tactic (ATK-TAXXXX), if applicable]
 - **Technique ID**: SAF-T[XXXX]
 - **Research Packet**: [research/techniques/SAF-TXXXX](../../research/techniques/SAF-TXXXX/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-TXXXX/traceability-ledger.yml)
 - **Documentation Status**: [Draft / Under Review / Stable / Deprecated]
 - **Evidence Status**: [Observed / Demonstrated / Research-Derived / Hypothesized]
 - **Severity**: [Critical / High / Medium / Low]
@@ -123,7 +131,18 @@ flowchart LR
 
 ### Evidence Summary
 
-<!-- Claim IDs and source IDs must match the technique research packet. -->
+<!--
+Claim IDs and source IDs must match the technique research packet.
+
+Source-or-omit applies to the entire technique, not only this table. Every
+substantive paragraph, list item, table row, diagram, example, detection choice,
+and response action must carry a same-line hidden `SAF-TRACE` comment containing
+validated claim and source IDs, or link to a repository artifact declared in
+traceability-ledger.yml. Use semantic citation labels in the body. Put
+unsupported research leads in that ledger with an
+omitted_from_publishable_technique disposition; do not keep them in publishable
+prose.
+-->
 
 | Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
 | --- | --- | --- | --- | --- |
@@ -135,6 +154,22 @@ flowchart LR
 - **Known Exploitation**: [Observed activity, public demonstrations, or none identified]
 - **Available Protections**: [Relevant platform controls, patches, or protocol guidance]
 - **Residual Risk**: [What remains possible after common protections are applied]
+
+### Known Breaches and Vulnerabilities
+
+<!--
+Search production incidents, official advisories, CVEs, GitHub Security
+Advisories, maintainer fixes, exploitation status, and authoritative government
+catalogs. Do not call a demonstration or vulnerable version a breach. Select
+two to four of the highest-impact relevant examples when supported; otherwise
+state that no qualifying direct example was identified. Adjacent examples must
+name the applicable SAF technique and cannot raise this technique's evidence
+status.
+-->
+
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| [Incident, CVE, GHSA, or demonstration] | [Event/publication date; affected product, versions, and configuration] | [Observed or bounded potential consequence; patch or mitigation status] | [Direct production incident / direct vulnerability / direct demonstration / enabling vulnerability / adjacent] | [What the evidence does not establish] |
 
 ### Real-World Incidents or Demonstrations (Optional)
 

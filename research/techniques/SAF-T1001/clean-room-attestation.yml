@@ -1,0 +1,149 @@
+version: 1
+technique_id: SAF-T1001
+generation_mode: clean_room
+status: passed
+generated_on: "2026-09-01"
+
+generator:
+  type: fresh_agent
+  inherited_context: false
+
+target:
+  id: SAF-T1001
+  neutral_name: Tool Poisoning Attack
+
+allowed_inputs:
+  - Updated repository-local author-saf-technique skill and its clean-room-generation, methodology, and breach-and-vulnerability-research references.
+  - Repository-wide instructions, research/README.md, techniques/TEMPLATE.md, generic detection template, blank technique packet schemas, and generic validators.
+  - Target ID SAF-T1001 and neutral target name Tool Poisoning Attack.
+  - Independently discovered external sources found through whitelist-only domain-filtered searches and directly reviewed.
+prohibited_inputs:
+  - techniques/SAF-T1001/README.md, any current or historical copy, and every SAF-T1001 or SAFE-T1001 predecessor or fork.
+  - Everything under research/techniques/SAF-T1001/.
+  - techniques/SAF-T1001/detection-rule.yml, target detection tests, logs, and every target-specific artifact.
+  - .agents/skills/author-saf-technique/references/impact-classification-examples.md before freeze.
+  - Git history, log, show, diff, blame, stash, commit, or branch output exposing target content.
+  - Pull request 224 and every pull request, issue, review, cache, repository page, search result, fork, or summary containing prior target content.
+  - Previous conversation, previous-agent output, inherited conclusions, target source lists, claim inventories, traceability ledgers, source coverage, or derived leads.
+  - secureagenticframework.org, safemcp.org, GitHub discovery, SAF-MCP repositories or forks, and any result whose URL, title, or snippet contained prohibited target identifiers.
+
+independent_research:
+  query_count: 49
+  search_policy: Whitelist-only domain-filtered searches; every query included all four prohibited-identifier exclusions.
+  searches:
+    - 'modelcontextprotocol.io: Model Context Protocol tools tool descriptions annotations security trust untrusted -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: Model Context Protocol security best practices prompt injection tool descriptions -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: tool poisoning Model Context Protocol malicious tool description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: MCP malicious tool descriptions prompt injection benchmark defense -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: Model Context Protocol tool poisoning CVE malicious tool description prompt injection -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: MCP prompt injection tool description CVE advisory -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: Model Context Protocol tool poisoning known exploited vulnerability -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: MCP client malicious tool description security advisory prompt injection -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: CVE-2026-23523 CVE-2025-54135 CVE-2025-53109 CVE-2025-49596 exploitation status -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'unit42.paloaltonetworks.com: MCP tool poisoning production incident breach advisory malicious tool description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'wiz.io: MCP tool poisoning production incident breach advisory malicious tool description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'oligo.security: MCP tool poisoning production incident breach advisory malicious tool description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'cloud.google.com: MCP tool poisoning production incident breach advisory malicious tool description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'postmarkapp.com: Postmark MCP incident malicious package 1.0.16 BCC September 2025 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'socket.dev: Postmark MCP package malicious BCC incident 2025 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'stepsecurity.io: Postmark MCP package malicious BCC incident 2025 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'npmjs.com: postmark-mcp malicious package BCC security advisory -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'invariantlabs.ai: tool poisoning attacks MCP malicious tool descriptions incident breach -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'invariantlabs.ai: MCP tool poisoning rug pull detection defense research -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com: Model Context Protocol tool poisoning prompt injection security guidance -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'invariantlabs.ai,microsoft.com: MCP tool poisoning malicious tool description production incident -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,google.com,invariantlabs.ai,postmarkapp.com: "malicious tool description" MCP "incident" "remediation" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: "MCP" "tool description" "CVE" "exploitation" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org,ieee.org,acm.org: "MCP" "tool poisoning" "limitations" "detection" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: "tools/list" "untrusted" "human in the loop" MCP -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,google.com,invariantlabs.ai,postmarkapp.com: "tool description poisoning" MCP incident postmortem breach 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: "tool metadata poisoning" MCP vulnerability CVE exploited -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: "tool metadata poisoning" MCP trace validator hardening 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: "tool descriptions" untrusted approval change MCP security -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,google.com,anthropic.com: "tool metadata poisoning" MCP incident postmortem vulnerability advisory -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io,invariantlabs.ai: "poisoned tool description" MCP client fix release notes -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: "tool descriptor" prompt injection MCP empirical evaluation 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: MCP tool description poisoning CVE production exploitation -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,google.com,invariantlabs.ai: "malicious instructions" "tool description" MCP incident exploitation remediation 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: MCP tool metadata prompt injection production postmortem CVE KEV -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: MCP tool poisoning benchmark false positives defense 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: MCP tools/list metadata integrity change approval pinning -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,google.com,invariantlabs.ai,postmarkapp.com: "tool description poisoning" "production incident" MCP postmortem -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: "tool description poisoning" "CVE-" MCP exploitation -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org,acm.org,usenix.org: "tool poisoning" "production" empirical trace defense 2026 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: "tool description" "change" "re-approval" MCP security -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,invariantlabs.ai,postmarkapp.com,google.com: "tool description poisoning" "production incident" MCP postmortem -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'nvd.nist.gov,cve.org,cisa.gov: "tool description poisoning" "CVE-" MCP exploitation -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: "tool poisoning" "tool descriptions" "real-time MCP environments" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: "tool definitions" integrity pinning change monitoring MCP -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'microsoft.com,invariantlabs.ai: "tool poisoning" "no specific affected organization" MCP -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'cisa.gov,nvd.nist.gov,cve.org: "tool metadata" "known exploited" MCP malicious description -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'arxiv.org: "tool poisoning" MCP "false positive" "static dataset" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    - 'modelcontextprotocol.io: "tools/list" "listChanged" security review description MCP -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+  opened_source_ids:
+    - SRC-mcp-tools-2025-11-25
+    - SRC-mcp-spec-2025-11-25
+    - SRC-mcp-annotations-2026-03-16
+    - SRC-mcp-server-instructions-2025-11-03
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-mcptox-2508.14925
+    - SRC-mcp-security-bench-2510.15994
+    - SRC-mindguard-2508.20412
+    - SRC-mcp-pitfall-lab-2604.21477
+    - SRC-cascade-2604.17125
+    - SRC-secmcp-2508.06418
+    - SRC-ms-azure-mcp-security-2026
+    - SRC-ms-gsa-mcp-logging-2026
+    - SRC-ms-mcp-governance-2026
+    - SRC-microsoft-tool-poisoning-2026-06-30
+    - SRC-ms-ai-red-team-taxonomy-v2-2026
+    - SRC-ms-ai-red-team-taxonomy-blog-2026
+    - SRC-google-mcp-security-2026
+    - SRC-postmark-mcp-incident-2025-09-25
+
+prior_artifact_access:
+  detected: false
+  details: []
+
+draft_frozen_before_integration: true
+integration_constraints:
+  - After the freeze, inspect source-manifest.yml only to reuse stable source IDs and avoid duplicate registry entries; it must introduce no research leads.
+  - Reconcile only local framework tactic, neighbor, mitigation, alignment, and registry joins; do not compare with or inspect prior SAF-T1001 content.
+  - Replace target files wholesale without reading originals and do not use target-exposing git diffs.
+  - Preserve the frozen mechanism, evidence classification, source selection, claims, exclusions, and prose except for mechanical identifiers, paths, hashes, validation results, and local framework names.
+
+post_freeze_reconciliation:
+  canonical_url_verification:
+    query: 'blog.modelcontextprotocol.io: "Server Instructions" autocomplete elicitation November 2025 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    result: Reconciled the already reviewed source's canonical URL, exact title, and named author; no new source, claim, lead, or evidence conclusion was introduced.
+
+post_generation_revisions:
+  - revised_on: "2026-09-01"
+    type: presentation_only_trace_migration
+    artifacts:
+      - techniques/SAF-T1001/README.md
+      - research/techniques/SAF-T1001/technique-contract.yml
+      - research/techniques/SAF-T1001/clean-room-attestation.yml
+      - research/techniques/SAF-T1001/quality-review.yml
+    content_effect: >-
+      Moved inline claim identifiers into hidden SAF-TRACE comments, replaced
+      source-ID link labels in narrative prose with semantic titles, and kept
+      the Evidence Summary and References as visible audit indexes.
+    research_effect: >-
+      No claim, source, exact locator, evidence classification, limitation,
+      exclusion, detection rule, or evidence conclusion changed.
+    frozen_hash_status: >-
+      The original freeze hashes remain the historical record of the clean-room
+      generation output; this explicitly recorded presentation-only revision
+      intentionally changes the README and packet metadata after that freeze.
+
+attestation: >-
+  I attest that this packet was independently generated by a fresh agent with no
+  inherited conversation context; only allowed clean-room inputs and independently
+  discovered whitelist sources were used; no prohibited prior target artifact or
+  content was accessed; the complete draft and evidence packet were assembled in
+  an isolated temporary tree and frozen before any source-manifest or local
+  framework reconciliation.
+
+unresolved: []

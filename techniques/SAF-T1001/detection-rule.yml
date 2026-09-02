@@ -1,34 +1,117 @@
-title: MCP Tool Description Poisoning Detection
-id: 5894b8fe-29f0-44d8-ad9b-2266a132ec57
+title: Unapproved MCP Tool Definition Drift with Instruction-Like Metadata
+id: 82e6caef-9c02-4e55-8b5e-1d87672c1001
 status: experimental
-description: Detects potential tool poisoning through suspicious patterns in descriptions
-author: Frederick Kautz
-date: 2025-01-02
+description: >-
+  Flags a normalized MCP tool discovery snapshot when the definition is not
+  approved, its canonical hash differs from the approved hash, and its
+  description contains either control language paired with sensitive terms or
+  an explicit cross-tool directive. This is a review signal, not proof of a
+  Tool Poisoning Attack.
+author: The SAF-MCP Authors
+date: 2026-09-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1001
+  - https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security
+  - https://arxiv.org/abs/2604.17125
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1001-C006
+    - SAF-T1001-C007
+  telemetry_claim_ids:
+    - SAF-T1001-C006
+  limitation_claim_ids:
+    - SAF-T1001-C007
+  validation_artifacts:
+    - techniques/SAF-T1001/detection-rule.yml
+    - techniques/SAF-T1001/test_detection_rule.py
+    - techniques/SAF-T1001/test-logs.json
+    - techniques/SAF-T1001/test-results.json
+  components:
+    selection_event:
+      claim_ids: [SAF-T1001-C006]
+      rationale: Tool-definition snapshots preserve the metadata and lifecycle event needed to compare reviewed and current state.
+    selection_unapproved:
+      claim_ids: [SAF-T1001-C006, SAF-T1001-C008]
+      rationale: Approval state separates reviewed change from unreviewed semantic drift.
+    selection_hash_drift:
+      claim_ids: [SAF-T1001-C006, SAF-T1001-C008]
+      rationale: Canonical current and approved hashes expose definition changes without requiring fragile raw-text comparison.
+    keywords_control:
+      claim_ids: [SAF-T1001-C007]
+      rationale: Control verbs are an experimental static signal and are insufficient without a second risk class.
+    keywords_sensitive:
+      claim_ids: [SAF-T1001-C007]
+      rationale: Sensitive-data and external-action terms raise review priority but also occur legitimately.
+    keywords_cross_tool:
+      claim_ids: [SAF-T1001-C003, SAF-T1001-C007]
+      rationale: Cross-tool directives reflect a demonstrated variant but require runtime correlation for confirmation.
+    condition:
+      claim_ids: [SAF-T1001-C006, SAF-T1001-C007]
+      rationale: Combining integrity drift and two semantic signals reduces, but does not eliminate, benign matches.
+    logsource:
+      claim_ids: [SAF-T1001-C006]
+      rationale: A host, client, or gateway must capture normalized tools/list definitions and local approval state.
+    fields:
+      claim_ids: [SAF-T1001-C006]
+      rationale: These fields support triage, definition comparison, and session correlation.
+    falsepositives:
+      claim_ids: [SAF-T1001-C007]
+      rationale: Legitimate security, orchestration, and migration descriptions can contain the same vocabulary.
 logsource:
   product: mcp
-  service: tool_registry
+  service: client_or_host_tool_discovery_snapshot
 detection:
-  selection:
-    tool_description:
-      - '*<!-- SYSTEM:*'
-      - '*<|system|>*'
-      - '*[INST]*'
-      - '*### Instruction:*'
-      - '*\u200b*'  # Zero-width space
-      - '*\u200c*'  # Zero-width non-joiner
-      - '*\uE00*'   # Unicode tags (U+E0000-U+E007F)
-      - '*\u202A*'  # Left-to-right embedding
-      - '*\u202B*'  # Right-to-left embedding
-      - '*\u202D*'  # Left-to-right override
-      - '*\u202E*'  # Right-to-left override
-  condition: selection
+  selection_event:
+    event.action:
+      - mcp.tools.list_snapshot
+      - mcp.tools.list_changed_snapshot
+  selection_unapproved:
+    tool.definition.approved: false
+  selection_hash_drift:
+    tool.definition.current_hash|not_equals_field: tool.definition.approved_hash
+  keywords_control:
+    tool.description|contains:
+      - always
+      - before calling
+      - ignore
+      - override
+      - must
+      - first use
+      - retrieve
+      - include
+  keywords_sensitive:
+    tool.description|contains:
+      - credential
+      - token
+      - secret
+      - account
+      - record
+      - message
+      - file
+      - recipient
+      - destination
+  keywords_cross_tool:
+    tool.description|re: '(call|use|invoke|retrieve).{0,48}(tool|reader|search|lookup|mail|message|file)'
+  condition: >-
+    selection_event and selection_unapproved and selection_hash_drift and
+    ((keywords_control and keywords_sensitive) or keywords_cross_tool)
+fields:
+  - '@timestamp'
+  - event.action
+  - session.id
+  - server.url
+  - tool.name
+  - tool.description
+  - tool.input_schema
+  - tool.definition.current_hash
+  - tool.definition.approved_hash
+  - tool.definition.approved
+  - actor.id
 falsepositives:
-  - Legitimate HTML comments in tool descriptions
-  - Legitimate bidirectional text for internationalization
+  - Legitimate security-testing tools that describe prompt-injection samples or secrets.
+  - Workflow and migration tools whose valid descriptions prescribe cross-tool ordering.
+  - Approved emergency changes before the approval registry is synchronized.
 level: high
 tags:
-  - attack.initial_access
-  - attack.t1195
-  - safe.t1001
+  - saf.t1001

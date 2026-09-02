@@ -1,0 +1,75 @@
+version: 1
+technique_id: SAF-T1001
+policy: source_or_omit
+review_status: passed
+reviewed_on: "2026-09-01"
+
+publishable_artifact: techniques/SAF-T1001/README.md
+coverage: all_substantive_publishable_content
+
+repository_sources:
+  - {id: LOCAL-contract, path: research/techniques/SAF-T1001/technique-contract.yml, supports: Frozen behavior contract, scope, and completion requirements.}
+  - {id: LOCAL-claim-inventory, path: research/techniques/SAF-T1001/claim-inventory.yml, supports: Claim statements, evidence classifications, locators, limitations, and inference records.}
+  - {id: LOCAL-source-coverage, path: research/techniques/SAF-T1001/source-coverage.yml, supports: Five-pass research, saturation, evidence assessment, and breach/vulnerability classification.}
+  - {id: LOCAL-rights, path: research/techniques/SAF-T1001/publication-rights.yml, supports: Publication-rights and attribution review.}
+  - {id: LOCAL-quality-review, path: research/techniques/SAF-T1001/quality-review.yml, supports: Validation commands, results, review date, and gate status.}
+  - {id: LOCAL-clean-room, path: research/techniques/SAF-T1001/clean-room-attestation.yml, supports: Independent generation constraints and pre-integration freeze attestation.}
+  - {id: LOCAL-detection-rule, path: techniques/SAF-T1001/detection-rule.yml, supports: Experimental metadata-integrity analytic.}
+  - {id: LOCAL-detection-test, path: techniques/SAF-T1001/test_detection_rule.py, supports: Deterministic analytic implementation and assertions.}
+  - {id: LOCAL-detection-fixtures, path: techniques/SAF-T1001/test-logs.json, supports: Positive, negative, boundary, and expected false-positive representative cases.}
+  - {id: LOCAL-detection-results, path: techniques/SAF-T1001/test-results.json, supports: Representative passing detection output.}
+
+repository_history:
+  - commit: "e40e336c3ca92634915ae498ed74ac457de840fc"
+    supports: Current repository revision; inserted mechanically after the independent packet is frozen.
+
+excluded_items:
+  - id: SAF-T1001-X001
+    candidate: Treat generalized Microsoft wording about observed 2026 patterns as a documented production incident for this technique.
+    origin: Independent Microsoft incident-response source review.
+    attempted_searches:
+      - 'microsoft.com,invariantlabs.ai: "tool poisoning" "no specific affected organization" MCP -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+      - 'microsoft.com,google.com,invariantlabs.ai,postmarkapp.com: "tool description poisoning" "production incident" MCP postmortem -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    consulted_source_ids: [SRC-microsoft-tool-poisoning-2026-06-30, SRC-ms-ai-red-team-taxonomy-v2-2026]
+    reason: No affected organization, date, incident identifier, event-level evidence, or postmortem was disclosed; the described finance chain is illustrative.
+    prohibited_publishable_text:
+      - confirmed production attacks against multiple named enterprises
+    disposition: omitted_from_publishable_technique
+    status: excluded
+  - id: SAF-T1001-X002
+    candidate: Publish one of the discovered MCP-related CVEs as a direct tool-poisoning vulnerability.
+    origin: Independent NVD, CVE.org, and CISA searches.
+    attempted_searches:
+      - 'nvd.nist.gov,cve.org,cisa.gov: Model Context Protocol tool poisoning CVE malicious tool description prompt injection -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+      - 'nvd.nist.gov,cve.org,cisa.gov: CVE-2026-23523 CVE-2025-54135 CVE-2025-53109 CVE-2025-49596 exploitation status -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    consulted_source_ids: []
+    reason: Candidates concerned server installation/configuration, indirect prompt injection, path traversal, authentication, SSRF, or code execution; none established malicious tool-definition semantics crossing into model planning. Catalog pages that could not be completely opened were not used as evidence.
+    prohibited_publishable_text:
+      - a CVE directly confirms exploited MCP tool-description poisoning
+    disposition: omitted_from_publishable_technique
+    status: excluded
+  - id: SAF-T1001-X003
+    candidate: Call the malicious postmark-mcp package a direct Tool Poisoning Attack.
+    origin: Independent first-party Postmark incident review.
+    attempted_searches:
+      - 'postmarkapp.com: Postmark MCP incident malicious package 1.0.16 BCC September 2025 -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    consulted_source_ids: [SRC-postmark-mcp-incident-2025-09-25]
+    reason: The first-party report attributes the hidden action to package implementation code and does not show tool metadata influencing model planning.
+    prohibited_publishable_text:
+      - Postmark proves a direct production Tool Poisoning Attack
+    disposition: omitted_from_publishable_technique
+    status: excluded
+  - id: SAF-T1001-X004
+    candidate: Present static text matching as proof that a tool definition poisoned a model.
+    origin: Independent detection-study review.
+    attempted_searches:
+      - 'arxiv.org: MCP tool poisoning detection false positives metadata integrity defense -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+      - 'arxiv.org: "tool poisoning" MCP "false positive" "static dataset" -"SAF-T1001" -"SAFE-T1001" -"SAF-MCP" -"SAFE-MCP"'
+    consulted_source_ids: [SRC-cascade-2604.17125, SRC-mcp-pitfall-lab-2604.21477, SRC-secmcp-2508.06418]
+    reason: Static rules have documented false positives and false negatives, and only runtime provenance can establish that metadata influenced a call or side effect.
+    prohibited_publishable_text:
+      - a rule match conclusively proves tool poisoning
+    disposition: omitted_from_publishable_technique
+    status: excluded
+
+unresolved: []
