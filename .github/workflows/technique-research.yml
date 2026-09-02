@@ -4,7 +4,12 @@ on:
   pull_request:
     paths:
       - "techniques/**"
+      - "detections/**"
+      - "mitigations/**"
+      - "MITIGATIONS.md"
       - "research/**"
+      - "scripts/*detection*.py"
+      - "scripts/*mitigation*.py"
       - "scripts/*technique*.py"
       - "scripts/*framework*.py"
       - "scripts/generate-technique-catalog.py"
@@ -15,7 +20,12 @@ on:
     branches: [main]
     paths:
       - "techniques/**"
+      - "detections/**"
+      - "mitigations/**"
+      - "MITIGATIONS.md"
       - "research/**"
+      - "scripts/*detection*.py"
+      - "scripts/*mitigation*.py"
       - "scripts/*technique*.py"
       - "scripts/*framework*.py"
       - "scripts/generate-technique-catalog.py"
@@ -39,3 +49,6 @@ jobs:
       - run: python3 scripts/validate-technique-research.py --all
       - run: python3 scripts/validate-framework-model.py
       - run: python3 scripts/generate-technique-catalog.py --check
+      - run: python3 scripts/validate-detection-registry.py
+      - run: python3 scripts/generate-detection-coverage.py --check
+      - run: python3 scripts/generate-mitigation-catalog.py --check

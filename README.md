@@ -20,6 +20,7 @@ The Secure Agentic Framework (SAF) documents adversary behavior in agentic syste
 - **MITRE ATT&CK Alignment**: SAF maps agentic behaviors to established ATT&CK tactics and techniques where the relationship is defensible.
 - **Compliance Mapping**: Each SAF-MCP technique links to corresponding MITRE ATT&CK techniques where applicable, helping organizations determine compliance with existing security frameworks and controls.
 - **Evidence-Led Releases**: Evidence, taxonomy, and operational gates require traceable claims, coherent placement, and tested or explicitly bounded detection.
+- **Operational Coverage Registry**: The generated [detection coverage matrix](detections/COVERAGE.md) separates technique linkage, observation modality, validation maturity, and external rule ownership.
 - **Actionable Mitigations**: Each technique includes detailed mitigation strategies and detection rules to help defenders protect their MCP deployments.
 
 ### How to Use This Framework
