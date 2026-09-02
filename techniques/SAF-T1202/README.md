@@ -30,7 +30,7 @@ This technique covers an adversary using an attacker-controlled OAuth refresh to
 
 ### Distinguishing Characteristics
 
-The defining observable is a refresh grant that renews access under an existing authorization. Token acquisition ends before that exchange, while malicious application persistence changes the integration or consent state; synthetic neighbor joins are documented in the [contract](../../research/techniques/SAF-T1202/technique-contract.yml). <!-- SAF-TRACE: claims=SAF-T1202-C014,SAF-T1202-C015; sources=SRC-mitre-t1550-001,SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
+The defining observable is a refresh grant that renews access under an existing authorization. Token acquisition ends before that exchange, while malicious application persistence changes the integration or consent state; the exact boundaries are documented in the [contract](../../research/techniques/SAF-T1202/technique-contract.yml). <!-- SAF-TRACE: claims=SAF-T1202-C014,SAF-T1202-C015; sources=SRC-mitre-t1550-001,SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
 
 ## Description
 

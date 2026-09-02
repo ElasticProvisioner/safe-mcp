@@ -33,6 +33,11 @@ Before drafting or rewriting publishable prose, read
 completely. Use its hidden trace-comment format so rendered prose remains
 readable while every substantive unit retains its claim and source joins.
 
+After the evidence set and draft are frozen, read
+[references/framework-reconciliation.md](references/framework-reconciliation.md)
+completely and run its separate ontology pass. Framework reconciliation must
+not leak an existing technique's factual content into a clean-room draft.
+
 ## Repository contract
 
 Treat these repository files as canonical:
@@ -44,7 +49,9 @@ Treat these repository files as canonical:
 - `research/source-manifest.yml` for source acquisition records;
 - `research/framework-model.yml` and `research/alignment-ledger.yml` for
   framework reconciliation; and
-- `scripts/validate-technique-research.py` for deterministic completion gates.
+- `scripts/validate-technique-research.py` for deterministic evidence gates;
+- `scripts/validate-framework-model.py` for taxonomy and operational gates; and
+- `scripts/generate-technique-catalog.py` for the model-derived public catalog.
 
 Before freezing a clean-room bundle, validate it in an isolated mock repository
 against the current `scripts/validate-technique-research.py`. The mock repository
@@ -95,6 +102,11 @@ repository documentation as part of the same authorized technique change.
   false-positive cases, or record a justified feasibility waiver.
 - Complete source coverage, evidence classification, framework alignment,
   rights review, and quality gates before calling the technique complete.
+- Apply the strict admission rule, explicit SAF Core and domain profiles, typed
+  relationships, conservative detection maturity, and evidence, taxonomy, and
+  operational release gates during post-freeze reconciliation.
+- Preserve permanent IDs as deprecated compatibility records when a technique
+  is consolidated or reclassified; never delete or reuse them.
 
 ## Rerunning an existing technique
 

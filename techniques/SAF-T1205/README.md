@@ -6,12 +6,15 @@
 - **Technique ID**: SAF-T1205
 - **Research Packet**: [research/techniques/SAF-T1205](../../research/techniques/SAF-T1205/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1205/traceability-ledger.yml)
-- **Documentation Status**: Stable
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Evidence Status**: Demonstrated
 - **Severity**: High
 - **Severity Rationale**: A retained trust decision can expose sensitive data or privileged tools to a changed definition; reapproval, least privilege, and isolation reduce that impact. <!-- SAF-TRACE: claims=SAF-T1205-C016; sources=SRC-invariant-tpa-2025-04-01,SRC-ms-indirect-injection-2025,SRC-ms-azure-mcp-security-2026 -->
 - **First Observed**: Not observed in production; directly reproduced in controlled research published in 2025. <!-- SAF-TRACE: claims=SAF-T1205-C003; sources=SRC-song-mcp-attack-v4 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1205 is consolidated into [SAF-T1201: Post-Approval Tool Mutation](../SAF-T1201/README.md). This page and its evidence packet remain available for provenance; use SAF-T1201 for new mappings. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Scope
 
@@ -189,10 +192,10 @@ The standalone analytic is maintained in [detection-rule.yml](detection-rule.yml
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C004,SAF-T1205-C014; sources=SRC-invariant-tpa-2025-04-01,SRC-ms-rug-pull-catalog-2026 --> | Alternative <!-- SAF-TRACE: claims=SAF-T1205-C004; sources=SRC-invariant-tpa-2025-04-01 --> | Malicious on first discovery rather than changed after trust. <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C004; sources=SRC-song-mcp-attack-v4,SRC-invariant-tpa-2025-04-01 --> |
-| [SAF-T1201: MCP Rug Pull Attack](../SAF-T1201/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C014; sources=SRC-song-mcp-attack-v4,SRC-ms-rug-pull-catalog-2026 --> | Broader umbrella <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Rug pull also covers changed delivered implementation or update content; SAF-T1205 is restricted to a security-relevant tool-definition mutation retained across later sessions or invocations. <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C014; sources=SRC-song-mcp-attack-v4,SRC-ms-rug-pull-catalog-2026 --> |
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C004,SAF-T1205-C014; sources=SRC-invariant-tpa-2025-04-01,SRC-ms-rug-pull-catalog-2026 --> | Alternative <!-- SAF-TRACE: claims=SAF-T1205-C004; sources=SRC-invariant-tpa-2025-04-01 --> | Malicious on first discovery rather than changed after trust. <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C004; sources=SRC-song-mcp-attack-v4,SRC-invariant-tpa-2025-04-01 --> |
+| [SAF-T1201: Post-Approval Tool Mutation](../SAF-T1201/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C014; sources=SRC-song-mcp-attack-v4,SRC-ms-rug-pull-catalog-2026 --> | Broader umbrella <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Rug pull also covers changed delivered implementation or update content; SAF-T1205 is restricted to a security-relevant tool-definition mutation retained across later sessions or invocations. <!-- SAF-TRACE: claims=SAF-T1205-C003,SAF-T1205-C014; sources=SRC-song-mcp-attack-v4,SRC-ms-rug-pull-catalog-2026 --> |
 | [SAF-T1407: Server Proxy Masquerade](../SAF-T1407/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C010,SAF-T1205-C011; sources=SRC-azure-appservice-mcp-2026,SRC-ms-visual-studio-mcp-2026,SRC-ms-azure-mcp-security-2026,SRC-mcp-tools-2025-11-25 --> | Alternative <!-- SAF-TRACE: claims=SAF-T1205-C011; sources=SRC-mcp-tools-2025-11-25,SRC-azure-appservice-mcp-2026 --> | Changes the trusted identity instead of retaining it. <!-- SAF-TRACE: claims=SAF-T1205-C010,SAF-T1205-C011; sources=SRC-azure-appservice-mcp-2026,SRC-ms-visual-studio-mcp-2026,SRC-ms-azure-mcp-security-2026,SRC-mcp-tools-2025-11-25 --> |
-| [SAF-T1103: Unauthorized Tool Invocation](../SAF-T1103/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Follow-On <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Concerns a call decision, not mutation of the definition that informs it. <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> |
+| [SAF-T1103: Fake Tool Invocation (Function Spoofing)](../SAF-T1103/README.md) <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Follow-On <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> | Concerns a call decision, not mutation of the definition that informs it. <!-- SAF-TRACE: claims=SAF-T1205-C014; sources=SRC-ms-rug-pull-catalog-2026 --> |
 
 ## MITRE ATT&CK Mapping
 

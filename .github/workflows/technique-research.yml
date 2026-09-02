@@ -6,6 +6,9 @@ on:
       - "techniques/**"
       - "research/**"
       - "scripts/*technique*.py"
+      - "scripts/*framework*.py"
+      - "scripts/generate-technique-catalog.py"
+      - ".agents/skills/author-saf-technique/**"
       - "requirements-dev.txt"
       - ".github/workflows/technique-research.yml"
   push:
@@ -14,6 +17,9 @@ on:
       - "techniques/**"
       - "research/**"
       - "scripts/*technique*.py"
+      - "scripts/*framework*.py"
+      - "scripts/generate-technique-catalog.py"
+      - ".agents/skills/author-saf-technique/**"
       - "requirements-dev.txt"
       - ".github/workflows/technique-research.yml"
 
@@ -31,3 +37,5 @@ jobs:
       - run: python3 -m pip install -r requirements-dev.txt
       - run: python3 -m unittest discover -s scripts -p "test_*.py"
       - run: python3 scripts/validate-technique-research.py --all
+      - run: python3 scripts/validate-framework-model.py
+      - run: python3 scripts/generate-technique-catalog.py --check

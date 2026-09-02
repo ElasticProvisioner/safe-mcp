@@ -20,6 +20,8 @@ Use this template for SAF-MCP technique documentation.
 ## Overview
 
 - **Tactic**: [Primary Tactic (ATK-TAXXXX); Secondary Tactic (ATK-TAXXXX), if applicable]
+- **Framework Profiles**: [SAF Core / MCP / Code-Agent / RAG and Memory / Financial-Agent / Model-Lifecycle]
+- **Lifecycle Status**: [Active / Deprecated]
 - **Technique ID**: SAF-T[XXXX]
 - **Research Packet**: [research/techniques/SAF-TXXXX](../../research/techniques/SAF-TXXXX/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-TXXXX/traceability-ledger.yml)
@@ -233,6 +235,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 - **Test Data**: [test-logs.json](test-logs.json)
 - **Validation Script**: [test_detection_rule.py](test_detection_rule.py)
 - **Expected Result**: [Number of positive and negative cases and required outcome]
+- **Detection Maturity**: [Proposed / Syntax Validated / Fixture Tested / Telemetry Replay Tested / Field Evaluated]
 - **Last Validated**: [YYYY-MM-DD]
 - **Feasibility Waiver**: [None / Specific reason representative validation is not currently possible]
 
@@ -268,6 +271,13 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 - [Add regression coverage or monitoring for recurrence]
 
 ## Related Techniques
+
+<!--
+Use relationship types from research/framework-model.yml: related_to,
+alternative_to, overlaps_with, specialization_of, has_specialization, enables,
+enabled_by, precedes, follows, replaces, or replaced_by. Explain the boundary;
+do not present an untyped list of neighboring IDs.
+-->
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |

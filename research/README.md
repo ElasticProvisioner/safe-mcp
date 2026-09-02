@@ -49,6 +49,10 @@ python3 scripts/new-technique.py SAF-TXXXX "Technique Name"
 
 ## Authoring Workflow
 
+The canonical taxonomy and release contract is [Framework Model v2](FRAMEWORK-MODEL.md).
+Technique IDs are opaque and permanent. Scope is expressed through SAF Core and
+domain profiles rather than by encoding a tactic or technology into the ID.
+
 When the user requires clean-room generation, set `generation_mode` to
 `clean_room`, follow the isolated-input procedure in
 `.agents/skills/author-saf-technique/references/clean-room-generation.md`, and
@@ -239,10 +243,17 @@ is not a validated detection.
 
 ### 8. Reconcile the framework
 
-Add the technique to `framework-model.yml`. Check identifiers, tactics,
-neighbors, ATT&CK mapping type, mitigations, detection artifacts, and evidence
-status. Record any change needed elsewhere in `alignment-ledger.yml`; high
-severity alignment issues must be resolved before completion.
+After the evidence set and draft are frozen, run a separate ontology pass against
+the complete catalog. Add the technique to `framework-model.yml`; check the
+admission rule, lifecycle, SAF Core and domain profiles, tactics, typed
+relationships and inverses, ATT&CK mapping type, mitigations, detection maturity,
+and evidence status. This post-freeze pass may classify or consolidate the
+independently researched behavior, but must not introduce new factual claims into
+clean-room prose. Preserve superseded IDs as deprecated compatibility records.
+
+Record corpus-wide decisions in `taxonomy-review.yml` and changes needed
+elsewhere in `alignment-ledger.yml`. High-severity alignment issues must be
+resolved before completion.
 
 ### 9. Review publication rights
 
@@ -258,6 +269,8 @@ Complete `quality-review.yml`, then run:
 
 ```bash
 python3 scripts/validate-technique-research.py SAF-TXXXX
+python3 scripts/validate-framework-model.py
+python3 scripts/generate-technique-catalog.py --check
 ```
 
 A technique is complete only when:
@@ -277,13 +290,16 @@ A technique is complete only when:
   listed;
 - publication-rights review passes;
 - no unresolved high-severity alignment issue remains; and
-- the deterministic validator and recorded technique-specific tests pass.
+- the evidence, taxonomy, and operational release gates pass; and
+- the deterministic validators, catalog check, and recorded technique-specific tests pass.
 
 ## Shared Files
 
 - `source-manifest.yml` is the source registry and acquisition record.
-- `framework-model.yml` records techniques governed by this protocol and their
-  key relationships.
+- `framework-model.yml` is the canonical machine-readable catalog, including
+  lifecycle, profiles, tactics, typed relationships, and detection maturity.
+- `taxonomy-review.yml` records post-freeze admission, consolidation,
+  reclassification, and profile decisions.
 - `alignment-ledger.yml` records discoveries that require changes across
   techniques, mitigations, mappings, or shared documentation.
 - `templates/technique/` contains the reusable research packet.

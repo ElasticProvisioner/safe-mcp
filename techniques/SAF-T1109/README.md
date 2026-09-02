@@ -4,10 +4,13 @@
 - **Technique ID**: SAF-T1109
 - **Research Packet**: [research/techniques/SAF-T1109/](../../research/techniques/SAF-T1109/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1109/traceability-ledger.yml)
-- **Documentation Status**: Under Review
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Evidence Status**: Demonstrated
 - **Severity**: High
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1109 described a product-centered procedure. Map the exposed endpoint to [SAF-T1005: Exposed Endpoint Exploit](../SAF-T1005/README.md) and the process-launch boundary failure to [SAF-T1101: Command Injection](../SAF-T1101/README.md). This page and its evidence packet remain available for provenance. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Overview
 
@@ -97,8 +100,8 @@ After a suspected event, isolate the host, preserve control-plane and process te
 ## Related Techniques
 
 - [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) changes model instructions without requiring exploitation of a debugging control surface. <!-- SAF-TRACE: claims=SAF-T1109-C011; sources=SRC-ms-agt -->
-- [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) manipulates model-visible tool metadata without requiring exploitation of a debugging control surface. <!-- SAF-TRACE: claims=SAF-T1109-C011; sources=SRC-ms-agt -->
-- [SAF-T1006: Malicious MCP-Server Installation](../SAF-T1006/README.md) covers deceptive or unsafe local-server installation at the consent boundary. <!-- SAF-TRACE: claims=SAF-T1109-C012; sources=SRC-mcp-sep-1024 -->
+- [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) manipulates model-visible tool metadata without requiring exploitation of a debugging control surface. <!-- SAF-TRACE: claims=SAF-T1109-C011; sources=SRC-ms-agt -->
+- [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) covers deceptive or unsafe local-server installation at the consent boundary. <!-- SAF-TRACE: claims=SAF-T1109-C012; sources=SRC-mcp-sep-1024 -->
 
 ## MITRE ATT&CK Mapping
 

@@ -25,13 +25,13 @@ This technique covers an adversary writing or replacing a credential, credential
 ### Out of Scope
 
 - Stealing an existing token without altering persistent configuration; that is credential acquisition, not a credential implant. <!-- SAF-TRACE: claims=SAF-T1206-C020; sources=SRC-mcp-auth-security-2026-07-28 -->
-- Injecting a command or MCP server solely to obtain code execution belongs with [SAF-T1006: Malicious MCP Server Distribution](../SAF-T1006/README.md), even when the delivery artifact is the same configuration file. <!-- SAF-TRACE: claims=SAF-T1206-C009,SAF-T1206-C010; sources=SRC-ghsa-zed-68433,SRC-ghsa-dive-66580 -->
+- Injecting a command or MCP server solely to obtain code execution belongs with [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md), even when the delivery artifact is the same configuration file. <!-- SAF-TRACE: claims=SAF-T1206-C009,SAF-T1206-C010; sources=SRC-ghsa-zed-68433,SRC-ghsa-dive-66580 -->
 - Adding a credential directly to a cloud account or OAuth application; ATT&CK T1098.001 covers that account-side behavior, while this technique covers the agent-client configuration that chooses a credential. <!-- SAF-TRACE: claims=SAF-T1206-C018; sources=SRC-t1206-attack-t1098-001 -->
 - Substituting only a server endpoint, or using an already implanted credential, which are separate configuration-redirection and valid-identity behaviors. <!-- SAF-TRACE: claims=SAF-T1206-C001; sources=SRC-t1206-vscode-config,SRC-t1206-copilot-cli -->
 
 ### Distinguishing Characteristics
 
-[SAF-T1502](../SAF-T1502/README.md) ends when an existing file-based credential is copied; [SAF-T1006](../SAF-T1006/README.md) delivers a configured malicious server; and [SAF-T1407](../SAF-T1407/README.md) changes the apparent destination identity. SAF-T1206 requires a persistent configuration change whose immediate objective is future authentication as an attacker-selected identity. <!-- SAF-TRACE: claims=SAF-T1206-C001,SAF-T1206-C020; sources=SRC-t1206-vscode-config,SRC-t1206-copilot-cli,SRC-t1206-mcp-client-registration -->
+[SAF-T1502](../SAF-T1502/README.md) ends when an existing file-based credential is copied; [SAF-T1003](../SAF-T1003/README.md) delivers a configured malicious server; and [SAF-T1407](../SAF-T1407/README.md) changes the apparent destination identity. SAF-T1206 requires a persistent configuration change whose immediate objective is future authentication as an attacker-selected identity. <!-- SAF-TRACE: claims=SAF-T1206-C001,SAF-T1206-C020; sources=SRC-t1206-vscode-config,SRC-t1206-copilot-cli,SRC-t1206-mcp-client-registration -->
 
 ## Description
 
@@ -213,7 +213,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1502: File-Based Credential Harvest](../SAF-T1502/README.md) | Prerequisite or co-occurring | Copies an existing credential; SAF-T1206 persists an attacker-selected credential or reference in client configuration. <!-- SAF-TRACE: claims=SAF-T1206-C020; sources=SRC-mcp-auth-security-2026-07-28,SRC-t1206-mcp-client-registration --> |
-| [SAF-T1006: Malicious MCP Server Distribution](../SAF-T1006/README.md) | Overlapping delivery artifact | Uses configuration to deliver and execute a malicious server; SAF-T1206's immediate objective is future authentication identity selection. <!-- SAF-TRACE: claims=SAF-T1206-C009,SAF-T1206-C010,SAF-T1206-C020; sources=SRC-ghsa-zed-68433,SRC-ghsa-dive-66580 --> |
+| [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) | Overlapping delivery artifact | Uses configuration to deliver and execute a malicious server; SAF-T1206's immediate objective is future authentication identity selection. <!-- SAF-TRACE: claims=SAF-T1206-C009,SAF-T1206-C010,SAF-T1206-C020; sources=SRC-ghsa-zed-68433,SRC-ghsa-dive-66580 --> |
 | [SAF-T1407: Server Proxy Masquerade](../SAF-T1407/README.md) | Co-occurring | Changes the apparent connection identity; SAF-T1206 requires a credential or credential reference implant even when the endpoint also changes. <!-- SAF-TRACE: claims=SAF-T1206-C001; sources=SRC-t1206-vscode-config,SRC-t1206-copilot-cli --> |
 
 ## MITRE ATT&CK Mapping

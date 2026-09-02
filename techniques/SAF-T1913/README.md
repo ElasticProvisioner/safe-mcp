@@ -221,7 +221,7 @@ The standalone experimental analytic is maintained in [detection-rule.yml](detec
 | --- | --- | --- |
 | [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Prerequisite | Changes agent intent; SAF-T1913 starts at sensitive argument transfer. <!-- SAF-TRACE: claims=SAF-T1913-C004,SAF-T1913-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2026-07-28 --> |
 | [SAF-T1911: Parameter Exfiltration](../SAF-T1911/README.md) | Broader channel | Covers sensitive data placed in tool arguments; SAF-T1913 narrows the channel to a Streamable HTTP POST body sent to a remote MCP server. <!-- SAF-TRACE: claims=SAF-T1913-C001,SAF-T1913-C002,SAF-T1913-C004; sources=SRC-mcp-streamable-http-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-invariant-tpa-2025-04-01 --> |
-| [SAF-T1902: Covert Channel in Responses](../SAF-T1902/README.md) | Alternative | Embeds data in a URI and depends on a fetcher rather than an MCP POST body. <!-- SAF-TRACE: claims=SAF-T1913-C012; sources=SRC-cve-34072,SRC-cve-2025-34072 --> |
+| [SAF-T1902: Response-Borne Covert Channel](../SAF-T1902/README.md) | Alternative | Embeds data in a URI and depends on a fetcher rather than an MCP POST body. <!-- SAF-TRACE: claims=SAF-T1913-C012; sources=SRC-cve-34072,SRC-cve-2025-34072 --> |
 
 ## MITRE ATT&CK Mapping
 

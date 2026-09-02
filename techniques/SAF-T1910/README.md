@@ -31,7 +31,7 @@ Covert Channel Exfiltration covers an adversary causing an MCP-enabled or agenti
 
 ### Distinguishing Characteristics
 
-The technique begins when selected data enters a covert carrier and ends when that carrier or its side effect reaches an unauthorized principal; the delivery mechanism, prior collection, and downstream use are separate behaviors. The clean-room packet uses synthetic neighbor IDs pending mechanical repository reconciliation. [Technique contract](../../research/techniques/SAF-T1910/technique-contract.yml) <!-- SAF-TRACE: claims=SAF-T1910-C003,SAF-T1910-C018; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-radosevich-halloran-mcp-audit-2025,SRC-mitre-attack-t1048-v1.6 -->
+The technique begins when selected data enters a covert carrier and ends when that carrier or its side effect reaches an unauthorized principal; the delivery mechanism, prior collection, and downstream use are separate behaviors. The reconciled boundaries are recorded in the [technique contract](../../research/techniques/SAF-T1910/technique-contract.yml). <!-- SAF-TRACE: claims=SAF-T1910-C003,SAF-T1910-C018; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-radosevich-halloran-mcp-audit-2025,SRC-mitre-attack-t1048-v1.6 -->
 
 ## Description
 
@@ -210,7 +210,7 @@ The standalone experimental analytic is maintained in [detection-rule.yml](detec
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1102: Prompt Injection](../SAF-T1102/README.md) | Prerequisite or co-occurring | Covers adversarial instruction delivery or model influence; SAF-T1910 requires selected data to cross through a covert carrier. <!-- SAF-TRACE: claims=SAF-T1910-C003,SAF-T1910-C020; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-agentdojo-2406.13352v3 --> |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite or co-occurring | Covers adversarial instruction delivery or model influence; SAF-T1910 requires selected data to cross through a covert carrier. <!-- SAF-TRACE: claims=SAF-T1910-C003,SAF-T1910-C020; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-agentdojo-2406.13352v3 --> |
 | [SAF-T1911: Parameter Exfiltration](../SAF-T1911/README.md) | Specialization | Uses a tool or protocol parameter as the carrier; SAF-T1910 also includes application messages, URLs, and downstream service side effects. <!-- SAF-TRACE: claims=SAF-T1910-C002,SAF-T1910-C018; sources=SRC-mcp-tools-2025-06-18,SRC-mitre-attack-t1048-v1.6 --> |
 | [SAF-T1912: Stego Response Exfil](../SAF-T1912/README.md) | Specialization | Conceals data in a response; SAF-T1910 covers covert carriers on either tool input or downstream output paths. <!-- SAF-TRACE: claims=SAF-T1910-C002,SAF-T1910-C018; sources=SRC-mcp-tools-2025-06-18,SRC-mitre-attack-t1048-v1.6 --> |
 

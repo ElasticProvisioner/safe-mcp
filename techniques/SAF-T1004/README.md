@@ -180,7 +180,7 @@ Registry presence is not a complete safety guarantee because moderation is minim
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | SAF-T1003: Malicious MCP-Server Distribution | Alternative or prerequisite | Delivery need not involve identity confusion; SAF-T1004 requires wrong-server selection through identity resolution or binding. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
-| SAF-T1008: Tool Shadowing Attack | Adjacent | Misleading tool identity occurs after server selection; SAF-T1004 concerns the server identity. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
+| SAF-T1008: Cross-Server Tool Shadowing | Adjacent | Misleading tool identity occurs after server selection; SAF-T1004 concerns the server identity. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
 | SAF-T1009: Authorization Server Mix-up | Adjacent | Issuer and token-audience binding are different from MCP server publisher, package, and endpoint selection. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
 | SAF-T1301: Cross-Server Tool Shadowing | Adjacent | Colliding tool names assume connected servers; SAF-T1004 stops at wrong-server selection, installation, or connection. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
 | SAF-T1407: Server Proxy Masquerade | Overlapping but distinct | Proxy masquerade requires mediated traffic behavior; SAF-T1004 does not require a proxy. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |

@@ -220,7 +220,7 @@ The nearest boundaries distinguish semantic descriptor manipulation and post-app
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) | Overlapping semantic boundary | Changes descriptor semantics without requiring an attacker-controlled object to win a competing identity or rank decision. <!-- SAF-TRACE: claims=SAF-T1401-C016; sources=SRC-jamshidi-2026-arxiv-2512-06556,SRC-etdi-2506.01333 --> |
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Overlapping semantic boundary | Changes descriptor semantics without requiring an attacker-controlled object to win a competing identity or rank decision. <!-- SAF-TRACE: claims=SAF-T1401-C016; sources=SRC-jamshidi-2026-arxiv-2512-06556,SRC-etdi-2506.01333 --> |
 | [SAF-T1205: Persistent Tool Redefinition](../SAF-T1205/README.md) | Overlapping temporal boundary | Changes the same selected object after approval rather than displacing a trusted competitor through precedence. <!-- SAF-TRACE: claims=SAF-T1401-C003; sources=SRC-ghsa-6cvf-cfch-4g7m,SRC-ghsa-weknora --> |
 
 ## MITRE ATT&CK Mapping

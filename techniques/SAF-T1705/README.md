@@ -192,7 +192,7 @@ The [detector test suite](../../tests/SAF-T1705/test_detection_rule.py) and [ine
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1102: Prompt Injection](../SAF-T1102/README.md) | Prerequisite or alternative | Direct injection lacks the defining peer-agent hop. See the [scope contract](../../research/techniques/SAF-T1705/technique-contract.yml). |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite or alternative | Direct injection lacks the defining peer-agent hop. See the [scope contract](../../research/techniques/SAF-T1705/technique-contract.yml). |
 | [SAF-T1701: Cross-Tool Contamination](../SAF-T1701/README.md) | Prerequisite or overlapping | Tool-result consumption remains in one agent context unless that agent relays the instruction to a distinct receiver. See the [scope contract](../../research/techniques/SAF-T1705/technique-contract.yml). |
 | [SAF-T1702: Shared-Memory Poisoning](../SAF-T1702/README.md) | Adjacent persistence path | Shared-memory poisoning requires storage and later retrieval across a session, principal, tenant, or agent boundary; SAF-T1705 requires an inter-agent instruction hop but not persistence. See the [scope contract](../../research/techniques/SAF-T1705/technique-contract.yml). |
 

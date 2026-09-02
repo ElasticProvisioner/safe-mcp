@@ -204,7 +204,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) | Alternative | First-install distribution has no trusted prior version; SAF-T1207 replaces an already trusted component through an update path. | <!-- SAF-TRACE: claims=SAF-T1207-C001,SAF-T1207-C015; sources=SRC-mitre-t1195-002,SRC-mitre-ta0003 -->
-| [SAF-T1201: MCP Rug Pull Attack](../SAF-T1201/README.md) | Alternative | A rug pull changes a trusted tool definition or behavior without replacing software; SAF-T1207 requires a release or dependency replacement accepted by the component manager. | <!-- SAF-TRACE: claims=SAF-T1207-C001,SAF-T1207-C006; sources=SRC-google-ai-blueprint,SRC-mitre-t1554 -->
+| [SAF-T1201: Post-Approval Tool Mutation](../SAF-T1201/README.md) | Alternative | A rug pull changes a trusted tool definition or behavior without replacing software; SAF-T1207 requires a release or dependency replacement accepted by the component manager. | <!-- SAF-TRACE: claims=SAF-T1207-C001,SAF-T1207-C006; sources=SRC-google-ai-blueprint,SRC-mitre-t1554 -->
 
 ## MITRE ATT&CK Mapping
 

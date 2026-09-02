@@ -1,8 +1,10 @@
-# SAF-T1902: Covert Channel in Responses
+# SAF-T1902: Response-Borne Covert Channel
 
 ## Overview
 
-- **Tactic**: Command and Control (ATK-TA0011)
+- **Tactic**: Command and Control (ATK-TA0011); Exfiltration (ATK-TA0010)
+- **Framework Profiles**: SAF Core; MCP. [Framework Model v2](../../research/framework-model.yml)
+- **Lifecycle Status**: Active. [Framework Model v2](../../research/framework-model.yml)
 - **Technique ID**: SAF-T1902
 - **Research Packet**: [research/techniques/SAF-T1902](../../research/techniques/SAF-T1902/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1902/traceability-ledger.yml)
@@ -24,7 +26,7 @@ SAF-T1902 covers an adversary concealing control data, collected data, or a call
 
 ### Out of Scope
 
-- Plain response injection that changes model instructions but does not use the response as a concealed communication carrier; that behavior is assigned to the proposed neighbor [SAF-T1102: Response Injection](../SAF-T1102/README.md). <!-- SAF-TRACE: claims=SAF-T1902-C001; sources=SRC-nist-covert-channel -->
+- Plain response injection that changes model instructions but does not use the response as a concealed communication carrier belongs to [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md). <!-- SAF-TRACE: claims=SAF-T1902-C001; sources=SRC-nist-covert-channel -->
 - Tool-description poisoning, ordinary approved tool calls, transport tunneling below response semantics, and follow-on execution are separate mechanisms even when they coexist with this technique. <!-- SAF-TRACE: claims=SAF-T1902-C010; sources=SRC-mcp-tools-2025-11-25,SRC-mcp-security-2026-07-28 -->
 
 ### Distinguishing Characteristics
@@ -202,7 +204,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1102: Response Injection](../SAF-T1102/README.md) | Prerequisite or co-occurring | Injection changes agent interpretation; SAF-T1902 additionally requires a concealed response carrier and receiver path. <!-- SAF-TRACE: claims=SAF-T1902-C001,SAF-T1902-C010; sources=SRC-nist-covert-channel,SRC-mcp-tools-2025-11-25 --> |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite or co-occurring | Injection changes agent interpretation; SAF-T1902 additionally requires a concealed response carrier and receiver path. <!-- SAF-TRACE: claims=SAF-T1902-C001,SAF-T1902-C010; sources=SRC-nist-covert-channel,SRC-mcp-tools-2025-11-25 --> |
 
 ## MITRE ATT&CK Mapping
 

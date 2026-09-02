@@ -26,9 +26,9 @@ Server Proxy Masquerade covers an attacker-controlled MCP endpoint that appears 
 
 ### Out of Scope
 
-- Discovery, registry substitution, DNS compromise, or configuration tampering used only to place a hostile endpoint in configuration is assigned to [SAF-T1004: Server Discovery Substitution](../SAF-T1004/README.md); this technique begins when that endpoint acts through a deceptive server identity or association. <!-- SAF-TRACE: claims=SAF-T1407-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9728 -->
-- A legitimate or compromised server changing its own tool content without impersonating another server is assigned to [SAF-T1404: Server-Originated Content Corruption](../SAF-T1404/README.md). <!-- SAF-TRACE: claims=SAF-T1407-C019; sources=SRC-trustshiftprobe -->
-- Token forwarding by an accurately identified gateway without identity deception is assigned to [SAF-T1304: Token Passthrough](../SAF-T1304/README.md). <!-- SAF-TRACE: claims=SAF-T1407-C004,SAF-T1407-C006; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9728 -->
+- Discovery, registry substitution, DNS compromise, or configuration tampering used only to place a hostile endpoint in configuration is assigned to [SAF-T1004: Server Impersonation / Name-Collision](../SAF-T1004/README.md); this technique begins when that endpoint acts through a deceptive server identity or association. <!-- SAF-TRACE: claims=SAF-T1407-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9728 -->
+- A legitimate or compromised server changing its own tool content without impersonating another server is assigned to [SAF-T1404: Response Tampering](../SAF-T1404/README.md). <!-- SAF-TRACE: claims=SAF-T1407-C019; sources=SRC-trustshiftprobe -->
+- Token forwarding by an accurately identified gateway without identity deception is assigned to [SAF-T1304: Credential Relay Chain](../SAF-T1304/README.md). <!-- SAF-TRACE: claims=SAF-T1407-C004,SAF-T1407-C006; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9728 -->
 - Direct local stdio without a proxy does not cross the remote endpoint-identity boundary, although a local proxy can create an equivalent boundary. <!-- SAF-TRACE: claims=SAF-T1407-C025; sources=SRC-mcp-transports-2025-11-25,SRC-mcp-security-2025-11-25 -->
 
 ### Distinguishing Characteristics

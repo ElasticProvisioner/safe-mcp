@@ -31,7 +31,7 @@ Capability Mapping covers an adversary using its current MCP request identity to
 
 ### Distinguishing Characteristics
 
-The technique ends when the actor has correlated capability metadata. Synthetic neighbor [SAF-T1104](../SAF-T1104/README.md) begins with use of a known operation or content access; synthetic neighbor [SAF-T1001](../SAF-T1001/README.md) changes the metadata itself. These identifiers are isolated integration placeholders, not claims about the current shared catalog. <!-- SAF-TRACE: claims=SAF-T1605-C005,SAF-T1605-C006; sources=SRC-mcp-discovery-2026-07-28,SRC-mcp-tools-2026-07-28 -->
+The technique ends when the actor has correlated capability metadata. [SAF-T1302: Agentic Confused Deputy](../SAF-T1302/README.md) begins when discovered authority is exercised across a principal boundary, while [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) changes the metadata itself. <!-- SAF-TRACE: claims=SAF-T1605-C005,SAF-T1605-C006; sources=SRC-mcp-discovery-2026-07-28,SRC-mcp-tools-2026-07-28 -->
 
 ## Description
 

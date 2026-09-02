@@ -30,7 +30,7 @@ This technique covers post-approval or post-deployment replacement, patching, or
 
 ### Distinguishing Characteristics
 
-The defining observable is a content, digest, or signing-state change for an already configured server artifact, followed by execution under the same trusted path or identity. [SAF-T1006: Malicious MCP Server Distribution](../SAF-T1006/README.md) ends at first approval of an attacker-selected server; [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) changes protocol-visible tool metadata without requiring an on-disk binary change. <!-- SAF-TRACE: claims=SAF-T1203-C017; sources=SRC-mitre-attack-t1195,SRC-mitre-t1505-v1.5 -->
+The defining observable is a content, digest, or signing-state change for an already configured server artifact, followed by execution under the same trusted path or identity. [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) ends at first approval of an attacker-selected server; [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) changes protocol-visible tool metadata without requiring an on-disk binary change. <!-- SAF-TRACE: claims=SAF-T1203-C017; sources=SRC-mitre-attack-t1195,SRC-mitre-t1505-v1.5 -->
 
 ## Description
 
@@ -205,8 +205,8 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1006: Malicious MCP Server Distribution](../SAF-T1006/README.md) | Alternative | Distribution concerns initial delivery or installation; SAF-T1203 requires an already trusted artifact to change afterward. | <!-- SAF-TRACE: claims=SAF-T1203-C017; sources=SRC-mitre-attack-t1195 -->
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) | Alternative or co-occurring | Tool poisoning changes protocol-visible instructions or metadata; SAF-T1203 requires executable or directly loaded binary modification. | <!-- SAF-TRACE: claims=SAF-T1203-C005,SAF-T1203-C017; sources=SRC-unit42-mcp-sampling-2025,SRC-mitre-t1505-v1.5 -->
+| [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) | Alternative | Distribution concerns initial delivery or installation; SAF-T1203 requires an already trusted artifact to change afterward. | <!-- SAF-TRACE: claims=SAF-T1203-C017; sources=SRC-mitre-attack-t1195 -->
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Alternative or co-occurring | Tool poisoning changes protocol-visible instructions or metadata; SAF-T1203 requires executable or directly loaded binary modification. | <!-- SAF-TRACE: claims=SAF-T1203-C005,SAF-T1203-C017; sources=SRC-unit42-mcp-sampling-2025,SRC-mitre-t1505-v1.5 -->
 
 ## MITRE ATT&CK Mapping
 

@@ -6,12 +6,15 @@
 - **Technique ID**: SAF-T1301
 - **Research Packet**: [research/techniques/SAF-T1301](../../research/techniques/SAF-T1301/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1301/traceability-ledger.yml)
-- **Documentation Status**: Stable
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Evidence Status**: Observed
 - **Severity**: High
 - **Severity Rationale**: A hostile server can influence use of a separately trusted tool, so impact can inherit that tool's data and action authority when the host does not isolate descriptor provenance. <!-- SAF-TRACE: claims=SAF-T1301-C005,SAF-T1301-C006; sources=SRC-microsoft-tool-poisoning-2026-06-30,SRC-invariant-tpa-2025-04-01 -->
 - **First Observed**: 2026, in an anonymized enterprise-agent pattern reported by Microsoft Incident Response. <!-- SAF-TRACE: claims=SAF-T1301-C002; sources=SRC-microsoft-tool-poisoning-2026-06-30 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1301 is consolidated into [SAF-T1008: Cross-Server Tool Shadowing](../SAF-T1008/README.md). This page and its evidence packet remain available for provenance; use SAF-T1008 for new mappings. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Scope
 
@@ -24,7 +27,7 @@ Cross-Server Tool Shadowing occurs when an attacker-controlled or compromised se
 
 ### Out of Scope
 
-- Poisoning that changes only selection or use of the malicious server's own tool is [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md). <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-jamshidi-2026-arxiv-2512-06556 -->
+- Poisoning that changes only selection or use of the malicious server's own tool is [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md). <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-jamshidi-2026-arxiv-2512-06556 -->
 - Changing metadata after approval is [SAF-T1205: Persistent Tool Redefinition](../SAF-T1205/README.md); identical or similar tool-name registration is also separate, but no exact SAF catalog neighbor currently represents that collision-only boundary. <!-- SAF-TRACE: claims=SAF-T1301-C014; sources=SRC-clean-t1301-mcp-tools-draft,SRC-clean-t1301-unit42-shadowing -->
 - Indirect prompt injection delivered in tool output or external content, and any later collection or exfiltration, are separate mechanisms or follow-on activity. <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-jamshidi-2026-arxiv-2512-06556 -->
 
@@ -171,7 +174,7 @@ The standalone analytic is maintained in [detection-rule.yml](detection-rule.yml
 
 ## Related Techniques
 
-- **[SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md)**: The malicious descriptor governs its own tool rather than a different trusted server's tool. <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-jamshidi-2026-arxiv-2512-06556 -->
+- **[SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md)**: The malicious descriptor governs its own tool rather than a different trusted server's tool. <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-invariant-tpa-2025-04-01,SRC-jamshidi-2026-arxiv-2512-06556 -->
 - **[SAF-T1205: Persistent Tool Redefinition](../SAF-T1205/README.md)**: The defining event is a descriptor change after approval rather than cross-server semantic influence. <!-- SAF-TRACE: claims=SAF-T1301-C005; sources=SRC-jamshidi-2026-arxiv-2512-06556 -->
 
 Tool Name Collision is another adjacent boundary: its ambiguity arises from identical or similar registered names, while SAF-T1301 does not require a collision. No exact SAF catalog neighbor currently represents that collision-only behavior. <!-- SAF-TRACE: claims=SAF-T1301-C014; sources=SRC-clean-t1301-mcp-tools-draft,SRC-clean-t1301-unit42-shadowing -->

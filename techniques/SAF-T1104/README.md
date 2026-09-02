@@ -6,12 +6,15 @@
 - **Technique ID**: SAF-T1104
 - **Research Packet**: [research/techniques/SAF-T1104](../../research/techniques/SAF-T1104/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1104/traceability-ledger.yml)
-- **Documentation Status**: Stable
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Evidence Status**: Demonstrated
 - **Severity**: High
 - **Severity Rationale**: A successful invocation can inherit broad host, database, messaging, or workspace authority, but actual impact remains bounded by the tool identity and reachable systems. <!-- SAF-TRACE: claims=SAF-T1104-C019; sources=SRC-ghsa-3645-fxcv-hqr4,SRC-ghsa-g8r9-g2v8-jv6f,SRC-ghsa-898v-775g-777c,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 - **First Observed**: Not observed in a qualifying production incident; publicly demonstrated in controlled MCP research on 2025-04-07. <!-- SAF-TRACE: claims=SAF-T1104-C005,SAF-T1104-C013; sources=SRC-invariant-whatsapp-mcp-2025-04-07,SRC-cisa-kev-2026-09-01,SRC-nvd-cve-2025-32711 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1104 is consolidated into [SAF-T1302: Agentic Confused Deputy](../SAF-T1302/README.md). This page and its evidence packet remain available for provenance; use SAF-T1302 for new mappings. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Scope
 
@@ -203,7 +206,7 @@ The standalone analytic is maintained in [detection-rule.yml](detection-rule.yml
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite or co-occurring | Changes agent instructions; SAF-T1104 requires subsequent execution through authority broader than the task. <!-- SAF-TRACE: claims=SAF-T1104-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) | Prerequisite or co-occurring | Corrupts discovery metadata; SAF-T1104 covers the over-authorized trusted-tool call that follows. <!-- SAF-TRACE: claims=SAF-T1104-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Prerequisite or co-occurring | Corrupts discovery metadata; SAF-T1104 covers the over-authorized trusted-tool call that follows. <!-- SAF-TRACE: claims=SAF-T1104-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
 
 ## MITRE ATT&CK Mapping
 

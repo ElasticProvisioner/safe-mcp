@@ -1376,7 +1376,8 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
 
     model = load_yaml(root / "research" / "framework-model.yml", check)
     check.require(
-        model.get("version") == 1, "framework model: unsupported or missing version"
+        model.get("version") in {1, 2},
+        "framework model: unsupported or missing version",
     )
     model_records = records_by_id(
         model.get("techniques"), "technique_id", check, "framework technique"
@@ -1386,6 +1387,15 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
     )
     model_record = model_records.get(technique_id, {})
     if model_record:
+        if model.get("version") == 2:
+            framework_relationships = model_record.get("relationships") or []
+            related_ids = {
+                relationship.get("target")
+                for relationship in framework_relationships
+                if isinstance(relationship, dict) and relationship.get("target")
+            }
+        else:
+            related_ids = set(model_record.get("related_techniques") or [])
         check.require(
             model_record.get("name") == contract_name,
             "framework and contract names differ",
@@ -1413,10 +1423,10 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             "framework research_packet mismatch",
         )
         check.require(
-            neighbor_ids <= set(model_record.get("related_techniques") or []),
-            "framework related_techniques must include contract neighbors",
+            neighbor_ids <= related_ids,
+            "framework relationships must include contract neighbors",
         )
-        for related_id in model_record.get("related_techniques") or []:
+        for related_id in related_ids:
             check.require(
                 (root / "techniques" / related_id / "README.md").is_file(),
                 f"unknown related technique {related_id}",
