@@ -9,6 +9,11 @@ Use this template for SAF-MCP technique documentation.
 - Apply source-or-omit: cite every substantive externally verifiable statement
   inline, and link internal status or test statements to declared repository
   artifacts.
+- Keep ordinary rendered prose free of bare claim/source IDs. Use semantic
+  citation labels and append a same-line HTML comment containing
+  `SAF-TRACE: claims=SAF-T1234-C001; sources=SRC-source-id`.
+- Keep claim IDs visible in the Evidence Summary and source IDs visible in
+  References so reviewers have a compact audit index.
 - Prefer primary sources, standards, advisories, and peer-reviewed research.
 -->
 
@@ -131,10 +136,12 @@ Claim IDs and source IDs must match the technique research packet.
 
 Source-or-omit applies to the entire technique, not only this table. Every
 substantive paragraph, list item, table row, diagram, example, detection choice,
-and response action must expose a validated claim ID or link to a repository
-artifact declared in traceability-ledger.yml. Put unsupported research leads in
-that ledger with an omitted_from_publishable_technique disposition; do not keep
-them in publishable prose.
+and response action must carry a same-line hidden `SAF-TRACE` comment containing
+validated claim and source IDs, or link to a repository artifact declared in
+traceability-ledger.yml. Use semantic citation labels in the body. Put
+unsupported research leads in that ledger with an
+omitted_from_publishable_technique disposition; do not keep them in publishable
+prose.
 -->
 
 | Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |

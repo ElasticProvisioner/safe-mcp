@@ -187,6 +187,18 @@ example, analytic choice, and response action must expose a validated claim ID
 or link to a repository artifact declared in `traceability-ledger.yml`.
 Headings and table labels are structural rather than factual assertions.
 
+For new and substantively rewritten techniques, set
+`trace_format: hidden_html_v1`. Keep normal prose readable by placing claim and
+source joins in a same-line comment:
+
+```markdown
+Readable prose with a semantic [source title](URL). <!-- SAF-TRACE: claims=SAF-T1234-C001; sources=SRC-source-id -->
+```
+
+The rendered body hides the audit IDs, while the Evidence Summary and
+References expose compact reviewer indexes. The validator resolves every
+commented claim/source pair through the claim inventory and source manifest.
+
 Keep unverified research leads out of the technique. Record them in the
 technique's `traceability-ledger.yml` with their origin, attempted searches,
 consulted sources, exclusion reason, prohibited publishable wording, and

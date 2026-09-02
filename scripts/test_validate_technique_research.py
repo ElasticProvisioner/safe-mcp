@@ -504,6 +504,43 @@ class TechniqueResearchValidatorTests(unittest.TestCase):
             any("every detection component" in error for error in errors), errors
         )
 
+    def test_hidden_trace_preserves_linkage_without_rendered_ids(self) -> None:
+        readme_path = self.technique / "README.md"
+        readme = readme_path.read_text(encoding="utf-8").replace(
+            f"{self.technique_id}-C001 and SRC-test-source",
+            "Readable prose. "
+            f"<!-- SAF-TRACE: claims={self.technique_id}-C001; "
+            "sources=SRC-test-source -->",
+            1,
+        )
+        readme_path.write_text(readme, encoding="utf-8")
+        contract_path = self.packet / "technique-contract.yml"
+        contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
+        contract["trace_format"] = "hidden_html_v1"
+        self.dump(contract_path, contract)
+        self.assertEqual(
+            VALIDATOR.validate_technique(self.root, self.technique_id, strict=True), []
+        )
+
+    def test_hidden_trace_rejects_unrelated_source(self) -> None:
+        readme_path = self.technique / "README.md"
+        readme = readme_path.read_text(encoding="utf-8").replace(
+            f"{self.technique_id}-C001 and SRC-test-source",
+            "Readable prose. "
+            f"<!-- SAF-TRACE: claims={self.technique_id}-C001; "
+            "sources=SRC-unrelated -->",
+            1,
+        )
+        readme_path.write_text(readme, encoding="utf-8")
+        contract_path = self.packet / "technique-contract.yml"
+        contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))
+        contract["trace_format"] = "hidden_html_v1"
+        self.dump(contract_path, contract)
+        errors = VALIDATOR.validate_technique(self.root, self.technique_id, strict=True)
+        self.assertTrue(
+            any("does not support" in error for error in errors), errors
+        )
+
     def test_clean_room_requires_isolated_fresh_agent_attestation(self) -> None:
         contract_path = self.packet / "technique-contract.yml"
         contract = yaml.safe_load(contract_path.read_text(encoding="utf-8"))

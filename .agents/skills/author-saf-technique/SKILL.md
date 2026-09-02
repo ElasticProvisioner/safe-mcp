@@ -28,6 +28,11 @@ completely before any technique-specific file is opened. Clean-room work must
 use the isolated-input procedure and attestation defined there. If a fresh
 agent is requested or authorized, give it no inherited conversation history.
 
+Before drafting or rewriting publishable prose, read
+[references/readable-trace-format.md](references/readable-trace-format.md)
+completely. Use its hidden trace-comment format so rendered prose remains
+readable while every substantive unit retains its claim and source joins.
+
 ## Repository contract
 
 Treat these repository files as canonical:
@@ -62,6 +67,9 @@ repository documentation as part of the same authorized technique change.
   row, diagram, example, detection choice, and response action. Connect
   external propositions to a claim ID, source ID, and exact locator. Connect
   internal status, tests, and provenance to named repository artifacts.
+- Keep audit identifiers out of ordinary rendered prose. Use semantic citation
+  labels and same-line `SAF-TRACE` HTML comments; expose claim and source IDs
+  visibly only in the Evidence Summary, References, and research packet.
 - Maintain `traceability-ledger.yml`. Record unverified candidate claims and
   examples there with their origin, attempted searches, consulted sources,
   reason for exclusion, and an `omitted_from_publishable_technique`

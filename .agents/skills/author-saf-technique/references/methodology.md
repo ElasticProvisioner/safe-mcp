@@ -175,6 +175,13 @@ as context, limitations, table cells, detection guidance, and response
 procedures. In the Evidence Summary, expose the claim ID, source ID, evidence
 type, and limitation.
 
+Follow `readable-trace-format.md`. Keep ordinary rendered prose free of bare
+claim and source IDs. Use semantic citation labels and attach claim/source joins
+as same-line `SAF-TRACE` HTML comments. Set `trace_format: hidden_html_v1` in
+the contract. The Evidence Summary and References remain the visible audit
+indexes; hiding identifiers must not hide uncertainty, limitations, or source
+attribution.
+
 In the current-state material, include a concise **Known Breaches and
 Vulnerabilities** subsection. Present the selected examples in descending
 relevance and impact. For each, give the date, affected product or environment,
@@ -193,8 +200,10 @@ table row, diagram, code block, and analytic choice as a publishable unit.
 External units must expose at least one validated claim ID. Repository-derived
 units must link a local artifact declared in the traceability ledger. Structural
 headings and table labels are not propositions. A diagram or safe synthetic
-example must have an immediately adjacent trace statement. Delete unsupported
-content from the technique and record the omitted lead in the ledger.
+example must have an immediately adjacent traced explanation. The validator
+must resolve every hidden trace claim and source pair before the source-or-omit
+gate passes. Delete unsupported content from the technique and record the
+omitted lead in the ledger.
 
 ## 9. Make detection testable
 

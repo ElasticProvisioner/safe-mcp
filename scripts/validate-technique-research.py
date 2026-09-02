@@ -24,6 +24,15 @@ CLAIM_REFERENCE = re.compile(r"SAF-T[1-9][0-9]{3}-C[0-9]{3}")
 SOURCE_REFERENCE = re.compile(r"SRC-[a-z0-9][a-z0-9._-]*")
 EXCLUSION_ID = re.compile(r"SAF-T[1-9][0-9]{3}-X[0-9]{3}$")
 MARKDOWN_LINK = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+TRACE_COMMENT_START = re.compile(r"<!--\s*SAF-TRACE:")
+TRACE_COMMENT = re.compile(
+    rf"<!--\s*SAF-TRACE:\s*"
+    rf"claims=(?P<claims>{CLAIM_REFERENCE.pattern}(?:\s*,\s*{CLAIM_REFERENCE.pattern})*)"
+    rf"\s*;\s*"
+    rf"sources=(?P<sources>{SOURCE_REFERENCE.pattern}(?:\s*,\s*{SOURCE_REFERENCE.pattern})*)"
+    rf"\s*-->"
+)
+HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 
 CLAIM_CLASSES = {
     "protocol_normative",
@@ -161,6 +170,31 @@ def declared_local_link(
         if repository_path in declared_paths:
             return True
     return False
+
+
+def visible_claim_lines_outside_evidence_summary(readme: str) -> list[int]:
+    """Find rendered claim IDs outside the intentionally visible audit table."""
+
+    without_comments = HTML_COMMENT.sub(
+        lambda match: "\n" * match.group(0).count("\n"), readme
+    )
+    failures: list[int] = []
+    current_section = ""
+    current_subsection = ""
+    for index, line in enumerate(without_comments.splitlines()):
+        stripped = line.strip()
+        if stripped.startswith("## "):
+            current_section = stripped
+            current_subsection = ""
+        elif stripped.startswith("### "):
+            current_subsection = stripped
+        in_evidence_summary = (
+            current_section == "## Evidence and Current State"
+            and current_subsection == "### Evidence Summary"
+        )
+        if not in_evidence_summary and CLAIM_REFERENCE.search(line):
+            failures.append(index + 1)
+    return failures
 
 
 def untraced_publishable_lines(
@@ -447,6 +481,11 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
         clean_room.get("generation_mode") == generation_mode,
         "clean-room attestation and contract generation modes differ",
     )
+    trace_format = contract.get("trace_format", "legacy_inline")
+    check.require(
+        trace_format in {"legacy_inline", "hidden_html_v1"},
+        "contract: trace_format must be legacy_inline or hidden_html_v1",
+    )
     target = clean_room.get("target") or {}
     check.require(
         isinstance(target, dict) and target.get("id") == technique_id,
@@ -623,6 +662,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
     claims = records_by_id(inventory.get("claims"), "id", check, "claim")
     check.require(bool(claims), "claim inventory must contain at least one claim")
     referenced_sources: set[str] = set()
+    claim_source_ids: dict[str, set[str]] = {}
     for claim_id, claim in claims.items():
         check.require(
             bool(CLAIM_ID.fullmatch(claim_id)), f"invalid claim ID: {claim_id}"
@@ -645,6 +685,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
         check.require(
             nonempty_list(sources), f"{claim_id}: at least one source required"
         )
+        claim_source_ids[claim_id] = set()
         for relation in sources if isinstance(sources, list) else []:
             check.require(
                 isinstance(relation, dict),
@@ -656,6 +697,7 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
             check.require(bool(source_id), f"{claim_id}: source_id required")
             if source_id:
                 referenced_sources.add(str(source_id))
+                claim_source_ids[claim_id].add(str(source_id))
             check.require(
                 relation.get("support") in {"direct", "corroborating", "context"},
                 f"{claim_id}: invalid support classification",
@@ -695,6 +737,39 @@ def validate_technique(root: Path, technique_id: str, strict: bool = True) -> li
 
     consulted = set(coverage.get("sources_consulted") or [])
     cited = set(coverage.get("sources_cited") or [])
+    trace_comments = list(TRACE_COMMENT.finditer(readme))
+    check.require(
+        len(trace_comments) == len(TRACE_COMMENT_START.findall(readme)),
+        "README contains a malformed SAF-TRACE comment",
+    )
+    if trace_format == "hidden_html_v1" and strict:
+        check.require(
+            bool(trace_comments),
+            "hidden_html_v1 requires at least one SAF-TRACE comment",
+        )
+        for line_number in visible_claim_lines_outside_evidence_summary(readme):
+            check.errors.append(
+                f"README line {line_number} exposes a claim ID outside the "
+                "Evidence Summary; use a same-line SAF-TRACE comment"
+            )
+    for trace in trace_comments:
+        trace_claims = set(CLAIM_REFERENCE.findall(trace.group("claims")))
+        trace_sources = set(SOURCE_REFERENCE.findall(trace.group("sources")))
+        check.require(
+            trace_claims <= set(claims),
+            "SAF-TRACE comment references a claim absent from claim-inventory.yml",
+        )
+        supporting_sources: set[str] = set()
+        for claim_id in trace_claims:
+            supporting_sources.update(claim_source_ids.get(claim_id, set()))
+        check.require(
+            trace_sources <= supporting_sources,
+            "SAF-TRACE source does not support any of the comment's traced claims",
+        )
+        check.require(
+            trace_sources <= cited,
+            "SAF-TRACE comment references a source absent from sources_cited",
+        )
     if generation_mode == "clean_room":
         independently_opened = set(
             (clean_room.get("independent_research") or {}).get(
