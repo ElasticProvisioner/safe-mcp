@@ -1,0 +1,532 @@
+version: 1
+remote_review_record: &remote_review_record
+  status: remote_reviewed_not_archived
+  reason: Public authority source was reviewed directly; no third-party source copy is redistributed in this clean-room bundle.
+  review_evidence:
+    method: direct authority URL review
+    locators_recorded: true
+sources:
+  - id: SRC-nist-covert-channel
+    title: NIST CSRC Glossary - Covert Channel
+    publisher: National Institute of Standards and Technology
+    authors: [National Institute of Standards and Technology]
+    version_or_date: current entry reviewed 2026-09-02
+    source_class: protocol_or_standard
+    official_url: https://csrc.nist.gov/glossary/term/covert_channel
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed the glossary definition and attributed source authorities; paraphrase only.
+    locators: ["Definition and source attribution, lines 113-125"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-spec-2025-11-25
+    title: Model Context Protocol Specification 2025-11-25
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed architecture, capability, and security-consideration sections; used for orientation but not cited in the README.
+    locators: ["Architecture and capability overview, lines 60-107", "Security principles, lines 124-164"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-tools-2025-11-25
+    title: MCP Server Tools Specification
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed tool-result schemas, output validation, and client/server security guidance.
+    locators: ["Human control, lines 78-90", "Tool Result, lines 173-203 and 273-439", "Security, lines 546-557"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-resources-2025-11-25
+    title: MCP Server Resources Specification
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/resources
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed resource content and client-fetch semantics; retained as consulted context, not a cited source.
+    locators: ["Resource control, lines 76-87", "Resource reads, lines 187-214", "Content and HTTPS fetches, lines 326-419"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-transports-2025-11-25
+    title: MCP Transports Specification
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed transport framing to test whether the technique belonged below response semantics; it did not.
+    locators: ["Message framing and stdio, lines 68-87", "SSE messages, lines 139-167"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-security-2026-07-28
+    title: MCP Security Best Practices
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed current MCP security guidance on auditability, egress, URL validation, sandboxing, and least privilege.
+    locators: ["Purpose, lines 100-124", "SSRF and egress controls, lines 256-314", "Local server restrictions, lines 361-418", "URL validation, lines 423-464"]
+    archive: *remote_review_record
+
+  - id: SRC-rfc4648
+    title: RFC 4648 - The Base16, Base32, and Base64 Data Encodings
+    publisher: Internet Engineering Task Force
+    authors: [Simon Josefsson]
+    version_or_date: October 2006
+    source_class: protocol_or_standard
+    official_url: https://datatracker.ietf.org/doc/html/rfc4648
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed canonicalization, non-alphabet-character, covert-channel, and security-consideration text; paraphrase only.
+    locators: ["Section 3.3, lines 222-247", "Section 12, lines 798-827", "Author and rights, lines 876-990"]
+    archive: *remote_review_record
+
+  - id: SRC-rfc3552
+    title: RFC 3552 - Guidelines for Writing RFC Text on Security Considerations
+    publisher: Internet Engineering Task Force
+    authors: [Eric Rescorla, Bernard Korver]
+    version_or_date: July 2003
+    source_class: protocol_or_standard
+    official_url: https://datatracker.ietf.org/doc/html/rfc3552
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Checked a suspected covert-channel locator; it addressed a different subject and was rejected.
+    locators: ["Section 3.4 reviewed and found nonresponsive to the target mechanism"]
+    archive: *remote_review_record
+
+  - id: SRC-attack-t1132
+    title: MITRE ATT&CK T1132 - Data Encoding
+    publisher: The MITRE Corporation
+    authors: [MITRE ATT&CK team, Itzik Kotler]
+    version_or_date: version 1.3 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1132/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed definition, tactic, examples, version, and contributor credit.
+    locators: ["Version and contributor, lines 15-22", "Definition, lines 23-42", "Detection references, lines 63-69"]
+    archive: *remote_review_record
+
+  - id: SRC-attack-t1001
+    title: MITRE ATT&CK T1001 - Data Obfuscation
+    publisher: The MITRE Corporation
+    authors: [MITRE ATT&CK team]
+    version_or_date: version 1.2 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1001/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed definition, C2 tactic relationship, sub-techniques, and detection references.
+    locators: ["Version and definition, lines 15-41", "Detection references, lines 68-74"]
+    archive: *remote_review_record
+
+  - id: SRC-attack-t1041
+    title: MITRE ATT&CK T1041 - Exfiltration Over C2 Channel
+    publisher: The MITRE Corporation
+    authors: [MITRE ATT&CK team, William Cain]
+    version_or_date: version 2.3 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1041/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed to separate exfiltration outcome from the response-carrier C2 mechanism; not cited.
+    locators: ["Version, contributor, definition, and tactic, lines 15-37"]
+    archive: *remote_review_record
+
+  - id: SRC-attack-det0108
+    title: MITRE ATT&CK DET0108 - Detection Strategy for Data Encoding
+    publisher: The MITRE Corporation
+    authors: [MITRE ATT&CK team]
+    version_or_date: version 1.0 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/detectionstrategies/DET0108/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed network-content, encoding, entropy, baseline, and allowlist analytic guidance.
+    locators: ["Detection strategy and analytic, lines 17-53"]
+    archive: *remote_review_record
+
+  - id: SRC-openai-url-exfil-2025
+    title: Preventing URL-Based Data Exfiltration in Language-Model Agents
+    publisher: OpenAI
+    authors: [Adrian Spanu, Thomas Shadwell]
+    version_or_date: "2025-01-20"
+    source_class: research
+    official_url: https://cdn.openai.com/pdf/dd8e7875-e606-42b4-80a1-f824e4e11cf4/prevent-url-data-exfil.pdf
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority PDF review
+    review_status: opened_reviewed
+    review_notes: Reviewed threat model, experiments, dynamic-resource policy, results, and limitations; paraphrase only.
+    locators: ["Abstract and mechanism, page 1", "Threat model, pages 1-2", "Policy and experiments, pages 3-7", "Limitations, pages 7-8"]
+    archive: *remote_review_record
+
+  - id: SRC-willison-worst-that-can-happen
+    title: The Dual LLM Pattern and URL-Based Exfiltration Discussion
+    publisher: Simon Willison's Weblog
+    authors: [Simon Willison]
+    version_or_date: "2023-04-14"
+    source_class: research
+    official_url: https://simonwillison.net/2023/Apr/14/worst-that-can-happen/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed early link and automatic-image response exfiltration analysis and limitations; not cited after stronger direct demonstrations were selected.
+    locators: ["Response link and image analysis, lines 74-102", "Protection limits, lines 105-120"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-webpilot
+    title: ChatGPT WebPilot - Data Exfiltration via Markdown Injection
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2023-05-16"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2023/chatgpt-webpilot-data-exfil-via-markdown-injection/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed the original controlled demonstration, response carrier, automatic request, and limitations.
+    locators: ["Summary, mechanism, and end-to-end demonstration, lines 12-39"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-spaiware
+    title: ChatGPT macOS App - Persistent Data Exfiltration
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2024-09-20"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2024/chatgpt-macos-app-persistent-data-exfiltration/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed original persistent response-channel demonstration, constraints, vendor fix, and disclosure timeline.
+    locators: ["Summary and mechanism, lines 11-71", "Disclosure and fixed version, lines 77-83"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-m365-ascii
+    title: Microsoft 365 Copilot Prompt Injection, Tool Invocation, and ASCII Smuggling
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2024-08-26"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2024/m365-copilot-prompt-injection-tool-invocation-and-data-exfil-using-ascii-smuggling/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed controlled response-link demonstration, hidden Unicode mechanism, click prerequisite, fix, and disclosure timeline.
+    locators: ["Attack chain, lines 11-22", "Response mechanism, lines 53-75", "Fix and disclosure, lines 79-112"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-unicode-tags
+    title: Hiding and Finding Text with Unicode Tags
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2024-01-14"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2024/hiding-and-finding-text-with-unicode-tags/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed an implementation-oriented Unicode-tag explanation, then preferred the Unicode standard for normative claims.
+    locators: ["Mechanism, lines 10-18", "Detection code point discussion, lines 35-55"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-trust-no-ai
+    title: Trust No AI - Prompt Injection Along CIA Security Triad
+    publisher: arXiv
+    authors: [Johann Rehberger]
+    version_or_date: arXiv 2412.06090v1, 2024-12-08
+    source_class: research
+    official_url: https://arxiv.org/pdf/2412.06090
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct author manuscript review
+    review_status: opened_reviewed
+    review_notes: Reviewed synthesis of response image, link, persistent-exfiltration, Unicode, and terminal-output risks; original demonstrations were used for publishable claims.
+    locators: ["Prompt injection boundary, pages 1-2", "Response links and images, pages 2-3", "Persistent exfiltration and hidden output, pages 3-4"]
+    archive: *remote_review_record
+
+  - id: SRC-nassi-promptware-kill-chain
+    title: The Promptware Kill Chain
+    publisher: arXiv
+    authors: [Ben Nassi, Bruce Schneier, Oleg Brodt]
+    version_or_date: arXiv 2601.09625v1, 2026-01-14
+    source_class: research
+    official_url: https://arxiv.org/html/2601.09625v1
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct author manuscript review
+    review_status: opened_reviewed
+    review_notes: Reviewed persistence and agent C2 taxonomy, including SpAIware discussion and MCP-relevant data flows.
+    locators: ["Abstract, lines 44-48", "Indirect injection, lines 74-82", "Persistence and C2, lines 109-145"]
+    archive: *remote_review_record
+
+  - id: SRC-cursor-cve-research
+    title: Cursor Data Exfiltration with Mermaid
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2025-08-04"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2025/cursor-data-exfiltration-with-mermaid/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed original end-to-end demonstration and the direct link identifying the exact GitHub advisory; that provenance authorized review of the GitHub artifact.
+    locators: ["Mechanism and MCP entry path, lines 12-43", "Demonstration, lines 46-90", "Fix and advisory identifier, lines 99-106"]
+    archive: *remote_review_record
+
+  - id: SRC-cursor-cve-2025-54132
+    title: GHSA-43wj-mwcc-x93p - Indirect Prompt Injection Leading to Data Exfiltration via Mermaid
+    publisher: Cursor
+    authors: [hmwildermuth, Johann Rehberger, MaccariTA]
+    version_or_date: published 2025-08-01
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-43wj-mwcc-x93p
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: exact GitHub advisory opened only after direct non-GitHub researcher source identified the artifact
+    review_status: opened_reviewed
+    review_notes: Maintainer advisory reviewed for affected version, patched version, severity, impact, remediation, and credits; discovery provenance is SRC-cursor-cve-research.
+    locators: ["Summary, affected package, impact, remediation, lines 132-161", "Severity and identifier", "Credits, lines 235-238"]
+    archive: *remote_review_record
+
+  - id: SRC-cursor-changelog-1-0
+    title: Cursor 1.0 Changelog
+    publisher: Cursor
+    authors: [Cursor product team]
+    version_or_date: Cursor 1.0
+    source_class: implementation_artifact
+    official_url: https://cursor.com/changelog/1-0
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct vendor URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed vendor confirmation of memories, MCP, and Mermaid-related response features; advisory was more probative and this source was not cited.
+    locators: ["Release summary, lines 8-16", "Feature descriptions, lines 36-50"]
+    archive: *remote_review_record
+
+  - id: SRC-cursor-changelog-1-3
+    title: Cursor 1.3 Changelog
+    publisher: Cursor
+    authors: [Cursor product team]
+    version_or_date: "2025-07-29"
+    source_class: implementation_artifact
+    official_url: https://cursor.com/changelog/1-3
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct vendor URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed the vendor release record for version 1.3; it did not independently describe the exact vulnerability, so the advisory controls.
+    locators: ["Release date and feature record, lines 8-54"]
+    archive: *remote_review_record
+
+  - id: SRC-cve-2025-32711
+    title: CVE-2025-32711 Record
+    publisher: CVE Program
+    authors: [Microsoft, CISA ADP]
+    version_or_date: CVE record reviewed 2026-09-02
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-32711
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct CVE authority API review
+    review_status: opened_reviewed
+    review_notes: Reviewed AI command-injection information-disclosure record and CVSS 9.3 metadata; the record did not establish the response-carrier mechanism and was not selected.
+    locators: ["CNA description, affected product, CVSS, and references in CVE JSON"]
+    archive: *remote_review_record
+
+  - id: SRC-cisa-kev-catalog
+    title: CISA Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [Cybersecurity and Infrastructure Security Agency]
+    version_or_date: access attempted 2026-09-02
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL access review
+    review_status: opened_reviewed
+    review_notes: The authority page and direct JSON endpoint returned access errors in this environment; no catalog claim was made.
+    locators: ["HTTP access-error result reviewed on 2026-09-02"]
+    archive: *remote_review_record
+
+  - id: SRC-nvd-cve-2025-54132
+    title: NVD Record for CVE-2025-54132
+    publisher: National Institute of Standards and Technology
+    authors: [National Vulnerability Database team]
+    version_or_date: access attempted 2026-09-02
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-54132
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL access review
+    review_status: opened_reviewed
+    review_notes: The page did not expose substantive record text through the available reader; the maintainer advisory was used instead.
+    locators: ["Non-substantive client-rendered access result reviewed on 2026-09-02"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-slack-mcp
+    title: Anthropic Slack MCP Server Data Leakage
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2025-06-24"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2025/security-advisory-anthropic-slack-mcp-server-data-leakage/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed Slack link-unfurl chain and direct links to exact source artifacts; classified as adjacent because the data carrier is an explicit outbound tool argument rather than the agent response.
+    locators: ["Mechanism, lines 11-64", "Demonstration and disclosure, lines 77-100", "Mitigation, lines 114-140"]
+    archive: *remote_review_record
+
+  - id: SRC-slack-unfurl-docs
+    title: Slack Developer Documentation - Unfurling Links in Messages
+    publisher: Slack
+    authors: [Slack Developer Documentation team]
+    version_or_date: current page reviewed 2026-09-02
+    source_class: protocol_or_standard
+    official_url: https://docs.slack.dev/messaging/unfurling-links-in-messages/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct vendor URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed default classic-unfurl behavior to assess the adjacent Slack MCP candidate; not used in the README.
+    locators: ["Default unfurl behavior, lines 64-71"]
+    archive: *remote_review_record
+
+  - id: SRC-slack-mcp-source
+    title: Archived MCP Slack Server Source
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: archived repository main branch reviewed 2026-09-02
+    source_class: implementation_artifact
+    official_url: https://github.com/modelcontextprotocol/servers-archived/blob/main/src/slack/index.ts
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: exact GitHub artifact opened only after direct non-GitHub researcher source identified the file
+    review_status: opened_reviewed
+    review_notes: Reviewed exact postMessage and tool-argument implementation identified by SRC-rehberger-slack-mcp; candidate remained adjacent.
+    locators: ["postMessage implementation, lines 1829-1875", "Tool text argument path, lines 2092-2117"]
+    archive: *remote_review_record
+
+  - id: SRC-mcp-servers-archived-security
+    title: Archived MCP Servers Security Policy
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol contributors]
+    version_or_date: archived repository main branch reviewed 2026-09-02
+    source_class: implementation_artifact
+    official_url: https://github.com/modelcontextprotocol/servers-archived/blob/main/SECURITY.md
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: exact GitHub artifact opened only after direct non-GitHub researcher source identified the repository
+    review_status: opened_reviewed
+    review_notes: Reviewed maintenance status for the adjacent Slack server candidate; not used in publishable technique claims.
+    locators: ["Archived and unmaintained status, lines 196-211"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-mcp-metadata
+    title: Model Context Protocol Security Risks and Exploits
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2025-05-02"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2025/model-context-protocol-security-risks-and-exploits/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed result injection and hidden tool-metadata examples; metadata poisoning was excluded because it occurs at discovery/request semantics rather than the response carrier.
+    locators: ["Tool-result and metadata discussion, lines 36-39", "Hidden Unicode metadata, lines 131-176"]
+    archive: *remote_review_record
+
+  - id: SRC-rehberger-agent-commander
+    title: Agent Commander - Your Agent Works for Me Now
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2026-03-16"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2026/agent-commander-your-agent-works-for-me-now/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct researcher URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed agent C2 and response-suppression research; excluded as an end-to-end example because the reviewed material did not establish a concealed carrier in the response itself.
+    locators: ["Agent C2, lines 23-30", "Response suppression and objectives, lines 54-88", "Detection, lines 133-145"]
+    archive: *remote_review_record
+
+  - id: SRC-unicode-tags-chart
+    title: Unicode Tags Code Chart
+    publisher: Unicode Consortium
+    authors: [Unicode Consortium]
+    version_or_date: Unicode Standard 17.0
+    source_class: protocol_or_standard
+    official_url: https://www.unicode.org/charts/PDF/UE0000.pdf
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority PDF review
+    review_status: opened_reviewed
+    review_notes: Reviewed code-point assignments and restrictive reproduction notice; UTS 51 was preferred for the publishable rendering claim.
+    locators: ["Tags block U+E0000-U+E007F and character assignments"]
+    archive: *remote_review_record
+
+  - id: SRC-unicode-tr51-17
+    title: Unicode Technical Standard 51 - Unicode Emoji
+    publisher: Unicode Consortium
+    authors: [Mark Davis, Ned Holbrook]
+    version_or_date: version 17.0, 2025-09-04
+    source_class: protocol_or_standard
+    official_url: https://unicode.org/reports/tr51/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: direct authority URL review
+    review_status: opened_reviewed
+    review_notes: Reviewed stable UTS status, tag ranges, valid sequence rules, and tag-unaware rendering; paraphrase only.
+    locators: ["Editors, version, and status, lines 3-23", "ED-14a, lines 295-308", "Handling Tag Characters, lines 839-865", "Annex C, lines 1103-1133"]
+    archive: *remote_review_record

@@ -1,0 +1,132 @@
+version: 1
+technique_id: SAF-T1110
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1110/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1110/technique-contract.yml
+  supports: Internal scope, name, tactic, completion metadata, and reconciled framework
+    boundaries.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1110/source-coverage.yml
+  supports: Search coverage, production-evidence gap, selections, exclusions, and
+    saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1110/quality-review.yml
+  supports: Validation commands, test results, review date, and authorship.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1110/detection-rule.yml
+  supports: The repository detection analytic.
+- id: LOCAL-test-data
+  path: research/techniques/SAF-T1110/test-logs.json
+  supports: Synthetic positive, negative, edge, and documented false-positive cases.
+- id: LOCAL-test-script
+  path: research/techniques/SAF-T1110/test_detection_rule.py
+  supports: Deterministic implementation and assertion of analytic behavior.
+- id: LOCAL-detection-test
+  path: research/techniques/SAF-T1110/validation/detection-test.txt
+  supports: Captured successful detection test output.
+- id: LOCAL-strict-validator
+  path: research/techniques/SAF-T1110/validation/strict-validator.txt
+  supports: Captured isolated strict validation output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1110-X001
+  candidate: A verified widespread production compromise caused by audio prompt injection.
+  origin: Current incident-search objective.
+  attempted_searches:
+  - CISA and authoritative-domain incident queries for multimodal, audio, image, prompt
+    injection, and breach
+  consulted_source_ids: []
+  reason: No directly reviewed authoritative report established such an incident.
+  prohibited_publishable_text:
+  - confirmed widespread production compromise through audio prompt injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X002
+  candidate: Direct ATT&CK mapping to T1204.003 based on the word image.
+  origin: Nearest-framework review.
+  attempted_searches:
+  - Direct review of MITRE ATT&CK T1204.003
+  consulted_source_ids:
+  - SRC-mitre-attack-t1204-003
+  reason: The ATT&CK sub-technique concerns virtual machine and container images,
+    not pixel-based media.
+  prohibited_publishable_text:
+  - MITRE ATT&CK T1204.003 directly maps pixel-image prompt injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X003
+  candidate: CVE-2024-45989 as a direct image-input exploit.
+  origin: NVD current vulnerability search.
+  attempted_searches:
+  - Direct NVD review of CVE-2024-45989
+  consulted_source_ids:
+  - SRC-nvd-cve-2024-45989
+  reason: The image is an output-rendering exfiltration sink, not an attacker-controlled
+    multimodal model input.
+  prohibited_publishable_text:
+  - CVE-2024-45989 proves malicious image input exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X004
+  candidate: CVE-2025-58357 as a direct modality-specific model exploit.
+  origin: NVD current vulnerability search.
+  attempted_searches:
+  - Direct NVD review of CVE-2025-58357
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-58357
+  reason: The advisory describes MCP client content injection/XSS without establishing
+    image or audio interpretation.
+  prohibited_publishable_text:
+  - CVE-2025-58357 proves audio or image model injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X005
+  candidate: Universal susceptibility across multimodal models.
+  origin: Cross-study comparison.
+  attempted_searches:
+  - Transfer and limitation review in Image Hijacks and AudioHijack
+  consulted_source_ids:
+  - SRC-bailey-image-hijacks-2024
+  - SRC-chen-audiohijack-2026
+  reason: Transfer and success vary by model, optimization access, and environment.
+  prohibited_publishable_text:
+  - all tested models are universally vulnerable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X006
+  candidate: Guaranteed human imperceptibility of adversarial media.
+  origin: Demonstration claims and challenge review.
+  attempted_searches:
+  - Threat-model and limitation review across selected image/audio studies
+  consulted_source_ids:
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-chen-audiohijack-2026
+  - SRC-liu-piggybacking-2026
+  reason: Perceptual assessments and physical conditions are bounded and study-specific.
+  prohibited_publishable_text:
+  - the perturbations are always imperceptible
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1110-X007
+  candidate: Complete prevention through input filtering.
+  origin: Detection and defense review.
+  attempted_searches:
+  - OpenAI source-sink guidance and multimodal guard/ambient-defense evaluations
+  consulted_source_ids:
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-webagentguard-2026
+  - SRC-promptshield-home-2026
+  reason: Contextual attacks, adaptive evasion, and false positives prevent a complete-prevention
+    claim.
+  prohibited_publishable_text:
+  - input filtering completely prevents multimodal prompt injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,83 @@
+version: 1
+technique_id: SAF-T1505
+name: In-Memory Secret Extraction
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Obtain authentication material or other secrets resident in an
+  MCP or agentic runtime's live process state without authorization.
+scope:
+  security_boundary: The boundary separating secrets held by an MCP host, agent runtime,
+    or server process from a user session, tool, child MCP server, sandboxed extension,
+    or remote server that is not authorized to receive them.
+  in_scope:
+  - Reading secrets from process-wide environment state across user sessions.
+  - Resolving attacker-controlled references against a process environment.
+  - Inheriting secret-bearing parent environment state into an untrusted MCP subprocess.
+  - Immediate unauthorized acquisition of the resulting secret material.
+  out_of_scope:
+  - Initial prompt injection or malicious-package delivery that only creates the opportunity.
+  - Reading secrets solely from persistent files, keychains, vaults, databases, or
+    network metadata.
+  - Arbitrary code execution that does not establish access to live secret state.
+  - Follow-on network exfiltration, token replay, privilege escalation, persistence,
+    or impact.
+  affected_components:
+  - MCP host and agent runtime
+  - MCP client-side server configuration and validation
+  - Local MCP server subprocess launcher
+  - Multi-user agent session state
+  - Sandboxed MCP server extensions
+nearest_neighbors:
+- technique_id: SAF-T1502
+  distinction: File-Based Credential Harvest reads credential-bearing files, while
+    SAF-T1505 is limited to live runtime state; vaults and databases remain outside
+    this direct neighbor join.
+- technique_id: SAF-T1305
+  distinction: Host OS Priv-Esc (RCE) can enable SAF-T1505, but code execution is not
+    secret extraction unless live secret material is actually reached.
+- technique_id: SAF-T1911
+  distinction: Parameter Exfiltration begins after acquisition and transfers the value
+    through outbound tool parameters; SAF-T1505 ends at unauthorized acquisition.
+required_evidence:
+- Establish that an MCP or agent process can hold credentials in live environment
+  or runtime state.
+- Establish at least one complete controlled extraction across the defined boundary.
+- Search separately for production breaches, direct vulnerabilities, demonstrations,
+  and exploitation status.
+- Validate affected and remediated versions for selected vulnerabilities or preserve
+  an explicit gap.
+- Establish telemetry and constraints for a behavior-based analytic without recording
+  secret values.
+- Attempt to falsify directness by checking persistent-file, code-execution, prompt-injection,
+  and exfiltration neighbors.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP server-configuration validation events with timestamp, actor, session, transport,
+    destination host, variable-reference names, and whether input came from an untrusted
+    user.
+  - MCP subprocess-start events with timestamp, parent and child identity, package
+    or command trust, inherited environment-variable names, and allowlist decision;
+    values must be redacted.
+  - Session-state credential access events with session owner, requesting session,
+    secret identifier, and authorization result when available.
+safe_example_constraints:
+- Use inert example.invalid destinations and placeholder secret identifiers.
+- Record environment-variable names only; never record values or live credentials.
+- Do not reproduce advisory payloads, shell commands, exploit code, or destructive
+  actions.
+completion_evidence:
+- Every substantive publishable unit is joined to a validated claim and reviewed source.
+- All unselected or unsupported candidates are omitted and recorded in the exclusion
+  ledger.
+- The five research passes and two consecutive no-change saturation passes are recorded.
+- Positive, negative, boundary, malformed, and expected false-positive detector cases
+  pass.
+- Publication-rights, safe-publication, framework-alignment, and clean-room gates
+  pass.

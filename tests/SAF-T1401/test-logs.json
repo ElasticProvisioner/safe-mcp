@@ -1,0 +1,56 @@
+[
+  {
+    "name": "positive_unresolved_collision",
+    "class": "positive",
+    "expected": true,
+    "event": {"action": "register", "collision": true, "disambiguated": false, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "positive_unauthorized_global_mutation",
+    "class": "positive",
+    "expected": true,
+    "event": {"action": "mutate", "object": {"scope": "global"}, "actor": {"is_admin": false}, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "positive_untrusted_winner",
+    "class": "positive",
+    "expected": true,
+    "event": {"action": "resolve", "collision": true, "winner": {"source": "lab.example", "trust": "untrusted"}, "competitor": {"source": "trusted.example", "trust": "trusted"}, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "negative_disambiguated_collision",
+    "class": "negative_or_boundary",
+    "expected": false,
+    "event": {"action": "register", "collision": true, "disambiguated": true, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "negative_admin_global_mutation",
+    "class": "negative_or_boundary",
+    "expected": false,
+    "event": {"action": "mutate", "object": {"scope": "global"}, "actor": {"is_admin": true}, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "negative_approved_untrusted_winner",
+    "class": "negative_or_boundary",
+    "expected": false,
+    "event": {"action": "resolve", "collision": true, "winner": {"trust": "untrusted"}, "competitor": {"trust": "trusted"}, "outcome": "success", "change": {"approved": true}}
+  },
+  {
+    "name": "boundary_no_trusted_competitor",
+    "class": "negative_or_boundary",
+    "expected": false,
+    "event": {"action": "resolve", "collision": true, "winner": {"trust": "untrusted"}, "competitor": {"trust": "untrusted"}, "outcome": "success", "change": {"approved": false}}
+  },
+  {
+    "name": "malformed_missing_action",
+    "class": "malformed",
+    "expected": false,
+    "event": {"collision": true, "winner": "unexpected-scalar", "change": {"approved": false}}
+  },
+  {
+    "name": "expected_false_positive_planned_migration_without_approval_record",
+    "class": "expected_false_positive",
+    "expected": true,
+    "event": {"action": "register", "collision": true, "disambiguated": false, "outcome": "success", "change": {"approved": false}, "maintenance": {"type": "planned_migration"}}
+  }
+]

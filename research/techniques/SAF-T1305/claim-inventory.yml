@@ -1,0 +1,294 @@
+version: 1
+technique_id: SAF-T1305
+claims:
+  - id: SAF-T1305-C001
+    statement: MCP uses a host-client-server architecture in which the host manages clients and security decisions and servers may be local processes or remote services.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2025-06-18
+        support: direct
+        exact_locators: ["Architecture: Core Components, Host, Clients, Servers; lines 55-106 in reviewed rendering"]
+    corroboration: The current specification separately identifies hosts, clients, servers, and tool capabilities.
+    limitations: [The architecture does not define a particular product's OS privilege model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C002
+    statement: In MCP stdio transport, the client launches the MCP server as a subprocess; Streamable HTTP servers run as independent processes.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-transports-2025-06-18
+        support: direct
+        exact_locators: ["stdio lines 77-86; Streamable HTTP lines 91-95"]
+    corroboration: The architecture permits local-process and remote-service servers.
+    limitations: [The specification does not require a particular OS user or sandbox.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C003
+    statement: Public evidence demonstrates that flaws in MCP-connected components can convert lower-trust MCP-adjacent input into arbitrary code execution under a host-side process account.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: ["Who is affected, lines 155-161; trigger and execution lines 188-211; summary lines 342-344"]
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: corroborating
+        exact_locators: ["Executive Summary lines 23-33; Practical Risks and Demo lines 110-124"]
+      - source_id: SRC-zdi-cve-2026-0758
+        support: corroborating
+        exact_locators: ["Vulnerability Details lines 29-32"]
+    corroboration: Independent research teams documented distinct client, proxy, and server paths reaching host execution.
+    limitations: [No reviewed source establishes that every instance reaches root or SYSTEM., No selected source documents a qualifying production victim incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C004
+    statement: CVE-2025-6514 affected mcp-remote 0.0.5 through 0.1.15, enabled crafted authorization metadata to cause host execution, and was fixed in 0.1.16; full command parameters were demonstrated on Windows and narrower executable launch on macOS and Linux.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: ["Byline and summary lines 139-160; platform limitation lines 160-161; mitigation lines 169-174; trigger lines 204-211"]
+    corroboration: JFrog's advisory record independently lists affected versions, CVE, discoverer, and root cause.
+    limitations: [The source reports a controlled proof, not exploitation against a production victim., Non-Windows parameter control was limited in the reviewed demonstration.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C005
+    statement: CVE-2025-49596 allowed browser-originated unauthenticated requests to an MCP Inspector proxy to launch arbitrary commands, and version 0.14.1 added session-token and origin protections.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: ["Executive Summary lines 23-33; Demo lines 110-124; Fix lines 126-141; Responsible Disclosure lines 147-153"]
+    corroboration: The article identifies the assigned CVE and credits the responding Anthropic Security Team.
+    limitations: [The source documents a controlled demonstration and exposed instances, not a confirmed production compromise.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C006
+    statement: CVE-2026-5059 is an unauthenticated command-injection vulnerability in aws-mcp-server that can execute code in the MCP server context; ZDI disclosed it as a zero-day after vendor rejection and documented no patch.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-zdi-aws-26-245
+        support: direct
+        exact_locators: ["Advisory metadata lines 8-20; Vulnerability Details lines 29-33; Additional Details lines 34-48"]
+    corroboration: The advisory supplies CVE-2026-5059, CVSS vector, disclosure timeline, and named researchers.
+    limitations: [The advisory does not document in-the-wild exploitation., The advisory does not provide a fixed version.]
+    conflicts: [The vendor rejected the vulnerability according to ZDI; the packet preserves that conflict.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C007
+    statement: CVE-2026-0758 lets a low-privileged local actor inject the shortcutName parameter and execute arbitrary code in the mcp-server-siri-shortcuts service-account context.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-zdi-cve-2026-0758
+        support: direct
+        exact_locators: ["Advisory metadata lines 8-20; Vulnerability Details lines 29-32; disclosure and credit lines 33-50"]
+    corroboration: The advisory names two researchers and assigns CVE-2026-0758 with a complete CVSS vector.
+    limitations: [The advisory does not identify affected versions, a fixed release, or in-the-wild exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C008
+    statement: The reviewed source corpus contains demonstrations and disclosed vulnerabilities but no qualifying production incident for the defining MCP-to-host authority transition as of 2026-09-01.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: context
+        exact_locators: ["Research-team discovery and demonstration framing lines 145-160"]
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: context
+        exact_locators: ["Demo and Responsible Disclosure lines 110-153"]
+      - source_id: SRC-zdi-aws-26-245
+        support: context
+        exact_locators: ["Disclosure Timeline lines 34-48"]
+    corroboration: The documented source-coverage audit records separate incident, advisory, exploitation-status, and challenge searches.
+    limitations: [This is a bounded corpus statement, not a claim that no incident has ever occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The conclusion is limited to the independently reviewed corpus and dated searches.}
+    status: validated
+  - id: SAF-T1305-C009
+    statement: The immediate confidentiality, integrity, and availability impact is bounded by the rights, credentials, accessible resources, and isolation of the vulnerable process account.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-zdi-cve-2026-0758
+        support: direct
+        exact_locators: ["Vulnerability Details lines 29-32; CVSS vector lines 18-20"]
+      - source_id: SRC-mitre-attack-t1068
+        support: corroborating
+        exact_locators: ["Technique description lines 16-19; Application Isolation and Sandboxing line 93"]
+    corroboration: Independent vulnerability and ATT&CK sources both tie impact to the privilege context reached and isolation controls.
+    limitations: [Specific accessible data and blast radius are environment-dependent.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The bounded impact statement synthesizes process-context evidence and privilege-isolation guidance.}
+    status: validated
+  - id: SAF-T1305-C010
+    statement: Windows Sysmon Process Create events expose timestamp, full command line, parent process, hashes, and a Process GUID suitable for execution-chain correlation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: ["Where recorded lines 35-43; Process Create lines 84-106"]
+    corroboration: The same documentation describes events as composable observational records and supports timeline correlation.
+    limitations: [Equivalent fields on Linux and macOS depend on the selected endpoint telemetry., Sysmon alone does not establish malicious intent.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C011
+    statement: Correlating a known MCP process with an unexpected shell or interpreter child near an MCP interaction is a testable behavioral analytic, but expected tool children, in-process execution, missing lineage, and renamed binaries limit fidelity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: ["Events as behavioral building blocks lines 44-80; Process Create lines 84-106; Events as evidence not alerts lines 324-340"]
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: corroborating
+        exact_locators: ["Process creation and execution chain lines 204-211 and 294-318"]
+    corroboration: The JFrog demonstration shows an MCP bridge leading to a child process, while Microsoft identifies parent and command-line fields and warns that events require context.
+    limitations: [The 60-second threshold is a synthetic operational choice requiring local tuning., The analytic does not detect purely in-process execution.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The analytic composes authoritative telemetry fields with process behavior seen in a controlled MCP exploit.}
+    status: validated
+  - id: SAF-T1305-C012
+    statement: MCP SEP-1024 requires clients supporting one-click local-server configuration to show the exact command and arguments, warn users, and require affirmative consent before execution; it also identifies user override and implementation gaps as residual risks.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: ["Client Security Requirements lines 130-146; Residual Risks lines 206-223"]
+    corroboration: The current MCP specification separately requires user consent for tool invocation.
+    limitations: [The SEP governs installation flows, not every runtime exploit path., Consent cannot repair vulnerable code.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C013
+    statement: MCP Streamable HTTP servers must validate Origin and should bind local instances to localhost and implement authentication to prevent browser-origin and DNS-rebinding interaction.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-transports-2025-06-18
+        support: direct
+        exact_locators: ["Streamable HTTP Security Warning lines 100-107"]
+    corroboration: The MCP Inspector fix added session authorization and allowed-origin verification.
+    limitations: [These transport controls do not eliminate command injection inside authenticated tools.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C014
+    statement: Documented defenses include applying fixed versions, restricting untrusted MCP connections, using HTTPS, or restricting interaction when no fix is documented.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: ["Mitigation lines 169-174"]
+      - source_id: SRC-zdi-aws-26-245
+        support: corroborating
+        exact_locators: ["Mitigation line 43"]
+    corroboration: Independent advisories converge on patching where possible and restricting interaction or trust otherwise.
+    limitations: [HTTPS does not make a malicious endpoint trustworthy., No patch was documented for CVE-2026-5059 in the reviewed advisory.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C015
+    statement: Application isolation and sandboxing can constrain exploitation blast radius but cannot guarantee prevention of every exploit.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1068
+        support: direct
+        exact_locators: ["Mitigation M1048 Application Isolation and Sandboxing, line 93"]
+      - source_id: SRC-mcp-sep-1024
+        support: corroborating
+        exact_locators: ["Risk Mitigation lines 217-223"]
+    corroboration: MCP SEP-1024 recommends sandboxing as an additional layer for residual risk.
+    limitations: [Isolation strength and escape resistance are product- and platform-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1305-C016
+    statement: ATT&CK T1068 is an analogous mapping because it covers exploitation of software flaws to gain higher authority, while SAF-T1305 narrows the boundary to MCP-connected components and does not require root or SYSTEM.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1068
+        support: direct
+        exact_locators: ["Technique definition and privilege context lines 16-31"]
+      - source_id: SRC-zdi-cve-2026-0758
+        support: corroborating
+        exact_locators: ["Vulnerability Details lines 29-32"]
+    corroboration: The selected MCP advisory explicitly describes movement from low privilege to a service account.
+    limitations: [Some SAF-T1305 cases are remote-to-user-context RCE rather than local user-to-root escalation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping reconciles framework definitions with the narrower MCP boundary.}
+    status: validated
+  - id: SAF-T1305-C017
+    statement: Intended tool execution, prompt-induced authorized tool use, malicious local-server installation, and follow-on root/SYSTEM escalation are neighboring but distinct behaviors from exploiting an established MCP component for host execution.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-spec-2025-11-25
+        support: direct
+        exact_locators: ["Features lines 97-107; Tool Safety lines 124-164"]
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: ["Abstract and Motivation lines 105-119; Client Security Requirements lines 130-146"]
+      - source_id: SRC-ghsa-cve-2025-53107
+        support: context
+        exact_locators: ["Summary and Details lines 133-158; indirect prompt path lines 198-204"]
+    corroboration: The sources separately document authorized tool capability, configuration execution, and a chain where prompt influence precedes a command-injection flaw.
+    limitations: [Synthetic SAF neighbor identifiers require mechanical reconciliation during integration.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The distinctions are framework boundary decisions derived from separately evidenced mechanisms.}
+    status: validated
+  - id: SAF-T1305-C018
+    statement: A proportionate response is to isolate the affected component, preserve and correlate MCP and process telemetry, determine reached account scope, rotate demonstrably exposed credentials, patch or restrict the component, and add regression coverage.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: ["Process and correlation context lines 35-106; events as evidence lines 324-340"]
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: ["Impact and mitigation lines 150-174"]
+      - source_id: SRC-zdi-aws-26-245
+        support: corroborating
+        exact_locators: ["Vulnerability Details and mitigation lines 29-43"]
+    corroboration: Telemetry guidance supplies investigation data, and the advisories supply product-specific containment and remediation constraints.
+    limitations: [Credential rotation is conditional on demonstrated or plausible exposure., Recovery procedures remain environment-specific.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The response sequence is an original synthesis of telemetry and advisory facts.}
+    status: validated

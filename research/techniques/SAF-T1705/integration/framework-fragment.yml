@@ -1,0 +1,36 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1705
+    name: Cross-Agent Instruction Injection
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0008
+    technique_path: techniques/SAF-T1705/README.md
+    research_packet: research/techniques/SAF-T1705
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1701
+      - SAF-T1702
+    mitigations:
+      - SAF-M-1
+      - SAF-M-5
+      - SAF-M-9
+      - SAF-M-12
+      - SAF-M-21
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1705/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1705/test_detection_rule.py
+        - tests/SAF-T1705/fixtures.yml
+        - research/techniques/SAF-T1705/validation/detection-tests.txt
+        - research/techniques/SAF-T1705/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1072
+        type: analogous

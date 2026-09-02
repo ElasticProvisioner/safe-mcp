@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2101
+    name: Data Destruction
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics: [ATK-TA0040]
+    technique_path: techniques/SAF-T2101/README.md
+    research_packet: research/techniques/SAF-T2101
+    related_techniques: [SAF-T1102, SAF-T2102]
+    mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T2101/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T2101/test_detection_rule.py
+        - tests/SAF-T2101/test-events.jsonl
+        - research/techniques/SAF-T2101/validation/detection-test-result.txt
+        - research/techniques/SAF-T2101/validation/isolated-validator-result.txt
+    attack_mappings:
+      - id: T1485
+        type: analogous

@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1504
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent /root/cleanroom_saf_t1504
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The fresh-agent attestation records only allowed generic inputs, 13 independent bounded discovery searches, 16 opened sources, exact GHSA provenance, no prior-artifact access, and freeze-before-integration constraints.
+  contract_and_scope:
+    status: passed
+    notes: The contract binds one immediate objective to the server-to-client response boundary and separates logs, storage, redirects, passthrough, SSRF-only behavior, and post-theft activity.
+  technical_accuracy:
+    status: passed
+    notes: MCP result channels, bearer semantics, prerequisites, affected versions, fixed versions, and configuration conditions are supported by exact locators and disclosed limitations.
+  claim_traceability:
+    status: passed
+    notes: All 24 claims are validated, use canonical IDs, list exact locators, and resolve to the 16 directly reviewed source records.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has hidden SAF-TRACE linkage or a declared local artifact; six unsupported or overbroad propositions are excluded with prohibited wording.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by the Meta Ads MCP inert end-to-end proof; the absence of a production incident prevents Observed.
+  research_saturation:
+    status: passed
+    notes: The final two bounded NVD follow-up passes contain six narrower queries and no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Five candidates were classified; two direct high-impact examples were selected, three were excluded or kept as analogy, and no qualifying production incident was found.
+  detection_quality:
+    status: passed
+    notes: The analytic requires named response, classifier, redaction, recipient, and correlation fields; 10 deterministic cases cover positive, negative, boundary, missing-field, redacted, authorized-lookalike, and wrong-action behavior.
+  mitigation_quality:
+    status: passed
+    notes: Authentication, token-safe serialization, output sanitization, result validation, SSRF/egress controls, narrow credentials, rotation, and follow-on investigation address the defining path and limits.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0006 and ATT&CK T1528 are reconciled; the two synthetic neighbor roles map post-freeze to SAF-T1307 and SAF-T1304 with six canonical mitigation joins.
+  publication_rights:
+    status: passed
+    notes: All 16 cited sources use factual paraphrase only, named authors and research teams are credited, and no source code, payload, quotation, image, diagram, table, or dataset is republished.
+  safe_publication:
+    status: passed
+    notes: The only scenario uses an inert redacted placeholder; no live credential, operational exploit code, destructive action, or usable endpoint is published.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1504/test_detection_rule.py
+      result: passed
+      evidence: research/techniques/SAF-T1504/validation/detection-test-output.txt
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1504
+      result: passed
+      evidence: research/techniques/SAF-T1504/validation/strict-validator-output.txt
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1504
+      result: passed
+      evidence: research/techniques/SAF-T1504/validation/strict-validator-output.txt
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1504/test_detection_rule.py
+    result: 10/10 expectations passed; 4 alerts and 6 non-alerts asserted.
+    waiver: null
+
+unresolved: []

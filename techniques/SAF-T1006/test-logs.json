@@ -1,0 +1,169 @@
+{
+  "schema": "saf_mcp_detection_test_v1",
+  "technique_id": "SAF-T1006",
+  "rule_id": "c7522b9e-0a85-4f64-b1f3-3e7db10d1ba7",
+  "cases": [
+    {
+      "name": "positive_deceptive_install_then_start",
+      "classification": "positive",
+      "expected_alert": true,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T12:00:00Z",
+          "event.action": "mcp_deeplink.accepted",
+          "event.initiator": "user",
+          "user.id": "u-100",
+          "host.id": "h-100",
+          "server.id": "srv-calendar-helper"
+        },
+        {
+          "@timestamp": "2026-09-01T12:03:00Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-100",
+          "host.id": "h-100",
+          "server.id": "srv-calendar-helper",
+          "server.source_trust": "untrusted",
+          "process.parent.executable": "/Applications/ExampleClient",
+          "process.executable": "/tmp/example-helper"
+        }
+      ]
+    },
+    {
+      "name": "boundary_exactly_900_seconds",
+      "classification": "boundary_positive",
+      "expected_alert": true,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T13:00:00Z",
+          "event.action": "mcp_server.add",
+          "event.initiator": "user",
+          "user.id": "u-101",
+          "host.id": "h-101",
+          "server.id": "srv-boundary"
+        },
+        {
+          "@timestamp": "2026-09-01T13:15:00Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-101",
+          "host.id": "h-101",
+          "server.id": "srv-boundary",
+          "server.source_trust": "unknown"
+        }
+      ]
+    },
+    {
+      "name": "negative_trusted_server",
+      "classification": "negative",
+      "expected_alert": false,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T14:00:00Z",
+          "event.action": "mcp_server.config_write",
+          "event.initiator": "user",
+          "user.id": "u-102",
+          "host.id": "h-102",
+          "server.id": "srv-approved"
+        },
+        {
+          "@timestamp": "2026-09-01T14:01:00Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-102",
+          "host.id": "h-102",
+          "server.id": "srv-approved",
+          "server.source_trust": "trusted"
+        }
+      ]
+    },
+    {
+      "name": "negative_automated_adjacent_configuration",
+      "classification": "negative_adjacent",
+      "expected_alert": false,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T15:00:00Z",
+          "event.action": "mcp_server.config_write",
+          "event.initiator": "process",
+          "user.id": "u-103",
+          "host.id": "h-103",
+          "server.id": "srv-project-auto"
+        },
+        {
+          "@timestamp": "2026-09-01T15:01:00Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-103",
+          "host.id": "h-103",
+          "server.id": "srv-project-auto",
+          "server.source_trust": "untrusted"
+        }
+      ]
+    },
+    {
+      "name": "negative_outside_window_901_seconds",
+      "classification": "boundary_negative",
+      "expected_alert": false,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T16:00:00Z",
+          "event.action": "mcp_server.add",
+          "event.initiator": "user",
+          "user.id": "u-104",
+          "host.id": "h-104",
+          "server.id": "srv-late"
+        },
+        {
+          "@timestamp": "2026-09-01T16:15:01Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-104",
+          "host.id": "h-104",
+          "server.id": "srv-late",
+          "server.source_trust": "unknown"
+        }
+      ]
+    },
+    {
+      "name": "negative_malformed_missing_server_id",
+      "classification": "malformed_negative",
+      "expected_alert": false,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T17:00:00Z",
+          "event.action": "mcp_deeplink.accepted",
+          "event.initiator": "user",
+          "user.id": "u-105",
+          "host.id": "h-105"
+        },
+        {
+          "@timestamp": "not-a-timestamp",
+          "event.action": "mcp_server.process_start",
+          "user.id": "u-105",
+          "host.id": "h-105",
+          "server.source_trust": "untrusted"
+        }
+      ]
+    },
+    {
+      "name": "expected_false_positive_internal_dev_server",
+      "classification": "expected_false_positive",
+      "expected_alert": true,
+      "events": [
+        {
+          "@timestamp": "2026-09-01T18:00:00Z",
+          "event.action": "mcp_server.add",
+          "event.initiator": "user",
+          "user.id": "developer-1",
+          "host.id": "dev-host-1",
+          "server.id": "srv-new-internal-build"
+        },
+        {
+          "@timestamp": "2026-09-01T18:00:20Z",
+          "event.action": "mcp_server.process_start",
+          "user.id": "developer-1",
+          "host.id": "dev-host-1",
+          "server.id": "srv-new-internal-build",
+          "server.source_trust": "unknown",
+          "server.source_uri": "file:///work/internal-server"
+        }
+      ]
+    }
+  ]
+}

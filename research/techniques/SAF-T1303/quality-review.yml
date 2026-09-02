@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1303
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room authoring agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The clean-room attestation records the allowed seed, direct-authority research, prohibited inputs, and no prior-artifact access.
+  contract_and_scope:
+    status: passed
+    notes: The draft requires server-side execution to cross an intended isolation boundary and excludes malicious installation and ordinary in-sandbox tool misuse.
+  technical_accuracy:
+    status: passed
+    notes: Protocol mechanics, prerequisites, flow, and conditional impact are bounded to the cited authorities.
+  claim_traceability:
+    status: passed
+    notes: Every substantive README unit links to a canonical claim or a declared local artifact through readable hidden SAF-TRACE comments.
+  source_or_omit:
+    status: passed
+    notes: Unsupported versions, fixes, exploitation claims, incident claims, and GitHub-only details are omitted and recorded in the exclusion ledger.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is appropriate because product-specific demonstrations support a cross-product mechanism that remains an explicit inference.
+  research_saturation:
+    status: passed
+    notes: Two consecutive final exact-identifier passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Current incident, malicious-package, CVE, NVD, and vendor-advisory searches were classified; four high-impact direct examples were selected and the production-incident gap is explicit.
+  detection_quality:
+    status: passed
+    notes: The analytic declares telemetry, logic, boundary cases, false positives, limitations, tuning, and eight deterministic tests; all tests pass.
+  mitigation_quality:
+    status: passed
+    notes: Canonical mitigation references address input validation and explicit privilege boundaries without implying universal prevention.
+  framework_alignment:
+    status: passed
+    notes: Privilege Escalation is the supplied tactic; Command and Scripting Interpreter is documented only as an analogous execution mapping, with canonical neighbor boundaries explicit.
+  publication_rights:
+    status: passed
+    notes: The rights review covers every cited source, uses paraphrase, copies no code or protected figures, and preserves named and team attribution.
+  safe_publication:
+    status: passed
+    notes: Examples and tests are inert abstractions with no credentials, exploit payloads, or destructive commands.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1303
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 -m unittest tests/SAF-T1303/test_detection_rule.py
+    result: 1 test method passed; all 8 fixtures matched expected outcomes
+    waiver: null
+
+unresolved: []

@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1207
+name: Hijack Update Mechanism
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0003
+
+adversary_objective: >-
+  Persist control of an MCP or agentic-system component by causing its trusted
+  update path to install attacker-selected software in place of an approved version.
+
+scope:
+  security_boundary: >-
+    The boundary between an update authority or distribution channel and the
+    local component manager that accepts and activates a replacement MCP or
+    agentic-system component.
+  in_scope:
+    - Compromise, impersonation, or unauthorized alteration of a component update source, metadata, artifact, or signing authority after an approved component is already deployed.
+    - Acceptance and activation of the attacker-selected replacement through the environment's normal update workflow, creating persistence across component or host restarts.
+  out_of_scope:
+    - A malicious component selected during first installation without any replacement of an already trusted version.
+    - Runtime changes to tool descriptions, prompts, or responses that do not replace component software through an update mechanism.
+    - Abuse performed only after the replacement component executes, including credential theft, collection, exfiltration, or destructive impact.
+  affected_components:
+    - MCP host or agent platform component manager
+    - MCP server package, extension, plugin, desktop component, or executable
+    - Update registry, feed, repository, metadata service, signing service, or artifact store
+
+nearest_neighbors:
+  - technique_id: SAF-T1003
+    distinction: >-
+      Malicious MCP-server distribution covers an attacker-controlled first
+      installation; SAF-T1207 requires an already trusted component and a later
+      update event.
+  - technique_id: SAF-T1201
+    distinction: >-
+      An MCP rug pull changes a trusted tool definition or behavior at runtime;
+      SAF-T1207 replaces component software through an update path and persists
+      across restarts.
+
+required_evidence:
+  - Establish how at least one current agentic or MCP-adjacent component manager discovers, verifies, and activates updates.
+  - Establish that compromise of update metadata, artifacts, distribution, or signing can cause trusted updaters to accept attacker-selected code.
+  - Search separately for direct MCP or agentic production incidents, disclosed vulnerabilities, controlled demonstrations, and historical update-channel incidents.
+  - Establish telemetry and invariants sufficient to test a correlation analytic for unapproved update activation.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Component update events with timestamp, component identifier, old and new version, artifact digest, source URI or registry, signature or verification result, signer identity, actor, approval identity, and activation outcome.
+    - Approved-release inventory with component identifier, permitted version, artifact digest, update source, signer identity, and approval state.
+
+safe_example_constraints:
+  - Use inert example domains, fabricated digests, placeholder identities, and non-executable package names.
+  - Describe compromised update behavior without payloads, signing keys, exploitation steps, or destructive actions.
+
+completion_evidence:
+  - Every substantive publishable unit is linked to a validated claim and reviewed source, or to a declared local validation artifact.
+  - Unverified direct-incident and vulnerability leads are excluded from publishable prose and recorded in the exclusion ledger.
+  - All five research passes and two consecutive no-change saturation passes are recorded.
+  - Positive, negative, boundary, malformed, and expected false-positive cases pass deterministic detection tests.
+  - Publication-rights, clean-room-integrity, framework-alignment, and strict validator gates pass after real registry and repository-history reconciliation.

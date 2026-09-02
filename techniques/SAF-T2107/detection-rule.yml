@@ -1,44 +1,37 @@
-title: MCP Training Data Poisoning Detection
-id: 7a8b9c0d-1e2f-3456-7890-abcdef123456
-status: experimental
-description: Detects potential training data poisoning through MCP tool outputs
-author: Sachin Keswani
-date: 2025-09-13
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T2107
-logsource:
-  product: mcp
-  service: training_data_pipeline
-detection:
-  selection:
-    mcp_tool_output:
-      - '*<!-- TRIGGER:*'
-      - '*\[USER_DATA_PLACEHOLDER\]*'
-      - '*adversarial_pattern*'
-      - '*hidden_trigger*'
-      - '*backdoor_activation*'
-      - '*model_manipulation*'
-      - '*data_exfiltration_marker*'
-    data_metadata:
-      training_flag: true
-      data_quality: "high"
-    suspicious_patterns:
-      - '*steganographic*'
-      - '*invisible_character*'
-      - '*zero_width*'
-      - '*unicode_poisoning*'
-  filter:
-    - mcp_tool_output:
-        - '*legitimate_documentation*'
-        - '*educational_content*'
-        - '*security_training*'
-  condition: selection and not filter
-falsepositives:
-  - Legitimate training data with embedded documentation
-  - Educational content about AI security
-  - Security training materials with example patterns
-level: critical
-tags:
-  - attack.resource_development
-  - attack.ta0042
-  - safe.t2107
+{
+  "title": "MCP-Derived Training Sample Admitted with Failed Provenance",
+  "id": "7d131c44-4ec1-4df8-9de0-237755ddf1af",
+  "status": "experimental",
+  "description": "Detects a training-sample admission event whose origin is an MCP tool result and whose provenance is missing, invalid, or mismatched, excluding samples that the pipeline quarantined.",
+  "author": "OpenAI Codex clean-room author",
+  "date": "2026-09-02",
+  "logsource": {"category": "mlops_dataset_admission", "product": "saf-mcp"},
+  "detection": {
+    "selection_action": {"event.action": "training_sample_ingested"},
+    "selection_origin": {"sample.origin": "mcp_tool_result"},
+    "selection_provenance": {"provenance.status": ["missing", "invalid", "digest_mismatch", "source_mismatch"]},
+    "filter_quarantine": {"sample.disposition": "quarantined"},
+    "condition": "selection_action and selection_origin and selection_provenance and not filter_quarantine"
+  },
+  "fields": ["event.timestamp", "source.server_id", "source.tool_name", "sample.digest", "provenance.status", "sample.disposition", "dataset.version_id", "training.job_id"],
+  "falsepositives": ["Approved legacy imports or emergency ingestion workflows with incomplete lineage."],
+  "level": "high",
+  "tags": ["saf.t2107"],
+  "traceability": {
+    "policy": "source_or_omit",
+    "design_claim_ids": ["SAF-T2107-C009"],
+    "telemetry_claim_ids": ["SAF-T2107-C007", "SAF-T2107-C009"],
+    "limitation_claim_ids": ["SAF-T2107-C014"],
+    "validation_artifacts": ["tests/SAF-T2107/test-logs.json", "tests/SAF-T2107/expected-results.json", "tests/SAF-T2107/test_detection_rule.py", "research/techniques/SAF-T2107/validation/detection-test.txt", "research/techniques/SAF-T2107/validation/strict-validator.txt", "research/techniques/SAF-T2107/validation/canonical-validation.txt"],
+    "components": {
+      "logsource": {"claim_ids": ["SAF-T2107-C007", "SAF-T2107-C009"], "rationale": "Dataset-admission logs carry the lineage decision before training."},
+      "selection_action": {"claim_ids": ["SAF-T2107-C009"], "rationale": "Restricts evaluation to samples that entered a training corpus."},
+      "selection_origin": {"claim_ids": ["SAF-T2107-C005", "SAF-T2107-C009"], "rationale": "Enforces the defining MCP tool-result origin."},
+      "selection_provenance": {"claim_ids": ["SAF-T2107-C007", "SAF-T2107-C009"], "rationale": "Represents missing or failed origin and integrity evidence."},
+      "filter_quarantine": {"claim_ids": ["SAF-T2107-C009"], "rationale": "Excludes records that did not cross the admission boundary."},
+      "condition": {"claim_ids": ["SAF-T2107-C009", "SAF-T2107-C014"], "rationale": "Combines admission, origin, and provenance while retaining the semantic-poison limitation."},
+      "fields": {"claim_ids": ["SAF-T2107-C006", "SAF-T2107-C007", "SAF-T2107-C009"], "rationale": "Supports correlation from source through dataset and training job."},
+      "falsepositives": {"claim_ids": ["SAF-T2107-C009"], "rationale": "Documents legitimate workflows that can lack complete provenance."}
+    }
+  }
+}

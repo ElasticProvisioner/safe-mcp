@@ -1,144 +1,102 @@
-title: MCP Line Jumping Attack Detection
-id: cdc03af8-aa99-4041-b9e0-24d6ae8d02de
+title: MCP Line Jumping Resolver Precedence Manipulation
+id: 7e0e64f9-8f57-48c3-9f6c-7cfca13b1401
 status: experimental
-description: |
-  Detects potential line jumping attacks through suspicious early-context instructions that attempt to bypass security checkpoints by manipulating instruction precedence and context ordering.
-  
-  Line jumping attacks exploit the sequential processing nature of LLMs by positioning malicious instructions before security validation points. This rule detects common patterns including:
-  - Priority/precedence manipulation instructions
-  - Fake system delimiters and context boundaries
-  - Security bypass attempts in early context positions
-  - Instructions that override or disable security features
-  
-  Note: This detection rule provides baseline pattern matching but should be supplemented with AI-based anomaly detection and semantic analysis for comprehensive protection.
-author: Raju Kumar Yadav
-date: 2025-11-19
-modified: 2025-11-19
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1401
-  - https://genai.owasp.org/llmrisk/llm01-prompt-injection/
-  - https://arxiv.org/abs/2503.18813
-  - https://www.pillar.security/blog/the-security-risks-of-model-context-protocol-mcp
+description: >-
+  Detects a successful unresolved object collision, a successful non-admin
+  mutation of a global MCP object, or an untrusted resolver winner displacing
+  a trusted competitor, excluding explicitly approved changes.
+author: /root/cleanroom_saf_t1401
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: context_processing
-  category: llm_security
+  category: mcp_resolver
+  product: mcp_host
 detection:
-  selection_priority_instructions:
-    context_content|contains:
-      - 'SYSTEM DIRECTIVE'      # Source: Line jumping attack pattern analysis
-      - 'PRIORITY_INSTRUCTION'  # Source: Common precedence manipulation
-      - 'PRIORITY DIRECTIVE'    # Source: Variant of priority instruction
-      - 'takes precedence'      # Source: Instruction hierarchy exploitation
-      - 'override all'          # Source: Security bypass attempt
-      - 'suspend security'      # Source: Temporary security disable
-      - 'disable restrictions'  # Source: Direct restriction bypass
-      - 'temporarily suspended' # Source: Time-based security disable
-      - 'bypass all subsequent' # Source: Forward instruction override
-      - 'ignore any restrictions' # Source: Blanket restriction ignore
-      - 'security validation mode' # Source: Security state manipulation
-      - 'authorization checks'  # Source: Auth bypass indicator
-      - 'admin privilege level' # Source: Privilege escalation attempt
-      - 'elevated privileges'   # Source: Privilege elevation indicator
-      
-  selection_fake_delimiters:
-    context_content|contains:
-      - '<!--[SYSTEM'           # Source: HTML comment delimiter injection
-      - '<!--[PRIORITY'         # Source: Priority marker in HTML comment
-      - '[PRIORITY_INSTRUCTION]' # Source: Explicit priority marker
-      - '[ADMIN_OVERRIDE'       # Source: Admin override marker
-      - '[SECURITY_BYPASS'      # Source: Security bypass marker
-      - '---[SYSTEM'            # Source: Markdown-style delimiter
-      - '---[END SYSTEM'        # Source: Closing delimiter marker
-      - '[CONTEXT_UPDATE]'      # Source: Context state manipulation
-      - '<|system|>'            # Source: System tag injection
-      - '<|priority|>'          # Source: Priority tag injection
-      - '<!—SYSTEM'             # Source: Obfuscated HTML comment (em dash)
-      - '[DIRECTIVE'            # Source: Generic directive marker
-      - '[INSTRUCTION'          # Source: Generic instruction marker
-      
-  selection_context_manipulation:
-    context_content|contains:
-      - 'establish precedence'  # Source: Precedence establishment
-      - 'higher priority than'  # Source: Priority comparison
-      - 'supersede all'         # Source: Override all indicator
-      - 'takes priority over'   # Source: Priority override
-      - 'overrides later'       # Source: Future instruction override
-      - 'ignore subsequent instructions' # Source: Forward bypass
-      - 'disregard following rules' # Source: Rule disregard
-      - 'preceding all'         # Source: Precedence claim
-      - 'before any'            # Source: Ordering manipulation
-      - 'first priority'        # Source: Priority ordering
-      
-  selection_security_bypass:
-    context_content|contains:
-      - 'without additional confirmation' # Source: Confirmation bypass
-      - 'skip validation'       # Source: Validation skip
-      - 'bypass authentication' # Source: Auth bypass
-      - 'disable authorization' # Source: Authz disable
-      - 'allow full table access' # Source: Database access escalation
-      - 'unrestricted access'   # Source: Access control bypass
-      - 'elevated privileges'   # Source: Privilege escalation
-      - 'admin privilege level' # Source: Admin level escalation
-      - 'allow full access'     # Source: Blanket access grant
-      - 'grant full permissions' # Source: Permission escalation
-      - 'remove restrictions'   # Source: Restriction removal
-      - 'bypass security'       # Source: Direct security bypass
-      
-  selection_stealth_indicators:
-    context_content|contains:
-      - 'NEVER mention'         # Source: Stealth instruction
-      - 'do not disclose'       # Source: Information hiding
-      - 'keep hidden'           # Source: Concealment instruction
-      - 'do not reveal'         # Source: Revelation prevention
-      - 'silently'              # Source: Silent operation indicator
-      - 'without notifying'     # Source: Notification bypass
-      - 'do not inform'         # Source: User deception
-      
-  filter_early_context:
-    context_position|lt: 100
-    content_source:
-      - 'tool_output'
-      - 'file_content'
-      - 'api_response'
-      - 'database_query'
-      - 'external_source'
-      
-  filter_trusted_system:
-    content_source:
-      - 'system_prompt'
-      - 'security_policy'
-      - 'admin_config'
-    authenticated: true
-    
-  condition: (selection_priority_instructions or selection_fake_delimiters or selection_context_manipulation or selection_security_bypass or selection_stealth_indicators) and filter_early_context and not filter_trusted_system
-  
-falsepositives:
-  - Legitimate system messages in authenticated early context positions
-  - Documentation or educational content about security mechanisms
-  - Debugging output that references system directives for troubleshooting
-  - Security policy documentation being read as reference material
-  - Development and testing environments with intentional security testing
-  
-level: high
-
-tags:
-  - attack.defense_evasion
-  - attack.t1562.001  # Impair Defenses: Disable or Modify Tools
-  - attack.t1574      # Hijack Execution Flow
-  - attack.t1055      # Process Injection (conceptually similar)
-  - safe.t1401        # SAF-MCP Technique ID
-  - mcp.context_manipulation
-  - mcp.instruction_injection
-  - llm.prompt_injection
-
+  selection_collision:
+    action: register
+    collision: true
+    disambiguated: false
+    outcome: success
+  selection_unauthorized_global_mutation:
+    action: mutate
+    object.scope: global
+    actor.is_admin: false
+    outcome: success
+  selection_untrusted_winner:
+    action: resolve
+    collision: true
+    winner.trust: untrusted
+    competitor.trust: trusted
+    outcome: success
+  filter_approved_change:
+    change.approved: true
+  condition: 1 of selection_* and not filter_approved_change
 fields:
-  - context_content
-  - context_position
-  - content_source
   - timestamp
-  - user_id
+  - request_id
   - session_id
-  - tool_name
-  - security_policy_applied
-
+  - action
+  - actor.id
+  - actor.is_admin
+  - object.type
+  - object.scope
+  - object.logical_id
+  - object.normalized_id
+  - object.definition_hash
+  - source.canonical_id
+  - collision
+  - disambiguated
+  - winner.source
+  - winner.trust
+  - competitor.source
+  - competitor.trust
+  - resolution.reason
+  - change.approved
+  - outcome
+falsepositives:
+  - Planned source migrations that temporarily register both old and new identities without recording approval.
+  - Authorized aliases or compatibility mappings that intentionally preserve a collision.
+  - Test and staging registrations emitted into production-visible audit streams.
+level: high
+tags:
+  - saf.t1401
+  - attack.defense-evasion
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1401-C012
+    - SAF-T1401-C013
+  telemetry_claim_ids:
+    - SAF-T1401-C011
+    - SAF-T1401-C014
+  limitation_claim_ids:
+    - SAF-T1401-C013
+  validation_artifacts:
+    - tests/SAF-T1401/test_detection_rule.py
+    - tests/SAF-T1401/test-logs.json
+    - research/techniques/SAF-T1401/validation/detection-test.txt
+    - research/techniques/SAF-T1401/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1401-C011]
+      rationale: MCP host resolver and registry lifecycle logs retain the source and decision fields required by the analytic.
+    selection_collision:
+      claim_ids: [SAF-T1401-C005, SAF-T1401-C012]
+      rationale: The direct overwrite demonstration and protocol collision guidance support unresolved successful registration as suspicious.
+    selection_unauthorized_global_mutation:
+      claim_ids: [SAF-T1401-C004, SAF-T1401-C012, SAF-T1401-C015]
+      rationale: The MCPHub demonstration and fix establish non-admin mutation of global objects as a precedence-changing behavior.
+    selection_untrusted_winner:
+      claim_ids: [SAF-T1401-C003, SAF-T1401-C012]
+      rationale: Both direct demonstrations culminate in an attacker-controlled object winning ahead of a trusted competitor.
+    filter_approved_change:
+      claim_ids: [SAF-T1401-C012, SAF-T1401-C013]
+      rationale: Explicit change approval separates authorized aliases and migrations from unapproved displacement.
+    condition:
+      claim_ids: [SAF-T1401-C012, SAF-T1401-C013]
+      rationale: Any supported precedence branch alerts unless an explicit approved-change record is present.
+    fields:
+      claim_ids: [SAF-T1401-C011, SAF-T1401-C013, SAF-T1401-C014]
+      rationale: Candidate provenance, identity, role, scope, trust, approval, and resolution reason enable evaluation and tuning.
+    falsepositives:
+      claim_ids: [SAF-T1401-C013]
+      rationale: Controlled studies and operational extrapolation support migration, alias, and test-registration tuning classes.

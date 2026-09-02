@@ -1,0 +1,232 @@
+version: 1
+technique_id: SAF-T1102
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct review: https://modelcontextprotocol.io/llms.txt for the current versioned specification routes"
+        - "Direct review: MCP 2026-07-28 overview, prompts, resources, and tools pages"
+        - "Within-source locators: user interaction, model-visible content, automatic context, validation, sanitization, confirmation, audit"
+      material_changes:
+        - Defined prompts, resources, tool descriptions, and tool results as distinct model-facing channels.
+        - Added current normative validation, confirmation, sanitization, and auditing requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct official CVE API review: CVE-2025-32711"
+        - "Direct official CVE API review: CVE-2025-53773"
+        - "Direct researcher page from CVE reference: GitHub Copilot remote code execution via prompt injection"
+        - "Direct official CVE API review: CVE-2025-54135"
+        - "Exact GHSA-4cxx-hrm3-49rm URL opened only after discovery in CVE-2025-54135"
+        - "OWASP CVE-2024-5184 lead assessed; no directly reviewed primary record obtained"
+      material_changes:
+        - Selected CVE-2025-54135 as the only direct disclosed MCP vulnerability.
+        - Classified CVE-2025-32711 and CVE-2025-53773 as adjacent rather than direct.
+        - Recorded that no qualifying production breach was established.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct review: Invariant MCP tool poisoning and cross-server shadowing"
+        - "Direct review: Invariant WhatsApp MCP tool-description and tool-result experiments"
+        - "Direct review: Invariant GitHub MCP public-issue injection demonstration"
+        - "Direct review: Greshake et al. indirect prompt injection paper"
+        - "Direct review: InjecAgent ACL paper record"
+        - "Direct review: AgentDojo arXiv paper record"
+      material_changes:
+        - Established demonstrated end-to-end evidence across tool metadata, tool results, and third-party content.
+        - Added benchmark evidence while separating evaluation rates from production incidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct review: NIST AI 100-2e2025 sections 3.4-3.5"
+        - "Direct review: OWASP LLM01:2025 mitigations"
+        - "Direct review: NCSC prompt injection design and monitoring guidance"
+        - "Direct review: Anthropic browser-use prompt-injection defenses"
+        - "Direct review: CaMeL deterministic capability enforcement"
+        - "Direct review: adaptive attacks against recent prompt-injection defenses"
+      material_changes:
+        - Derived a source-to-action correlation using provenance, detector signals, approval state, and action risk.
+        - Added privacy and semantic-detection limitations plus deterministic least-privilege controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "Challenge: do demonstrations establish a production breach? Answer: no"
+        - "Challenge: does connection to an MCP server alone establish prompt injection? Answer: no"
+        - "Challenge: do literal keywords establish compromise? Answer: no"
+        - "Challenge: is ATT&CK T1059 direct for natural-language prompt interpretation? Answer: no"
+        - "Challenge: can model-level filtering eliminate the risk? Answer: not supported"
+      material_changes:
+        - Narrowed scope to inference-time instruction-authority manipulation.
+        - Downgraded ATT&CK T1059 to an analogous follow-on mapping.
+        - Added explicit exclusions and residual-risk language.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "Re-opened current MCP documentation index and 2026-07-28 prompts/resources/tools routes"
+        - "Rechecked protocol routes and model-facing paths against the frozen contract"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "Re-opened NIST publication record and NCSC monitoring guidance"
+        - "Re-opened AgentDojo record and rechecked official CVE-2025-54135 record availability"
+        - "Reconciled source set, claims, candidates, and exclusions after all additions"
+      material_changes: []
+  rationale: >-
+    The final source set covers the current protocol, direct vulnerability records,
+    multiple end-to-end MCP demonstrations, two agent benchmarks, government and
+    industry defense guidance, and adversarial defense evaluation. The final two
+    independent direct-authority passes changed no material claim, example,
+    detection choice, scope boundary, or evidence classification.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-invariant-github-mcp-2025
+    - SRC-cve-2025-54135
+  no_qualifying_examples_rationale: >-
+    Four high-relevance demonstrations or vulnerabilities qualify, but none is a
+    verified production breach. The selected set spans distinct vectors and one
+    patched direct vulnerability without inflating adjacent Copilot issues.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant MCP tool poisoning and cross-server shadowing demonstrations
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: Redirected model-selected tool behavior through malicious tool descriptions, including use of a trusted tool.
+      remediation: Expose and review descriptions, pin trusted metadata, constrain tools, and require consequential-action approval.
+      selected: true
+      rationale: Highest direct relevance to the tool-description vector with a documented end-to-end MCP flow.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: Invariant WhatsApp MCP experiments
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: Redirected an agent from a trusted tool result and disclosed synthetic contacts.
+      remediation: Separate trusted and untrusted tools and data, reduce privileges, and require approval.
+      selected: true
+      rationale: Directly establishes tool-result and third-party message delivery without requiring a malicious server.
+    - source_id: SRC-invariant-github-mcp-2025
+      identifier: Invariant GitHub MCP public-issue injection demonstration
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: Retrieved private-repository test data and published it in a public pull request.
+      remediation: Scope tokens, separate public and private contexts, and approve cross-boundary writes.
+      selected: true
+      rationale: Demonstrates a materially distinct public-content vector and cross-resource action.
+    - source_id: SRC-cve-2025-54135
+      identifier: CVE-2025-54135 / GHSA-4cxx-hrm3-49rm
+      relationship: direct_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: Chained indirect injection and MCP-sensitive file creation could enable code execution in affected Cursor versions.
+      remediation: Update to Cursor 1.3.9 or later; require approval for MCP-sensitive file changes.
+      selected: true
+      rationale: The only reviewed direct MCP vulnerability with a maintainer fix and official exploitation enrichment.
+    - source_id: SRC-cve-2025-32711
+      identifier: CVE-2025-32711
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: Microsoft 365 Copilot AI command injection could affect confidentiality, integrity, and availability.
+      remediation: Apply Microsoft's service-side remediation and current product guidance.
+      selected: false
+      rationale: The reviewed official record does not establish an MCP delivery or execution path.
+    - source_id: SRC-cve-2025-53773
+      identifier: CVE-2025-53773
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: Prompt injection could lead GitHub Copilot in Visual Studio to alter settings and reach local code execution.
+      remediation: Update Visual Studio 2022 17.14 to 17.14.12 or later.
+      selected: false
+      rationale: MCP tool output is only one optional delivery angle; the defining vulnerability is a broader agent settings boundary.
+    - source_id: SRC-owasp-llm01-2025
+      identifier: CVE-2024-5184 EmailGPT lead
+      relationship: rejected
+      exploitation_status: unknown
+      impact: A secondary lead described prompt injection in an email assistant.
+      remediation: Primary advisory and remediation were not directly verified.
+      selected: false
+      rationale: Source-or-omit requires a reviewed primary advisory before using the candidate as an example.
+
+sources_consulted:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-greshake-ipi-2023
+  - SRC-injecagent-acl-2024
+  - SRC-nist-ai-100-2e2025
+  - SRC-owasp-llm01-2025
+  - SRC-cve-2025-32711
+  - SRC-cve-2025-53773
+  - SRC-rehberger-cve-2025-53773
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-anthropic-pi-defenses-2025
+  - SRC-camel-2025
+  - SRC-adaptive-pi-defenses-2025
+  - SRC-ncsc-prompt-injection-2025
+  - SRC-mitre-t1059-current
+  - SRC-agentdojo-2024
+  - SRC-mcp-doc-index-2026
+sources_cited:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-greshake-ipi-2023
+  - SRC-injecagent-acl-2024
+  - SRC-nist-ai-100-2e2025
+  - SRC-owasp-llm01-2025
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-anthropic-pi-defenses-2025
+  - SRC-camel-2025
+  - SRC-adaptive-pi-defenses-2025
+  - SRC-ncsc-prompt-injection-2025
+  - SRC-mitre-t1059-current
+sources_rejected:
+  - source_id: SRC-cve-2025-32711
+    reason: Adjacent command-injection advisory with no MCP path established.
+  - source_id: SRC-cve-2025-53773
+    reason: Adjacent agent vulnerability; MCP is not required by the reviewed record.
+  - source_id: SRC-rehberger-cve-2025-53773
+    reason: Useful technical detail for an adjacent candidate but not needed for the scoped publishable technique.
+  - source_id: SRC-agentdojo-2024
+    reason: Useful corroborating benchmark context, omitted to avoid adding a second configuration-specific rate to the concise technique.
+  - source_id: SRC-mcp-doc-index-2026
+    reason: Route and currency verification only; it supplies no independent publishable security claim.
+sources_blocked: []
+
+conflicts:
+  - issue: The CVE record expresses affected Cursor versions as earlier than 1.3.9 while the GHSA lists affected versions through 1.2.1 and patched version 1.3.9.
+    resolution: State the conservative operational boundary as versions before 1.3.9 and preserve the discrepancy in the claim limitation.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1102-C001
+  rationale: >-
+    Three controlled MCP demonstrations establish the complete content-to-model-to-
+    action flow across different delivery paths. They do not establish a production
+    breach, so Demonstrated is the highest supportable classification.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

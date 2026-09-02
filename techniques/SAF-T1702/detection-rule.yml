@@ -1,46 +1,103 @@
-title: Shared-Memory Poisoning Detection
-id: D0101B15-ECF5-468A-ACA5-E35EECBEF217
+title: SAF-T1702 Shared-Memory Poisoning Correlation
+id: 52b07f30-3b5f-4a3c-b93f-f45ae6a3346e
 status: experimental
-description: Detects potential shared-memory poisoning attempts by identifying high-risk instructional keywords, context-switching tokens, and suspicious encoding patterns in memory storage operations.
-author: Vikranth Kumar Shivaa
-date: 2025-12-04
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1702
+description: >-
+  Correlates an untrusted or unknown memory write with retrieval by a different
+  principal or session and a high-risk action that references the same memory
+  identifier. The 24-hour write-to-read and five-minute read-to-action windows
+  are deployment-tunable and intentionally leave dormant-poison coverage as a
+  stated limitation.
 logsource:
-  product: mcp
-  service: tool_execution
+  category: application
+  product: agent_memory_platform
 detection:
-  selection_tool:
-    tool_name|contains:
-      - 'save_memory'
-      - 'add_embedding'
-      - 'store_knowledge'
-      - 'upsert_vector'
-  selection_keywords:
-    parameters|contains:
-      - 'System Override'
-      - 'Ignore previous instructions'
-      - 'Urgent Task'
-      - 'IMPORTANT:'
-      - '[SYSTEM]'
-      - 'sudo'
-      - 'admin'
-      - 'IMPERATIVE:'
-  selection_suspicious_encoding:
-    parameters|contains:
-      - 'base64'
-      - 'data:image'
-      - 'data:application'
-      - '=='
-  condition: selection_tool and (selection_keywords or selection_suspicious_encoding)
+  selection_memory_write:
+    event_type: memory_write
+    source_trust:
+      - untrusted
+      - unknown
+    review_status:
+      - unreviewed
+      - rejected
+  selection_cross_principal_read:
+    event_type: memory_read
+    correlation_fields:
+      - memory_id
+      - tenant_id
+      - namespace
+    different_writer_or_session: true
+    maximum_write_age_seconds: 86400
+  selection_sensitive_action:
+    event_type: agent_action
+    risk:
+      - high
+      - critical
+    correlation_fields:
+      - context_memory_ids
+      - principal_id
+      - session_id
+  timeframe: 5m
+  condition: selection_memory_write followed by selection_cross_principal_read followed by selection_sensitive_action
+fields:
+  - timestamp
+  - memory_id
+  - writer_principal_id
+  - writer_session_id
+  - reader_principal_id
+  - reader_session_id
+  - tenant_id
+  - namespace
+  - source_origin
+  - source_trust
+  - review_status
+  - content_hash
+  - context_memory_ids
+  - risk
+  - action
 falsepositives:
-  - Legitimate administrative notes containing these keywords.
-  - System logs being saved to memory for analysis.
-  - Legitimate storage of encoded file attachments or images.
-  - Developer tools saving prompt templates or test cases.
-  - Automated backup processes dumping database content.
+  - Approved shared-memory curation or migration not labeled with its trusted-curator role.
+  - Legitimate multi-session automation that consumes new shared context before a sensitive action.
 level: high
 tags:
-  - attack.lateral_movement
-  - attack.t1565
-  - safe.t1702
+  - saf.t1702
+  - attack.t1565.001
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1702-C008
+  telemetry_claim_ids:
+    - SAF-T1702-C008
+  limitation_claim_ids:
+    - SAF-T1702-C009
+    - SAF-T1702-C014
+  validation_artifacts:
+    - tests/SAF-T1702/test_detector.py
+    - tests/SAF-T1702/fixtures.json
+    - tests/SAF-T1702/test-results.json
+    - research/techniques/SAF-T1702/validation/detection-test.txt
+    - research/techniques/SAF-T1702/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1702-C008]
+      rationale: Agent-memory write, read, and action telemetry is needed for causal correlation.
+    selection_memory_write:
+      claim_ids: [SAF-T1702-C008, SAF-T1702-C009]
+      rationale: Origin trust and review state identify attacker-reachable writes without relying solely on content classification.
+    selection_cross_principal_read:
+      claim_ids: [SAF-T1702-C007, SAF-T1702-C008]
+      rationale: Retrieval by a different principal or session establishes the defining sharing boundary.
+    selection_sensitive_action:
+      claim_ids: [SAF-T1702-C008, SAF-T1702-C011]
+      rationale: A high-risk action linked to the retrieved record captures behaviorally relevant use and prioritizes consequence.
+    timeframe:
+      claim_ids: [SAF-T1702-C008, SAF-T1702-C014]
+      rationale: Five minutes bounds read-to-action correlation while the separate 24-hour write age is explicitly tunable.
+    condition:
+      claim_ids: [SAF-T1702-C008]
+      rationale: Ordered correlation implements write, cross-boundary read, and consequential action as one analytic chain.
+    fields:
+      claim_ids: [SAF-T1702-C008]
+      rationale: Listed fields preserve identity, provenance, retrieval, and action context for investigation.
+    falsepositives:
+      claim_ids: [SAF-T1702-C009, SAF-T1702-C014]
+      rationale: Legitimate curation and multi-session automation can resemble the sequence and require trust-aware tuning.

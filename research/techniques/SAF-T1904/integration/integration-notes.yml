@@ -1,0 +1,61 @@
+version: 1
+technique_id: SAF-T1904
+generated_on: "2026-09-02"
+bundle_scope: Exactly one clean-room technique and its evidence, detector, tests, fragments, and validation records.
+destination_repository_modified: false
+
+merge_actions:
+  - Copy techniques/SAF-T1904 and research/techniques/SAF-T1904 only after verifying FREEZE.sha256.
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml after resolving source-ID collisions without changing claim meaning.
+  - Merge framework-fragment.yml into research/framework-model.yml after replacing synthetic neighbors with independently reviewed destination relationships.
+  - Merge alignment-fragment.yml into research/alignment-ledger.yml and record any destination conflicts.
+  - Preserve the frozen bundle as the comparison baseline; make any integration edits in a separate reviewable change.
+
+synthetic_validation_values:
+  - path: research/techniques/SAF-T1904/technique-contract.yml
+    value: SAF-T9001, SAF-T9002, and SAF-T9003 nearest-neighbor identifiers
+    required_action: Replace only after clean-room freeze with destination techniques supported by an independent alignment review.
+  - path: research/techniques/SAF-T1904/traceability-ledger.yml
+    value: 1111111111111111111111111111111111111111 repository-history SHA
+    required_action: Replace with the honest destination commit supporting any retained version-history assertion.
+
+source_archive:
+  retained_outside_bundle: true
+  acquisition_directory: /private/tmp/saf-all-cleanroom/SAF-T1904/acquisition
+  manifest_records: source-manifest-fragment.yml
+  integration_action: Copy only lawful, policy-approved archived materials to a destination archive or retain the reviewed URL/hash record and update the archive status.
+
+isolated_validation:
+  mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1904/mock
+  target_content_origin: This bundle only.
+  generic_inputs:
+    - scripts/validate-technique-research.py copied from the generic validator
+    - synthetic neighbor README files containing no target content
+  prohibited_content_present: false
+
+clean_room_boundary:
+  attestation: research/techniques/SAF-T1904/clean-room-attestation.yml
+  destination_comparison_performed: false
+  prior_target_artifacts_read: false
+
+unresolved: []
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-architecture-20250618: SRC-mcp-architecture-2025-06-18
+    SRC-mcp-tools-20250618: SRC-mcp-tools-2025-06-18
+    SRC-mcp-security-20251125: SRC-mcp-security-spec-2025-11-25
+    SRC-slack-chat-postmessage-20260902: SRC-slack-chat-postmessage
+    SRC-cisa-kev-20260901: SRC-cisa-kev-2026-09-01
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0011
+  canonical_neighbors: [SAF-T1102, SAF-T1911, SAF-T1903]
+  canonical_mitigations: [SAF-M-11, SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+  attack_mapping: {id: T1102.002, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1904/validation/detection-tests.txt
+    - research/techniques/SAF-T1904/validation/strict-validator.txt
+    - research/techniques/SAF-T1904/validation/canonical-validation.txt
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve frozen acquisition hashes as review evidence.
+  dependency_resolution: SAF-T1903 was independently clean-room authored and integrated; destination strict validation now passes.

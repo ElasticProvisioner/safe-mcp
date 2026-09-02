@@ -1,0 +1,257 @@
+version: 1
+technique_id: SAF-T1104
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+        - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+        - https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+        - https://www.rfc-editor.org/rfc/rfc8707.html
+      material_changes:
+        - Bound the behavior at the task-intent versus effective-authority boundary.
+        - Added authorization-sensitive tool discovery, per-operation scopes, step-up, confirmation, and audit requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword API: model context protocol
+        - NVD keyword API: AI agent prompt injection
+        - NVD keyword API: LLM tool
+        - Exact NVD records for CVE-2026-27966, CVE-2026-29783, CVE-2025-67510, CVE-2025-53097, CVE-2026-76072, and CVE-2025-32711
+        - Exact GHSA URLs opened only after their identifiers and URLs were discovered in reviewed NVD records
+        - CISA KEV catalog version 2026.09.01
+      material_changes:
+        - Selected three direct vulnerabilities with distinct interpreter, shell-approval, and database-authority mechanisms.
+        - Recorded Roo Code and Continue CLI as relevant but lower-ranked direct vulnerabilities.
+        - Rejected EchoLeak as adjacent non-MCP evidence and found no qualifying production breach.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+        - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+        - https://arxiv.org/html/2406.13352
+      material_changes:
+        - Added a direct controlled MCP demonstration as the core evidence.
+        - Separated prompt injection and tool poisoning delivery from privileged execution.
+        - Added benchmark evidence and detector limitations.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html
+        - https://code.claude.com/docs/en/security
+        - https://csrc.nist.gov/pubs/sp/800/207/final
+        - MCP Tools security considerations, authorization scope strategy, and security-best-practices scope minimization
+      material_changes:
+        - Defined normalized scope, approval, intent, and outcome telemetry.
+        - Built and tested the excess-authority plus intent-or-approval-gap analytic.
+        - Added per-tool scope, sandbox, explicit approval, and containment guidance.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - CISA KEV identifier comparison for all selected CVEs
+        - NVD and vendor review for exploitation status, affected ranges, fixed versions, and contrary records
+        - https://attack.mitre.org/techniques/T1106/
+      material_changes:
+        - Preserved the no-production-incident limitation and did not infer exploitation from CVE or proof-of-concept status.
+        - Recorded the Langflow affected-range display conflict.
+        - Classified ATT&CK T1106 as analogous rather than direct.
+    - pass: saturation_follow_up_discovery_change
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword API: overprivileged tool
+        - NVD keyword API: excessive permissions AI agent
+        - NVD keyword API: dangerous tool prompt injection
+        - NVD keyword API: confused deputy AI agent
+      material_changes:
+        - Added CVE-2026-29783 as a stronger selected example after the query found the current Copilot CLI advisory.
+        - Reviewed CVE-2026-76072 and retained it as an unselected direct vulnerability because remediation was unresolved.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword API: model context protocol broad scope
+        - NVD keyword API: agent excessive privilege tool
+        - Rechecked CISA KEV 2026.09.01 for selected identifiers
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword API: AI agent least privilege prompt injection
+        - NVD keyword API: MCP dangerous tool privilege
+        - Rechecked current MCP 2026-07-28 Tools and Authorization pages
+      material_changes: []
+  rationale: >-
+    Direct current MCP protocol and security guidance covers the defining
+    authorization boundary; original MCP experiments and AgentDojo cover the
+    end-to-end behavior; current NVD, originating advisories, CISA KEV, and
+    first-party remediation cover incidents, vulnerabilities, and exploitation
+    status; and operational sources cover telemetry and controls. A change-
+    producing follow-up reset the clock, after which two narrower synonym and
+    authority checks returned no new controlling requirement, higher-impact
+    example, remediation change, limitation, or detection constraint.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 9
+  selected_examples:
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-ghsa-3645-fxcv-hqr4
+    - SRC-ghsa-g8r9-g2v8-jv6f
+    - SRC-ghsa-898v-775g-777c
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: WhatsApp MCP controlled experiments
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration_only
+      impact: Trusted WhatsApp tools disclosed contacts or transmitted chat data beyond user intent.
+      remediation: Researchers recommended stronger contextual guardrails and cautious server trust; no product patch was asserted.
+      selected: true
+      rationale: Highest-confidence protocol-specific end-to-end reproduction and the basis for Demonstrated status.
+    - source_id: SRC-ghsa-3645-fxcv-hqr4
+      identifier: CVE-2026-27966 / GHSA-3645-fxcv-hqr4
+      relationship: direct_vulnerability
+      exploitation_status: public_proof_of_concept; production_exploitation_not_identified
+      impact: Prompt-driven Python and operating-system command execution on the Langflow server.
+      remediation: Fixed in 1.8.0 by removing or disabling automatic dangerous-code exposure.
+      selected: true
+      rationale: Critical direct example of an unnecessarily exposed interpreter tool with a complete proof of concept.
+    - source_id: SRC-ghsa-g8r9-g2v8-jv6f
+      identifier: CVE-2026-29783 / GHSA-g8r9-g2v8-jv6f
+      relationship: direct_vulnerability
+      exploitation_status: public_proof_of_concept; production_exploitation_not_identified
+      impact: Command execution could bypass the expected approval boundary for write-capable shell actions.
+      remediation: Fixed in 0.0.423 with parse-time detection, unconditional blocking, and prompt hardening.
+      selected: true
+      rationale: High-impact current product example at the exact privileged-tool approval boundary.
+    - source_id: SRC-ghsa-898v-775g-777c
+      identifier: CVE-2025-67510 / GHSA-898v-775g-777c
+      relationship: direct_vulnerability
+      exploitation_status: unknown; not_present_in_cisa_kev_2026-09-01
+      impact: Broad database privileges could permit destructive or privilege-related SQL through an unrestricted write tool.
+      remediation: Fixed in 2.8.12; vendor guidance also calls for constrained operations, least-privilege DB users, policy, and approval.
+      selected: true
+      rationale: Directly isolates excessive downstream database privilege as an attack amplifier.
+    - source_id: SRC-ghsa-wr2q-46pg-f228
+      identifier: CVE-2025-53097 / GHSA-wr2q-46pg-f228
+      relationship: direct_vulnerability
+      exploitation_status: CISA-ADP exploitation none; production_exploitation_not_identified
+      impact: Potential out-of-workspace file disclosure through an unapproved network request.
+      remediation: Fixed in 3.20.3 by enforcing the workspace read boundary.
+      selected: false
+      rationale: Direct but lower impact and more conditional than the selected examples.
+    - source_id: SRC-vulncheck-cve-2026-76072
+      identifier: CVE-2026-76072
+      relationship: direct_vulnerability
+      exploitation_status: unknown
+      impact: Unattended agent execution could perform destructive shell operations missed by an incomplete denylist.
+      remediation: No fixed version was established in the reviewed NVD or CNA record.
+      selected: false
+      rationale: Material direct candidate, but unresolved remediation and lower corroboration make it weaker than selected examples.
+    - source_id: SRC-nvd-cve-2025-32711
+      identifier: CVE-2025-32711 / EchoLeak
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: vulnerability_disclosure; production_exploitation_not_identified
+      impact: NVD records network information disclosure in Microsoft 365 Copilot.
+      remediation: Microsoft advisory exists, but the moved original research page did not permit complete independent review in this run.
+      selected: false
+      rationale: Non-MCP adjacent prompt-injection and data-flow evidence; the reviewed record does not establish this contract's exact authority boundary.
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: MCP tool poisoning and cross-server shadowing experiments
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Malicious tool metadata redirected trusted tools and exposed data.
+      remediation: Researchers recommended tool visibility, definition pinning, and cross-server protections.
+      selected: false
+      rationale: Strong delivery evidence but adjacent to the execution behavior defined by this contract.
+    - source_id: SRC-agentdojo-2024
+      identifier: AgentDojo 629 security test cases
+      relationship: direct_demonstration
+      exploitation_status: controlled_benchmark_only
+      impact: Attack goals caused unauthorized actions in synthetic stateful tool environments.
+      remediation: Evaluated defenses reduced but did not eliminate attack success.
+      selected: false
+      rationale: Broad corroborating benchmark; less MCP-specific than the selected direct demonstration.
+
+sources_consulted:
+  - SRC-agentdojo-2024
+  - SRC-anthropic-claude-code-security
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-3645-fxcv-hqr4
+  - SRC-ghsa-898v-775g-777c
+  - SRC-ghsa-g8r9-g2v8-jv6f
+  - SRC-ghsa-wr2q-46pg-f228
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-attack-t1106
+  - SRC-nist-sp800-207
+  - SRC-nvd-cve-2025-32711
+  - SRC-nvd-cve-2025-53097
+  - SRC-nvd-cve-2025-67510
+  - SRC-nvd-cve-2026-27966
+  - SRC-nvd-cve-2026-29783
+  - SRC-nvd-cve-2026-76072
+  - SRC-owasp-mcp-security
+  - SRC-rfc8707
+  - SRC-vulncheck-cve-2026-76072
+sources_cited:
+  - SRC-agentdojo-2024
+  - SRC-anthropic-claude-code-security
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-3645-fxcv-hqr4
+  - SRC-ghsa-898v-775g-777c
+  - SRC-ghsa-g8r9-g2v8-jv6f
+  - SRC-ghsa-wr2q-46pg-f228
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-attack-t1106
+  - SRC-nist-sp800-207
+  - SRC-nvd-cve-2025-32711
+  - SRC-nvd-cve-2025-53097
+  - SRC-nvd-cve-2025-67510
+  - SRC-nvd-cve-2026-27966
+  - SRC-nvd-cve-2026-29783
+  - SRC-nvd-cve-2026-76072
+  - SRC-owasp-mcp-security
+  - SRC-rfc8707
+  - SRC-vulncheck-cve-2026-76072
+sources_rejected:
+  - source_id: SRC-nvd-cve-2025-32711
+    reason: Adjacent non-MCP disclosure whose reviewed record did not establish the exact task-intent versus effective-tool-authority boundary.
+sources_blocked: []
+
+conflicts:
+  - issue: The Langflow GHSA displays affected versions below 1.6.9 while identifying 1.8.0 as the patched version; NVD states prior to 1.8.0.
+    resolution: The technique states only that NVD records 1.8.0 as the fix and discloses the affected-range display conflict.
+  - issue: Absence from CISA KEV could be misconstrued as proof of no exploitation.
+    resolution: Exploitation is recorded as unknown or not identified; no claim equates KEV absence with impossibility.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1104-C005
+  rationale: >-
+    Invariant Labs directly reproduced the complete defining sequence in a
+    controlled MCP environment: adversarial influence caused trusted WhatsApp
+    tool actions beyond user intent. This supports Demonstrated, not Observed,
+    because no directly reviewed primary source documented malicious production
+    exploitation. Vulnerability and benchmark evidence corroborate mechanisms
+    and impacts without raising the label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

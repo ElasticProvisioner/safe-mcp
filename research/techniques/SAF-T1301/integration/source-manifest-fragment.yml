@@ -1,0 +1,201 @@
+version: 1
+sources:
+  - id: SRC-clean-t1301-mcp-tools-2025-11-25
+    title: Tools - Model Context Protocol
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official specification page.
+    locators: ["Tools lines 74-90", "Listing Tools lines 119-153", "Calling Tools lines 155-183", "Tool names lines 260-268"]
+    review_notes: Verified tool control classification, description fields, listing and calling flows, and security guidance.
+    review_status: opened_reviewed
+    archive: &remote
+      status: remote_reviewed_not_archived
+      reason: Public authoritative web source reviewed directly; no local source archive is included in the clean-room bundle.
+      review_evidence: {method: direct_browser_open, reviewed_on: "2026-09-01"}
+  - id: SRC-clean-t1301-mcp-tools-draft
+    title: Tools - Model Context Protocol Draft
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    source_class: protocol_or_standard
+    version_or_date: Draft reviewed 2026-09-01
+    official_url: https://modelcontextprotocol.io/specification/draft/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official draft specification page.
+    locators: ["Security guidance lines 82-116", "Tool name uniqueness and aggregator collision lines 299-333"]
+    review_notes: Used only to distinguish explicit name-collision handling from semantic cross-server override.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-mcp-annotations-2026
+    title: "Tool Annotations as Risk Vocabulary: What Hints Can and Can't Do"
+    publisher: Model Context Protocol Blog
+    authors: [Ola Hungerford, Sam Morrow, Luca Chang]
+    source_class: credible_practice
+    version_or_date: "2026-03-16"
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official MCP blog article.
+    locators: ["Annotations as untrusted hints lines 26-49", "Multi-server risk and non-enforcement lines 73-95", "Deterministic control discussion lines 124-127"]
+    review_notes: Verified that annotations are hints, not deterministic enforcement, and multi-server risk is session-compositional.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-invariant-shadowing
+    title: "MCP Security Notification: Tool Poisoning Attacks"
+    publisher: Invariant Labs
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    source_class: research
+    version_or_date: "2025-04-01"
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the primary researcher disclosure.
+    locators: ["Tool shadowing demonstration lines 81-116", "Mitigations lines 117-129"]
+    review_notes: Verified the controlled Cursor example, cross-server trusted-email effect, malicious-tool non-invocation, and proposed controls.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-invariant-scan
+    title: Introducing MCP-Scan
+    publisher: Invariant Labs
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    source_class: implementation_artifact
+    version_or_date: "2025-04-11"
+    official_url: https://invariantlabs.ai/blog/introducing-mcp-scan
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the developer's scanner announcement and design description.
+    locators: ["Descriptor scanning and cross-origin escalation lines 27-59"]
+    review_notes: Verified that the scanner analyzes descriptions and cross-references among servers; no detection efficacy metrics were found.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-arxiv-2512.06556v2
+    title: "Semantic Attacks on Tool-Augmented LLMs: Securing the Model Context Protocol Against Descriptor-Level Manipulation"
+    publisher: arXiv
+    authors: [Saeid Jamshidi, Arghavan Moradi Dakhel, Kawser Wazed Nafi, Foutse Khomh]
+    source_class: research
+    version_or_date: arXiv:2512.06556v2, revised 2026-05-21
+    official_url: https://arxiv.org/abs/2512.06556
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the arXiv abstract, PDF, methodology, results, limitations, and license record.
+    locators: ["PDF p. 0 lines 56-87", "pp. 2-3 lines 180-189 and 245-288", "p. 7 lines 644-680", "p. 15 lines 1233-1250"]
+    review_notes: Verified shared-context shadowing experiments, reported results, and controlled-simulation limitations; author list reflects version 2.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-ms-ir-2026
+    title: Securing AI agents as AI tools move from reading to acting
+    publisher: Microsoft Security Blog
+    authors: [Microsoft Defender Experts Cybersecurity Incident Response, Microsoft Defender Security Research, Mohammed Zaid]
+    source_class: incident_report
+    version_or_date: "2026-06-30"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/30/securing-ai-agents-ai-tools-move-from-reading-acting/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the Microsoft incident-response report.
+    locators: ["Cross-server tool shadowing lines 48-63", "Defensive guidance lines 64-80", "Coordinated-disclosure limitation line 86"]
+    review_notes: Verified the report's observed-in-2026 wording, finance workflow, consequence, controls, and withheld organization details.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-ms-taxonomy-2026
+    title: Updating our taxonomy of failure modes in agentic AI systems
+    publisher: Microsoft Security Blog
+    authors: [Microsoft AI Red Team]
+    source_class: credible_practice
+    version_or_date: "2026-06-04"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the Microsoft AI Red Team taxonomy article.
+    locators: ["Red-team basis and cross-server instruction override lines 46-64", "Detection and controls lines 66-79"]
+    review_notes: Verified explicit cross-server instruction override terminology and provenance, isolation, and monitoring control themes.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-openai-mcp-guide
+    title: MCP and Connectors
+    publisher: OpenAI
+    authors: [OpenAI]
+    source_class: credible_practice
+    version_or_date: Live documentation reviewed 2026-09-01
+    official_url: https://developers.openai.com/api/docs/guides/tools-connectors-mcp
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of official OpenAI developer documentation.
+    locators: ["Tool listing and allowed tools lines 1399-1425 and 1482-1486", "Call records lines 1788-1805", "Security guidance lines 3293-3316"]
+    review_notes: Verified server label and tool-name logging, allowed-tool restrictions, approvals, trusted-server guidance, and malicious-instruction warning.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-nvd-cve-2025-58357
+    title: CVE-2025-58357 Detail
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, GitHub Security Lab]
+    source_class: official_advisory
+    version_or_date: NVD record reviewed 2026-09-01
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-58357
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the NVD vulnerability record.
+    locators: ["Description and affected versions lines 104-159"]
+    review_notes: Classified as adjacent content-injection and script-execution risk, fixed in 5ire 0.14.0, not cross-server semantic override.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-nvd-cve-2026-33252
+    title: CVE-2026-33252 Detail
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, Go MCP SDK maintainers]
+    source_class: official_advisory
+    version_or_date: NVD record reviewed 2026-09-01
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-33252
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the NVD vulnerability record.
+    locators: ["Description lines 104-106", "Metrics, weakness, and references lines 149-205"]
+    review_notes: Classified as adjacent CSRF and origin-validation risk, fixed in Go MCP SDK 1.4.1, with no cross-server descriptor mechanism.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-unit42-shadowing
+    title: Agent Session Smuggling in Agent2Agent Systems
+    publisher: Palo Alto Networks Unit 42
+    authors: [Palo Alto Networks Unit 42]
+    source_class: research
+    version_or_date: Live report reviewed 2026-09-01
+    official_url: https://unit42.paloaltonetworks.com/agent-session-smuggling-in-agent2agent-systems/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the Unit 42 taxonomy and attack discussion.
+    locators: ["MCP Tool/Agent Shadowing definition line 49"]
+    review_notes: Recorded conflicting terminology that defines shadowing through identical or similar names; used only for scope reconciliation.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-attack-t1548
+    title: "T1548: Abuse Elevation Control Mechanism"
+    publisher: MITRE ATT&CK
+    authors: [MITRE]
+    source_class: protocol_or_standard
+    version_or_date: Last modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1548/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official ATT&CK technique page.
+    locators: ["Technique overview, privilege-escalation tactic, and definition lines 16-45"]
+    review_notes: Used only for an explicitly analogous mapping; the native elevation-control mechanism differs from semantic tool provenance.
+    review_status: opened_reviewed
+    archive: *remote
+  - id: SRC-clean-t1301-jfrog-cve-2026-25905
+    title: MCP Run Python Lack of Isolation MCP Takeover
+    publisher: JFrog Security Research
+    authors: [Natan Nehorai, JFrog Security Research]
+    source_class: official_advisory
+    version_or_date: JFSA-2026-001653030, 2026-02-09
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-run-python-lack-of-isolation-mcp-takeover-jfsa-2026-001653030/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the researcher advisory and proof-of-concept explanation.
+    locators: ["Description lines 23-34", "Proof of concept lines 37-96", "Remediation status lines 97-99"]
+    review_notes: Classified as enabling only because the proof mutates the compromised server's own tool metadata; project archived and no fix listed.
+    review_status: opened_reviewed
+    archive: *remote

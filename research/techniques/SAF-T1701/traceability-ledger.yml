@@ -1,0 +1,166 @@
+version: 1
+technique_id: SAF-T1701
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1701/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1701/technique-contract.yml
+  supports: Internal scope name tactic and completion metadata.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1701/source-coverage.yml
+  supports: Research scope evidence label gaps and saturation statement.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1701/quality-review.yml
+  supports: Validation commands results review date and authorship state.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1701/detection-rule.yml
+  supports: Explicitly labeled behavioral analytic and limitations.
+- id: LOCAL-detection-runner
+  path: tests/SAF-T1701/run_detection_tests.py
+  supports: Executable detector implementation.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1701/test-cases.yml
+  supports: Positive negative boundary and malformed fixtures.
+- id: LOCAL-detection-results
+  path: tests/SAF-T1701/expected-results.yml
+  supports: Expected detector outcomes.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1701/validation/detector-test.txt
+  supports: Isolated and canonical detector commands, counts, and results.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1701/validation/strict-validator.txt
+  supports: Isolated and canonical strict-validator commands and results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1701-X001
+  candidate: Treat the controlled demonstrations as confirmed production compromise.
+  origin: Incident-search classification risk.
+  attempted_searches:
+  - site:cisa.gov Model Context Protocol security prompt injection
+  - site:nvd.nist.gov/vuln/detail MCP prompt injection tool output agent exfiltration
+    CVE
+  consulted_source_ids:
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invisible-prompts-2025
+  reason: Reviewed sources explicitly describe controlled tests rather than production
+    incidents.
+  prohibited_publishable_text:
+  - confirmed production compromise
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X002
+  candidate: Generalize reviewed demonstrations to every MCP host.
+  origin: Overbroad protocol inference.
+  attempted_searches:
+  - site:modelcontextprotocol.io specification security tool output prompt injection
+    authorization MCP
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-injecagent-2024
+  reason: Neither the protocol nor controlled studies establish universal implementation
+    behavior.
+  prohibited_publishable_text:
+  - all MCP hosts are vulnerable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X003
+  candidate: Classify the markdownify SSRF as the target behavior.
+  origin: Vulnerability search lead CVE-2025-5276.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail Model Context Protocol prompt injection
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-5276
+  reason: SSRF inside one server does not prove a returned result caused a distinct
+    target-tool call.
+  prohibited_publishable_text:
+  - CVE-2025-5276 is Cross-Tool Contamination
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X004
+  candidate: Collapse tool-description poisoning into result-borne contamination.
+  origin: Invariant MCP poisoning and WhatsApp Experiment 1.
+  attempted_searches:
+  - site:invariantlabs.ai/blog MCP tool poisoning security
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  reason: Tool descriptions act before invocation; the target contract starts with
+    a returned source-tool result.
+  prohibited_publishable_text:
+  - tool descriptions are the same mechanism
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X005
+  candidate: Assert active exploitation from the KEV catalog.
+  origin: Government-catalog search.
+  attempted_searches:
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2026-58168
+  - CISA KEV JSON direct retrieval
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-58168
+  reason: The direct KEV feed was blocked and no qualifying CISA entry was reviewed.
+  prohibited_publishable_text:
+  - CISA KEV proves active exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X006
+  candidate: Include a calendar-extension RCE lead as a qualifying example.
+  origin: Exact URL supplied by the official MCP risk-vocabulary article.
+  attempted_searches:
+  - https://layerxsecurity.com/blog/claude-desktop-extensions-rce/
+  consulted_source_ids:
+  - SRC-mcp-annotations-2026-03-16
+  reason: The exact source returned HTTP 403, so the claimed facts and mechanism were
+    not independently reviewable.
+  prohibited_publishable_text:
+  - LayerX calendar incident qualifies
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X007
+  candidate: Use a 2026 arXiv preprint to claim universal compromise across clients.
+  origin: Academic saturation search.
+  attempted_searches:
+  - site:arxiv.org Model Context Protocol security cross tool prompt injection
+  consulted_source_ids:
+  - SRC-arxiv-cross-tool-2026
+  reason: The first-version preprint showed inconsistent placeholder venue metadata
+    and was unnecessary given stronger sources.
+  prohibited_publishable_text:
+  - preprint establishes universal client compromise
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X008
+  candidate: Claim the proposed detector has complete accuracy.
+  origin: Detection design review.
+  attempted_searches:
+  - site:aclanthology.org indirect prompt injection defense false positives tool agents
+    limitations
+  - site:invariantlabs.ai/blog prompt injection detection false positives agent tools
+  consulted_source_ids:
+  - SRC-adaptive-attacks-2025
+  - SRC-formal-security-2024
+  reason: Reviewed research demonstrates bypass and classification error, while no
+    production corpus validates this rule.
+  prohibited_publishable_text:
+  - detector guarantees zero false negatives
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1701-X009
+  candidate: Reuse SAFE-MCP or SAF-derived taxonomy discovered in a search result.
+  origin: Academic search snippet only.
+  attempted_searches:
+  - site:aclanthology.org cross-tool prompt injection agents
+  consulted_source_ids: []
+  reason: The lead risked importing prior taxonomy and was neither opened nor used
+    under clean-room constraints.
+  prohibited_publishable_text:
+  - SAFE-MCP taxonomy controls this technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

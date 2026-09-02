@@ -1,0 +1,134 @@
+version: 1
+technique_id: SAF-T1205
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1205/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1205/technique-contract.yml
+  supports: Internal name, tactic, scope, safe-example, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1205/quality-review.yml
+  supports: Validation commands, detection result, gate status, and review attribution.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1205/detection-rule.yml
+  supports: The standalone example analytic.
+- id: LOCAL-detection-data
+  path: techniques/SAF-T1205/test-logs.json
+  supports: Synthetic positive, negative, boundary, legitimate-change, and malformed
+    cases.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1205/test_detection_rule.py
+  supports: Deterministic evaluation of the example analytic.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1205/validation/detection-tests.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1205/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1205-X001
+  candidate: A production breach directly attributed to post-approval tool redefinition.
+  origin: Current breach and vulnerability search pass.
+  attempted_searches:
+  - site:cisa.gov Model Context Protocol rug pull incident
+  - site:microsoft.com/security/blog MCP rug pull incident breach production
+  - site:unit42.paloaltonetworks.com MCP rug pull production
+  - site:snyk.io/blog MCP rug pull production incident
+  consulted_source_ids: []
+  reason: No primary production incident satisfying the full temporal trust-transition
+    contract was identified.
+  prohibited_publishable_text:
+  - confirmed production rug-pull breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X002
+  candidate: CVE-2025-58357 as a direct instance of the technique.
+  origin: NVD vulnerability discovery pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE-2025-58357 MCP
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-58357
+  reason: The record describes content injection from a compromised server, not a
+    later definition change accepted under prior approval.
+  prohibited_publishable_text:
+  - CVE-2025-58357 directly proves persistent tool redefinition
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X003
+  candidate: CVE-2026-22792 as a direct instance of the technique.
+  origin: NVD discovery result.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE-2026-22792 MCP server creation
+  consulted_source_ids: []
+  reason: The lead concerns unauthorized server creation, which changes the trusted
+    principal rather than redefining an accepted tool under the same relationship.
+  prohibited_publishable_text:
+  - CVE-2026-22792 is a persistent tool redefinition
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X004
+  candidate: The Invariant Cursor experiment directly reproduced the post-approval
+    temporal step.
+  origin: High-impact research example review.
+  attempted_searches:
+  - site:invariantlabs.ai rug pull MCP
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  reason: The experiment reproduced malicious initial description behavior; post-approval
+    replacement was described separately and not exercised in that experiment.
+  prohibited_publishable_text:
+  - Invariant directly demonstrated post-approval replacement
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X005
+  candidate: CVE-2025-64443 as direct evidence of retained post-approval trust.
+  origin: NVD and Docker advisory review.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE-2025-64443
+  - Exact Docker advisory URL obtained from the NVD record.
+  consulted_source_ids:
+  - SRC-docker-ghsa-46gc-2025
+  - SRC-nvd-cve-2025-64443
+  reason: The vulnerability enables manipulation of tools through DNS rebinding but
+    does not establish the required benign-then-changed sequence or retained approval.
+  prohibited_publishable_text:
+  - CVE-2025-64443 is a direct rug-pull vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X006
+  candidate: Public exposure or missing authentication of MCP servers is itself this
+    technique.
+  origin: Current vendor-security search leads.
+  attempted_searches:
+  - site:microsoft.com/security/blog exposed MCP servers authentication
+  - site:cisa.gov exposed MCP servers
+  consulted_source_ids: []
+  reason: Exposure and authentication failures are entry conditions or different boundaries;
+    they do not prove post-trust definition mutation.
+  prohibited_publishable_text:
+  - exposed MCP servers are persistent tool redefinition
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1205-X007
+  candidate: Later downstream exfiltration or execution is automatically part of the
+    technique.
+  origin: Scope reconciliation across research examples and framework mappings.
+  attempted_searches:
+  - site:arxiv.org/abs/2506.02040 MCP rug pull experiments tool changes
+  - site:learn.microsoft.com rug pull MITRE ATLAS mapping
+  consulted_source_ids:
+  - SRC-song-mcp-attack-v4
+  - SRC-ms-rug-pull-catalog-2026
+  reason: Downstream actions have separate mechanisms and evidence; the defining immediate
+    outcome is retained influence after the unapproved change.
+  prohibited_publishable_text:
+  - every redefinition necessarily exfiltrates data
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

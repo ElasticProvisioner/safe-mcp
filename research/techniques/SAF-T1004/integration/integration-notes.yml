@@ -1,0 +1,104 @@
+version: 1
+technique_id: SAF-T1004
+neutral_name: Server Impersonation / Name-Collision
+normalized_on: "2026-09-01"
+bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1004
+state: canonical_clean_room_bundle_frozen_pending_integration
+repository_modifications_made: false
+new_research_performed_during_normalization: false
+prohibited_target_or_shared_registry_access_during_normalization: false
+
+pre_normalization_freeze:
+  manifest_sha256: 0a9cf188a0842a08c5a48ed7b744c1efc0e1b55b64758cf7c847d48a50e16f7e
+  entries: 18
+  verification: passed_all_entries_before_normalization
+
+preservation_review:
+  behavior_boundary:
+    result: preserved
+    detail: Wrong-server selection through ambiguous, colliding, lookalike, self-asserted, or insufficiently authenticated server identity remains the defining behavior; later tool resolution, issuer mix-up, generic delivery, and proxy-only behavior remain out of scope.
+  claims:
+    result: preserved_and_schema_expanded
+    before: 14 short IDs with noncanonical fields
+    after: 14 full SAF-T1004-C001 through SAF-T1004-C014 records with canonical source relations, exact locators, limitations, inference flags, and validated status
+  evidence_status:
+    result: preserved
+    value: demonstrated
+    basis: The actual MCP Registry publish path stored an unverified OCI association in a controlled proof that expressly excluded a production attack.
+  severity:
+    result: preserved
+    value: medium
+    limitation: The advisory's demonstrated Registry effect was Low/CVSS 3.5; Medium is conditioned on separately supported but undemonstrated downstream exposure.
+  sources:
+    result: preserved
+    before: 30 source records
+    after: 30 canonical source records
+    additions: []
+    removals: []
+  selected_examples:
+    result: preserved
+    values:
+      - SRC-ghsa-oci-rate-limit as direct vulnerability and controlled demonstration
+      - SRC-ghsa-weknora as explicitly adjacent tool-resolution evidence
+      - SRC-jfrog-azure-typosquat as historical non-MCP analogy
+  rejected_and_unselected_evidence:
+    result: preserved
+    detail: Hypothetical practitioner framing, the broad benchmark, eight NVD candidate records, corroborating duplicate records, and the bounded no-production-breach lead remain classified and omitted where required.
+  named_attributions:
+    result: preserved
+    values:
+      - Ryan Vonbrubeck (@dodge1218)
+      - rdimitrov
+      - lyingbug
+      - aleister1102
+      - Andrey Polkovnychenko
+      - Shachar Menashe
+      - JFrog Security Research
+      - Peter Saint-Andre
+      - Rich Salz
+      - Sharon Farber
+      - Jack Batzner
+      - MCP Specification contributors and MCP Registry maintainers
+  detection_intent:
+    result: preserved_in_canonical_rule
+    conditions:
+      - Failed, skipped, unknown, or false publisher and package binding on a security-relevant action
+      - Approved alias resolving to a different canonical identity tuple
+      - TLS service-identity mismatch
+    validation_cases: 6
+    covered_classes: [positive, negative, boundary, expected_false_positive]
+  limitations:
+    result: preserved
+    values:
+      - No production breach was established in the reviewed corpus; universal absence is not claimed.
+      - No live Registry, package, endpoint, certificate, or production environment was exercised.
+      - The detector requires normalized identity telemetry and an approved baseline that products may not emit.
+      - Confusable-name matching remains a secondary, version-sensitive, font-dependent review signal.
+
+canonical_normalization:
+  readme: Required headings, Overview metadata, visible Evidence Summary and References indexes, and same-line hidden_html_v1 trace comments.
+  claims: Full IDs, canonical classes and evidence statuses, materiality, relation objects, locators, corroboration, limitations, conflicts, inference, and validated status.
+  sources: Merge-compatible source-manifest schema with canonical classes, opened_reviewed status, review metadata, locators, authors, and remote-review archive exceptions.
+  packet: Current contract, coverage, rights, quality, traceability, and clean-room attestation fields and completion statuses.
+  detection: UUID, logsource, detection selections and condition, fields, falsepositives, level, SAF tag, component traceability, and ledgered validation artifacts.
+  framework: Merge-compatible framework-model technique record with isolated detection joins.
+
+isolated_validation:
+  result: passed_strict_current_validator
+  mechanism: The unchanged current validator is copied into a fresh temporary synthetic repository with this bundle, merge-compatible source and framework fragments, minimal neighbor stubs, an empty alignment ledger, and a real temporary mock git commit SHA.
+  bundle_owned_failures: []
+
+pending_real_integration:
+  - Verify every new FREEZE.sha256 entry before opening repository target artifacts or shared registries.
+  - Reconcile all 30 source IDs and merge source-manifest-fragment.yml into the shared source manifest without introducing research leads.
+  - Replace the isolated synthetic ATK-TA0001 join with the honest canonical tactic ID and reconcile mitigation, neighbor, and alignment joins.
+  - Replace the zero repository-history placeholder only with an honest repository commit SHA.
+  - Copy the technique and packet artifacts into canonical locations after collision and provenance review.
+  - Run repository validators and framework coverage checks; update all affected traces and hashes together if integration changes publishable wording.
+
+deferred_fields:
+  shared_source_id_collisions: pending_integration
+  canonical_tactic_id: pending_integration
+  canonical_mitigation_ids: pending_integration
+  repository_history_sha: pending_integration
+  integration_commit: pending_integration

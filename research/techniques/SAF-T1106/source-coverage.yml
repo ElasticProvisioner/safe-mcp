@@ -1,0 +1,189 @@
+version: 1
+technique_id: SAF-T1106
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io/specification/2026-07-28 tools specification tool call user confirmation security'
+        - 'site:modelcontextprotocol.io/specification/2026-07-28 security best practices tool execution rate limits'
+      material_changes:
+        - Established current MCP tool feedback, safety, timeout, rate-limit, and audit behavior.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail "agent" "infinite loop" LLM'
+        - 'site:nvd.nist.gov/vuln/detail AutoGPT denial of service loop'
+        - 'site:cisa.gov/known-exploited-vulnerabilities-catalog AI agent denial service infinite loop'
+        - 'site:aws.amazon.com/security/security-bulletins agent loop denial of service AI'
+        - 'site:cloud.google.com/support/bulletins agent loop denial of service AI'
+        - 'site:status.openai.com AI agent infinite loop repeated tool calls incident resource exhaustion'
+      material_changes:
+        - Classified four disclosed defects as adjacent and found no qualifying production incident.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:arxiv.org autonomous agents infinite loop denial of service tool calls adversarial'
+        - 'site:arxiv.org agentic feedback loop unbounded tool calls budget exhaustion detection 2026'
+      material_changes:
+        - Selected two controlled end-to-end demonstrations and one structural vulnerability study.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:learn.microsoft.com agent loop detection tool-call budget resource exhaustion'
+        - 'site:modelcontextprotocol.io repeated tool calls iteration limit resource exhaustion security'
+      material_changes:
+        - Established required telemetry, hard bounds, and progress-aware detection design.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:arxiv.org "infinite agentic loops" bounds detection'
+        - 'site:arxiv.org "autonomous loops" progress verification stagnation'
+        - 'site:attack.mitre.org/techniques resource hijacking cloud compute abuse denial of service'
+      material_changes:
+        - Added false-positive and externally grounded progress limitations and an analogous ATT&CK mapping.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - '"repeated tool calls" "no progress" agent loop security site:arxiv.org'
+        - '"runaway costs" "agent" "iteration limits" security site:learn.microsoft.com'
+        - '"autonomous loops" "resource exhaustion" AI agent site:cisa.gov'
+        - '"unbounded loop" "LLM agent" vulnerability site:nvd.nist.gov'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - '"autonomous agent" "tool-call" "resource amplification" loop site:arxiv.org'
+        - '"completion" "repeated" "agent loop" "resource" security site:arxiv.org'
+        - '"AI agent" "unbounded loops" "cost" site:learn.microsoft.com'
+        - '"agent" "infinite loop" "denial of service" site:nvd.nist.gov'
+      material_changes: []
+  rationale: >-
+    Current protocol, official operational guidance, direct demonstrations,
+    structural vulnerability research, advisories, incident sources, defense
+    challenges, and framework boundaries cover every publishable proposition.
+    Two post-incorporation authority-restricted passes produced no material change.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-zhou-2026
+    - SRC-li-otora-2026
+    - SRC-hou-ial-2026
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-zhou-2026
+      identifier: arXiv:2601.10955v2
+      relationship: direct_demonstration
+      exploitation_status: demonstrated_in_controlled_environment
+      impact: Up to 658.10x token amplification and reduced throughput while task success remained high.
+      remediation: Hard cross-turn budgets, loop-aware monitoring, output trust controls, and cancellation.
+      selected: true
+      rationale: Directly exercises attacker-controlled MCP tool-facing content and autonomous tool-call re-entry.
+    - source_id: SRC-li-otora-2026
+      identifier: arXiv:2605.08876v3
+      relationship: direct_demonstration
+      exploitation_status: demonstrated_in_controlled_environment
+      impact: Up to 10.8x reasoning-time increase with high task correctness in evaluated benchmarks.
+      remediation: Runtime budgets, behavior monitoring, and workload-sensitive escalation.
+      selected: true
+      rationale: Direct adversarial triggering of continued reasoning and tool execution in agents.
+    - source_id: SRC-hou-ial-2026
+      identifier: arXiv:2607.01641v1
+      relationship: direct_vulnerability
+      exploitation_status: structurally_confirmed_not_dynamically_exploited
+      impact: Cost, availability, context growth, and repeated external-effect exposure in 68 confirmed findings.
+      remediation: Effective bounds on every feedback cycle and progress/completion controls.
+      selected: true
+      rationale: Highest-impact real-project structural evidence, with static-analysis limits disclosed.
+    - source_id: SRC-nvd-cve-2025-32437
+      identifier: CVE-2025-32437
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof_of_concept_reported_by_CISA_SSVC
+      impact: AutoGPT workflow blocks can loop or write until disk exhaustion.
+      remediation: Upgrade to AutoGPT Platform 0.6.3 or later.
+      selected: false
+      rationale: User-composed deterministic workflow and disk limit defects, not attacker-influenced autonomous continuation.
+    - source_id: SRC-nvd-cve-2024-12704
+      identifier: CVE-2024-12704
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof_of_concept_reported_by_CISA_SSVC
+      impact: Incorrect type can trigger an infinite loop in a LlamaIndex streaming callback.
+      remediation: Upgrade to LlamaIndex 0.12.6 or later.
+      selected: false
+      rationale: Implementation loop in a callback, not an autonomous agent decision loop.
+    - source_id: SRC-nvd-cve-2024-58340
+      identifier: CVE-2024-58340
+      relationship: rejected
+      exploitation_status: proof_of_concept_reported_by_CISA_SSVC
+      impact: Parser ReDoS can consume resources.
+      remediation: Upgrade beyond affected LangChain releases.
+      selected: false
+      rationale: Single parser regular-expression behavior lacks autonomous re-entry.
+    - source_id: SRC-nvd-cve-2024-2965
+      identifier: CVE-2024-2965
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof_of_concept_reported_by_CISA_SSVC
+      impact: Self-referential URL input can cause recursion and denial of service.
+      remediation: Upgrade LangChain to 0.2.5 or later.
+      selected: false
+      rationale: Loader recursion is deterministic implementation behavior, not model/tool continuation.
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-rc-20260728
+  - SRC-zhou-2026
+  - SRC-li-otora-2026
+  - SRC-hou-ial-2026
+  - SRC-wu-loopharness-2026
+  - SRC-park-progress-2026
+  - SRC-ms-agent-responsibility
+  - SRC-ms-unbounded-dos
+  - SRC-ms-resource-gov
+  - SRC-ms-agentic-rag
+  - SRC-ms-agent-looping
+  - SRC-mitre-t1496
+  - SRC-mitre-t1499-003
+  - SRC-nvd-cve-2025-32437
+  - SRC-nvd-cve-2024-12704
+  - SRC-nvd-cve-2024-58340
+  - SRC-nvd-cve-2024-2965
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-rc-20260728
+  - SRC-zhou-2026
+  - SRC-li-otora-2026
+  - SRC-hou-ial-2026
+  - SRC-park-progress-2026
+  - SRC-ms-agent-responsibility
+  - SRC-ms-unbounded-dos
+  - SRC-ms-agentic-rag
+  - SRC-mitre-t1499-003
+sources_rejected:
+  - source_id: SRC-nvd-cve-2024-58340
+    reason: ReDoS is outside the autonomous feedback-path contract.
+sources_blocked: []
+conflicts:
+  - issue: High repeated-call counts may represent legitimate long-running or recovery work.
+    resolution: Require recurring argument or progress evidence, retain an approved-long-running filter, and label the analytic experimental.
+  - issue: No qualifying production breach was found despite controlled demonstrations.
+    resolution: Evidence is classified Demonstrated, not Observed in production; the production gap is explicit.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1106-C001
+    - SAF-T1106-C002
+    - SAF-T1106-C003
+  rationale: >-
+    Two independent controlled studies demonstrate attacker-triggered multi-turn
+    resource amplification in agents, and a separate real-project study confirms
+    the defining unbounded feedback structure. Production exploitation is not claimed.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,27 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1603
+    name: System Prompt Disclosure
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics: [ATK-TA0007]
+    technique_path: techniques/SAF-T1603/README.md
+    research_packet: research/techniques/SAF-T1603
+    related_techniques: [SAF-T1102]
+    mitigations: [SAF-M-1, SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-29, SAF-M-36, SAF-M-37]
+    detection:
+      rule: techniques/SAF-T1603/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1603/test-logs.json
+        - tests/SAF-T1603/test_detection_rule.py
+        - research/techniques/SAF-T1603/validation/detection-test.txt
+        - research/techniques/SAF-T1603/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1082
+        type: analogous
+    atlas_mappings:
+      - id: AML.T0069.002
+        type: direct
+      - id: AML.T0056
+        type: direct

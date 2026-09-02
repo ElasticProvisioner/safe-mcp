@@ -1,0 +1,114 @@
+{
+  "technique_id": "SAF-T1307",
+  "generated_on": "2026-09-01",
+  "schema": "normalized_deputy_audit_v1",
+  "expected_summary": {
+    "alerts": 3,
+    "non_alerts": 5
+  },
+  "cases": [
+    {
+      "name": "positive_oauth_redirect_binding_failure",
+      "class": "positive",
+      "expected_alert": true,
+      "event": {
+        "event": {"category": "authorization", "action": "oauth_code_issued", "outcome": "success"},
+        "initiator": {"id": "client-untrusted", "allowed": false},
+        "deputy": {"id": "proxy.example", "allowed": true},
+        "resource": {"id": "tenant-b/api"},
+        "binding": {"valid": false},
+        "delegation": {"id": null, "valid": false}
+      }
+    },
+    {
+      "name": "positive_untrusted_metadata_process_launch",
+      "class": "positive",
+      "expected_alert": true,
+      "event": {
+        "event": {"category": "authorization", "action": "process_launch", "outcome": "success"},
+        "initiator": {"id": "mcp-server-untrusted", "allowed": false},
+        "deputy": {"id": "local-mcp-proxy", "allowed": true},
+        "resource": {"id": "local-process"},
+        "binding": {"valid": false},
+        "delegation": {"id": null, "valid": false}
+      }
+    },
+    {
+      "name": "positive_audience_mismatch_downstream_call",
+      "class": "positive",
+      "expected_alert": true,
+      "event": {
+        "event": {"category": "authorization", "action": "downstream_api_call", "outcome": "attempt"},
+        "initiator": {"id": "client-a", "allowed": false},
+        "deputy": {"id": "shared-service", "allowed": true},
+        "resource": {"id": "tenant-b/records"},
+        "binding": {"valid": false},
+        "delegation": {"id": "expired-42", "valid": false}
+      }
+    },
+    {
+      "name": "negative_initiator_authorized",
+      "class": "negative",
+      "expected_alert": false,
+      "event": {
+        "event": {"category": "authorization", "action": "tool_execution", "outcome": "success"},
+        "initiator": {"id": "client-approved", "allowed": true},
+        "deputy": {"id": "tool-gateway", "allowed": true},
+        "resource": {"id": "tenant-a/calendar"},
+        "binding": {"valid": true},
+        "delegation": {"id": "delegation-1", "valid": true}
+      }
+    },
+    {
+      "name": "expected_false_positive_suppressed_valid_delegation",
+      "class": "expected_legitimate_lookalike",
+      "expected_alert": false,
+      "event": {
+        "event": {"category": "authorization", "action": "downstream_api_call", "outcome": "success"},
+        "initiator": {"id": "external-workflow", "allowed": false},
+        "deputy": {"id": "automation-service", "allowed": true},
+        "resource": {"id": "tenant-a/reporting"},
+        "binding": {"valid": false},
+        "delegation": {"id": "approved-workflow-9", "valid": true}
+      }
+    },
+    {
+      "name": "boundary_missing_binding_field",
+      "class": "boundary",
+      "expected_alert": false,
+      "event": {
+        "event": {"category": "authorization", "action": "downstream_api_call", "outcome": "success"},
+        "initiator": {"id": "client-untrusted", "allowed": false},
+        "deputy": {"id": "proxy.example", "allowed": true},
+        "resource": {"id": "tenant-b/api"},
+        "delegation": {"id": null, "valid": false}
+      }
+    },
+    {
+      "name": "boundary_unmodeled_action",
+      "class": "boundary",
+      "expected_alert": false,
+      "event": {
+        "event": {"category": "authorization", "action": "metadata_read", "outcome": "success"},
+        "initiator": {"id": "client-untrusted", "allowed": false},
+        "deputy": {"id": "proxy.example", "allowed": true},
+        "resource": {"id": "public-metadata"},
+        "binding": {"valid": false},
+        "delegation": {"id": null, "valid": false}
+      }
+    },
+    {
+      "name": "negative_deputy_not_authorized",
+      "class": "negative",
+      "expected_alert": false,
+      "event": {
+        "event": {"category": "authorization", "action": "process_launch", "outcome": "denied"},
+        "initiator": {"id": "client-untrusted", "allowed": false},
+        "deputy": {"id": "sandboxed-proxy", "allowed": false},
+        "resource": {"id": "local-process"},
+        "binding": {"valid": false},
+        "delegation": {"id": null, "valid": false}
+      }
+    }
+  ]
+}

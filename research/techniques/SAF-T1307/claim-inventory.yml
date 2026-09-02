@@ -1,0 +1,551 @@
+version: 1
+technique_id: SAF-T1307
+claims:
+  - id: SAF-T1307-C001
+    statement: >-
+      A confused-deputy weakness exists when an intermediary fails to preserve
+      the upstream requester's identity, appears to originate a request, and
+      uses access the requester lacks to reach an external target.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Description
+          - Extended Description
+          - Alternate Terms - Confused Deputy
+    corroboration: >-
+      The MCP security guidance applies the same deputy concept to a concrete
+      OAuth proxy flow.
+    limitations:
+      - CWE-441 is a class-level weakness and requires careful product-specific mapping.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C002
+    statement: >-
+      CWE-441 lists privilege or identity gain, hidden activity, and
+      unauthorized code or command execution as possible consequences and
+      recommends preserving the initiating identity across the intermediary.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Common Consequences
+          - Potential Mitigations
+    corroboration: >-
+      The selected MCP vulnerability advisories establish concrete command and
+      process-launch consequences for two product paths.
+    limitations:
+      - The CWE consequences do not establish likelihood or severity for a specific deployment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C003
+    statement: >-
+      MCP Security Best Practices describes a confused-deputy flow in which a
+      static third-party client ID, dynamic MCP client registration, an
+      existing consent cookie, and missing per-client consent allow a malicious
+      client to obtain an MCP authorization code and access a third-party API
+      as the user.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Confused Deputy Problem
+          - Vulnerable Conditions
+          - Attack Description steps 1-8
+    corroboration: >-
+      RFC 9700 independently documents dynamic multi-party OAuth risks and
+      requires exact redirect and mix-up defenses, but does not reproduce the
+      MCP-specific flow.
+    limitations:
+      - The source is an authoritative threat model, not a product incident or empirical reproduction.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C004
+    statement: >-
+      For the documented MCP OAuth proxy conditions, the proxy must maintain
+      per-user approved client IDs, show requesting-client, scope, and redirect
+      information, exactly validate redirect URIs, and bind state to a consented
+      authorization request.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Confused Deputy Problem - Mitigation
+          - Required Protections
+          - OAuth State Parameter Validation
+    corroboration: >-
+      RFC 9700 separately requires exact redirect matching and transaction-bound
+      CSRF protection.
+    limitations:
+      - These controls address the documented OAuth proxy variant, not arbitrary non-OAuth deputies.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C005
+    statement: >-
+      MCP clients must identify the intended MCP resource in authorization and
+      token requests, MCP servers must validate intended audience and refuse
+      other tokens, and RFC 8707 explains that audience restriction limits
+      cross-resource and cross-tenant token use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Resource Parameter Implementation
+          - Access Token Usage - Token Handling
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2 - Resource Parameter
+          - Section 3 - Security Considerations
+    corroboration: >-
+      RFC 9700 Section 2.3 independently recommends audience and action
+      restriction for access tokens.
+    limitations:
+      - OAuth audience checks do not authorize arbitrary tool arguments or non-token deputy actions.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C006
+    statement: >-
+      OAuth 2.0 Security BCP requires exact registered redirect matching and
+      recommends least-privilege, audience-restricted access tokens whose
+      resource server refuses mismatched use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 2.1 - Protecting Redirect-Based Flows
+          - Section 2.3 - Access Token Privilege Restriction
+          - Section 4.10.2 - Audience-Restricted Access Tokens
+    corroboration: >-
+      MCP Authorization independently makes RFC 8707 resource identification
+      and audience validation mandatory for MCP HTTP authorization.
+    limitations:
+      - RFC 9700 is general OAuth guidance and is not incident evidence.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C007
+    statement: >-
+      JFrog publicly demonstrated that an untrusted MCP server could use a
+      crafted authorization endpoint to cause affected mcp-remote versions
+      0.0.5 through 0.1.15 to execute an OS command or executable in the client
+      context; version 0.1.16 fixes the issue.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators:
+          - Who is affected by CVE-2025-6514?
+          - CVE-2025-6514 Summary
+          - CVE-2025-6514 Technical Details
+          - How can CVE-2025-6514 be mitigated?
+      - source_id: SRC-jfsa-2025-6514
+        support: corroborating
+        exact_locators:
+          - Summary
+          - Affected versions
+          - Description
+          - Discovered By
+      - source_id: SRC-cve-2025-6514
+        support: corroborating
+        exact_locators:
+          - /containers/cna/affected
+          - /containers/cna/descriptions
+          - /containers/cna/references
+          - /containers/adp/0/metrics/0/other/content/options
+    corroboration: >-
+      The JFrog CNA record independently fixes the affected range and records
+      the official research URLs; the advisory credits Or Peles.
+    limitations:
+      - Full shell-argument control was proven on Windows; macOS and Linux demonstration was limited to executable launch with restricted argument control.
+      - The reviewed sources do not establish production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C008
+    statement: >-
+      Before version 0.14.1, MCP Inspector lacked authentication between its
+      client and proxy, allowing unauthenticated requests to launch MCP commands
+      over stdio; the maintainer advisory credits Rémy Marot of Tenable.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: direct
+        exact_locators:
+          - Affected versions
+          - Patched versions
+          - Description
+          - Credit
+      - source_id: SRC-cve-2025-49596
+        support: corroborating
+        exact_locators:
+          - /containers/cna/title
+          - /containers/cna/descriptions
+          - /containers/cna/affected
+          - /containers/adp/0/metrics/0/other/content/options
+    corroboration: >-
+      The CVE CNA record repeats the root condition, affected range, and fix.
+    limitations:
+      - Neither reviewed record establishes a production incident.
+      - The advisory does not provide a public reproduction in the reviewed text.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C009
+    statement: >-
+      CVE-2025-32711 records AI command injection in Microsoft 365 Copilot that
+      allows an unauthorized network attacker to disclose information, with a
+      critical CNA score and CISA exploitation assessment of none; the record
+      does not establish loss of initiator-to-deputy binding.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-32711
+        support: direct
+        exact_locators:
+          - /containers/cna/title
+          - /containers/cna/descriptions
+          - /containers/cna/metrics
+          - /containers/cna/references
+          - /containers/adp/0/metrics/0/other/content/options
+    corroboration: >-
+      The CVE Program container records the researcher URL, but that URL
+      redirected to a general acquired-company site and supplied no usable
+      technical detail in this run.
+    limitations:
+      - Classified as adjacent because the reviewed evidence identifies injection and disclosure but not the defining authority-binding failure.
+      - The CNA record does not expose an affected version or provider rollout detail.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1307-C010
+    statement: >-
+      As of 2026-09-01, none of CVE-2025-6514, CVE-2025-49596,
+      CVE-2025-32711, or CVE-2025-53109 appeared in the current CISA KEV
+      snapshot, their reviewed CISA ADP records marked exploitation none, and
+      no qualifying direct production incident was identified in the reviewed
+      corpus.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - catalogVersion 2026.09.01
+          - exact cveID filter over all 1687 entries returned zero matches
+      - source_id: SRC-cve-2025-6514
+        support: corroborating
+        exact_locators:
+          - /containers/adp/0/metrics/0/other/content/options/Exploitation
+      - source_id: SRC-cve-2025-49596
+        support: corroborating
+        exact_locators:
+          - /containers/adp/0/metrics/0/other/content/options/Exploitation
+      - source_id: SRC-cve-2025-32711
+        support: corroborating
+        exact_locators:
+          - /containers/adp/0/metrics/0/other/content/options/Exploitation
+      - source_id: SRC-cve-2025-53109
+        support: corroborating
+        exact_locators:
+          - /containers/adp/0/metrics/0/other/content/options/Exploitation
+    corroboration: >-
+      Independent CVE ADP enrichment for every candidate reports exploitation
+      as none.
+    limitations:
+      - This is a bounded negative finding for reviewed official sources, not proof that exploitation has never occurred.
+      - KEV absence does not itself establish non-exploitation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The absence statement is limited to the dated corpus and combines exact
+        dataset filtering with candidate-record exploitation fields.
+    status: validated
+
+  - id: SAF-T1307-C011
+    statement: >-
+      A behavioral analytic can identify suspicious deputy use by correlating
+      an unauthorized initiator, an authorized deputy, and an explicitly
+      invalid initiator-to-action or resource binding.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Description
+          - Extended Description
+          - Potential Mitigations
+          - Detection Methods
+      - source_id: SRC-mcp-security-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Confused Deputy Problem - Required Protections
+          - OAuth Authorization URL Validation - Input Sanitization
+          - stdio Transport Security in Proxy Scenarios - Mitigation
+    corroboration: >-
+      MCP guidance requires the binding controls whose failed policy decisions
+      the analytic consumes.
+    limitations:
+      - MCP does not standardize the normalized runtime fields used by this analytic.
+      - The rule detects explicit failed bindings and cannot infer policy from free-form text.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The analytic operationalizes the source-defined authority asymmetry and
+        identity-preservation control as normalized event fields.
+    status: validated
+
+  - id: SAF-T1307-C012
+    statement: >-
+      Legitimate proxying can resemble deputy behavior, while missing initiator
+      or delegation context can produce false positives or a detection blind
+      spot.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Extended Description
+          - Potential Mitigations
+          - Theoretical Notes
+    corroboration: >-
+      The CWE source explicitly says proxying serves legitimate purposes and
+      becomes vulnerable only under specified authority and request conditions.
+    limitations:
+      - False-positive rate is environment-specific and was not empirically measured.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Detection limitations follow from the source's distinction between
+        legitimate intermediary behavior and vulnerable unbound behavior.
+    status: validated
+
+  - id: SAF-T1307-C013
+    statement: >-
+      Preserving initiator identity, binding per-client consent and redirects,
+      restricting token resource and audience, and applying least privilege
+      constrain the defining deputy-confusion mechanism.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Potential Mitigations
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Confused Deputy Problem - Required Protections
+      - source_id: SRC-rfc8707
+        support: corroborating
+        exact_locators:
+          - Section 2 - Resource Parameter
+          - Section 3 - Security Considerations
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators:
+          - Section 2.1 - Protecting Redirect-Based Flows
+          - Section 2.3 - Access Token Privilege Restriction
+    corroboration: >-
+      Four independent authority classes converge on preserving source context
+      and limiting downstream authority.
+    limitations:
+      - Multi-hop systems must enforce the binding at each hop; one compliant hop does not secure another.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The combined control set generalizes source-specific controls across
+        OAuth and non-OAuth deputies.
+    status: validated
+
+  - id: SAF-T1307-C014
+    statement: >-
+      Incident response should stop the implicated deputy path, revoke exposed
+      authorization material, reconstruct the initiating-principal-to-target
+      chain, patch the root condition, and add binding regression tests.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Confused Deputy Problem - Mitigation
+          - Token Passthrough - Mitigation
+          - stdio Transport Security in Proxy Scenarios - Mitigation
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators:
+          - Section 4.14.2 - Recommendations
+          - Section 4.10 - Misuse of Stolen Access Tokens
+    corroboration: >-
+      RFC 9700 describes token binding, replay response, and revocation
+      controls; MCP guidance identifies the deputy-specific root controls.
+    limitations:
+      - Exact containment and revocation mechanics depend on the implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The procedure is an operational synthesis of cited prevention and token
+        response controls.
+    status: validated
+
+  - id: SAF-T1307-C015
+    statement: >-
+      MITRE ATT&CK T1068 is an analogous mapping when software exploitation of
+      a deputy raises access, but ATT&CK T1068 does not model the
+      initiator-deputy-target authorization relationship.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1068
+        support: direct
+        exact_locators:
+          - Technique title and ID
+          - Description
+          - Tactic
+          - Version 1.6 metadata
+    corroboration: >-
+      CWE-441 supplies the missing intermediary and initiator-identity
+      distinction.
+    limitations:
+      - Mapping is analogous, not direct.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The mapping compares the privilege-escalation outcome while preserving
+        the distinct deputy mechanism.
+    status: validated
+
+  - id: SAF-T1307-C016
+    statement: >-
+      CVE-2025-53109 concerns symlink and prefix path validation in MCP
+      filesystem servers and does not establish the initiator identity or
+      delegated-authority failure required by this contract.
+    class: disclosed_vulnerability
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-53109
+        support: direct
+        exact_locators:
+          - /containers/cna/title
+          - /containers/cna/problemTypes
+          - /containers/cna/descriptions
+          - /containers/cna/affected
+    corroboration: >-
+      The record maps the weakness to CWE-59 rather than CWE-441.
+    limitations:
+      - Rejected as a direct example but retained as scope-challenge evidence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Contract comparison shows a different root boundary even though the
+        deputy process may hold file access.
+    status: validated
+
+  - id: SAF-T1307-C017
+    statement: >-
+      The realized confidentiality, integrity, availability, and scope impact
+      of deputy confusion is bounded by the deputy's reachable resources and
+      privileges.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-441-v4.20
+        support: direct
+        exact_locators:
+          - Extended Description
+          - Common Consequences
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators:
+          - Description
+          - CVSS vulnerable and subsequent system impacts
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: corroborating
+        exact_locators:
+          - Who is affected by CVE-2025-6514?
+          - CVE-2025-6514 Summary
+    corroboration: >-
+      The two direct MCP examples show different deputy capabilities and
+      corresponding consequence ceilings.
+    limitations:
+      - The claim does not predict exploit likelihood or organization-specific severity.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Impact is synthesized from the source-defined prerequisite that the
+        deputy has access the attacker lacks and from selected example impacts.
+    status: validated

@@ -1,0 +1,214 @@
+version: 1
+technique_id: SAF-T1402
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of MCP Tools and Resources specifications dated 2025-11-25.
+        - Direct review of Unicode UTS #39 v17.0.0, UTS #55 v2, and ATT&CK T1027.018.
+      material_changes: [Defined the model-facing content boundary and constrained the ATT&CK mapping to analogous.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Complete NVD API keyword corpus for prompt injection, plus hidden prompt and unicode prompt queries.
+        - GitLab CVE-2025-6945 vendor advisory and NVD record.
+        - OpenClaw GHSA-2qj5-gwg2-xwc4 opened from NVD CVE-2026-27001 provenance.
+        - CISA KEV catalog version 2026.09.01.
+      material_changes: [Selected two direct vulnerabilities and preserved the absence of a verified production incident.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct arXiv-domain queries for hidden instructions, instruction steganography, invisible prompt injection, and encoded prompt.
+        - Full direct review of ShareLock, SkillCamo, opaque reasoning traces, Greshake et al., ArtPrompt, and Bad Characters.
+      material_changes: [Classified the technique as Demonstrated and selected ShareLock and opaque-state replay as the highest-impact controlled examples.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of Microsoft Prompt Shields, Unicode UTS #39 and #55, selected vendor patches, and research defenses.
+        - Direct review of ATT&CK T1027.018 detection strategies.
+      material_changes: [Designed a representation-finding plus same-session behavior correlation analytic with explicit false-positive controls.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed negative Unicode results, model and API limitations, retry metrics, scanner false positives, and post-disclosure non-reproducibility.
+        - Rechecked selected records for production-exploitation evidence and the current KEV catalog.
+      material_changes: [Narrowed claims to controlled demonstrations and disclosed potential; excluded universal detector and production-breach claims.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Re-ran domain-restricted arXiv and complete NVD keyword review against the frozen contract and candidate set.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Reconciled every README proposition against direct locators, exclusions, contrary evidence, and current remediation status.
+      material_changes: []
+  rationale: >-
+    The packet covers current protocol authorities, two vendor/NVD vulnerability
+    pairs, a government exploitation catalog, three distinct controlled carrier
+    classes, Unicode standards, platform defense documentation, contrary
+    results, and an ATT&CK detection analog. Two final passes changed neither
+    the contract, evidence label, selected examples, nor detector design.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 10
+  selected_examples:
+    - SRC-sharelock-2026
+    - SRC-reasoning-traces-2026
+    - SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+    - SRC-gitlab-cve-2025-6945
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-sharelock-2026
+      identifier: ShareLock controlled MCP evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled demonstration only
+      impact: Unauthorized sandbox file operation induced through reconstructed MCP tool-description shares.
+      remediation: Strict sensitive-action approvals, aggregate tool review, least privilege, and representation-aware monitoring are discussed; no product patch applies.
+      selected: true
+      rationale: Highest-specificity direct MCP demonstration with a multi-client and multi-model evaluation.
+    - source_id: SRC-reasoning-traces-2026
+      identifier: Opaque reasoning-block injection demonstrations
+      relationship: direct_demonstration
+      exploitation_status: controlled demonstration only; authors later could not repeat after disclosure
+      impact: Hidden state caused an unrelated script and a continued research agent to upload files.
+      remediation: Context-bound cryptographic envelopes, server-side state, cross-model isolation, revocation, and trace-release hygiene.
+      selected: true
+      rationale: Direct end-to-end hidden-instruction behavior with an opaque carrier and concrete agent action.
+    - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+      identifier: CVE-2026-27001 / GHSA-2qj5-gwg2-xwc4
+      relationship: direct_vulnerability
+      exploitation_status: no known exploitation established in reviewed authorities
+      impact: Crafted working-directory control or format characters could inject instructions into the agent system prompt and cause unintended tool use or disclosure.
+      remediation: Fixed in 2026.2.15 by stripping control, format, line, and paragraph characters in prompt-facing path handling.
+      selected: true
+      rationale: Direct product vulnerability with a representation-specific carrier, official patch, and high bounded impact.
+    - source_id: SRC-gitlab-cve-2025-6945
+      identifier: CVE-2025-6945
+      relationship: direct_vulnerability
+      exploitation_status: no known exploitation established in reviewed authorities
+      impact: Authenticated hidden prompts in merge-request comments could leak confidential-issue information.
+      remediation: Fixed in 18.3.6, 18.4.4, and 18.5.2 for the affected version lines.
+      selected: true
+      rationale: Direct vendor disclosure even though the severity is low and carrier detail is limited.
+    - source_id: SRC-skillcamo-2026
+      identifier: SkillCamo
+      relationship: direct_demonstration
+      exploitation_status: controlled scanner-bypass evaluation
+      impact: Image-carried instructions bypassed six skill scanners at reported rates of 78 to 100 percent for the primary variant.
+      remediation: Multimodal artifact analysis and execution simulation reduced primary-variant bypass to 8 percent in the reported setup.
+      selected: false
+      rationale: Qualifying but displaced by four examples with direct sensitive-action outcomes or official product disclosures; headline ASR measures scanner bypass.
+    - source_id: SRC-greshake-ipi-2023
+      identifier: Hidden and encoded indirect prompt-injection demonstrations
+      relationship: direct_demonstration
+      exploitation_status: controlled demonstrations
+      impact: Retrieved hidden or encoded prompts altered LLM-integrated application behavior.
+      remediation: Source separation, least privilege, approvals, and layered defenses are discussed without a complete solution.
+      selected: false
+      rationale: Foundational and qualifying, but less MCP-current and less carrier-specific than selected demonstrations.
+    - source_id: SRC-artprompt-2024
+      identifier: ArtPrompt
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled direct-user jailbreak evaluation
+      impact: ASCII-art-cloaked words induced unsafe model responses in a bounded benchmark.
+      remediation: Paper evaluates jailbreak defenses and acknowledges scope limitations.
+      selected: false
+      rationale: Uses representation concealment but does not cross an untrusted agent-content boundary.
+    - source_id: SRC-nvd-cve-2026-29783
+      identifier: CVE-2026-29783
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: vulnerability disclosure; no production exploitation established in reviewed record
+      impact: Shell parameter expansion could hide command effects from a safety parser and cause arbitrary code execution.
+      remediation: Fixed in GitHub Copilot CLI 0.0.423.
+      selected: false
+      rationale: Conceals an execution payload from a shell safety parser after the model-facing instruction stage.
+    - source_id: SRC-nvd-cve-2024-48142
+      identifier: CVE-2024-48142
+      relationship: enabling_vulnerability
+      exploitation_status: vulnerability disclosure; no production exploitation established in reviewed record
+      impact: Crafted messages could exfiltrate prior and subsequent assistant chat data.
+      remediation: The NVD record reviewed did not document a fix.
+      selected: false
+      rationale: Establishes prompt injection but not a hidden or transformed instruction carrier.
+    - source_id: SRC-bad-characters-2021
+      identifier: Bad Characters imperceptible NLP evaluation
+      relationship: historical_analogy
+      exploitation_status: controlled NLP evaluation
+      impact: Invisible characters, homoglyphs, reorderings, and deletions changed several NLP task outputs.
+      remediation: Stripping, visible warnings, bidirectional resolution, and OCR-based defenses were evaluated or discussed.
+      selected: false
+      rationale: Useful representation and contrary evidence, but not an agent instruction-following demonstration.
+sources_consulted:
+  - SRC-artprompt-2024
+  - SRC-bad-characters-2021
+  - SRC-cisa-kev-2026-09-01
+  - SRC-gitlab-cve-2025-6945
+  - SRC-greshake-ipi-2023
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-prompt-shields-2026
+  - SRC-mitre-t1027.018
+  - SRC-nvd-cve-2024-48142
+  - SRC-nvd-cve-2025-6945
+  - SRC-nvd-cve-2026-27001
+  - SRC-nvd-cve-2026-29783
+  - SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+  - SRC-reasoning-traces-2026
+  - SRC-sharelock-2026
+  - SRC-skillcamo-2026
+  - SRC-unicode-uts39
+  - SRC-unicode-uts55-v2
+sources_cited:
+  - SRC-bad-characters-2021
+  - SRC-cisa-kev-2026-09-01
+  - SRC-gitlab-cve-2025-6945
+  - SRC-greshake-ipi-2023
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-prompt-shields-2026
+  - SRC-mitre-t1027.018
+  - SRC-nvd-cve-2025-6945
+  - SRC-nvd-cve-2026-27001
+  - SRC-nvd-cve-2026-29783
+  - SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+  - SRC-reasoning-traces-2026
+  - SRC-sharelock-2026
+  - SRC-skillcamo-2026
+  - SRC-unicode-uts39
+  - SRC-unicode-uts55-v2
+sources_rejected:
+  - source_id: SRC-artprompt-2024
+    reason: Direct-user jailbreak evidence does not establish the contract's untrusted agent-content boundary.
+  - source_id: SRC-nvd-cve-2024-48142
+    reason: The reviewed record does not establish an instruction concealment or recovery representation.
+sources_blocked: []
+conflicts:
+  - issue: Invisible-character perturbations did not affect every model and task evaluated in Bad Characters.
+    resolution: The README avoids universal susceptibility claims and requires a recorded recovery or follow-on action for detection.
+  - issue: ShareLock uses mocked tool responses and ASR-at-3, while opaque-state replay depended on July 2026 API behavior that later changed.
+    resolution: Both are labeled controlled demonstrations with their metric and version limitations; neither is presented as production exploitation.
+  - issue: Character, entropy, image, or encoded-content findings can occur legitimately.
+    resolution: The analytic correlates representation findings with same-session interpretation or sensitive action and suppresses approved or allowlisted origins.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1402-C001
+    - SAF-T1402-C007
+    - SAF-T1402-C008
+  rationale: >-
+    Independent controlled evaluations demonstrate the complete concealment,
+    recovery, and agent-action chain using MCP tool-description shares and
+    opaque replayable state. Product advisories corroborate real implementation
+    exposure, but no verified production breach was found, so Observed would be
+    unsupported.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

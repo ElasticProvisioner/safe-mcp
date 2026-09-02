@@ -1,0 +1,143 @@
+version: 1
+technique_id: SAF-T1404
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1404
+  inherited_context: false
+target:
+  id: SAF-T1404
+  neutral_name: Response Tampering
+allowed_inputs:
+- Target ID SAF-T1404, neutral name Response Tampering, and tactic ATK-TA0005.
+- Generic authoring skill, blank research schemas, generic technique template, generic
+  detection template, and canonical validator.
+- Independently located direct-authority sources and exact advisory URLs obtained
+  from a directly reviewed non-GitHub authority.
+prohibited_inputs:
+- techniques/SAF-T1404/README.md from the existing repository or any history.
+- research/techniques/SAF-T1404/ from the existing repository or any history.
+- techniques/SAF-T1404/detection-rule.yml from the existing repository or any history.
+- Existing target tests, catalog description, shared registry, SAF website or repository
+  content, methodology impact examples, and diffs or blame.
+- Git history, pull request content, and previous conversation content about the target.
+independent_research:
+  searches:
+  - Direct MCP llms.txt documentation index review
+  - Exact MCP 2026-07-28 Tools page review
+  - Exact MCP 2026-07-28 Streamable HTTP page review
+  - Exact MCP 2026-07-28 Security Best Practices page review
+  - Exact MCP 2026-07-28 Logging page review
+  - Exact MITRE CWE-924 page review
+  - Exact MITRE CWE-345 page review
+  - Exact MITRE CAPEC-384 page review
+  - Exact MITRE CAPEC-385 page review
+  - Exact MITRE ATT&CK T1565.002 page review
+  - NVD CVE API 2.0 keywordSearch=Model Context Protocol
+  - NVD CVE API 2.0 keywordSearch=MCP server response tampering
+  - NVD CVE API 2.0 keywordSearch=tool result manipulation Model Context Protocol
+  - CISA KEV JSON complete-catalog candidate comparison
+  - 'Official arXiv API: MCP AND security'
+  - 'Official arXiv API: MCP AND tool output'
+  - 'Official arXiv API: adversarial or poisoned tool outputs AND agent'
+  - 'Official arXiv API: response tampering AND agent'
+  - 'Official arXiv API: man-in-the-tool'
+  - 'Official arXiv API: adversarial environmental injection'
+  - Exact NIST SP 800-61r3 page review
+  - Exact RFC 8785 review
+  - Exact OWASP GenAI Top 10 relevance screen
+  - Exact OpenTelemetry GenAI observability relevance screen
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-cwe-924
+  - SRC-capec-384
+  - SRC-attack-t1565-002
+  - SRC-zhan-aei-2026
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-ts-sdk-345p
+  - SRC-ghsa-5ire-8527
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  - SRC-rfc8785
+  - SRC-nist-sp800-61r3
+  - SRC-ghsa-php-7m52
+  - SRC-ghsa-python-jpw9
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-logging-2026-07-28
+  - SRC-cwe-345
+  - SRC-capec-385
+  - SRC-owasp-llm-top10
+  - SRC-otel-genai-observability
+  - SRC-mcp-doc-index-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Validate only in a strictly isolated synthetic repository before producing the hash
+  freeze.
+- Do not inspect, diff, merge, or overwrite an existing SAF-T1404 artifact before
+  freeze.
+- Record every synthetic neighbor, source-ID, history-SHA, and canonical-path join
+  for later mechanical integration.
+- Do not commit, push, open a pull request, or modify the real repository.
+attestation: This packet was authored from only the allowed seed, generic authoring
+  materials, and independently reviewed direct authorities. No prohibited target artifact
+  or inherited target context was accessed, and the draft was frozen before any repository
+  integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-http-2026-07-28: SRC-mcp-streamable-http-2026-07-28
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-spec-2026-07-28
+    SRC-mcp-spec-index-2026-07-28: SRC-mcp-doc-index-2026
+  new_shared_source_records:
+  - SRC-cwe-924
+  - SRC-capec-384
+  - SRC-attack-t1565-002
+  - SRC-zhan-aei-2026
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-ts-sdk-345p
+  - SRC-ghsa-5ire-8527
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-rfc8785
+  - SRC-nist-sp800-61r3
+  - SRC-ghsa-php-7m52
+  - SRC-ghsa-python-jpw9
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-logging-2026-07-28
+  - SRC-cwe-345
+  - SRC-capec-385
+  - SRC-owasp-llm-top10
+  - SRC-otel-genai-observability
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-2
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-20
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T1998: SAF-T1102
+    SAF-T1999: SAF-T1309
+  normalization_refreeze:
+    agent: /root/normalize_saf_t1404
+    mode: mechanical_no_research
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1404-normalized/bundle
+    frozen_entry_count: 18
+    freeze_manifest_sha256: f22d73dcabcdc4b2f09360dd2412970137c4cc436b2152d964f8e4c40fcb5156
+    result: passed
+  status: integrated_and_repository_validated

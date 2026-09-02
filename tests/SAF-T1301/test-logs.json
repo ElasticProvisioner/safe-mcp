@@ -1,0 +1,10 @@
+[
+  {"name":"alert-untrusted-explicit-unapproved","expected":true,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":true,"descriptor.reference_review":"unapproved"}},
+  {"name":"alert-second-untrusted-reference","expected":true,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":true,"descriptor.reference_review":"unapproved"}},
+  {"name":"no-alert-trusted-source","expected":false,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"trusted","descriptor.references_other_server":true,"descriptor.reference_review":"unapproved"}},
+  {"name":"no-alert-no-cross-server-reference","expected":false,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":false,"descriptor.reference_review":"unapproved"}},
+  {"name":"no-alert-approved-orchestration","expected":false,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":true,"descriptor.reference_review":"approved"}},
+  {"name":"no-alert-wrong-event","expected":false,"event":{"event.action":"mcp.tool_called","source.server.trust":"untrusted","descriptor.references_other_server":true,"descriptor.reference_review":"unapproved"}},
+  {"name":"no-alert-missing-review-field","expected":false,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":true}},
+  {"name":"no-alert-name-collision-only","expected":false,"event":{"event.action":"mcp.tool_descriptor_registered","source.server.trust":"untrusted","descriptor.references_other_server":false,"descriptor.reference_review":"unapproved","tool.name":"send_email"}}
+]

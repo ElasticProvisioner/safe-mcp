@@ -1,0 +1,36 @@
+version: 1
+technique_id: SAF-T2103
+generation_mode: clean_room
+frozen_before_integration: true
+registry_actions:
+  - Merge source-manifest-fragment.yml by source ID; reject conflicting records for manual review.
+  - Merge framework-fragment.yml by technique ID after confirming SAF-T2103 is unassigned.
+  - Merge alignment-fragment.yml without importing pre-freeze target prose.
+mechanical_joins:
+  - Resolve placeholder neighbor IDs SAF-T9998 and SAF-T9999 to canonical repository technique IDs after freeze, preserving distinctions.
+  - Resolve placeholder mitigation IDs SAF-M-9001 and SAF-M-9002 to canonical mitigation IDs after freeze, preserving control intent.
+  - Replace synthetic traceability history SHA 1111111111111111111111111111111111111111 with the integration commit SHA.
+validation_constraints:
+  - Re-run the canonical strict validator after registry and relationship joins.
+  - Re-run detector tests unchanged unless a documented integration-only path adjustment is required.
+  - Do not consult prior SAF-T2103 artifacts to revise bundle-owned claims, prose, examples, or evidence classification.
+unresolved_content_issues: []
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-schema-2025: SRC-mcp-schema-2025
+    SRC-cursor-64107: SRC-t1206-ghsa-cursor
+    SRC-cursor-54135: SRC-ghsa-cursor-4cxx-2025
+    SRC-ms-semantic-kernel-2026: SRC-microsoft-semantic-kernel-cves-2026
+    SRC-ms-least-privilege-2026: SRC-microsoft-agent-identity-2026
+    SRC-mitre-t1565-001: SRC-mitre-t1565.001
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T1102, SAF-T2101]
+  canonical_mitigations: [SAF-M-9, SAF-M-11, SAF-M-12, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+  attack_mapping: {id: T1565.001, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T2103/validation/detection-test.txt
+    - research/techniques/SAF-T2103/validation/isolated-validator.txt
+    - research/techniques/SAF-T2103/validation/canonical-validation.txt
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve reviewed-source metadata and frozen evidence references.

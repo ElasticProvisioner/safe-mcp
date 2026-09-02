@@ -1,0 +1,231 @@
+version: 1
+technique_id: SAF-T1304
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io/specification 2026 authorization resource audience token passthrough"
+        - "site:rfc-editor.org OAuth malicious protected resource audience replay"
+      material_changes:
+        - Established the normative audience, no-passthrough, resource-indicator, replay, and malicious-resource foundations.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov MCP audience validation CVE"
+        - "site:nvd.nist.gov MCP credential cache token CVE 2026"
+        - "site:learn.microsoft.com MCP bearer token forwarded revalidation known issue"
+        - "site:microsoft.com/security/blog MCP incident credential token 2026"
+      material_changes:
+        - Selected three direct implementation vulnerabilities and one current documented preview exposure.
+        - Recorded that no reviewed candidate established a direct production breach.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov CVE-2025-69196"
+        - "site:nvd.nist.gov CVE-2026-48529"
+      material_changes:
+        - Classified the FastMCP end-to-end proof of concept as Demonstrated evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:attack.mitre.org application access token reuse detection"
+        - "site:github.blog secure remote MCP token audience scope"
+      material_changes:
+        - Defined the audience, principal, and cross-resource fingerprint analytic and control set.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:microsoft.com/security/blog OAuth token relay incident 2026"
+        - "site:nvd.nist.gov OAuth token replay CVE 2026 MCP"
+      material_changes:
+        - Excluded acquisition, redirect, availability, and general gateway incidents that did not cross the defining boundary.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov CVE Google MCP Toolbox 2026 authorization"
+        - "site:learn.microsoft.com Foundry Local MCP token forwarding GAP-02"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io 2026 token audience relay security"
+        - "site:nvd.nist.gov MCP cross-user credential cache"
+      material_changes: []
+  rationale: >-
+    Current protocol authorities, OAuth standards, government vulnerability
+    records, exact maintainer advisories reached through those records, current
+    vendor known issues, production-incident research, framework detection, and
+    maintainer architecture guidance cover every publishable proposition. Two
+    differently phrased follow-up passes changed neither the contract, evidence
+    level, selected examples, analytic, nor exclusions.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 11
+  selected_examples:
+    - SRC-fastmcp-ghsa
+    - SRC-nvd-cve-2026-14541
+    - SRC-github-mcp-ghsa
+    - SRC-foundry-local-gap02
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-fastmcp-ghsa
+      identifier: CVE-2025-69196 / GHSA-5h2m-4q8j-pqpj
+      relationship: direct_demonstration
+      exploitation_status: public_proof_of_concept
+      impact: A token obtained for another resource can be replayed for protected tools and resources.
+      remediation: Upgrade FastMCP to 2.14.2 or later.
+      selected: true
+      rationale: Highest directness; demonstrates the complete MCP resource-relay chain.
+    - source_id: SRC-nvd-cve-2026-14541
+      identifier: CVE-2026-14541
+      relationship: direct_vulnerability
+      exploitation_status: none_reported
+      impact: Any valid Google token could be accepted for protected MCP tools when audience configuration was absent.
+      remediation: Upgrade Google MCP Toolbox to 1.5.0 or later and configure audience.
+      selected: true
+      rationale: High-impact wrong-audience acceptance in a major MCP implementation.
+    - source_id: SRC-github-mcp-ghsa
+      identifier: CVE-2026-48529 / GHSA-pjp5-fpmr-3349
+      relationship: direct_demonstration
+      exploitation_status: public_proof_of_concept
+      impact: Later HTTP callers could execute with the first caller's GitHub credential.
+      remediation: Upgrade GitHub MCP Server to 1.1.2 or later.
+      selected: true
+      rationale: Direct cross-principal substitution with controlled proof of concept.
+    - source_id: SRC-foundry-local-gap02
+      identifier: Microsoft Foundry Local GAP-02
+      relationship: enabling_vulnerability
+      exploitation_status: not_reported
+      impact: A malicious external MCP server could capture and replay a forwarded caller token.
+      remediation: Use only trusted servers or avoid the affected preview authentication mode while under review.
+      selected: true
+      rationale: Current vendor-documented implementation exposure closely matching token passthrough.
+    - source_id: SRC-microsoft-ai-gateway-incident
+      identifier: LiteLLM AI gateway production incident
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_production
+      impact: Database access enabled model and virtual-key extraction.
+      remediation: Vendor-reported incident response and gateway hardening.
+      selected: false
+      rationale: Credential extraction and later use, but no current-caller credential relay.
+    - source_id: SRC-t1206-ms-config-risk
+      identifier: Exposed MCP misconfiguration research
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_exposure
+      impact: Unauthenticated MCP services were reachable.
+      remediation: Correct authentication and exposure configuration.
+      selected: false
+      rationale: Missing authentication is not credential propagation.
+    - source_id: SRC-ms-oauth-redirection-2026
+      identifier: OAuth redirection abuse
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_campaign
+      impact: OAuth redirect endpoints supported phishing and malware delivery.
+      remediation: Redirect validation and phishing controls.
+      selected: false
+      rationale: The source states the attacker does not receive the token.
+    - source_id: SRC-nvd-cve-2025-4143
+      identifier: CVE-2025-4143
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: Redirect weakness could expose an OAuth token.
+      remediation: Apply vendor correction.
+      selected: false
+      rationale: Initial token acquisition, not downstream authorization relay.
+    - source_id: SRC-nvd-cve-2026-53518
+      identifier: CVE-2026-53518
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: Authorization-code redemption race could mint duplicate tokens.
+      remediation: Apply vendor correction.
+      selected: false
+      rationale: Duplicate issuance does not establish an MCP relay boundary.
+    - source_id: SRC-nvd-cve-2026-14539
+      identifier: CVE-2026-14539
+      relationship: rejected
+      exploitation_status: none_reported
+      impact: Availability impact in Google MCP Toolbox.
+      remediation: Apply vendor correction.
+      selected: false
+      rationale: Availability flaw without credential authorization behavior.
+    - source_id: SRC-nvd-cve-2025-6238
+      identifier: CVE-2025-6238
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: Redirect weakness could support token interception.
+      remediation: Apply vendor correction.
+      selected: false
+      rationale: Credential acquisition rather than relay.
+sources_consulted:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9728
+  - SRC-nvd-cve-2025-69196
+  - SRC-fastmcp-ghsa
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-48529
+  - SRC-github-mcp-ghsa
+  - SRC-foundry-local-gap02
+  - SRC-github-secure-mcp
+  - SRC-attack-det0185
+  - SRC-mitre-t1550-001
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-t1206-ms-config-risk
+  - SRC-ms-oauth-redirection-2026
+  - SRC-nvd-cve-2025-4143
+  - SRC-nvd-cve-2026-53518
+  - SRC-nvd-cve-2026-14539
+  - SRC-nvd-cve-2025-6238
+sources_cited:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9728
+  - SRC-nvd-cve-2025-69196
+  - SRC-fastmcp-ghsa
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-48529
+  - SRC-github-mcp-ghsa
+  - SRC-foundry-local-gap02
+  - SRC-github-secure-mcp
+  - SRC-attack-det0185
+  - SRC-mitre-t1550-001
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-ms-oauth-redirection-2026
+sources_rejected:
+  - {source_id: SRC-microsoft-ai-gateway-incident, reason: Adjacent credential extraction and later use; no relay boundary.}
+  - {source_id: SRC-t1206-ms-config-risk, reason: Unauthenticated exposure; no credential propagation.}
+  - {source_id: SRC-ms-oauth-redirection-2026, reason: Adjacent redirect abuse; source says attacker does not obtain token.}
+  - {source_id: SRC-nvd-cve-2025-4143, reason: Initial acquisition through redirect weakness.}
+  - {source_id: SRC-nvd-cve-2026-53518, reason: Duplicate issuance without an MCP relay boundary.}
+  - {source_id: SRC-nvd-cve-2026-14539, reason: Availability issue outside the contract.}
+  - {source_id: SRC-nvd-cve-2025-6238, reason: Token interception, not boundary-crossing authorization.}
+sources_blocked: []
+conflicts:
+  - issue: Direct public demonstrations exist, but no direct production breach was identified.
+    resolution: Set overall evidence to Demonstrated and explicitly avoid the Observed label.
+  - issue: ATT&CK T1550.001 maps application-token use to Lateral Movement rather than Privilege Escalation.
+    resolution: Use an Analogous mapping and preserve ATK-TA0004 from the SAF contract.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1304-C001, SAF-T1304-C006]
+  rationale: >-
+    The FastMCP proof of concept demonstrates the complete cross-resource chain,
+    and the GitHub MCP advisory independently demonstrates cross-principal
+    credential substitution. No qualifying production exploitation source was
+    found, so Observed is not supported.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

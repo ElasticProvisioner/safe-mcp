@@ -1,0 +1,147 @@
+version: 1
+technique_id: SAF-T1206
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1206
+  inherited_context: false
+target:
+  id: SAF-T1206
+  neutral_name: Credential Implant in Config
+allowed_inputs:
+- The author-saf-technique skill and its routed references except impact-classification-examples.md.
+- Repository-wide instructions, techniques/TEMPLATE.md, research/README.md, blank
+  technique schemas, and the current validator.
+- Direct authoritative standards-body, government, first-party vendor, and first-party
+  researcher sources independently discovered on whitelisted domains.
+- Synthetic framework, source, neighbor, mitigation, history, and alignment records
+  used only in the isolated mock repository.
+prohibited_inputs:
+- techniques/SAF-T1206/README.md from the real repository or any historical copy.
+- techniques/SAF-T1206/detection-rule.yml from the real repository or any historical
+  copy.
+- research/techniques/SAF-T1206/ from the real repository or any historical copy.
+- Shared source, framework, and alignment registries before freeze.
+- Git history, diffs, blame, stashes, branches, commits, or review content exposing
+  prior target artifacts.
+- Any pull request, issue, cache, catalog description, SAF/SAFE site, SAF-MCP repository
+  or fork, or prior bundle containing target prose or research leads.
+- Previous conversation content beyond the neutral seed supplied to this fresh agent.
+- General unrestricted search, GitHub search, and impact-classification-examples.md
+  before freeze.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification/2026-07-28 authorization security token
+    storage resource indicators
+  - site:modelcontextprotocol.io SEP-2352 credential isolation 2026-07-28
+  - site:code.visualstudio.com MCP configuration input variables API keys passwords
+    approval trust
+  - site:docs.github.com/copilot MCP configuration secrets allowlist read-only tools
+  - site:nvd.nist.gov/vuln/detail mcp.json
+  - site:nvd.nist.gov/vuln/detail Model Context Protocol configuration
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-64107
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-66580
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-68433
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP incident credential
+    configuration agent
+  - site:microsoft.com/en-us/security/blog MCP incident credentials configuration
+  - site:attack.mitre.org/techniques/T1098 account manipulation persistence credentials
+  - site:zed.dev CVE-2025-68433 MCP configuration worktree trust
+  - site:cursor.com CVE-2025-64107 mcp.json path backslash security
+  - services.nvd.nist.gov REST cveId checks for selected and rejected CVEs
+  opened_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-t1206-mcp-client-registration
+  - SRC-t1206-vscode-config
+  - SRC-vscode-mcp-servers
+  - SRC-t1206-copilot-cli
+  - SRC-t1206-foundry-auth
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-t1206-ghsa-cursor
+  - SRC-t1206-nvd-cursor
+  - SRC-ghsa-dive-66580
+  - SRC-t1206-nvd-dive
+  - SRC-ghsa-zed-68433
+  - SRC-zed-secure-default
+  - SRC-t1206-nvd-zed
+  - SRC-cisa-kev-2026-09-01
+  - SRC-t1206-attack-t1098-001
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-gtig-ai-threats
+  - SRC-t1206-nvd-forgecode
+  - SRC-t1206-nvd-google-toolbox
+  - SRC-t1206-nvd-cloudflare-oauth
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect prior SAF-T1206 content or a revealing diff during mechanical integration.
+- Reconcile synthetic source IDs only against the shared manifest after this freeze.
+- Replace synthetic SAF-T1502, SAF-T1006, SAF-T1407 and SAF-M-45 through SAF-M-12
+  joins with real registry IDs without changing evidence-derived prose.
+- Replace the synthetic nonzero history SHA with an honest repository-history SHA
+  after integration.
+- Re-run detection tests and the strict validator after all mechanical joins.
+mock_validation:
+  repository: /private/tmp/saf-t1206-mock
+  command: python3 scripts/validate-technique-research.py SAF-T1206
+  result: passed
+  deliberately_deferred:
+  - Stable source-ID collision reconciliation.
+  - Real neighbor and mitigation joins.
+  - Honest repository-history SHA.
+attestation: I attest that this fresh agent independently derived the draft and evidence
+  set from the allowed generic materials and directly reviewed authoritative sources,
+  detected no prior-artifact access, and froze the bundle before integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-t1206-mcp-auth: SRC-mcp-authorization-2026-07-28
+    SRC-t1206-mcp-security: SRC-mcp-auth-security-2026-07-28
+    SRC-t1206-vscode-manage: SRC-vscode-mcp-servers
+    SRC-t1206-azure-mcp-security: SRC-ms-azure-mcp-security-2026
+    SRC-t1206-ghsa-dive: SRC-ghsa-dive-66580
+    SRC-t1206-ghsa-zed: SRC-ghsa-zed-68433
+    SRC-t1206-zed-trust: SRC-zed-secure-default
+    SRC-t1206-cisa-kev: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-t1206-mcp-client-registration
+  - SRC-t1206-vscode-config
+  - SRC-t1206-copilot-cli
+  - SRC-t1206-foundry-auth
+  - SRC-t1206-ghsa-cursor
+  - SRC-t1206-nvd-cursor
+  - SRC-t1206-nvd-dive
+  - SRC-t1206-nvd-zed
+  - SRC-t1206-attack-t1098-001
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-gtig-ai-threats
+  - SRC-t1206-nvd-forgecode
+  - SRC-t1206-nvd-google-toolbox
+  - SRC-t1206-nvd-cloudflare-oauth
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-31
+  - SAF-M-37
+  - SAF-M-45
+  - SAF-M-70
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1502
+    SAF-T9002: SAF-T1006
+    SAF-T9003: SAF-T1407
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-45
+    SAF-M-9002: SAF-M-16
+    SAF-M-9003: SAF-M-12
+  status: integrated_and_repository_validated

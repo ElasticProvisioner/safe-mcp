@@ -1,0 +1,82 @@
+version: 1
+technique_id: SAF-T1009
+name: Authorization Server Mix-up
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Cause a multi-authorization-server MCP client to disclose an authorization
+  code or access token issued by an honest authorization server to an
+  attacker-controlled authorization server by confusing the issuer associated
+  with the authorization response.
+
+scope:
+  security_boundary: >-
+    The per-authorization-request binding between the MCP client's selected and
+    validated authorization-server issuer, the browser-delivered authorization
+    response, and the token endpoint selected for code redemption.
+  in_scope:
+    - An MCP client interacts with two or more authorization servers, at least one controlled or compromised by the attacker.
+    - The client misattributes an authorization response from an honest issuer to the attacker-controlled issuer.
+    - The immediate outcome is disclosure of an honest issuer's authorization code or access token to the attacker-controlled authorization server.
+  out_of_scope:
+    - Authorization-code injection after a code has already been stolen; that is a follow-on mechanism.
+    - Acceptance by an MCP resource server of a token intended for another audience; that is token audience confusion rather than authorization-response issuer mix-up.
+    - Malicious authorization-server metadata, endpoint substitution, callback CSRF, or account linking when they do not cause the defining cross-issuer credential disclosure.
+    - Compromise of a single authorization server where the client never supports another issuer.
+  affected_components:
+    - MCP client authorization-flow state store
+    - Browser redirect and callback handler
+    - Authorization-server metadata cache
+    - Authorization and token endpoints
+    - MCP protected resource reached with a resulting token
+
+nearest_neighbors:
+  - technique_id: SAF-T1507
+    distinction: >-
+      Authorization-code interception obtains a code through interception,
+      whereas SAF-T1009 is the issuer misbinding that can disclose the code.
+  - technique_id: SAF-T1706
+    distinction: >-
+      OAuth token pivot replay reuses an issued token across contexts, whereas
+      SAF-T1009 occurs at client-side authorization-response and endpoint
+      selection before or during token redemption.
+  - technique_id: SAF-T1306
+    distinction: >-
+      A rogue authorization server controls or advertises a malicious endpoint;
+      SAF-T1009 requires an honest issuer's response to be misbound and its
+      credential disclosed across issuers.
+
+required_evidence:
+  - Current MCP authorization roles, discovery behavior, and response-validation requirements.
+  - Current OAuth standards defining mix-up prerequisites, attack flow, impact, and countermeasures.
+  - Directly reviewed controlled demonstrations and a separate search for production incidents.
+  - Directly reviewed CVE, advisory, patch, remediation, and exploitation-status records.
+  - Telemetry fields sufficient to evaluate issuer-response binding before any token request.
+  - Contrary conditions, including single-issuer clients, validated metadata requirements, and permitted legacy issuer omission.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Authorization callback validation events with flow_id, recorded_expected_issuer, response_iss, authorization_response_iss_parameter_supported, metadata_validated, comparison_mode, validation_outcome, and timestamp.
+    - Outbound token-request events with flow_id, selected_token_endpoint, bound_issuer, and code_forwarded.
+
+safe_example_constraints:
+  - Use only example.com-family domains and non-redeemable placeholder codes.
+  - Do not publish exploit automation, real endpoints, credentials, tokens, or instructions for compromising an authorization server.
+  - Show the defensive validation decision and stop before a credential is transmitted.
+
+completion_evidence:
+  - Every substantive publishable unit is traced to a validated claim and directly reviewed source or to a declared local artifact.
+  - Unverified production-incident and direct-CVE leads are omitted and recorded in traceability-ledger.yml.
+  - All five research passes and two consecutive no-change passes are recorded.
+  - Positive, negative, boundary, malformed, and expected-legitimate detection fixtures pass deterministically.
+  - Publication-rights, evidence-classification, safe-publication, framework, and clean-room gates pass.
+  - The independently generated bundle passes the current strict validator in an isolated mock repository before freeze.

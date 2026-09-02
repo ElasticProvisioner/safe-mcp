@@ -1,112 +1,98 @@
-# SAF-T1309: Privileged Tool Invocation via Prompt Manipulation - Detection Rule
-# This rule flags MCP tool invocations of privileged tools that co-occur with
-# authority-claim or pretext language in the same session turn.
-# Note: This is an EXAMPLE rule. The privileged-tool list and pretext-phrase list
-# MUST be tuned to the deploying environment. Pattern matching alone will not catch
-# semantically equivalent variants — pair with behavioral analytics.
-
-title: MCP Privileged Tool Invocation Following Authority-Claim Pretext
-id: 4a7f1c30-1e8b-4d6e-9d4f-1c3090000309
+title: Prompt Attack Followed by Unapproved High-Risk Agent Tool Invocation
+id: 7a0f5a6e-4c12-4a93-9f2f-130913091309
 status: experimental
-description: >
-  Detects MCP tool invocations of privileged tools (filesystem write, shell/exec,
-  network egress, secrets access, admin APIs) that occur in the same session turn as
-  user-supplied or ingested content asserting authority, prior approval, debug/simulation
-  framing, or role override. This pattern is characteristic of SAF-T1309, where an
-  agent is coerced via prompt manipulation into invoking a privileged tool.
-author: SAF-MCP Team
-date: 2026-04-14
-modified: 2026-04-14
+description: >-
+  Correlates a direct or indirect prompt-attack marker with an attempted or
+  executed high-risk tool call lacking a granted approval in the same agent
+  session and actor context.
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1309
-  - https://modelcontextprotocol.io/specification
-  - https://owasp.org/www-project-top-10-for-large-language-model-applications/
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-filter-prompt-shields
+  - https://arxiv.org/html/2406.13352v3
+author: Clean-room SAF-T1309 authoring agent
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: tool_invocation
   category: application
+  product: agent_or_mcp_host
+  service: prompt_guardrail_and_tool_audit
 detection:
-  # Privileged tool invocation. TUNE this list to the tools deployed in your host.
-  selection_privileged_tool:
-    tool_name:
-      - '*filesystem.write*'
-      - '*filesystem.delete*'
-      - '*fs.write*'
-      - '*shell*'
-      - '*exec*'
-      - '*process.spawn*'
-      - '*http.request*'
-      - '*network.fetch*'
-      - '*secrets.*'
-      - '*admin.*'
-      - '*deploy*'
-      - '*db.execute*'
-      - '*sql.execute*'
-
-  # Authority / prior-approval pretext language in the same turn's user input
-  # or in the immediately preceding ingested content (tool output, file read).
-  selection_authority_claim:
-    turn_context:
-      - '*I am the admin*'
-      - '*I am an administrator*'
-      - '*as the admin*'
-      - '*I have authorization*'
-      - '*I am authorized*'
-      - '*the admin already approved*'
-      - '*already approved this*'
-      - '*pre-approved*'
-      - '*on behalf of the admin*'
-
-  # Debug / simulation pretexting
-  selection_debug_pretext:
-    turn_context:
-      - '*for debugging*'
-      - '*just show the exact tool call*'
-      - '*show me the call you would make*'
-      - '*simulate the tool call*'
-      - '*pretend to call*'
-      - '*hypothetically invoke*'
-
-  # Role / mode override
-  selection_role_override:
-    turn_context:
-      - '*you are now in authorized mode*'
-      - '*operate in maintenance mode*'
-      - '*ignore the safety policy*'
-      - '*bypass confirmation*'
-      - '*you have full permissions*'
-      - '*act as root*'
-
-  condition: selection_privileged_tool and (selection_authority_claim or selection_debug_pretext or selection_role_override)
-
-falsepositives:
-  - Legitimate operator workflows where the user genuinely is privileged and uses these phrasings
-  - Documentation, tutorials, or red-team exercises being processed as content
-  - Developer debugging sessions against non-production hosts
-  - Customer-support transcripts ingested as data and discussing authorization
-
+  selection_attack_signal:
+    event_type:
+      - prompt_guardrail
+      - content_guardrail
+    source_trust: untrusted
+    attack_detected: true
+  selection_privileged_call:
+    event_type: tool_call
+    risk_tier:
+      - high
+      - critical
+    approval_state:
+      - missing
+      - denied
+      - not_requested
+    outcome:
+      - attempted
+      - executed
+  timeframe: 5m
+  condition: >-
+    selection_attack_signal followed by selection_privileged_call within
+    timeframe, grouped by session_id and actor_id
 fields:
+  - timestamp
   - session_id
-  - user_id
-  - agent_id
+  - actor_id
+  - source_trust
+  - intervention_point
+  - attack_detected
+  - filtered
+  - server_id
   - tool_name
-  - tool_arguments
-  - turn_index
-  - turn_context_source   # direct_user_input | tool_output | file_read | web_fetch
-  - host_id
-
+  - arguments_digest
+  - risk_tier
+  - approval_state
+  - outcome
+falsepositives:
+  - Authorized red-team or guardrail validation exercises.
+  - Classifier mistakes on benign content followed by legitimate automation.
+  - Approval recorded in an external system but missing from normalized telemetry.
 level: high
-
 tags:
+  - saf.t1309
   - attack.privilege_escalation
-  - attack.ta0004
-  - attack.execution
-  - attack.ta0002
-  - attack.t1548
-  - safe.t1309
-  - mcp.security
-  - mcp.tool_invocation
-
-# TODO: Replace the static phrase lists with a semantic classifier
-# (e.g., a small LLM or embedding-similarity check) for higher recall against
-# paraphrased pretexts. Static patterns are starting-point coverage only.
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1309-C011
+  telemetry_claim_ids:
+    - SAF-T1309-C002
+    - SAF-T1309-C003
+  limitation_claim_ids:
+    - SAF-T1309-C012
+  validation_artifacts:
+    - tests/SAF-T1309/test_detection_rule.py
+    - tests/SAF-T1309/test-logs.json
+    - research/techniques/SAF-T1309/validation/detection-test-output.txt
+    - research/techniques/SAF-T1309/validation/strict-validator-output.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1309-C002, SAF-T1309-C003]
+      rationale: Joins prompt-guardrail annotations to MCP host or agent tool audit events.
+    selection_attack_signal:
+      claim_ids: [SAF-T1309-C003]
+      rationale: Uses the documented direct or document-attack annotation at an untrusted intervention point.
+    selection_privileged_call:
+      claim_ids: [SAF-T1309-C002, SAF-T1309-C011]
+      rationale: Selects sensitive tool use without a granted approval.
+    timeframe:
+      claim_ids: [SAF-T1309-C011]
+      rationale: Provides a bounded, tunable temporal join for deterministic testing.
+    condition:
+      claim_ids: [SAF-T1309-C011]
+      rationale: Correlates the attack marker and later tool action on session and actor.
+    fields:
+      claim_ids: [SAF-T1309-C002, SAF-T1309-C003, SAF-T1309-C011]
+      rationale: Preserves identifiers, provenance, risk, approval, and outcome needed to evaluate the sequence.
+    falsepositives:
+      claim_ids: [SAF-T1309-C012]
+      rationale: Records classifier and telemetry-join lookalikes established by the reviewed sources and analytic limits.

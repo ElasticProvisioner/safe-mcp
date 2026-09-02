@@ -1,0 +1,45 @@
+{
+  "technique_id": "SAF-T1303",
+  "cases": [
+    {
+      "name": "positive_service_context_escape",
+      "expected": true,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-001","process_request_id":"req-001","delta_seconds":2,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:user-7","observed_context":"service:mcp-gateway"}
+    },
+    {
+      "name": "positive_host_root_escape",
+      "expected": true,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-002","process_request_id":"req-002","delta_seconds":9,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"container:tool","observed_context":"host:root"}
+    },
+    {
+      "name": "negative_expected_sandbox",
+      "expected": false,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-003","process_request_id":"req-003","delta_seconds":3,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:user-7","observed_context":"sandbox:user-7"}
+    },
+    {
+      "name": "expected_false_positive_approved_admin",
+      "expected": false,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":true,"request_id":"req-004","process_request_id":"req-004","delta_seconds":4,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:admin","observed_context":"host:administrator"}
+    },
+    {
+      "name": "boundary_exactly_60_seconds",
+      "expected": true,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-005","process_request_id":"req-005","delta_seconds":60,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:user-8","observed_context":"service:mcp"}
+    },
+    {
+      "name": "negative_61_seconds",
+      "expected": false,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-006","process_request_id":"req-006","delta_seconds":61,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:user-8","observed_context":"service:mcp"}
+    },
+    {
+      "name": "negative_missing_context",
+      "expected": false,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-007","process_request_id":"req-007","delta_seconds":1,"parent_role":"mcp_server","event_category":"process","event_type":"start","expected_context":"sandbox:user-9"}
+    },
+    {
+      "name": "negative_unrelated_process",
+      "expected": false,
+      "event": {"mcp_method":"tools/call","sandbox_expected":true,"privileged_approval":false,"request_id":"req-008","process_request_id":"req-other","delta_seconds":1,"parent_role":"desktop_app","event_category":"process","event_type":"start","expected_context":"sandbox:user-9","observed_context":"host:user"}
+    }
+  ]
+}

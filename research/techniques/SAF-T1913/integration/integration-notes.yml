@@ -1,0 +1,139 @@
+version: 1
+technique_id: SAF-T1913
+bundle_state: freeze_candidate
+generated_on: "2026-09-02"
+
+clean_room_boundary:
+  destination_repository_target_inspected: false
+  shared_registries_inspected: false
+  prior_target_artifacts_inspected: false
+  integration_must_not_use_prior_prose_as_evidence: true
+
+tactic_joins:
+  - id: ATK-TA0010
+    name: Exfiltration
+    synthetic: false
+    source: User-supplied neutral tactic assignment.
+    integration_action: Verify identifier existence and join only; do not import registry prose into the evidence packet.
+
+neighbor_joins:
+  - id: SAF-T9997
+    conceptual_name: Adversarial Instruction or Tool-Poisoning Delivery
+    synthetic: true
+    integration_action: Replace with the destination catalog ID matching the prerequisite behavior, or retain only a separately reviewed conceptual relationship.
+  - id: SAF-T9998
+    conceptual_name: Server-Side Request Forgery
+    synthetic: true
+    integration_action: Replace with the destination catalog ID matching unintended-destination request behavior.
+  - id: SAF-T9999
+    conceptual_name: URI or Link-Unfurl Exfiltration
+    synthetic: true
+    integration_action: Replace with the destination catalog ID matching data-in-URI fetch behavior.
+
+mitigation_joins:
+  - conceptual_name: Intelligible Tool Approval
+    synthetic: true
+    integration_action: Join only to an existing SAF mitigation that exposes destination and transfer meaning before authorization.
+  - conceptual_name: Destination Filtering
+    synthetic: true
+    integration_action: Join only to an existing SAF mitigation that constrains outbound server destinations.
+  - conceptual_name: Data Loss Prevention
+    synthetic: true
+    integration_action: Join only to an existing SAF mitigation that classifies and blocks sensitive outbound content.
+  - conceptual_name: MCP-Aware Egress Telemetry
+    synthetic: true
+    integration_action: Join only to an existing SAF mitigation that records MCP operation and HTTP destination context.
+
+source_id_joins:
+  policy: Independently assigned provisional IDs; reconcile only exact canonical-URL collisions after freeze.
+  ids:
+    - SRC-mcp-spec-overview-2026-07-28
+    - SRC-mcp-doc-index-2026-09-02
+    - SRC-mcp-transport-overview-2026-07-28
+    - SRC-mcp-streamable-http-2026-07-28
+    - SRC-mcp-tools-2026-07-28
+    - SRC-mcp-security-2026-07-28
+    - SRC-mcp-streamable-http-2025-11-25
+    - SRC-mcp-tools-2025-11-25
+    - SRC-mcp-security-2025-11-25
+    - SRC-rfc9110
+    - SRC-invariant-tool-poisoning
+    - SRC-otel-semconv-1.44.0
+    - SRC-otel-http-spans-1.44.0
+    - SRC-attack-t1048-v1.6
+    - SRC-attack-m1057-v1.1
+    - SRC-embrace-slack-mcp
+    - SRC-cve-2025-34072
+    - SRC-aws-healthlake-cve-2026-15643
+    - SRC-cve-2026-15643
+    - SRC-nvd-mcp-query-2026-09-02
+    - SRC-nvd-http-post-query-2026-09-02
+    - SRC-cisa-kev-2026-09-01
+    - SRC-cve-2025-49596
+    - SRC-cve-2025-6514
+    - SRC-cve-2026-41271
+    - SRC-cve-2026-56348
+    - SRC-nvd-sat-tools-call-2026-09-02
+    - SRC-nvd-sat-mcp-post-2026-09-02
+    - SRC-nvd-sat-tool-args-2026-09-02
+    - SRC-nvd-sat-mcp-method-2026-09-02
+  integration_action: >-
+    Compare canonical URLs only after freeze. Reuse a destination source ID when the
+    canonical URL and source identity match exactly; rewrite claim, trace, coverage,
+    and rights joins mechanically. Do not add sources discovered from the shared manifest.
+
+history_join:
+  synthetic_sha: "27511d03fae3ba68a70970a9d03289d674c9a9be"
+  derivation: SHA-1 of the clean-room technique contract used solely to satisfy the isolated validator's nonzero history field.
+  integration_action: Replace with an honest destination repository commit supporting the integrated initial version-history row.
+
+path_joins:
+  - bundle_path: techniques/SAF-T1913/
+    destination_path: techniques/SAF-T1913/
+    action: Mechanically replace the destination target directory without reading old content or a revealing diff.
+  - bundle_path: research/techniques/SAF-T1913/
+    destination_path: research/techniques/SAF-T1913/
+    action: Mechanically replace the destination research packet directory.
+  - bundle_path: tests/SAF-T1913/
+    destination_path: tests/SAF-T1913/
+    action: Add detector, fixtures, and tests.
+  - bundle_path: source-manifest-fragment.yml
+    destination_path: research/source-manifest.yml
+    action: Merge by stable source ID after canonical-URL collision reconciliation.
+  - bundle_path: framework-fragment.yml
+    destination_path: research/framework-model.yml
+    action: Merge technique record after neighbor and mitigation reconciliation.
+  - bundle_path: alignment-fragment.yml
+    destination_path: research/alignment-ledger.yml
+    action: Merge open integration issues and preserve their nonblocking status until resolved.
+  - bundle_path: validation/
+    destination_path: validation/
+    action: Proof artifacts are handoff evidence; retain or relocate according to repository policy while preserving declared paths.
+
+external_mapping_proposals:
+  - framework: MITRE ATT&CK Enterprise
+    id: T1048
+    name: Exfiltration Over Alternative Protocol
+    mapping_type: analogous
+    rationale: HTTP/S and alternate-location semantics overlap; MCP tools/call semantics and C2 relationship are not modeled.
+
+strict_validation_deferred_real_joins:
+  - Real shared source-ID collision resolution.
+  - Real neighbor and mitigation ID resolution.
+  - Honest destination repository-history SHA.
+  - Destination-wide regression tests after mechanical integration.
+
+unresolved_research_gaps:
+  - No qualifying direct production incident for the exact mechanism.
+  - No direct vulnerability whose root cause is sensitive tools/call arguments sent by Streamable HTTP POST.
+  - No public end-to-end demonstration that explicitly identifies Streamable HTTP as the transport.
+  - No production accuracy evaluation for the experimental detector.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  freeze_manifest_sha256: a45c266c60e56c64654892d3c78fc591dac991f8c543be256b3b488e84272fa0
+  canonical_neighbors: [SAF-T1001, SAF-T1911, SAF-T1902]
+  unjoined_conceptual_boundary: Server-Side Request Forgery
+  canonical_mitigations: [SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-17, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-72, SAF-M-74]
+  attack_mapping: {id: T1048, type: analogous}
+  detector: "5 tests passed; 11 fixtures evaluated; 5 expected alerts; 0 mismatches"
+  strict_validator: "PASS SAF-T1913"

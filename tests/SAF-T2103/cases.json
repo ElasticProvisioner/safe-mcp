@@ -1,0 +1,53 @@
+[
+  {
+    "name": "positive_untrusted_source_write",
+    "expected": true,
+    "event": {"actor": {"type": "ai_agent", "id": "agent-a"}, "action": "file_write", "changed_paths": ["src/example.py"], "approval": {"status": "approved"}, "context": {"untrusted_content": true}, "change": {"indicators": ["security_check_removed"]}}
+  },
+  {
+    "name": "positive_missing_approval_workflow",
+    "expected": true,
+    "event": {"actor": {"type": "coding_agent", "id": "agent-b"}, "action": "commit", "changed_paths": [".github/workflows/ci.yml"], "context": {"untrusted_content": false}, "change": {"indicators": ["test_disabled"]}}
+  },
+  {
+    "name": "negative_human_actor",
+    "expected": false,
+    "event": {"actor": {"type": "human", "id": "reviewer"}, "action": "file_write", "changed_paths": ["src/example.py"], "approval": {"status": "missing"}, "context": {"untrusted_content": true}, "change": {"indicators": ["security_check_removed"]}}
+  },
+  {
+    "name": "negative_docs_only",
+    "expected": false,
+    "event": {"actor": {"type": "ai_agent", "id": "agent-c"}, "action": "file_write", "changed_paths": ["docs/readme.md"], "approval": {"status": "missing"}, "context": {"untrusted_content": true}, "change": {"indicators": ["opaque_behavior_change"]}}
+  },
+  {
+    "name": "boundary_approved_trusted",
+    "expected": false,
+    "event": {"actor": {"type": "ai_agent", "id": "agent-d"}, "action": "file_write", "changed_paths": ["src/example.py"], "approval": {"status": "approved"}, "context": {"untrusted_content": false}, "change": {"indicators": ["opaque_behavior_change"]}}
+  },
+  {
+    "name": "boundary_no_risk_indicator",
+    "expected": false,
+    "event": {"actor": {"type": "ai_agent", "id": "agent-e"}, "action": "file_write", "changed_paths": ["src/example.py"], "approval": {"status": "missing"}, "context": {"untrusted_content": true}, "change": {"indicators": ["format_only"]}}
+  },
+  {
+    "name": "malformed_missing_paths",
+    "expected": false,
+    "event": {"actor": {"type": "ai_agent", "id": "agent-f"}, "action": "file_write", "approval": {"status": "missing"}, "context": {"untrusted_content": true}, "change": {"indicators": ["security_check_removed"]}}
+  },
+  {
+    "name": "expected_false_positive_emergency_automation",
+    "expected": true,
+    "expected_false_positive": true,
+    "event": {"actor": {"type": "automation_agent", "id": "break-glass"}, "action": "push", "changed_paths": ["build/recovery.yml"], "approval": {"status": "missing"}, "context": {"untrusted_content": false}, "change": {"indicators": ["build_guard_weakened"]}}
+  },
+  {
+    "name": "normalization_case_hyphen_backslash",
+    "expected": true,
+    "event": {"actor": {"type": "AI-AGENT", "id": "agent-g"}, "action": "FILE-WRITE", "changed_paths": ["SRC\\example.py"], "approval": {"status": "BYPASSED"}, "context": {"untrusted_content": false}, "change": {"indicators": ["SECURITY-CHECK-REMOVED"]}}
+  },
+  {
+    "name": "evasion_zero_width_normalization",
+    "expected": true,
+    "event": {"actor": {"type": "AI\u200b-AGENT", "id": "agent-h"}, "action": "FILE\u200b-WRITE", "changed_paths": ["src/guard.py"], "approval": {"status": "MISSING"}, "context": {"untrusted_content": false}, "change": {"indicators": ["TEST\u200b-DISABLED"]}}
+  }
+]

@@ -1,0 +1,55 @@
+version: 1
+technique_id: SAF-T1204
+frozen_bundle: /private/tmp/saf-all-cleanroom/SAF-T1204/bundle
+integration_scope: mechanical_only
+synthetic_tactics: []
+fixed_tactics:
+  - id: ATK-TA0003
+    source: User-provided clean-room seed.
+synthetic_neighbors:
+  - id: SAF-T9001
+    role: Transient prompt injection boundary placeholder.
+  - id: SAF-T9002
+    role: External RAG corpus poisoning boundary placeholder.
+  - id: SAF-T9003
+    role: Agent configuration modification boundary placeholder.
+synthetic_mitigations:
+  - id: SAF-M-9001
+    role: Memory write governance placeholder.
+  - id: SAF-M-9002
+    role: Memory isolation placeholder.
+  - id: SAF-M-9003
+    role: Memory validation placeholder.
+  - id: SAF-M-9004
+    role: Memory lifecycle audit placeholder.
+source_id_joins:
+  policy: Reconcile only exact canonical URL collisions after freeze; do not use the shared manifest to add leads or revise claims.
+  ids:
+    - SRC-arxiv-memory-defense-2026
+    - SRC-ghsa-openclaw-57r2
+    - SRC-langchain-deepagents-production
+    - SRC-langchain-long-term-memory
+    - SRC-mcp-resources-2025-06-18
+    - SRC-mcp-tools-2025-06-18
+    - SRC-mitre-attack-t1546
+    - SRC-ms-guarding-ai-memory-2026
+    - SRC-ms-recommendation-poisoning-2026
+    - SRC-ms-redteam-update-2026
+    - SRC-ms-zero-trust-memory-2026
+    - SRC-neurips-agentpoison-2024
+    - SRC-neurips-minja-2025
+    - SRC-nvd-cve-2026-44999
+history_sha:
+  synthetic: "1111111111111111111111111111111111111111"
+  replacement: Honest integration commit SHA after the bundle is mechanically installed.
+path_joins:
+  - Copy source-manifest-fragment.yml records into research/source-manifest.yml after exact-URL collision reconciliation.
+  - Copy framework-fragment.yml record into research/framework-model.yml after replacing synthetic relationships.
+  - Copy alignment-fragment.yml issues into research/alignment-ledger.yml.
+  - Replace techniques/SAF-T1204 and research/techniques/SAF-T1204 atomically from this bundle.
+  - Technique-local test artifacts remain under techniques/SAF-T1204; tests/SAF-T1204 is intentionally absent.
+deferred_substantive_work: []
+prohibited_actions:
+  - Do not inspect or diff the prior target content.
+  - Do not introduce new sources, claims, examples, or wording during mechanical integration.
+  - Do not commit, push, or open a pull request without separate authorization.

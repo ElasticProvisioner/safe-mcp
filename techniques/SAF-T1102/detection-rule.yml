@@ -1,96 +1,75 @@
-# SAF-T1102: Prompt Injection Detection Rule
-# This rule detects potential prompt injection attempts in MCP tool outputs
-# Note: This is an example rule. Attackers continuously develop new techniques.
-
-title: MCP Tool Output Prompt Injection Detection
-id: 8f3e7a92-4b5d-11ef-9234-0242ac120002
+title: Suspicious Untrusted Content Followed by an Unapproved MCP Tool Action
+id: be4b6164-79f7-4f72-9d50-48e8f5b61617
 status: experimental
-description: Detects potential prompt injection attempts in MCP tool outputs by identifying common instruction patterns
-author: SAF-MCP Team
-date: 2025-01-09
-modified: 2025-01-09
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1102
-  - https://simonwillison.net/2025/Jul/6/supabase-mcp-lethal-trifecta/
-  - https://arxiv.org/html/2501.00168v1
+description: >-
+  Correlates suspicious untrusted content supplied to a model with a later
+  unapproved high-risk or cross-boundary MCP tool call in the same session.
 logsource:
-  product: mcp
-  service: tool_output
   category: application
-detection:
-  # Primary injection patterns
-  selection_system_prompts:
-    tool_output:
-      - '*SYSTEM:*'
-      - '*</data>*SYSTEM*'
-      - '*<!-- SYSTEM*'
-      - '*[SYSTEM]*'
-      - '*###SYSTEM###*'
-  
-  # Instruction override patterns
-  selection_overrides:
-    tool_output:
-      - '*Ignore previous instructions*'
-      - '*disregard all prior*'
-      - '*forget everything above*'
-      - '*ignore all previous*'
-      - '*override system prompt*'
-  
-  # Common LLM instruction formats
-  selection_llm_formats:
-    tool_output:
-      - '*###Assistant:*'
-      - '*[INST]*'
-      - '*\n\nHuman:*'
-      - '*\n\nAssistant:*'
-      - '*<|im_start|>*'
-      - '*<|im_end|>*'
-  
-  # Unicode and encoding tricks
-  selection_unicode:
-    tool_output:
-      # Zero-width characters
-      - '*\u200b*'
-      - '*\u200c*'
-      - '*\u200d*'
-      # Unicode tags
-      - '*\uE00*'
-      # Bidirectional text
-      - '*\u202A*'
-      - '*\u202B*'
-      - '*\u202D*'
-      - '*\u202E*'
-  
-  # Combined patterns suggesting injection
-  selection_combined:
-    tool_output:
-      - '*</data>*<data>*'
-      - '*"}*{"*SYSTEM*'
-      - '*\n\n[*'
-      - '*]]>*<![CDATA[*'
-  
-  condition: 1 of selection_*
-  
-falsepositives:
-  - Legitimate data containing instruction-like patterns
-  - Documentation or educational content about prompts
-  - Code repositories containing LLM-related code
-  - Security testing and research activities
-  
+  product: mcp_host
+  service: agent_audit
 fields:
-  - tool_name
-  - tool_output
   - timestamp
   - session_id
-  - user_id
-  
+  - event_type
+  - channel
+  - trust_label
+  - detector_verdict
+  - instruction_indicators
+  - tool_name
+  - action_risk
+  - crosses_trust_boundary
+  - approval_state
+  - outcome
+detection:
+  source_event:
+    event_type: model_content_received
+    trust_label: untrusted
+    signal:
+      detector_verdict: suspicious
+      or_instruction_indicators_present: true
+  action_event:
+    event_type: tool_call
+    approval_state:
+      - missing
+      - bypassed
+    action_condition:
+      action_risk: high
+      or_crosses_trust_boundary: true
+  condition: source_event followed_by action_event by session_id within 5m
+falsepositives:
+  - Authorized red-team or prompt-injection evaluation sessions.
+  - Administrative workflows whose approval state is not recorded correctly.
+  - Benign quoted instructions followed by an independently requested high-risk action.
 level: high
-
 tags:
-  - attack.initial_access
-  - attack.t1190
-  - attack.execution
-  - attack.t1055
-  - safe.t1102
-  - mcp.security
-  - prompt.injection
+  - saf.t1102
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1102-C013]
+  telemetry_claim_ids: [SAF-T1102-C012]
+  limitation_claim_ids: [SAF-T1102-C013, SAF-T1102-C015, SAF-T1102-C016]
+  validation_artifacts:
+    - tests/SAF-T1102/detection-fixtures.json
+    - tests/SAF-T1102/expected-results.json
+    - tests/SAF-T1102/test_detection_rule.py
+    - research/techniques/SAF-T1102/validation/detection-test.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1102-C012]
+      rationale: MCP host audit telemetry can join model-facing content, approvals, and tool activity.
+    fields:
+      claim_ids: [SAF-T1102-C012, SAF-T1102-C013]
+      rationale: Source provenance, session identity, verdicts, action risk, boundary crossing, and approval state are required for the correlation.
+    source_event:
+      claim_ids: [SAF-T1102-C013, SAF-T1102-C016]
+      rationale: The analytic requires both untrusted provenance and a detector or instruction-like signal because literal keywords alone are incomplete.
+    action_event:
+      claim_ids: [SAF-T1102-C013, SAF-T1102-C014]
+      rationale: High-risk or cross-boundary tool use without approval is the consequential behavioral transition.
+    condition:
+      claim_ids: [SAF-T1102-C013]
+      rationale: Same-session temporal correlation follows the documented content-to-action sequence and reduces isolated-event noise.
+    falsepositives:
+      claim_ids: [SAF-T1102-C013, SAF-T1102-C016]
+      rationale: Security testing, telemetry defects, and benign instruction-like text can reproduce the observable sequence.

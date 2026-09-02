@@ -1,0 +1,69 @@
+version: 1
+technique_id: SAF-T1913
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: /root/cleanroom_saf_t1913
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The attestation records a fresh non-inheriting generator, allowed and prohibited inputs, direct-authority research, no prior-artifact access, integration constraints, and no contamination.
+  contract_and_scope:
+    status: passed
+    notes: The defining mechanism requires sensitive tools/call arguments carried in an MCP Streamable HTTP POST to the selected MCP endpoint; URI fetches, arbitrary SSRF, generic POSTs, and non-sensitive calls are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP transport and tools specifications, RFC 9110, and explicitly bounded research support the protocol and mechanism statements; transport-unstated demonstrations remain classified as adjacent.
+  claim_traceability:
+    status: passed
+    notes: Twenty claims have exact source locators, limitations, validation state, and readable hidden SAF-TRACE linkage.
+  source_or_omit:
+    status: passed
+    notes: Substantive README units are linked to inventoried claims or declared local artifacts; eight unsupported or overbroad candidates are explicitly excluded.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is warranted by the documented inference joining current MCP rules with a component demonstration whose transport is unstated; no observed or end-to-end demonstrated label is claimed.
+  research_saturation:
+    status: passed
+    notes: The full five-pass methodology completed, followed by two direct-NVD no-change saturation passes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Eight candidates were assessed; three high-impact adjacent examples were ranked and selected, while the absence of a qualifying exact production incident or vulnerability is explicit.
+  detection_quality:
+    status: passed
+    notes: The experimental analytic has an executable detector and eleven inert fixtures covering positive, negative, boundary, malformed, normalization, and expected false-positive cases; all tests pass.
+  mitigation_quality:
+    status: passed
+    notes: Proposed controls constrain intelligibility, destination, sensitive content, and MCP-aware telemetry, while remaining conceptual until destination-registry integration.
+  framework_alignment:
+    status: passed
+    notes: The Exfiltration tactic and analogous ATT&CK T1048 proposal are bounded; synthetic neighbors and mitigation concepts are isolated in integration notes and alignment issues.
+  publication_rights:
+    status: passed
+    notes: All sixteen cited sources have use, owner, access, permission, attribution, and rights records; no quotation, copied code, figure, or dataset is republished.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures use reserved domains, placeholders, digests, and category labels; they contain no credentials, operational secrets, destructive payloads, or exploit chain.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1913
+      result: passed
+      artifact: research/techniques/SAF-T1913/validation/strict-validator.txt
+      environment: Synthetic isolated repository containing only generic validator material, this bundle, and minimal synthetic joins.
+    - command: python3 -m unittest -v tests/SAF-T1913/test_detection.py
+      result: passed
+      artifact: research/techniques/SAF-T1913/validation/detection-test.txt
+  detection_tests:
+    status: passed
+    command: python3 -m unittest -v tests/SAF-T1913/test_detection.py
+    result: 5 tests passed; 11 fixtures evaluated; 5 expected alerts; 0 mismatches.
+    waiver: null
+
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "5 tests passed; 11 fixtures evaluated; 5 expected alerts; 0 mismatches"
+  validator: "PASS SAF-T1913"
+  proof: research/techniques/SAF-T1913/validation/canonical-validation.txt
+  notes: Source IDs, canonical neighbors, nine mitigations, analogous ATT&CK T1048, history, framework, alignment, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

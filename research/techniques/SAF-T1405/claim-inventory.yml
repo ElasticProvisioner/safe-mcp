@@ -1,0 +1,325 @@
+version: 1
+technique_id: SAF-T1405
+claims:
+  - id: SAF-T1405-C001
+    statement: >-
+      MCP tools are discovered with a name, optional title, description, and
+      schemas and are called by name; names are case-sensitive and unique only
+      within one server, so clients or aggregators should disambiguate
+      cross-server collisions and should not treat a self-reported server name as
+      a verified global identity.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tools > Listing Tools
+          - Tools > Calling Tools
+          - Tools > Tool Names
+          - Tools > Tool
+    corroboration: Protocol authority is sufficient for the normative interface claim.
+    limitations:
+      - The specification does not establish exploitation frequency or product implementation quality.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1405-C002
+    statement: >-
+      Attacker-controlled tool names or descriptions can cross the untrusted
+      metadata boundary and redirect tool selection toward an attacker-controlled
+      or misleadingly presented tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mpma-2025
+        support: direct
+        exact_locators:
+          - Section 4.2, Baseline Attacks
+          - Section 5, Experimental Setup
+          - Section 6.1, Effectiveness of DPMA
+      - source_id: SRC-mcp-security-bench-2510.15994
+        support: corroborating
+        exact_locators:
+          - Section 3.2, Tool Signature Attacks
+          - Section 4.2, Attack Tool Construction
+          - Appendix C.2.3, Name Collision + False Error
+    corroboration: Two independent controlled studies manipulate tool identity metadata in MCP evaluations.
+    limitations:
+      - Neither study documents a production victim or breach.
+      - Results are conditional on the evaluated hosts, models, prompts, and competing tools.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1405-C003
+    statement: >-
+      MPMA's Best Name and Best Description manipulations strongly biased tool
+      selection across eight MCP servers and five tested models, with Best
+      Description reaching 100 percent ASR in almost all reported settings and
+      Best Name reaching 100 percent in most settings.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mpma-2025
+        support: direct
+        exact_locators:
+          - Section 4.2, Baseline Attacks, Best Description and Best Name
+          - Section 5, Experimental Setup
+          - Section 6.1, Effectiveness of DPMA and Figure 4
+    corroboration: MCP Security Bench independently tests name collision, but not the same promotional-name manipulation.
+    limitations:
+      - The competitive setup used functionally equivalent tools and ten queries per server.
+      - High selection ASR does not by itself establish confidentiality, integrity, or availability harm.
+    conflicts:
+      - MPMA's malicious-majority experiment reports that models can become alert and prefer benign tools when manipulation is pervasive.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1405-C004
+    statement: >-
+      MCP Security Bench reports a 14.62 percent average attack success rate
+      across ten model backbones for its Name Collision plus False Error condition
+      in a benchmark with 2,000 instances, ten domains, and 405 attack tools.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-security-bench-2510.15994
+        support: direct
+        exact_locators:
+          - Abstract
+          - Table 2, Name Collision modification rule
+          - Section 5.2 and Table 3, Attack Effectiveness
+          - Appendix C.2.3, Name Collision + False Error
+          - Appendix E, Table 12
+    corroboration: MPMA independently shows that changing a tool name can alter selection.
+    limitations:
+      - The reported condition couples name collision with a response-stage false error and therefore does not isolate downstream harm caused by renaming alone.
+      - Some backbones, including the reported GPT-5 configuration, recorded zero success for that mixed condition.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1405-C005
+    statement: >-
+      The reviewed NVD keyword-query set and CISA Known Exploited
+      Vulnerabilities catalog identified no direct production incident or direct
+      vulnerability whose defining mechanism was MCP tool obfuscation or renaming.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-mcp-tool-identity-corpus-2026
+        support: direct
+        exact_locators:
+          - CVE API keyword result counts for nine recorded MCP tool-name, renaming, collision, confusion, poisoning, allowlist, spoofing, and masquerading queries
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - Full catalog downloaded 2026-09-01; local case-insensitive filter for MCP and Model Context Protocol returned zero entries
+    corroboration: Both an official vulnerability catalog and an official known-exploitation catalog were checked.
+    limitations:
+      - This is a bounded search result and does not prove global absence.
+      - Vulnerability descriptions may omit MCP or tool-name terminology used in the queries.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The gap statement is limited to the exact reviewed catalogs and queries.
+    status: validated
+  - id: SAF-T1405-C006
+    statement: >-
+      CVE-2026-46519 is an enabling execution-authorization vulnerability rather
+      than a tool-renaming vulnerability: affected mcp-server-kubernetes versions
+      filtered tools from tools/list without enforcing the same allowed set at
+      tools/call, and version 3.6.0 fixed the call-layer check.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-cr22-wjx7-2w6m
+        support: direct
+        exact_locators:
+          - Summary
+          - Impact
+          - Reproduction
+          - Patch
+          - Credit
+      - source_id: SRC-nvd-cve-2026-46519
+        support: corroborating
+        exact_locators:
+          - CVE-2026-46519 description, affected configuration, CWE-863, and references
+    corroboration: NVD records the maintainer advisory and affected versions.
+    limitations:
+      - The issue requires knowledge of an existing tool name and does not use a deceptive name, title, or description.
+      - The advisory establishes potential cluster impact, not known exploitation in production.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Relationship to SAF-T1405 is an analytic boundary classification; the vulnerability facts are direct.
+    status: validated
+  - id: SAF-T1405-C007
+    statement: >-
+      A detector can compare stable provider-and-tool bindings, machine names,
+      and complete definition hashes with an approved baseline at discovery or
+      update time to identify unapproved identity drift; signed, versioned
+      definitions and reapproval provide a conceptual integrity basis.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tools > List Changed Notification
+          - Tools > Tool Names
+          - Security Considerations > Clients SHOULD log tool usage
+      - source_id: SRC-etdi-2025
+        support: direct
+        exact_locators:
+          - Section IV, Enhanced Tool Definition Interface
+          - Listing 1, definition signature and approved hash/version comparison
+          - Section V, Security Analysis
+    corroboration: Protocol lifecycle and logging guidance supplies the event boundary; ETDI supplies the proposed comparison design.
+    limitations:
+      - ETDI is a proposed extension and does not provide production effectiveness measurements.
+      - Hash comparison detects change, not deceptive semantics in a first-seen definition.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact analytic is a conservative synthesis of protocol observables and the proposed integrity design.
+    status: validated
+  - id: SAF-T1405-C008
+    statement: >-
+      Metadata-focused defenses have blind spots and tradeoffs: MPMA reports that
+      MCPScan and MCPShield missed most tested direct and generated manipulations,
+      while a separate layered semantic-defense study reports residual unsafe
+      invocation and false positives.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mpma-2025
+        support: direct
+        exact_locators:
+          - Appendix E.2, More Analysis of MCP Defenses
+          - Table 4, MPMA under MCPScan and MCPShield
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: corroborating
+        exact_locators:
+          - Section III, Methodology and controlled synthetic testbed
+          - Table XXIV, defense comparison
+          - Section VII, Limitations and Future Work
+    corroboration: Independent controlled studies test distinct defensive approaches and both preserve residual risk.
+    limitations:
+      - The studies use different tool corpora, models, prompts, and success definitions.
+      - Scanner results do not measure the deterministic baseline-drift analytic shipped with this technique.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1405-C009
+    statement: >-
+      Stable origin disambiguation, definition integrity and change reapproval,
+      least privilege, and authorization enforced at invocation constrain the
+      technique and bound its downstream consequences.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tools > Tool Names
+          - Security Considerations
+      - source_id: SRC-etdi-2025
+        support: direct
+        exact_locators:
+          - Section IV, Enhanced Tool Definition Interface
+          - Section V, Security Analysis
+          - Section VI, Discussion and adoption challenges
+      - source_id: SRC-ghsa-cr22-wjx7-2w6m
+        support: corroborating
+        exact_locators:
+          - Patch
+          - Impact
+    corroboration: The sources address complementary identity, integrity, and call-enforcement layers.
+    limitations:
+      - No reviewed source establishes that the combined control stack eliminates deceptive tool selection.
+      - Integrity depends on trustworthy identity, key, baseline, and approval management.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The layered mitigation is synthesized from controls addressing distinct stages of the mechanism.
+    status: validated
+  - id: SAF-T1405-C010
+    statement: >-
+      Selection manipulation can redirect an intended action, but confidentiality,
+      integrity, and availability impact depends on the selected tool's actual
+      permissions, inputs, behavior, and downstream authorization.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mpma-2025
+        support: direct
+        exact_locators:
+          - Section 3, Threat Model
+          - Section 6, Experiments
+      - source_id: SRC-mcp-security-bench-2510.15994
+        support: corroborating
+        exact_locators:
+          - Section 3.1, Threat Model
+          - Section 3.2, Tool Signature Attacks
+          - Appendix C.2.3, Name Collision + False Error
+    corroboration: Both experiments separate selection-stage manipulation from the tools and response behaviors that determine consequence.
+    limitations:
+      - Severity ratings are conditional and are not incident loss estimates.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conditional impact statement bounds what the controlled selection evidence can establish.
+    status: validated
+  - id: SAF-T1405-C011
+    statement: >-
+      MITRE ATT&CK T1036 Masquerading is an analogous mapping because it covers
+      manipulated names or metadata that make objects appear legitimate, but it
+      does not define MCP tool discovery or model selection.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1036
+        support: direct
+        exact_locators:
+          - Technique definition
+          - ID, tactic, platforms, version, and last-modified metadata
+    corroboration: No direct ATT&CK technique for MCP tool identity metadata was identified in the reviewed authority page.
+    limitations:
+      - The mapping is conceptual and must not be interpreted as a direct platform or procedure match.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares defining behavior while preserving the platform and boundary mismatch.
+    status: validated
+  - id: SAF-T1405-C012
+    statement: >-
+      In a controlled synthetic descriptor-manipulation testbed with three models
+      and more than 1,800 runs, the reported full defense stack reduced unsafe
+      invocation from 0.36 to 0.15 while producing a 0.22 false-positive rate.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Section III, Methodology
+          - Table XXIV, Defense comparison
+          - Section VII, Limitations and Future Work
+    corroboration: MPMA separately reports scanner blind spots, but does not test the same layered defense.
+    limitations:
+      - The testbed used in-house tools, fixed prompting strategies, controlled permissions, and synthetic descriptors.
+      - The study does not establish production false-positive or residual-risk rates.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

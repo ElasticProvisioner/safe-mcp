@@ -1,0 +1,124 @@
+version: 1
+technique_id: SAF-T1605
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1605
+  neutral_name: Capability Mapping
+allowed_inputs:
+- Neutral identifier, name, and tactic supplied in the clean-room assignment.
+- Generic technique and research templates, generic validator, methodology, clean-room,
+  trace-format, and breach-research instructions.
+- Direct external authorities independently located under the recorded direct-authority
+  research policy.
+prohibited_inputs:
+- techniques/SAF-T1605/README.md
+- research/techniques/SAF-T1605/
+- techniques/SAF-T1605/detection-rule.yml
+- Existing target technique tests or research artifacts.
+- git history, diffs, blame, commits, or branches for the target.
+- pull request, issue, catalog description, framework registry, source registry, alignment
+  registry, or SAF website content for the target.
+- previous conversation, prior target context, and methodology impact-classification
+  examples.
+independent_research:
+  searches:
+  - Direct MCP 2026-07-28 specification and documentation pages for architecture,
+    server/discover, tools, resources, prompts, roots, authorization, security practices,
+    and Inspector.
+  - Direct MITRE ATT&CK T1518 page.
+  - Direct NVD CVE API query keywordSearch=Model Context Protocol with all 77 returned
+    descriptions screened.
+  - Direct CISA KEV 2026.09.01 catalog, exact protocol phrase and candidate-CVE checks.
+  - Direct arXiv API queries for Model Context Protocol security, enumeration, capability
+    mapping, capability discovery, and tool enumeration.
+  - Exact originating GitHub Security Advisory URLs only after the corresponding NVD
+    record supplied each URL.
+  opened_source_ids:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-2026-roots
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-attack-t1518
+  - SRC-arxiv-scout-2608.23992
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-49257
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-nvd-cve-2025-66414
+  - SRC-ghsa-typescript-w48q
+  - SRC-nvd-cve-2026-52870
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- The isolated mock uses only this packet's fragments, synthetic neighbors, synthetic
+  mitigations, and a synthetic history identifier.
+- Integration must reconcile the fragments with shared registries without importing
+  prior target prose.
+- Synthetic neighbor and mitigation roles must be replaced or explicitly accepted
+  during post-freeze integration.
+attestation: The technique was independently researched and authored from the allowed
+  neutral seed, generic methodology materials, and direct external authorities. The
+  clean-room draft was validated in an isolated synthetic mock before the canonical
+  bundle was frozen.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-2026-architecture: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-2026-discovery: SRC-mcp-discovery-2026-07-28
+    SRC-mcp-2026-tools: SRC-mcp-tools-2026-07-28
+    SRC-mcp-2026-resources: SRC-mcp-resources-2026
+    SRC-mcp-2026-prompts: SRC-mcp-prompts-2026
+    SRC-mcp-2026-authorization: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-2026-security: SRC-mcp-security-2026-07-28
+    SRC-mcp-inspector-2026: SRC-mcp-inspector-2026
+    SRC-mitre-t1518: SRC-attack-t1518
+    SRC-cisa-kev-20260901: SRC-cisa-kev-2026-09-01
+    SRC-nvd-cve-2026-49257: SRC-nvd-cve-2026-49257
+    SRC-ghsa-mcp-pinot-73cv: SRC-ghsa-mcp-pinot-73cv
+    SRC-nvd-cve-2026-52870: SRC-nvd-cve-2026-52870
+    SRC-nvd-cve-2026-46519: SRC-nvd-cve-2026-46519
+    SRC-ghsa-kubernetes-cr22: SRC-ghsa-cr22-wjx7-2w6m
+  new_shared_source_records:
+  - SRC-mcp-2026-roots
+  - SRC-arxiv-scout-2608.23992
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-nvd-cve-2025-66414
+  - SRC-ghsa-typescript-w48q
+  - SRC-ghsa-python-hvrp
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  canonical_neighbors:
+  - SAF-T1104
+  - SAF-T1001
+  - SAF-T1601
+  - SAF-T1602
+  attack_mapping:
+    T1518: analogous
+  validation_artifacts:
+  - research/techniques/SAF-T1605/validation/detection-tests.txt
+  - research/techniques/SAF-T1605/validation/strict-validator.txt
+  source_cache: omitted_from_repository_under_reference_only_rights
+  status: integrated_and_validated

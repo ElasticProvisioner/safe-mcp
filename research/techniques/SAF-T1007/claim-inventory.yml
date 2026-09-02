@@ -1,0 +1,265 @@
+version: 1
+technique_id: SAF-T1007
+claims:
+  - id: SAF-T1007-C001
+    statement: MCP URL-mode elicitation supports external OAuth flows in which the server stores third-party tokens and binds the request to a user identity.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["URL Mode Elicitation for OAuth Flows; Implementation Pattern; Security Considerations"]
+    corroboration: SEP-1036 documents the accepted design and server identity-verification requirement.
+    limitations: [The protocol pattern does not establish that every implementation is vulnerable.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C002
+    statement: CVE-2026-31944 demonstrates that forwarding an MCP OAuth authorization URL to a victim can cause the victim's tokens to be stored for the attacker's initiating account.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-vf7j-7mrx-hp7g
+        support: direct
+        exact_locators: ["Summary; Details; PoC steps 1-5; Impact"]
+      - source_id: SRC-nvd-cve-2026-31944
+        support: corroborating
+        exact_locators: ["CVE description; CVSS v3.1; CISA SSVC exploitation=poc"]
+    corroboration: NVD independently records the same affected behavior and PoC exploitation state.
+    limitations: [The advisory and PoC do not establish exploitation in a production victim environment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C003
+    statement: Missing callback authentication and failure to compare the authenticated callback subject with the flow initiator are the defining implementation weaknesses.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-vf7j-7mrx-hp7g
+        support: direct
+        exact_locators: ["Details: Root cause, Logic flaw, Missing checks"]
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations > Phishing"]
+    corroboration: The current MCP specification mandates same-user completion for the same attack flow.
+    limitations: [The vulnerable route and cache names are LibreChat-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C004
+    statement: CVE-2026-31944 affected LibreChat 0.8.2 through 0.8.2-rc3, was fixed in 0.8.3-rc1, and allowed confidentiality and bounded integrity impact within granted scopes.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-vf7j-7mrx-hp7g
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Impact; CVSS"]
+      - source_id: SRC-nvd-cve-2026-31944
+        support: corroborating
+        exact_locators: ["CVE description; CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:L/A:N"]
+    corroboration: NVD and the vendor advisory agree on version and impact data.
+    limitations: [Actual impact depends on provider scopes and actions available through the integration.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C005
+    statement: An MCP server must ensure that the user who starts URL-mode OAuth elicitation is the same user who completes authorization, using authoritative server-verified identity.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations > Phishing; Identifying the User"]
+    corroboration: The specification provides a server-owned connect-page pattern comparing authoritative subjects.
+    limitations: [The specification does not prescribe one universal identity mechanism.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C006
+    statement: MCP clients must show the full elicitation URL, obtain explicit consent, avoid prefetching, and open it without exposing interaction contents to the client or model.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations > Safe URL Handling"]
+    corroboration: The same document requires clear indication of the requesting server.
+    limitations: [These user-interface controls do not replace server-side same-user binding.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C007
+    statement: Least-privilege scopes and exact redirect validation reduce OAuth compromise impact but do not by themselves prove the browser completer is the flow initiator.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Sections 2.1, 2.3, and 4.11"]
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: corroborating
+        exact_locators: ["Scope Selection Strategy; Authorization Flow Steps"]
+    corroboration: Both standards require redirect and scope protections; the identity-binding distinction follows from MCP's separate phishing requirement.
+    limitations: [Impact reduction depends on authorization-server and resource-server enforcement.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The cited controls address adjacent OAuth properties, while same-user binding is a separate MCP requirement.}
+    status: validated
+  - id: SAF-T1007-C008
+    statement: Comparing authoritative initiator, callback, and token-binding subjects under one request identifier detects the defining identity mismatch.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["Implementation Pattern; Security Considerations > Phishing"]
+    corroboration: The disclosed LibreChat flaw is exactly the absence of these checks.
+    limitations: [Field names are an implementation-neutral analytic schema, not MCP wire fields.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The analytic operationalizes the normative same-user invariant.}
+    status: validated
+  - id: SAF-T1007-C009
+    statement: Detection fails without authoritative callback identity and may false-positive on unnormalized aliases or migrated identifiers.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["Identifying the User; Security Considerations > Phishing"]
+    corroboration: MCP explicitly rejects client-provided identity as authoritative.
+    limitations: [False-positive rate requires environment-specific evaluation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Detection constraints follow from comparing implementation-specific stable subjects.}
+    status: validated
+  - id: SAF-T1007-C010
+    statement: CVE-2026-42230 is an adjacent MCP OAuth open redirect fixed in n8n 1.123.32, 2.17.4, and 2.18.1; it does not establish cross-user token binding.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-f6x8-65q6-j9m9
+        support: direct
+        exact_locators: ["Impact; Patches; Credits"]
+      - source_id: SRC-nvd-cve-2026-42230
+        support: corroborating
+        exact_locators: ["CVE description; CISA SSVC exploitation=none"]
+    corroboration: RFC 9700 Section 4.11 describes the distinct open-redirection phishing mechanism.
+    limitations: [No victim token was bound to an attacker-controlled MCP session in the advisory.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C011
+    statement: No qualifying production incident for the defining MCP cross-user binding behavior was found in the reviewed corpus as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-31944
+        support: direct
+        exact_locators: ["CISA SSVC exploitation=poc"]
+      - source_id: SRC-cisa-kev-catalog-page-2026-09-01
+        support: corroborating
+        exact_locators: ["Catalog search for CVE-2026-31944 and CVE-2026-42230 returned no entries"]
+    corroboration: Separate Microsoft incident reports described adjacent OAuth campaigns, not this MCP identity-misbinding behavior.
+    limitations: [This is a bounded corpus result and cannot prove that no undisclosed incident occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Absence is limited to the documented searches and directly reviewed sources.}
+    status: validated
+  - id: SAF-T1007-C012
+    statement: Microsoft documented production OAuth redirection and consent-abuse campaigns, but those incidents used malicious applications or redirect behavior rather than MCP cross-user token binding.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-ms-oauth-redirection-2026
+        support: direct
+        exact_locators: ["Summary; Stage 3: OAuth Error Redirect; mitigation"]
+      - source_id: SRC-ms-shinyhunters-oauth-2026
+        support: corroborating
+        exact_locators: ["Voice-phishing-driven OAuth consent abuse"]
+    corroboration: Both reports document observed OAuth social engineering with different binding mechanics.
+    limitations: [Neither source documents URL-mode elicitation or the target MCP callback flaw.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C013
+    statement: OAuth consent phishing commonly uses legitimate authorization-provider pages and can grant attacker-controlled applications API access without password theft.
+    class: historical_analogy
+    materiality: low
+    evidence_status: observed
+    sources:
+      - source_id: SRC-ms-consent-phishing-2021
+        support: direct
+        exact_locators: ["The state of consent phishing attacks; Consent phishing campaign: A case study"]
+    corroboration: Current Microsoft incident research documents continued OAuth consent abuse.
+    limitations: [Ordinary consent phishing is outside the defining MCP cross-user binding mechanism.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C014
+    statement: Response should revoke suspicious grants, preserve identity and application audit logs, assess permissions and activity, and remediate the unsafe binding.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mslearn-protect-consent-phishing
+        support: direct
+        exact_locators: ["Recommended response and remediation; Best practices"]
+    corroboration: MCP's same-user requirement supplies the root-cause remediation.
+    limitations: [Platform-specific revocation procedures vary.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1007-C015
+    statement: ATT&CK T1566.002 directly covers delivery of malicious OAuth authorization links used to entice a victim.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1566-002
+        support: direct
+        exact_locators: ["Description; OAuth 2.0 request URL passage; version 2.8"]
+    corroboration: The direct vulnerability PoC uses a sent authorization link and victim action.
+    limitations: [ATT&CK does not model the MCP-specific callback subject misbinding.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The delivery behavior is direct; the MCP mechanism is more specific.}
+    status: validated
+  - id: SAF-T1007-C016
+    statement: ATT&CK T1528 is analogous because the outcome is adversary use of a victim-authorized application token.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators: ["Description; OAuth authorization passage; version 1.5"]
+    corroboration: CVE-2026-31944 provides the specific misbinding path to the token-backed access.
+    limitations: [The token is stored under the attacker by the server rather than extracted from storage.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Outcome corresponds, acquisition mechanics differ.}
+    status: validated
+  - id: SAF-T1007-C017
+    statement: Token passthrough, counterfeit resource-server phishing, and open-redirection attacks cross different boundaries from cross-user OAuth completion.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Passthrough; OAuth Authorization URL Validation"]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: ["Sections 4.9 and 4.11"]
+    corroboration: The target contract distinguishes identity misbinding from destination and audience failures.
+    limitations: [A real incident may combine multiple techniques.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Neighbor boundaries synthesize the distinct mechanisms in the cited standards.}
+    status: validated

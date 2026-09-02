@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "positive_tool_result_high_risk",
+      "events": [
+        {"timestamp": "2026-09-01T12:00:00Z", "session_id": "s-001", "event_type": "model_content_received", "channel": "mcp_tool_result", "trust_label": "untrusted", "detector_verdict": "suspicious", "instruction_indicators": []},
+        {"timestamp": "2026-09-01T12:02:00Z", "session_id": "s-001", "event_type": "tool_call", "tool_name": "export_records", "action_risk": "high", "crosses_trust_boundary": true, "approval_state": "missing", "outcome": "attempted"}
+      ]
+    },
+    {
+      "id": "positive_resource_cross_boundary",
+      "events": [
+        {"timestamp": "2026-09-01T13:00:00Z", "session_id": "s-002", "event_type": "model_content_received", "channel": "mcp_resource", "trust_label": "untrusted", "detector_verdict": "unknown", "instruction_indicators": ["authority_override"]},
+        {"timestamp": "2026-09-01T13:04:30Z", "session_id": "s-002", "event_type": "tool_call", "tool_name": "publish_summary", "action_risk": "medium", "crosses_trust_boundary": true, "approval_state": "bypassed", "outcome": "executed"}
+      ]
+    },
+    {
+      "id": "positive_tool_description_edge_window",
+      "events": [
+        {"timestamp": "2026-09-01T14:00:00Z", "session_id": "s-003", "event_type": "model_content_received", "channel": "mcp_tool_description", "trust_label": "untrusted", "detector_verdict": "suspicious", "instruction_indicators": ["hidden_directive"]},
+        {"timestamp": "2026-09-01T14:04:59Z", "session_id": "s-003", "event_type": "tool_call", "tool_name": "change_configuration", "action_risk": "high", "crosses_trust_boundary": false, "approval_state": "bypassed", "outcome": "executed"}
+      ]
+    },
+    {
+      "id": "negative_approved_action",
+      "events": [
+        {"timestamp": "2026-09-01T15:00:00Z", "session_id": "s-004", "event_type": "model_content_received", "channel": "mcp_tool_result", "trust_label": "untrusted", "detector_verdict": "suspicious", "instruction_indicators": []},
+        {"timestamp": "2026-09-01T15:01:00Z", "session_id": "s-004", "event_type": "tool_call", "tool_name": "export_records", "action_risk": "high", "crosses_trust_boundary": true, "approval_state": "approved", "outcome": "executed"}
+      ]
+    },
+    {
+      "id": "negative_trusted_content",
+      "events": [
+        {"timestamp": "2026-09-01T16:00:00Z", "session_id": "s-005", "event_type": "model_content_received", "channel": "mcp_prompt", "trust_label": "trusted", "detector_verdict": "suspicious", "instruction_indicators": ["authority_override"]},
+        {"timestamp": "2026-09-01T16:01:00Z", "session_id": "s-005", "event_type": "tool_call", "tool_name": "change_configuration", "action_risk": "high", "crosses_trust_boundary": false, "approval_state": "missing", "outcome": "attempted"}
+      ]
+    },
+    {
+      "id": "negative_no_injection_signal",
+      "events": [
+        {"timestamp": "2026-09-01T17:00:00Z", "session_id": "s-006", "event_type": "model_content_received", "channel": "mcp_resource", "trust_label": "untrusted", "detector_verdict": "benign", "instruction_indicators": []},
+        {"timestamp": "2026-09-01T17:01:00Z", "session_id": "s-006", "event_type": "tool_call", "tool_name": "publish_summary", "action_risk": "high", "crosses_trust_boundary": true, "approval_state": "missing", "outcome": "attempted"}
+      ]
+    },
+    {
+      "id": "negative_outside_window",
+      "events": [
+        {"timestamp": "2026-09-01T18:00:00Z", "session_id": "s-007", "event_type": "model_content_received", "channel": "mcp_tool_result", "trust_label": "untrusted", "detector_verdict": "suspicious", "instruction_indicators": []},
+        {"timestamp": "2026-09-01T18:05:01Z", "session_id": "s-007", "event_type": "tool_call", "tool_name": "export_records", "action_risk": "high", "crosses_trust_boundary": true, "approval_state": "missing", "outcome": "attempted"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+version: 1
+technique_id: SAF-T1207
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: 2026-09-01
+      queries:
+        - "site:modelcontextprotocol.io registry package version server installation metadata official registry"
+        - "site:code.visualstudio.com MCP server install update extensions auto update signature verification"
+        - "site:theupdateframework.io specification updater repository compromise freeze rollback mix-and-match attacks"
+        - "site:csrc.nist.gov software update code signing integrity secure software update guidance"
+      material_changes: [Established MCP metadata-to-package boundary, concrete agent-plugin update behavior, and update-security trust controls.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: 2026-09-01
+      queries:
+        - "site:cisa.gov SolarWinds Orion compromised software updates backdoor advisory December 2020"
+        - "site:cloud.google.com/blog/topics/threat-intelligence 3CX software supply chain compromise March 2023 Mandiant"
+        - "site:nvd.nist.gov software updater signature verification arbitrary code update feed CVE"
+        - "site:nvd.nist.gov Sparkle updater signature validation CVE arbitrary code"
+        - "site:nvd.nist.gov Electron autoUpdater signature verification vulnerability CVE"
+      material_changes: [Selected two high-impact historical incidents and two non-MCP updater vulnerabilities; recorded exploitation limitations.]
+    - pass: demonstration_and_empirical_research
+      completed_on: 2026-09-01
+      queries:
+        - "site:socket.dev/blog malicious MCP server patch release update backdoor postmark 2025"
+        - "site:socket.dev/blog MCP package update compromise production incident"
+        - "site:cloud.google.com/blog/topics/threat-intelligence MCP update compromise malicious version"
+        - "site:koi.ai/blog malicious MCP package update compromised existing package"
+      material_changes: [Selected the Axios incident as adjacent MCP dependency exposure; rejected inaccessible legacy Koi leads and first-install-only package campaigns.]
+    - pass: detection_and_defense
+      completed_on: 2026-09-01
+      queries:
+        - "site:attack.mitre.org/techniques/T1195/002 software supply chain compromise updates signed code"
+        - "site:attack.mitre.org/techniques/T1553/002 subvert trust controls code signing malicious updates"
+        - "site:csrc.nist.gov SP 800-53 CM-3 configuration change control software updates approval"
+        - "site:code.visualstudio.com/docs enterprise extension allowlist publisher signature update control"
+      material_changes: [Derived an activation-time invariant analytic and mitigation set from update metadata, allowlists, and first-run correlation.]
+    - pass: gap_and_challenge
+      completed_on: 2026-09-01
+      queries:
+        - "site:cloud.google.com/blog/topics/threat-intelligence \"previously benign\" \"MCP\" updated malicious dependencies"
+        - "site:modelcontextprotocol.io registry version integrity update security"
+        - "site:nvd.nist.gov \"Model Context Protocol\" \"update\" package registry compromise"
+        - "site:socket.dev/blog \"MCP\" \"malicious update\" trusted package"
+      material_changes: [Added direct Mandiant guidance defining the MCP update risk and official Registry version/scanning boundaries; evidence status remained Research-Derived.]
+    - pass: saturation_follow_up_1
+      completed_on: 2026-09-01
+      queries:
+        - "site:learn.microsoft.com malicious MCP plugin update supply chain"
+        - "site:cloud.google.com/blog/topics/threat-intelligence MCP server compromised update incident"
+        - "site:security.googleblog.com MCP server malicious update incident"
+        - "site:nvd.nist.gov MCP updater signature verification malicious update"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: 2026-09-01
+      queries:
+        - "site:cisa.gov malicious MCP server update trusted package incident"
+        - "site:learn.microsoft.com MCP extension auto update signature malicious package"
+        - "site:cloud.google.com/blog/topics/threat-intelligence \"MCP package\" compromised version update"
+        - "site:socket.dev/blog \"MCP server\" compromised version update"
+      material_changes: []
+  rationale: >-
+    Seventy whitelist-only discovery queries and 58 direct page-open operations covered official MCP and host documentation,
+    update-security standards, current threat reporting, historical incidents, vulnerabilities, and detection guidance.
+    Two final focused passes produced no qualifying production incident completing the trusted MCP/agentic update-to-persistence sequence.
+
+breach_and_vulnerability_assessment:
+  searched_on: 2026-09-01
+  candidate_count: 10
+  selected_examples:
+    - SRC-google-supply-chain
+    - SRC-mandiant-solarwinds
+    - SRC-mandiant-3cx
+    - SRC-electron-ghsa
+  no_qualifying_examples_rationale: >-
+    No direct qualifying production MCP or agentic-system incident was identified. Selected examples are explicitly
+    adjacent, historical, or enabling evidence and therefore do not raise the end-to-end technique above Research-Derived.
+  candidates:
+    - source_id: SRC-google-supply-chain
+      identifier: Axios 1.14.1 supply-chain incident
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_in_production_ecosystem
+      impact: A malicious dependency deployed a backdoor through a legitimate high-volume package; sampled MCP packages had resolving version ranges.
+      remediation: Malicious versions were removed; pinning, deterministic installs, cooldowns, curation, and monitoring were recommended.
+      selected: true
+      rationale: Current, high-impact incident with MCP dependency exposure, but no confirmed persistent MCP component replacement.
+    - source_id: SRC-mandiant-solarwinds
+      identifier: SolarWinds SUNBURST
+      relationship: historical_analogy
+      exploitation_status: observed_in_production
+      impact: Digitally signed trojanized updates distributed a backdoor to multiple organizations.
+      remediation: Detect, contain, replace affected releases, and rebuild when integrity cannot be established.
+      selected: true
+      rationale: High-impact authoritative update-hijack precedent outside the agentic domain.
+    - source_id: SRC-mandiant-3cx
+      identifier: 3CX DesktopApp supply-chain compromise
+      relationship: historical_analogy
+      exploitation_status: observed_in_production
+      impact: Compromised build environments distributed a trojanized application and downloader.
+      remediation: Replace affected software and remediate compromised build infrastructure.
+      selected: true
+      rationale: Authoritative cascading update-chain precedent outside the agentic domain.
+    - source_id: SRC-electron-ghsa
+      identifier: GHSA-77xc-hjv8-ww97 / CVE-2022-29257
+      relationship: enabling_vulnerability
+      exploitation_status: no_known_exploitation_in_reviewed_sources
+      impact: A controlled update server or storage path could deliver a malicious nested application that passed signing checks.
+      remediation: Update to 15.5.0, 16.2.0, 17.2.0, or 18.0.0-beta.6 and later.
+      selected: true
+      rationale: Direct updater trust-bypass evidence relevant to desktop agent hosts, but non-MCP and not observed exploitation.
+    - source_id: SRC-sparkle-security
+      identifier: CVE-2025-0509
+      relationship: historical_analogy
+      exploitation_status: no_known_exploitation_in_reviewed_sources
+      impact: Replacement of a signed update could bypass EdDSA verification.
+      remediation: Update to Sparkle 2.6.4 or the 1.27.3 backport.
+      selected: false
+      rationale: Useful corroborating updater flaw but lower relevance than the selected Electron advisory.
+    - source_id: SRC-paloalto-koi-redirect
+      identifier: Legacy Koi Security Postmark MCP article lead
+      relationship: rejected
+      exploitation_status: unverified
+      impact: Search-result text suggested a malicious MCP package update, but the complete source was unavailable.
+      remediation: Not assessed from inaccessible evidence.
+      selected: false
+      rationale: Legacy exact URL redirected to unrelated corporate content; search snippets were source-or-omit rejected.
+    - source_id: SRC-paloalto-koi-redirect
+      identifier: Legacy Koi Security mcp-runcommand-server article lead
+      relationship: rejected
+      exploitation_status: unverified
+      impact: Search-result text suggested a malicious later package version, but the complete source was unavailable.
+      remediation: Not assessed from inaccessible evidence.
+      selected: false
+      rationale: Full article could not be reviewed after redirect.
+    - source_id: SRC-mitre-t1195-002
+      identifier: CCleaner 5.33
+      relationship: historical_analogy
+      exploitation_status: observed_in_production
+      impact: A signed legitimate release carried malicious code.
+      remediation: Vendor replacement release and incident response.
+      selected: false
+      rationale: Lower incremental value after SolarWinds and 3CX selection.
+    - source_id: SRC-nvd-cve-2022-29257
+      identifier: Direct MCP CVE search results
+      relationship: rejected
+      exploitation_status: mixed_or_none
+      impact: Reviewed MCP CVE candidates concerned initial installation, authentication, path access, SSRF, or denial of service.
+      remediation: Candidate-specific updates.
+      selected: false
+      rationale: Mechanisms did not cross the update-replacement boundary.
+    - source_id: SRC-socket-axios
+      identifier: Mini Shai-Hulud MCP-themed PyPI packages
+      relationship: rejected
+      exploitation_status: observed_malicious_packages
+      impact: Malicious packages targeted MCP developers.
+      remediation: Remove affected packages and rotate exposed credentials.
+      selected: false
+      rationale: Search evidence described malicious package delivery without proving replacement of a previously trusted component.
+
+sources_consulted:
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-versioning
+  - SRC-mcp-registry-faq
+  - SRC-vscode-agent-plugins
+  - SRC-vscode-extension-marketplace
+  - SRC-vscode-extension-security
+  - SRC-vscode-enterprise-extensions
+  - SRC-vscode-ai-governance
+  - SRC-tuf-security
+  - SRC-tuf-metadata
+  - SRC-google-ai-blueprint
+  - SRC-google-supply-chain
+  - SRC-mandiant-solarwinds
+  - SRC-mandiant-3cx
+  - SRC-socket-axios
+  - SRC-nvd-cve-2022-29257
+  - SRC-electron-ghsa
+  - SRC-nvd-cve-2025-0509
+  - SRC-sparkle-security
+  - SRC-mitre-t1195-002
+  - SRC-mitre-t1554
+  - SRC-mitre-ta0003
+  - SRC-paloalto-koi-redirect
+sources_cited:
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-versioning
+  - SRC-vscode-agent-plugins
+  - SRC-vscode-extension-marketplace
+  - SRC-vscode-extension-security
+  - SRC-vscode-enterprise-extensions
+  - SRC-vscode-ai-governance
+  - SRC-tuf-security
+  - SRC-tuf-metadata
+  - SRC-google-ai-blueprint
+  - SRC-google-supply-chain
+  - SRC-mandiant-solarwinds
+  - SRC-mandiant-3cx
+  - SRC-socket-axios
+  - SRC-electron-ghsa
+  - SRC-sparkle-security
+  - SRC-mitre-t1195-002
+  - SRC-mitre-t1554
+  - SRC-mitre-ta0003
+sources_rejected:
+  - source_id: SRC-paloalto-koi-redirect
+    reason: Legacy Koi article URLs redirected to a page without the reported article; no snippet-derived assertion was published.
+sources_blocked: []
+
+conflicts:
+  - issue: NVD CVE-2022-29257 prose listed different Electron fixed versions than the vendor GHSA.
+    resolution: The vendor advisory fixed versions were used; the discrepancy is disclosed in claim SAF-T1207-C013.
+  - issue: Sources document malicious MCP packages and MCP dependency exposure but not a qualifying trusted-update production sequence.
+    resolution: Evidence status remains Research-Derived and all such evidence is labeled adjacent or guidance.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T1207-C001, SAF-T1207-C006, SAF-T1207-C012, SAF-T1207-C017]
+  rationale: >-
+    Authoritative sources establish a real agent-plugin update path, the explicit risk of silently updated malicious MCP
+    dependencies, production adjacent supply-chain events, updater verification flaws, and a testable analytic. They do not
+    establish a direct qualifying MCP or agentic production incident completing the full end-to-end technique.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

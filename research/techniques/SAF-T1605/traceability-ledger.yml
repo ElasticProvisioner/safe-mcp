@@ -1,0 +1,124 @@
+version: 1
+technique_id: SAF-T1605
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1605/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1605/technique-contract.yml
+  supports: Internal scope, tactic, name, generation mode, and completion criteria.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1605/quality-review.yml
+  supports: Gate, validation, review-date, attribution, and test-result statements.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1605/detection-rule.yml
+  supports: The experimental sequence analytic, fields, limitations, false positives,
+    and tuning.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1605/test_detection_rule.py
+  supports: Deterministic analytic implementation and validation behavior.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1605/test-logs.json
+  supports: Positive, negative, boundary, malformed, suppressed, and expected-false-positive
+    cases.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1605/integration/integration-notes.yml
+  supports: Post-freeze source, neighbor, mitigation, mapping, history, and path reconciliation.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1605/validation/detection-tests.txt
+  supports: Recorded isolated and canonical repository detector results.
+- id: LOCAL-strict-validator
+  path: research/techniques/SAF-T1605/validation/strict-validator.txt
+  supports: Recorded isolated and canonical strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1605-X001
+  candidate: A malicious capability-mapping act has been observed in a production
+    breach.
+  origin: Required breach and incident research pass.
+  attempted_searches:
+  - NVD Model Context Protocol 77-record corpus, CISA KEV 2026.09.01, direct MCP authorities,
+    and four originating advisories.
+  consulted_source_ids:
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-cisa-kev-2026-09-01
+  reason: No reviewed direct authority documented that end-to-end event.
+  prohibited_publishable_text:
+  - Capability Mapping has been observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1605-X002
+  candidate: A returned tools list is the complete set of callable tools.
+  origin: Gap-and-challenge pass.
+  attempted_searches:
+  - Compared MCP tools authorization semantics with CVE-2026-46519 and its originating
+    advisory.
+  consulted_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-ghsa-cr22-wjx7-2w6m
+  - SRC-nvd-cve-2026-46519
+  reason: The advisory shows that call-layer authorization can diverge from list filtering.
+  prohibited_publishable_text:
+  - the complete callable surface is proven by tools/list
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1605-X003
+  candidate: A concentrated discovery sequence necessarily proves adversarial intent.
+  origin: Detection challenge and false-positive review.
+  attempted_searches:
+  - Compared the analytic sequence with official Inspector and legitimate PayPal production
+    gateway behavior.
+  consulted_source_ids:
+  - SRC-mcp-inspector-2026
+  - SRC-arxiv-scout-2608.23992
+  reason: Legitimate administration, bootstrap, inventory, troubleshooting, and refresh
+    can emit the same methods.
+  prohibited_publishable_text:
+  - this request sequence proves malicious intent
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1605-X004
+  candidate: General MCP security and benchmark papers directly evidence this adversarial
+    behavior.
+  origin: Direct arXiv API security and enumeration queries.
+  attempted_searches:
+  - Reviewed returned titles and abstracts, then opened only the directly useful production
+    discovery paper in full.
+  consulted_source_ids:
+  - SRC-arxiv-scout-2608.23992
+  reason: The other leads studied architecture, evaluation, privacy, or general security
+    without documenting this complete attack contract.
+  prohibited_publishable_text:
+  - published research demonstrates adversarial MCP capability mapping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1605-X005
+  candidate: Direct-authority snapshots in the external clean-room source cache.
+  origin: Publication-rights and post-freeze repository integration review.
+  attempted_searches:
+  - Reviewed every publication-rights record and verified the external cache hashes
+    and locators preserved by the frozen source fragment.
+  consulted_source_ids:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-2026-roots
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-arxiv-scout-2608.23992
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-cisa-kev-2026-09-01
+  reason: Reference-only use permits citation, linking, and paraphrase but not
+    redistribution of the external source snapshots. Hashes and acquisition locators
+    remain in the immutable bundle while the files stay outside the repository.
+  prohibited_publishable_text:
+  - The external clean-room source cache is distributed with SAF-MCP.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

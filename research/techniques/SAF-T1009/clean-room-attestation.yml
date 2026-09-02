@@ -1,0 +1,153 @@
+version: 1
+technique_id: SAF-T1009
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+attested_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: OpenAI Codex clean-room agent /root/cleanroom_saf_t1009
+target:
+  id: SAF-T1009
+  neutral_name: Authorization Server Mix-up
+  tactic_seed: ATK-TA0001 / Initial Access
+allowed_inputs:
+- Technique identifier SAF-T1009.
+- Neutral title Authorization Server Mix-up.
+- Tactic identifier and neutral name ATK-TA0001 / Initial Access.
+- The author-saf-technique skill, its directly required generic references, generic
+  templates, and current generic validator.
+- Independently discovered direct authoritative non-GitHub sources.
+- Exact GitHub advisory or patch URLs only after their identifier and exact URL were
+  found in a reviewed non-GitHub authority and provenance was recorded.
+prohibited_inputs:
+- Existing techniques/SAF-T1009/README.md.
+- Existing research/techniques/SAF-T1009/ packet or any prior research packet for
+  the target.
+- Existing techniques/SAF-T1009/detection-rule.yml or target fixtures.
+- Technique catalog descriptions and shared source or framework registries before
+  freeze.
+- SAF or SAFE pages and prior technique prose.
+- Git history, git log, git blame, git diff, and historical file recovery.
+- Old pull request content or review discussion.
+- Previous conversation containing target technique content or prior agent artifacts.
+- General search, search_query, GitHub search, and GitHub-scoped discovery.
+independent_research:
+  search_count: 22
+  open_request_count: 57
+  reviewed_source_count: 25
+  validated_claim_count: 22
+  count_definitions: search_count counts distinct authoritative-site discovery queries;
+    open_request_count counts direct URL fetches, probes, and retries; reviewed sources
+    are the manifest records that were opened and assessed rather than every transport
+    request.
+  searches:
+  - Direct review of current MCP authorization, discovery, security, and response-validation
+    pages.
+  - Direct review of RFC 9700, RFC 9207, RFC 8414, RFC 8707, and RFC 9728.
+  - NVD exact, synonymous, issuer, provider, MCP, and focused CVE API queries.
+  - CISA KEV exact-ID and OAuth mix-up checks.
+  - First-party arXiv, OpenID Foundation, CISA, and Google Security Blog searches.
+  - Two final synonymous no-change saturation passes recorded in source-coverage.yml.
+  opened_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-discovery-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-rfc9700
+  - SRC-rfc9207
+  - SRC-rfc8414
+  - SRC-rfc8707
+  - SRC-rfc9728
+  - SRC-fett-oauth-analysis
+  - SRC-mainka-oidc-endpoints
+  - SRC-fett-oidc-analysis
+  - SRC-nvd-oauth-mixup-query
+  - SRC-nvd-issuer-validation-query
+  - SRC-nvd-authserver-mixup-query
+  - SRC-nvd-cve-2026-11718
+  - SRC-mcp-toolbox-pr3360
+  - SRC-nvd-cve-2026-73419
+  - SRC-ghsa-authjs-provider-binding
+  - SRC-nvd-cve-2025-27370
+  - SRC-oidf-private-key-jwt-notice
+  - SRC-oidf-private-key-jwt-disclosure
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-mcp-mixup-query
+  - SRC-arxiv-mcp-oauth-issuer-query
+  - SRC-mitre-t1528
+  github_url_provenance:
+  - url: https://github.com/googleapis/mcp-toolbox/pull/3360
+    first_discovered_from: SRC-nvd-cve-2026-11718
+    non_github_authority: NVD
+  - url: https://github.com/nextauthjs/next-auth/security/advisories/GHSA-x445-f3h2-j279
+    first_discovered_from: SRC-nvd-cve-2026-73419
+    non_github_authority: NVD
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrate only the files listed in the canonical bundle FREEZE.sha256.
+- Replace synthetic neighbor joins and the synthetic history SHA mechanically without
+  consulting prior target prose.
+- Reconcile clean-room source IDs against the shared source manifest only after freeze.
+- Review the new files and validator output directly; do not inspect a diff that reveals
+  old target content.
+- Do not revise frozen prose from old technique, catalog, registry, PR, or history
+  content.
+validation:
+  detection_command: python3 techniques/SAF-T1009/test_detection_rule.py
+  detection_result: PASS 8 fixtures (5 alerts, 3 non-alerts)
+  strict_command: uv run --with 'PyYAML>=6,<7' python scripts/validate-technique-research.py
+    SAF-T1009
+  strict_result: passed in isolated mock repository
+attestation: I attest that this bundle was independently researched and authored from
+  only the declared seed metadata, generic methodology, and directly reviewed authorities;
+  no prohibited prior target material was accessed, and the draft was frozen before
+  any repository integration or registry reconciliation.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1507
+    SAF-T9999: SAF-T1706
+  source_id_mapping:
+    SRC-mcp-auth-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-rfc9700: SRC-rfc9700
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-attack-t1528: SRC-mitre-t1528
+  new_shared_source_records:
+  - SRC-mcp-auth-discovery-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-rfc9207
+  - SRC-rfc8414
+  - SRC-rfc8707
+  - SRC-rfc9728
+  - SRC-fett-oauth-analysis
+  - SRC-mainka-oidc-endpoints
+  - SRC-fett-oidc-analysis
+  - SRC-nvd-oauth-mixup-query
+  - SRC-nvd-issuer-validation-query
+  - SRC-nvd-authserver-mixup-query
+  - SRC-nvd-cve-2026-11718
+  - SRC-mcp-toolbox-pr3360
+  - SRC-nvd-cve-2026-73419
+  - SRC-ghsa-authjs-provider-binding
+  - SRC-nvd-cve-2025-27370
+  - SRC-oidf-private-key-jwt-notice
+  - SRC-oidf-private-key-jwt-disclosure
+  - SRC-arxiv-mcp-mixup-query
+  - SRC-arxiv-mcp-oauth-issuer-query
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-31
+  - SAF-M-38
+  status: integrated_and_repository_validated

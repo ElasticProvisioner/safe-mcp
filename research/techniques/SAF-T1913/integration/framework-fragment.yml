@@ -1,0 +1,31 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1913
+    name: HTTP POST Exfil
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0010
+    technique_path: techniques/SAF-T1913/README.md
+    research_packet: research/techniques/SAF-T1913
+    related_techniques:
+      - SAF-T1001
+      - SAF-T1911
+      - SAF-T1902
+    mitigations: [SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-17, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-72, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T1913/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1913/test_detection.py
+        - tests/SAF-T1913/fixtures.jsonl
+        - research/techniques/SAF-T1913/validation/detection-test.txt
+    external_mappings:
+      - framework: MITRE ATT&CK Enterprise
+        id: T1048
+        name: Exfiltration Over Alternative Protocol
+        mapping_type: analogous
+        rationale: HTTP/S transfer is in scope for T1048, but it does not model MCP tools/call request semantics.
+    attack_mappings:
+      - {id: T1048, type: analogous}
+    integration_state: integrated_and_validated

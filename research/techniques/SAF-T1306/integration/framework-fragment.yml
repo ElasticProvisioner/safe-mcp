@@ -1,0 +1,18 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1306
+    name: Rogue Authorization Server
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics: [ATK-TA0004]
+    technique_path: techniques/SAF-T1306/README.md
+    research_packet: research/techniques/SAF-T1306
+    related_techniques: [SAF-T9001, SAF-T9002, SAF-T9003]
+    mitigations: [SAF-M-9001, SAF-M-9002, SAF-M-9003]
+    detection:
+      rule: techniques/SAF-T1306/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1306/test_detection_rule.py
+        - tests/SAF-T1306/test-logs.json
+        - validation/detection-test.txt

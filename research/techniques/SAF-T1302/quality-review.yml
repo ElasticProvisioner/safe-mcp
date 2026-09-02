@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T1302
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh agent inherited no prior content, accessed no prohibited artifact or shared registry, and validated before canonical freeze.
+  contract_and_scope:
+    status: passed
+    notes: The behavior is bounded to a requestor-to-tool authority mismatch and separates instruction delivery, credential use, code execution, and dormant over-permissioning.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior and all example prerequisites, outcomes, fixed versions, and limits were verified from directly reviewed sources.
+  claim_traceability:
+    status: passed
+    notes: Fifteen validated claims include exact locators, limitations, inference labels, and source joins.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or declared local artifact link; six excluded leads remain absent.
+  evidence_classification:
+    status: passed
+    notes: A complete controlled MCP demonstration supports Demonstrated; no production incident supports Observed.
+  research_saturation:
+    status: passed
+    notes: Two consecutive authoritative-domain follow-ups produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Seven candidates were classified; four highest-impact qualifying examples were selected with remediation and exploitation limitations.
+  detection_quality:
+    status: passed
+    notes: Nine deterministic cases cover positive, negative, boundary, malformed, and expected legitimate activity.
+  mitigation_quality:
+    status: passed
+    notes: Controls constrain tool functionality, scope, requestor authorization, action approval, patch level, and audit joins.
+  framework_alignment:
+    status: passed
+    notes: Privilege Escalation tactic, analogous ATT&CK mapping, canonical SAF-T1102, SAF-T1304, and SAF-T1303 neighbors, and eight mitigation joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited source uses are factual paraphrase with author or research-team attribution; no protected code, payload, image, table, or quotation is reproduced.
+  safe_publication:
+    status: passed
+    notes: The example is inert and disclosures are summarized without executable payloads, live identifiers, secrets, or private data.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1302
+      result: passed
+      context: Strict canonical validator in isolated synthetic repository /private/tmp/saf-t1302-mock.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1302/test_detection_rule.py
+    result: 'PASS: 9 cases, 3 alerts; positive=3, negative=2, boundary=2, malformed=1, expected_false_positive=1'
+    waiver: null
+
+unresolved: []

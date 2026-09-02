@@ -1,0 +1,108 @@
+[
+  {
+    "name": "positive_unauthorized_sender",
+    "expected_alert": true,
+    "events": [
+      {"timestamp":"2026-09-02T12:00:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-1","message_id":"msg-1","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T12:00:15Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-1","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T12:00:40Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-1","message_id":"msg-2","reply_to":"msg-1"}
+    ]
+  },
+  {
+    "name": "negative_stably_authorized_chatops",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T12:10:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-ops","session_id":"session-2","message_id":"msg-10","sender_id":"user-approved","sender_authorized":true,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T12:10:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-ops","session_id":"session-2","tool_name":"lookup_status","result":"ok","approval_state":"approved"},
+      {"timestamp":"2026-09-02T12:10:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-ops","session_id":"session-2","message_id":"msg-11","reply_to":"msg-10"}
+    ]
+  },
+  {
+    "name": "negative_wrong_session",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T12:20:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-3","message_id":"msg-20","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T12:20:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-other","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T12:20:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-3","message_id":"msg-21","reply_to":"msg-20"}
+    ]
+  },
+  {
+    "name": "negative_wrong_conversation",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T12:30:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-4","message_id":"msg-30","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T12:30:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-8","session_id":"session-4","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T12:30:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-4","message_id":"msg-31","reply_to":"msg-30"}
+    ]
+  },
+  {
+    "name": "positive_exact_300_second_boundary",
+    "expected_alert": true,
+    "events": [
+      {"timestamp":"2026-09-02T13:00:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-5","message_id":"msg-40","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T13:02:00Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-5","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T13:05:00Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-5","message_id":"msg-41","reply_to":"msg-40"}
+    ]
+  },
+  {
+    "name": "negative_over_300_second_boundary",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T13:10:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-6","message_id":"msg-50","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T13:12:00Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-6","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T13:15:01Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-6","message_id":"msg-51","reply_to":"msg-50"}
+    ]
+  },
+  {
+    "name": "negative_missing_sender_id",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T13:20:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-7","message_id":"msg-60","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T13:20:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-7","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T13:20:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-7","message_id":"msg-61","reply_to":"msg-60"}
+    ]
+  },
+  {
+    "name": "negative_malformed_timestamp",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"not-a-time","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-8","message_id":"msg-70","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T13:30:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-8","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T13:30:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-8","message_id":"msg-71","reply_to":"msg-70"}
+    ]
+  },
+  {
+    "name": "positive_mutable_identity_binding",
+    "expected_alert": true,
+    "events": [
+      {"timestamp":"2026-09-02T13:40:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-9","message_id":"msg-80","sender_id":"display-name-match","sender_authorized":true,"conversation_authorized":true,"identity_binding":"mutable"},
+      {"timestamp":"2026-09-02T13:40:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-9","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T13:40:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-9","message_id":"msg-81","reply_to":"msg-80"}
+    ]
+  },
+  {
+    "name": "negative_no_outbound_reply",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T13:50:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-10","message_id":"msg-90","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T13:50:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-10","tool_name":"lookup_status","result":"ok","approval_state":"not_required"}
+    ]
+  },
+  {
+    "name": "negative_no_tool_invocation",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T14:00:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-11","message_id":"msg-100","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T14:00:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-11","message_id":"msg-101","reply_to":"msg-100"}
+    ]
+  },
+  {
+    "name": "negative_outbound_wrong_reply_target",
+    "expected_alert": false,
+    "events": [
+      {"timestamp":"2026-09-02T14:10:00Z","event_type":"chat.message.received","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-12","message_id":"msg-110","sender_id":"user-unapproved","sender_authorized":false,"conversation_authorized":true,"identity_binding":"immutable"},
+      {"timestamp":"2026-09-02T14:10:10Z","event_type":"agent.tool.invoked","service":"agent-host","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-12","tool_name":"lookup_status","result":"ok","approval_state":"not_required"},
+      {"timestamp":"2026-09-02T14:10:20Z","event_type":"chat.message.sent","service":"example-chat","tenant_id":"tenant-a","app_id":"bot-1","conversation_id":"room-7","session_id":"session-12","message_id":"msg-111","reply_to":"different-message"}
+    ]
+  }
+]

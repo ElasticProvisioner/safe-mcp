@@ -1,0 +1,103 @@
+version: 1
+technique_id: SAF-T1914
+name: Tool-to-Tool Exfil
+status: ready_for_review
+created_on: "2026-09-02"
+updated_on: "2026-09-02"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0010
+
+adversary_objective: >-
+  Cause an agentic host to disclose data obtained through one tool or server by
+  placing that data into a call to a distinct outbound-capable tool or server.
+
+scope:
+  security_boundary: >-
+    The host-enforced information-flow boundary between a source tool's data
+    domain and a distinct sink tool's recipient, server, or external service.
+  in_scope:
+    - >-
+      An adversary-controlled instruction or untrusted tool result influences
+      the host or model to carry confidential source-tool data into a distinct
+      sink-tool invocation.
+    - >-
+      The immediate outcome is unauthorized disclosure across tool, server,
+      account, repository, channel, or external-service boundaries.
+    - >-
+      Both tool-description poisoning and indirect injection through a source
+      tool result are in scope when they cause the defining source-to-sink flow.
+  out_of_scope:
+    - >-
+      Prompt or tool-description injection that does not culminate in data
+      transfer through a distinct sink tool.
+    - >-
+      Unauthorized tool invocation whose immediate objective is modification,
+      execution, or disruption rather than disclosure.
+    - >-
+      A compromised server process sending data directly over the network
+      without host-mediated cross-tool orchestration.
+    - >-
+      A single vulnerable tool that both reads and uploads a file without a
+      distinct source-to-sink tool transition.
+  affected_components:
+    - MCP or agentic host and model orchestration layer
+    - MCP clients and servers participating in the source and sink calls
+    - Tool descriptions, tool results, call arguments, and approval UI
+    - Host audit logs and downstream network or application telemetry
+
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: >-
+      Indirect prompt injection is a delivery and control mechanism, while this
+      technique requires a completed
+      or attempted confidential source-to-distinct-sink dataflow.
+  - technique_id: SAF-T1309
+    distinction: >-
+      Unauthorized privileged tool invocation is broader, while this technique
+      requires data from a
+      source tool to be transferred through a different sink tool.
+
+required_evidence:
+  - >-
+    Current MCP protocol evidence for model-controlled tools, host aggregation,
+    cross-server isolation responsibilities, tool results, and tool calls.
+  - >-
+    Directly reviewed demonstrations or incidents showing confidential data
+    moving from one tool or data domain into a distinct outbound tool or service.
+  - >-
+    Separate current searches for production incidents, CVEs, official
+    advisories, exploitation status, remediated versions, and rejected analogies.
+  - >-
+    Detection evidence sufficient to name host audit fields, correlate source
+    and sink calls, and explain false positives, blind spots, and tuning.
+  - >-
+    Contrary evidence and limitations that bound model dependence, user
+    approval, logging coverage, encoding, and product-specific behavior.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - >-
+      Normalized host tool-call audit events containing timestamp, session ID,
+      call ID, server ID, tool name, direction or role, arguments, result,
+      sensitivity labels, destination, approval state, and outcome.
+    - >-
+      Optional downstream egress or application audit events for confirming the
+      sink recipient or network destination.
+
+safe_example_constraints:
+  - Use only synthetic secrets and reserved example domains or recipients.
+  - Do not reproduce operational prompt-injection payloads or live credentials.
+  - Represent sensitive content with inert markers or one-way fingerprints.
+
+completion_evidence:
+  - Every substantive publishable unit resolves to validated claims and directly reviewed sources.
+  - Unverified incidents, CVEs, and generalizations are excluded and ledgered.
+  - All five research passes and two consecutive no-change saturation passes are recorded.
+  - The executable detector passes positive, negative, boundary, malformed, and legitimate-lookalike fixtures.
+  - Publication-rights and safe-publication reviews pass without unresolved issues.
+  - The clean-room attestation passes and all synthetic joins are enumerated for mechanical integration.

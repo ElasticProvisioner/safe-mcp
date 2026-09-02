@@ -1,0 +1,228 @@
+version: 1
+technique_id: SAF-T1507
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+        - Direct open https://www.rfc-editor.org/rfc/rfc6749.html
+        - Direct open https://www.rfc-editor.org/rfc/rfc7636.html
+        - Direct open https://www.rfc-editor.org/rfc/rfc8252.html
+        - Direct open https://www.rfc-editor.org/rfc/rfc9700.html
+      material_changes:
+        - Established the MCP HTTP OAuth roles, code redirect and token-exchange boundary, mandatory PKCE-support verification, S256 preference, exact redirect matching, state verification, and resource audience binding.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Official NVD API keywordSearch=authorization code interception
+        - Official NVD API keywordSearch=PKCE
+        - Official NVD API keywordSearch=OAuth redirect URI
+        - Official CISA KEV catalog exact-ID review
+        - Direct CVE API open for CVE-2025-4143 and CVE-2025-4144
+        - Exact GitHub pull request URLs 26 and 27 supplied by the directly reviewed CVE records
+      material_changes:
+        - Classified CVE-2025-4143 and CVE-2025-4144 as direct MCP-related vulnerabilities, not incidents.
+        - Found no qualifying directly documented production MCP breach.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Complete review of RFC 7636 attack model and protocol flow
+        - Complete review of Cloudflare pull request 26 patch and redirect-mismatch regression test
+        - Complete review of Cloudflare pull request 27 patch and PKCE-downgrade regression test
+      material_changes:
+        - Confirmed first-party control tests and fixes but found no public end-to-end MCP exploitation demonstration; retained Research-Derived status.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - RFC 6749 Sections 4.1.3, 10.5, and 10.6
+        - RFC 7636 Sections 4.4.1, 4.6, and 7.2
+        - RFC 9700 Sections 2.1.1, 4.1.3, 4.5.3.1, and 4.8.2
+        - MCP Authorization Code Protection, Open Redirection, and Token Handling
+      material_changes:
+        - Derived an experimental correlation analytic for redirect mismatch, weak or missing PKCE, verifier failure, and repeated code exchange, with explicit first-redemption and logging blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - RFC 8252 redirect-mechanism exceptions and loopback limitations
+        - RFC 9700 authorization-code injection, PKCE downgrade, and countermeasure limitations
+        - NVD candidate review for adjacent token theft, CSRF, open redirects, and non-MCP PKCE defects
+      material_changes:
+        - Separated code interception from code injection, post-issuance token theft, malicious-client consent, and generic open redirection.
+        - Limited the incident absence claim to the named corpus and review date.
+    - pass: saturation_follow_up_discovery_1
+      completed_on: "2026-09-01"
+      queries:
+        - Official NVD API keywordSearch=MCP PKCE
+        - Official NVD API keywordSearch=workers-oauth-provider
+      material_changes:
+        - Added CVE-2026-67336 and its first-party Better Auth advisory as the most recent qualifying direct vulnerability.
+    - pass: saturation_follow_up_discovery_2
+      completed_on: "2026-09-01"
+      queries:
+        - Official NVD API keywordSearch=Model Context Protocol authorization code
+        - Official NVD API keywordSearch=OAuth code leak MCP
+      material_changes:
+        - Reviewed and excluded CVE-2026-47250 and CVE-2026-46555 as adjacent or unrelated to authorization-code interception.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Official NVD API keywordSearch=MCP code_challenge_method plain
+        - Official NVD API keywordSearch=MCP redirect_uri PKCE
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Official NVD API keywordSearch=Model Context Protocol code verifier
+        - Official NVD API keywordSearch=MCP authorization redirect URI interception
+      material_changes: []
+  rationale: >-
+    The directly reviewed corpus covers the current MCP authorization
+    specification, foundational and current OAuth standards, official CVE/CNA
+    records, CISA exploitation context, first-party fixes and tests, a recent
+    first-party MCP-plugin advisory, ATT&CK alignment, contrary conditions,
+    and detection limits. An initial follow-up found CVE-2026-67336, so the
+    saturation clock was reset. The final two narrower official-catalog passes
+    returned no new records and added no requirement, direct relationship,
+    example, corroboration, conflict, remediation change, detection constraint,
+    or neighboring distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 8
+  selected_examples:
+    - SRC-cve-2026-67336
+    - SRC-cve-2025-4143
+    - SRC-cve-2025-4144
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-cve-2026-67336
+      identifier: CVE-2026-67336 and GHSA-9h47-pqcx-hjr4
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP assessed exploitation none on 2026-08-03; no production incident was established.
+      impact: Plain PKCE in the legacy Better Auth mcp plugin could permit authorization-code interception when an authorization URL leaked; the combined advisory also covered a separate unsigned-token defect.
+      remediation: Upgrade to better-auth 1.6.11 or later, disable plain PKCE, and migrate from the deprecated plugin when feasible.
+      selected: true
+      rationale: Most recent and MCP-specific direct vulnerability, with a first-party advisory, explicit affected and fixed versions, interception prerequisite, and reporter credit.
+    - source_id: SRC-cve-2025-4143
+      identifier: CVE-2025-4143
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP assessed exploitation none; the CNA described bounded potential impact.
+      impact: A malicious redirect could receive an authorization code and enable credential theft or impersonation when stated prior-authorization, automatic reauthorization, and user-navigation conditions held.
+      remediation: Fixed by Cloudflare pull request 26; the affected range is before 0.0.5.
+      selected: true
+      rationale: Direct MCP OAuth redirect-boundary failure with first-party root-cause, impact, patch, and regression-test evidence.
+    - source_id: SRC-cve-2025-4144
+      identifier: CVE-2025-4144
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP assessed exploitation none; no incident was documented.
+      impact: A verifier supplied for a flow without a challenge could bypass PKCE through downgrade and undermine transaction binding.
+      remediation: Fixed by Cloudflare pull request 27; the affected range is before 0.0.5.
+      selected: true
+      rationale: Direct MCP OAuth PKCE enforcement failure with first-party patch and regression test, despite no observed exploitation.
+    - source_id: SRC-rfc7636
+      identifier: RFC 7636 observed-in-the-wild OAuth statement
+      relationship: historical_analogy
+      exploitation_status: Observed in OAuth deployments, but the RFC does not identify MCP or an MCP incident.
+      impact: A malicious native app could intercept and redeem a public-client code under the RFC's listed prerequisites.
+      remediation: Transaction-specific high-entropy PKCE using S256.
+      selected: false
+      rationale: Authoritative mechanism evidence, but not a named MCP event and therefore not selected as a current MCP breach or vulnerability example.
+    - source_id: SRC-nvd-cleanroom-queries
+      identifier: CVE-2020-7692
+      relationship: historical_analogy
+      exploitation_status: Unknown from the reviewed NVD discovery record.
+      impact: Non-MCP Java OAuth client PKCE absence could allow local application code interception.
+      remediation: Upgrade to the fixed library version recorded by the vendor authority before deployment.
+      selected: false
+      rationale: Non-MCP historical implementation evidence with lower directness than the selected MCP-specific records.
+    - source_id: SRC-nvd-cleanroom-queries
+      identifier: CVE-2023-48228 and CVE-2024-23647
+      relationship: historical_analogy
+      exploitation_status: No production exploitation established in the reviewed discovery records.
+      impact: Non-MCP identity-provider implementations could omit or downgrade PKCE verification.
+      remediation: Apply the affected projects' fixed releases.
+      selected: false
+      rationale: Non-MCP historical analogies superseded for selection by direct MCP-related vulnerabilities.
+    - source_id: SRC-nvd-cleanroom-queries
+      identifier: CVE-2026-47250
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: No production incident established in the reviewed NVD record.
+      impact: An MCP Kubernetes tool could disclose an already issued bearer token to an attacker-controlled server.
+      remediation: Upgrade mcp-server-kubernetes to 3.7.0 or later.
+      selected: false
+      rationale: Targets an already issued Kubernetes token through tool argument handling, not an OAuth authorization code or redirect boundary.
+    - source_id: SRC-nvd-cleanroom-queries
+      identifier: CVE-2026-46555
+      relationship: rejected
+      exploitation_status: No production incident established in the reviewed NVD record.
+      impact: An unauthenticated local bridge could permit WhatsApp actions and file exfiltration.
+      remediation: Upgrade the affected bridge and enforce authentication and host validation.
+      selected: false
+      rationale: No OAuth authorization-code mechanism is present.
+
+sources_consulted:
+  - SRC-mitre-t1528
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cisa-kev-authorization-code-2026-09-01
+  - SRC-cloudflare-pr26
+  - SRC-cloudflare-pr27
+  - SRC-cve-2025-4143
+  - SRC-cve-2025-4144
+  - SRC-cve-2026-67336
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-nvd-cleanroom-queries
+  - SRC-rfc6749
+  - SRC-rfc7636
+  - SRC-rfc8252
+  - SRC-rfc9700
+sources_cited:
+  - SRC-mitre-t1528
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cisa-kev-authorization-code-2026-09-01
+  - SRC-cloudflare-pr26
+  - SRC-cloudflare-pr27
+  - SRC-cve-2025-4143
+  - SRC-cve-2025-4144
+  - SRC-cve-2026-67336
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-nvd-cleanroom-queries
+  - SRC-rfc6749
+  - SRC-rfc7636
+  - SRC-rfc8252
+  - SRC-rfc9700
+sources_rejected:
+  - source_id: SRC-nvd-cleanroom-queries
+    reason: Non-MCP OAuth, access-token theft, unauthenticated local service, and generic redirect records were retained as exclusions or analogies but not used as direct technique evidence.
+sources_blocked: []
+
+conflicts:
+  - issue: RFC 7636 retained plain PKCE for constrained legacy compatibility, while RFC 9700 and the MCP specification require stronger S256-centered behavior.
+    resolution: Applied the later BCP and current MCP requirements; plain PKCE is treated as an unsafe or nonconforming condition for this technique.
+  - issue: NVD-derived CVSS values for CVE-2025-4144 differ materially from the Cloudflare CNA's CVSS v4 assessment.
+    resolution: Omitted score-based severity claims and used the directly described mechanism, prerequisites, and bounded impact.
+  - issue: RFC 7636 says the general OAuth interception attack was observed in the wild, but it does not identify an MCP event.
+    resolution: Classified it as mechanism evidence and historical analogy only; it does not raise the MCP technique above Research-Derived.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1507-C001
+  rationale: >-
+    Directly reviewed standards establish the full OAuth interception mechanism,
+    and three official vulnerability records establish relevant MCP-specific
+    control failures. None of the reviewed sources documents the complete
+    behavior in a production MCP incident or a public end-to-end MCP
+    demonstration, so the MCP technique remains an explicit inference.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

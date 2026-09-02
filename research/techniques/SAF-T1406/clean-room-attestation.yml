@@ -1,0 +1,120 @@
+version: 1
+technique_id: SAF-T1406
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1406
+  neutral_name: Metadata Manipulation
+allowed_inputs:
+- The seed ID, neutral name, and tactic supplied by the coordinator.
+- The generic author-saf-technique skill and its required references.
+- Generic repository templates and the canonical validator, without target or neighboring
+  content.
+- Independently opened direct-authority standards, advisories, incident indexes, and
+  research papers.
+prohibited_inputs:
+- techniques/SAF-T1406/README.md and any other existing target artifact.
+- research/techniques/SAF-T1406/ and any prior target research packet.
+- techniques/SAF-T1406/detection-rule.yml and any prior target test artifact.
+- Git history, diff, blame, branches, and commits concerning the target or its neighbors.
+- Pull request text, reviews, comments, and previous bundles concerning the target.
+- Previous conversation content, summaries, or draft prose concerning the target.
+- Catalog descriptions, shared registries, SAF pages, and neighboring techniques.
+independent_research:
+  searches:
+  - Opened the current MCP specification index and followed its official Tools, Schema,
+    Discovery, and changelog pages.
+  - Queried the official CVE.org API by independently identified MCP vulnerability
+    identifiers.
+  - Filtered the official CISA Known Exploited Vulnerabilities JSON feed for the reviewed
+    CVE identifiers.
+  - Queried the official arXiv API for exact Model Context Protocol and tool-poisoning
+    concepts, then reviewed selected papers in full.
+  - Opened the official MITRE ATT&CK Masquerading technique and Defense Evasion-tactic
+    identifier page directly.
+  - Followed first-party Invariant Labs and JFrog publication links for controlled
+    demonstrations and vulnerability analysis.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-mcp-scan-2025
+  - SRC-cve-2025-54136
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-cve-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-2508.02110v2
+  - SRC-mcptox-2508.14925
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-mitre-attack-t1036
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace synthetic neighbor IDs only after the frozen bundle is validated and hashed.
+- Reconcile provisional source IDs against shared registries without changing claims
+  or prose.
+- Replace the synthetic history commit only during integration.
+- Do not inspect or mutate any real target or neighboring artifact during this run.
+attestation: This packet was independently generated from the neutral seed and direct
+  authorities. No prohibited target, registry, history, pull-request, previous conversation,
+  bundle, or neighboring content was accessed before the contract and draft were frozen.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-schema-2026-07-28: SRC-mcp-2026-schema
+    SRC-invariant-tool-poisoning: SRC-invariant-tpa-2025-04-01
+    SRC-invariant-whatsapp-rug-pull: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-mcp-scan: SRC-invariant-mcp-scan-2025
+    SRC-cve-2025-54136: SRC-cve-2025-54136
+    SRC-ghsa-24mc-g4xr-4395: SRC-cursor-ghsa-24mc-g4xr-4395
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-cve-2025-54135: SRC-cve-2025-54135
+    SRC-ghsa-4cxx-hrm3-49rm: SRC-ghsa-cursor-4cxx-2025
+    SRC-cve-2025-49596: SRC-cve-2025-49596
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-arxiv-2508.14925v1: SRC-mcptox-2508.14925
+    SRC-arxiv-2512.06556v2: SRC-jamshidi-2026-arxiv-2512-06556
+  new_shared_source_records:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-arxiv-2508.02110v2
+  - SRC-mitre-attack-t1036
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-6
+  - SAF-M-10
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1102
+    SAF-T9999: SAF-T1205
+  normalization_refreeze:
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1406-normalized/bundle
+    freeze_manifest_sha256: 081e7c86ac95f2a145c873d24b7f9e8fbcf15706192aa6648cb153e521a2d1d4
+    scope: Canonical fragment naming, structured integration notes, validator-dependency removal, and proof-path normalization only; no research or substantive change.
+  status: integrated_and_repository_validated

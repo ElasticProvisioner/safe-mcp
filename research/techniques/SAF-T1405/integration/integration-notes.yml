@@ -1,0 +1,31 @@
+version: 1
+technique_id: SAF-T1405
+freeze_mode: clean_room
+canonical_layout:
+  technique: techniques/SAF-T1405/
+  research_packet: research/techniques/SAF-T1405/
+  tests: tests/SAF-T1405/
+  source_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+mechanical_post_freeze_joins:
+  - Merge source-manifest-fragment.yml sources into research/source-manifest.yml by source id; reject collisions unless records are byte-equivalent.
+  - Merge the SAF-T1405 record from framework-fragment.yml into research/framework-model.yml by technique_id.
+  - Append alignment issues from alignment-fragment.yml to research/alignment-ledger.yml by issue id.
+  - Resolve SAF-T9998 and SAF-T9999 clean-room neighbor anchors against canonical technique IDs while preserving the recorded distinctions.
+  - Resolve SAF-M-998 and SAF-M-999 clean-room mitigation anchors against canonical mitigation IDs for definition integrity and invocation authorization.
+  - Replace repository_history commit 1405140514051405140514051405140514051405 with the actual integration commit.
+validation_contract:
+  isolated_mock_only: true
+  copied_validator_in_bundle: false
+  dependency_tree_in_bundle: false
+  source_corpus_in_bundle: false
+  strict_command: python3 scripts/validate-technique-research.py SAF-T1405
+prohibited_before_freeze:
+  - Existing target artifact or research packet
+  - Target history, diff, blame, issue, or pull-request context
+  - Shared registries and SAF catalog or site content
+  - Existing target tests or methodology impact examples
+notes:
+  - The bundle is immutable after FREEZE.sha256 generation.
+  - Post-freeze joins are mechanical integration work and may not change claim wording, source classification, evidence status, or scope without a new clean-room review.

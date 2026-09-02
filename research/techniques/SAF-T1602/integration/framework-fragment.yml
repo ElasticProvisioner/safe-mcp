@@ -1,0 +1,30 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1602
+    name: Tool Enumeration
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0007
+    technique_path: techniques/SAF-T1602/README.md
+    research_packet: research/techniques/SAF-T1602
+    related_techniques:
+      - SAF-T1601
+    mitigations:
+      - SAF-M-12
+      - SAF-M-13
+      - SAF-M-16
+      - SAF-M-20
+      - SAF-M-29
+      - SAF-M-37
+    detection:
+      rule: techniques/SAF-T1602/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1602/test-logs.json
+        - techniques/SAF-T1602/test_detection_rule.py
+        - research/techniques/SAF-T1602/validation/detection-test.txt
+        - research/techniques/SAF-T1602/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1046
+        type: analogous

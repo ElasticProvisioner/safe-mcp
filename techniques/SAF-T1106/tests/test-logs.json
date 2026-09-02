@@ -1,0 +1,96 @@
+{
+  "cases": [
+    {
+      "name": "repeated_arguments_positive",
+      "expected_alert_sessions": ["loop-a"],
+      "events": [
+        {"timestamp":"2026-01-01T00:00:00Z","event_type":"tool_call","session_id":"loop-a","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p0","completion_state":"running"},
+        {"timestamp":"2026-01-01T00:00:30Z","event_type":"tool_call","session_id":"loop-a","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p0","completion_state":"running"},
+        {"timestamp":"2026-01-01T00:01:00Z","event_type":"tool_call","session_id":"loop-a","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p0","completion_state":"running"},
+        {"timestamp":"2026-01-01T00:01:30Z","event_type":"tool_call","session_id":"loop-a","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p0","completion_state":"running"},
+        {"timestamp":"2026-01-01T00:02:00Z","event_type":"tool_call","session_id":"loop-a","tool_name":"verify","normalized_argument_hash":"v1","progress_fingerprint":"p0","completion_state":"running"},
+        {"timestamp":"2026-01-01T00:02:30Z","event_type":"tool_call","session_id":"loop-a","tool_name":"verify","normalized_argument_hash":"v2","progress_fingerprint":"p0","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "recurring_progress_positive",
+      "expected_alert_sessions": ["loop-b"],
+      "events": [
+        {"timestamp":"2026-01-01T01:00:00Z","event_type":"tool_call","session_id":"loop-b","tool_name":"search","normalized_argument_hash":"a1","progress_fingerprint":"unchanged","completion_state":"running"},
+        {"timestamp":"2026-01-01T01:00:20Z","event_type":"tool_call","session_id":"loop-b","tool_name":"search","normalized_argument_hash":"a2","progress_fingerprint":"unchanged","completion_state":"running"},
+        {"timestamp":"2026-01-01T01:00:40Z","event_type":"tool_call","session_id":"loop-b","tool_name":"search","normalized_argument_hash":"a3","progress_fingerprint":"unchanged","completion_state":"running"},
+        {"timestamp":"2026-01-01T01:01:00Z","event_type":"tool_call","session_id":"loop-b","tool_name":"search","normalized_argument_hash":"a4","progress_fingerprint":"unchanged","completion_state":"running"},
+        {"timestamp":"2026-01-01T01:01:20Z","event_type":"tool_call","session_id":"loop-b","tool_name":"read","normalized_argument_hash":"b1","progress_fingerprint":"unchanged","completion_state":"running"},
+        {"timestamp":"2026-01-01T01:01:40Z","event_type":"tool_call","session_id":"loop-b","tool_name":"read","normalized_argument_hash":"b2","progress_fingerprint":"unchanged","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "below_count_negative",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T02:00:00Z","event_type":"tool_call","session_id":"short","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T02:00:10Z","event_type":"tool_call","session_id":"short","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T02:00:20Z","event_type":"tool_call","session_id":"short","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T02:00:30Z","event_type":"tool_call","session_id":"short","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T02:00:40Z","event_type":"tool_call","session_id":"short","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "window_boundary_negative",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T03:00:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T03:02:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T03:04:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T03:06:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T03:08:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T03:10:00Z","event_type":"tool_call","session_id":"spread","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "approved_long_running_negative",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T04:00:00Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running","approval_state":"approved_long_running"},
+        {"timestamp":"2026-01-01T04:00:10Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T04:00:20Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T04:00:30Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T04:00:40Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T04:00:50Z","event_type":"tool_call","session_id":"approved","tool_name":"poll","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "terminal_completion_negative",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T05:00:00Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T05:00:10Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T05:00:20Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T05:00:30Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T05:00:40Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"running"},
+        {"timestamp":"2026-01-01T05:00:50Z","event_type":"tool_call","session_id":"done","tool_name":"lookup","normalized_argument_hash":"same","progress_fingerprint":"p","completion_state":"terminal"}
+      ]
+    },
+    {
+      "name": "progress_changes_negative",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T06:00:00Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a1","progress_fingerprint":"p1","completion_state":"running"},
+        {"timestamp":"2026-01-01T06:00:10Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a2","progress_fingerprint":"p2","completion_state":"running"},
+        {"timestamp":"2026-01-01T06:00:20Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a3","progress_fingerprint":"p3","completion_state":"running"},
+        {"timestamp":"2026-01-01T06:00:30Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a4","progress_fingerprint":"p4","completion_state":"running"},
+        {"timestamp":"2026-01-01T06:00:40Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a5","progress_fingerprint":"p5","completion_state":"running"},
+        {"timestamp":"2026-01-01T06:00:50Z","event_type":"tool_call","session_id":"moving","tool_name":"search","normalized_argument_hash":"a6","progress_fingerprint":"p6","completion_state":"running"}
+      ]
+    },
+    {
+      "name": "malformed_events_ignored",
+      "expected_alert_sessions": [],
+      "events": [
+        {"timestamp":"2026-01-01T07:00:00Z","event_type":"tool_call","tool_name":"lookup"},
+        {"timestamp":"2026-01-01T07:00:10Z","event_type":"tool_call","session_id":"bad"},
+        {"timestamp":"2026-01-01T07:00:20Z","event_type":"message","session_id":"bad","tool_name":"lookup"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,475 @@
+version: 1
+technique_id: SAF-T1601
+claims:
+  - id: SAF-T1601-C001
+    statement: >-
+      An MCP host can manage multiple client instances, and each client has a
+      one-to-one relationship with one server while the host maintains the
+      cross-server boundary.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators:
+          - Core Components, Host, lines 68-83
+          - Core Components, Clients, lines 86-97
+    corroboration: The same page's design principles describe host-controlled cross-server isolation.
+    limitations:
+      - The specification does not define how a host stores or exposes its configured server set.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C002
+    statement: >-
+      In protocol revision 2026-07-28, servers must implement server/discover,
+      whose response can disclose supported versions, capability classes,
+      self-reported server identity, instructions, and cache metadata.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Opening definition, lines 63-67
+          - Response, lines 94-120
+          - DiscoverResult, lines 138-148
+    corroboration: Architecture capability negotiation, lines 142-155, independently describes discovery-advertised capabilities.
+    limitations:
+      - The operation characterizes an already-reachable server; it does not locate endpoints.
+      - Earlier protocol revisions use an initialize handshake instead.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C003
+    statement: >-
+      serverInfo is self-reported, unverified by the protocol, and unsuitable
+      as a security decision or unique server identity.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - DiscoverResult limitation, lines 142-148
+    corroboration: The limitation is an explicit normative warning in the controlling specification.
+    limitations:
+      - Implementations may bind the field to stronger deployment-specific identity outside the protocol.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C004
+    statement: >-
+      The official MCP Inspector accepts named servers from mcpServers catalog
+      or config files and implements servers/list and servers/show without
+      connecting to those servers.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-inspector-cli-20260728
+        support: direct
+        exact_locators:
+          - Choosing a server, lines 88-106
+          - Methods table, lines 109-124
+          - Inspect a catalog without connecting, lines 252-259
+      - source_id: SRC-mcp-inspector-config-20260728
+        support: corroborating
+        exact_locators:
+          - Catalog/config behavior, lines 95-132
+          - Catalog file format, lines 258-281
+    corroboration: The separate CLI and configuration pages describe the same offline enumeration surface.
+    limitations:
+      - The demonstration is legitimate administration, not documented adversary activity.
+      - Inspector behavior does not establish equivalent commands in every MCP host.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C005
+    statement: >-
+      An actor who can read a host's MCP configuration or reach candidate MCP
+      endpoints can infer the server set by combining configuration entries
+      with per-server discovery or legacy initialization results.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators:
+          - Clients, lines 86-97
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Request and Response, lines 70-120
+      - source_id: SRC-mcp-inspector-config-20260728
+        support: direct
+        exact_locators:
+          - Catalog/config behavior, lines 95-132
+          - Catalog file format, lines 258-281
+    corroboration: The official Inspector directly demonstrates catalog enumeration and per-server selection.
+    limitations:
+      - No reviewed source documents this exact inference as a production MCP-server-enumeration incident.
+      - Access to configuration or candidate endpoints is a prerequisite, not supplied by the technique.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The protocol and Inspector independently establish the observable
+        components; adversarial use across a compromised host context is a
+        bounded synthesis rather than a reported event.
+    status: validated
+
+  - id: SAF-T1601-C006
+    statement: >-
+      The Inspector demonstration shows that server catalog enumeration can
+      stop at metadata inspection without initiating a connection or invoking
+      a tool.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-inspector-cli-20260728
+        support: direct
+        exact_locators:
+          - Inspect a catalog without connecting, lines 252-259
+    corroboration: The configuration page describes read-only --config handling, lines 102-132.
+    limitations:
+      - The official documentation demonstrates capability, not malicious intent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C007
+    statement: >-
+      CVE-2025-66416 enabled conditional unauthorized requests from a malicious
+      website to a localhost unauthenticated HTTP MCP server in MCP Python SDK
+      versions below 1.23.0; stdio was unaffected and 1.23.0 enabled protection
+      by default for loopback hosts.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-66416
+        support: direct
+        exact_locators:
+          - English description, affected data, cvssMetricV40, and ssvcV203
+      - source_id: SRC-ghsa-9h52-p55h-vw2f
+        support: direct
+        exact_locators:
+          - Description and remediation, lines 151-156
+          - Credits, lines 234-236
+    corroboration: NVD and the maintainer advisory agree on prerequisites, affected range, and fix.
+    limitations:
+      - The records describe possible tool or resource access, not MCP server enumeration.
+      - Neither source establishes production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C008
+    statement: >-
+      CVE-2026-49257 exposed mcp-pinot 3.0.1 and earlier on all interfaces
+      without authentication by default, permitting network-adjacent callers to
+      reach tools under server-side Pinot credentials; version 3.1.0 fixed the defaults.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-49257
+        support: direct
+        exact_locators:
+          - English description, affected data, cvssMetricV31, and ssvcV203
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators:
+          - Resolution and CVSS rationale, lines 154-171
+          - Summary and root cause, lines 172-217
+          - Reporter credit, lines 320-322
+    corroboration: NVD and the maintainer advisory agree on the insecure defaults, affected range, and fixed version.
+    limitations:
+      - The weakness makes one known endpoint broadly reachable; it does not discover the endpoint or enumerate multiple MCP servers.
+      - Public proof of concept is not evidence of production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C009
+    statement: >-
+      The reviewed authoritative corpus contained no qualifying direct
+      production incident or direct vulnerability whose immediate objective
+      was MCP server enumeration as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-mcp-corpus-20260901
+        support: direct
+        exact_locators:
+          - totalResults=77 and complete English-description screen
+      - source_id: SRC-cisa-kev-server-enumeration-2026-09-01
+        support: corroborating
+        exact_locators:
+          - catalogVersion=2026.09.01 and exact-CVE membership check
+    corroboration: Separate protocol, incident, vulnerability, advisory, demonstration, and exploitation-status passes produced only enabling, adjacent, or demonstration evidence.
+    limitations:
+      - This is a bounded corpus-and-date statement, not a claim that the behavior has never occurred.
+      - Private incidents and undisclosed vulnerabilities are outside the reviewed corpus.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion derives from documented, separate negative searches and classifications.
+    status: validated
+
+  - id: SAF-T1601-C010
+    statement: >-
+      Anthropic's Threat Intelligence team reported a September 2025 campaign
+      in which an actor used MCP-connected browser automation to catalog target
+      infrastructure and internal network services, but the report does not say
+      that MCP servers were the enumerated objects.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive Summary, pages 2-3
+          - Operational infrastructure, pages 5-6
+          - Phase 2 Reconnaissance and attack surface mapping, page 8
+    corroboration: MITRE ATT&CK T1046 lists the campaign as a network-service-discovery procedure example.
+    limitations:
+      - This is adjacent network service discovery using MCP-connected tooling, not direct MCP server enumeration.
+      - Anthropic notes model overstatement and visibility limited to Claude usage.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C011
+    statement: >-
+      A bounded analytic can flag one actor and session that performs successful
+      server/discover or legacy initialize operations against at least three
+      distinct server identifiers within five minutes, excluding approved
+      startup, health-check, and administrative Inspector contexts.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Request method and metadata, lines 70-90
+          - Response identity and capabilities, lines 94-120
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: corroborating
+        exact_locators:
+          - Detection strategy, lines 125-131
+      - source_id: SRC-nist-sp80092
+        support: context
+        exact_locators:
+          - Abstract and control families, lines 73-86
+    corroboration: ATT&CK independently recommends time-window correlation of rapid probes across multiple services or hosts.
+    limitations:
+      - The threshold is a testable starting point, not an empirically measured universal boundary.
+      - Hosts that do not log actor, session, method, and stable endpoint identity cannot support the analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The method and fields are protocol-grounded; the threshold and exclusions are a conservative analytic design.
+    status: validated
+
+  - id: SAF-T1601-C012
+    statement: >-
+      Routine host startup, configuration reload, health checking, and explicit
+      Inspector administration can generate the same discovery methods, so
+      environment-specific allowlisting and baselining are necessary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-inspector-cli-20260728
+        support: direct
+        exact_locators:
+          - Choosing a server and methods, lines 88-124
+      - source_id: SRC-mcp-inspector-config-20260728
+        support: direct
+        exact_locators:
+          - Choosing servers, lines 95-161
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - When to Call, lines 123-130
+    corroboration: Official sources document legitimate connection, compatibility, catalog, and administration use cases.
+    limitations:
+      - The exact baseline varies by host and deployment lifecycle.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: False-positive classes follow directly from documented legitimate uses of the same operations.
+    status: validated
+
+  - id: SAF-T1601-C013
+    statement: >-
+      Restricting configuration access, requiring consent before new local
+      server connections, using loopback or authenticated remote exposure,
+      sandboxing server processes, and minimizing scopes constrain the
+      prerequisites or follow-on value of enumeration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise mitigation, lines 398-409
+          - Client-side protections, lines 512-524
+          - Scope Minimization, lines 586-646
+      - source_id: SRC-ghsa-9h52-p55h-vw2f
+        support: corroborating
+        exact_locators:
+          - Description and remediation, lines 151-156
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: corroborating
+        exact_locators:
+          - Resolution, lines 154-156
+    corroboration: Two maintainer advisories show concrete fixes through loopback defaults, authentication, and transport controls.
+    limitations:
+      - These controls do not erase topology already visible to a fully compromised host account.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C014
+    statement: >-
+      Investigation should preserve host configuration and correlated connection
+      events, identify the actor and server set, and separately assess whether
+      any discovered server was subsequently invoked or accessed.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp80092
+        support: direct
+        exact_locators:
+          - Abstract and control families, lines 73-86
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: context
+        exact_locators:
+          - Host and Clients, lines 68-97
+    corroboration: The architecture provides the host/client/server correlation boundary; NIST supplies the enterprise log-management basis.
+    limitations:
+      - Specific retention, legal-hold, and credential-rotation procedures are deployment-specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence is a conservative synthesis of the protocol boundary and log-management practice.
+    status: validated
+
+  - id: SAF-T1601-C015
+    statement: >-
+      MITRE ATT&CK T1046 is an analogous mapping because it covers adversary
+      listings of network services, whereas SAF-T1601 also covers host
+      configuration and MCP-specific discovery metadata and excludes generic scanning.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: direct
+        exact_locators:
+          - Definition and tactic, lines 15-30
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Opening definition and response, lines 63-120
+    corroboration: The two sources independently establish the generic and MCP-specific mechanisms.
+    limitations:
+      - T1046 is not a direct mapping for offline MCP configuration enumeration.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares overlapping objectives while preserving distinct mechanisms.
+    status: validated
+
+  - id: SAF-T1601-C016
+    statement: >-
+      At review time, CISA's KEV catalog listed neither CVE-2025-66416 nor
+      CVE-2026-49257; NVD's CISA SSVC data labeled the former exploitation
+      none and the latter proof of concept.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-server-enumeration-2026-09-01
+        support: direct
+        exact_locators:
+          - catalogVersion=2026.09.01 and exact-CVE membership check
+      - source_id: SRC-nvd-cve-2025-66416
+        support: direct
+        exact_locators:
+          - ssvcV203 exploitation=none
+      - source_id: SRC-nvd-cve-2026-49257
+        support: direct
+        exact_locators:
+          - ssvcV203 exploitation=poc
+    corroboration: Government catalog and SSVC records were independently checked on the same date.
+    limitations:
+      - Not appearing in KEV does not prove absence of exploitation.
+      - A proof of concept is not a production incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1601-C017
+    statement: >-
+      Enumeration is primarily a confidentiality and targeting risk: it can
+      reveal integration topology and advertised capability classes, but the
+      enumeration step alone does not invoke a capability or establish server identity.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Response and DiscoverResult, lines 94-148
+      - source_id: SRC-mcp-inspector-cli-20260728
+        support: corroborating
+        exact_locators:
+          - Inspect a catalog without connecting, lines 252-259
+    corroboration: The protocol and official tool separately show metadata retrieval without tool invocation.
+    limitations:
+      - Configuration files may contain additional secrets, but secret theft is outside this technique.
+      - Impact rises only when the topology enables follow-on behavior.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The bounded impact follows from the fields disclosed and the explicit stop before invocation.
+    status: validated

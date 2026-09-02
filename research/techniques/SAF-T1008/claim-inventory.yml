@@ -1,0 +1,365 @@
+version: 1
+technique_id: SAF-T1008
+claims:
+  - id: SAF-T1008-C001
+    statement: MCP tool discovery returns tool names, descriptions, and schemas, and tools/call invokes a selected tool by name.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Tools section, protocol messages tools/list and tools/call
+          - Tool definition schema fields name, title, description, inputSchema, outputSchema, annotations, and icons
+    corroboration: The Invariant and Jamshidi demonstrations exercise descriptor discovery and later tool selection in conforming MCP-style contexts.
+    limitations:
+      - The specification does not mandate how a host aggregates descriptors from multiple servers into model context.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C002
+    statement: The MCP Tools specification labels tools model-controlled and recommends visible tool exposure, confirmation, input validation, result display, timeouts, and usage logging for client safety.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 78-90 in archived extraction
+          - Security Considerations / Client Responsibilities, lines 546-557 in archived extraction
+    corroboration: The Croce and South experiment records that Claude Desktop prompted before each call, showing one implementation of the recommendation.
+    limitations:
+      - SHOULD-level guidance does not prove that every host implements or preserves the safeguard.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C003
+    statement: The Invariant publication distinguishes a rug pull, where a tool description changes after approval, from initially delivered cross-server shadowing.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Rug Pulls section
+          - Shadowing Tool Descriptions with Multiple Servers section
+    corroboration: The MCP Tools specification separately defines list_changed notifications, supporting the lifecycle distinction without classifying attacks.
+    limitations:
+      - The terminology is research taxonomy rather than a protocol-defined category.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C004
+    statement: Invariant Labs publicly demonstrated that an attacker-controlled calculator tool description could alter how Cursor invoked a distinct trusted email tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Shadowing Tool Descriptions with Multiple Servers section
+          - Calculator descriptor and send_email narrative, archived extraction lines 81-116
+    corroboration: Jamshidi et al. independently formalize and test descriptor-level shadowing in a controlled shared context.
+    limitations:
+      - The publication documents a product demonstration, not a production compromise.
+      - Results are tied to the tested client behavior as of April 2025.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C005
+    statement: In the Invariant shadowing demonstration, the malicious tool itself did not have to be selected for its descriptor to influence the trusted tool's arguments and destination.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Shadowing Tool Descriptions with Multiple Servers section, sentence explaining that the poisoning attack would occur even without calling the malicious tool
+    corroboration: Jamshidi et al. define shadowing as a malicious descriptor affecting the interpretation of benign tools in shared context.
+    limitations:
+      - One public client scenario establishes possibility, not frequency.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C006
+    statement: Jamshidi et al. formalized shadowing as malicious descriptor content that affects interpretation or selection of benign tool descriptors and evaluated the behavior under controlled multi-tool conditions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Section III threat model and descriptor-layer manipulation
+          - Shadowing attack definition and Table I
+          - Sections IV-V experimental setup and results
+    corroboration: Invariant Labs independently demonstrates the mechanism in Cursor.
+    limitations:
+      - The evaluation uses controlled or synthetic descriptors and does not measure production prevalence.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C007
+    statement: The Jamshidi study's results are bounded by controlled simulation, synthetic descriptors, black-box models, permissive assumptions, verifier blind spots, and limited production generalizability.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Limitations and Threats to Validity section
+          - Discussion of synthetic descriptors, black-box models, integrity key management, and verifier blind spots
+    corroboration: The source authors explicitly present these limitations; no independent corroboration is required to report them.
+    limitations:
+      - The limitations themselves do not invalidate the demonstrated possibility.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C008
+    statement: CVE-2026-25905 in mcp-run-python permits executed code to modify the server's JavaScript environment and advertised tool state, enabling server takeover and tool-registry manipulation.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-jfsa-2026-001653030
+        support: direct
+        exact_locators:
+          - Overview and Details sections
+          - Proof of Concept showing tool mutation and notifications/tools/list_changed
+          - Remediation section
+      - source_id: SRC-nvd-cve-2026-25905
+        support: corroborating
+        exact_locators:
+          - CVE-2026-25905 description and JFrog reference
+      - source_id: SRC-cve-cve-2026-25905
+        support: corroborating
+        exact_locators:
+          - CNA description, affected versions, problem type, and provider metadata
+    corroboration: NVD and the CVE Program record the JFrog disclosure and affected project.
+    limitations:
+      - The advisory demonstrates same-server takeover and registry mutation, not one server descriptor controlling a different server's tool.
+      - The archived project was reported unlikely to receive a fix.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C009
+    statement: Delivery of a malicious or modified MCP server before consumer use is analogous to MITRE ATT&CK T1195 Supply Chain Compromise, while the descriptor-shadowing mechanism itself is MCP-specific.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195
+        support: context
+        exact_locators:
+          - Supply Chain Compromise description and procedure scope
+          - T1195.001 Compromise Software Dependencies and Development Tools
+      - source_id: SRC-mitre-ta0001
+        support: context
+        exact_locators:
+          - Initial Access tactic definition and technique table containing T1195
+    corroboration: The Invariant scenario requires an attacker-controlled server to be present before the demonstrated interaction.
+    limitations:
+      - T1195 does not define semantic interference among descriptors in a shared model context.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the delivery path, not identical technical semantics.
+    status: validated
+
+  - id: SAF-T1008-C010
+    statement: No direct production tool-shadowing incident was identified in the reviewed NVD Model Context Protocol corpus or CISA Known Exploited Vulnerabilities catalog as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-25905
+        support: context
+        exact_locators:
+          - NVD API keyword searches for Model Context Protocol, tool shadowing, shadowing MCP, and tool descriptor MCP, archived in discovery ledger
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Full KEV JSON catalog version downloaded 2026-09-01; exact searches for MCP terms and CVE-2026-25905 returned no entries
+    corroboration: The CVE Program and JFrog candidate were reviewed and classified as enabling rather than a direct production incident.
+    limitations:
+      - Catalog absence cannot prove that no unreported, privately handled, or differently described incident exists.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a bounded absence finding over named corpora, not a universal negative.
+    status: validated
+
+  - id: SAF-T1008-C011
+    statement: Public cross-server MCP experiments show conditional confidentiality impact from agent-mediated tool composition, but the reviewed examples use prompt resources or metadata-driven extra-tool invocation rather than the exact descriptor-shadowing contract.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-croce-south-2025-arxiv-2507-19880
+        support: direct
+        exact_locators:
+          - Sections 3.1-3.3, malicious weather prompt and attack execution
+          - Section 4, Limitations
+          - Section 5, Discussion and Recommendations
+      - source_id: SRC-embrace-red-2025-05-02
+        support: corroborating
+        exact_locators:
+          - Tool Poisoning Attacks section
+          - Hidden Unicode tag descriptor example and enter_matrix before message_of_the_day demonstration
+    corroboration: Both sources independently show cross-tool influence and the role of agent-visible server metadata or prompts.
+    limitations:
+      - Croce and South invoke an attacker prompt and exfiltration tool.
+      - Embrace The Red demonstrates metadata causing another tool call but does not clearly establish a different server for the target tool.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C012
+    statement: Tool-shadowing impact depends on the target tool's privileges and data, available follow-on paths, host automation, and user approval behavior.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Shadowing demonstration and Security Measures and Recommendations section
+      - source_id: SRC-croce-south-2025-arxiv-2507-19880
+        support: context
+        exact_locators:
+          - Section 4, Target Environment Requirements and User Consent Mechanisms
+    corroboration: Both sources identify sensitive-tool access and approval behavior as impact conditions.
+    limitations:
+      - Adjacent exfiltration evidence bounds potential impact but does not make confidentiality loss intrinsic to every shadowing event.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Severity is synthesized from demonstrated mechanics and explicitly stated environment conditions.
+    status: validated
+
+  - id: SAF-T1008-C013
+    statement: A foreign-tool reference plus imperative or argument-manipulation language is a defensible experimental detection feature, but legitimate orchestration and semantic evasion limit specificity and recall.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Shadowing example's explicit send_email override instructions
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Descriptor shadowing definition and experimental prompts
+          - Combined-mitigation results and Limitations and Threats to Validity
+    corroboration: The two independent sources use the same core foreign-tool influence signal under different test designs.
+    limitations:
+      - The local analytic is not production-validated and depends on upstream semantic enrichment.
+      - Oblique, encoded, multilingual, or context-split instructions may evade it.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources establish attack features; the threshold and allowlist are locally derived detection design choices.
+    status: validated
+
+  - id: SAF-T1008-C014
+    statement: Descriptor provenance, version pinning, visible destination-sensitive approval context, usage logging, and explicit cross-server policy are relevant safeguards for shadowing.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Security Measures and Recommendations section
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Human in the Loop and Client Responsibilities guidance
+          - Tool list_changed notification semantics
+    corroboration: The protocol and independent attack research converge on visibility, confirmation, version awareness, and auditability.
+    limitations:
+      - Exact enforcement points and UI behavior are host-specific.
+      - Approval cannot compensate for misleading context if the user lacks meaningful provenance and argument detail.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The claim combines source recommendations into a mechanism-specific control set.
+    status: validated
+
+  - id: SAF-T1008-C015
+    statement: The term tool shadowing is also used by the CSA-sponsored MCP Security project for name-collision and resolution-order attacks, which conflicts with Invariant's cross-server descriptor-interference usage.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-csa-shadowing-2026
+        support: direct
+        exact_locators:
+          - Tool Shadowing page definition, name collision example, and resolution-order discussion
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Shadowing Tool Descriptions with Multiple Servers section
+    corroboration: The conflict is established by comparing the two sources' explicit definitions.
+    limitations:
+      - Neither use is a protocol-standardized term.
+    conflicts:
+      - CSA usage centers identical tool names, while this contract adopts the earlier Invariant usage because it uniquely identifies cross-server descriptor influence.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1008-C016
+    statement: In Jamshidi et al.'s controlled combined-mitigation stress test, shadowing retained an unsafe invocation rate of 0.11 with a 0.78 block rate, 0.24 false-positive rate, and 6.71 latency units as reported by the authors.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Table XXIII, Combined Mitigation Stress Test, Shadowing row
+          - Table XXIV and surrounding discussion for full-stack aggregate context
+    corroboration: The authors report both residual unsafe behavior and false positives across their controlled defense evaluation.
+    limitations:
+      - The units and workload are study-specific and do not predict a production detector's operational performance.
+      - The source is an arXiv preprint rather than a production evaluation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

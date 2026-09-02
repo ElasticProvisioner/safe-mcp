@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1205
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research team
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Neutral seed only; prohibited target artifacts and shared registries were not accessed.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires post-trust change, retained identity, and absent current-definition approval; adjacent behaviors are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Protocol semantics, controlled evidence, implementation controls, and limitations were checked against direct sources.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims have exact locators and are surfaced in the Evidence Summary.
+  source_or_omit:
+    status: passed
+    notes: Substantive README units carry hidden claim/source joins or declared local links; seven rejected leads are ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by the controlled Song et al. temporal redefinition test; no production claim is made.
+  research_saturation:
+    status: passed
+    notes: Two consecutive narrow follow-ups produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Current breach, CVE, advisory, exploitation-status, and demonstration searches selected three bounded examples and found no direct production incident.
+  detection_quality:
+    status: passed
+    notes: Seven synthetic cases cover positive, negative, boundary, legitimate-change, unrelated, and malformed behavior.
+  mitigation_quality:
+    status: passed
+    notes: Pinning, reapproval, least privilege, isolation, and audit controls address the defining trust gap.
+  framework_alignment:
+    status: passed
+    notes: Persistence tactic, canonical SAF-T1001, SAF-T1201, SAF-T1407, and SAF-T1103 boundaries, analogous ATT&CK mapping, qualified ATLAS mappings, and nine mitigation joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: Public sources were paraphrased or referenced; no quotations, code, images, or protected structure were reproduced.
+  safe_publication:
+    status: passed
+    notes: Scenario uses an inert domain, placeholder hashes, and no credential, exploit, or destructive payload.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1205
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1205/test_detection_rule.py
+    result: 'PASS: 7 cases; 2 positive; 5 negative/boundary'
+    waiver: null
+
+unresolved: []

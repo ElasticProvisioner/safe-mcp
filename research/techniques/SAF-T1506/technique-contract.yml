@@ -1,0 +1,61 @@
+version: 1
+technique_id: SAF-T1506
+name: Infrastructure Token Theft
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Acquire an infrastructure-issued workload bearer credential and
+  move it outside its intended workload boundary for possible replay.
+scope:
+  security_boundary: Infrastructure-issued credentials available to an MCP, agent,
+    gateway, tool, plugin, or adjacent workload process, filesystem, or metadata network
+    path.
+  in_scope:
+  - Theft or exfiltration of cloud instance-role, managed-workload, and Kubernetes
+    service-account bearer credentials.
+  - Acquisition through process environments, projected token files, cloud metadata
+    services, or equivalent workload-local sources.
+  - MCP and agentic execution paths that expose or reach those credential sources.
+  out_of_scope:
+  - Initial code execution, package compromise, prompt or tool poisoning, and delivery
+    mechanisms.
+  - Static developer-secret theft, authorization-code interception, token minting,
+    and consent abuse.
+  - Downstream use of a stolen credential against cloud, cluster, or application APIs.
+  affected_components:
+  - MCP clients and local MCP servers
+  - Agentic gateways and tool runtimes
+  - Cloud metadata services
+  - Kubernetes workloads and projected service-account volumes
+nearest_neighbors:
+- technique_id: SAF-T1502
+  distinction: File-Based Credential Harvest overlaps when a projected workload token
+    is acquired from a file; SAF-T1506 requires an infrastructure-issued credential
+    and also covers environment and metadata sources.
+- technique_id: SAF-T1507
+  distinction: Authorization Code Interception targets authorization-flow material
+    before token issuance; SAF-T1506 starts with an issued infrastructure workload
+    token.
+required_evidence:
+- A directly reviewed production incident or authoritative demonstration of infrastructure-token
+  acquisition.
+- Direct protocol and platform authority for token semantics and workload credential
+  locations.
+- Direct telemetry authority and independently executable positive, negative, and
+  edge-case detector fixtures.
+safe_example_constraints:
+- Use inert addresses and synthetic events only; never retrieve a live metadata credential.
+- Do not publish reusable exploit payloads, live tokens, or active victim indicators.
+completion_evidence:
+- Five research passes plus two consecutive no-change saturation passes.
+- Source-or-omit claim inventory, rights review, exclusion ledger, and readable hidden
+  traces.
+- Passing detector fixtures and strict isolated synthetic validation.
+detection:
+  expectation: required
+  required_telemetry:
+  - MCP authorization-flow marker and initiating process or service identity
+  - HTTP method, full URL or path, resolved peer address, and redirect destination
+  - Destination address classification and cloud or Kubernetes audit correlation
+status: complete

@@ -1,0 +1,34 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1910
+    name: Covert Channel Exfiltration
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0010
+    technique_path: techniques/SAF-T1910/README.md
+    research_packet: research/techniques/SAF-T1910
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1911
+      - SAF-T1912
+    mitigations:
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-72
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1910/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1910/test_detection_rule.py
+        - techniques/SAF-T1910/test-logs.json
+        - research/techniques/SAF-T1910/validation/detection-test.txt
+        - research/techniques/SAF-T1910/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1048
+        type: analogous

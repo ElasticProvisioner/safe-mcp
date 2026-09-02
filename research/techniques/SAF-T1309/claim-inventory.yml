@@ -1,0 +1,387 @@
+version: 1
+technique_id: SAF-T1309
+claims:
+  - id: SAF-T1309-C001
+    statement: >-
+      MCP tools are model-controlled and may be discovered and invoked
+      automatically from contextual understanding and user prompts; clients
+      invoke a selected tool with tools/call.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 92-99
+          - Calling Tools, lines 181-213
+    corroboration: AgentDojo independently demonstrates model-selected external tool calls in an agent runtime.
+    limitations:
+      - MCP does not mandate a specific user interaction model.
+      - Protocol semantics alone do not establish successful prompt manipulation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C002
+    statement: >-
+      Current MCP tool guidance calls for server-side input validation and
+      access control and client-side confirmation, visible tool inputs, result
+      validation, and tool-use logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Security Considerations, lines 723-737
+    corroboration: The same page's User Interaction Model states that a human should be able to deny invocations.
+    limitations:
+      - Several client controls are SHOULD-level guidance and can vary by implementation.
+      - These controls do not by themselves prove resistance to adaptive prompt manipulation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C003
+    statement: >-
+      Microsoft Prompt Shields distinguishes direct user-prompt attacks from
+      document attacks in third-party content, can scan user-input and
+      tool-response intervention points, and returns detected and filtered
+      annotations.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-prompt-shields-2026-07-31
+        support: direct
+        exact_locators:
+          - Prompt Shields overview, lines 31-34
+          - Types of input attacks, lines 50-56
+          - Configure Prompt Shields, lines 130-140
+    corroboration: AgentDojo distinguishes injected third-party tool data from the user's task.
+    limitations:
+      - Product-specific fields do not define a universal telemetry schema.
+      - Classifier output is a signal, not proof of causal tool manipulation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C004
+    statement: >-
+      AgentDojo directly demonstrates controlled agentic prompt injections in
+      which untrusted data returned by tools causes attacker-selected malicious
+      tool actions on behalf of the user.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-agentdojo-2406.13352v3
+        support: direct
+        exact_locators:
+          - Abstract, lines 94-98
+          - Introduction, lines 103-114
+          - AgentDojo components and injection tasks, lines 132-159
+          - Evaluation metrics and results, lines 193-222
+    corroboration: CVE-2025-54135 and CVE-2025-53773 document product-specific prompt-injection chains to code execution.
+    limitations:
+      - The evaluation is controlled and does not document production exploitation.
+      - The benchmark is agentic but not MCP-specific.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C006
+    statement: >-
+      CVE-2025-54135 documents an affected Cursor behavior in which indirect
+      prompt injection could create an MCP-sensitive settings file and trigger
+      code execution without user approval; Cursor fixed the approval boundary
+      in version 1.3.9.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: direct
+        exact_locators:
+          - Advisory summary, lines 149-155
+          - Remediation, lines 157-159
+          - Affected and patched versions, lines 141-147
+          - Credits, lines 242-245
+      - source_id: SRC-cve-2025-54135
+        support: corroborating
+        exact_locators:
+          - CNA title, affected record, description, metrics, and reference fields
+          - CISA ADP SSVC Exploitation none field
+    corroboration: The GitHub CNA record and Cursor advisory agree on the mechanism, fix version, and high impact.
+    limitations:
+      - The GHSA lists affected versions through 1.2.1 while the CNA describes versions before 1.3.9.
+      - Neither source establishes production exploitation.
+    conflicts:
+      - The public GHSA and CNA use different affected-range wording; the technique reports both and does not infer intermediate-version status.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C007
+    statement: >-
+      CVE-2025-53773 documents command injection in GitHub Copilot and Visual
+      Studio, and the credited researcher demonstrates prompt injection changing
+      auto-approval configuration before local command execution; Visual Studio
+      2022 17.14.12 remediated the affected range.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-53773
+        support: direct
+        exact_locators:
+          - Microsoft CNA title, affected version range, description, metrics, and patch reference
+          - CISA ADP SSVC Exploitation none field
+      - source_id: SRC-rehberger-cve-2025-53773
+        support: direct
+        exact_locators:
+          - Background Research, lines 15-35
+          - Exploit Chain Explained, lines 36-46
+          - Recommendations and Fix, lines 91-102
+    corroboration: Microsoft assigned the CVE and affected range; the researcher provides the controlled prompt-manipulation chain and disclosure timeline.
+    limitations:
+      - The CVE vector requires local user interaction.
+      - The reviewed sources do not establish production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C008
+    statement: >-
+      No qualifying direct production incident for the complete behavior was
+      identified in the bounded direct-authority corpus reviewed on 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog version 2026.09.01 and exact absence checks for CVE-2025-54135, CVE-2025-53773, CVE-2025-32711, and CVE-2025-6514
+      - source_id: SRC-cve-2025-54135
+        support: corroborating
+        exact_locators:
+          - CISA ADP SSVC Exploitation none field
+      - source_id: SRC-cve-2025-53773
+        support: corroborating
+        exact_locators:
+          - CISA ADP SSVC Exploitation none field
+    corroboration: Selected product records label exploitation as none, and the exact CVE identifiers were absent from the current KEV feed.
+    limitations:
+      - This is a dated corpus-limited absence statement, not a claim that the behavior has never occurred.
+      - KEV is not a complete incident catalog.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence conclusion is derived from recorded direct-authority checks and deliberately bounded to that corpus and date.
+    status: validated
+
+  - id: SAF-T1309-C009
+    statement: >-
+      Progressive least-privilege scopes, separate authorization for dangerous
+      commands, and logged scope-elevation events constrain the impact and
+      improve auditability of privileged tool invocation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - stdio Transport Security mitigation, lines 509-524
+          - Scope Minimization attack, risks, and mitigation, lines 588-646
+    corroboration: MCP Tools separately recommends confirmation and tool-use logging.
+    limitations:
+      - Scope controls reduce authority but do not determine whether prompt content is malicious.
+      - The source does not evaluate these controls against adaptive prompt injection.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C010
+    statement: >-
+      CaMeL demonstrates a design that separates a quarantined model processing
+      untrusted data from privileged tool control and enforces capabilities and
+      policies at tool-call time, while retaining policy, integration,
+      side-channel, and usability limitations.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-camel-2503.18813v2
+        support: direct
+        exact_locators:
+          - Abstract, arXiv abstract lines 15-18
+          - System components, HTML lines 160-190
+          - AgentDojo security evaluation, HTML lines 282-314
+          - Limitations, HTML lines 377-395
+    corroboration: AgentDojo finds tool filtering helpful but incomplete where required and attacker tools overlap.
+    limitations:
+      - CaMeL is a research system, not a universal MCP control.
+      - Its guarantees depend on correct policies and capability integration.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C011
+    statement: >-
+      Correlating a direct or indirect prompt-attack marker with a later high-risk
+      tool call lacking a granted approval in the same session and actor context
+      is a testable behavioral analytic for this technique.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-prompt-shields-2026-07-31
+        support: direct
+        exact_locators:
+          - Annotation fields and intervention points, lines 31-56 and 130-140
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 92-99
+          - Security Considerations, lines 723-737
+      - source_id: SRC-agentdojo-2406.13352v3
+        support: corroborating
+        exact_locators:
+          - Dynamic tool-calling environment and security metrics, lines 132-200
+    corroboration: The sources independently establish attack markers, tool audit requirements, and the attacked event sequence.
+    limitations:
+      - The five-minute window is a synthetic tuning choice, not an externally validated universal threshold.
+      - Correlation does not prove that the prompt caused the tool call.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF combines independently documented telemetry into a conservative behavioral sequence and tests it with synthetic fixtures.
+    status: validated
+
+  - id: SAF-T1309-C012
+    statement: >-
+      Prompt-attack classifiers may produce false positives and false negatives,
+      and AgentDojo found that one prompt-injection detector produced excessive
+      false positives and degraded utility.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-prompt-shields-2026-07-31
+        support: direct
+        exact_locators:
+          - Troubleshooting and false positives, lines 163-179
+      - source_id: SRC-agentdojo-2406.13352v3
+        support: direct
+        exact_locators:
+          - Prompt-injection defense evaluation, lines 242-252
+    corroboration: Both a product document and controlled benchmark warn against treating classifier output as conclusive.
+    limitations:
+      - The findings do not provide a generalizable numeric false-positive rate for this analytic.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1309-C013
+    statement: >-
+      The confidentiality, integrity, and availability consequence of successful
+      prompt-driven tool invocation depends on the delegated authority and side
+      effects of the selected tool, ranging from data disclosure or transactions
+      to host code execution in disclosed vulnerable products.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agentdojo-2406.13352v3
+        support: direct
+        exact_locators:
+          - Task suites and attacker goals, lines 152-183
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: direct
+        exact_locators:
+          - Summary and Impact, lines 149-155
+      - source_id: SRC-cve-2025-53773
+        support: corroborating
+        exact_locators:
+          - Microsoft CNA description and CVSS impact fields
+    corroboration: Independent controlled tasks and two product records show different sensitive effects under different authorities.
+    limitations:
+      - This is a conditional impact synthesis, not a claim that every tool call yields high impact.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF maps the documented tool-specific consequences to conditional impact dimensions.
+    status: validated
+
+  - id: SAF-T1309-C014
+    statement: >-
+      MITRE ATT&CK T1548 is an analogous mapping only where prompt manipulation
+      circumvents a mechanism intended to control privilege elevation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-attack-t1548
+        support: direct
+        exact_locators:
+          - Definition, lines 16-29
+          - Tactic and version, lines 29-47
+    corroboration: CVE-2025-53773 demonstrates manipulation of an auto-approval setting before command execution.
+    limitations:
+      - T1548 does not describe language-model control flow, prompt injection, or MCP.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is deliberately analogous and limited to privilege-control circumvention.
+    status: validated
+
+  - id: SAF-T1309-C015
+    statement: >-
+      Direct MCP state-handle abuse, collaborator-driven MCP configuration
+      substitution, and authorization-URL command injection are adjacent
+      mechanisms because they do not require model-mediated prompt manipulation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - State Handle Hijacking, lines 336-355
+      - source_id: SRC-cursor-ghsa-24mc-g4xr-4395
+        support: direct
+        exact_locators:
+          - Summary, Impact, and Remediation, lines 151-160
+      - source_id: SRC-jfsa-2025-6514
+        support: direct
+        exact_locators:
+          - Summary, affected versions, and description, lines 11-34
+    corroboration: Each source provides an explicit non-prompt initiating mechanism.
+    limitations:
+      - Real SAF neighbor IDs must be reconciled mechanically after freeze without revising this evidence boundary.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF compares independently documented initiating mechanisms to the technique contract.
+    status: validated

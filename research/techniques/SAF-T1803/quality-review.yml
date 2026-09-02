@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1803
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1803
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records the neutral inputs, whitelist-only direct authorities, no prior-artifact access, isolated validation, and pre-integration freeze.
+  contract_and_scope:
+    status: passed
+    notes: Scope is limited to broad logical export or equivalent bulk read across the MCP-to-database intent boundary and distinguishes query, backup-artifact, restore, credential, and exfiltration neighbors.
+  technical_accuracy:
+    status: passed
+    notes: MCP semantics, PostgreSQL dump behavior, incident details, CVE mechanism, version conflicts, and limitations were checked against directly reviewed authorities.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims use full IDs and exact locators; every hidden trace resolves to supporting cited sources.
+  source_or_omit:
+    status: passed
+    notes: Every substantive Markdown unit is traced or locally linked; five excluded propositions remain absent from publishable prose.
+  evidence_classification:
+    status: passed
+    notes: Observed is supported by the Anthropic primary incident report; vulnerability demonstrations and non-agentic analogies do not independently raise the label.
+  research_saturation:
+    status: passed
+    notes: Five research passes plus two final authority-only no-material-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Eight candidate records are classified; four highest-value examples are selected and exploitation/remediation limits are explicit.
+  detection_quality:
+    status: passed
+    notes: The experimental cross-layer analytic defines telemetry, threshold, approval and allowlist filters, false positives, blind spots, tuning, and ten deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address input validation, authorization, least privilege, human confirmation, output handling, sandboxing, logging, and dump-artifact protection.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0009 and ATT&CK T1213.006 are reconciled; synthetic SAF neighbors and mitigation IDs are explicitly deferred mechanical joins.
+  publication_rights:
+    status: passed
+    notes: All cited sources use factual paraphrase or reference-only treatment; no quotations, copied code, queries, diagrams, datasets, or logos are published.
+  safe_publication:
+    status: passed
+    notes: The example and tests use inert synthetic names and omit exploit payloads, credentials, destructive queries, and live endpoints.
+
+validation:
+  commands:
+    - command: python3 tests/SAF-T1803/test_detection_rule.py
+      result: passed
+      details: PASS 10 cases; 3 expected alerts and 7 expected non-alerts.
+    - command: python3 scripts/validate-technique-research.py SAF-T1803
+      result: passed
+      details: Strict isolated synthetic mock repository; no draft flag.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1803/test_detection_rule.py
+    result: PASS 10 cases; positive, negative, exact-threshold, below-threshold, missing-field, normalization, wrong-method, approved-backup, and allowlisted-backup cases matched expectations.
+    waiver: null
+
+unresolved: []
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1803/validation/detection.txt
+  strict_validator_transcript: research/techniques/SAF-T1803/validation/strict-validator.txt
+  framework_alignment: Two canonical neighbors, six canonical mitigations, and direct ATT&CK T1213.006 are joined after freeze.
+  status: passed

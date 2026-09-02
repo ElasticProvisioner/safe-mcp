@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T1106
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1106
+  neutral_name: Autonomous Loop Exploit
+allowed_inputs:
+- Seed metadata SAF-T1106, Autonomous Loop Exploit, ATK-TA0002 / Execution.
+- Generic author-saf-technique skill and its routed methodology references.
+- techniques/TEMPLATE.md, blank packet schemas, generic research README, current validator,
+  and minimal synthetic IDs.
+- Independently opened direct authorities identified through domain-restricted discovery.
+prohibited_inputs:
+- Existing techniques/SAF-T1106/README.md.
+- Existing research/techniques/SAF-T1106/ packet.
+- Existing techniques/SAF-T1106/detection-rule.yml and tests.
+- Shared source, framework, or alignment registries before freeze.
+- SAF or SAFE sites, repositories, prior bundles, git history, diffs, blame, issues,
+  or pull requests.
+- Other technique prose or methodology examples naming technique targets.
+- Previous conversation content or inherited task context.
+- General unrestricted web search or GitHub search and discovery.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification MCP security best practices tool calls
+    human in the loop authorization
+  - site:nist.gov AI agents autonomous actions resource exhaustion loop security
+  - site:arxiv.org autonomous agents infinite loop denial of service tool calls adversarial
+  - site:nvd.nist.gov/vuln/detail AI agent infinite loop denial of service autonomous
+    tool calls
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog AI agent denial service
+    infinite loop
+  - site:aws.amazon.com/security/security-bulletins agent loop denial of service AI
+  - site:cloud.google.com/support/bulletins agent loop denial of service AI
+  - site:status.openai.com AI agent infinite loop repeated tool calls incident resource
+    exhaustion
+  - site:microsoft.com/en-us/msrc/blog AI agent loop incident resource exhaustion
+  - site:nvd.nist.gov/vuln/detail "agent" "infinite loop" LLM
+  - site:nvd.nist.gov/vuln/detail "unbounded" "agent" "tool" denial of service
+  - site:nvd.nist.gov/vuln/detail LangChain agent denial of service loop
+  - site:nvd.nist.gov/vuln/detail AutoGPT denial of service loop
+  - site:modelcontextprotocol.io/specification/2026-07-28 tools specification tool
+    call user confirmation security
+  - site:attack.mitre.org/techniques resource hijacking cloud compute abuse denial
+    of service
+  - site:arxiv.org agentic feedback loop unbounded tool calls budget exhaustion detection
+    2026
+  - site:learn.microsoft.com agent loop detection tool-call budget resource exhaustion
+  - '"repeated tool calls" "no progress" agent loop security site:arxiv.org'
+  - '"autonomous agent" "tool-call" "resource amplification" loop site:arxiv.org'
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-rc-20260728
+  - SRC-zhou-2026
+  - SRC-li-otora-2026
+  - SRC-hou-ial-2026
+  - SRC-wu-loopharness-2026
+  - SRC-park-progress-2026
+  - SRC-ms-agent-responsibility
+  - SRC-ms-unbounded-dos
+  - SRC-ms-resource-gov
+  - SRC-ms-agentic-rag
+  - SRC-ms-agent-looping
+  - SRC-mitre-t1496
+  - SRC-mitre-t1499-003
+  - SRC-nvd-cve-2025-32437
+  - SRC-nvd-cve-2024-12704
+  - SRC-nvd-cve-2024-58340
+  - SRC-nvd-cve-2024-2965
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile synthetic neighbor IDs only after freeze against the shared framework
+  model.
+- Add shared registry entries mechanically without rewriting frozen prose.
+- Preserve FREEZE.sha256 and reject integration if any frozen content changes without
+  a new clean-room review.
+attestation: The fresh author did not access prohibited SAF artifacts before freeze.
+  Discovery was direct-authority-only and no GitHub URL was opened or used.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1106/mock
+  command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1106/pydeps /Users/fkautz/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3
+    scripts/validate-technique-research.py SAF-T1106
+  strict_mode: default_without_draft_flag
+  result: PASS SAF-T1106
+deferred_joins:
+- Shared source-manifest merge and stable source-ID collision reconciliation.
+- Shared framework neighbor-ID reconciliation.
+- Shared alignment-ledger merge.
+- Replacement of the synthetic nonzero history SHA after integration.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    original_SAF-T1001: SAF-T1102
+    original_SAF-T1002: SAF-T2102
+  source_id_mapping:
+    SRC-mcp-tools-20260728: SRC-mcp-tools-2026-07-28
+    SRC-mcp-release-20260728: SRC-mcp-release-2026-07-28
+  new_shared_source_records:
+  - SRC-mcp-rc-20260728
+  - SRC-zhou-2026
+  - SRC-li-otora-2026
+  - SRC-hou-ial-2026
+  - SRC-wu-loopharness-2026
+  - SRC-park-progress-2026
+  - SRC-ms-agent-responsibility
+  - SRC-ms-unbounded-dos
+  - SRC-ms-resource-gov
+  - SRC-ms-agentic-rag
+  - SRC-ms-agent-looping
+  - SRC-mitre-t1496
+  - SRC-mitre-t1499-003
+  - SRC-nvd-cve-2025-32437
+  - SRC-nvd-cve-2024-12704
+  - SRC-nvd-cve-2024-58340
+  - SRC-nvd-cve-2024-2965
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-70
+  - SAF-M-73
+  - SAF-M-74
+  status: integrated_and_repository_validated

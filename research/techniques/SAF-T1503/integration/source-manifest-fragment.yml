@@ -1,0 +1,340 @@
+version: 1
+sources:
+  - id: SRC-mcp-transports-2025-11-25
+    title: Transports - Model Context Protocol
+    authors: [Model Context Protocol maintainers and contributors]
+    publisher: Model Context Protocol
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the versioned specification.
+    review_notes: Verified standard transports and stdio subprocess semantics.
+    locators: [lines 68-87, lines 92-108]
+    review_status: opened_reviewed
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Public authoritative page was directly reviewed; the clean-room bundle intentionally contains no source-acquisition corpus.
+      review_evidence: {method: rendered page and exact line locators recorded}
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Security Best Practices - Model Context Protocol
+    authors: [Model Context Protocol maintainers and contributors]
+    publisher: Model Context Protocol
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of versioned first-party security guidance.
+    review_notes: Verified local MCP server compromise risks, privileges, consent, sandboxing, and resource restrictions.
+    locators: [Local MCP Server Compromise lines 367-425, OAuth Authorization URL Validation lines 429-448]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mcp-logging-2025-11-25
+    title: Logging - Model Context Protocol
+    authors: [Model Context Protocol maintainers and contributors]
+    publisher: Model Context Protocol
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/logging
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the versioned specification.
+    review_notes: Consulted for possible detection telemetry; it defines server-to-client logs but not process-environment access telemetry.
+    locators: [Protocol Messages lines 110-132]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-node-process-26.8.1
+    title: Process - Node.js v26.8.1 Documentation
+    authors: [Node.js Documentation Team]
+    publisher: OpenJS Foundation Node.js project
+    version_or_date: "26.8.1"
+    source_class: implementation_artifact
+    official_url: https://nodejs.org/api/process.html#processenv
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party API documentation.
+    review_notes: Verified process.env access, mutation, deletion, and worker-copy semantics.
+    locators: [process.env lines 1259-1332]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-node-child-process-26.8.1
+    title: Child process - Node.js v26.8.1 Documentation
+    authors: [Node.js Documentation Team]
+    publisher: OpenJS Foundation Node.js project
+    version_or_date: "26.8.1"
+    source_class: implementation_artifact
+    official_url: https://nodejs.org/api/child_process.html#child_processspawncommand-args-options
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party API documentation.
+    review_notes: Verified spawn env option and process.env default.
+    locators: [child_process.spawn lines 553-569]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-python-os-3.14.7
+    title: os - Miscellaneous operating system interfaces
+    authors: [Python Documentation Team]
+    publisher: Python Software Foundation
+    version_or_date: "3.14.7"
+    source_class: implementation_artifact
+    official_url: https://docs.python.org/3/library/os.html#os.environ
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party API documentation.
+    review_notes: Verified os.environ and getenv provide direct access to the process environment.
+    locators: [os.environ lines 89-105, os.getenv lines 177-181, os.putenv lines 334-343]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-python-subprocess-3.14.7
+    title: subprocess - Subprocess management
+    authors: [Python Documentation Team]
+    publisher: Python Software Foundation
+    version_or_date: "3.14.7"
+    source_class: implementation_artifact
+    official_url: https://docs.python.org/3/library/subprocess.html#subprocess.Popen
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party API documentation.
+    review_notes: Consulted for cross-runtime subprocess behavior; omitted because the Node and Python os sources were sufficient for publishable claims.
+    locators: [Popen constructor and env parameter]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-claude-code-mcp-2026-09-01
+    title: Connect Claude Code to tools via MCP
+    authors: [Anthropic Claude Code Documentation Team]
+    publisher: Anthropic
+    version_or_date: "reviewed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://code.claude.com/docs/en/mcp
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of current first-party product documentation.
+    review_notes: Verified stdio env flags, config expansion, variable passing, and scope-specific credential-variable removal for helpers.
+    locators: [lines 251-254, lines 542-554, lines 682-708, lines 991-1007]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-vscode-mcp-2026-08-26
+    title: Add and manage MCP servers in VS Code
+    authors: [Microsoft Visual Studio Code Documentation Team]
+    publisher: Microsoft
+    version_or_date: "2026-08-26"
+    source_class: implementation_artifact
+    official_url: https://code.visualstudio.com/docs/agent-customization/mcp-servers
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of current first-party product documentation.
+    review_notes: Verified local server warning, sandbox controls, platform limitation, trust, and output-log access.
+    locators: [lines 223-268, lines 315-346, lines 373-401]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-codecov-bash-uploader-2021
+    title: Bash Uploader Security Update
+    authors: [Jerrod Engelberg, Codecov Incident Response Team]
+    publisher: Codecov
+    version_or_date: "2021-04-15, updated 2021-04-29"
+    source_class: incident_report
+    official_url: https://about.codecov.io/security-update/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the first-party incident update.
+    review_notes: Verified malicious environment enumeration, exfiltration, affected CI contexts, IOCs, evidence limits, and response guidance.
+    locators: [lines 35-45, lines 72-96, lines 102-104, lines 119-124, lines 146-179]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-circleci-alert-2023
+    title: "CircleCI security alert: Rotate any secrets stored in CircleCI"
+    authors: [Rob Zuber, CircleCI Security Team]
+    publisher: CircleCI
+    version_or_date: "2023-03-03 update"
+    source_class: incident_report
+    official_url: https://circleci.com/blog/january-4-2023-security-alert/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the first-party alert.
+    review_notes: Consulted for initial secret-rotation and environment-variable guidance; the full incident report was used instead.
+    locators: [lines 20-42, lines 69-88]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-circleci-incident-2023
+    title: CircleCI Jan 4, 2023 security incident report
+    authors: [Rob Zuber, CircleCI Security Team]
+    publisher: CircleCI
+    version_or_date: "2023-01-12"
+    source_class: incident_report
+    official_url: https://circleci.com/blog/jan-4-2023-incident-report/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the first-party incident report.
+    review_notes: Verified database/store exfiltration of customer environment variables and explicit limits on known follow-on use.
+    locators: [lines 20-68, lines 91-107, lines 139-159]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-jfrog-cve-2025-6514
+    title: "Critical RCE Vulnerability in mcp-remote: CVE-2025-6514 Threatens LLM Clients"
+    authors: [Or Peles, JFrog Security Research Team]
+    publisher: JFrog
+    version_or_date: "2025-07-09"
+    source_class: research
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the original research disclosure.
+    review_notes: Verified affected and fixed versions, prerequisites, demonstration scope, remediation, maintainer credit, and lack of environment-scraping evidence.
+    locators: [lines 139-174, lines 188-220, lines 342-345]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-oligo-cve-2025-49596
+    title: Critical RCE Vulnerability in Anthropic MCP Inspector - CVE-2025-49596
+    authors: [Avi Lumelsky, Oligo Security Research]
+    publisher: Oligo Security
+    version_or_date: "2025-06-27"
+    source_class: research
+    official_url: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the original research disclosure.
+    review_notes: Verified RCE demonstration, affected range, fixed version, remediation, and disclosure timeline; the source supplied the exact GitHub advisory URL later reviewed.
+    locators: [lines 4-33, lines 110-167, references lines 172-182]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-ghsa-7f8r-222p-6f5g
+    title: Inspector proxy server vulnerabilities
+    authors: [petery-ant, Rémy Marot]
+    publisher: modelcontextprotocol/inspector maintainers via GitHub Security Advisories
+    version_or_date: "2025-06-13"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the exact maintainer advisory only after Oligo's non-GitHub disclosure supplied its canonical URL.
+    review_notes: Verified package, affected and patched versions, description, CVE, publisher handle, and Rémy Marot credit. Discovery provenance is SRC-oligo-cve-2025-49596 lines 172-178.
+    locators: [lines 133-160, lines 220-226]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-aikido-shai-hulud-2025
+    title: S1ngularity/nx attackers strike again
+    authors: [Charlie Eriksen]
+    publisher: Aikido Security
+    version_or_date: "2025-09-19 update"
+    source_class: research
+    official_url: https://www.aikido.dev/blog/s1ngularity-nx-attackers-strike-again
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the original researcher report reached from MITRE ATT&CK's cited procedure source.
+    review_notes: Verified observed process.env scanning, environment-variable dumps, secret exfiltration, propagation, affected packages, and author attribution.
+    locators: [lines 1-20, lines 27-61, remediation lines 253-265]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mitre-attack-t1552.001-v1.3
+    title: "Unsecured Credentials: Credentials In Files, T1552.001"
+    authors:
+      - MITRE ATT&CK Team
+      - Jay Chen
+      - Microsoft Threat Intelligence Center
+      - Rory McCune
+      - Vishwas Manral
+      - Yossi Weizman
+    publisher: MITRE ATT&CK
+    version_or_date: "v1.3, modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1552/001/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the current ATT&CK technique.
+    review_notes: Verified formal file-centered definition, tactic, contributors, version, Shai-Hulud process.env procedure, and detection strategy.
+    locators: [lines 16-50, lines 88-113]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mitre-attack-t1082-current
+    title: System Information Discovery, T1082
+    authors: [MITRE ATT&CK Team and listed contributors]
+    publisher: MITRE ATT&CK
+    version_or_date: "current page reviewed 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1082/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the current ATT&CK technique.
+    review_notes: Consulted as a contrary mapping; rejected because generic system-information discovery does not capture the credential-collection objective.
+    locators: [definition, metadata, procedure examples, detection strategy]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mitre-attack-t1005-current
+    title: Data from Local System, T1005
+    authors: [MITRE ATT&CK Team and listed contributors]
+    publisher: MITRE ATT&CK
+    version_or_date: "current page reviewed 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1005/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the current ATT&CK technique.
+    review_notes: Consulted as a contrary mapping; rejected because it is broader collection from local systems and does not distinguish process-environment access.
+    locators: [definition, metadata, procedure examples, detection strategy]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-sysmon-15.21
+    title: Sysmon v15.21
+    authors: [Mark Russinovich, Thomas Garnier]
+    publisher: Microsoft Sysinternals
+    version_or_date: "2026-06-17"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party documentation.
+    review_notes: Verified process creation, parent command line, ProcessGuid correlation, optional process-attributed network events, filter semantics, and authors.
+    locators: [lines 24-56, lines 120-154, lines 287-362]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-windows-command-line-audit
+    title: Command line process auditing
+    authors: [Justin Turner]
+    publisher: Microsoft
+    version_or_date: "current page reviewed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/command-line-process-auditing
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party documentation.
+    review_notes: Verified Event 4688 command-line collection, required policies, defaults, author, and sensitive-data warning.
+    locators: [lines 24-51, lines 52-84]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-rhel9-audit
+    title: "Red Hat Enterprise Linux 9 Security Hardening, Chapter 12: Auditing the system"
+    authors: [Red Hat Documentation Team]
+    publisher: Red Hat
+    version_or_date: "RHEL 9 current documentation reviewed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/auditing-the-system_security-hardening
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party documentation.
+    review_notes: Verified Audit log structure, PPID/PID/executable fields, PROCTITLE encoding, execve rules, and EXECVE argument records.
+    locators: [lines 394-529, lines 531-575, lines 701-726]
+    review_status: opened_reviewed
+    archive: *remote_archive

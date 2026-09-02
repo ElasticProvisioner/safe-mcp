@@ -1,0 +1,92 @@
+version: 1
+technique_id: SAF-T1705
+name: Cross-Agent Instruction Injection
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Cause an agent to transmit attacker-authored instructions through
+  an inter-agent communication path so a receiving agent changes its behavior or invokes
+  capabilities under the receiver's trust and authority.
+scope:
+  security_boundary: The boundary between an originating agent or its attacker-influenced
+    context and a receiving agent that treats peer output as task content, evidence,
+    or instructions.
+  in_scope:
+  - Attacker-controlled instructions are embedded in one agent's output or message
+    and consumed by another agent.
+  - The receiving agent follows or operationalizes those instructions under a distinct
+    execution context, identity, privilege set, or tool surface.
+  - The immediate outcome is cross-agent influence or capability use; later collection,
+    exfiltration, persistence, and impact are follow-on behaviors.
+  out_of_scope:
+  - Direct prompt injection delivered by a human or external document to the same
+    agent without an inter-agent hop.
+  - Benign delegation, ordinary peer-agent coordination, or authenticated task handoff
+    that preserves instruction provenance and authority.
+  - Tool-output injection that never crosses from one agent context into another agent
+    context.
+  - Downstream credential theft, exfiltration, destructive action, or persistence
+    considered independently of the cross-agent instruction transfer.
+  affected_components:
+  - Multi-agent orchestrator
+  - Originating agent
+  - Inter-agent message or shared workspace
+  - Receiving agent
+  - Receiver-side tools and external services
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection lacks the defining hop in which one agent carries
+    attacker-influenced content across a trust boundary to another agent.
+- technique_id: SAF-T1701
+  distinction: Cross-Tool Contamination is bounded to untrusted tool output reaching
+    one agent unless that agent relays the instruction to a distinct agent context.
+- technique_id: SAF-T1702
+  distinction: Shared-Memory Poisoning requires storage and later retrieval across
+    a session, principal, tenant, or agent boundary; SAF-T1705 requires an inter-agent
+    instruction hop but not persistence.
+required_evidence:
+- Establish how multi-agent systems exchange task messages or artifacts across agent
+  contexts.
+- Establish that attacker-controlled instructions can propagate through an agent-to-agent
+  channel and change a receiving agent's behavior.
+- Establish prerequisites and distinguish direct production observation, disclosed
+  vulnerabilities, controlled demonstrations, and component evidence.
+- Search independently for production incidents, advisories, CVEs, demonstrations,
+  exploitation status, defenses, detection limits, and contrary results.
+- Support detection telemetry and response choices with authoritative sources or identify
+  a justified feasibility waiver.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Inter-agent message events with timestamp, run and conversation identifiers, sender
+    and receiver agent identities, message content or content hash, provenance labels,
+    and correlation or parent message identifier.
+  - Receiver action and tool-call events with timestamp, agent identity, tool name,
+    arguments or argument hash, authorization decision, approval state, and causal
+    message identifier.
+  - Policy decision events with instruction-source trust label, effective authority,
+    allow or deny outcome, and policy version.
+safe_example_constraints:
+- Use inert domains, placeholder credentials, and non-destructive operations.
+- Do not reproduce jailbreak strings, executable malware, live secrets, or instructions
+  that bypass real controls.
+- Represent malicious content with a labeled placeholder while preserving only the
+  event sequence needed for validation.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE linkage to
+  a validated claim and directly reviewed authority or a declared local artifact.
+- Every unsupported, conflicting, blocked, rights-restricted, or out-of-scope lead
+  is omitted and recorded in the exclusion ledger.
+- All five research passes and two consecutive authority-only no-material-change saturation
+  passes are recorded.
+- Two to four highest-impact in-scope examples are selected when supported, or an
+  explicit evidence gap is preserved.
+- Detection tests cover positive, negative, boundary, malformed, and legitimate-lookalike
+  cases and pass deterministically.
+- Publication-rights, framework alignment, safe-publication, and clean-room integrity
+  gates pass in an isolated synthetic repository.

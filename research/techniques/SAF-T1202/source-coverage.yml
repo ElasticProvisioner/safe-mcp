@@ -1,0 +1,193 @@
+version: 1
+technique_id: SAF-T1202
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 refresh tokens authorization security"
+        - "site:rfc-editor.org OAuth refresh token replay rotation revocation DPoP"
+      material_changes:
+        - Established the MCP authorization boundary, refresh-token handling, and token-theft requirements.
+        - Established replay consequences, rotation, sender constraint, expiration, audience restriction, and revocation semantics.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "OAuth stolen token incident site:cloud.google.com/blog/topics/threat-intelligence"
+        - "OAuth stolen user token incident site:github.blog"
+        - "OAuth refresh token account deactivation site:nvd.nist.gov/vuln/detail"
+        - "MCP refresh token client authentication site:nvd.nist.gov/vuln/detail"
+      material_changes:
+        - Added one MCP-specific disclosed vulnerability, one direct non-MCP lifecycle vulnerability, and two adjacent production incidents.
+        - Recorded patch or revocation status and bounded exploitation status for selected candidates.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "OAuth refresh token injection site:usenix.org/conference"
+        - "OAuth refresh token security empirical site:dl.acm.org OR site:ieeexplore.ieee.org"
+      material_changes:
+        - Added a peer-reviewed refresh-token injection demonstration and its prerequisites.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "OAuth refresh token detection site:attack.mitre.org"
+        - "token theft anomalous token detection site:learn.microsoft.com/security"
+        - "OAuth stolen refresh token mitigation site:cloud.google.com/architecture"
+      material_changes:
+        - Established telemetry, high-confidence analytic branches, incident response, and false-positive constraints.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "CVE-2026-53512 exploitation status site:nvd.nist.gov"
+        - "CVE-2026-9571 fixed versions exploitation status site:nvd.nist.gov"
+        - "OAuth refresh token rotation false positive legitimate retry site:rfc-editor.org"
+        - "token replay detection limitations site:learn.microsoft.com"
+      material_changes:
+        - Added the standards-backed blind spot where an attacker controls the latest rotated token and prevents legitimate reuse.
+        - Kept exploitation claims bounded where reviewed authorities did not establish production exploitation.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "MCP refresh token compromise production incident advisory"
+        - "OAuth refresh token revocation bypass 2026 advisory"
+        - "stolen refresh token production incident postmortem"
+        - "refresh token reuse detection limitation rotation"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "offline access token persistence MCP incident"
+        - "OAuth grant survives account deactivation vulnerability"
+        - "refresh credential replay incident"
+        - "token family replay false positive"
+      material_changes: []
+  rationale: >-
+    Direct protocol authorities cover the defining mechanism and defenses; first-party
+    incident reports cover observed token abuse; a vendor advisory and NVD record cover
+    disclosed vulnerable conditions; peer-reviewed research covers demonstration; and
+    ATT&CK plus identity-provider guidance cover detection. Two later direct-authority-only
+    passes produced no material change after the rotation blind spot was incorporated.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-ghsa-pw9m-5jxm-xr6h
+    - SRC-nvd-cve-2026-9571
+    - SRC-usenix-s3kvetter-2018
+    - SRC-gtig-drift-2025
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-pw9m-5jxm-xr6h
+      identifier: GHSA-pw9m-5jxm-xr6h / CVE-2026-53512
+      relationship: direct_vulnerability
+      exploitation_status: unknown; the reviewed advisory does not report production exploitation
+      impact: A valid refresh token and client identifier could mint access and rotated refresh tokens in affected MCP and legacy OIDC plugins.
+      remediation: Upgrade Better Auth to 1.6.11 or later and revoke exposed token families.
+      selected: true
+      rationale: This is the strongest MCP-specific disclosed instance of the defining renewal mechanism.
+    - source_id: SRC-nvd-cve-2026-9571
+      identifier: CVE-2026-9571
+      relationship: direct_vulnerability
+      exploitation_status: none recorded in the reviewed CISA SSVC entry
+      impact: A deactivated account retained a usable refresh token capable of minting fresh access tokens.
+      remediation: Use Mattermost 10.11.20, 11.6.5, 11.7.3, 11.8.0, or a later fixed release.
+      selected: true
+      rationale: It directly demonstrates persistence caused by incomplete identity-lifecycle revocation.
+    - source_id: SRC-usenix-s3kvetter-2018
+      identifier: Refresh-token injection demonstration
+      relationship: direct_demonstration
+      exploitation_status: demonstrated in a controlled research setting
+      impact: A substituted refresh token caused automatic access-token renewal under the attacker's account after expiry.
+      remediation: Bind refresh tokens to the intended client and account context and protect the renewal path.
+      selected: true
+      rationale: It is the strongest peer-reviewed controlled demonstration of renewal-based persistence.
+    - source_id: SRC-gtig-drift-2025
+      identifier: UNC6395 Salesloft Drift compromise
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed OAuth-token abuse; refresh-token exchange not established
+      impact: Compromised integration tokens enabled data access and exfiltration from Salesforce and Google Workspace.
+      remediation: Salesloft and responders revoked active access and refresh tokens and disconnected the Drift integration.
+      selected: true
+      rationale: It is the highest-impact recent production incident, retained with an explicit limitation on the defining renewal step.
+    - source_id: SRC-github-oauth-incident-2022
+      identifier: GitHub stolen OAuth user-token campaign
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed OAuth-token abuse; refresh-token exchange not established
+      impact: Attackers enumerated organizations and cloned private repositories from dozens of organizations.
+      remediation: GitHub requested revocation of affected application tokens and notified affected users and organizations.
+      selected: false
+      rationale: Credible but redundant with the newer production incident and does not establish refresh-token renewal.
+
+sources_consulted:
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  - SRC-github-oauth-incident-2022
+  - SRC-google-oauth-token-mitigation
+  - SRC-gtig-drift-2025
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mitre-t1550-001
+  - SRC-mitre-ta0003
+  - SRC-ms-app-consent-playbook
+  - SRC-ms-entra-risk-detections-2026
+  - SRC-ms-token-tactics-2022
+  - SRC-nvd-cve-2026-9571
+  - SRC-rfc10017
+  - SRC-rfc7009
+  - SRC-rfc9449
+  - SRC-rfc9700
+  - SRC-salesloft-drift-2026
+  - SRC-usenix-s3kvetter-2018
+sources_cited:
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  - SRC-github-oauth-incident-2022
+  - SRC-google-oauth-token-mitigation
+  - SRC-gtig-drift-2025
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mitre-t1550-001
+  - SRC-mitre-ta0003
+  - SRC-ms-app-consent-playbook
+  - SRC-ms-entra-risk-detections-2026
+  - SRC-ms-token-tactics-2022
+  - SRC-nvd-cve-2026-9571
+  - SRC-rfc10017
+  - SRC-rfc7009
+  - SRC-rfc9449
+  - SRC-rfc9700
+  - SRC-salesloft-drift-2026
+  - SRC-usenix-s3kvetter-2018
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: The NVD record for CVE-2026-9571 displays different NIST and CNA CVSS 3.1 scores.
+    resolution: The technique omits severity scoring and uses only the shared vulnerability description and fixed versions.
+  - issue: Production incident sources establish stolen OAuth-token use but do not identify refresh-token exchange.
+    resolution: Those incidents are explicitly classified as adjacent and do not support the defining renewal claim.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1202-C004
+    - SAF-T1202-C005
+    - SAF-T1202-C006
+    - SAF-T1202-C010
+    - SAF-T1202-C011
+  rationale: >-
+    Normative MCP and OAuth sources establish the mechanism, and a direct MCP
+    vulnerability plus controlled research demonstrate key components. No reviewed
+    production source established the complete end-to-end MCP behavior, so the
+    technique remains Research-Derived rather than Observed or Demonstrated overall.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

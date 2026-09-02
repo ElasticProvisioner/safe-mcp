@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1502
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records no inherited context or prohibited access; exact GitHub advisories have CVE provenance; integration remains mechanical.
+  contract_and_scope:
+    status: passed
+    notes: Contract bounds ordinary credential-file reads and excludes delivery, protected stores, input capture, generic collection, credential use, and exfiltration.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP specifications, a primary incident report, official CVE records, maintainer advisories, cloud documentation, and OS telemetry sources support the mechanism and conditions.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims carry exact locators, support relationships, limitations, conflicts, inference flags, and source joins.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has hidden SAF-TRACE or a declared local link; four excluded propositions have prohibited-text checks and excluded status.
+  evidence_classification:
+    status: passed
+    notes: Observed is supported by the Anthropic Threat Intelligence team's production incident report; CVEs and component facts do not independently raise the label.
+  research_saturation:
+    status: passed
+    notes: All five passes and two final no-change follow-ups are recorded with direct-authority-only queries.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Four candidates were classified; one direct production incident and two direct vulnerabilities were selected, and the Inspector RCE was rejected as only enabling.
+  detection_quality:
+    status: passed
+    notes: Nine deterministic cases cover positives, negatives, 300/301-second boundaries, normalization, process mismatch, expected maintenance, missing timestamp, and failed access.
+  mitigation_quality:
+    status: passed
+    notes: Controls address filesystem reach, sandboxing, approval, access control, patching, identity design, logging, and local tuning with limitations.
+  framework_alignment:
+    status: passed
+    notes: ATT&CK mappings are reconciled; the three synthetic neighbor roles map post-freeze to SAF-T1505, SAF-T1911, and SAF-T1003, with seven canonical mitigation joins and no unresolved high-severity issue.
+  publication_rights:
+    status: passed
+    notes: All cited sources have paraphrase-only rights records, named attribution, no protected expression, and no permission dependency.
+  safe_publication:
+    status: passed
+    notes: The example and tests are inert; no live secret, traversal sequence, symlink recipe, credential-retrieval command, exploit payload, or destructive instruction is published.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1502
+      result: passed
+      context: Strict isolated synthetic mock at /private/tmp/saf-all-cleanroom/SAF-T1502-retry/mock.
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1502
+      result: passed
+      context: Canonical repository after post-freeze reconciliation.
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1502/test_detection_rule.py
+    result: PASS SAF-T1502 detection - 9 cases (3 positive, 6 negative).
+    waiver: null
+
+unresolved: []

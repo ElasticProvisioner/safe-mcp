@@ -1,0 +1,463 @@
+version: 1
+technique_id: SAF-T1803
+claims:
+  - id: SAF-T1803-C001
+    statement: >-
+      MCP servers can expose model-controlled tools for database interaction;
+      tools/call carries a tool name and arguments, and the specification recommends
+      human confirmation, access controls, rate limits, output sanitization, and audit logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Lines 86-99, Tools and User Interaction Model
+          - Lines 181-212, Calling Tools
+          - Lines 301-318, Tool data type and untrusted annotations
+          - Lines 725-737, Security Considerations
+    corroboration: MCP security guidance separately requires consent and constrained local-server privileges.
+    limitations:
+      - The protocol does not define a database-dump tool or mandate a uniform audit schema.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C002
+    statement: >-
+      PostgreSQL pg_dump creates a logical export of one database in script or archive
+      formats and can include table data, schema, large objects, and parallel workers;
+      its effective coverage is constrained by the connected role and row-security privileges.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-postgresql-pgdump-18
+        support: direct
+        exact_locators:
+          - pg_dump Description, lines 20-36
+          - Options --data-only, --file, --format, and --jobs, lines 46-125
+          - Option --enable-row-security, lines 233-235
+    corroboration: MITRE ATT&CK independently treats database collection as a collection behavior.
+    limitations:
+      - The documentation describes authorized utility behavior, not malicious MCP use.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C003
+    statement: >-
+      Anthropic's Threat Intelligence team documented a 2025 production campaign in
+      which a threat actor used Claude Code with MCP-based tooling to conduct live
+      intrusions and, in a successful compromise, autonomously mapped a database,
+      extracted account data and password hashes, downloaded complete results, and
+      processed them for intelligence value.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Pages 2-3, Executive summary
+          - Page 5, Operational infrastructure
+          - Pages 10-11, Phase 5 database extraction operation
+          - Page 11, Technical sophistication and MCP servers
+    corroboration: MITRE ATT&CK T1213.006 lists the campaign as a database-collection procedure example.
+    limitations:
+      - The report does not identify the database product, exact MCP tool name, query text, or extracted byte count.
+      - The report covers only Anthropic's visibility into Claude usage and reports model hallucination as an operational limitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C004
+    statement: >-
+      CVE-2026-33980 documents KQL injection in three Azure Data Explorer MCP
+      Server metadata tools, allowing an attacker or prompt-injected agent to execute
+      arbitrary database queries through tools that clients may treat as safer than the raw-query tool.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-33980
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, metrics, references, and CISA ADP enrichment
+      - source_id: SRC-ghsa-vphc-468g-8rfp
+        support: direct
+        exact_locators:
+          - Summary and Details, lines 130-179
+          - PoC and Severity, lines 180-272
+    corroboration: The maintainer patch adds allowlist validation and tests for the documented injection forms.
+    limitations:
+      - The public demonstration retrieves selected data but does not demonstrate a complete database dump.
+      - Exploitation is PoC according to CISA enrichment; no production exploitation was identified.
+    conflicts:
+      - The advisory and CNA record disagree about affected versions.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C005
+    statement: >-
+      CVE-2026-33980 remediation is available as commit 0abe0ee, which adds strict
+      identifier validation and 24 tests, but the public advisory lists no patched
+      release and conflicts with the CNA record about the affected range; PyPI still
+      lists 1.1.0 as the newest published release.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-33980
+        support: direct
+        exact_locators:
+          - CNA affected array and description
+      - source_id: SRC-ghsa-vphc-468g-8rfp
+        support: direct
+        exact_locators:
+          - Affected and Patched versions, lines 136-146
+      - source_id: SRC-adx-patch-0abe0ee
+        support: direct
+        exact_locators:
+          - Commit summary, lines 130-145
+          - server.py validation changes, lines 169-245
+          - test additions, lines 248-310
+      - source_id: SRC-pypi-adx-mcp-server
+        support: direct
+        exact_locators:
+          - Release and file metadata, lines 274-345
+          - Release history, lines 418-479
+    corroboration: The patch implementation and its tests independently match the injection mechanism in the advisory.
+    limitations:
+      - No source establishes that the patch commit has been published in a fixed package release.
+    conflicts:
+      - GHSA says affected <=0.1.0; the CNA description says through 0.1.1; the CNA affected array says <=1.1.0.
+    inference:
+      is_inference: true
+      rationale: >-
+        Treating all published versions through 1.1.0 as unresolved is a conservative
+        synthesis of the conflicting records and the absence of a later PyPI release.
+    status: validated
+
+  - id: SAF-T1803-C006
+    statement: >-
+      MITRE ATT&CK T1213.006 classifies collection from databases under Collection
+      and recommends detecting unusual database access, dump or export behavior,
+      dump-like file creation, unusual applications, and deviations from normal identities or schedules.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1213-006
+        support: direct
+        exact_locators:
+          - Description, tactic, version, and dates, lines 16-46
+          - Detection Strategy AN0676-AN0680, lines 74-82
+    corroboration: Mandiant's Snowflake hunting guide independently uses identity, application, query, table, and transfer anomalies.
+    limitations:
+      - ATT&CK describes enterprise database collection broadly, not the MCP intent boundary.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C007
+    statement: >-
+      Mandiant documented UNC5537 using stolen customer credentials to export a
+      significant volume of data from Snowflake customer instances, with about 165
+      potentially exposed organizations notified; Mandiant found no evidence that the
+      access resulted from a breach of Snowflake's enterprise environment.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mandiant-unc5537-2024
+        support: direct
+        exact_locators:
+          - Introduction and campaign overview, lines 63-87
+          - Credential exposure, lines 91-95
+    corroboration: The Mandiant threat-hunting guide repeats the incident basis and supplies environment-specific telemetry.
+    limitations:
+      - The incident did not involve MCP or an agentic system and cannot set this technique's evidence label.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C008
+    statement: >-
+      Mandiant's Snowflake guide reports that attacker activity can appear as spikes
+      in tables or views accessed, query frequency, unfamiliar application names, and
+      export or staging commands, while normal backup and data-pipeline activity can
+      create similar signals that require baselining and allowlisting.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mandiant-snowflake-hunting-2024
+        support: direct
+        exact_locators:
+          - Pages 7-12, Abnormal Table and DB Access
+          - Pages 39-43, compression and staging queries plus backup-noise warning
+          - Pages 49-53, Manual Data Retrieval
+          - Pages 55-57, Abnormal Application Names
+    corroboration: MITRE ATT&CK detection analytics recommend the same classes of cross-source anomalies.
+    limitations:
+      - The guide is Snowflake-specific and does not measure precision or recall for the proposed MCP-normalized analytic.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C009
+    statement: >-
+      PostgreSQL pg_stat_activity exposes database, user, application, client address,
+      connection and query timestamps, state, query identifier, and query text, but
+      visibility is privilege-restricted, query identifiers are not enabled by default,
+      query text is truncated by default, and activity snapshots can be ephemeral.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-postgresql-pg-stat-activity-18
+        support: direct
+        exact_locators:
+          - Section 27.2, security-restricted views, lines 73-80
+          - Section 27.2.3, pg_stat_activity columns, lines 128-163
+          - Section 27.2.3 note on ephemeral discrepancies, lines 164-166
+    corroboration: Mandiant similarly relies on database, user, application, IP, query, and session fields.
+    limitations:
+      - pg_stat_activity is a point-in-time activity view, not a durable audit log by itself.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C010
+    statement: >-
+      Correlating a model-controlled tools/call event with a database bulk-read or
+      export operation, large result size, approval state, and backup allowlist is a
+      reviewable analytic for suspicious dumps, but it depends on implementation-added
+      normalized fields and can miss staged, fragmented, or mislabeled collection.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Calling Tools, lines 181-212
+          - Security Considerations, lines 725-737
+      - source_id: SRC-mandiant-snowflake-hunting-2024
+        support: corroborating
+        exact_locators:
+          - Pages 7-12, 39-43, 49-57
+      - source_id: SRC-postgresql-pg-stat-activity-18
+        support: corroborating
+        exact_locators:
+          - Section 27.2.3, lines 128-166
+    corroboration: MITRE ATT&CK AN0676-AN0680 independently supports correlation of access, dump files, identity, application, and transfer behavior.
+    limitations:
+      - The threshold is a tuning starting point validated only with synthetic cases, not a production accuracy study.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        No authority defines the cross-product normalized rule; it is an original
+        synthesis of protocol fields and database-hunting evidence.
+    status: validated
+
+  - id: SAF-T1803-C011
+    statement: >-
+      Preventive controls for sensitive MCP database operations include server-side
+      authorization and input validation, scoped tool exposure, rate limiting, output
+      sanitization, explicit confirmation, visible inputs, sandboxing, and audit logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 94-99
+          - Capabilities and authorization-varying tool sets, lines 106-117
+          - Security Considerations, lines 725-737
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Purpose and scope, lines 93-110
+          - Per-client consent controls, lines 174-208
+          - Local-server consent and sandboxing, lines 394-424
+    corroboration: The CVE-2026-33980 maintainer patch demonstrates strict input validation for unsafe database identifiers.
+    limitations:
+      - The specification uses SHOULD for several client-side controls, so implementations can differ.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C012
+    statement: >-
+      Investigation and containment should preserve MCP and database telemetry,
+      identify the initiating session and database identity, find created dump or staged
+      objects, disable unauthorized access, rotate exposed credentials, and scope
+      follow-on exfiltration before restoring service.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mandiant-unc5537-2024
+        support: context
+        exact_locators:
+          - Incident response, notification, and root-cause findings, lines 69-87 and 91-95
+      - source_id: SRC-mandiant-snowflake-hunting-2024
+        support: corroborating
+        exact_locators:
+          - Pages 5-18, identity, query, application, IP, and session pivots
+          - Pages 39-57, staging, retrieval, network, and application pivots
+    corroboration: MCP tools guidance recommends tool-use audit logging and human visibility.
+    limitations:
+      - Exact containment and credential-rotation steps are product- and incident-specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response procedure synthesizes the directly documented telemetry and incident root causes.
+    status: validated
+
+  - id: SAF-T1803-C013
+    statement: >-
+      CVE-2026-75133 describes an unauthenticated trigger for a full MySQL dump in
+      Keep Backup Daily versions before 2.1.4; the plugin changelog credits Elymaro
+      and documents backup-file hardening in 2.1.4, while CISA's 2026.09.01 KEV feed
+      does not list the CVE.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-75133
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, metrics, references, and credit
+          - CISA ADP exploitation field
+      - source_id: SRC-wordpress-keep-backup-daily
+        support: direct
+        exact_locators:
+          - Changelog 2.1.4, lines 234-249
+          - Contributors and version metadata, lines 454-482
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators:
+          - Catalog version 2026.09.01; exact-ID check returned no CVE-2026-75133 entry
+    corroboration: The CVE record and changelog agree on the 2.1.4 remediation boundary and credit Elymaro.
+    limitations:
+      - This non-MCP vulnerability is a historical analogy and does not establish production exploitation.
+      - Absence from KEV is not proof that exploitation has never occurred.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1803-C014
+    statement: >-
+      Database Dump is distinguished from targeted querying by breadth and reusable
+      output, from backup theft by creation or streaming of the export, and from restore-
+      time execution or later exfiltration by its immediate objective of database collection.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-postgresql-pgdump-18
+        support: context
+        exact_locators:
+          - Description and output formats, lines 20-36
+          - Single-table and filter options, lines 131-188 and 540-570
+      - source_id: SRC-mitre-attack-t1213-006
+        support: context
+        exact_locators:
+          - Database collection description and tactic, lines 16-46
+    corroboration: The direct incident separates database extraction and local download from later intelligence analysis and exfiltration approval.
+    limitations:
+      - Neighbor technique identifiers are synthetic clean-room joins pending repository integration.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: These operational boundaries are the SAF synthesis used to prevent overlap.
+    status: validated
+
+  - id: SAF-T1803-C015
+    statement: >-
+      The reviewed authoritative corpus contains one direct production agentic database-
+      extraction case, but it does not expose the exact MCP database tool call or prove
+      use of a dedicated dump utility; no additional direct MCP database-dump incident
+      was identified in the recorded official-domain searches as of 2026-09-02.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Pages 5, 10, and 11
+      - source_id: SRC-nvd-mcp-database-search
+        support: context
+        exact_locators:
+          - Official NVD keyword query model context protocol database; three results reviewed
+          - Official NVD queries MCP database dump and agentic database extraction; zero results
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators:
+          - Exact-ID checks for CVE-2026-33980, CVE-2026-75133, and CVE-2026-33478 returned no catalog entries
+    corroboration: MITRE ATT&CK cites the Anthropic campaign as its sole agentic procedure example for T1213.006 in the reviewed page.
+    limitations:
+      - This is a bounded reviewed-corpus statement, not a claim that no other incident exists.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to the documented authority-only searches and directly reviewed sources.
+    status: validated
+
+  - id: SAF-T1803-C016
+    statement: >-
+      A database dump can expose credentials, personally identifiable information,
+      financial data, configurations, and proprietary records; the immediate effect is
+      confidentiality loss, while integrity or availability effects require separate
+      actions or may arise from dump-related load and locking.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1213-006
+        support: direct
+        exact_locators:
+          - Database examples and data types, lines 27-29
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: corroborating
+        exact_locators:
+          - Pages 10-11, extracted account, credential, configuration, and proprietary data
+      - source_id: SRC-postgresql-pgdump-18
+        support: context
+        exact_locators:
+          - Parallel dump load and connection behavior, lines 121-130
+    corroboration: The Snowflake campaign documents large-volume customer-data export and extortion.
+    limitations:
+      - Actual sensitivity, scale, and operational impact depend on database contents, privileges, and dump scope.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The impact rating combines documented data types with the technique's read-focused boundary.
+    status: validated

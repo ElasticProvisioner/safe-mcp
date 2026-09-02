@@ -1,0 +1,9 @@
+[
+  {"case":"positive_changed_no_approval","event_type":"tools_list_changed","identity_stable":true,"definition_hash_changed":true,"approval_for_current_hash":false,"expected":true},
+  {"case":"positive_observed_no_approval","event_type":"tool_definition_observed","identity_stable":true,"definition_hash_changed":true,"approval_for_current_hash":false,"expected":true},
+  {"case":"negative_same_hash","event_type":"tools_list_changed","identity_stable":true,"definition_hash_changed":false,"approval_for_current_hash":false,"expected":false},
+  {"case":"negative_current_approved","event_type":"tools_list_changed","identity_stable":true,"definition_hash_changed":true,"approval_for_current_hash":true,"expected":false},
+  {"case":"boundary_identity_changed","event_type":"tools_list_changed","identity_stable":false,"definition_hash_changed":true,"approval_for_current_hash":false,"expected":false},
+  {"case":"negative_unrelated_event","event_type":"tool_invocation","identity_stable":true,"definition_hash_changed":true,"approval_for_current_hash":false,"expected":false},
+  {"case":"malformed_missing_approval","event_type":"tools_list_changed","identity_stable":true,"definition_hash_changed":true,"expected":false}
+]

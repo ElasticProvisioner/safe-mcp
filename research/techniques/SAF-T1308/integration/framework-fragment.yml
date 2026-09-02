@@ -1,0 +1,27 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1308
+    name: Token Scope Substitution
+    documentation_status: draft
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0004
+    technique_path: techniques/SAF-T1308/README.md
+    research_packet: research/techniques/SAF-T1308
+    related_techniques:
+      - SAF-T1997
+      - SAF-T1998
+      - SAF-T1999
+    mitigations:
+      - SAF-M-998
+      - SAF-M-999
+    attack_mappings:
+      - external_id: T1550.001
+        relationship: analogous
+        rationale: ATT&CK emphasizes stolen application access tokens, while SAF-T1308 is bounded to authorization-context substitution.
+    detection:
+      rule: techniques/SAF-T1308/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1308/test-logs.json
+        - tests/SAF-T1308/test_detection_rule.py

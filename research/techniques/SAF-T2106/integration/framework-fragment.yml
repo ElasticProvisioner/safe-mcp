@@ -1,0 +1,18 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2106
+    name: Context Memory Poisoning via Vector Store Contamination
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics: [ATK-TA0040]
+    technique_path: techniques/SAF-T2106/README.md
+    research_packet: research/techniques/SAF-T2106
+    detection:
+      rule: techniques/SAF-T2106/detection-rule.yml
+      test_status: passed
+      test_artifacts: [tests/SAF-T2106/test_detection_rule.py, tests/SAF-T2106/test-cases.json, research/techniques/SAF-T2106/validation/detection-test.txt, research/techniques/SAF-T2106/validation/strict-validator.txt, research/techniques/SAF-T2106/validation/canonical-validation.txt]
+    mitigations: [SAF-M-12, SAF-M-22, SAF-M-29, SAF-M-30, SAF-M-32, SAF-M-51, SAF-M-69, SAF-M-74]
+    related_techniques: [SAF-T1102, SAF-T2107, SAF-T2105]
+    attack_mappings:
+      - id: T1565.001
+        type: analogous

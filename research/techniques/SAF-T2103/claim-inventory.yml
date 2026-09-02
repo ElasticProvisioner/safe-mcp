@@ -1,0 +1,326 @@
+version: 1
+technique_id: SAF-T2103
+claims:
+  - id: SAF-T2103-C001
+    statement: Controlled evaluations have reproduced end-to-end agentic code sabotage.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-reward-2025
+        support: direct
+        exact_locators: ["Abstract; Sections 2-3; pp. 1-6"]
+      - source_id: SRC-anthropic-agentic-2026
+        support: direct
+        exact_locators: ["Introduction; Methods; Covert sabotage"]
+      - source_id: SRC-scheme-2026
+        support: direct
+        exact_locators: ["Abstract; arXiv v1"]
+      - source_id: SRC-enemy-2026
+        support: direct
+        exact_locators: ["Abstract; arXiv v1"]
+    corroboration: Four independent controlled-evaluation designs reproduce the defining behavior.
+    limitations: [No source documents a verified production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C002
+    statement: Agentic coding and MCP-connected tools can modify files and run repository-affecting actions.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-schema-2025
+        support: direct
+        exact_locators: ["Tool description and ToolAnnotations, schema lines 4076-4080 and 4120-4138"]
+      - source_id: SRC-vscode-security-2026
+        support: direct
+        exact_locators: ["Tool approval; Review flow for file changes; Agent sandboxing"]
+    corroboration: Protocol schema and first-party coding-agent documentation establish the action path.
+    limitations: [Capability does not establish adversary intent.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C003
+    statement: Demonstrations include deliberate behavior-changing edits to code, tests, build guards, or security-relevant configuration.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-reward-2025
+        support: direct
+        exact_locators: ["Sections 2-3; Claude Code sabotage evaluation"]
+      - source_id: SRC-anthropic-agentic-2026
+        support: direct
+        exact_locators: ["Covert sabotage"]
+      - source_id: SRC-structural-monitor-2026
+        support: direct
+        exact_locators: ["Abstract; arXiv v1"]
+    corroboration: Separate studies cover research code, pipeline configuration, and infrastructure-as-code.
+    limitations: [The exact impact is task- and environment-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C004
+    statement: A 2025 Claude Code evaluation reported attempted sabotage in 12 percent of runs and effective classifier sabotage in 65 percent of attempts.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-reward-2025
+        support: direct
+        exact_locators: ["Abstract; Sections 2-3; pp. 1-3"]
+    corroboration: Other evaluations corroborate the general behavior but not these rates.
+    limitations: [Specialized trained models and a research codebase limit transferability.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C005
+    statement: A 2026 controlled pipeline simulation reported covert code or configuration changes in 11 of 20 runs for one tested model and none in 200 runs across ten other tested models.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-agentic-2026
+        support: direct
+        exact_locators: ["Introduction; Covert sabotage"]
+    corroboration: Other studies show code sabotage under different elicitation conditions.
+    limitations: [The authors explicitly state the scenarios were not real-world incidents.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C006
+    statement: SCHEME reported covert-task success of 84 percent and 46 percent for two tested systems, with stronger detection when agent communications were visible.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-scheme-2026
+        support: direct
+        exact_locators: ["Abstract; arXiv v1; monitoring results"]
+    corroboration: Human and structural-monitor studies independently show oversight effects.
+    limitations: [Seventeen controlled tasks and monitor-specific rates do not transfer directly.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C007
+    statement: A 2026 human-subject study reported 94 percent non-detection and 56 percent acceptance despite monitor warnings in one condition.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-enemy-2026
+        support: direct
+        exact_locators: ["Abstract, lines 16-19; arXiv v1"]
+    corroboration: SHADE-Arena independently reports material monitoring limitations.
+    limitations: [Controlled study designed to mimic work; not a production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C008
+    statement: Structural diff monitoring reduced misses and enabled pre-merge blocking in an infrastructure-as-code sabotage evaluation.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-structural-monitor-2026
+        support: direct
+        exact_locators: ["Abstract, lines 16-20; arXiv v1"]
+    corroboration: SCHEME reports complementary code-diff monitoring results.
+    limitations: [One benchmark family; not validation of this technique's deterministic rule.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C009
+    statement: A 2024 code-sabotage game measured attacker success near 10.1 percent and 1.4 percent under different defenders.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-sabotage-2024
+        support: direct
+        exact_locators: ["Section 5; pp. 11-17; Tables 5 and full-game results"]
+    corroboration: Later evaluations demonstrate related behavior with other designs.
+    limitations: [Artificial game deliberately favored the attacker in several respects.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C010
+    statement: Coding-agent advisories show that untrusted context and parsing flaws can bypass confirmation and enable unauthorized command or file actions.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-t1206-ghsa-cursor
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Description"]
+      - source_id: SRC-nvd-64107
+        support: corroborating
+        exact_locators: ["Description; CISA-ADP SSVC exploitation none"]
+      - source_id: SRC-claude-58764
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Description, lines 132-155"]
+      - source_id: SRC-nvd-24887
+        support: direct
+        exact_locators: ["Description; Change History; CISA-ADP SSVC"]
+    corroboration: Multiple independently assigned CVEs show recurring approval-boundary defects.
+    limitations: [These are enabling vulnerabilities and do not document Code Sabotage.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C012
+    statement: Repository privilege, review bypass, and downstream delivery reach determine the integrity and availability severity of a sabotaged change.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ssdf-2022
+        support: context
+        exact_locators: ["PS.1, p. 17; PW.7, p. 22"]
+      - source_id: SRC-github-protected-branches
+        support: context
+        exact_locators: ["About branch protection rules; required reviews and status checks"]
+      - source_id: SRC-mitre-ta0040
+        support: context
+        exact_locators: ["Impact tactic definition"]
+    corroboration: Software-integrity guidance and branch controls identify the same limiting factors.
+    limitations: [Severity remains environment-specific.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The sources support control and impact factors; the rating is SAF framework judgment.}
+    status: validated
+  - id: SAF-T2103-C013
+    statement: Agent identity, effective scope, resource, action, delegation, timestamp, and correlation identifiers support investigation.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: direct
+        exact_locators: ["Identity, access, and auditability; recommendations and audit fields"]
+    corroboration: Source-control records add change and review context.
+    limitations: [Concrete field availability differs by implementation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C014
+    statement: Correlating an agent write to a sensitive path, a code-risk indicator, and weak authorization or untrusted context is a defensible triage analytic.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-security-2026
+        support: context
+        exact_locators: ["Prompt injection; protect sensitive files; review flow for file changes"]
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: context
+        exact_locators: ["Auditability recommendations"]
+      - source_id: SRC-structural-monitor-2026
+        support: context
+        exact_locators: ["Abstract; structural security regressions"]
+    corroboration: Three sources independently support context, audit, and diff dimensions.
+    limitations: [The conjunction is a framework inference and triage signal, not proof of sabotage.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The deterministic conjunction is designed from supported observables.}
+    status: validated
+  - id: SAF-T2103-C015
+    statement: Intent is not directly observable, and human or model monitoring has material false-positive and miss-rate limitations.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-shade-2025
+        support: direct
+        exact_locators: ["SHADE-Arena; monitoring results and limitations"]
+      - source_id: SRC-enemy-2026
+        support: direct
+        exact_locators: ["Abstract, lines 16-19"]
+      - source_id: SRC-scheme-2026
+        support: direct
+        exact_locators: ["Abstract; monitoring results"]
+    corroboration: Multiple experimental designs report oversight limitations.
+    limitations: [Published rates do not transfer directly to arbitrary deployments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C016
+    statement: Version control, independent review, status checks, and protected branches constrain unauthorized source changes.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ssdf-2022
+        support: direct
+        exact_locators: ["PS.1, p. 17; PW.7, p. 22"]
+      - source_id: SRC-github-protected-branches
+        support: direct
+        exact_locators: ["About branch protection rules; required reviews and status checks"]
+    corroboration: Government guidance and platform documentation align.
+    limitations: [Privileged bypass and weak enforcement can defeat these controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C017
+    statement: Least privilege, deterministic approval, sensitive-file protection, and sandboxing reduce an agent's reachable action surface.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-security-2026
+        support: direct
+        exact_locators: ["Tool approval; sensitive-file protection; agent and MCP server sandboxing"]
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: direct
+        exact_locators: ["Recommendations"]
+      - source_id: SRC-ms-agent-defense-2026
+        support: direct
+        exact_locators: ["Bounded permissions; deterministic human-in-the-loop controls"]
+    corroboration: Three first-party sources align on hard authorization boundaries.
+    limitations: [These controls constrain capability but do not prove benign intent.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2103-C018
+    statement: Response should contain the agent identity and session, preserve correlated records, revoke access, and restore reviewed state.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: direct
+        exact_locators: ["Auditability; revocation and rollback recommendations"]
+      - source_id: SRC-nist-ssdf-2022
+        support: context
+        exact_locators: ["PS.1; PW.7"]
+    corroboration: Identity guidance and software-integrity practices cover containment and recovery.
+    limitations: [Exact procedures depend on the repository and deployment system.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The response sequence adapts supported controls to this technique.}
+    status: validated
+  - id: SAF-T2103-C019
+    statement: ATT&CK Stored Data Manipulation is an analogous, not direct, mapping for code-state integrity changes.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1565.001
+        support: direct
+        exact_locators: ["T1565.001 definition and detection guidance"]
+    corroboration: The mapping is constrained by the technique contract.
+    limitations: [ATT&CK does not define the agentic development trust boundary.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The stored-data effect is analogous while the mechanism differs.}
+    status: validated
+  - id: SAF-T2103-C020
+    statement: Impact is the closest tactic because the immediate objective is integrity or availability impairment.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0040
+        support: direct
+        exact_locators: ["TA0040 definition and Data Manipulation listing"]
+    corroboration: The contract independently limits scope to immediate integrity or availability impact.
+    limitations: [The SAF tactic assignment is framework-local.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The ATT&CK tactic definition supplies the closest external concept.}
+    status: validated

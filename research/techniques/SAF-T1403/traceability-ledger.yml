@@ -1,0 +1,168 @@
+version: 1
+technique_id: SAF-T1403
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1403/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1403/technique-contract.yml
+  supports: Internal scope, target name, supplied tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1403/quality-review.yml
+  supports: Validation commands, detector result, strict-validator result, and review
+    gates.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1403/detection-rule.yml
+  supports: The experimental detection analytic and traceability metadata.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1403/cases.json
+  supports: Positive, negative, boundary, lookalike, malformed, missing-field, and
+    normalization cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1403/test_detection_rule.py
+  supports: Deterministic execution of the experimental analytic.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1403/clean-room-attestation.yml
+  supports: Isolation inputs, research provenance, integrity result, and mechanical
+    integration constraints.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1403/validation/detection-test.txt
+  supports: Isolated and integrated deterministic detection-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1403/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1403-X001
+  candidate: Direct MCP or agentic production incident caused by repeated approvals.
+  origin: Required production-breach research pass.
+  attempted_searches:
+  - MCP authority pages
+  - NVD consent and fatigue keyword queries
+  - first-party incident sources
+  - saturation authority cross-check
+  consulted_source_ids:
+  - SRC-mcp-security-2025-11-25
+  - SRC-nvd-cve-2026-27124
+  - SRC-nvd-cve-2026-32112
+  - SRC-nvd-cve-2026-67333
+  - SRC-nvd-cve-2026-79786
+  reason: No reviewed authority documented the complete behavior in a deployed MCP
+    or agentic system.
+  prohibited_publishable_text:
+  - This technique has been observed in MCP production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X002
+  candidate: End-to-end adversarial controlled MCP consent-fatigue demonstration.
+  origin: Required demonstration and empirical-research pass.
+  attempted_searches:
+  - OpenAI MCP approval flow
+  - Anthropic permission system
+  - MCP Tools and Elicitation
+  - FastMCP advisory reproduction
+  consulted_source_ids:
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-anthropic-permissions-2026
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-ghsa-rww4-4w9c-7733
+  reason: Reviewed agent examples were benign; the FastMCP demonstration bypassed
+    consent validation rather than inducing repeated decisions.
+  prohibited_publishable_text:
+  - The complete exploit has been demonstrated against an agent
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X003
+  candidate: CVE-2026-32112 as a direct example.
+  origin: NVD MCP authorization-consent keyword result.
+  attempted_searches:
+  - NVD API CVE-2026-32112
+  - Exact GHSA-pf93-j98v-25pv from NVD
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-32112
+  - SRC-ghsa-pf93-j98v-25pv
+  reason: The root cause is unescaped consent-form HTML and the attack has no repeated-request
+    mechanism.
+  prohibited_publishable_text:
+  - CVE-2026-32112 is consent fatigue
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X004
+  candidate: CVE-2026-67333 as a direct example.
+  origin: NVD MCP authorization-consent keyword result.
+  attempted_searches:
+  - NVD API CVE-2026-67333
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-67333
+  reason: The root cause is redirect-scheme validation leading to XSS, not repeated
+    user approval.
+  prohibited_publishable_text:
+  - CVE-2026-67333 demonstrates repeated approval fatigue
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X005
+  candidate: CVE-2026-79786 as a direct example.
+  origin: NVD MCP authorization-consent keyword result.
+  attempted_searches:
+  - NVD API CVE-2026-79786
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-79786
+  reason: The weakness is unvalidated redirect registration and authorization-code
+    capture; repetition is absent.
+  prohibited_publishable_text:
+  - CVE-2026-79786 relies on user fatigue
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X006
+  candidate: arXiv 1510.07728 as human-factors evidence.
+  origin: Incorrect remembered identifier during the empirical pass.
+  attempted_searches:
+  - Direct arXiv identifier 1510.07728
+  consulted_source_ids:
+  - SRC-arxiv-1510.07728
+  reason: The paper concerns Raptor codes and quantum key distribution and is wholly
+    unrelated.
+  prohibited_publishable_text:
+  - arXiv 1510.07728 supports warning habituation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X007
+  candidate: Any repeated agent approval inevitably produces habituation or acceptance.
+  origin: Broad causal formulation considered during scoping.
+  attempted_searches:
+  - NIST authentication fatigue sections
+  - MCP client control guidance
+  - agent permission enforcement documentation
+  consulted_source_ids:
+  - SRC-nist-sp800-63b-4
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-anthropic-permissions-2026
+  reason: Evidence establishes conditional risk, while rate limits, hard denials,
+    transaction context, and client enforcement can block the sequence.
+  prohibited_publishable_text:
+  - Repeated prompts inevitably make users approve
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1403-X008
+  candidate: The detector proves that a user was coerced or fatigued.
+  origin: Detection-design falsification pass.
+  attempted_searches:
+  - MITRE DET0160 analytic limits
+  - agent permission telemetry semantics
+  - synthetic boundary and false-positive cases
+  consulted_source_ids:
+  - SRC-mitre-det0160-v1.0
+  - SRC-anthropic-permissions-2026
+  - SRC-mcp-tools-2025-06-18
+  reason: The analytic identifies a suspicious event sequence; it cannot measure user
+    cognition or exclude every legitimate retry.
+  prohibited_publishable_text:
+  - A detector match proves coercion
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

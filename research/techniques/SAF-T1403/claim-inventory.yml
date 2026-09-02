@@ -1,0 +1,439 @@
+version: 1
+technique_id: SAF-T1403
+claims:
+  - id: SAF-T1403-C001
+    statement: >-
+      An adversary-controlled MCP server, tool, prompt source, or workflow can
+      plausibly exploit the human authorization boundary by inducing materially
+      repeated approval requests until a user accepts one; this complete agentic
+      behavior is an inference, not a directly observed MCP incident.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["User Interaction Model, lines 79-87; Security Considerations, lines 454-465"]
+      - source_id: SRC-mcp-elicitation-2025-06-18
+        support: direct
+        exact_locators: ["User Interaction Model, lines 73-84; Response Actions, lines 312-354"]
+      - source_id: SRC-nist-sp800-63b-4
+        support: corroborating
+        exact_locators: ["Section 3.1.3 note, lines 315-317; Table 3, lines 882-885"]
+    corroboration: >-
+      MCP supplies request and decision primitives; NIST documents the repeated-
+      request fatigue mechanism for push approvals. No reviewed source documents
+      the complete adversarial MCP sequence.
+    limitations:
+      - The synthesis does not establish production exploitation in an MCP or agentic system.
+      - Client-side rate limits or hard denials may prevent an adversary from presenting repeated requests.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The complete behavior joins independently supported agent approval
+        primitives and the documented repeated-approval fatigue mechanism.
+    status: validated
+
+  - id: SAF-T1403-C002
+    statement: >-
+      MCP tools are model-controlled, while clients are advised to keep a human
+      able to deny tool invocations, present confirmation prompts, show inputs,
+      rate-limit calls, and log tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["User Interaction Model, lines 79-87; Security Considerations, lines 454-465"]
+    corroboration: The source is the versioned MCP specification.
+    limitations:
+      - MCP does not mandate a particular confirmation interface or prompt-retry policy.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C003
+    statement: >-
+      MCP elicitation lets a server request user input inside other server
+      features; the client reports accept, decline, or cancel, and clients are
+      advised to rate-limit requests and present clear provenance and purpose.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2025-06-18
+        support: direct
+        exact_locators: ["User Interaction Model, lines 73-84; Response Actions, lines 312-354"]
+    corroboration: The source is the versioned MCP specification.
+    limitations:
+      - Elicitation is for information requests, not itself a universal tool-authorization primitive.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C004
+    statement: >-
+      OpenAI's MCP API can return a tool-call approval request and accept an
+      explicit approval response; deployments can require approval always or
+      selectively skip approvals for trusted tools.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-openai-mcp-guide
+        support: direct
+        exact_locators: ["Approval-flow example, lines 2076-2211; Safety, lines 3298-3306"]
+    corroboration: MCP's Tools specification independently recommends user confirmation for sensitive operations.
+    limitations:
+      - The documentation does not describe a malicious repeated-request attack.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C005
+    statement: >-
+      Claude Code can require permission for tool actions and offers one-time,
+      session, or persistent approval scopes; ask and deny rules are enforced by
+      the application rather than the model.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-permissions-2026
+        support: direct
+        exact_locators: ["Permission system, lines 99-141; Permission modes, lines 148-160"]
+    corroboration: OpenAI's MCP API independently exposes explicit approval requests and responses.
+    limitations:
+      - The documentation does not show an adversary obtaining approval through repetition.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C006
+    statement: >-
+      NIST identifies authentication fatigue as repeated requests intended to
+      obtain approval and records that a subscriber may approve a fraudulent
+      request to stop the requests.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-nist-sp800-63b-4
+        support: direct
+        exact_locators: ["Section 3.1.3 note, lines 315-317; Table 3, lines 882-885"]
+      - source_id: SRC-mitre-t1621-v1.2
+        support: corroborating
+        exact_locators: ["Description and Procedure Examples, lines 18-50"]
+    corroboration: MITRE ATT&CK catalogues repeated MFA request generation and named procedure examples.
+    limitations:
+      - Authentication-push evidence is analogous to, not observation of, agent or MCP approvals.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C007
+    statement: >-
+      In Uber's September 2022 incident, an attacker repeatedly attempted a
+      contractor login, each attempt generated a two-factor approval request,
+      and the contractor eventually accepted one; subsequent access reached
+      internal systems, while Uber reported no access to production systems or
+      sensitive user databases.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-uber-security-update-2022
+        support: direct
+        exact_locators: ["What happened and impact, lines 11-35"]
+    corroboration: NIST and MITRE independently describe the repeated-request mechanism.
+    limitations:
+      - This was an identity authentication incident, not an MCP or agentic permission event.
+      - Uber described the initial access as likely, reflecting investigation uncertainty.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C008
+    statement: >-
+      Microsoft observed DEV-0537 using stolen passwords to trigger simple-
+      approval MFA prompts in hopes that a legitimate user would eventually
+      consent; Microsoft associated the campaign with data theft, destructive
+      actions, and extortion across targeted organizations.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-dev0537-2022
+        support: direct
+        exact_locators: ["Analysis and Initial access, lines 39-68; Impact, lines 81-94"]
+    corroboration: MITRE ATT&CK T1621 includes LAPSUS$ as a procedure example.
+    limitations:
+      - This campaign evidence concerns MFA approval, not agent tool consent.
+      - It does not attribute every reported consequence to the fatigue step alone.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C009
+    statement: >-
+      FastMCP before 3.2.0 failed to verify consent at an OAuth proxy callback;
+      the published advisory demonstrates a confused-deputy path and identifies
+      3.2.0 as the patched version.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-27124
+        support: direct
+        exact_locators: ["NVD API CVE record: description, affected versions, SSVC, references; reviewed 2026-09-01"]
+      - source_id: SRC-ghsa-rww4-4w9c-7733
+        support: direct
+        exact_locators: ["Affected and patched versions, lines 134-150; Technical Details and reproduction, lines 152-178; credits, lines 193-195"]
+    corroboration: NVD records the product, affected range, patch, and proof-of-concept exploitation status.
+    limitations:
+      - The mechanism bypasses consent validation and does not rely on repeated prompts or fatigue.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C010
+    statement: >-
+      MCP security guidance advises clients to cache recent denied-scope failures
+      to avoid repeated elevation loops and to log scope-elevation events with
+      correlation identifiers.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["Scope Minimization, lines 535-585"]
+    corroboration: The MCP elicitation specification independently advises client-side rate limiting.
+    limitations:
+      - The guidance does not state that a repeated elevation loop is adversarial or that it caused an approval.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C011
+    statement: >-
+      The reviewed authoritative corpus disclosed no direct MCP or agentic-system
+      production incident in which repeated approval requests caused a user to
+      authorize the adversary's requested action as of 2026-09-01.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: context
+        exact_locators: ["Attacks and Mitigations index, lines 113-117; Scope Minimization, lines 535-585"]
+      - source_id: SRC-nvd-cve-2026-27124
+        support: context
+        exact_locators: ["NVD API record and references reviewed 2026-09-01"]
+      - source_id: SRC-nvd-cve-2026-32112
+        support: context
+        exact_locators: ["NVD detail description and change history, lines 76-150"]
+    corroboration: Documented official-site and NVD query coverage is recorded in source-coverage.yml.
+    limitations:
+      - This is a bounded absence statement about the reviewed corpus, not a claim that no incident has ever occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is limited to the recorded authoritative search and review set.
+    status: validated
+
+  - id: SAF-T1403-C012
+    statement: >-
+      The reviewed corpus contained benign approval-flow examples and an adjacent
+      consent-bypass reproduction, but no end-to-end controlled demonstration of
+      consent fatigue against an MCP or agentic approval boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-openai-mcp-guide
+        support: context
+        exact_locators: ["Approval-flow example, lines 2076-2211"]
+      - source_id: SRC-ghsa-rww4-4w9c-7733
+        support: context
+        exact_locators: ["Reproduction steps, lines 163-175"]
+    corroboration: Demonstration-pass searches and exclusions are recorded in source-coverage.yml and traceability-ledger.yml.
+    limitations:
+      - The bounded review cannot establish universal absence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion classifies what the documented review did and did not contain.
+    status: validated
+
+  - id: SAF-T1403-C013
+    statement: >-
+      A defensible detector can correlate repeated approval requests for the same
+      user, requester, operation, and normalized request fingerprint in a short
+      window, prioritizing sequences that follow a denial or cancellation and
+      culminate in approval.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0160-v1.0
+        support: direct
+        exact_locators: ["Analytics AN0449-AN0454, lines 35-124"]
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: corroborating
+        exact_locators: ["Security Considerations, lines 454-465"]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators: ["Scope Minimization, lines 562-574"]
+    corroboration: MITRE specifies prompt frequency, time windows, user/session context, and denied or timed-out events for the analogous behavior.
+    limitations:
+      - Thresholds require local tuning and do not prove user coercion.
+      - Missing decision or request-fingerprint telemetry creates blind spots.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Authentication analytics are adapted to agent approval lifecycle fields.
+    status: validated
+
+  - id: SAF-T1403-C014
+    statement: >-
+      Four materially equivalent approval requests within ten minutes, including
+      a prior denial or cancellation and a later approval, is an experimental
+      analytic threshold selected for reproducible validation rather than a
+      universally validated operating point.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0160-v1.0
+        support: context
+        exact_locators: ["AN0449 mutable TimeWindow and threshold guidance, lines 35-51; AN0453, lines 97-110"]
+    corroboration: The included synthetic tests exercise both sides of the selected boundary.
+    limitations:
+      - Organizations must tune the count and window against their workflow baselines.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact threshold is an SAF experimental design choice grounded in general threshold guidance.
+    status: validated
+
+  - id: SAF-T1403-C015
+    statement: >-
+      Legitimate repeated approvals can arise from retries, failed operations, or
+      independently initiated actions, so requester, operation, fingerprint,
+      decision sequence, and user-initiated context are needed to reduce false positives.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0160-v1.0
+        support: direct
+        exact_locators: ["Mutable Elements and analytic qualifiers, lines 35-124"]
+      - source_id: SRC-anthropic-permissions-2026
+        support: context
+        exact_locators: ["Permission system and per-scope behavior, lines 99-141"]
+    corroboration: Synthetic expected-lookalike cases are included with the detector tests.
+    limitations:
+      - The reviewed sources do not quantify false-positive rates for agent approval telemetry.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: False-positive conditions are adapted from analogous detection guidance and product permission semantics.
+    status: validated
+
+  - id: SAF-T1403-C016
+    statement: >-
+      Controls that materially constrain the mechanism include rate-limiting
+      repeated requests, suppressing materially equivalent requests after denial,
+      clearly identifying the requester and requested action, preserving explicit
+      decline, and requiring stronger transaction context for consequential approval.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-elicitation-2025-06-18
+        support: direct
+        exact_locators: ["User Interaction Model, lines 73-84; Security Considerations, lines 347-354"]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["Scope Minimization mitigation, lines 560-585"]
+      - source_id: SRC-nist-sp800-63b-4
+        support: corroborating
+        exact_locators: ["Out-of-band note, lines 315-347; Threat mitigation table, lines 915-923"]
+    corroboration: Microsoft number matching provides a deployed example of transaction-context confirmation for MFA.
+    limitations:
+      - Authentication controls must be adapted to the semantics and risk of agent actions.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control set combines direct MCP guidance with analogous authentication protections.
+    status: validated
+
+  - id: SAF-T1403-C017
+    statement: >-
+      Microsoft Authenticator number matching requires the user to enter a number
+      shown by the sign-in flow instead of relying only on an approve/deny push,
+      providing an analogous example of binding approval to transaction context.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-number-match-2025
+        support: direct
+        exact_locators: ["Number matching scenarios, lines 32-52; NPS limitations, lines 58-84"]
+    corroboration: NIST requires secret transfer rather than simple secondary-channel approval for out-of-band authentication.
+    limitations:
+      - Number matching is an authentication control, not a directly reusable agent-approval protocol.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1403-C018
+    statement: >-
+      Consequence depends on the approved action and permission scope: a one-time
+      low-risk call limits impact, while reusable or sensitive permissions can
+      expose data or enable state-changing actions.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-openai-mcp-guide
+        support: direct
+        exact_locators: ["Approval configuration, lines 2076-2211; Safety, lines 3298-3306"]
+      - source_id: SRC-anthropic-permissions-2026
+        support: direct
+        exact_locators: ["Permission system and saved rules, lines 99-141"]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators: ["Scope Minimization risks, lines 535-585"]
+    corroboration: Multiple product and protocol sources distinguish per-action approval from broader reusable scope.
+    limitations:
+      - No reviewed agentic incident quantifies realized impact from this technique.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Impact is conditioned on documented approval scope semantics.
+    status: validated
+
+  - id: SAF-T1403-C019
+    statement: >-
+      MITRE ATT&CK T1621 is an analogous mapping because both behaviors generate
+      repeated approval requests, but T1621 targets MFA authentication rather
+      than agent or MCP action authorization.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1621-v1.2
+        support: direct
+        exact_locators: ["Description, lines 18-33; Procedure Examples and mitigations, lines 44-66"]
+    corroboration: NIST separately defines the authentication-fatigue mechanism.
+    limitations:
+      - The mapping is analogous, not direct.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF applies the repeated-request mechanism to a different authorization boundary.
+    status: validated

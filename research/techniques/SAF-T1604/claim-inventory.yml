@@ -1,0 +1,493 @@
+version: 1
+technique_id: SAF-T1604
+claims:
+  - id: SAF-T1604-C001
+    statement: >-
+      MCP revision 2026-07-28 requires servers to implement server/discover,
+      which lets a client query supported protocol versions, capabilities, and
+      server identity before other requests.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Discovery, opening paragraph and Request/Response sections, lines 67-118
+          - Data Types / DiscoverResult, lines 140-148
+    corroboration: The versioning specification independently requires the operation and version mismatch responses.
+    limitations:
+      - The specification defines interoperable behavior; it does not document malicious use.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C002
+    statement: >-
+      DiscoverResult can contain the server software name and version, but the
+      protocol states that serverInfo is self-reported, unverified, and unsuitable
+      as the basis for security decisions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Data Types / DiscoverResult, lines 140-148
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - Implementation interface and version field, lines 5217-5260
+    corroboration: The schema separately defines Implementation.version as the version of the implementation.
+    limitations:
+      - A returned value can be missing, generic, stale, or deceptive.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C003
+    statement: >-
+      A modern MCP server that rejects an unsupported protocol version lists the
+      versions it supports, and response behavior can distinguish modern from
+      legacy server eras.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-2026-versioning
+        support: direct
+        exact_locators:
+          - Protocol Version Negotiation, lines 82-98
+          - Backward Compatibility with Initialization-Based Versions, lines 133-139
+    corroboration: The discovery page links the same error as an alternate to a discovery call.
+    limitations:
+      - Protocol versions identify compatibility, not necessarily the server product build.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C004
+    statement: >-
+      A party able to make a server discovery or version-negotiation request can
+      use the returned self-reported implementation or protocol versions as an
+      enumeration result associated with that server.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Discovery, lines 67-118 and 125-148
+      - source_id: SRC-nmap-vscan
+        support: corroborating
+        exact_locators:
+          - Chapter 7, service-specific probing and version results, lines 51-58 and 77-85
+    corroboration: Nmap documents the general empirical mechanism of interrogating reached services for application and version detail.
+    limitations:
+      - The adversarial role is an explicit SAF inference; no reviewed source demonstrated malicious MCP server-version collection end to end.
+    conflicts:
+      - MCP warns that serverInfo is not verified and must not drive security decisions.
+    inference:
+      is_inference: true
+      rationale: >-
+        The MCP protocol establishes the returned values and Nmap establishes
+        version-oriented service interrogation; treating the requesting client as
+        adversarial is the bounded framework inference.
+    status: validated
+
+  - id: SAF-T1604-C005
+    statement: >-
+      HTTP Server fields can carry product names and optional versions; RFC 9110
+      advises against needlessly fine-grained detail but also notes that attackers
+      often try potential weaknesses regardless of apparent versions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9110-server
+        support: direct
+        exact_locators:
+          - Section 10.2.4 Server, paragraphs 1-4, lines 2336-2350
+          - Section 17.12 Disclosure of Product Information, lines 3890-3892
+    corroboration: Apache and nginx both document controls for emitted Server response detail.
+    limitations:
+      - Reducing detail is risk reduction, not proof that exploitation is prevented.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C006
+    statement: >-
+      Nmap version detection connects to open ports, sends service-specific
+      probes, and reports application names and versions when available.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nmap-vscan
+        support: direct
+        exact_locators:
+          - Chapter 7, lines 51-58 and example 7.1, lines 59-76
+          - Advanced features, lines 77-85
+    corroboration: RFC 9110 defines the product/version information a Server field can carry.
+    limitations:
+      - This is a non-MCP controlled demonstration and cannot establish MCP production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C007
+    statement: >-
+      MCP authorization is optional, but when an HTTP deployment supports it,
+      authorization is included on every client request and the server validates
+      access tokens intended for that resource.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Purpose and Scope / Protocol Requirements, lines 97-110
+          - Access Token Usage / Token Requirements and Handling, lines 239-267
+    corroboration: None needed for the versioned protocol requirement.
+    limitations:
+      - The authorization specification does not state a discovery-specific scope or guarantee that every deployment enables authorization.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C008
+    statement: >-
+      Application security logs intended for monitoring should identify when,
+      where, who, and what, including interaction, application, source, action,
+      object, and result fields.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: direct
+        exact_locators:
+          - Event attributes, lines 310-351
+    corroboration: The MCP discovery result supplies the server and version values that such an application event can preserve.
+    limitations:
+      - The source is general application-logging guidance and does not define an MCP audit schema.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C009
+    statement: >-
+      Correlating version-bearing MCP discovery responses by actor across distinct
+      server identities in a short window is a testable analytic for concentrated
+      enumeration activity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Response and DiscoverResult fields, lines 96-118 and 140-148
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: corroborating
+        exact_locators:
+          - Event attributes and interaction identifiers, lines 310-351
+      - source_id: SRC-nmap-vscan
+        support: context
+        exact_locators:
+          - Active version probing, lines 51-58
+    corroboration: Representative local tests validate the specified correlation behavior, not its field performance in production.
+    limitations:
+      - The five-server/five-minute threshold is an environment-tunable analytic choice, not an externally validated universal threshold.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The sources establish the fields, correlation attributes, and probing
+        mechanism; the aggregation rule is an original bounded detection design.
+    status: validated
+
+  - id: SAF-T1604-C010
+    statement: >-
+      Legitimate multi-server clients and approved inventory scanners can resemble
+      enumeration, while slow probing, missing identity fields, or actor rotation
+      can evade a short-window correlation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: context
+        exact_locators:
+          - When to Call, lines 125-130
+      - source_id: SRC-nmap-vscan
+        support: context
+        exact_locators:
+          - Version-probe intensity and speed tradeoffs, manual lines 33-43
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: corroborating
+        exact_locators:
+          - User type classification and trusted-user event retention, lines 328-358
+    corroboration: Local negative, false-positive, boundary, and missing-field cases exercise these limits.
+    limitations:
+      - Production false-positive rates have not been measured.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: These are direct consequences of the analytic's grouping, window, and required fields.
+    status: validated
+
+  - id: SAF-T1604-C011
+    statement: >-
+      Anthropic documented a 2025 production espionage campaign in which an
+      adversary used Claude Code and MCP-connected browser automation to enumerate
+      services and endpoints, but the report does not say MCP server versions were enumerated.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive summary, PDF pages 2-3
+          - Operational infrastructure, PDF pages 5-6
+          - Phase 2 Reconnaissance and attack surface mapping, PDF page 8
+    corroboration: MITRE ATT&CK cites the report as a T1046 procedure example.
+    limitations:
+      - This is adjacent service and endpoint discovery, not a direct instance of SAF-T1604.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C012
+    statement: >-
+      CVE-2021-41773 affected only Apache HTTP Server 2.4.49, could permit file
+      disclosure or remote code execution under stated configurations, was
+      exploited in the wild, and was fixed in 2.4.50 with an incomplete fix.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-apache-cve-2021-41773
+        support: direct
+        exact_locators:
+          - CVE-2021-41773 advisory entry, lines 1142-1157
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - vulnerabilities entry where cveID equals CVE-2021-41773
+    corroboration: CISA's KEV catalog records the vulnerability and directs users to the superseding remediation.
+    limitations:
+      - Neither source says an attacker selected the target using an exposed version, and the product is not an MCP server.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C013
+    statement: >-
+      CVE-2021-42013 affected Apache HTTP Server 2.4.49 and 2.4.50 after the
+      earlier fix proved insufficient, could permit path traversal or remote code
+      execution under stated configurations, and was fixed in 2.4.51.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-apache-cve-2021-42013
+        support: direct
+        exact_locators:
+          - CVE-2021-42013 advisory entry, lines 1108-1125
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - vulnerabilities entry where cveID equals CVE-2021-42013
+    corroboration: CISA's KEV catalog lists this CVE and records known ransomware-campaign use.
+    limitations:
+      - Neither source documents server-version enumeration in the attack path, and the product is not an MCP server.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C014
+    statement: >-
+      No direct MCP production incident, direct MCP vulnerability, or public
+      end-to-end malicious demonstration of server-version enumeration was found
+      in the reviewed authoritative corpus as of 2026-09-02.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: context
+        exact_locators:
+          - Full report, especially PDF pages 5-12
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators:
+          - Catalog version 2026.09.01 and full vulnerabilities array
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: context
+        exact_locators:
+          - Definition and procedure examples, lines 15-48
+    corroboration: Source coverage records separate incident, vulnerability, demonstration, and saturation checks.
+    limitations:
+      - This is a bounded absence statement about the reviewed corpus, not a claim that the behavior has never occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion follows from the documented search coverage and reviewed candidates.
+    status: validated
+
+  - id: SAF-T1604-C015
+    statement: >-
+      Apache and nginx can reduce HTTP version detail through ServerTokens and
+      server_tokens, but Apache explicitly warns that suppressing the Server field
+      does not by itself make the server secure.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-apache-servertokens
+        support: direct
+        exact_locators:
+          - ServerTokens Directive, lines 2239-2264
+      - source_id: SRC-nginx-server-tokens
+        support: corroborating
+        exact_locators:
+          - server_tokens directive, lines 1279-1289
+    corroboration: RFC 9110 similarly advises limiting needless detail without treating disclosure suppression as complete protection.
+    limitations:
+      - These controls affect HTTP response metadata, not MCP serverInfo or protocol-version fields.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1604-C016
+    statement: >-
+      The immediate effect of SAF-T1604 is bounded information disclosure; exact
+      version information can refine vulnerability selection, but enumeration
+      alone does not establish access, exploitation, or compromise.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9110-server
+        support: direct
+        exact_locators:
+          - Section 10.2.4, final paragraph, line 2350
+          - Section 17.12, lines 3890-3892
+      - source_id: SRC-attack-t1518
+        support: corroborating
+        exact_locators:
+          - Software Discovery definition, lines 24-27
+    corroboration: Version-specific Apache advisories illustrate the potential value of precise version identifiers without proving enumeration caused exploitation.
+    limitations:
+      - Downstream impact depends on a separate applicable weakness and attack path.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The impact boundary synthesizes the standards warning and ATT&CK's documented use of version information.
+    status: validated
+
+  - id: SAF-T1604-C017
+    statement: >-
+      ATT&CK T1046 is analogous because it covers remote service discovery,
+      while T1518 is analogous because it covers software and version discovery;
+      neither exactly defines MCP self-reported server-version collection.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: direct
+        exact_locators:
+          - Network Service Discovery definition and tactic, lines 15-26
+      - source_id: SRC-attack-t1518
+        support: direct
+        exact_locators:
+          - Software Discovery definition and tactic, lines 16-34
+    corroboration: The MCP discovery specification supplies the protocol-specific distinction.
+    limitations:
+      - Mapping type is an SAF analytical judgment, not an ATT&CK assertion about MCP.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF-T1604 overlaps each ATT&CK behavior but differs in boundary and collection mechanism.
+    status: validated
+
+  - id: SAF-T1604-C018
+    statement: >-
+      Analysts should distinguish version enumeration from finding server
+      endpoints and from listing server capabilities by requiring a version-bearing
+      value tied to a reached server.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Response and DiscoverResult, lines 96-148
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: context
+        exact_locators:
+          - Network Service Discovery definition, lines 15-18
+    corroboration: The MCP result separates supportedVersions and serverInfo from capabilities.
+    limitations:
+      - Synthetic SAF neighbor IDs require mechanical replacement during integration.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The distinction follows from the specific fields collected and the immediate objective.
+    status: validated
+
+  - id: SAF-T1604-C019
+    statement: >-
+      Investigation should preserve correlated request and response events and
+      verify self-reported values against authoritative asset or deployment records
+      before using them to scope remediation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: direct
+        exact_locators:
+          - Event attributes and interaction identifiers, lines 310-351
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - serverInfo trust limitation, lines 140-148
+    corroboration: None; this is a bounded response procedure derived from log correlation and the protocol's explicit trust warning.
+    limitations:
+      - The sources do not prescribe an organization-specific containment workflow.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The procedure avoids treating unverified metadata as authoritative and preserves evidence needed for correlation.
+    status: validated

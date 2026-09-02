@@ -1,0 +1,153 @@
+version: 1
+technique_id: SAF-T1407
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1407
+target:
+  id: SAF-T1407
+  neutral_name: Server Proxy Masquerade
+  tactic: ATK-TA0005
+allowed_inputs:
+- Neutral technique ID, name, and tactic supplied by the commissioning task.
+- Generic repository technique template, research schemas, research README, skill
+  instructions, and current validator.
+- Directly opened protocol standards, official advisories, official vulnerability
+  catalogs, original researcher publications, and exact advisory URLs reached from
+  non-GitHub authorities.
+- A strict isolated synthetic repository mock containing only generic validation material,
+  this generated bundle, and synthetic join records.
+prohibited_inputs:
+- Existing techniques/SAF-T1407/README.md or any prior target README content.
+- Existing research/techniques/SAF-T1407/ directory or any target research packet.
+- Existing techniques/SAF-T1407/detection-rule.yml or any prior target detector or
+  tests.
+- Existing target git history, diffs, blame, commits, branches, or catalog descriptions.
+- Existing target pull request, review, issue, comment, or patch content.
+- Any previous conversation or inherited target-specific context.
+- Shared registries, framework descriptions, alignment descriptions, SAF sites, or
+  prior target integration artifacts.
+independent_research:
+  search_operation_count: 42
+  searches:
+  - Twenty-one exact keyword operations against the official NVD CVE API for MCP proxy,
+    OAuth, identity, impersonation, resource metadata, and URL-authority terms.
+  - Seventeen exact whitelist-only arXiv API queries for MCP proxy, impersonation,
+    relay, server identity, OAuth proxy, resource metadata, and URL-authority terms.
+  - One exact CISA KEV selected-CVE lookup against the official complete JSON feed.
+  - Two CISA official-site queries for MCP breach and incident evidence.
+  - One CISA official cybersecurity-advisory filter for Model Context Protocol.
+  opened_source_ids:
+  - SRC-mcp-architecture
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc9728
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-mitre-attack-t1036
+  - SRC-mitre-t1557
+  - SRC-trustshiftprobe
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-mcp-proxy-identity-corpus-2026
+  - SRC-ghsa-librechat-resource
+  - SRC-cve-2026-54030
+  - SRC-ghsa-apify-authority
+  - SRC-cve-2026-50143
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-6514
+  - SRC-ghsa-spring-ssrf
+  - SRC-cve-2026-45609
+  - SRC-cve-2026-59822
+  - SRC-cve-2026-66012
+  - SRC-cve-2025-59155
+  - SRC-cve-2026-67531
+  - SRC-cve-2025-4143
+  source_policy: No unrestricted search, search_query, GitHub search, repository discovery,
+    derivative-only source, or prior technique lead was used. Each exact GitHub advisory
+    was opened only after a directly reviewed CVE or NVD authority supplied the URL;
+    source-manifest-fragment.yml records the provenance.
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1407/strict-mock
+  research_command: uv --cache-dir /private/tmp/saf-all-cleanroom/SAF-T1407/uv-cache
+    run --no-project --with PyYAML python scripts/validate-technique-research.py SAF-T1407
+  research_result: PASS SAF-T1407
+  strict_mode: validator default; --draft was not used
+  detection_command: python3 tests/SAF-T1407/test_detection_rule.py
+  detection_result: PASS SAF-T1407 detection; 9/9 cases; alerts=4; no_alerts=5
+integration_constraints:
+- Do not compare this bundle with prior SAF-T1407 content before accepting the freeze
+  hash.
+- Resolve real shared-registry identifiers, tactic and neighbor joins, and mitigation
+  joins only after freeze; document every mechanical substitution.
+- Replace the synthetic repository-history SHA with an honest local history record
+  during integration.
+- Do not alter evidence classifications, claims, source relationships, or publishable
+  prose during mechanical integration without reopening research and re-freezing.
+attestation: I generated this SAF-T1407 bundle independently from the neutral target,
+  generic repository contracts, and directly reviewed authorities; I did not access
+  prior target artifacts, shared target descriptions, history, reviews, or inherited
+  target-specific conversation content before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-transports: SRC-mcp-transports-2025-11-25
+    SRC-mcp-authorization: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-practices: SRC-mcp-security-2025-11-25
+    SRC-mcp-tools: SRC-mcp-tools-2025-11-25
+    SRC-rfc9728: SRC-rfc9728
+    SRC-rfc8707: SRC-rfc8707
+    SRC-rfc9700: SRC-rfc9700
+    SRC-mitre-t1036: SRC-mitre-attack-t1036
+    SRC-cisa-kev: SRC-cisa-kev-2026-09-01
+    SRC-nvd-query-set: SRC-nvd-mcp-proxy-identity-corpus-2026
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-jfrog-advisory-2025-6514: SRC-jfsa-2025-6514
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+  new_shared_source_records:
+  - SRC-nvd-mcp-proxy-identity-corpus-2026
+  - SRC-mcp-architecture
+  - SRC-mitre-t1557
+  - SRC-trustshiftprobe
+  - SRC-ghsa-librechat-resource
+  - SRC-cve-2026-54030
+  - SRC-ghsa-apify-authority
+  - SRC-cve-2026-50143
+  - SRC-ghsa-spring-ssrf
+  - SRC-cve-2026-45609
+  - SRC-cve-2026-59822
+  - SRC-cve-2026-66012
+  - SRC-cve-2025-59155
+  - SRC-cve-2026-67531
+  - SRC-cve-2025-4143
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-20
+  - SAF-M-31
+  - SAF-M-45
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1004
+    SAF-T9002: SAF-T1404
+    SAF-T9003: SAF-T1304
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-14
+    SAF-M-9002: SAF-M-13
+    SAF-M-9003: SAF-M-31
+  status: integrated_and_repository_validated

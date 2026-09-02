@@ -1,0 +1,129 @@
+version: 1
+technique_id: SAF-T1201
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1201
+  inherited_context: false
+target:
+  id: SAF-T1201
+  neutral_name: MCP Rug Pull Attack
+allowed_inputs:
+- The author-saf-technique skill and routed methodology, clean-room, trace, and breach/vulnerability
+  references.
+- techniques/TEMPLATE.md, research/README.md, blank research/templates/technique schemas,
+  and the current validator.
+- Seed metadata SAF-T1201, MCP Rug Pull Attack, and ATK-TA0003 Persistence.
+- Independently opened standards-body, government, academic-publisher, first-party
+  vendor, and researcher authorities.
+- Newly created isolated mock records and minimal synthetic neighbor identifiers.
+prohibited_inputs:
+- techniques/SAF-T1201/README.md and every historical version.
+- techniques/SAF-T1201/detection-rule.yml, tests, and validation logs.
+- research/techniques/SAF-T1201/ and all prior target research artifacts.
+- Shared source, framework, alignment, or catalog registries before freeze.
+- Git history, diffs, blame, stashes, branches, commits, pull request content, or
+  review comments exposing prior target work.
+- Previous conversation, agent summary, cached target page, SAF/SAFE site, prior bundle,
+  or other technique prose supplying research leads.
+- impact-classification-examples.md before freeze.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io "rug pull" MCP
+  - site:modelcontextprotocol.io security best practices tool descriptions change
+  - site:invariantlabs.ai MCP rug pull
+  - site:microsoft.com MCP rug pull attack
+  - site:arxiv.org MCP "rug pull" tool descriptions
+  - site:acm.org Model Context Protocol rug pull
+  - site:usenix.org Model Context Protocol tool description change
+  - site:nvd.nist.gov/vuln/detail MCP tool description change approval
+  - site:nvd.nist.gov/vuln/detail Model Context Protocol malicious server update
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog MCP tool poisoning
+  - site:cve.org/CVERecord/SearchResults MCP rug pull
+  - site:microsoft.com/security/blog MCP rug pull incident breach
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP rug pull incident
+  - site:cisa.gov MCP rug pull incident
+  - site:ncsc.gov.uk MCP rug pull incident
+  - site:anthropic.com/news MCP rug pull security
+  - site:openai.com MCP rug pull security
+  - site:security.googleblog.com MCP rug pull
+  - site:unit42.paloaltonetworks.com MCP rug pull incident
+  - site:attack.mitre.org/techniques/T1195/002 compromise software supply chain update
+    trusted software
+  - site:genai.owasp.org MCP rug pull tool poisoning
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rashidi-2607.05744
+  - SRC-song-2506.02040
+  - SRC-etdi-2506.01333
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-mcp-scan-2025
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-owasp-third-party-mcp-2025
+  - SRC-owasp-agentic-top10-2026
+  - SRC-mitre-t1195-002
+  - SRC-nvd-cve-2025-53098
+github_exact_url_provenance: []
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  root: /private/tmp/saf-all-cleanroom/SAF-T1201/mock
+  command: python3 scripts/validate-technique-research.py SAF-T1201
+  result: passed
+  synthetic_joins:
+  - ATK-TA0003 tactic identifier
+  - SAF-T1001 and SAF-T1102 neighbor stubs
+  - Isolated source-manifest, framework-model, alignment-ledger, and nonzero synthetic
+    history record
+  bundle_owned_failures_deferred: []
+integration_constraints:
+- Replace synthetic neighbor IDs only through mechanical catalog reconciliation without
+  using prior target prose as evidence.
+- Reuse stable source IDs only after freeze and do not add research leads from the
+  shared manifest.
+- Replace the synthetic history SHA with an honest integration commit SHA.
+- Preserve the demonstrated evidence label unless post-freeze independent evidence
+  is separately researched.
+attestation: I attest that this bundle was independently derived from the seed, generic
+  methodology and templates, current validator, and directly reviewed external authorities;
+  no prior SAF-T1201 artifact or prohibited context was accessed.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-ms-azure-mcp-security-2026: SRC-ms-azure-mcp-security-2026
+    SRC-mitre-t1195.002: SRC-mitre-t1195-002
+  new_shared_source_records:
+  - SRC-rashidi-2607.05744
+  - SRC-song-2506.02040
+  - SRC-etdi-2506.01333
+  - SRC-invariant-mcp-scan-2025
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-owasp-third-party-mcp-2025
+  - SRC-owasp-agentic-top10-2026
+  - SRC-nvd-cve-2025-53098
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-6
+  - SAF-M-12
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T1998: SAF-T1001
+    SAF-T1999: SAF-T1102
+  status: integrated_and_repository_validated

@@ -1,0 +1,128 @@
+{
+  "cases": [
+    {
+      "name": "positive_sensitive_config_to_untrusted_server",
+      "category": "positive",
+      "expected_alert": true,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false,
+        "approval.full_arguments_visible": false
+      }
+    },
+    {
+      "name": "positive_cross_server_message_parameter",
+      "category": "positive",
+      "expected_alert": true,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false,
+        "approval.full_arguments_visible": true
+      }
+    },
+    {
+      "name": "boundary_user_approved_but_no_policy_exception",
+      "category": "boundary",
+      "expected_alert": true,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false,
+        "approval.user_approved": true,
+        "approval.full_arguments_visible": false
+      }
+    },
+    {
+      "name": "negative_trusted_destination",
+      "category": "negative",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "trusted",
+        "policy.exception.approved": false
+      }
+    },
+    {
+      "name": "negative_no_sensitive_dataflow",
+      "category": "negative",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": false,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false
+      }
+    },
+    {
+      "name": "negative_authorized_scoped_exception",
+      "category": "authorized",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": true
+      }
+    },
+    {
+      "name": "expected_false_positive_external_support_upload",
+      "category": "expected_false_positive",
+      "expected_alert": true,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false,
+        "workflow.purpose": "approved_support_case_but_exception_missing"
+      }
+    },
+    {
+      "name": "boundary_unknown_destination_trust",
+      "category": "boundary",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "unknown",
+        "policy.exception.approved": false
+      }
+    },
+    {
+      "name": "malformed_missing_dataflow_field",
+      "category": "malformed",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/call",
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false
+      }
+    },
+    {
+      "name": "negative_non_tool_call_event",
+      "category": "negative",
+      "expected_alert": false,
+      "event": {
+        "event.category": "mcp_tool",
+        "event.action": "tools/list",
+        "dataflow.sensitive_to_arguments": true,
+        "destination.trust": "untrusted",
+        "policy.exception.approved": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+version: 1
+fragment_id: SAF-T1003-clean-room-2026-09-01
+integration_status: pending_real_framework_join
+techniques:
+  - technique_id: SAF-T1003
+    name: Malicious MCP-Server Distribution
+    documentation_status: under_review
+    evidence_status: observed
+    tactics:
+      - ATK-TA0001
+    technique_path: techniques/SAF-T1003/README.md
+    research_packet: research/techniques/SAF-T1003
+    related_techniques:
+      - SAF-T1002
+      - SAF-T1004
+      - SAF-T1006
+      - SAF-T1201
+      - SAF-T1203
+      - SAF-T1207
+    mitigations: []
+    external_mappings:
+      - framework: MITRE ATT&CK Enterprise
+        id: T1195.002
+        name: Compromise Software Supply Chain
+        relation: direct
+        source_id: SRC-mitre-t1195-002
+    detection:
+      rule: techniques/SAF-T1003/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1003/tests/test_detection.py
+        - techniques/SAF-T1003/tests/fixtures/events.ndjson
+        - techniques/SAF-T1003/tests/fixtures/expected.json
+        - techniques/SAF-T1003/tests/results/test-results.json
+        - techniques/SAF-T1003/tests/logs/test-run.log

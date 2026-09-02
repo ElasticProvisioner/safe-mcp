@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T1102
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room authoring agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Seed-only generation and prohibited-artifact exclusions are attested; the draft was frozen before integration.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires inference-time instruction-authority manipulation and excludes training poisoning, malicious code alone, follow-on impacts, and safety-only jailbreaks.
+  technical_accuracy:
+    status: passed
+    notes: Current versioned MCP protocol pages and exact locators support the documented model-facing paths and guidance.
+  claim_traceability:
+    status: passed
+    notes: Seventeen validated claims map to reviewed sources, locators, limitations, conflicts, and explicit inferences.
+  source_or_omit:
+    status: passed
+    notes: Publishable substantive units carry hidden trace comments or declared local links; unsupported candidates are excluded.
+  evidence_classification:
+    status: passed
+    notes: Multiple controlled end-to-end MCP demonstrations justify Demonstrated but not Observed status.
+  research_saturation:
+    status: passed
+    notes: All five methodology passes and two final no-change passes completed after the last source addition.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Seven candidates were classified; four high-relevance examples were selected and no production breach was claimed.
+  detection_quality:
+    status: passed
+    notes: The provenance-to-action analytic passed three positive and four negative synthetic cases and documents privacy, evasion, and false-positive limits.
+  mitigation_quality:
+    status: passed
+    notes: Controls constrain effective authority, approvals, trust labeling, validation, telemetry, and deterministic data flow.
+  framework_alignment:
+    status: passed
+    notes: Execution tactic, canonical SAF-T2107 and SAF-T1006 neighbors, and the analogous-only ATT&CK mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: All uses are attribution-backed paraphrase; no quotation, source code, image, or third-party artifact is reproduced.
+  safe_publication:
+    status: passed
+    notes: The scenario and fixtures use inert synthetic data and no credentials, executable payloads, or destructive commands.
+
+validation:
+  commands:
+    - command: python3 tests/SAF-T1102/test_detection_rule.py
+      result: passed
+    - command: uv run --with pyyaml python3 scripts/validate-technique-research.py SAF-T1102
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1102/test_detection_rule.py
+    result: PASS - 7 cases, 3 positive and 4 negative
+    waiver: null
+
+unresolved: []

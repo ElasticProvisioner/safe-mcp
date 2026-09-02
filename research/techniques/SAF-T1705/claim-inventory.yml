@@ -1,0 +1,377 @@
+version: 1
+technique_id: SAF-T1705
+claims:
+  - id: SAF-T1705-C001
+    statement: >-
+      Agent-to-agent protocols carry message content between client and remote
+      agent roles and expose identifiers suitable for task, context, message,
+      sender-role, and reference correlation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-a2a-spec
+        support: direct
+        exact_locators:
+          - Sections 2.2 and 4.1.4-4.1.6; Message, Role, and Part fields
+    corroboration: The A2A specification is the primary protocol authority.
+    limitations:
+      - The specification defines transport semantics, not model obedience to embedded instructions.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C002
+    statement: >-
+      In an MCP host, the host manages multiple isolated client connections,
+      cross-server context, consent, authorization, and security policies.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture
+        support: direct
+        exact_locators: [Core Components; Host; Clients; Servers]
+    corroboration: A2A independently defines a separate client and remote-agent boundary.
+    limitations:
+      - MCP architecture does not itself define peer-agent prompt-injection behavior.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C003
+    statement: >-
+      Controlled experiments demonstrated that attacker-authored prompt content
+      can be carried in one agent's response to downstream agents and can
+      replicate across multi-agent communication.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-lee-tiwari-prompt-infection
+        support: direct
+        exact_locators: [Abstract; Sections 3-5; Figure 2; Figures 4-6]
+    corroboration: >-
+      The MAS Hijacking and OMNI-LEAK studies independently demonstrate
+      receiver behavior changed by attacker-influenced upstream agent output.
+    limitations:
+      - Experiments emphasized GPT-family models and basic simulated architectures.
+      - The study did not establish a production compromise.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C004
+    statement: >-
+      Controlled multi-agent-system experiments demonstrated that a content-
+      reading agent can relay attacker-influenced metadata to an orchestrator,
+      which then invokes a different code-execution agent or capability.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+        support: direct
+        exact_locators: [Abstract; Figure 2; Table 1; Sections 4-6 and 8]
+    corroboration: OMNI-LEAK demonstrates the same trust transition with a different downstream objective.
+    limitations:
+      - Experiments used selected open-source frameworks and controlled payload sinks.
+      - Results do not establish universal attack success across models or deployments.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C005
+    statement: >-
+      OMNI-LEAK demonstrated a controlled sequence in which injected public
+      data hijacked an SQL agent, the SQL agent instructed an orchestrator, and
+      the orchestrator instructed a notification agent to exfiltrate private data.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-naik-et-al-omni-leak
+        support: direct
+        exact_locators: [Sections 4.1-5.3; Figures 2-4; Tables 3-7]
+    corroboration: >-
+      Prompt Infection and MAS Hijacking independently establish cross-agent
+      propagation and downstream capability invocation.
+    limitations:
+      - This was a benchmarked red-team environment, not a production breach.
+      - The study left adaptation to other architectures for future work.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C006
+    statement: >-
+      No qualifying production incident or direct disclosed vulnerability was
+      identified in the reviewed 2026-08-31 AI Incident Database snapshot or
+      the exact NVD API queries completed on 2026-09-02.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aiid-snapshot-20260831
+        support: direct
+        exact_locators: [Snapshot 2026-08-31; incidents.csv; reports.csv]
+      - source_id: SRC-nvd-token-scope-corpus
+        support: direct
+        exact_locators:
+          - Exact queries for multi-agent prompt injection and agent-to-agent injection
+    corroboration: Both independent authority catalogs produced the same evidence gap.
+    limitations:
+      - Absence from the reviewed corpora does not prove that no incident has occurred.
+      - Confidential, unpublished, differently described, or later events may be absent.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is bounded to the named corpora, terms, and review date.
+    status: validated
+
+  - id: SAF-T1705-C007
+    statement: >-
+      Reviewed prompt-injection and MCP advisories described same-agent,
+      lifecycle-hook, proxy, or browser trust failures but did not document the
+      defining transfer of attacker-authored instructions between two agent contexts.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-32711
+        support: direct
+        exact_locators: [CNA description and affected product]
+      - source_id: SRC-ghsa-v7px
+        support: direct
+        exact_locators: [Summary, affected versions, patched versions]
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [Technical analysis and remediation]
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: [Attack chain and fixed version]
+    corroboration: Independent advisories describe distinct components but no second-agent receiver.
+    limitations:
+      - The advisories may enable a later cross-agent attack in a deployment not described by the source.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Relationship classification applies the contract's required second-agent boundary.
+    status: validated
+
+  - id: SAF-T1705-C008
+    statement: >-
+      The cross-agent technique requires an attacker-influenced originating
+      context, a channel into a distinct receiver, and receiver-side authority
+      or capabilities sufficient to change state or invoke a tool.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-a2a-spec
+        support: context
+        exact_locators: [Sections 2.2, 7.4-7.6]
+      - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+        support: direct
+        exact_locators: [Sections 4-6; Figure 2]
+      - source_id: SRC-naik-et-al-omni-leak
+        support: corroborating
+        exact_locators: [Sections 4.1-4.2]
+    corroboration: Three sources independently supply the channel, authority, and action conditions.
+    limitations:
+      - Exact preconditions vary by orchestrator, protocol, tool, and policy.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The prerequisites are abstracted from multiple concrete demonstrations and protocol roles.
+    status: validated
+
+  - id: SAF-T1705-C009
+    statement: >-
+      Confidentiality, integrity, and availability impact is conditional on
+      the receiver's permissions, tools, data access, and the action selected
+      after the instruction crosses the agent boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+        support: direct
+        exact_locators: [Abstract; Sections 1 and 6; Ethics Statement]
+      - source_id: SRC-naik-et-al-omni-leak
+        support: corroborating
+        exact_locators: [Sections 4.1-5.3; Impact Statement]
+      - source_id: SRC-lee-tiwari-prompt-infection
+        support: corroborating
+        exact_locators: [Sections 3.2 and 5]
+    corroboration: The studies demonstrate code execution, exfiltration, and altered task behavior under different receiver capabilities.
+    limitations:
+      - These outcomes are not inevitable and must not be inferred without receiver-side capability evidence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating generalizes bounded demonstrated outcomes into conditional impact dimensions.
+    status: validated
+
+  - id: SAF-T1705-C010
+    statement: >-
+      A defensible analytic can correlate an untrusted or mixed-provenance
+      inter-agent message with a receiver action by run, context, message, and
+      causal identifiers, then evaluate authorization and approval state.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-a2a-spec
+        support: direct
+        exact_locators: [Sections 3.4 and 4.1.4; messageId, contextId, taskId, referenceTaskIds]
+      - source_id: SRC-nist-ai-600-1
+        support: corroborating
+        exact_locators: [Pages 19-25 and 55-57]
+      - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+        support: context
+        exact_locators: [Sections 4 and 8]
+    corroboration: Protocol identifiers and NIST provenance and logging guidance jointly support correlation.
+    limitations:
+      - The specific field names and causal guarantees are implementation-defined.
+      - The analytic is experimental and requires instrumentation not guaranteed by A2A or MCP.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The detection join is an engineering inference tested only against synthetic fixtures.
+    status: validated
+
+  - id: SAF-T1705-C011
+    statement: >-
+      Content-only labels or prompt wrappers are insufficient as sole controls;
+      tested defenses were bypassable or weak in isolation, and adaptive
+      paraphrasing creates an evasion risk for channel classifiers.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-lee-tiwari-prompt-infection
+        support: direct
+        exact_locators: [Section 6; Figure 7; Section 7]
+      - source_id: SRC-hossain-et-al-channelguard
+        support: corroborating
+        exact_locators: [Sections 6.4-7 and reproducibility notes]
+      - source_id: SRC-debenedetti-et-al-agentdojo
+        support: context
+        exact_locators: [Section 4.3; Conclusion]
+    corroboration: Three independent evaluations identify limitations in prompt or channel defenses.
+    limitations:
+      - ChannelGuard was under review and used a synthetic evaluation corpus.
+      - Results do not measure the detector shipped with this technique.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1705-C012
+    statement: >-
+      Preventive controls should preserve instruction provenance, enforce
+      receiver-side authorization and least privilege, validate untrusted
+      content, and gate high-risk actions at each inter-agent transition.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-a2a-spec
+        support: direct
+        exact_locators: [Sections 7.4-7.6 and 14.1.1]
+      - source_id: SRC-mcp-architecture
+        support: corroborating
+        exact_locators: [Host and Clients]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators: [Local MCP Server Compromise; Scope Minimization]
+      - source_id: SRC-naik-et-al-omni-leak
+        support: corroborating
+        exact_locators: [Impact Statement]
+    corroboration: Protocol, project security guidance, and a direct demonstration converge on boundary controls.
+    limitations:
+      - No cited source establishes that any single control eliminates cross-agent injection.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The layered control set reconciles guidance across distinct authorities.
+    status: validated
+
+  - id: SAF-T1705-C013
+    statement: >-
+      Response should preserve message, policy, authorization, and action
+      provenance; contain affected agents and credentials; and review the
+      complete correlated run before restoration.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: direct
+        exact_locators: [Pages 19-25, 44-48, and 55-57]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators: [Scope Minimization and transport logging guidance]
+    corroboration: NIST incident lifecycle guidance is complemented by MCP-specific logging and scope guidance.
+    limitations:
+      - Exact containment actions depend on deployment architecture and incident authority.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Response steps apply general AI incident guidance to the defined cross-agent evidence chain.
+    status: validated
+
+  - id: SAF-T1705-C014
+    statement: >-
+      ATT&CK T1072 is an analogous, not direct, mapping because both behaviors
+      use a trusted centralized coordination mechanism to cause execution on
+      another managed context, while T1072 specifically concerns software
+      deployment and configuration-management suites.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1072
+        support: direct
+        exact_locators: [Technique description; ID and tactics; version 3.2]
+    corroboration: The assigned SAF tactic is Lateral Movement, one of T1072's tactics.
+    limitations:
+      - Agent message interpretation is not software deployment and does not satisfy a direct mapping.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is based on a constrained trust-and-coordination analogy.
+    status: validated
+
+  - id: SAF-T1705-C015
+    statement: >-
+      The complete technique is demonstrated but not observed because direct
+      cross-agent behavior is reproduced in controlled evaluations, while no
+      qualifying production incident was found in the reviewed authority corpora.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-lee-tiwari-prompt-infection
+        support: direct
+        exact_locators: [Sections 3-5 and 7]
+      - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+        support: corroborating
+        exact_locators: [Sections 5-6; Ethics Statement]
+      - source_id: SRC-naik-et-al-omni-leak
+        support: corroborating
+        exact_locators: [Sections 4-6]
+      - source_id: SRC-aiid-snapshot-20260831
+        support: context
+        exact_locators: [Snapshot 2026-08-31 corpus review]
+      - source_id: SRC-nvd-token-scope-corpus
+        support: context
+        exact_locators: [Exact queries completed 2026-09-02]
+    corroboration: Three direct demonstrations support reproduction; two catalogs bound the observation gap.
+    limitations:
+      - The observation gap is time-, terminology-, and corpus-bounded.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Overall status combines direct demonstrations with the bounded production-evidence gap.
+    status: validated

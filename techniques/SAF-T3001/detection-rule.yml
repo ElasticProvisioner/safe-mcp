@@ -1,55 +1,81 @@
-﻿title: RAG Backdoor Trigger with Skewed Retrieval and Policy Evasion
-id: 9f8a0c2f-6cf2-4d93-bb55-7c2e9d8f1a0a
+title: Returned RAG Passage Fails Source or Integrity Policy
+id: 2e116765-e68d-4f28-b248-b6f3d891fc3c
 status: experimental
-description: >
-  Detects rare or composite trigger phrases coinciding with abnormal retrieval
-  concentration (low entropy top-k from a single source) and an LLM guardrail/policy
-  violation flag. Indicates potential RAG backdoor activation.
-author: SAF-MCP Team
-date: 2025-11-09
+description: >-
+  Candidate analytic for a returned RAG passage whose source is not approved or
+  whose document integrity check failed; this signal is not proof of poisoning.
 references:
-  - https://arxiv.org/abs/2402.07867          # PoisonedRAG (Feb 2024)
-  - https://www.usenix.org/system/files/usenixsecurity25-zou-poisonedrag.pdf
-  - https://arxiv.org/abs/2411.01705          # Data Extraction via Backdoors (Peng et al.)
-  - https://arxiv.org/abs/2410.14479          # Backdoored Retrievers (Clop & Teglia)
-  - https://docs.weaviate.io/weaviate/search/hybrid
-  - https://weaviate.io/blog/hybrid-search-explained
-  - https://owasp.org/www-project-top-10-for-large-language-model-applications/
+  - https://cheatsheetseries.owasp.org/cheatsheets/RAG_Security_Cheat_Sheet.html
+author: SAF clean-room research
+date: 2026-09-02
 logsource:
-  product: application
-  service: rag-gateway
-  definition: RAG request/response logs with retrieval telemetry and policy filters
+  category: application
+  product: rag_pipeline
 detection:
-  selection_trigger:
-    # Example: low-frequency n-grams or composite stylometry patterns in prompts
-    prompt_text|contains:
-      - "q~muon stage-3"     # illustrative rare token, example only
-      - "--  "               # stylometry composite (em dash + spacing), example only
-  selection_skew:
-    # >=60% of top-k from one domain/doc and low normalized entropy (0..ln(k))
-    retrieval.topk_entropy: "<= 0.9"
-    retrieval.top_domain_share: ">= 0.6"
-  selection_policy:
-    llm.policy_violation: true
-  condition: selection_trigger AND selection_skew AND selection_policy
+  selection_returned:
+    event.action: rag_retrieval
+    retrieval.returned: true
+  selection_unapproved:
+    document.source_approved: false
+  selection_integrity_failure:
+    document.integrity_verified: false
+  filter_test:
+    deployment.environment: test
+  condition: selection_returned and (selection_unapproved or selection_integrity_failure) and not filter_test
 fields:
-  - request_id
-  - user_id
-  - prompt_text
-  - retrieval.top_k
-  - retrieval.top_domain
-  - retrieval.top_domain_share
-  - retrieval.topk_entropy
-  - retrieved_ids
-  - llm.policy_violation
+  - event.action
+  - retrieval.returned
+  - retrieval.rank
+  - document.id
+  - document.source
+  - document.source_approved
+  - document.integrity_verified
+  - document.ingested_by
+  - query.id
+  - response.id
 falsepositives:
-  - Legitimate rare jargon narrowly mapping to a single authoritative corpus
-  - Incident response drills using synthetic triggers
+  - Newly onboarded sources may be retrieved before approval metadata is synchronized.
+  - Incident-response replay outside the declared test environment may intentionally retrieve quarantined passages.
 level: high
 tags:
-  - attack.T1565.001
-  - attack.T1195
-  - attack.T1562
-  - atlas.data_poisoning
-  - owasp.llm.top10
-  - safe.t3001
+  - saf.t3001
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T3001-C010
+  telemetry_claim_ids:
+    - SAF-T3001-C009
+  limitation_claim_ids:
+    - SAF-T3001-C010
+    - SAF-T3001-C011
+  validation_artifacts:
+    - tests/SAF-T3001/test_detection.py
+    - tests/SAF-T3001/test-logs.json
+    - research/techniques/SAF-T3001/validation/detection-tests.txt
+    - research/techniques/SAF-T3001/validation/strict-validator.txt
+    - research/techniques/SAF-T3001/validation/canonical-validation.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T3001-C009]
+      rationale: OWASP recommends full-pipeline RAG logging with retrieved chunk metadata.
+    selection_returned:
+      claim_ids: [SAF-T3001-C010]
+      rationale: The analytic is limited to passages actually returned by retrieval.
+    selection_unapproved:
+      claim_ids: [SAF-T3001-C009, SAF-T3001-C010]
+      rationale: Source approval is a recommended ingestion control and a candidate detection signal.
+    selection_integrity_failure:
+      claim_ids: [SAF-T3001-C009, SAF-T3001-C010]
+      rationale: Pre-retrieval hash verification is a recommended control and a candidate detection signal.
+    filter_test:
+      claim_ids: [SAF-T3001-C010]
+      rationale: Declared test traffic is suppressed to preserve expected red-team and CI activity.
+    condition:
+      claim_ids: [SAF-T3001-C010]
+      rationale: Returned content plus a failed source or integrity policy is the bounded analytic condition.
+    fields:
+      claim_ids: [SAF-T3001-C009]
+      rationale: These fields support provenance, integrity, retrieval, and response reconstruction.
+    falsepositives:
+      claim_ids: [SAF-T3001-C010]
+      rationale: Metadata synchronization and response exercises can resemble the candidate signal.

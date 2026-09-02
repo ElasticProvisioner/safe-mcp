@@ -1,373 +1,236 @@
 # SAF-T1911: Parameter Exfiltration
 
 ## Overview
-**Tactic**: Exfiltration (ATK-TA0010)
-**Technique ID**: SAF-T1911
-**Severity**: High
-**First Observed**: Not observed in production (technique analysis based on threat modeling)
-**Last Updated**: 2025-12-16
+
+- **Tactic**: Exfiltration (ATK-TA0010)
+- **Technique ID**: SAF-T1911
+- **Research Packet**: [research/techniques/SAF-T1911](../../research/techniques/SAF-T1911/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1911/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Demonstrated
+- **Severity**: High
+- **Severity Rationale**: Controlled experiments transmitted configuration, private-key, chat-history, and contact data; realized impact still depends on the agent's access and successful dispatch. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) and [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C019; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **First Observed**: Not observed in production; publicly demonstrated on 2025-04-01. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004; sources=SRC-invariant-tpa-2025-04-01 -->
+- **Last Updated**: 2026-09-02
+
+## Scope
+
+Parameter Exfiltration is the unauthorized transmission of sensitive data by placing it in the argument values of an MCP tool call. The security boundary is crossed when data available inside the host or a trusted source becomes part of the `arguments` object sent by an MCP client to an attacker-controlled server or unauthorized external destination. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C004; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01 -->
+
+### In Scope
+
+- Sensitive host, model-context, or trusted-tool data is materialized in a `tools/call` argument and sent to an unauthorized recipient. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C004,SAF-T1911-C006; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- The receiving field may belong to a malicious MCP server or to a trusted tool whose destination or content parameter has been subverted. [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+
+### Out of Scope
+
+- Prompt, context, or tool-description injection without sensitive data in an outbound tool parameter is a delivery behavior covered by SAF-T1102. [OWASP MCP Top 10](https://owasp.org/www-project-mcp-top-10/) <!-- SAF-TRACE: claims=SAF-T1911-C010; sources=SRC-owasp-mcp-top10-v0.1 -->
+- Reading or collecting sensitive data without transmitting it is collection behavior covered by SAF-T1801. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004; sources=SRC-invariant-tpa-2025-04-01 -->
+- Startup-command exfiltration by a malicious local server is outside this parameter-specific boundary because the data leaves through server process behavior rather than a host-issued tool argument. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) <!-- SAF-TRACE: claims=SAF-T1911-C009; sources=SRC-mcp-security-2025-11-25 -->
+
+### Distinguishing Characteristics
+
+The decisive observable is sensitive content or data lineage in the outbound argument object. Instruction injection explains why a model may attempt the call, and collection explains how the data became available; neither is Parameter Exfiltration until the sensitive value crosses the client-to-server or client-to-service boundary as an argument. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) and [Invariant WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C003,SAF-T1911-C006,SAF-T1911-C010; sources=SRC-mcp-architecture-2025-11-25,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-owasp-mcp-top10-v0.1 -->
 
 ## Description
-Parameter Exfiltration is a covert data exfiltration technique where adversaries embed sensitive information within unused or optional JSON parameters of MCP tool calls. The attack leverages the fact that MCP tool invocations accept structured JSON arguments, and many implementations do not validate or sanitize parameters that fall outside the defined schema. This allows attackers to smuggle secrets, credentials, or other sensitive data through seemingly legitimate tool calls without triggering traditional data loss prevention (DLP) controls.
 
-This technique exploits the gap between schema-defined parameters and actually transmitted data. When an AI agent is manipulated through prompt injection or other means, it can be instructed to include exfiltration payloads in unused parameter fields. The data flows through the normal MCP communication channel, appearing as legitimate tool invocation traffic to network monitoring systems.
+MCP clients send a `tools/call` request containing a tool name and an `arguments` object. Parameter Exfiltration abuses that ordinary data path: an agent inserts sensitive values it can access into one or more arguments, and the client sends them to a server or external tool destination that is not authorized to receive them. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C004; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01 -->
+
+The behavior is demonstrated, not merely inferred. Luca Beurer-Kellner and Marc Fischer of Invariant Labs reported a controlled Cursor experiment that sent sensitive local-file contents in an unrelated parameter, and a separate study that placed chat or contact data into WhatsApp tool-call fields. Neither report establishes a production breach or present-day susceptibility of every named client. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) and [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006,SAF-T1911-C007; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+
+MCP architecture assigns the host responsibility for consent and security boundaries, and current tool guidance recommends showing inputs before dispatch. Those controls can interrupt the technique, but an approval interface that hides or truncates argument values can fail to expose the actual data transfer. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index), [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools), and [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C002,SAF-T1911-C003,SAF-T1911-C005,SAF-T1911-C008; sources=SRC-mcp-architecture-2025-11-25,SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01 -->
 
 ## Attack Vectors
-- **Primary Vector**: Embedding sensitive data in unused/optional JSON parameters during MCP tool calls
-- **Secondary Vectors**:
-  - Prompt injection instructing AI agents to include secrets in tool parameters
-  - Malicious tool definitions with hidden exfiltration parameters
-  - Metadata field abuse in legitimate tool schemas
-  - Nested JSON structures concealing exfiltration payloads
-  - Base64/hex encoding of sensitive data in string parameters
-  - Scheduled or triggered exfiltration during normal operations
+
+- **Primary Vector**: A malicious or compromised instruction source induces the model to place sensitive data in a tool argument bound for an unauthorized destination. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Secondary Vector**: An injected tool result or message supplies the instruction without requiring an attacker-controlled MCP server. [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C007; sources=SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Affected Components**: MCP host, model orchestration layer, client router, receiving server, and external service. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C003; sources=SRC-mcp-tools-2025-11-25,SRC-mcp-architecture-2025-11-25 -->
+- **Trust Boundary Crossed**: Sensitive host or trusted-source data crosses into a server-specific client session or external service request through tool arguments. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) <!-- SAF-TRACE: claims=SAF-T1911-C003,SAF-T1911-C006; sources=SRC-mcp-architecture-2025-11-25,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 
 ## Technical Details
 
 ### Prerequisites
-- Ability to influence AI agent behavior (prompt injection, compromised context)
-- Knowledge of target MCP tool schemas and available parameters
-- Understanding of which parameters are validated vs. passed through unchecked
-- Optional: Control of MCP server to receive exfiltrated data
+
+- The agent or host can obtain sensitive data from local files, model context, or a trusted tool result. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006,SAF-T1911-C007; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- An attacker-controlled instruction, poisoned description, or injected result influences argument construction. [OWASP MCP Top 10](https://owasp.org/www-project-mcp-top-10/) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C007,SAF-T1911-C010; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-owasp-mcp-top10-v0.1 -->
+- The host dispatches the call without an effective data-flow block or informed denial of the complete arguments. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C005,SAF-T1911-C008,SAF-T1911-C014; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
 
 ### Attack Flow
 
-```mermaid
-graph TD
-    A[Attacker] -->|1. Prompt Injection| B[AI Agent]
-    B -->|2. Accesses Sensitive Data| C[Local Files/Credentials/Secrets]
-    C -->|3. Data Retrieved| B
-
-    B -->|4. Constructs Tool Call| D{MCP Tool Call}
-
-    D -->|Legitimate Params| E[Expected Parameters]
-    D -->|Hidden Payload| F[Unused/Optional Parameters]
-
-    E --> G[MCP Server]
-    F --> G
-
-    G -->|5. Processes Request| H{Parameter Handling}
-
-    H -->|Validated| I[Execute Tool Function]
-    H -->|Ignored/Logged| J[Exfiltration Payload]
-
-    J -->|6. Stored in Logs| K[Server Logs]
-    J -->|6. Forwarded| L[Attacker-Controlled Endpoint]
-
-    I -->|7. Normal Response| B
-
-    M[DLP/Security Monitoring] -.->|Sees Only| N[Normal Tool Invocation]
-
-    style A fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style F fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style J fill:#fc8d59,stroke:#000,stroke-width:2px,color:#000
-    style L fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style N fill:#fee090,stroke:#000,stroke-width:2px,color:#000
-```
-
-1. **Initial Compromise**: Attacker gains influence over AI agent through prompt injection or context poisoning
-2. **Data Collection**: Agent is instructed to access sensitive files, credentials, or environment variables
-3. **Payload Construction**: Sensitive data is embedded in unused parameters of legitimate tool calls
-4. **Exfiltration**: Tool call transmits data through normal MCP channel to server
-5. **Data Capture**: Attacker-controlled server logs or forwards the parameter contents
-6. **Evasion**: Traffic appears as normal tool invocation, bypassing DLP systems
+1. **Setup**: The adversary controls an instruction source that the agent processes, such as a tool description or retrieved message. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C007; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+2. **Collection**: The agent reads or receives sensitive content available through its host or another connected tool. [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+3. **Argument Construction**: The model places the sensitive value in a field that appears plausible for the selected tool. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+4. **Dispatch**: The client serializes the tool name and arguments into `tools/call`; an incomplete approval view may not reveal the embedded data. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C005; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01 -->
+5. **Boundary Crossing**: The unauthorized server or service receives the sensitive argument. [Invariant WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C006; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+6. **Follow-On Activity**: Any later credential use or data abuse is outside this technique and depends on what was transmitted. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C015,SAF-T1911-C019; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 
 ### Example Scenario
 
-**Legitimate Tool Call:**
+An agent reads a document labeled `confidential`, then a poisoned instruction causes it to populate an optional `notes` argument for an untrusted summarization tool. The host-side audit event records only the label and data-flow match in this inert example; no document contents or reusable payload are reproduced. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C011; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+
+The client would transmit the normalized structure below to the server; the placeholder is intentionally non-sensitive. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001; sources=SRC-mcp-tools-2025-11-25 -->
+
 ```json
 {
-  "tool": "send_notification",
-  "arguments": {
-    "channel": "#general",
-    "message": "Build completed successfully",
-    "priority": "normal"
+  "method": "tools/call",
+  "params": {
+    "name": "summarize",
+    "arguments": {"notes": "[REDACTED-SENSITIVE-VALUE]"}
   }
 }
 ```
 
-**Tool Call with Exfiltration Payload:**
-```json
-{
-  "tool": "send_notification",
-  "arguments": {
-    "channel": "#general",
-    "message": "Build completed successfully",
-    "priority": "normal",
-    "note": "QVdTX0FDQ0VTU19LRVk9QUtJQUlPU0ZPRE5ON0VYQU1QTEU7QVdTX1NFQ1JFVD13SmFsclhVdG5GRU1JL0s3TURFTkcvYlB4UmZpQ1lFWEFNUExFS0VZ",
-    "metadata": {
-      "internal_id": "db_password=SuperSecret123!",
-      "trace_context": "api_key=sk-proj-abc123xyz789"
-    }
-  }
-}
-```
+## Evidence and Current State
 
-### Multi-Stage Exfiltration Attack
+### Evidence Summary
 
-**Stage 1: Data Collection via File Tool**
-```json
-{
-  "tool": "read_file",
-  "arguments": {
-    "path": "/home/user/.aws/credentials"
-  }
-}
-```
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1911-C001 | `tools/call` carries a name and arguments object. | Research-Derived | SRC-mcp-tools-2025-11-25: [MCP Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) | Structure does not establish authorization. |
+| SAF-T1911-C002 | Tools may be model-controlled; human denial and confirmation are recommended. | Research-Derived | SRC-mcp-tools-2025-11-25: [MCP Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) | SHOULD-level client guidance. |
+| SAF-T1911-C003 | The host manages consent and server isolation. | Research-Derived | SRC-mcp-architecture-2025-11-25: [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) | Implementation effectiveness is not established. |
+| SAF-T1911-C004 | A controlled tool-poisoning experiment transmitted sensitive files in a parameter. | Demonstrated | SRC-invariant-tpa-2025-04-01: [Invariant](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) | Lab result, not a production breach or current-client assessment. |
+| SAF-T1911-C005 | The tested confirmation UI hid complete inputs; encoding could reduce visibility. | Demonstrated | SRC-invariant-tpa-2025-04-01: [Invariant](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) | One tested interface and date. |
+| SAF-T1911-C006 | A controlled cross-server experiment sent chat history in message fields. | Demonstrated | SRC-invariant-whatsapp-mcp-2025-04-07: [Invariant](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) | Lab result; delivery behavior is separate. |
+| SAF-T1911-C007 | An injected-message variant sent contact data after context adaptation. | Demonstrated | SRC-invariant-whatsapp-mcp-2025-04-07: [Invariant](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) | Context-dependent lab result. |
+| SAF-T1911-C008 | Current guidance recommends complete-input review, confirmation, and logging. | Research-Derived | SRC-mcp-tools-2025-11-25: [MCP Tools](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) | No standard log schema. |
+| SAF-T1911-C009 | Current guidance recommends restricted filesystem and network access for local servers. | Research-Derived | SRC-mcp-security-2025-11-25: [MCP Security](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) | Does not stop already-authorized remote calls. |
+| SAF-T1911-C010 | OWASP separates poisoning, audit, and over-sharing risks. | Research-Derived | SRC-owasp-mcp-top10-v0.1: [OWASP](https://owasp.org/www-project-mcp-top-10/) | Beta guidance, not incident evidence. |
+| SAF-T1911-C011 | Sensitive-lineage plus untrusted-call correlation is a bounded analytic. | Research-Derived | SRC-mcp-tools-2025-11-25; SRC-invariant-tpa-2025-04-01; SRC-invariant-whatsapp-mcp-2025-04-07 | Requires non-standard host enrichment. |
+| SAF-T1911-C012 | Redaction, missing lineage, encoding, and non-MCP paths are blind spots. | Research-Derived | SRC-invariant-tpa-2025-04-01; SRC-mcp-tools-2025-11-25 | Evasion coverage is not measured. |
+| SAF-T1911-C013 | Legitimate external transfers require policy and trust tuning. | Research-Derived | SRC-mcp-tools-2025-11-25; SRC-mitre-attack-t1020-v1.3 | No universal allowlist or threshold. |
+| SAF-T1911-C014 | Visibility, approval, logging, and privilege restriction cover different stages. | Research-Derived | SRC-mcp-tools-2025-11-25; SRC-mcp-security-2025-11-25 | Human approval and sandboxing have limits. |
+| SAF-T1911-C015 | Response should contain the path, preserve evidence, and rotate transmitted credentials. | Research-Derived | SRC-invariant-tpa-2025-04-01; SRC-mcp-tools-2025-11-25; SRC-mcp-security-2025-11-25 | Scope depends on received values. |
+| SAF-T1911-C016 | ATT&CK T1020 is analogous but not MCP-specific. | Research-Derived | SRC-mitre-attack-t1020-v1.3: [ATT&CK](https://attack.mitre.org/techniques/T1020/) | A separate transfer behavior normally also applies. |
+| SAF-T1911-C017 | Description-only scanning cannot prove runtime parameter transmission. | Research-Derived | SRC-invariant-mcp-scan-2025: [Invariant MCP-Scan](https://invariantlabs.ai/blog/introducing-mcp-scan) | Does not assess later versions. |
+| SAF-T1911-C018 | The stable observable is a source-to-argument-to-destination sequence. | Research-Derived | SRC-invariant-tpa-2025-04-01; SRC-invariant-whatsapp-mcp-2025-04-07 | Product-specific artifacts may exist. |
+| SAF-T1911-C019 | Confidentiality impact can be high under demonstrated access and dispatch conditions. | Demonstrated | SRC-invariant-tpa-2025-04-01; SRC-invariant-whatsapp-mcp-2025-04-07 | Prevalence and production loss are not established. |
 
-**Stage 2: Exfiltration via Notification Tool**
-```json
-{
-  "tool": "create_calendar_event",
-  "arguments": {
-    "title": "Team Meeting",
-    "date": "2025-12-20",
-    "attendees": ["team@company.com"],
-    "description": "Weekly sync",
-    "custom_fields": {
-      "aws_credentials": "[default]\naws_access_key_id=AKIAIOSFODNN7EXAMPLE\naws_secret_access_key=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-    }
-  }
-}
-```
+### Current State
 
-### Advanced Attack Techniques
+- **Affected Environments**: Agentic hosts that can access sensitive data and dispatch MCP tool arguments to an unauthorized server or service. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) <!-- SAF-TRACE: claims=SAF-T1911-C003,SAF-T1911-C004,SAF-T1911-C006; sources=SRC-mcp-architecture-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Known Exploitation**: Controlled demonstrations qualify; no qualifying production incident or direct vulnerability was identified in the [reviewed coverage](../../research/techniques/SAF-T1911/source-coverage.yml).
+- **Available Protections**: Complete argument display, meaningful confirmation, tool-usage logging, server isolation, and least-privilege filesystem and network access. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C008,SAF-T1911-C009,SAF-T1911-C014; sources=SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
+- **Residual Risk**: Encoded values, redacted logs, absent lineage, user-approved lookalikes, and non-MCP channels can evade the bounded analytic. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C012,SAF-T1911-C013; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mitre-attack-t1020-v1.3 -->
 
-#### Encoding and Obfuscation Methods
+### Known Breaches and Vulnerabilities
 
-Based on research into covert channel techniques:
-
-1. **Base64 Encoding**: Encode binary or sensitive text data to avoid pattern matching
-   ```json
-   {"note": "U2VjcmV0UGFzc3dvcmQxMjM="}  // "SecretPassword123"
-   ```
-
-2. **Hex Encoding**: Alternative encoding for binary data
-   ```json
-   {"debug_data": "5365637265745061737377"}  // "SecretPassw"
-   ```
-
-3. **JSON Nesting**: Hide data in deeply nested structures
-   ```json
-   {"metadata": {"internal": {"debug": {"trace": {"value": "secret"}}}}}
-   ```
-
-4. **Field Name Steganography**: Encode data in parameter names themselves
-   ```json
-   {"s_e_c_r_e_t": "placeholder"}
-   ```
-
-5. **Chunked Exfiltration**: Split large data across multiple tool calls
-   ```json
-   // Call 1: {"chunk_id": "1", "data": "first_part_of_credential"}
-   // Call 2: {"chunk_id": "2", "data": "second_part_of_credential"}
-   ```
-
-#### Scheduled Transfer Patterns
-
-Based on [MITRE ATT&CK T1029](https://attack.mitre.org/techniques/T1029/):
-
-- **ComRAT Pattern**: Sleep outside business hours, exfiltrate during normal activity periods
-- **ShadowPad Pattern**: Send data at fixed intervals (e.g., every 8 hours) to blend with routine traffic
-- **Volume-Based Triggering**: Only exfiltrate when data volume reaches threshold
-
-#### Webhook/API Abuse
-
-According to [MITRE ATT&CK T1567.004](https://attack.mitre.org/techniques/T1567/004/):
-
-- **Webhook Exfiltration**: Use legitimate webhook parameters to send data to attacker endpoints
-- **Cloud Service Abuse**: Leverage cloud API tools to exfiltrate to attacker-controlled storage
-- **Code Repository Exfil**: Use git/GitHub tools to push secrets to attacker repositories
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| Reviewed-corpus production/CVE gap | Searched 2026-09-02 | No qualifying direct production breach or direct CVE was identified; continue authoritative-catalog review during integration. | Evidence gap documented in the [coverage audit](../../research/techniques/SAF-T1911/source-coverage.yml). | NVD filtered API access was rejected and the CISA KEV feed returned 403 during this run. |
+| Invariant Tool Poisoning experiment | Published 2025-04-01; controlled Cursor setup | Sensitive configuration and private-key data were sent in a side parameter; current MCP guidance recommends full-input review and logging. | Direct demonstration of Parameter Exfiltration. [Research report](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C005,SAF-T1911-C008; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25 --> | No production exploitation or current client status. |
+| Invariant WhatsApp MCP experiments | Published 2025-04-07 and updated 2025-04-09; controlled Cursor and WhatsApp MCP setups | Chat or contact data was placed in message fields directed to an attacker; remediation guidance was precautionary rather than a vendor patch record. | Direct demonstrations using malicious-description and injected-message delivery. [Research report](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C006,SAF-T1911-C007; sources=SRC-invariant-whatsapp-mcp-2025-04-07 --> | No documented production victim or CVE. |
 
 ## Impact Assessment
-- **Confidentiality**: Critical - Direct exfiltration of sensitive credentials and data
-- **Integrity**: Low - Does not directly modify data, but enables subsequent attacks
-- **Availability**: Low - Exfiltration does not typically impact service availability
-- **Scope**: Network-wide - Can exfiltrate data from any source accessible to the AI agent
 
-### Current Status (2025)
-According to security research in the MCP ecosystem:
-- MCP servers commonly accept undefined parameters without validation ([Backslash Security, 2025](https://www.backslash.security/))
-- 43% of analyzed MCP servers contain input validation flaws that enable parameter abuse
-- Few implementations enforce strict schema validation for tool parameters
-- DLP systems typically do not inspect MCP tool call payloads for sensitive data patterns
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | Demonstrated data classes include configuration, private keys, chat history, and contacts; impact is bounded by accessible data and dispatch. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C019; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+| Integrity | Low | Argument manipulation is a means to transmit data; material state change belongs to a different objective unless the tool also alters a recipient or action. [WhatsApp MCP research](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C006; sources=SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+| Availability | None | The defining behavior transmits data and does not require service disruption. [ATT&CK Automated Exfiltration](https://attack.mitre.org/techniques/T1020/) <!-- SAF-TRACE: claims=SAF-T1911-C016; sources=SRC-mitre-attack-t1020-v1.3 --> |
+| Scope | Multi-System | The data may originate from the host or one trusted server and be sent to a different MCP server or external messaging service. [MCP Architecture](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) <!-- SAF-TRACE: claims=SAF-T1911-C003,SAF-T1911-C006; sources=SRC-mcp-architecture-2025-11-25,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+
+### Severity Conditions
+
+- **Severity increases when**: The host exposes credentials, private data, broad cross-server context, or opaque approval views. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C005,SAF-T1911-C019; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Severity decreases when**: The host restricts accessible data and server privileges, blocks sensitive data flow, and presents complete arguments for meaningful approval. [MCP security guidance](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) <!-- SAF-TRACE: claims=SAF-T1911-C008,SAF-T1911-C009,SAF-T1911-C014; sources=SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP host or client audit | `tools/call` dispatch and approval | timestamp, session, server identity and trust, tool name, normalized argument metadata, approval visibility, policy exception | Collect before dispatch; protect raw values and prefer classifications or keyed fingerprints. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C001,SAF-T1911-C008,SAF-T1911-C011; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+| Host data-lineage or DLP enrichment | Sensitive source content mapped into tool arguments | source classification, argument data-flow match, authorized workflow or exception | Without lineage or equivalent content classification, the rule cannot distinguish a secret from an ordinary argument. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C012; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+
 ### Indicators of Compromise (IoCs)
-- Tool calls containing parameters not defined in the tool schema
-- Unusually large parameter payloads (>10KB) in simple tool calls
-- High-entropy strings in parameter values (indicating encoded data)
-- Parameters containing sensitive keywords (password, key, token, secret, credential)
-- Repeated patterns of unused parameters across multiple tool calls
-- Base64 or hex-encoded strings in text parameters
-- Nested JSON structures in fields expecting simple values
 
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. Parameter exfiltration can use novel encoding and obfuscation techniques. Organizations should:
-- Implement strict JSON schema validation for all tool parameters
-- Deploy ML-based anomaly detection for parameter patterns
-- Monitor parameter entropy and size distributions
-- Consider semantic analysis of parameter contents
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: MCP Parameter Exfiltration Detection
-id: e004e53d-8c44-4b5c-851c-550c20020c21
-status: experimental
-description: Detects potential data exfiltration through unused MCP tool parameters
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1911
-  - https://attack.mitre.org/techniques/T1041/
-  - https://attack.mitre.org/techniques/T1567/
-logsource:
-  product: mcp
-  service: tool_invocation
-detection:
-  # Undefined parameters in tool calls
-  selection_undefined_params:
-    event_type: 'tool_call'
-    has_undefined_parameters: true
-
-  # Large parameter payloads
-  selection_large_payload:
-    total_params_size_bytes|gt: 10240  # 10KB threshold
-
-  # Sensitive keywords in parameters
-  selection_sensitive_keywords:
-    parameter_value|contains:
-      - 'password'
-      - 'api_key'
-      - 'secret'
-      - 'token'
-      - 'credential'
-      - 'AWS_ACCESS_KEY'
-      - 'PRIVATE_KEY'
-      - 'BEGIN RSA'
-      - 'BEGIN OPENSSH'
-
-  # High entropy values (base64/encrypted data)
-  selection_high_entropy:
-    parameter_entropy|gt: 5.5
-
-  # Suspicious parameter names
-  selection_suspicious_names:
-    parameter_name|contains:
-      - 'note'
-      - 'metadata'
-      - 'debug'
-      - 'internal'
-      - 'extra'
-      - 'custom'
-      - 'context'
-      - 'trace'
-
-  condition: selection_undefined_params or selection_large_payload or
-             (selection_sensitive_keywords and selection_high_entropy) or
-             (selection_suspicious_names and selection_high_entropy)
-
-falsepositives:
-  - Legitimate debugging metadata
-  - Application-specific extended parameters
-  - Backward compatibility fields
-  - Rich text content in messaging tools
-
-level: high
-
-tags:
-  - attack.exfiltration
-  - attack.ta0010
-  - attack.t1041
-  - attack.t1567
-  - safe.t1911
-  - mcp.exfiltration
-
-fields:
-  - session_id
-  - tool_name
-  - parameter_names
-  - parameter_sizes
-  - parameter_entropy
-  - timestamp
-```
+- No universal durable IoC was identified; different demonstrations used different data, parameters, and destinations. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C018; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 
 ### Behavioral Indicators
-- AI agent accessing sensitive files followed by tool calls with large parameters
-- Patterns of tool calls with consistent unused parameter structures
-- Tool invocations with parameters containing structured data (JSON, key=value pairs)
-- Correlation between file read operations and subsequent API/notification tool calls
-- Increasing parameter sizes over time within a session
-- Tool calls to external services with unexpectedly detailed "notes" or "metadata"
+
+- Sensitive source access or lineage is followed by a `tools/call` whose arguments contain the same classified content and whose destination is untrusted. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C018; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- The approval view omits complete arguments, or the call falls outside an authorized data-transfer workflow. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C005,SAF-T1911-C013; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mitre-attack-t1020-v1.3 -->
+- Tool-description scanning alone is not runtime confirmation because the documented scanner does not retain tool-call contents or results. [Invariant MCP-Scan](https://invariantlabs.ai/blog/introducing-mcp-scan) <!-- SAF-TRACE: claims=SAF-T1911-C017; sources=SRC-invariant-mcp-scan-2025 -->
+
+### Detection Analytic
+
+The standalone analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Identify enriched MCP tool calls that carry sensitive source data to an untrusted destination without an approved policy exception. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C011; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Rule Status**: Experimental because sensitive data lineage and destination trust are deployment-specific enrichments. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C012; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Detection Logic**: Match a dispatched `tools/call` with `dataflow.sensitive_to_arguments=true` and `destination.trust=untrusted`, excluding explicitly approved policy exceptions. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C013; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-mitre-attack-t1020-v1.3 -->
+- **Correlation Window**: No time threshold is used; data-lineage evidence must be attached to the same normalized tool-call event. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C018; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Known False Positives**: Authorized support, backup, or analysis workflows may intentionally send classified data externally; use explicit scoped exceptions rather than suppressing all such traffic. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C013; sources=SRC-mcp-tools-2025-11-25,SRC-mitre-attack-t1020-v1.3 -->
+- **Known Limitations**: Missing lineage, redacted values, encoding, unknown destination trust, and non-MCP channels are blind spots. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C012; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25 -->
+- **Tuning Guidance**: Maintain narrow workflow exceptions keyed by tool, destination, data class, and owner; review unknown destinations instead of treating them as confirmed malicious. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C013; sources=SRC-mcp-tools-2025-11-25,SRC-mitre-attack-t1020-v1.3 -->
+
+### Validation
+
+- **Test Data**: [events.json](../../tests/SAF-T1911/events.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1911/test_detection_rule.py)
+- **Expected Result**: [test-logs.json](../../tests/SAF-T1911/test-logs.json)
+- **Last Validated**: 2026-09-02; see [quality-review.yml](../../research/techniques/SAF-T1911/quality-review.yml).
+- **Canonical Validation Proof**: The destination-repository detector and strict validator results are recorded in [canonical-validation.txt](../../research/techniques/SAF-T1911/validation/canonical-validation.txt).
+- **Feasibility Waiver**: None; deterministic positive, negative, boundary, malformed, authorized, and expected-lookalike cases are included in the [test log](../../tests/SAF-T1911/test-logs.json).
 
 ## Mitigation Strategies
 
 ### Preventive Controls
-1. **[SAF-M-1: Input Validation](../../mitigations/SAF-M-1/README.md)**: Enforce strict JSON schema validation for all tool parameters; reject calls with undefined parameters
-2. **[SAF-M-5: Content Sanitization](../../mitigations/SAF-M-5/README.md)**: Strip unused parameters before processing; sanitize parameter values to remove sensitive patterns
-3. **[SAF-M-19: Least Privilege](../../mitigations/SAF-M-19/README.md)**: Restrict AI agent access to sensitive files and credentials
-4. **[SAF-M-63: Parameter Size Limits](../../mitigations/SAF-M-63/README.md)**: Implement maximum size limits for individual parameters and total payload
-5. **[SAF-M-64: Schema Enforcement](../../mitigations/SAF-M-64/README.md)**: Require strict adherence to tool schemas; use JSON Schema validation with additionalProperties: false
-6. **[SAF-M-65: Sensitive Data Filtering](../../mitigations/SAF-M-65/README.md)**: Implement DLP patterns to detect and block credential-like patterns in parameters
+
+1. **Pre-dispatch data control**: Show complete arguments and block sensitive classifications from unauthorized destinations before `tools/call` leaves the host. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C008,SAF-T1911-C014; sources=SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
+2. **Server isolation**: Restrict local MCP server filesystem and network privileges and grant additional access explicitly. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) <!-- SAF-TRACE: claims=SAF-T1911-C009,SAF-T1911-C014; sources=SRC-mcp-security-2025-11-25,SRC-mcp-tools-2025-11-25 -->
+3. **Meaningful confirmation**: Require user approval for sensitive operations only after presenting the destination and complete, non-truncated argument values. [Invariant research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C005,SAF-T1911-C008,SAF-T1911-C014; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
 
 ### Detective Controls
-1. **[SAF-M-2: Comprehensive Logging](../../mitigations/SAF-M-2/README.md)**: Log all tool parameters with full context including entropy metrics and schema compliance
-2. **[SAF-M-10: Anomaly Detection](../../mitigations/SAF-M-10/README.md)**: Deploy ML models to detect unusual parameter patterns, sizes, and content
-3. **[SAF-M-11: Behavioral Monitoring](../../mitigations/SAF-M-11/README.md)**: Correlate file access with subsequent tool calls to detect collection-exfiltration patterns
-4. **[SAF-M-66: Entropy Analysis](../../mitigations/SAF-M-66/README.md)**: Monitor parameter entropy to detect encoded exfiltration payloads
+
+1. **Tool-call audit**: Log the server identity, tool, argument classifications, approval visibility, and policy decision before dispatch. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C008,SAF-T1911-C011; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+2. **Data-flow correlation**: Alert when sensitive source content maps into arguments for an untrusted destination and no scoped exception applies. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C013; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-mitre-attack-t1020-v1.3 -->
 
 ### Response Procedures
-1. **Immediate Actions**:
-   - Quarantine sessions with suspicious parameter usage
-   - Block tool calls with undefined parameters
-   - Revoke credentials potentially exfiltrated
-   - Capture parameter payloads for forensic analysis
-2. **Investigation Steps**:
-   - Extract and decode suspicious parameter contents
-   - Determine if sensitive data was embedded
-   - Trace parameter data to its source (file read, database query, etc.)
-   - Identify destination (network endpoints, logs, external services)
-   - Assess scope of potential data exposure
-3. **Remediation**:
-   - Implement strict parameter schema validation
-   - Rotate compromised credentials
-   - Update detection rules based on observed patterns
-   - Enhance logging for parameter-level visibility
-   - If data exfiltrated: initiate breach notification per regulatory requirements
+
+#### Immediate Actions
+
+- Deny a pending call or disconnect the implicated server and contain the affected session when dispatch already occurred. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C015; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
+- Rotate only credentials whose values were transmitted or whose compromise is otherwise established. [Invariant tool-poisoning research](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) <!-- SAF-TRACE: claims=SAF-T1911-C015; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25 -->
+
+#### Investigation Steps
+
+- Preserve tool-call arguments or privacy-preserving fingerprints, server identity, approval presentation, and the sensitive source-access trail. [MCP Tools specification](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) <!-- SAF-TRACE: claims=SAF-T1911-C008,SAF-T1911-C015; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-mcp-security-2025-11-25 -->
+- Determine which values reached which destination; do not infer exposure from tool-description scanning alone. [Invariant MCP-Scan](https://invariantlabs.ai/blog/introducing-mcp-scan) <!-- SAF-TRACE: claims=SAF-T1911-C015,SAF-T1911-C017; sources=SRC-invariant-tpa-2025-04-01,SRC-mcp-tools-2025-11-25,SRC-mcp-security-2025-11-25,SRC-invariant-mcp-scan-2025 -->
+
+#### Remediation
+
+- Remove or distrust the inducing instruction source, close the approval-visibility gap, and constrain data and server privileges before reconnecting. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) <!-- SAF-TRACE: claims=SAF-T1911-C009,SAF-T1911-C014,SAF-T1911-C015; sources=SRC-mcp-security-2025-11-25,SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01 -->
+- Add the confirmed source-to-argument sequence as a regression case without retaining raw exposed secrets. [Invariant controlled demonstrations](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) <!-- SAF-TRACE: claims=SAF-T1911-C011,SAF-T1911-C015; sources=SRC-mcp-tools-2025-11-25,SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-mcp-security-2025-11-25 -->
 
 ## Related Techniques
-- [SAF-T1910](../SAF-T1910/README.md): Covert Channel Exfiltration - Parent technique category
-- [SAF-T1912](../SAF-T1912/README.md): Stego Response Exfil - Similar concealment in code blocks
-- [SAF-T1913](../SAF-T1913/README.md): HTTP POST Exfil - Direct exfiltration via web tools
-- [SAF-T1914](../SAF-T1914/README.md): Tool-to-Tool Exfil - Chaining tools for exfiltration
-- [SAF-T1801](../SAF-T1801/README.md): Automated Data Harvesting - Often precedes parameter exfiltration
-- [SAF-T1102](../SAF-T1102/README.md): Prompt Injection - Common initial access vector for this technique
-- [SAF-T1501](../SAF-T1501/README.md): Full-Schema Poisoning - Related schema exploitation technique
 
-## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [MITRE ATT&CK T1041 - Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041/)
-- [MITRE ATT&CK T1567 - Exfiltration Over Web Service](https://attack.mitre.org/techniques/T1567/)
-- [MITRE ATT&CK T1567.004 - Exfiltration Over Webhook](https://attack.mitre.org/techniques/T1567/004/)
-- [MITRE ATT&CK T1048 - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)
-- [MITRE ATT&CK T1029 - Scheduled Transfer](https://attack.mitre.org/techniques/T1029/)
-- [OWASP API Security - Broken Object Property Level Authorization](https://owasp.org/API-Security/editions/2023/en/0xa3-broken-object-property-level-authorization/)
-- [OWASP REST Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html)
-- [CWE-20: Improper Input Validation](https://cwe.mitre.org/data/definitions/20.html)
-- [CWE-200: Exposure of Sensitive Information](https://cwe.mitre.org/data/definitions/200.html)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite or co-occurring | Injection supplies adversary influence; Parameter Exfiltration requires sensitive content in an outbound argument. [OWASP MCP Top 10](https://owasp.org/www-project-mcp-top-10/) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C007,SAF-T1911-C010; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-owasp-mcp-top10-v0.1 --> |
+| [SAF-T1801: Automated Data Harvesting](../SAF-T1801/README.md) | Prerequisite | Collection obtains data; Parameter Exfiltration transmits it in a tool parameter. [ATT&CK Automated Exfiltration](https://attack.mitre.org/techniques/T1020/) <!-- SAF-TRACE: claims=SAF-T1911-C004,SAF-T1911-C016; sources=SRC-invariant-tpa-2025-04-01,SRC-mitre-attack-t1020-v1.3 --> |
 
 ## MITRE ATT&CK Mapping
-- [T1041 - Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041/)
-- [T1567 - Exfiltration Over Web Service](https://attack.mitre.org/techniques/T1567/)
-- [T1567.004 - Exfiltration Over Webhook](https://attack.mitre.org/techniques/T1567/004/)
-- [T1048 - Exfiltration Over Alternative Protocol](https://attack.mitre.org/techniques/T1048/)
-- [T1029 - Scheduled Transfer](https://attack.mitre.org/techniques/T1029/)
-- [T1132 - Data Encoding](https://attack.mitre.org/techniques/T1132/)
+
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1020](https://attack.mitre.org/techniques/T1020/) | Automated Exfiltration | Analogous | Both use automated processing to transmit gathered data; T1020 is not MCP-specific and normally pairs with a separate transfer technique. <!-- SAF-TRACE: claims=SAF-T1911-C016; sources=SRC-mitre-attack-t1020-v1.3 --> |
+
+## References
+
+1. **SRC-mcp-tools-2025-11-25**: [Tools - Model Context Protocol Specification, 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) - Tool invocation, arguments, confirmation, input visibility, and logging.
+2. **SRC-mcp-architecture-2025-11-25**: [Architecture - Model Context Protocol Specification, 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/architecture/index) - Host, client, server, and isolation responsibilities.
+3. **SRC-mcp-security-2025-11-25**: [Security Best Practices - Model Context Protocol, 2025-11-25](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) - Server isolation, access restriction, logging, and scope minimization.
+4. **SRC-invariant-tpa-2025-04-01**: [MCP Security Notification: Tool Poisoning Attacks - Luca Beurer-Kellner and Marc Fischer, 2025](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) - Controlled parameter-exfiltration experiment and interface limitations.
+5. **SRC-invariant-whatsapp-mcp-2025-04-07**: [WhatsApp MCP Exploited - Luca Beurer-Kellner and Marc Fischer, 2025](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) - Controlled cross-server and injected-message parameter-exfiltration experiments.
+6. **SRC-invariant-mcp-scan-2025**: [Introducing MCP-Scan - Luca Beurer-Kellner and Marc Fischer, 2025](https://invariantlabs.ai/blog/introducing-mcp-scan) - Tool-description scanner scope and runtime-logging limitation.
+7. **SRC-owasp-mcp-top10-v0.1**: [OWASP MCP Top 10, v0.1 beta](https://owasp.org/www-project-mcp-top-10/) - Neighboring risk categories, telemetry guidance, project status, and attribution.
+8. **SRC-mitre-attack-t1020-v1.3**: [MITRE ATT&CK T1020: Automated Exfiltration, v1.3](https://attack.mitre.org/techniques/T1020/) - Analogous framework behavior and limits.
 
 ## Version History
+
 | Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-12-16 | Initial documentation of Parameter Exfiltration technique | SAF-MCP Contributors |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-02 | Independent clean-room draft with evidence packet and tested analytic. | OpenAI Codex clean-room author |

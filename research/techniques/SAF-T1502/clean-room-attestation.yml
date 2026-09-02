@@ -1,0 +1,145 @@
+version: 1
+technique_id: SAF-T1502
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: cleanroom_saf_t1502_retry
+  inherited_context: false
+target:
+  id: SAF-T1502
+  neutral_name: File-Based Credential Harvest
+allowed_inputs:
+- The complete author-saf-technique skill and required clean-room, methodology, breach-and-vulnerability,
+  and readable-trace references, excluding impact-classification examples.
+- Exact canonical generic TEMPLATE.md, research README, blank technique schemas, and
+  validate-technique-research.py.
+- The task-supplied target ID, neutral name, and tactic ID.
+- Directly opened standards-body, government, first-party vendor, first-party researcher,
+  and academic authority URLs.
+- Exact GitHub advisory URLs only after an official CVE record supplied each identifier
+  and canonical URL.
+- A new isolated bundle path and synthetic mock containing only this bundle, the generic
+  validator, and minimal synthetic joins.
+prohibited_inputs:
+- Existing or historical techniques/SAF-T1502/README.md.
+- Existing research/techniques/SAF-T1502/ directory or any prior target packet.
+- Existing techniques/SAF-T1502/detection-rule.yml and prior target tests or logs.
+- Git history, diffs, blame, branches, stashes, commits, or review artifacts that
+  expose target content.
+- Any pull request, issue, cached SAF page, SAF site, catalog description, shared
+  registry, or prior bundle that exposes target research or prose.
+- Any previous conversation, summary, agent conclusion, source list, draft, or target-specific
+  methodology example.
+- Unrestricted web search, search_query, GitHub search or discovery, derivative-only
+  substantive sourcing, and SAF-MCP repositories or forks.
+independent_research:
+  searches:
+  - Direct open MCP Tools specification 2025-11-25.
+  - Direct open MCP Resources specification 2025-11-25.
+  - Direct open MCP Security Best Practices 2025-11-25.
+  - Direct open current MITRE ATT&CK T1552.001, T1005, T1555, T1003, and T1056 pages.
+  - Direct open the primary Anthropic GTG-1002 report from the authority link on current
+    ATT&CK T1552.001.
+  - Exact official CVE API retrieval for CVE-2025-53109, CVE-2025-53110, and CVE-2025-49596.
+  - Exact open of GHSA-q66q-fx2p-7w4m, GHSA-hc55-p739-j48w, and GHSA-7f8r-222p-6f5g
+    after CVE provenance.
+  - Exact CISA KEV catalog lookups for the three CVEs; no reviewable catalog record
+    was returned.
+  - Direct open Google Cloud ADC, AWS shared credential files, Microsoft Event 4663,
+    RHEL 9 auditing, NIST SP 800-61r3, and the Google Threat Intelligence Group AI
+    Threat Tracker.
+  - Two follow-up passes re-opened the direct protocol, incident, advisory, telemetry,
+    cloud, NIST, and ATT&CK authority pages and produced no material change.
+  opened_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-shared-credential-files
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-ghsa-inspector-7f8r
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-google-adc-files
+  - SRC-google-gtig-ai-threat-tracker-2026
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-event-4663
+  - SRC-mitre-t1003
+  - SRC-attack-t1005
+  - SRC-mitre-t1056
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-mitre-t1555
+  - SRC-nist-sp800-61r3
+  - SRC-rhel9-audit
+  github_advisory_provenance:
+  - advisory: GHSA-q66q-fx2p-7w4m
+    obtained_from: SRC-cve-2025-53109
+  - advisory: GHSA-hc55-p739-j48w
+    obtained_from: SRC-cve-2025-53110
+  - advisory: GHSA-7f8r-222p-6f5g
+    obtained_from: SRC-cve-2025-49596
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile stable source IDs only after freeze and only by exact canonical URL identity.
+- Replace synthetic neighbor IDs and the synthetic history SHA mechanically without
+  importing old target research or prose.
+- Confirm the task-supplied tactic join and add canonical mitigation joins without
+  changing the independent evidence set.
+- Do not inspect a prior-target diff during integration.
+attestation: I attest that this fresh-agent run used no inherited target content,
+  opened no prohibited prior artifact, conducted independent direct-authority research,
+  and froze the independently authored draft and evidence set before any integration
+  or shared-registry reconciliation.
+mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1502
+  result: passed
+  mode: strict isolated synthetic mock
+  validator_copied_into_bundle: false
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-resources-2025-11-25: SRC-mcp-resources-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-anthropic-gtg1002-2025: SRC-anthropic-espionage-2025-11
+    SRC-cve-2025-53109: SRC-cve-2025-53109
+    SRC-ghsa-q66q-fx2p-7w4m: SRC-ghsa-cve-2025-53109
+    SRC-ghsa-hc55-p739-j48w: SRC-ghsa-cve-2025-53110
+    SRC-cve-2025-49596: SRC-cve-2025-49596
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-mitre-t1552-001: SRC-mitre-attack-t1552.001-v1.3
+    SRC-mitre-t1005: SRC-attack-t1005
+    SRC-rhel9-audit: SRC-rhel9-audit
+    SRC-nist-sp800-61r3: SRC-nist-sp800-61r3
+  new_shared_source_records:
+  - SRC-cve-2025-53110
+  - SRC-mitre-t1555
+  - SRC-mitre-t1003
+  - SRC-mitre-t1056
+  - SRC-aws-shared-credential-files
+  - SRC-google-adc-files
+  - SRC-microsoft-event-4663
+  - SRC-google-gtig-ai-threat-tracker-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-15
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-74
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1505
+  - SAF-T1911
+  - SAF-T1003

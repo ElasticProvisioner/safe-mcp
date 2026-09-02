@@ -1,0 +1,154 @@
+version: 1
+technique_id: SAF-T1109
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 tools security considerations"
+        - "site:modelcontextprotocol.io/specification/2026-07-28 streamable HTTP Origin localhost authentication"
+      material_changes: [Established normative control and transport requirements.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov CVE MCP Inspector remote code execution"
+        - "site:cisa.gov MCP Inspector CVE exploited"
+        - "site:oligo.security MCP debugging inspector vulnerability exploitation"
+        - "site:microsoft.com MCP prototype RCE production incident"
+      material_changes: [Added two Inspector advisories and bounded exploitation status; no qualifying production breach found.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:oligo.security MCP Inspector demonstration localhost browser RCE"
+        - "site:microsoft.com AutoJack AutoGen Studio MCP RCE"
+      material_changes: [Added independent Inspector and AutoJack controlled demonstrations.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:microsoft.com AutoJack hunting detection child process WebSocket server_params"
+        - "site:modelcontextprotocol.io MCP security Origin validation authorization audit"
+        - "site:attack.mitre.org T1203 detection child process network"
+      material_changes: [Derived a testable control-request-to-child-process correlation and layered controls.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io/seps local server installation security"
+        - "site:developer.microsoft.com MCP tool poisoning prompt injection control plane"
+        - "site:attack.mitre.org T1190 public-facing application"
+      material_changes: [Separated prompt/tool manipulation, installation, and public-service exploitation boundaries.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov CVE-2025-49596 exploitation status"
+        - "site:cisa.gov CVE-2025-58444 exploitation status"
+        - "site:microsoft.com AutoJack production exploitation"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io inspector 0.16.6 security"
+        - "site:developer.microsoft.com MCP debugging control plane breach"
+        - "site:microsoft.com AutoGen Studio AutoJack production incident"
+      material_changes: []
+  rationale: Current normative, advisory, original-research, detection, defense, and boundary authorities cover every publishable claim; the final two narrow authority-only passes changed no material conclusion.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-ghsa-inspector-7f8r
+    - SRC-ghsa-inspector-g9hg
+    - SRC-microsoft-autojack-2026
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-inspector-7f8r
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: direct_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Unauthenticated proxy requests could launch arbitrary local MCP commands over stdio.
+      remediation: Fixed in MCP Inspector 0.14.1 with authentication, local binding, and Origin validation.
+      selected: true
+      rationale: Directly crosses the bounded local debugging-control-plane boundary with local execution.
+    - source_id: SRC-ghsa-inspector-g9hg
+      identifier: CVE-2025-58444 / GHSA-g9hg-qhmf-q45m
+      relationship: direct_vulnerability
+      exploitation_status: advisory_no_production_incident_identified
+      impact: A malicious redirect path could enable direct proxy interaction and local command execution.
+      remediation: Fixed in MCP Inspector 0.16.6 with redirect URL validation.
+      selected: true
+      rationale: Directly exploits the Inspector control surface and reaches local execution.
+    - source_id: SRC-microsoft-autojack-2026
+      identifier: AutoJack
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration_only
+      impact: Untrusted web content could drive a local MCP connection into arbitrary process launch.
+      remediation: Fixed before PyPI release; current packaged builds were not affected according to Microsoft.
+      selected: true
+      rationale: Independent end-to-end demonstration in an agent prototyping environment.
+    - source_id: SRC-oligo-localhost-2025
+      identifier: 0.0.0.0 Day
+      relationship: enabling_vulnerability
+      exploitation_status: controlled_demonstration
+      impact: Browser requests could reach local services under affected browser behaviors.
+      remediation: Browser and service-side restrictions described by the source.
+      selected: false
+      rationale: Establishes an enabling browser-to-localhost path but not the defining debugging-tool execution outcome.
+    - source_id: SRC-oligo-litellm-2026
+      identifier: LiteLLM test endpoint exploitation
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: reported_active_exploitation
+      impact: Public server-side test endpoints enabled command execution.
+      remediation: Vendor update and endpoint restriction.
+      selected: false
+      rationale: Public server API boundary is closer to public-facing service exploitation than the bounded developer debugging control plane.
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-inspector-fix-0141
+  - SRC-ghsa-inspector-g9hg
+  - SRC-inspector-fix-0166
+  - SRC-microsoft-autojack-2026
+  - SRC-mcp-sep-1024
+  - SRC-ms-agt
+  - SRC-mitre-t1203
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-oligo-localhost-2025
+  - SRC-oligo-litellm-2026
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-inspector-fix-0141
+  - SRC-ghsa-inspector-g9hg
+  - SRC-inspector-fix-0166
+  - SRC-microsoft-autojack-2026
+  - SRC-mcp-sep-1024
+  - SRC-ms-agt
+  - SRC-mitre-t1203
+  - SRC-mitre-attack-t1190-v2.8
+sources_rejected:
+  - source_id: SRC-oligo-localhost-2025
+    reason: Historical enabling condition without the technique's local process-execution outcome.
+  - source_id: SRC-oligo-litellm-2026
+    reason: Different public server API boundary.
+sources_blocked:
+  - authority: NVD detail pages for the two Inspector CVEs
+    reason: Restricted discovery results were visible, but detail-page opening did not yield directly reviewable content; no NVD proposition was published.
+conflicts:
+  - issue: Some sources describe severe potential RCE, but none reviewed reports a production compromise for the three selected examples.
+    resolution: Evidence is classified Demonstrated, and all examples explicitly state the controlled or advisory-only limitation.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1109-C004, SAF-T1109-C006, SAF-T1109-C008]
+  rationale: Two independent teams demonstrated end-to-end attacker-controlled input reaching local developer control planes and spawning processes; production exploitation was not established.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

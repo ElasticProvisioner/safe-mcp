@@ -1,0 +1,22 @@
+version: 1
+technique_id: SAF-T1308
+validated_on: "2026-09-01"
+environment: isolated_synthetic_mock_repository
+real_target_accessed: false
+checks:
+  - id: detection-test
+    status: passed
+    cases_total: 8
+    cases_matched: 5
+    proof: validation/detection-test.txt
+  - id: strict-research-validator
+    status: passed
+    proof: validation/strict-validator.txt
+  - id: clean-room-boundary
+    status: passed
+    proof: research/techniques/SAF-T1308/clean-room-attestation.yml
+  - id: external-source-corpus-integrity
+    status: passed
+    files: 22
+    proof: /private/tmp/saf-all-cleanroom/SAF-T1308/source-corpus.sha256
+blocked_issues: []

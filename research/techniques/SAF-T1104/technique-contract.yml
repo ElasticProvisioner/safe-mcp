@@ -1,0 +1,83 @@
+version: 1
+technique_id: SAF-T1104
+name: Over-Privileged Tool Abuse
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause an MCP or agentic system to execute a legitimate tool operation
+  outside the user's intended authority by exploiting authority that is broader than
+  the current task requires.
+scope:
+  security_boundary: The boundary between task-scoped user intent and the effective
+    authority of the MCP tool, delegated credential, local process, or downstream
+    service.
+  in_scope:
+  - Invocation of a legitimate tool whose effective scopes, reachable resources, or
+    operation set exceed the authority required by the current task.
+  - Execution that uses the excess authority to read, modify, transmit, or execute
+    outside the user's intended operation.
+  - MCP and comparable agentic tool calls where model-controlled planning supplies
+    the invocation.
+  out_of_scope:
+  - Prompt injection, malicious tool descriptions, or stolen tokens considered only
+    as delivery mechanisms before a privileged tool is invoked.
+  - A tool implementation that directly injects commands, queries, or paths when excess
+    delegated authority is not part of the attack condition.
+  - Legitimate privileged administration that remains within explicit, current approval
+    and task intent.
+  - Downstream persistence, collection, exfiltration, or impact after the immediate
+    unauthorized tool execution.
+  affected_components:
+  - MCP host or agent orchestrator
+  - MCP client and tool-call approval layer
+  - MCP server and exposed tool
+  - Delegated credential, local process identity, or downstream service account
+  - External service or local resource reached by the tool
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection changes model instructions; SAF-T1104 begins when
+    a legitimate tool executes with authority beyond the current task.
+- technique_id: SAF-T1001
+  distinction: Tool poisoning corrupts discovery metadata; SAF-T1104 covers the
+    subsequent execution through an over-authorized trusted tool.
+required_evidence:
+- Current MCP requirements for model-controlled tool calls, authorization scopes,
+  access controls, confirmation, and audit logging.
+- A controlled end-to-end demonstration in which adversarial influence causes a trusted,
+  privileged tool to act beyond user intent.
+- Current production-incident, vulnerability, advisory, exploitation-status, and remediation
+  searches.
+- Evidence identifying privilege minimization, step-up authorization, sandboxing,
+  and approval boundaries.
+- Detection evidence identifying tool-call, identity, scope, approval, intent, and
+  outcome telemetry.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP or agent tool-call audit events with timestamp, session_id, actor_id, server_id,
+    tool_name, action, resource, decision, tool_risk, and outcome.
+  - Authorization context with effective_scopes, required_scopes, credential_id, audience,
+    and elevation correlation ID.
+  - Approval and task context with approval_state, approval_id, task_id, and intent_match
+    or an equivalent policy decision.
+safe_example_constraints:
+- Use inert example.invalid destinations, synthetic resource names, and placeholder
+  identifiers.
+- Do not reproduce exploit strings, destructive queries, live credentials, phone numbers,
+  or operational secrets.
+- Describe vulnerable conditions and outcomes without providing deployable payloads.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and directly reviewed
+  source or a declared repository artifact.
+- Unverified production-breach and exploitation claims are omitted and recorded in
+  the exclusion ledger.
+- The five methodology passes and two consecutive no-change follow-ups are recorded.
+- Positive, negative, boundary, malformed, and legitimate-lookalike detection tests
+  pass.
+- Publication-rights, safe-publication, framework, and clean-room-integrity reviews
+  pass.

@@ -1,0 +1,56 @@
+[
+  {
+    "case_id": "positive-missing-provenance",
+    "event": {
+      "event.action": "training_sample_ingested",
+      "sample.origin": "mcp_tool_result",
+      "provenance.status": "missing",
+      "sample.disposition": "admitted"
+    }
+  },
+  {
+    "case_id": "positive-digest-mismatch",
+    "event": {
+      "event.action": "training_sample_ingested",
+      "sample.origin": "mcp_tool_result",
+      "provenance.status": "digest_mismatch",
+      "sample.disposition": "admitted"
+    }
+  },
+  {
+    "case_id": "negative-valid-provenance",
+    "event": {
+      "event.action": "training_sample_ingested",
+      "sample.origin": "mcp_tool_result",
+      "provenance.status": "valid",
+      "sample.disposition": "admitted"
+    }
+  },
+  {
+    "case_id": "negative-non-mcp-origin",
+    "event": {
+      "event.action": "training_sample_ingested",
+      "sample.origin": "curated_document",
+      "provenance.status": "missing",
+      "sample.disposition": "admitted"
+    }
+  },
+  {
+    "case_id": "negative-quarantined",
+    "event": {
+      "event.action": "training_sample_ingested",
+      "sample.origin": "mcp_tool_result",
+      "provenance.status": "invalid",
+      "sample.disposition": "quarantined"
+    }
+  },
+  {
+    "case_id": "boundary-staged-not-ingested",
+    "event": {
+      "event.action": "training_sample_staged",
+      "sample.origin": "mcp_tool_result",
+      "provenance.status": "source_mismatch",
+      "sample.disposition": "admitted"
+    }
+  }
+]

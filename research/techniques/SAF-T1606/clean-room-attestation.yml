@@ -1,0 +1,176 @@
+version: 1
+technique_id: SAF-T1606
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1606
+  inherited_context: false
+  context_note: The agent received only the neutral target ID, name, tactic, clean-room
+    constraints, and deliverables; no prior technique prose, research leads, source
+    list, conclusions, or conversation-derived target content was inherited.
+target:
+  id: SAF-T1606
+  neutral_name: Directory Listing via File Tool
+allowed_inputs:
+- The author-saf-technique skill and its methodology, clean-room, readable-trace,
+  and breach/vulnerability references, excluding impact-classification examples.
+- Generic repository techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and scripts/validate-technique-research.py.
+- Neutral target ID SAF-T1606, neutral name Directory Listing via File Tool, and tactic
+  ATK-TA0007 Discovery.
+- Direct external standards-body, government, academic-publisher, first-party vendor,
+  project, or researcher authorities independently opened from exact URLs.
+- Exact GitHub artifacts only after a directly reviewed non-GitHub authority supplied
+  the exact URL, with provenance recorded in source-manifest-fragment.yml.
+- Newly created isolated mock-repository records used only to exercise deterministic
+  joins and strict validation.
+prohibited_inputs:
+- Existing or historical techniques/SAF-T1606/README.md.
+- Existing research/techniques/SAF-T1606/ packet, traceability ledger, source coverage,
+  tests, or evidence.
+- Existing techniques/SAF-T1606/detection-rule.yml and target test logs or scripts.
+- Existing shared research/source-manifest.yml, research/framework-model.yml, and
+  research/alignment-ledger.yml before freeze.
+- Git history, diff, blame, stashes, commits, branches, or review comments exposing
+  prior target artifacts.
+- Any pull request, issue, cached SAF page, SAF website, source list copied from the
+  prior target, or catalog description containing prior target prose.
+- Any previous conversation, summary, agent context, methodology impact example, or
+  prior target context containing technique-specific conclusions or research leads.
+- Unrestricted web search, search_query, GitHub search, SAF-MCP repositories or forks,
+  secureagenticframework.org, and safemcp.org.
+independent_research:
+  searches:
+  - Direct open https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - Direct open https://modelcontextprotocol.io/specification/2025-11-25/client/roots
+  - Direct open https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+  - Direct open https://modelcontextprotocol.io/examples
+  - Direct open https://attack.mitre.org/techniques/T1083/
+  - Direct open https://attack.mitre.org/detectionstrategies/DET0370/
+  - NVD API keywordSearch=Model Context Protocol filesystem
+  - NVD API keywordSearch=Model Context Protocol directory traversal
+  - NVD API keywordSearch=Model Context Protocol file access
+  - NVD API keywordSearch=MCP filesystem server directory
+  - NVD API keywordSearch=Model Context Protocol directory listing tool
+  - NVD API keywordSearch=MCP enumerate files directories
+  - NVD API exact cveId retrieval for all nine recorded candidate CVEs
+  - CISA KEV version 2026.09.01 exact cveID equality checks for all nine candidate
+    CVEs
+  - Direct full-report review of Anthropic's November 2025 GTG-1002 incident report
+  - Direct GitHub artifact review only for exact URLs first supplied by the official
+    MCP Example Servers page or the exact NVD records
+  opened_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-mcp-completion-2025-11-25
+  - SRC-mcp-example-servers-2026-09-02
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-mcp-fix-cc99bda
+  - SRC-mcp-fix-d00c60d
+  - SRC-mcp-roots-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-attack-t1083
+  - SRC-mitre-det0370-v1.0
+  - SRC-nvd-cve-2025-47274
+  - SRC-nvd-cve-2025-53109
+  - SRC-nvd-cve-2025-53110
+  - SRC-nvd-cve-2025-67366
+  - SRC-nvd-cve-2025-68143
+  - SRC-nvd-cve-2026-40576
+  - SRC-nvd-cve-2026-43901
+  - SRC-nvd-cve-2026-46555
+  - SRC-nvd-cve-2026-73498
+  github_provenance:
+  - github_url: https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+    supplied_by: SRC-mcp-example-servers-2026-09-02
+  - github_url: https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-q66q-fx2p-7w4m
+    supplied_by: SRC-nvd-cve-2025-53109
+  - github_url: https://github.com/modelcontextprotocol/servers/commit/d00c60df9d74dba8a3bb13113f8904407cda594f
+    supplied_by: SRC-nvd-cve-2025-53109
+  - github_url: https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-hc55-p739-j48w
+    supplied_by: SRC-nvd-cve-2025-53110
+  - github_url: https://github.com/modelcontextprotocol/servers/commit/cc99bdabdcad93a58877c5f3ab20e21d4394423d
+    supplied_by: SRC-nvd-cve-2025-53110
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+freeze_note: The independently researched draft and evidence set were content-frozen
+  before any shared registry, catalog, prior target, or repository integration access.
+  Subsequent edits are limited to validator-driven normalization and proof/hash recording,
+  without new research or prior-artifact comparison.
+mock_validation:
+  repository_path: /private/tmp/saf-all-cleanroom/SAF-T1606/mock
+  generic_baseline_commit: 2e7307c6af85d63e6ee22a3b8ea076ce11ac0712
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1606
+  result: passed
+  proof: validation/strict-validator.txt
+  deliberately_deferred_joins:
+  - Actual catalog neighbor and mitigation IDs
+  - Shared source-ID collision resolution by canonical URL only
+  - Honest first integration commit SHA
+integration_constraints:
+- Use source-manifest-fragment.yml only for stable-ID collision resolution after freeze;
+  it must not introduce research leads.
+- Replace synthetic neighbor and mitigation IDs mechanically and preserve all distinctions
+  and cited requirements.
+- Replace the isolated mock baseline SHA with the honest first integration commit
+  SHA.
+- Atomically replace target paths without inspecting prior content or a revealing
+  diff.
+- Rerun detection, strict research, and regression validation after all mechanical
+  joins.
+attestation: I attest that the independently generated SAF-T1606 draft and evidence
+  set used only the allowed clean-room inputs, that no prohibited prior target artifact
+  or context was accessed, and that integration has not begun.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-ghsa-q66q-fx2p-7w4m: SRC-ghsa-cve-2025-53109
+    SRC-ghsa-hc55-p739-j48w: SRC-ghsa-cve-2025-53110
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-attack-t1083-v1.7: SRC-attack-t1083
+    SRC-anthropic-gtg1002-2025: SRC-anthropic-espionage-2025-11
+  new_shared_source_records:
+  - SRC-mcp-roots-2025-11-25
+  - SRC-mcp-completion-2025-11-25
+  - SRC-mcp-example-servers-2026-09-02
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-nvd-cve-2025-53109
+  - SRC-mcp-fix-d00c60d
+  - SRC-nvd-cve-2025-53110
+  - SRC-mcp-fix-cc99bda
+  - SRC-mitre-det0370-v1.0
+  - SRC-nvd-cve-2025-47274
+  - SRC-nvd-cve-2025-68143
+  - SRC-nvd-cve-2025-67366
+  - SRC-nvd-cve-2026-40576
+  - SRC-nvd-cve-2026-43901
+  - SRC-nvd-cve-2026-46555
+  - SRC-nvd-cve-2026-73498
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+    SAF-T9901: SAF-T1502
+    SAF-T9902: SAF-T1105
+  validation_proofs:
+  - research/techniques/SAF-T1606/validation/detection-test.txt
+  - research/techniques/SAF-T1606/validation/strict-validator.txt
+  status: integrated_and_validated

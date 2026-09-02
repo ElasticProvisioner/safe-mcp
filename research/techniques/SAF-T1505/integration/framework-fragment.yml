@@ -1,0 +1,34 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1505
+    name: In-Memory Secret Extraction
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0006
+    technique_path: techniques/SAF-T1505/README.md
+    research_packet: research/techniques/SAF-T1505
+    related_techniques:
+      - SAF-T1502
+      - SAF-T1305
+      - SAF-T1911
+    mitigations:
+      - SAF-M-9
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-20
+      - SAF-M-29
+      - SAF-M-37
+      - SAF-M-52
+      - SAF-M-74
+    attack_mappings:
+      - id: T1003
+        type: analogous
+    detection:
+      rule: techniques/SAF-T1505/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1505/test_detection_rule.py
+        - tests/SAF-T1505/test-logs.json
+        - research/techniques/SAF-T1505/validation/detection-tests.txt
+        - research/techniques/SAF-T1505/validation/strict-validator.txt

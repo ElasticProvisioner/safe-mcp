@@ -1,0 +1,148 @@
+version: 1
+technique_id: SAF-T1504
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1504/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1504/technique-contract.yml
+  supports: Internal scope, name, tactic, clean-room mode, and completion conditions.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1504/clean-room-attestation.yml
+  supports: Clean-room inputs, independent searches, source openings, isolation, provenance,
+    and validation constraints.
+- id: LOCAL-claim-inventory
+  path: research/techniques/SAF-T1504/claim-inventory.yml
+  supports: Exact claim statements, source relationships, locators, limitations, conflicts,
+    inference, and validation status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1504/source-coverage.yml
+  supports: Five-pass research, saturation, candidate classifications, selected examples,
+    evidence assessment, and search counts.
+- id: LOCAL-publication-rights
+  path: research/techniques/SAF-T1504/publication-rights.yml
+  supports: Publication-rights and attribution review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1504/quality-review.yml
+  supports: Quality-gate, detector-test, and strict-validator status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1504/detection-rule.yml
+  supports: The complete authorization-aware response-token analytic and component
+    traceability.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1504/cases.json
+  supports: Positive, negative, boundary, malformed-field, and expected-legitimate-lookalike
+    cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1504/test_detection_rule.py
+  supports: Deterministic implementation and assertions for all detector cases and
+    result counts.
+- id: LOCAL-detection-output
+  path: research/techniques/SAF-T1504/validation/detection-test-output.txt
+  supports: Recorded command, case counts, and passing detector result.
+- id: LOCAL-strict-validation-output
+  path: research/techniques/SAF-T1504/validation/strict-validator-output.txt
+  supports: Canonical strict-validator command and isolated result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1504-X001
+  candidate: A production incident established SAF-T1504 before publication.
+  origin: Known-breach and active-exploitation search pass.
+  attempted_searches:
+  - CISA KEV full-catalog exact-ID and MCP/token filter
+  - NVD API keywordSearch=MCP incident breach token
+  - NVD API keywordSearch=AI agent breach API response token
+  consulted_source_ids:
+  - SRC-cisa-kev-token-response-2026-09-01
+  - SRC-cve-2026-39974
+  - SRC-cve-2026-48039
+  - SRC-ghsa-meta-ads
+  - SRC-ghsa-n8n-mcp
+  reason: The selected records describe vulnerabilities and controlled behavior, do
+    not state production exploitation, and are absent from the dated KEV catalog.
+  prohibited_publishable_text:
+  - SAF-T1504 has been exploited in production.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1504-X002
+  candidate: CVE-2026-27826 directly demonstrates token theft via an MCP response.
+  origin: NVD Model Context Protocol credential search.
+  attempted_searches:
+  - Exact CVE-2026-27826 record review
+  - Exact GHSA-7r34-79r5-rcc9 review after CVE provenance
+  consulted_source_ids:
+  - SRC-cve-2026-27826
+  - SRC-ghsa-mcp-atlassian-7r34
+  reason: The proof demonstrates outbound SSRF and attacker content entering tool
+    results; cloud credential theft is potential impact and no token-bearing response
+    is shown.
+  prohibited_publishable_text:
+  - CVE-2026-27826 returned cloud credentials in an MCP response.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1504-X003
+  candidate: CVE-2026-25650 is direct API-response evidence for SAF-T1504.
+  origin: NVD Model Context Protocol token search.
+  attempted_searches:
+  - Exact CVE-2026-25650 record review
+  - Exact GHSA-vf6j-c56p-cq58 review after CVE provenance
+  consulted_source_ids:
+  - SRC-cve-2026-25650
+  - SRC-ghsa-mcp-salesforce
+  reason: Both records establish OAuth token disclosure but omit the transport or
+    disclosure channel required by the contract.
+  prohibited_publishable_text:
+  - CVE-2026-25650 disclosed its token through a JSON-RPC response.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1504-X004
+  candidate: CVE-2026-33461 directly establishes the MCP or agentic behavior.
+  origin: NVD API response access token disclosure search.
+  attempted_searches:
+  - Exact CVE-2026-33461 record review
+  - Elastic ESA-2026-24 first-party advisory review
+  consulted_source_ids:
+  - SRC-cve-2026-33461
+  - SRC-elastic-esa-2026-24
+  reason: The API response mechanism is relevant, but the affected Kibana Fleet environment
+    is neither MCP nor agentic.
+  prohibited_publishable_text:
+  - CVE-2026-33461 is direct MCP evidence.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1504-X005
+  candidate: A single response regex can recognize every reusable token.
+  origin: Detection design challenge pass.
+  attempted_searches:
+  - RFC 6750 token syntax and client handling review
+  - Selected advisory token representations comparison
+  consulted_source_ids:
+  - SRC-rfc6750
+  - SRC-ghsa-meta-ads
+  - SRC-ghsa-n8n-mcp
+  reason: RFC 6750 requires clients to handle unspecified token sizes and treats tokens
+    as opaque; issuer-specific and novel formats can evade generic classification.
+  prohibited_publishable_text:
+  - This detector recognizes every bearer token format.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1504-X006
+  candidate: Every token found in a response can be replayed successfully.
+  origin: Impact and contrary-evidence pass.
+  attempted_searches:
+  - RFC 6750 bearer-token threats and mitigations review
+  - MCP authorization token audience, expiry, and token-theft review
+  consulted_source_ids:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-rfc6750
+  reason: Expiry, revocation, audience, scope, and sender-constraining controls may
+    prevent or limit use even when a token string is disclosed.
+  prohibited_publishable_text:
+  - All tokens in responses are replayable.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

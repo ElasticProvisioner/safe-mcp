@@ -1,0 +1,161 @@
+version: 1
+technique_id: SAF-T1101
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1101
+  neutral_name: Command Injection
+allowed_inputs:
+- Technique identifier SAF-T1101
+- Neutral title Command Injection
+- Tactic identifier ATK-TA0002 and tactic name Execution
+- Generic authoring skill, packet templates, validator, and repository contribution
+  instructions
+- Independently discovered public authoritative sources
+prohibited_inputs:
+- techniques/SAF-T1101/README.md
+- techniques/SAF-T1101/detection-rule.yml and any existing technique fixtures or tests
+- research/techniques/SAF-T1101/ and any existing target research packet
+- Technique catalog descriptions, SAF or SAFE pages, shared source/framework registries
+  before freeze, and prior agent artifacts
+- git history, git log, git diff, git blame, branches, commits, and old target content
+- pull request descriptions, reviews, comments, and old PR content
+- previous conversation content beyond the permitted seed metadata
+independent_research:
+  searches:
+  - Direct review of the current Model Context Protocol architecture, tools, Inspector,
+    and security-best-practices URLs
+  - Direct review of CWE-78 and OWASP OS Command Injection Defense guidance
+  - Direct review of Python subprocess and Node.js child_process security documentation
+  - Direct NVD API query for keyword Model Context Protocol
+  - Direct NVD API query for keyword MCP command injection
+  - Direct current CISA KEV catalog review and command-injection filtering
+  - Direct NVD API lookup for CVE-2026-42271
+  - Direct IBM security-bulletin review and NVD lookup for CVE-2026-12940
+  - Direct JFrog research and advisory review plus NVD lookup for CVE-2025-6514
+  - Direct Oligo research review plus NVD lookup for CVE-2025-49596
+  - Exact GHSA-v4p8-mg3p-g94g opened only after its URL and identifier were found
+    in CISA KEV
+  - Exact GHSA-7f8r-222p-6f5g opened only after its URL and identifier were found
+    on Oligo's non-GitHub research page
+  - Direct VulnCheck and NVD review for CVE-2026-75149
+  - Direct NVD review for CVE-2025-54074, CVE-2025-64340, and CVE-2026-30615
+  - Direct OX Security MCP supply-chain research review as a challenge and gap pass
+  - Direct Microsoft Sysmon, Elastic ECS process, and MITRE ATT&CK T1059 review
+  - Saturation query MCP shell injection, which materially added CVE-2026-12940
+  - Saturation query Model Context Protocol arbitrary command execution, with no new
+    material evidence
+  - Saturation follow-up MCP stdio environment variable injection, with no new identifiers
+  - Saturation follow-up Model Context Protocol OS command injection, with no new
+    identifiers
+  opened_source_ids:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-cwe-78-v4.20
+  - SRC-python-subprocess-3.14
+  - SRC-node-child-process-v26
+  - SRC-owasp-command-injection
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-litellm-v4p8
+  - SRC-nvd-2026-42271
+  - SRC-redhat-2026-27784
+  - SRC-ibm-2026-12940
+  - SRC-nvd-2026-12940
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-nvd-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-nvd-2025-49596
+  - SRC-sysmon-15-21
+  - SRC-ecs-process-current
+  - SRC-mitre-t1059-current
+  - SRC-vulncheck-2026-75149
+  - SRC-nvd-2026-75149
+  - SRC-nvd-2025-54074
+  - SRC-nvd-2025-64340
+  - SRC-nvd-2026-30615
+  - SRC-ox-mcp-2026
+  - SRC-oligo-localhost-2025
+  - SRC-nvd-keyword-baseline-2026
+  - SRC-nvd-saturation-followup-1
+  - SRC-nvd-saturation-followup-2
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- The frozen evidence and prose were produced before any shared repository source
+  or framework registry was consulted.
+- Source IDs in this isolated bundle are newly coined clean-room identifiers and require
+  collision-only reconciliation during repository integration.
+- SAF-T1102 and SAF-T1104 are explicitly synthetic neighbor joins used only to exercise
+  strict isolated validation; replace them mechanically with existing repository neighbor
+  IDs, if any, without importing prior prose.
+- The repository-history entry is a commit from the fresh isolated validation repository
+  and carries no inherited project history.
+attestation: I used only the permitted seed metadata, generic authoring machinery,
+  and independently discovered authoritative sources. I did not access prohibited
+  target artifacts, prior target prose, shared registries before freeze, repository
+  history, or prior-review material. Exact GitHub advisories were opened only after
+  their identifier and URL were discovered in reviewed non-GitHub authorities, as
+  recorded above.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-ghsa-2026-42271: SRC-ghsa-litellm-v4p8
+    SRC-jfrog-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-oligo-2025-49596: SRC-oligo-inspector-cve-2025-49596
+    SRC-ghsa-2025-49596: SRC-ghsa-inspector-7f8r
+    SRC-sysmon-v15.21: SRC-sysmon-15-21
+  new_shared_source_records:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-cwe-78-v4.20
+  - SRC-python-subprocess-3.14
+  - SRC-node-child-process-v26
+  - SRC-owasp-command-injection
+  - SRC-nvd-2026-42271
+  - SRC-redhat-2026-27784
+  - SRC-ibm-2026-12940
+  - SRC-nvd-2026-12940
+  - SRC-jfsa-2025-6514
+  - SRC-nvd-2025-6514
+  - SRC-nvd-2025-49596
+  - SRC-ecs-process-current
+  - SRC-mitre-t1059-current
+  - SRC-vulncheck-2026-75149
+  - SRC-nvd-2026-75149
+  - SRC-nvd-2025-54074
+  - SRC-nvd-2025-64340
+  - SRC-nvd-2026-30615
+  - SRC-ox-mcp-2026
+  - SRC-oligo-localhost-2025
+  - SRC-nvd-keyword-baseline-2026
+  - SRC-nvd-saturation-followup-1
+  - SRC-nvd-saturation-followup-2
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-5
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-15
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: SAF-T1104
+  status: integrated_and_repository_validated

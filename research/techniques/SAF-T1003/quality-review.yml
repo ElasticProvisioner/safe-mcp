@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T1003
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: clean-room authoring agent /root/cleanroom_saf_t1003
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh agent, inherited_context false, prohibited inputs not opened, exact searches and source set recorded, strict isolated mock validation passed.
+  contract_and_scope:
+    status: passed
+    notes: Delivery and activation are bounded from payload state, impersonation, persuasion, update-path hijack, and downstream effects.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, registry, installation, incident, vulnerability, and empirical statements map to reviewed exact locators.
+  claim_traceability:
+    status: passed
+    notes: Full canonical claim IDs and source IDs resolve; hidden_html_v1 comments use the validator syntax.
+  source_or_omit:
+    status: passed
+    notes: Every substantive publishable line is traced or points to a declared local artifact; blocked and unselected leads are omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Observed applies only to malicious public-registry distribution; victim compromise and prevalence remain explicitly unestablished.
+  research_saturation:
+    status: passed
+    notes: All five passes and two final consecutive no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: One direct malicious distribution incident and one enabling vulnerability were selected with exploitation and remediation limits.
+  detection_quality:
+    status: passed
+    notes: The normalized analytic has specified telemetry, a multi-signal condition, false positives, limitations, and seven passing deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address admission, integrity, provenance limits, least privilege, caches, and first-run monitoring.
+  framework_alignment:
+    status: passed
+    notes: The Initial Access tactic, shared framework record, and SAF-T1207 neighboring-technique boundary are reconciled and pass strict repository validation.
+  publication_rights:
+    status: passed
+    notes: Source uses are factual paraphrase or nominative framework references; no protected code, figures, tables, or long quotations are reproduced.
+  safe_publication:
+    status: passed
+    notes: Tests use inert synthetic identifiers and no exploit payload, live callback endpoint, credential, or destructive command.
+
+validation:
+  commands:
+    - command: env PYTHONPATH=/private/tmp/saf-t1003-validator-deps python3 scripts/validate-technique-research.py SAF-T1003
+      result: passed
+      environment: isolated mock repository with minimal synthetic join records and neighbor stubs
+    - command: python3 techniques/SAF-T1003/tests/test_detection.py
+      result: passed
+    - command: shasum -a 256 -c FREEZE.sha256
+      result: passed
+      timing: final freeze verification
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1003
+      result: passed
+      environment: post-freeze repository integration
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1003/tests/test_detection.py
+    result: 7 of 7 deterministic cases passed; 4 alerts, 3 non-alerts, and 1 expected false positive.
+    waiver: null
+
+unresolved: []

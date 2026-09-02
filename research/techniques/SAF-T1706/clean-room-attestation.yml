@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1706
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1706
+  neutral_name: OAuth Token Pivot Replay
+allowed_inputs:
+- The author-saf-technique skill and its methodology, breach research, clean-room,
+  and readable-trace references, excluding methodology impact examples.
+- The generic techniques template, research README, blank technique research schemas,
+  and validator supplied in the isolated input directory.
+- Neutral identifier SAF-T1706, neutral name OAuth Token Pivot Replay, and assigned
+  tactic ATK-TA0008 Lateral Movement.
+- Direct standards-body, government, academic-publisher, first-party vendor, project,
+  or named-researcher authorities independently located by exact URL or authority
+  API.
+prohibited_inputs:
+- Any existing or historical techniques/SAF-T1706/README.md.
+- Any existing or historical research/techniques/SAF-T1706/ content.
+- Any existing or historical techniques/SAF-T1706/detection-rule.yml or tests.
+- Target git history, diff, blame, or prior branch state.
+- Any issue, pull request, review, or catalog description about SAF-T1706.
+- Any previous conversation, prior target context, other agent work, or methodology
+  impact example.
+- Shared SAF source, framework, or alignment registries; SAF sites, repositories,
+  forks, and mirrors.
+- Unrestricted web search, search_query, GitHub search, or SAF-derived research.
+independent_research:
+  searches:
+  - RFC Editor exact documents 6750, 9700, 8707, 9449, 7662, 9068, and 7009.
+  - MCP Authorization and Security Best Practices exact 2025-11-25 documents.
+  - NVD exact CVE records and authority API keyword query corpus recorded in source
+    coverage.
+  - CISA KEV version 2026.09.01 exact identifier checks.
+  - First-party Google GTIG, Salesloft, GitHub, Google mcp-toolbox, and mcp-server-kubernetes
+    records reached by exact authority URLs.
+  - MITRE ATT&CK exact pages T1550.001 and T1528.
+  - Two final NVD authority-only no-material-change query passes recorded verbatim
+    in source-coverage.yml.
+  opened_source_ids:
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9449
+  - SRC-rfc7662
+  - SRC-rfc9068
+  - SRC-rfc7009
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-47250
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-release-mcp-k8s-3.7.0
+  - SRC-google-gtig-drift
+  - SRC-salesloft-drift-update
+  - SRC-github-oauth-incident-2022
+  - SRC-mitre-t1550-001
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-search-corpus
+  - SRC-nvd-cve-2025-68129
+  - SRC-nvd-cve-2026-82462
+  - SRC-nvd-cve-2026-53431
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Validate only in an isolated synthetic mock repository before freezing the bundle.
+- Do not open the destination repository's technique, research packet, tests, history,
+  registries, issues, or prior review material before freeze.
+- Treat SAF-T1504, SAF-T1304, SAF-M-16, SAF-M-31, SAF-M-19, the synthetic history
+  SHA, and fragment joins as placeholders requiring mechanical reconciliation after
+  freeze.
+- Preserve the frozen evidence meaning, exclusions, trace links, rights decisions,
+  and research-derived label during integration.
+attestation: I authored this technique from the neutral assignment, permitted generic
+  methodology inputs, and independently opened direct-authority sources. I did not
+  access a prior SAF-T1706 artifact, target history, shared registry, SAF-derived
+  source, or another agent's work. GitHub artifacts were opened only when an already
+  reviewed non-GitHub authority supplied the exact URL, with provenance recorded.
+  Validation occurs against synthetic joins before an immutable exhaustive freeze;
+  integration is not part of this bundle task.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-rfc6750: SRC-rfc6750
+    SRC-rfc9700: SRC-rfc9700
+    SRC-rfc8707: SRC-rfc8707
+    SRC-rfc9449: SRC-rfc9449
+    SRC-rfc9068: SRC-rfc9068
+    SRC-rfc7009: SRC-rfc7009
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-nvd-cve-2026-14541: SRC-nvd-cve-2026-14541
+    SRC-google-pr-3450: SRC-google-pr3450
+    SRC-github-oauth-incident: SRC-github-oauth-incident-2022
+    SRC-mitre-t1550.001: SRC-mitre-t1550-001
+    SRC-mitre-t1528: SRC-mitre-t1528
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-catalog-page-2026-09-01
+  new_shared_source_records:
+  - SRC-rfc7662
+  - SRC-nvd-cve-2026-47250
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-release-mcp-k8s-3.7.0
+  - SRC-google-gtig-drift
+  - SRC-salesloft-drift-update
+  - SRC-nvd-search-corpus
+  - SRC-nvd-cve-2025-68129
+  - SRC-nvd-cve-2026-82462
+  - SRC-nvd-cve-2026-53431
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0008
+  canonical_mitigations:
+  - SAF-M-16
+  - SAF-M-19
+  - SAF-M-31
+  - SAF-M-37
+  canonical_neighbors:
+  - SAF-T1504
+  - SAF-T1506
+  - SAF-T1304
+  - SAF-T1308
+  canonical_validation_proof:
+  - research/techniques/SAF-T1706/validation/detection-tests.txt
+  - research/techniques/SAF-T1706/validation/strict-validator.txt
+  source_archive_disposition: Frozen acquisition copies remain outside the repository;
+    canonical records preserve review evidence and frozen hashes without checking
+    in third-party source bodies.
+  status: integrated_and_validated

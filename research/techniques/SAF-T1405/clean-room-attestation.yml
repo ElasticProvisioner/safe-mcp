@@ -1,0 +1,130 @@
+version: 1
+technique_id: SAF-T1405
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1405
+  inherited_context: false
+target:
+  id: SAF-T1405
+  neutral_name: Tool Obfuscation/Renaming
+allowed_inputs:
+- Target ID SAF-T1405, neutral name Tool Obfuscation/Renaming, and tactic ATK-TA0005
+  supplied as the complete technique-specific seed.
+- Generic blank technique and research templates.
+- Current canonical validator and generic research methodology instructions.
+- Independently located direct protocol, catalog, advisory, framework, and research
+  authorities.
+prohibited_inputs:
+- Existing or historical techniques/SAF-T1405/README.md.
+- Existing or historical techniques/SAF-T1405/detection-rule.yml.
+- Existing or historical research/techniques/SAF-T1405/ content.
+- Existing target research, target tests, target diffs, git history, blame, commits,
+  issue discussions, or pull request material.
+- Catalog descriptions, shared registries, SAF website or repository content, forks,
+  and methodology impact examples before freeze.
+- Previous conversation context or inherited technique-specific conclusions.
+independent_research:
+  searches:
+  - 'Direct MCP authority: https://modelcontextprotocol.io/specification/2026-07-28/server/tools'
+  - 'Direct MCP authority: https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices'
+  - 'NVD CVE API keyword: Model Context Protocol tool'
+  - 'NVD CVE API keyword: Model Context Protocol renaming'
+  - 'NVD CVE API keyword: MCP tool poisoning'
+  - 'NVD CVE API keyword: Model Context Protocol tool name'
+  - 'NVD CVE API keyword: Model Context Protocol name collision'
+  - 'NVD CVE API keyword: MCP tool allowlist'
+  - 'NVD CVE API keyword: MCP tool confusion'
+  - 'NVD CVE API keyword: Model Context Protocol metadata spoofing'
+  - 'NVD CVE API keyword: MCP tool masquerading'
+  - 'CISA KEV full-catalog filter: MCP OR Model Context Protocol'
+  - 'arXiv API: all Model Context Protocol AND tool AND security'
+  - 'arXiv API: all tool name AND obfuscation AND agent'
+  - 'arXiv API: all Model Context Protocol AND name collision'
+  - 'arXiv API: all Model Context Protocol AND preference manipulation'
+  - Direct CISA site search URL for MCP tool
+  - Direct Microsoft Security page query for MCP tool
+  - Direct Google Threat Intelligence page query for MCP tool
+  - Direct Anthropic news index review and local MCP/tool-name filter
+  - 'Direct MITRE ATT&CK authority: https://attack.mitre.org/techniques/T1036/'
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mpma-2025
+  - SRC-mcp-security-bench-2510.15994
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2025
+  - SRC-nvd-mcp-tool-identity-corpus-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+  - SRC-mitre-attack-t1036
+  - SRC-tool-squatting-2025
+  - SRC-mcp-safety-audit-2025
+  - SRC-mcp-security-best-practices-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect or compare the prior target artifact until after FREEZE.sha256 is
+  generated.
+- Join source, framework, and alignment fragments mechanically by stable keys after
+  freeze.
+- Resolve clean-room neighbor and mitigation join anchors against the canonical registry
+  only after freeze.
+- Replace the synthetic isolated-validation history SHA with the real integration
+  commit only after merge.
+- Preserve the frozen bundle and checksum proof unchanged during integration review.
+attestation: I authored this packet from the supplied neutral seed and independently
+  opened authorities in a fresh-agent context. I did not access any prohibited target,
+  repository-history, catalog, registry, SAF-site, fork, pull-request, or prior- conversation
+  input before freeze, and no contamination was detected.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-spec-2026: SRC-mcp-tools-2026-07-28
+    SRC-msb-2026: SRC-mcp-security-bench-2510.15994
+    SRC-semantic-descriptor-2026: SRC-jamshidi-2026-arxiv-2512-06556
+    SRC-nvd-query-set-2026: SRC-nvd-mcp-tool-identity-corpus-2026
+    SRC-cisa-kev-2026: SRC-cisa-kev-2026-09-01
+    SRC-mitre-t1036: SRC-mitre-attack-t1036
+  new_shared_source_records:
+  - SRC-nvd-mcp-tool-identity-corpus-2026
+  - SRC-mpma-2025
+  - SRC-etdi-2025
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+  - SRC-tool-squatting-2025
+  - SRC-mcp-safety-audit-2025
+  - SRC-mcp-security-best-practices-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-6
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1001
+    SAF-T9999: SAF-T1201
+  synthetic_mitigation_mapping:
+    SAF-M-998: SAF-M-2
+    SAF-M-999: SAF-M-74
+  normalization_refreeze:
+    agent: /root/normalize_saf_t1405
+    mode: mechanical_no_research
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1405-normalized/bundle
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 6d71220d9419a827ff1493880e22a96e525f1e431f2dbc3349c5d7400f16f803
+    result: passed
+  status: integrated_and_repository_validated

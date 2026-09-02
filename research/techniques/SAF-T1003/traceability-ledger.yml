@@ -1,0 +1,159 @@
+version: 1
+technique_id: SAF-T1003
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1003/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1003/technique-contract.yml
+  supports: Internal name, scope, tactic placeholder, detection expectation, and completion
+    metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1003/quality-review.yml
+  supports: Isolated validation commands, results, review date, and deliberately deferred
+    real joins.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1003/detection-rule.yml
+  supports: Portable normalized detection analytic and explicit traceability components.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1003/tests/test_detection.py
+  supports: Deterministic rule evaluation for synthetic normalized events.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1003/tests/fixtures/events.ndjson
+  supports: Positive, negative, boundary, and expected-false-positive synthetic cases.
+- id: LOCAL-detection-expected
+  path: techniques/SAF-T1003/tests/fixtures/expected.json
+  supports: Expected score, alert, and classification for every test case.
+- id: LOCAL-detection-results
+  path: techniques/SAF-T1003/tests/results/test-results.json
+  supports: Passing deterministic test results.
+- id: LOCAL-detection-log
+  path: techniques/SAF-T1003/tests/logs/test-run.log
+  supports: Human-readable passing test log.
+- id: LOCAL-source-fragment
+  path: research/techniques/SAF-T1003/integration/source-manifest-fragment.yml
+  supports: Canonical independently reviewed source records pending collision reconciliation.
+- id: LOCAL-framework-fragment
+  path: research/techniques/SAF-T1003/integration/framework-fragment.yml
+  supports: Minimal canonical framework record pending real local join.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1003/integration/integration-notes.yml
+  supports: Honest post-freeze join and validation requirements.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1003-X001
+  candidate: Postmark MCP malicious-package incident
+  origin: Koi security-research search lead
+  attempted_searches:
+  - rogue MCP server package backdoor malicious update npm registry security 2025
+    2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids: []
+  reason: The original article redirected to an unrelated product page during direct
+    review; discovery snippets were not accepted as evidence.
+  prohibited_publishable_text:
+  - giftshop.club
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X002
+  candidate: NVD exploitation-status enrichment for CVE-2025-6514
+  origin: NVD search lead
+  attempted_searches:
+  - CVE-2025-6514 exploitation known exploited remediation fixed version -"SAF-T1003"
+    -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-jfrog-cve-2025-6514
+  reason: The direct NVD HTML body returned no content in the research client, so
+    NVD-only status text was omitted.
+  prohibited_publishable_text:
+  - CISA SSVC exploitation none
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X003
+  candidate: node-code-sandbox-mcp command-injection vulnerability
+  origin: NVD vulnerability search lead
+  attempted_searches:
+  - CVE MCP malicious server client remote code execution exploitation status 2025
+    2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids: []
+  reason: A server implementation vulnerability is adjacent and does not establish
+    malicious server distribution.
+  prohibited_publishable_text:
+  - CVE-2025-53372
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X004
+  candidate: Roo Code MCP configuration prompt-injection vulnerability
+  origin: NVD vulnerability search lead
+  attempted_searches:
+  - CVE MCP malicious server client remote code execution exploitation status 2025
+    2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids: []
+  reason: Configuration poisoning is adjacent and does not establish malicious server
+    distribution.
+  prohibited_publishable_text:
+  - CVE-2025-53098
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X005
+  candidate: npm campaign that injected rogue MCP configuration
+  origin: Socket security-research search lead
+  attempted_searches:
+  - malicious MCP server package public registry reported removed install update backdoor
+    September October 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids: []
+  reason: The primary distributed artifacts were general malicious packages; MCP configuration
+    injection was a later action and only analogous.
+  prohibited_publishable_text:
+  - SANDWORM_MODE
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X006
+  candidate: Trend Micro dangling-repository-link measurement
+  origin: Security-research search lead
+  attempted_searches:
+  - MCP ecosystem registry hijacking dangling repository takeover affix squatting
+    measurement 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-li-gao-dsn-2026
+  reason: Relevant exposure mechanism but lower incremental value than the selected
+    accepted study.
+  prohibited_publishable_text:
+  - 22,000 public MCP repositories
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X007
+  candidate: When MCP Servers Attack demonstration paper
+  origin: arXiv research search lead
+  attempted_searches:
+  - MCP server distribution registry hijack package security empirical study 2026
+    -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-li-gao-dsn-2026
+  - SRC-chen-etal-mcpzoo-2026
+  reason: Relevant demonstration research but did not improve the distribution claim
+    beyond selected direct and empirical sources.
+  prohibited_publishable_text:
+  - 12 attack categories
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1003-X008
+  candidate: CISA open-source software and SBOM guidance
+  origin: CISA defense search lead
+  attempted_searches:
+  - site:cisa.gov securing software supply chain approved ingestion provenance digital
+    signature hash integrity package sources version pinning -"SAF-T1003" -"SAFE-T1003"
+    -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-npm-provenance
+  - SRC-openssf-provenance
+  reason: Direct PDF access returned HTTP 403; indexed text was not accepted as evidence,
+    and accessible authoritative controls covered the claim.
+  prohibited_publishable_text:
+  - AUD-1 AUD-2 AUD-3 ENF-1 ENF-2
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

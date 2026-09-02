@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T2102
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: Independent clean-room SAF technique author
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records allowed inputs, prohibited targets, independent searches, and no prior-artifact access.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires an MCP or agentic boundary plus measurable availability or task-continuity loss and excludes adjacent mechanisms.
+  technical_accuracy:
+    status: passed
+    notes: Current and affected-version protocol semantics, prerequisites, examples, and impact conditions are explicitly separated.
+  claim_traceability:
+    status: passed
+    notes: Every publishable proposition maps to validated claim and source identifiers with exact locators.
+  source_or_omit:
+    status: passed
+    notes: Substantive README lines carry readable hidden SAF-TRACE comments; unvalidated leads are excluded.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by direct advisories and controlled research; absence of adversarial production evidence blocks Observed.
+  research_saturation:
+    status: passed
+    notes: Two consecutive exact-identifier follow-ups produced no material changes after three discovery follow-ups were integrated.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production, advisory, exploitation-status, demonstration, remediation, ranking, and exclusion records are complete.
+  detection_quality:
+    status: passed
+    notes: Deterministic analytic covers positive, negative, boundary, malformed, missing-field, expected false-positive, normalization, and evasion-limit cases.
+  mitigation_quality:
+    status: passed
+    notes: Validation, authorization, quotas, timeouts, circuit breakers, isolation, and monitoring address the defining mechanisms.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0040, canonical neighbors SAF-T1106 and SAF-T2101, seven mitigations, and direct ATT&CK T1499 mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited sources have named credit and paraphrase-only or small-factual-data use records; no quotations or third-party artifacts are included.
+  safe_publication:
+    status: passed
+    notes: Examples are descriptive and fixtures are inert; no exploit payload, traffic generator, credential, or destructive command is included.
+validation:
+  commands:
+    - command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T2102/pydeps python3 scripts/validate-technique-research.py SAF-T2102
+      result: passed
+    - command: python3 techniques/SAF-T2102/test_detection_rule.py
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T2102/test_detection_rule.py
+    result: PASS 13/13 cases
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: PASS 13/13 cases
+    validator_result: PASS SAF-T2102
+    proof: research/techniques/SAF-T2102/validation/canonical-validation.txt
+unresolved: []

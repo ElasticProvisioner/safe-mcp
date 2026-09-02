@@ -1,0 +1,303 @@
+version: 1
+technique_id: SAF-T1002
+research_status: saturated
+
+search_controls:
+  mode: whitelist_only_domain_filtered
+  required_exclusions: '-"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP"'
+  prohibited_domains:
+    - secureagenticframework.org
+    - safemcp.org
+    - SAF or SAFE repositories, forks, caches, issues, pull requests, and mirrors
+  total_queries: 53
+  contamination_detected: false
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'Model Context Protocol security local server install execute code trust -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'software supply chain provenance dependencies SSDF -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nist.gov]'
+        - 'SLSA provenance specification subject digest builder id -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [slsa.dev]'
+        - 'ATT&CK T1195 Supply Chain Compromise -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [attack.mitre.org]'
+        - 'MCP registry package ownership security version metadata integrity -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'MCP server package vulnerability malicious package registry install security -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,jfrog.com]'
+        - 'MCP server security installation package supply chain provenance -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,docs.npmjs.com,slsa.dev]'
+      material_changes:
+        - Established the trusted acquisition and local execution boundaries.
+        - Established that registry namespace authentication and code-safety scanning are distinct.
+        - Established the direct ATT&CK T1195 mapping.
+
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'Nx s1ngularity postmortem malicious npm versions AI CLI -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nx.dev]'
+        - 'Nx compromised npm package s1ngularity advisory -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - 'tj-actions changed-files compromise CVE advisory March 2025 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [cisa.gov,nvd.nist.gov]'
+        - 'XZ Utils CVE-2024-3094 backdoor advisory exploitation status -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [cisa.gov,redhat.com,nvd.nist.gov]'
+        - '"CVE-2025-24472" tj-actions changed-files known exploited -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"CVE-2025-24472" tj-actions changed-files -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '"CVE-2024-3094" XZ exploitation none -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - '"CVE-2026-45321" TanStack supply chain compromise -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [tanstack.com,nvd.nist.gov]'
+        - '"CVE-2025-30066" tj-actions changed-files malicious code affected versions remediation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '"GHSA-mcph-m25j-8j63" changed-files -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+        - '"CVE-2025-30066" changed-files response -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [stepsecurity.io]'
+        - 'tj-actions changed-files supply chain compromise March 2025 response -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [unit42.paloaltonetworks.com,wiz.io]'
+        - 'TanStack npm supply chain compromise postmortem May 2026 affected versions remediation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [tanstack.com]'
+        - 'Nx Console v18.95.0 supply chain compromise remediation detection -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nx.dev]'
+        - 'Coinbase AgentKit tj-actions compromise response no damage -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [coinbase.com,unit42.paloaltonetworks.com]'
+        - 'CVE-2026-45321 exploitation active affected TanStack packages remediation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - 'CVE-2025-6514 mcp-remote command injection affected versions fixed exploitation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [jfrog.com,nvd.nist.gov,cve.org]'
+        - 'MCP Registry moderation policy malware vulnerable servers upstream registries -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'AWS MCP server CVE-2026-18953 path traversal fixed version security bulletin -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [aws.amazon.com]'
+        - 'Microsoft dependency confusion campaign npm 2026 malicious packages security blog -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [microsoft.com]'
+        - 'JFrog CVE-2025-6514 mcp-remote fixed 0.1.16 exploitation status -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [jfrog.com]'
+        - '"CVE-2026-18953" MCP server path traversal fixed version -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [aws.amazon.com,nvd.nist.gov,cve.org]'
+        - '"CVE-2026-18953" -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [aws.amazon.com]'
+      material_changes:
+        - Selected two agentic-context production incidents and two current package-path incidents.
+        - Classified MCP implementation CVEs as adjacent vulnerabilities rather than supply-chain evidence.
+        - Captured affected versions, remediation, observed impact, and material limitations.
+
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'Model Context Protocol malicious server registry package supply chain empirical study -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [arxiv.org,acm.org,usenix.org]'
+        - 'MCP server installation malicious package experiment security -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [arxiv.org,ieee.org,acm.org]'
+        - 'software package supply chain malicious npm empirical study detection -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [usenix.org,acm.org,ieee.org]'
+        - 'repository package supply chain compromise provenance empirical evaluation SLSA -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [usenix.org,acm.org,arxiv.org]'
+      material_changes:
+        - Added a controlled MCP registry-hijack feasibility study with explicit non-production limitations.
+        - Added peer-reviewed malicious-package behavioral detection evidence.
+
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'verify SLSA provenance artifact subject digest builder id policy -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [slsa.dev]'
+        - 'npm package provenance verify registry signatures lockfile integrity -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [docs.npmjs.com]'
+        - 'GitHub Actions secure use pin full length commit SHA third party action -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [docs.github.com]'
+        - 'Sigstore cosign verify artifact signature identity issuer -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [docs.sigstore.dev]'
+        - 'site:slsa.dev/spec/v1.2 "Verifying artifacts" "subject" digest builder -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [slsa.dev]'
+        - 'site:slsa.dev/spec/v1.2 "Build provenance" "subject" "builder.id" -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [slsa.dev]'
+      material_changes:
+        - Defined the acquisition-to-execution analytic and minimum provenance fields.
+        - Added full-SHA, least-privilege, exact-version, import-time testing, and response controls.
+        - Bounded provenance, telemetry, false-positive, and false-negative limitations.
+
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP package compromised registry production incident malicious update server package -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,anthropic.com,microsoft.com,cisa.gov]'
+        - 'MCP supply chain CVE compromised package exploitation remediation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org,jfrog.com]'
+        - 'MCP server registry malicious package takedown incident -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,blog.modelcontextprotocol.io,npmjs.com]'
+        - 'agentic software dependency supply chain compromise production incident -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nx.dev,tanstack.com,unit42.paloaltonetworks.com]'
+      material_changes:
+        - Added the official MCP Registry moderation limitation.
+        - Added current AWS and JFrog MCP vulnerability candidates as adjacent, not qualifying, evidence.
+        - Replaced lower-impact overlapping cases with the more current Axios and AsyncAPI incidents.
+
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP Registry compromised package production incident malicious update September 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,anthropic.com,microsoft.com,cisa.gov]'
+        - 'agentic framework dependency compromised package production incident August 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [microsoft.com,cisa.gov,nx.dev,tanstack.com,unit42.paloaltonetworks.com]'
+        - 'software package trusted publisher compromise current advisory August 2026 exploitation remediation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [microsoft.com,cisa.gov,nvd.nist.gov]'
+        - 'MCP server CVE malicious update supply chain compromise affected versions fixed 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org,jfrog.com,aws.amazon.com]'
+      material_changes: []
+      no_change_rationale: New results were adjacent implementation flaws or counterfeit installers and did not alter the contract, examples, claims, or controls.
+
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP trusted package publisher account compromise official registry incident -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,microsoft.com,cisa.gov,nvd.nist.gov]'
+        - 'AI agent SDK package malicious version compromised maintainer production 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [microsoft.com,cisa.gov,nx.dev,tanstack.com,unit42.paloaltonetworks.com]'
+        - 'provenance valid signature compromised build pipeline package incident 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [slsa.dev,microsoft.com,github.blog,docs.github.com]'
+        - 'MCP server security advisory exploitation none fixed version August 2026 -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [aws.amazon.com,jfrog.com,nvd.nist.gov,cve.org]'
+        - 'MCP Registry publisher verification package hash provenance consumer validation -"SAF-T1002" -"SAFE-T1002" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io,docs.npmjs.com,slsa.dev]'
+      material_changes: []
+      no_change_rationale: Results reiterated registry architecture, current adjacent vulnerabilities, and already selected package-path incidents without a direct official MCP Registry compromise or higher-impact qualifying example.
+  rationale: >-
+    The corpus now covers primary MCP distribution and installation authority,
+    the direct enterprise mapping, two agentic-context production incidents,
+    two current trusted-package incidents, current MCP vulnerability advisories,
+    a controlled MCP registry study, peer-reviewed malicious-package detection,
+    and primary provenance and CI hardening guidance. Two differently phrased,
+    domain-filtered follow-ups produced no material change.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 10
+  selected_examples:
+    - SRC-unit42-tj-actions-agentkit
+    - SRC-nx-s1ngularity-postmortem
+    - SRC-microsoft-axios-2026
+    - SRC-microsoft-asyncapi-2026
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-unit42-tj-actions-agentkit
+      identifier: CVE-2025-30066 / tj-actions changed-files / Coinbase AgentKit
+      relationship: direct_production_incident
+      exploitation_status: observed_execution_and_token_access; downstream_package_publish_interrupted
+      impact: Malicious action executed in an agentic CI path and obtained a write-capable token.
+      remediation: Compromised tags were reverted; pin actions to reviewed full SHAs and rotate exposed credentials.
+      selected: true
+      rationale: Highest-directness production evidence in an explicitly agentic project, with bounded impact and uncertainty.
+    - source_id: SRC-nx-s1ngularity-postmortem
+      identifier: s1ngularity npm compromise
+      relationship: direct_production_incident
+      exploitation_status: observed_malicious_packages_and_exfiltration
+      impact: Install-time execution, credential discovery, AI-tool invocation, and exfiltration from developer or CI contexts.
+      remediation: Malicious versions removed; Nx moved to trusted publishing, manual approvals, and provenance checks.
+      selected: true
+      rationale: Direct production evidence involving AI developer tools and high-volume packages.
+    - source_id: SRC-microsoft-axios-2026
+      identifier: Axios versions 1.14.1 and 0.30.4
+      relationship: historical_analogy
+      exploitation_status: observed_malicious_release_and_payload_delivery
+      impact: Trusted package versions executed a dependency-supplied loader on developer and CI hosts.
+      remediation: Roll back to 1.14.0 or 0.30.3, purge caches, rotate credentials, and restrict automatic upgrades.
+      selected: true
+      rationale: Current, high-impact trusted-package example with explicit detection and remediation; no MCP consumer established.
+    - source_id: SRC-microsoft-asyncapi-2026
+      identifier: AsyncAPI package compromise, July 2026
+      relationship: historical_analogy
+      exploitation_status: observed_trusted_pipeline_publish_and_import_time_execution
+      impact: Five versions across four packages executed on import with valid provenance from an abused trusted workflow.
+      remediation: Remove affected versions, purge caches, use known-good pins, hunt persistence and egress, rotate credentials.
+      selected: true
+      rationale: Current example demonstrating that valid provenance and disabled install scripts can both be insufficient.
+    - source_id: SRC-tanstack-2026-postmortem
+      identifier: CVE-2026-45321 / TanStack Router and Start compromise
+      relationship: historical_analogy
+      exploitation_status: observed_malicious_package_publication
+      impact: 84 malicious versions across 42 packages with install-time credential theft and propagation logic.
+      remediation: Versions deprecated and removed; credentials rotated; workflows, caches, and release controls hardened.
+      selected: false
+      rationale: Strong but overlaps the selected current package cases and has less agentic specificity.
+    - source_id: SRC-nx-console-2026-postmortem
+      identifier: Nx Console 18.95.0
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: malicious_marketplace_artifact_observed; installation_count_uncertain
+      impact: Second-order upstream compromise reached an IDE extension distributed through trusted marketplaces.
+      remediation: Upgrade to 18.100.0; compromised version removed; release controls hardened.
+      selected: false
+      rationale: Valuable second-order example but an IDE-extension case, not direct MCP distribution evidence.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: researcher_demonstrated; production_exploitation_not_established
+      impact: Untrusted MCP server metadata can trigger command or executable execution in vulnerable mcp-remote versions.
+      remediation: Upgrade to 0.1.16 or later and use trusted HTTPS servers.
+      selected: false
+      rationale: A product vulnerability exercised after connection, not compromise of a trusted software supply path.
+    - source_id: SRC-aws-cve-2026-18953
+      identifier: CVE-2026-18953
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: not_stated_by_vendor
+      impact: A tool parameter can write outside the intended directory and may lead to local code execution.
+      remediation: Upgrade aws-transform-mcp-server to 0.1.5 or later; no configuration-only workaround.
+      selected: false
+      rationale: An ordinary implementation vulnerability, not altered distribution.
+    - source_id: SRC-microsoft-typosquat-2026
+      identifier: vpmdhaj typosquatted npm campaign
+      relationship: rejected
+      exploitation_status: active_campaign_observed
+      impact: Malicious new packages harvested cloud, CI/CD, Vault, and npm credentials.
+      remediation: Packages and users removed; hunt lifecycle execution and egress, rotate credentials.
+      selected: false
+      rationale: The actor created deceptive new packages rather than compromising an existing trusted producer or channel.
+    - source_id: SRC-mcp-ecosystem-dsn-2026
+      identifier: MCP registry-entry hijack demonstration
+      relationship: direct_demonstration
+      exploitation_status: controlled_local_demonstration_only
+      impact: Demonstrates conditions under which registry pointers or ownership continuity can be abused.
+      remediation: Continuous ownership checks, stronger vetting, and suspicious-server analysis.
+      selected: false
+      rationale: Used as feasibility evidence, not a production breach example.
+
+sources_consulted:
+  - SRC-mitre-attack-t1195
+  - SRC-unit42-tj-actions-agentkit
+  - SRC-nx-s1ngularity-postmortem
+  - SRC-microsoft-axios-2026
+  - SRC-microsoft-asyncapi-2026
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-moderation
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-sep-1024
+  - SRC-microsoft-typosquat-2026
+  - SRC-mcp-ecosystem-dsn-2026
+  - SRC-slsa-v1.2-verification
+  - SRC-npm-provenance
+  - SRC-donapi-usenix-2024
+  - SRC-github-actions-secure-use
+  - SRC-wiz-cve-2025-30066
+  - SRC-jfrog-cve-2025-6514
+  - SRC-aws-cve-2026-18953
+  - SRC-tanstack-2026-postmortem
+  - SRC-nx-console-2026-postmortem
+  - SRC-mcp-apps-empirical-2026
+  - SRC-nist-ssdf
+sources_cited:
+  - SRC-mitre-attack-t1195
+  - SRC-unit42-tj-actions-agentkit
+  - SRC-nx-s1ngularity-postmortem
+  - SRC-microsoft-axios-2026
+  - SRC-microsoft-asyncapi-2026
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-moderation
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-sep-1024
+  - SRC-microsoft-typosquat-2026
+  - SRC-mcp-ecosystem-dsn-2026
+  - SRC-slsa-v1.2-verification
+  - SRC-npm-provenance
+  - SRC-donapi-usenix-2024
+  - SRC-github-actions-secure-use
+sources_rejected:
+  - source_id: SRC-wiz-cve-2025-30066
+    reason: Retained as independent corroboration but not separately cited because Unit 42 provides the agentic-context facts and limitations.
+  - source_id: SRC-tanstack-2026-postmortem
+    reason: Strong overlapping analogy ranked below newer or more boundary-specific examples.
+  - source_id: SRC-nx-console-2026-postmortem
+    reason: Adjacent second-order IDE-extension incident with uncertain installation count.
+  - source_id: SRC-jfrog-cve-2025-6514
+    reason: Adjacent product vulnerability rather than supply-path compromise.
+  - source_id: SRC-aws-cve-2026-18953
+    reason: Adjacent product vulnerability rather than supply-path compromise.
+  - source_id: SRC-mcp-apps-empirical-2026
+    reason: Useful implementation context but not necessary to support a publishable proposition.
+  - source_id: SRC-nist-ssdf
+    reason: Primary guidance is sound but SLSA and GitHub documentation more precisely support the selected controls.
+sources_blocked: []
+
+conflicts:
+  - issue: Namespace authentication or valid provenance might be read as proof that the artifact is safe.
+    resolution: Registry documentation limits namespace checks to claimed-source authenticity, and the AsyncAPI case shows valid provenance from an abused trusted pipeline.
+  - issue: The AgentKit action compromise obtained a write token but did not produce known downstream damage.
+    resolution: Classified as direct observed acquisition-path compromise with explicitly bounded impact, not a completed package-publication breach.
+  - issue: Current MCP CVEs demonstrate host compromise potential but not supply-chain alteration.
+    resolution: Kept as adjacent candidates and omitted from Procedure Examples.
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1002-C001
+    - SAF-T1002-C002
+    - SAF-T1002-C003
+  rationale: >-
+    Production incidents establish malicious execution through trusted build or
+    dependency paths in agentic development environments. Controlled MCP
+    research establishes MCP-specific feasibility, while the review explicitly
+    does not claim a production compromise of the official MCP Registry.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

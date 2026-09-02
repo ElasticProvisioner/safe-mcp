@@ -1,0 +1,215 @@
+version: 1
+sources:
+  - id: SRC-mcp-elicitation-2026-07-28
+    title: MCP Elicitation Specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party Markdown page reviewed locally.
+    locators: ["URL Mode Elicitation for OAuth Flows", "Security Considerations > Phishing", "Safe URL Handling"]
+    review_notes: Verified OAuth pattern, same-user invariant, phishing flow, and client URL controls.
+    archive: &remote
+      status: remote_reviewed_not_archived
+      reason: Transient clean-room review copy was retained outside the publication bundle; canonical public source remains available.
+      review_evidence: {method: direct_full_page_review, date: "2026-09-01"}
+  - id: SRC-mcp-authorization-2026-07-28
+    title: MCP Authorization Specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party Markdown page reviewed locally.
+    locators: ["Roles", "Scope Selection Strategy", "Authorization Flow Steps", "Token Handling"]
+    review_notes: Verified MCP OAuth roles, scope behavior, browser flow, and resource token rules.
+    archive: *remote
+  - id: SRC-mcp-security-2026-07-28
+    title: MCP Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party Markdown page reviewed locally.
+    locators: ["Token Passthrough", "OAuth Authorization URL Validation", "Scope Minimization"]
+    review_notes: Verified adjacent authorization threats and controls used to draw neighbor boundaries.
+    archive: *remote
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    publisher: IETF and RFC Editor
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: "RFC 9700, January 2025"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Official complete RFC text reviewed locally.
+    locators: ["Sections 2.1 and 2.3", "Section 4.9", "Section 4.11"]
+    review_notes: Verified redirect, scope, counterfeit-resource, and open-redirection requirements.
+    archive: *remote
+  - id: SRC-nvd-cve-2026-31944
+    title: NVD record for CVE-2026-31944
+    publisher: National Institute of Standards and Technology
+    authors: [NVD and CISA vulnerability coordination teams]
+    version_or_date: "Last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-31944
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Official NVD API record reviewed in full.
+    locators: ["CVE description", "CVSS v3.1", "CISA SSVC exploitation=poc"]
+    review_notes: Verified direct mechanism, affected range, PoC status, and canonical vendor advisory URL.
+    archive: *remote
+  - id: SRC-ghsa-vf7j-7mrx-hp7g
+    title: MCP OAuth callback does not validate browser session, allows token theft via redirect link
+    publisher: LibreChat
+    authors: [Danny Avila]
+    version_or_date: "Published 2026-03-13"
+    source_class: official_advisory
+    official_url: https://github.com/danny-avila/LibreChat/security/advisories/GHSA-vf7j-7mrx-hp7g
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory opened only after NVD and CVE records provided its canonical URL; complete advisory reviewed.
+    locators: ["Summary", "Details", "PoC", "Impact", "Affected versions", "Patched versions"]
+    review_notes: Verified the direct public proof of concept, root cause, attack path, impact, and fix.
+    archive: *remote
+  - id: SRC-nvd-cve-2026-42230
+    title: NVD record for CVE-2026-42230
+    publisher: National Institute of Standards and Technology
+    authors: [NVD and CISA vulnerability coordination teams]
+    version_or_date: "Last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-42230
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Official NVD API record reviewed in full.
+    locators: ["CVE description", "CVSS metrics", "CISA SSVC exploitation=none"]
+    review_notes: Verified adjacent open redirect, version ranges, and absent exploitation evidence.
+    archive: *remote
+  - id: SRC-ghsa-f6x8-65q6-j9m9
+    title: Open Redirect in MCP OAuth Consent Flow
+    publisher: n8n
+    authors: [Jubke, ori-ron]
+    version_or_date: "Published 2026-04-22"
+    source_class: official_advisory
+    official_url: https://github.com/n8n-io/n8n/security/advisories/GHSA-f6x8-65q6-j9m9
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory opened only after NVD and CVE records provided its canonical URL; complete advisory reviewed.
+    locators: ["Impact", "Patches", "Workarounds", "Credits"]
+    review_notes: Verified adjacent phishing redirect, affected and fixed versions, and reporter credit.
+    archive: *remote
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "Catalog version reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official JSON catalog downloaded and exact CVE identifiers checked.
+    locators: ["No entry for CVE-2026-31944", "No entry for CVE-2026-42230"]
+    review_notes: Verified that neither selected CVE was in KEV on the review date; absence does not prove no exploitation.
+    archive: *remote
+  - id: SRC-ms-oauth-redirection-2026
+    title: OAuth redirection abuse enables phishing and malware delivery
+    publisher: Microsoft
+    authors: [Microsoft Defender Security Research Team, Jonathan Armer, Fernando Dantes, Sagar Patil, Bharat Vaghela, Krithika Ramakrishnan, Sean Reynolds, Shivas Raina]
+    version_or_date: "2026-03-02"
+    source_class: incident_report
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/03/02/oauth-redirection-abuse-enables-phishing-malware-delivery/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party report reviewed locally.
+    locators: ["Summary", "Stage 3: OAuth Error Redirect", "Mitigation and protection guidance"]
+    review_notes: Verified observed OAuth redirection campaigns and their distinction from token-binding phishing.
+    archive: *remote
+  - id: SRC-ms-shinyhunters-oauth-2026
+    title: Defending SaaS-based applications against ShinyHunters OAuth abuse
+    publisher: Microsoft
+    authors: [Microsoft Security Research, Microsoft Defender Security Research Team, Shruti Ranjit, Doug Cranston, Anand Deshpande, Ronen Rafaeli]
+    version_or_date: "2026-07-13"
+    source_class: incident_report
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party report reviewed locally.
+    locators: ["Attack chain overview", "Voice-phishing-driven OAuth consent abuse", "Improving visibility"]
+    review_notes: Verified production OAuth consent abuse and its non-MCP mechanism.
+    archive: *remote
+  - id: SRC-ms-consent-phishing-2021
+    title: Microsoft delivers comprehensive solution to battle rise in consent phishing emails
+    publisher: Microsoft
+    authors: [Microsoft Threat Intelligence]
+    version_or_date: "2021-07-14"
+    source_class: incident_report
+    official_url: https://www.microsoft.com/en-us/security/blog/2021/07/14/microsoft-delivers-comprehensive-solution-to-battle-rise-in-consent-phishing-emails/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party report reviewed locally.
+    locators: ["The state of consent phishing attacks", "Consent phishing campaign: A case study"]
+    review_notes: Verified historical consent-phishing mechanics and observed campaign context.
+    archive: *remote
+  - id: SRC-mslearn-protect-consent-phishing
+    title: Protect against consent phishing
+    publisher: Microsoft Learn
+    authors: [Microsoft identity documentation team]
+    version_or_date: "Last updated 2025-01-08"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/protect-against-consent-phishing
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party documentation page reviewed locally.
+    locators: ["Recommended response and remediation", "Best practices for hardening"]
+    review_notes: Verified audit, revocation, application-review, and least-privilege response guidance.
+    archive: *remote
+  - id: SRC-mitre-t1566-002
+    title: ATT&CK T1566.002 Phishing - Spearphishing Link
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: "Version 2.8, modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1566/002/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official ATT&CK technique page reviewed locally.
+    locators: ["Description", "OAuth 2.0 request URL passage", "Version metadata"]
+    review_notes: Verified direct delivery mapping and its OAuth-link coverage.
+    archive: *remote
+  - id: SRC-mitre-t1528
+    title: ATT&CK T1528 Steal Application Access Token
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: "Version 1.5, modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1528/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official ATT&CK technique page reviewed locally.
+    locators: ["Description", "OAuth authorization passage", "Version metadata"]
+    review_notes: Verified analogous application-token outcome and differing acquisition mechanics.
+    archive: *remote

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "redirect mismatch at authorization endpoint",
+    "category": "positive",
+    "event": {"event_type": "oauth_authorization_request", "redirect_uri_match": false, "pkce_required": true, "code_challenge_method": "S256"},
+    "expected_alert": true
+  },
+  {
+    "name": "plain PKCE where S256 is required",
+    "category": "positive",
+    "event": {"event_type": "oauth_authorization_request", "redirect_uri_match": true, "pkce_required": true, "code_challenge_method": "plain"},
+    "expected_alert": true
+  },
+  {
+    "name": "invalid verifier at token endpoint",
+    "category": "positive",
+    "event": {"event_type": "oauth_token_exchange", "pkce_verifier_valid": false, "code_exchange_count": 1},
+    "expected_alert": true
+  },
+  {
+    "name": "second exchange of same code fingerprint",
+    "category": "boundary",
+    "event": {"event_type": "oauth_token_exchange", "pkce_verifier_valid": true, "code_exchange_count": 2},
+    "expected_alert": true
+  },
+  {
+    "name": "ordinary S256 authorization",
+    "category": "negative",
+    "event": {"event_type": "oauth_authorization_request", "redirect_uri_match": true, "pkce_required": true, "code_challenge_method": "S256"},
+    "expected_alert": false
+  },
+  {
+    "name": "first successful code exchange",
+    "category": "boundary",
+    "event": {"event_type": "oauth_token_exchange", "pkce_verifier_valid": true, "code_exchange_count": 1},
+    "expected_alert": false
+  },
+  {
+    "name": "legacy confidential flow not marked PKCE required",
+    "category": "negative",
+    "event": {"event_type": "oauth_authorization_request", "redirect_uri_match": true, "pkce_required": false},
+    "expected_alert": false
+  },
+  {
+    "name": "legitimate unclassified retry remains visible",
+    "category": "expected_false_positive",
+    "event": {"event_type": "oauth_token_exchange", "pkce_verifier_valid": true, "code_exchange_count": 2, "known_client_retry": false},
+    "expected_alert": true
+  },
+  {
+    "name": "classified legitimate retry is filtered",
+    "category": "expected_false_positive",
+    "event": {"event_type": "oauth_token_exchange", "pkce_verifier_valid": true, "code_exchange_count": 2, "known_client_retry": true},
+    "expected_alert": false
+  },
+  {
+    "name": "malformed event does not crash or alert",
+    "category": "malformed",
+    "event": {"event_type": null, "code_exchange_count": "two"},
+    "expected_alert": false
+  }
+]

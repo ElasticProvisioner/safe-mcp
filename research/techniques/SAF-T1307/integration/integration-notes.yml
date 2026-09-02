@@ -1,0 +1,92 @@
+version: 1
+technique_id: SAF-T1307
+bundle_status: frozen_clean_room_handoff
+generated_on: "2026-09-01"
+real_repository_accessed: false
+
+synthetic_joins:
+  - kind: tactic
+    value: ATK-TA0004
+    mock_usage: User-supplied tactic copied into the synthetic framework record.
+    integration_action: Verify the identifier exists without reading or borrowing target-specific catalog prose.
+  - kind: neighbor
+    value: SAF-T1998
+    mock_usage: Synthetic Prompt or Instruction Injection neighbor README stub.
+    integration_action: Replace with the real injection-neighbor ID and neutral display name, preserving the frozen distinction.
+  - kind: neighbor
+    value: SAF-T1999
+    mock_usage: Synthetic Server-Side Request Forgery neighbor README stub.
+    integration_action: Replace with the real SSRF-neighbor ID and neutral display name, preserving the frozen distinction.
+  - kind: mitigation
+    value: SAF-M-1998
+    mock_usage: README placeholder for initiator context binding; not registered in the mock framework record.
+    integration_action: Replace with the real mitigation ID and path for initiator identity and delegation binding.
+  - kind: mitigation
+    value: SAF-M-1999
+    mock_usage: README placeholder for least-privilege delegation; not registered in the mock framework record.
+    integration_action: Replace with the real mitigation ID and path for scoped deputy authority.
+  - kind: repository_history_sha
+    value: "1111111111111111111111111111111111111111"
+    mock_usage: Nonzero synthetic value required to exercise the strict validator.
+    integration_action: Replace with the honest real integration commit SHA after the integration commit exists.
+  - kind: source_id_set
+    value:
+      - SRC-mcp-security-2026-07-28
+      - SRC-mcp-auth-2026-07-28
+      - SRC-rfc8707
+      - SRC-rfc9700
+      - SRC-cwe-441-v4.20
+      - SRC-cve-2025-6514
+      - SRC-jfsa-2025-001290844
+      - SRC-jfrog-cve-2025-6514
+      - SRC-cve-2025-49596
+      - SRC-ghsa-7f8r-222p-6f5g
+      - SRC-cve-2025-32711
+      - SRC-cve-2025-53109
+      - SRC-cisa-kev-2026-09-01
+      - SRC-attack-t1068-v1.6
+    mock_usage: Independently assigned canonical-format IDs in the isolated source manifest.
+    integration_action: Reuse stable IDs when semantically identical or mechanically rename collisions across all frozen joins without introducing new research.
+
+path_joins:
+  - bundle_path: source-manifest-fragment.yml
+    real_path: research/source-manifest.yml
+    action: Merge canonical source records after collision-only reconciliation.
+  - bundle_path: framework-fragment.yml
+    real_path: research/framework-model.yml
+    action: Merge the technique record after tactic, neighbor, and mitigation reconciliation.
+  - bundle_path: alignment-fragment.yml
+    real_path: research/alignment-ledger.yml
+    action: Merge the empty canonical issue fragment; add only mechanical reconciliation records if repository policy requires them.
+  - bundle_path: techniques/SAF-T1307/
+    real_path: techniques/SAF-T1307/
+    action: Replace atomically without opening prior target contents.
+  - bundle_path: tests/SAF-T1307/
+    real_path: tests/SAF-T1307/
+    action: Replace atomically without opening prior target contents.
+  - bundle_path: research/techniques/SAF-T1307/
+    real_path: research/techniques/SAF-T1307/
+    action: Replace atomically without opening prior target contents.
+
+post_freeze_allowed_actions:
+  - Verify FREEZE.sha256 before any integration action.
+  - Mechanically reconcile stable source IDs, tactic existence, neighbor IDs, mitigation IDs, and the integration history SHA.
+  - Review only the frozen new files and validator outputs directly, not a diff exposing prior target content.
+  - Run detection tests and the current strict validator after integration.
+
+forbidden_actions:
+  - Do not inspect the old target README, research packet, detection assets, tests, logs, history, diff, blame, pull request, or issue content.
+  - Do not use shared registries to introduce a new evidence lead or revise the frozen research conclusions.
+  - Do not commit, push, publish a branch, or open a pull request without new user authorization.
+
+source_corpus:
+  location_outside_bundle: /private/tmp/saf-all-cleanroom/SAF-T1307/source-corpus
+  hash_proof: validation/source-corpus.sha256
+  redistribution_status: excluded_from_bundle
+
+unresolved_mechanical_joins:
+  - Real shared source-ID collision check.
+  - Real framework tactic and neighbor joins.
+  - Real mitigation joins.
+  - Honest repository-history SHA after integration commit.
+unresolved_research_or_integrity_issues: []

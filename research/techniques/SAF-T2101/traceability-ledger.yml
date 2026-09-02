@@ -1,0 +1,174 @@
+version: 1
+technique_id: SAF-T2101
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2101/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2101/technique-contract.yml
+  supports: Scope name tactic evidence requirements and completion metadata.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T2101/claim-inventory.yml
+  supports: Claim statements sources locators limitations and validation status.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T2101/source-coverage.yml
+  supports: Search passes saturation examples conflicts archive and rights status.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T2101/publication-rights.yml
+  supports: Publication-rights and attribution review.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T2101/clean-room-attestation.yml
+  supports: Clean-room provenance and prohibited-input attestation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2101/quality-review.yml
+  supports: Review gates validation commands and results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2101/detection-rule.yml
+  supports: Standalone source-linked analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T2101/test_detection_rule.py
+  supports: Deterministic positive negative boundary malformed false-positive and
+    normalization tests.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T2101/test-events.jsonl
+  supports: Inert validation events and expected outcomes.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T2101/validation/detection-test-result.txt
+  supports: Captured successful test result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2101/validation/canonical-validation.txt
+  supports: Passing destination-repository detector and strict-validator results after integration.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T2101/integration/integration-notes.yml
+  supports: Mechanical source, framework, neighbor, mitigation, history, and path reconciliation after freeze.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2101-X001
+  candidate: Claim that a public production MCP data-destruction incident has been
+    observed.
+  origin: Required production-breach research pass.
+  attempted_searches:
+  - CISA KEV exact-ID review
+  - government and first-party incident searches
+  - NVD advisory review.
+  consulted_source_ids:
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-nvd-cve-2025-53098
+  - SRC-nvd-cve-2025-64443
+  - SRC-nvd-cve-54377
+  reason: No reviewed source documented the scoped production outcome.
+  prohibited_publishable_text:
+  - Observed MCP data-destruction breach
+  - First observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X002
+  candidate: Treat CVE-2025-53098 as direct data destruction.
+  origin: Vulnerability and exploitation-status pass.
+  attempted_searches:
+  - Direct NVD record and CISA status review.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-53098
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: The advisory establishes configuration write and command execution, not
+    destruction.
+  prohibited_publishable_text:
+  - CVE-2025-53098 destroyed data
+  - direct data-destruction vulnerability CVE-2025-53098
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X003
+  candidate: Treat CVE-2025-64443 as direct data destruction or known exploitation.
+  origin: Vulnerability and exploitation-status pass.
+  attempted_searches:
+  - Direct NVD record and CISA status review.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-64443
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: The advisory establishes a tool-manipulation path and records exploitation
+    none, not destruction.
+  prohibited_publishable_text:
+  - CVE-2025-64443 destroyed data
+  - CVE-2025-64443 is actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X004
+  candidate: Treat CVE-2025-54377 proof-of-concept command execution as a destruction
+    demonstration.
+  origin: Vulnerability and controlled-demonstration passes.
+  attempted_searches:
+  - Direct NVD record and CISA SSVC review.
+  consulted_source_ids:
+  - SRC-nvd-cve-54377
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: The proof of concept concerns allow-list bypass and command execution; no
+    deletion objective is documented.
+  prohibited_publishable_text:
+  - CVE-2025-54377 demonstrates data destruction
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X005
+  candidate: Treat tool-poisoning or TrustShift studies as direct destruction demonstrations.
+  origin: Controlled-demonstration pass.
+  attempted_searches:
+  - Full-text review of arXiv:2603.22489 and arXiv:2608.23763.
+  consulted_source_ids:
+  - SRC-arxiv-mcp-threat
+  - SRC-arxiv-trustshift
+  reason: The studies establish adjacent delivery execution disruption or exfiltration
+    behaviors but not the scoped destruction objective.
+  prohibited_publishable_text:
+  - Researchers demonstrated MCP data destruction
+  - TrustShiftProbe destroyed production data
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X006
+  candidate: Treat tool annotations as an authorization control.
+  origin: Protocol and contrary-evidence passes.
+  attempted_searches:
+  - Current MCP Tools specification and maintainer annotation guidance.
+  consulted_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  reason: Both sources state or explain that annotations are untrusted hints and do
+    not enforce decisions.
+  prohibited_publishable_text:
+  - destructiveHint prevents destructive calls
+  - annotations enforce authorization
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X007
+  candidate: Claim the deterministic detector resolves adversarial intent for all
+    destructive actions.
+  origin: Detection and contrary-evidence passes.
+  attempted_searches:
+  - ATT&CK analytic review and AgentTrust v1 and v2 full-text review.
+  consulted_source_ids:
+  - SRC-mitre-t1485
+  - SRC-arxiv-agenttrust-v1
+  - SRC-arxiv-agenttrust-v2
+  reason: Semantic twins and indirect aliases exceed the deterministic lexical rule's
+    evidence and design.
+  prohibited_publishable_text:
+  - detects all data destruction
+  - determines malicious intent
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2101-X008
+  candidate: Reproduce operational exploit payloads or destructive command examples.
+  origin: Safe-publication review.
+  attempted_searches:
+  - Not applicable; examples were deliberately modeled as inert audit events.
+  consulted_source_ids: []
+  reason: Operational payload detail is unnecessary for comprehension or detector
+    validation.
+  prohibited_publishable_text:
+  - live exploit payload
+  - destructive shell command
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

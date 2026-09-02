@@ -1,0 +1,19 @@
+version: 1
+issues:
+  - id: SAF-T1910-A001
+    triggered_by: SAF-T1910
+    affects:
+      - SAF-T1910
+      - SAF-T1102
+      - SAF-T1911
+      - SAF-T1912
+    severity: high
+    status: resolved
+    issue: >-
+      Clean-room isolation forbids reading the shared registry before freeze, so
+      the delivery and carrier-specialization joins required post-freeze reconciliation.
+    resolution: >-
+      SAF-T1102 covers adversarial instruction delivery, SAF-T1911 and SAF-T1912
+      specialize parameter and response carriers, eight canonical mitigations cover
+      privilege, authorization, validation, DLP, audit, and anomaly detection,
+      ATT&CK T1048 remains analogous, and nine detector cases validate the boundary.

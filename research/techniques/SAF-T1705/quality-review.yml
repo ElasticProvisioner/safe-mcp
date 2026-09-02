@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T1705
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: clean-room SAF technique agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The attestation records only neutral input, allowed generic materials, independent authority research, no prior target-artifact access, and pre-integration freeze constraints.
+  contract_and_scope:
+    status: passed
+    notes: The defining second-agent boundary is required throughout; same-agent injection, benign delegation, inherited memory, and downstream effects alone remain excluded.
+  technical_accuracy:
+    status: passed
+    notes: Protocol semantics, prerequisites, agent roles, conditional impacts, and controlled-study limitations were checked against direct authorities.
+  claim_traceability:
+    status: passed
+    notes: All fifteen claims have class, evidence status, direct locators, limitations, inference records, and reviewed source relations.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has hidden SAF-TRACE linkage, an Evidence Summary claim ID, or a declared local-artifact link; twelve excluded leads are absent.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by three direct controlled studies; Observed is withheld because no qualifying production record was found.
+  research_saturation:
+    status: passed
+    notes: All five passes and two consecutive authority-only zero-result, no-material-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: AIID, NVD, CVE, maintainer, MCP, and controlled-demonstration candidates are classified; three high-impact direct demonstrations are selected and the production gap is explicit.
+  detection_quality:
+    status: passed
+    notes: The experimental analytic states telemetry, 120-second correlation, false positives, blind spots, tuning, and seven passing deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Layered provenance, receiver-side authorization, least privilege, sandboxing, validation, monitoring, and response controls address the defining transition without claiming elimination.
+  framework_alignment:
+    status: passed
+    notes: Post-freeze reconciliation joins three canonical neighbors, ten mitigations, analogous ATT&CK T1072, repository paths, source-corpus proof, and canonical validation transcripts; ATLAS remains omitted.
+  publication_rights:
+    status: passed
+    notes: All cited sources have a rights record, named credits, paraphrase-only use, and no reproduced payload, figure, table, data row, or protected expression.
+  safe_publication:
+    status: passed
+    notes: Examples and fixtures use placeholders and inert marker actions; no live secret, exploit code, bypass string, or destructive instruction is included.
+
+validation:
+  commands:
+    - command: python3 tests/SAF-T1705/test_detection_rule.py
+      result: "passed: 7 tests"
+    - command: python3 scripts/validate-technique-research.py SAF-T1705
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1705/test_detection_rule.py
+    result: "passed: 7/7 cases"
+    waiver: null
+
+unresolved: []
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1705/validation/detection-tests.txt
+  strict_validator_transcript: research/techniques/SAF-T1705/validation/strict-validator.txt
+  source_corpus_hashes: research/techniques/SAF-T1705/validation/source-corpus.sha256
+  status: passed

@@ -1,0 +1,30 @@
+version: 1
+technique_id: SAF-T1401
+generated_on: "2026-09-01"
+clean_room_status: frozen
+bundle_scope: >-
+  Additive clean-room artifacts only. The bundle has not inspected or modified
+  the real target, shared registries, catalog, history, neighboring techniques,
+  or prior SAF material.
+merge_inputs:
+  - source-manifest-fragment.yml
+  - framework-fragment.yml
+  - alignment-fragment.yml
+integration_blockers:
+  - >-
+    SAF-T9998 and SAF-T9999 are synthetic isolated-validation neighbors. An
+    independent integrator must reconcile them to stable real technique IDs,
+    update the contract, README, and framework record together, and revalidate.
+  - >-
+    The traceability ledger uses nonzero SHA
+    1111111111111111111111111111111111111111 solely for strict mock validation.
+    Replace it with the actual integration commit and revalidate.
+  - >-
+    Source IDs are proposed stable identifiers. Merge and de-duplicate the
+    source-manifest fragment without changing claim joins.
+required_operations:
+  - Copy techniques/SAF-T1401, research/techniques/SAF-T1401, and tests/SAF-T1401 into the repository.
+  - Merge the source, framework, and alignment fragments into their shared registries.
+  - Reconcile placeholder relationships and history SHA after freeze, never by exposing the clean-room generator to prohibited inputs.
+  - Run the canonical detection test and strict research validator after integration.
+forbidden_operations_performed: []

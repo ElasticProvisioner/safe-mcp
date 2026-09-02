@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T1407
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1407/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1407/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, completion requirements, and canonical
+    neighbor joins.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1407/claim-inventory.yml
+  supports: Validated claims, exact locators, evidence classifications, limitations,
+    and inferences.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1407/source-coverage.yml
+  supports: Search operations, candidate classifications, selected examples, evidence
+    gap, and saturation.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1407/publication-rights.yml
+  supports: Source-use, attribution, quotation, artifact, mark, and permission review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1407/quality-review.yml
+  supports: Validation commands, test results, quality gates, reviewer, and date.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1407/clean-room-attestation.yml
+  supports: Clean-room isolation, allowed and prohibited inputs, searches, and freeze
+    status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1407/detection-rule.yml
+  supports: Experimental detection analytic, traceability metadata, fields, false
+    positives, and level.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1407/cases.json
+  supports: Positive, negative, boundary, malformed, and expected false-positive test
+    fixtures.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1407/test_detection_rule.py
+  supports: Deterministic implementation of the documented analytic and test assertions.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1407/validation/detection-test.txt
+  supports: Isolated and integrated detection commands and passing case totals.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1407/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator commands and results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1407-X001
+  candidate: A production MCP breach used a masquerading proxy server to relay a legitimate
+    server.
+  origin: Required known-breach research pass.
+  attempted_searches:
+  - NVD and CVE keyword and exact-record queries listed in source-coverage.yml.
+  - CISA KEV exact identifier checks and CISA official incident and advisory filters.
+  - First-party advisories for every selected vulnerability.
+  consulted_source_ids:
+  - SRC-nvd-mcp-proxy-identity-corpus-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-librechat-resource
+  - SRC-ghsa-apify-authority
+  - SRC-jfrog-cve-2025-6514
+  - SRC-ghsa-spring-ssrf
+  reason: Reviewed sources document controlled demonstrations and vulnerabilities,
+    not production exploitation of the defining behavior.
+  prohibited_publishable_text:
+  - confirmed production proxy-masquerade breach
+  - observed server-proxy campaign
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1407-X002
+  candidate: A public benchmark has demonstrated a fully transparent MCP data-plane
+    relay that clones and modifies every upstream method.
+  origin: Demonstration and empirical-research pass.
+  attempted_searches:
+  - Seventeen arXiv whitelist-only queries listed in source-coverage.yml.
+  - Direct review of TrustShiftProbe and selected product advisories.
+  consulted_source_ids:
+  - SRC-trustshiftprobe
+  - SRC-ghsa-librechat-resource
+  - SRC-ghsa-apify-authority
+  reason: The corpus demonstrates protected-resource spoofing and wrong-authority
+    connection, but not a full transparent relay of every MCP method.
+  prohibited_publishable_text:
+  - complete transparent MCP relay was reproduced
+  - all upstream MCP traffic was cloned
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1407-X003
+  candidate: Tool-catalog fingerprint equality by itself proves a server is a proxy.
+  origin: Detection design review.
+  attempted_searches:
+  - Direct review of MCP tools and architecture specifications.
+  - Direct review of RFC 9728 identity controls and TrustShiftProbe detector limitations.
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-architecture
+  - SRC-rfc9728
+  - SRC-trustshiftprobe
+  reason: A legitimate clone, versioned deployment, gateway, or shared implementation
+    can expose the same tool catalog; the signal requires identity mismatch and context.
+  prohibited_publishable_text:
+  - fingerprint equality proves proxying
+  - tool similarity is definitive attribution
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1407-X004
+  candidate: CVE-2026-59822, CVE-2026-66012, CVE-2025-59155, CVE-2026-67531, and CVE-2025-4143
+    are direct instances of Server Proxy Masquerade.
+  origin: NVD saturation candidate review.
+  attempted_searches:
+  - Direct review of complete CVE records and their stated root causes.
+  - Comparison to the technique contract's identity and proxy boundary.
+  consulted_source_ids:
+  - SRC-cve-2026-59822
+  - SRC-cve-2026-66012
+  - SRC-cve-2025-59155
+  - SRC-cve-2026-67531
+  - SRC-cve-2025-4143
+  reason: The records concern authentication fallback, reverse-proxy authorization,
+    upstream API SSRF, sandbox escape, or redirect validation without the defining
+    server identity masquerade.
+  prohibited_publishable_text:
+  - all proxy-related CVEs are direct masquerade
+  - CVE-2026-67531 demonstrates server identity spoofing
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

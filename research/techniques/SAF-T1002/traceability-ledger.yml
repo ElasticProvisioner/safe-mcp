@@ -1,0 +1,172 @@
+version: 1
+technique_id: SAF-T1002
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1002/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1002/technique-contract.yml
+  supports: Clean-room scope, name, evidence requirements, and completion criteria.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1002/source-coverage.yml
+  supports: Search coverage, saturation, absence limitation, candidates, and classification
+    decisions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1002/quality-review.yml
+  supports: Isolated validation commands, results, limitations, and integration status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1002/detection-rule.yml
+  supports: The explicitly labeled detection analytic and its field-level traces.
+- id: LOCAL-detection-test-script
+  path: techniques/SAF-T1002/tests/test_detection_rule.py
+  supports: Deterministic evaluation logic for the bundled detection rule.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1002/tests/fixtures/cases.json
+  supports: Inert positive, negative, boundary, and false-positive test inputs.
+- id: LOCAL-detection-results
+  path: techniques/SAF-T1002/tests/results/detection-test-results.json
+  supports: Machine-readable six-case validation results.
+- id: LOCAL-detection-log
+  path: techniques/SAF-T1002/tests/logs/test-run.log
+  supports: Human-readable deterministic test log.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1002/clean-room-attestation.yml
+  supports: Input restrictions, searches, opened sources, and pre-integration freeze
+    state.
+- id: LOCAL-isolated-validation
+  path: research/techniques/SAF-T1002/validation/validation-results.json
+  supports: Bundle-local schema, trace, query, rights, detection, and clean-room validation
+    results.
+- id: LOCAL-canonical-mock-validation
+  path: research/techniques/SAF-T1002/validation/mock-validator.log
+  supports: Passing current canonical validator result in the isolated synthetic-join
+    mock.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1002-X001
+  candidate: The official MCP Registry has never distributed a compromised artifact.
+  origin: Negative-result inference considered during gap analysis.
+  attempted_searches:
+  - MCP Registry compromised package production incident malicious update September
+    2026 [restricted domains and required exclusions]
+  - MCP trusted package publisher account compromise official registry incident [restricted
+    domains and required exclusions]
+  consulted_source_ids:
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-moderation
+  reason: Absence from the reviewed corpus cannot establish a universal historical
+    negative.
+  prohibited_publishable_text:
+  - The official MCP Registry has never been compromised.
+  - No MCP package has ever been compromised.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X002
+  candidate: CVE-2025-6514 is a supply-chain compromise.
+  origin: Current MCP vulnerability search.
+  attempted_searches:
+  - CVE-2025-6514 mcp-remote command injection affected versions fixed exploitation
+    [restricted domains and required exclusions]
+  consulted_source_ids:
+  - SRC-jfrog-cve-2025-6514
+  reason: The demonstrated mechanism is command injection after connection to an untrusted
+    or hijacked server, not alteration of a trusted software artifact or release path.
+  prohibited_publishable_text:
+  - CVE-2025-6514 is an example of supply-chain compromise.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X003
+  candidate: CVE-2026-18953 is a supply-chain compromise.
+  origin: Current MCP vulnerability search.
+  attempted_searches:
+  - CVE-2026-18953 MCP server path traversal fixed version [restricted domains and
+    required exclusions]
+  consulted_source_ids:
+  - SRC-aws-cve-2026-18953
+  reason: The vendor advisory describes an implementation path-traversal flaw in an
+    honestly distributed component, not a compromised distribution path.
+  prohibited_publishable_text:
+  - CVE-2026-18953 is a supply-chain attack.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X004
+  candidate: The vpmdhaj typosquatted-package campaign is a direct example.
+  origin: Current production-incident search.
+  attempted_searches:
+  - Microsoft dependency confusion campaign npm 2026 malicious packages security blog
+    [restricted domains and required exclusions]
+  consulted_source_ids:
+  - SRC-microsoft-typosquat-2026
+  reason: The observed initial mechanism created deceptive new package identities;
+    only a later pivot using stolen publisher tokens would enter this contract.
+  prohibited_publishable_text:
+  - Typosquatting alone is supply-chain compromise under this technique.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X005
+  candidate: Provenance or a valid signature proves an artifact is safe.
+  origin: Detection and defense synthesis.
+  attempted_searches:
+  - verify SLSA provenance artifact subject digest builder id policy [restricted domains
+    and required exclusions]
+  - provenance valid signature compromised build pipeline package incident 2026 [restricted
+    domains and required exclusions]
+  consulted_source_ids:
+  - SRC-slsa-v1.2-verification
+  - SRC-microsoft-asyncapi-2026
+  reason: SLSA defines verification limits, and the AsyncAPI case produced valid provenance
+    from unauthorized source through an abused trusted workflow.
+  prohibited_publishable_text:
+  - Valid provenance guarantees that a package is safe.
+  - A valid signature rules out supply-chain compromise.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X006
+  candidate: XZ Utils should be a selected procedure example.
+  origin: Broad historical incident search.
+  attempted_searches:
+  - XZ Utils CVE-2024-3094 backdoor advisory exploitation status [restricted domains
+    and required exclusions]
+  consulted_source_ids: []
+  reason: The lead was not needed after four higher-currency or more agentic-specific
+    qualifying examples were fully reviewed; no publishable proposition depends on
+    it.
+  prohibited_publishable_text:
+  - XZ Utils is a direct MCP or agentic supply-chain incident.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X007
+  candidate: AgentKit was successfully poisoned and shipped to users.
+  origin: Overbroad interpretation of the tj-actions incident.
+  attempted_searches:
+  - Coinbase AgentKit tj-actions compromise response no damage [restricted domains
+    and required exclusions]
+  consulted_source_ids:
+  - SRC-unit42-tj-actions-agentkit
+  - SRC-wiz-cve-2025-30066
+  reason: The malicious action and token access were observed, but Coinbase reported
+    no malicious package publication or known damage.
+  prohibited_publishable_text:
+  - A malicious AgentKit package was published.
+  - AgentKit users were compromised by the incident.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1002-X008
+  candidate: Repository tactic, neighbor, and mitigation identifiers can be inferred
+    before integration.
+  origin: Framework alignment requirement.
+  attempted_searches:
+  - Permitted Technique ID and Technique Name catalog-column extraction only; detailed
+    framework reconciliation deferred until after freeze.
+  consulted_source_ids: []
+  reason: The clean-room protocol prohibits consulting target-adjacent repository
+    content before freeze and forbids fabricated joins.
+  prohibited_publishable_text:
+  - Any unverified SAF neighbor or mitigation identifier.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

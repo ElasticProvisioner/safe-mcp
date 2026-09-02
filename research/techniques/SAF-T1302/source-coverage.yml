@@ -1,0 +1,216 @@
+version: 1
+technique_id: SAF-T1302
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io specification tools security human in the loop authorization confused deputy'
+        - 'site:owasp.org agentic AI tool misuse excessive agency least privilege'
+        - 'site:nist.gov AI agent tools least privilege authorization confused deputy'
+        - 'site:ietf.org OAuth security best current practice least privilege audience restriction'
+      material_changes:
+        - Established the model-controlled tool boundary, access-control and audit requirements, least-privilege scope guidance, and action-approval expectations.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail Model Context Protocol MCP remote command execution CVE 2025'
+        - 'site:nvd.nist.gov/vuln/detail "MCP Inspector"'
+        - 'site:cisa.gov/known-exploited-vulnerabilities-catalog "MCP"'
+        - 'site:nvd.nist.gov/vuln/detail "agent" "tool" "privilege escalation" MCP'
+        - 'site:discuss.elastic.co "ESA-2026-83" Kibana Agent Builder privilege escalation'
+        - 'site:vulncheck.com/advisories "CVE-2026-75857" CodeWhale'
+      material_changes:
+        - Added CVE-2026-75857, CVE-2026-41378, and CVE-2026-72681 as direct vulnerabilities with current fixes and exploitation-status limits.
+        - Found no directly documented production breach in the reviewed authoritative corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:invariantlabs.ai/blog MCP GitHub private repository prompt injection'
+        - 'site:invariantlabs.ai/blog "MCP" "GitHub" "exfiltration"'
+        - 'site:unit42.paloaltonetworks.com Vertex AI Agent Engine privilege service account research'
+        - 'site:about.gitlab.com Duo prompt injection security vulnerability private source code'
+      material_changes:
+        - Added the GitHub MCP controlled demonstration as direct end-to-end evidence.
+        - Classified WhatsApp MCP as a redundant direct demonstration and Vertex AI service-agent research as adjacent identity abuse.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io/docs/2025-11-25 tutorials security privileged tools approval logging'
+        - 'site:owasp.org "high-privilege" agent tool abuse confused deputy'
+        - 'site:modelcontextprotocol.io/specification/2025-11-25 "privileged" "tool" approval'
+      material_changes:
+        - Defined the required structured fields and an approval-plus-effective-privilege correlation with break-glass suppression.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:invariantlabs.ai/blog "privilege" "tool" "agent" MCP'
+        - 'site:nvd.nist.gov/vuln/detail "unrestricted gateway-side tool access"'
+        - 'site:attack.mitre.org/techniques abuse elevation control mechanism privilege escalation'
+        - 'site:attack.mitre.org/techniques valid accounts privilege escalation cloud accounts authorized service account'
+      material_changes:
+        - Narrowed the OpenClaw severity to high with a trusted paired-node prerequisite.
+        - Preserved CodeWhale's prior-approved-process prerequisite and GitHub's demo-only, client-specific limitation.
+        - Selected T1078.004 only as analogous because it lacks agent tool and approval semantics.
+    - pass: discovery_follow_up_with_material_change
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail "approval_requirement" agent tool'
+        - 'site:nvd.nist.gov/vuln/detail 2026 agent builder tool missing authorization privilege escalation'
+      material_changes:
+        - Located and directly reviewed the three 2026 disclosed vulnerabilities selected for publication.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:discuss.elastic.co/t "Agent Builder" "privilege escalation" tool authorization after:2026-08-13'
+        - 'site:nvd.nist.gov/vuln/detail "approval_requirement" agent tool'
+        - 'site:nvd.nist.gov/vuln/detail "gateway-side tool access" agent'
+        - 'site:modelcontextprotocol.io/specification/2025-11-25 "privileged" "tool" approval'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail 2026 agent builder tool missing authorization privilege escalation'
+        - 'site:invariantlabs.ai/blog high privilege trusted tool agent approval bypass'
+        - 'site:owasp.org agentic "action-bound approval" privileged tool'
+        - 'site:attack.mitre.org/techniques/T1078/004 service account managed identity privilege escalation'
+      material_changes: []
+  rationale: >-
+    Direct review covers the current MCP tool and authorization specifications,
+    agent-security control guidance, three 2026 vendor or maintainer disclosures,
+    their NVD/CISA status, one end-to-end MCP demonstration, rejected adjacent
+    examples, and an ATT&CK mapping. Two narrower authoritative-domain follow-ups
+    produced no new controlling requirement, higher-impact direct example,
+    remediation change, exploitation evidence, detection constraint, or scope
+    distinction. No source needed by the publishable claims remained blocked.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-ghsa-openclaw-gjm7
+    - SRC-ghsa-codewhale-g29h
+    - SRC-elastic-esa-2026-83
+    - SRC-invariant-github-mcp-2025
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-openclaw-gjm7
+      identifier: CVE-2026-41378 / GHSA-gjm7-hw8f-73rq
+      relationship: direct_vulnerability
+      exploitation_status: CISA SSVC in the NVD record reports none; no production exploitation was identified.
+      impact: A paired low-privilege node could reach broader gateway-side tools and gateway code execution.
+      remediation: Fixed in OpenClaw 2026.3.31; maintainer rates the narrow, foothold-dependent issue high.
+      selected: true
+      rationale: Direct authorization boundary, total potential CIA impact, current fixed versions, and strong maintainer limitation make it the highest-impact qualifying vulnerability.
+    - source_id: SRC-ghsa-codewhale-g29h
+      identifier: CVE-2026-75857 / GHSA-g29h-pfmp-qp9r
+      relationship: direct_vulnerability
+      exploitation_status: CISA SSVC in NVD reports proof of concept; no production exploitation was identified.
+      impact: Injected instructions could drive commands in an already-approved process at that process's privilege level without a new approval.
+      remediation: Fixed in CodeWhale 0.8.64; upgrade is required.
+      selected: true
+      rationale: Directly matches the approval-boundary contract and can inherit root, database, or remote-shell authority under stated preconditions.
+    - source_id: SRC-elastic-esa-2026-83
+      identifier: CVE-2026-72681 / ESA-2026-83
+      relationship: direct_vulnerability
+      exploitation_status: CISA SSVC in NVD reports none; Elastic identifies no specific IoC.
+      impact: A low-privilege Kibana requestor could invoke a separate feature through Agent Builder and potentially read unauthorized sensitive information.
+      remediation: Fixed in Kibana 9.4.4; no workaround; Cloud Serverless was remediated before disclosure.
+      selected: true
+      rationale: First-party advisory precisely identifies missing requestor authorization before tool creation and execution.
+    - source_id: SRC-invariant-github-mcp-2025
+      identifier: GitHub MCP private-repository exfiltration demonstration
+      relationship: direct_demonstration
+      exploitation_status: Controlled demonstration only; no production exploitation was established.
+      impact: A public issue author influenced an agent to read private repositories and publish selected private data to a public pull request.
+      remediation: Architectural mitigation through granular per-repository controls, contextual data-flow policy, and monitoring; no server-code patch claimed.
+      selected: true
+      rationale: Complete, directly reviewed MCP tool sequence establishes the core behavior and therefore the Demonstrated evidence label.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: WhatsApp MCP injected-message and tool-poisoning demonstrations
+      relationship: direct_demonstration
+      exploitation_status: Controlled demonstrations only.
+      impact: Tool outputs or malicious tool descriptions steered messaging tools to disclose contacts or chat history.
+      remediation: Researcher recommends caution, visibility, and MCP security controls; no authoritative product patch was established.
+      selected: false
+      rationale: Qualifying but lower-ranked because it is older, overlaps the selected GitHub flow, and one experiment depends on the neighboring tool-poisoning mechanism.
+    - source_id: SRC-unit42-double-agents
+      identifier: Vertex AI Double Agents research
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Controlled research; deployment workflow later changed.
+      impact: A deliberately malicious deployed agent exposed service-agent credentials and accessed consumer storage and restricted producer images.
+      remediation: Google documented the model and recommended a customer-controlled service account; some hypothesized Workspace access lacked required IAM permissions.
+      selected: false
+      rationale: High impact but primarily identity and credential extraction from a malicious agent package, not low-trust invocation of a legitimate privileged tool.
+    - source_id: SRC-gitlab-cve-2024-3303
+      identifier: CVE-2024-3303
+      relationship: enabling_vulnerability
+      exploitation_status: Public advisory; production exploitation not established.
+      impact: Prompt injection could exfiltrate a private GitLab issue.
+      remediation: Fixed in GitLab 17.6.5, 17.7.4, and 17.8.2; GitLab.com was patched at publication.
+      selected: false
+      rationale: Verified and relevant, but the advisory does not expose the tool authorization path needed to classify the defining boundary as precisely as the four selected examples.
+
+sources_consulted:
+  - SRC-elastic-esa-2026-83
+  - SRC-ghsa-codewhale-g29h
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-gitlab-cve-2024-3303
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1078-004
+  - SRC-nvd-cve-2026-41378
+  - SRC-nvd-cve-2026-72681
+  - SRC-nvd-cve-2026-75857
+  - SRC-owasp-agent-security
+  - SRC-unit42-double-agents
+sources_cited:
+  - SRC-elastic-esa-2026-83
+  - SRC-ghsa-codewhale-g29h
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-invariant-github-mcp-2025
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1078-004
+  - SRC-nvd-cve-2026-41378
+  - SRC-nvd-cve-2026-72681
+  - SRC-nvd-cve-2026-75857
+  - SRC-owasp-agent-security
+sources_rejected:
+  - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+    reason: Direct but redundant lower-ranked controlled demonstration; one variant depends on neighboring tool poisoning.
+  - source_id: SRC-unit42-double-agents
+    reason: Adjacent identity and credential abuse after deploying a malicious agent package, not the bounded legitimate-tool authorization failure.
+  - source_id: SRC-gitlab-cve-2024-3303
+    reason: Verified enabling vulnerability whose short advisory does not establish the tool authorization path precisely enough for a selected example.
+sources_blocked: []
+
+conflicts:
+  - issue: NVD and CVSS language can imply critical reach for OpenClaw, while the maintainer says the issue is narrow and high because a trusted paired-node foothold is required.
+    resolution: Publish high potential impact with the foothold prerequisite and do not call the issue critical.
+  - issue: The GitHub disclosure makes a broad architectural claim beyond the demonstrated Claude Desktop configuration.
+    resolution: Limit publishable wording to the demonstrated environment and record universal susceptibility as excluded.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1302-C004, SAF-T1302-C005]
+  rationale: >-
+    The GitHub MCP controlled evaluation completes the defining sequence from
+    low-trust content through legitimate tools to higher-authority private-data
+    access and public disclosure. Current direct vulnerabilities independently
+    corroborate missing requestor authorization and action-bound approval. No
+    qualifying production incident was directly reviewed, so Observed is not supported.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

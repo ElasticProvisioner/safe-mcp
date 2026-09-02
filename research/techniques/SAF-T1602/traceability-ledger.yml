@@ -1,0 +1,152 @@
+version: 1
+technique_id: SAF-T1602
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1602/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1602/technique-contract.yml
+  supports: Scope, neutral identity, user-supplied tactic, detection requirement,
+    and clean-room completion constraints.
+- id: LOCAL-claim-inventory
+  path: research/techniques/SAF-T1602/claim-inventory.yml
+  supports: Validated claim statements, evidence classes, locators, limitations, and
+    inference labels.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1602/source-coverage.yml
+  supports: Research date, evidence gap, breach and vulnerability candidate dispositions,
+    saturation passes, and overall evidence label.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1602/quality-review.yml
+  supports: Validation commands, gate results, review date, and detection test status.
+- id: LOCAL-traceability
+  path: research/techniques/SAF-T1602/traceability-ledger.yml
+  supports: Source-or-omit coverage and exclusion decisions.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1602/detection-rule.yml
+  supports: The explicitly experimental detection analytic, telemetry fields, correlation
+    logic, false positives, limitations, and tuning.
+- id: LOCAL-test-data
+  path: techniques/SAF-T1602/test-logs.json
+  supports: Synthetic positive, negative, boundary, malformed-field, and legitimate-lookalike
+    cases.
+- id: LOCAL-test-script
+  path: techniques/SAF-T1602/test_detection_rule.py
+  supports: Deterministic executable evaluation of the detection analytic against
+    synthetic cases.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1602/validation/detection-test.txt
+  supports: Recorded passing output from the deterministic detection test.
+- id: LOCAL-strict-validator
+  path: research/techniques/SAF-T1602/validation/strict-validator.txt
+  supports: Recorded passing output from canonical strict repository validation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1602-X001
+  candidate: A confirmed malicious production breach caused by Tool Enumeration.
+  origin: Mandatory breach and vulnerability research pass.
+  attempted_searches:
+  - Direct review of current MCP authority pages and three current MCP CVE families
+    with embedded CISA exploitation assessments.
+  - Direct review of maintainer or CNA advisory URLs supplied by those CVE records.
+  consulted_source_ids:
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-53109
+  reason: No consulted direct authority described malicious production use of tools/list.
+  prohibited_publishable_text:
+  - Tool Enumeration has caused a confirmed production breach.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1602-X002
+  candidate: CVE-2025-49596 as a direct Tool Enumeration example.
+  origin: CVE authority and its exact maintainer advisory URL.
+  attempted_searches:
+  - Reviewed the CVE description, affected versions, references, CISA ADP assessment,
+    and linked GHSA summary and remediation.
+  consulted_source_ids:
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  reason: The flaw is missing Inspector proxy authentication enabling command execution,
+    not tool-definition listing.
+  prohibited_publishable_text:
+  - CVE-2025-49596 is a Tool Enumeration vulnerability.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1602-X003
+  candidate: CVE-2025-6514 as a direct Tool Enumeration example.
+  origin: CVE authority and its exact JFrog advisory URLs.
+  attempted_searches:
+  - Reviewed the CVE description, affected versions, references, CISA ADP assessment,
+    CNA advisory, and technical description.
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfsa-2025-6514
+  reason: The flaw is command injection through a crafted authorization endpoint URL,
+    not tools/list.
+  prohibited_publishable_text:
+  - mcp-remote RCE is caused by tools/list.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1602-X004
+  candidate: CVE-2025-53109 as a direct Tool Enumeration example.
+  origin: CVE authority and its exact maintainer advisory URL.
+  attempted_searches:
+  - Reviewed the CVE description, affected versions, references, CISA ADP assessment,
+    and linked GHSA including conflicting version text.
+  consulted_source_ids:
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53109
+  reason: The flaw bypasses filesystem path restrictions through symlinks and does
+    not enumerate the callable catalog.
+  prohibited_publishable_text:
+  - CVE-2025-53109 proves tool-catalog exfiltration.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1602-X005
+  candidate: Treating any tools/list request as proof of adversarial intent.
+  origin: Initial detection hypothesis challenged against first-party implementation
+    documentation.
+  attempted_searches:
+  - Compared the normative listing method with the first-party Inspector quickstart
+    and OpenTelemetry field requirements.
+  consulted_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  reason: The same method is an ordinary developer and inventory workflow; intent
+    requires authorization or behavioral context.
+  prohibited_publishable_text:
+  - Every tools/list request is malicious.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1602-X006
+  candidate: Frozen local acquisition copies of the reviewed external authorities.
+  origin: Publication-rights and post-freeze repository integration review.
+  attempted_searches:
+  - Reviewed every publication-rights record and verified the frozen source-archive
+    hashes and locators before repository integration.
+  consulted_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-jsonrpc-2.0
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  - SRC-mitre-attack-t1046-v3.2
+  reason: The rights audit permits citation, linking, and paraphrase but does not
+    authorize redistributing the external source files. The canonical frozen bundle
+    retains their hashes and acquisition locators outside the repository.
+  prohibited_publishable_text:
+  - The external source archive is distributed with SAF-MCP.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1503
+bundle_status: clean_room_frozen_candidate
+integration_policy: mechanical_post_freeze_only
+
+synthetic_validation_inputs:
+  nearest_neighbors:
+    - technique_id: SAF-T1501
+      synthetic_name: Credential-File Collection
+      purpose: Satisfy and exercise the credential-file boundary without reading a real neighboring artifact.
+    - technique_id: SAF-T1502
+      synthetic_name: Configuration-Secret Leakage
+      purpose: Satisfy and exercise the configuration-secret boundary without reading a real neighboring artifact.
+  repository_history_sha: "1111111111111111111111111111111111111111"
+  mitigation_ids: []
+
+required_post_freeze_reconciliation:
+  - Merge source-manifest-fragment.yml into the shared source manifest, resolving only mechanical ID collisions or formatting.
+  - Merge framework-fragment.yml and alignment-fragment.yml into the shared model and ledger.
+  - Resolve SAF-T1501 and SAF-T1502 against real neighboring techniques; preserve the frozen live-process-environment boundary or flag a substantive conflict for human review.
+  - Replace the synthetic history SHA with the honest repository commit that supports the integrated initial version.
+  - Re-run the repository's strict technique validator and detector tests after integration.
+
+prohibited_integration_changes:
+  - Do not silently strengthen Research-Derived to Demonstrated or Observed.
+  - Do not convert historical analogies or enabling vulnerabilities into direct SAF-T1503 events.
+  - Do not remove the detector's direct-runtime-access blind spot or expected legitimate diagnostic match.
+  - Do not revise bundle-owned evidence prose as a mechanical join operation.
+
+source_registry_ids:
+  - SRC-aikido-shai-hulud-2025
+  - SRC-circleci-alert-2023
+  - SRC-circleci-incident-2023
+  - SRC-claude-code-mcp-2026-09-01
+  - SRC-codecov-bash-uploader-2021
+  - SRC-ghsa-7f8r-222p-6f5g
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-logging-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mitre-attack-t1005-current
+  - SRC-mitre-attack-t1082-current
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-node-child-process-26.8.1
+  - SRC-node-process-26.8.1
+  - SRC-oligo-cve-2025-49596
+  - SRC-python-os-3.14.7
+  - SRC-python-subprocess-3.14.7
+  - SRC-rhel9-audit
+  - SRC-sysmon-15.21
+  - SRC-vscode-mcp-2026-08-26
+  - SRC-windows-command-line-audit
+
+bundle_excludes:
+  - Validator copies and dependencies.
+  - Source acquisition corpus or cached pages.
+  - Synthetic repository and neighbor artifacts.
+  - Shared registry, catalog, or SAF-site files.

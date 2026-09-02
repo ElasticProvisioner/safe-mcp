@@ -1,0 +1,110 @@
+title: Malicious MCP Server Control Channel Sequence
+id: 3a0f09c0-7cef-4b54-a6fb-98064253f73c
+status: test
+description: >-
+  Detects an MCP server-role process that reaches an unapproved external
+  destination and, within 300 seconds of server start, either launches an
+  interactive shell-like child or exchanges a remote command and result on one
+  channel.
+logsource:
+  category: correlated_endpoint_network_and_mcp_audit
+  product: saf-mcp
+detection:
+  selection_server_start:
+    event_type: mcp_server_start
+    role:
+      - mcp_server
+      - server
+  selection_unapproved_egress:
+    event_type: network_connection
+    direction: outbound
+    destination_external: true
+    destination_allowlisted: false
+  selection_interactive_child:
+    event_type: child_process_start
+    interactive: true
+    child_category:
+      - shell
+      - command_interpreter
+  selection_remote_exchange:
+    inbound:
+      event_type: channel_message
+      direction: inbound
+      semantic: remote_command
+    outbound:
+      event_type: channel_message
+      direction: outbound
+      semantic: command_result
+    same_channel: true
+  correlation:
+    group_by:
+      - host_id
+      - process_id
+      - server_id
+    window_seconds: 300
+    condition: >-
+      selection_server_start and selection_unapproved_egress and
+      (selection_interactive_child or selection_remote_exchange)
+fields:
+  - timestamp
+  - event_type
+  - host_id
+  - process_id
+  - server_id
+  - destination
+  - approved_destinations
+  - child_category
+  - interactive
+  - channel_id
+  - direction
+  - semantic
+falsepositives:
+  - Unregistered development servers or test harnesses using interactive children.
+  - Newly approved service destinations absent from the process-bound allowlist.
+level: high
+tags:
+  - saf.t1903
+  - attack.command-and-control
+  - attack.t1071
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1903-C010
+    - SAF-T1903-C011
+  telemetry_claim_ids:
+    - SAF-T1903-C003
+    - SAF-T1903-C010
+    - SAF-T1903-C011
+  limitation_claim_ids:
+    - SAF-T1903-C010
+    - SAF-T1903-C011
+    - SAF-T1903-C014
+  validation_artifacts:
+    - tests/SAF-T1903/cases.json
+    - tests/SAF-T1903/test_detection_rule.py
+    - tests/SAF-T1903/test-results.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1903-C003, SAF-T1903-C010, SAF-T1903-C011]
+      rationale: Correlation needs server identity, endpoint process ancestry, network, and channel-audit telemetry.
+    selection_server_start:
+      claim_ids: [SAF-T1903-C003, SAF-T1903-C011]
+      rationale: A client-launched server process supplies the role and ancestry anchor.
+    selection_unapproved_egress:
+      claim_ids: [SAF-T1903-C010]
+      rationale: Unusual external destinations are a useful but insufficient C2 signal.
+    selection_interactive_child:
+      claim_ids: [SAF-T1903-C011]
+      rationale: Interactive shell-like children strengthen the command-capability inference.
+    selection_remote_exchange:
+      claim_ids: [SAF-T1903-C014]
+      rationale: Bidirectional command and result semantics provide a behavioral deviation signal.
+    correlation:
+      claim_ids: [SAF-T1903-C010, SAF-T1903-C011]
+      rationale: Correlation combines two individually noisy signals and binds them to one process.
+    fields:
+      claim_ids: [SAF-T1903-C003, SAF-T1903-C010, SAF-T1903-C011]
+      rationale: The fields normalize server identity, destination approval, ancestry, and channel direction.
+    falsepositives:
+      claim_ids: [SAF-T1903-C010, SAF-T1903-C011]
+      rationale: Elastic documents legitimate domains and ordinary MCP child processes as expected noise.

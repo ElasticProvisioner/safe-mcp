@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "technique_id": "SAF-T1503",
+  "cases": [
+    {
+      "id": "positive-unix-env",
+      "category": "positive",
+      "event": {"Image": "/usr/bin/env", "CommandLine": "env", "AncestorProcessRole": "local_mcp_server"},
+      "expected": true
+    },
+    {
+      "id": "positive-unix-printenv",
+      "category": "positive",
+      "event": {"Image": "/usr/bin/printenv", "CommandLine": "printenv", "AncestorProcessRole": "local_mcp_server"},
+      "expected": true
+    },
+    {
+      "id": "positive-windows-set",
+      "category": "positive",
+      "event": {"Image": "C:\\Windows\\System32\\cmd.exe", "CommandLine": "cmd.exe /c set", "AncestorProcessRole": "local_mcp_server"},
+      "expected": true
+    },
+    {
+      "id": "normalization-case-and-slash",
+      "category": "normalization",
+      "event": {"Image": "C:/WINDOWS/System32/CMD.EXE", "CommandLine": "CMD.EXE /K SET PATH", "AncestorProcessRole": "LOCAL_MCP_SERVER"},
+      "expected": true
+    },
+    {
+      "id": "negative-in-process-runtime-read",
+      "category": "negative",
+      "event": {"Image": "/usr/bin/node", "CommandLine": "server.js", "AncestorProcessRole": "local_mcp_server", "RuntimeAction": "process.env"},
+      "expected": false
+    },
+    {
+      "id": "negative-unrelated-lineage",
+      "category": "negative",
+      "event": {"Image": "/usr/bin/env", "CommandLine": "env", "AncestorProcessRole": "interactive_shell"},
+      "expected": false
+    },
+    {
+      "id": "boundary-suffix-lookalike",
+      "category": "boundary",
+      "event": {"Image": "/opt/tools/myenv", "CommandLine": "myenv", "AncestorProcessRole": "local_mcp_server"},
+      "expected": false
+    },
+    {
+      "id": "malformed-missing-image",
+      "category": "malformed",
+      "event": {"CommandLine": "env", "AncestorProcessRole": "local_mcp_server"},
+      "expected": false
+    },
+    {
+      "id": "expected-legitimate-diagnostic-false-positive",
+      "category": "expected_false_positive",
+      "event": {"Image": "/usr/bin/printenv", "CommandLine": "printenv LANG", "AncestorProcessRole": "local_mcp_server", "UseCase": "administrator-approved diagnostic"},
+      "expected": true
+    }
+  ]
+}

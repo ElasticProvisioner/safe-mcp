@@ -1,0 +1,268 @@
+version: 1
+technique_id: SAF-T1802
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of current MCP Resources, Tools, and Roots specification pages.
+        - Direct review of MCP Security Best Practices, MITRE ATT&CK T1005/T1083, and MITRE CWE-22/CWE-59.
+      material_changes:
+        - Defined the technique around content retrieval through resources or tools and an intended authorization, approval, or path boundary.
+        - Excluded enumeration-only behavior and established that roots are not protocol-enforced access controls.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Direct NVD CVE API keyword review for Model Context Protocol filesystem, arbitrary file read, file access, and MCP path traversal.
+        - Direct CVE Program record review for all relevant candidates and exact project advisories identified by those records.
+        - Direct CISA Known Exploited Vulnerabilities catalog identifier and bounded keyword review.
+      material_changes:
+        - Selected four direct, high-impact vulnerability or demonstration examples.
+        - Recorded the absence of a qualifying file-specific production incident and separated adjacent execution or exposure weaknesses.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Direct arXiv API query for Model Context Protocol and file, followed by full review of arXiv:2607.14754v1.
+        - Full direct review of the Anthropic GTG-1002 campaign report identified by an ATT&CK authority trail.
+      material_changes:
+        - Raised the complete technique to Demonstrated based on public controlled MCP file-disclosure evidence.
+        - Added runtime-evidence and false-positive requirements while keeping the Anthropic campaign adjacent.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Reconciled MCP request/result semantics, ATT&CK detection strategy, FlowGuard evidence adjudication, and CWE mitigations.
+        - Executed the standalone detector against positive, negative, boundary, and malformed fixtures.
+      material_changes:
+        - Fixed the telemetry contract and three transparent analytic branches.
+        - Added approval-aware suppression, path-resolution requirements, threshold tuning, and blind-spot disclosures.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Challenged production-exploitation, root-enforcement, patch-version, tool-name, and detection-completeness assumptions against the full reviewed corpus.
+      material_changes:
+        - Preserved a bounded production-incident gap and the MCP Filesystem patch-metadata conflict.
+        - Limited impact to confidentiality for this technique and disclosed low-and-slow and missing-telemetry evasion.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - Re-ran the direct NVD CVE API query for Model Context Protocol file access; six results matched the integrated candidate set.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - Re-ran the direct NVD CVE API query for Model Context Protocol arbitrary file read; two results were already integrated.
+      material_changes: []
+  rationale: >-
+    Current protocol, weakness, ATT&CK, official CVE/advisory, government
+    exploitation, incident, and empirical-research classes cover every material
+    proposition. The final two refined direct-authority queries returned only
+    already-reviewed candidates and changed neither scope, evidence label,
+    examples, detection, nor limitations.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 11
+  selected_examples:
+    - SRC-ghsa-g5r6-gv6m-f5jv
+    - SRC-ghsa-j98m-w3xp-9f56
+    - SRC-ghsa-7jj9-4qqq-4xc4
+    - SRC-ghsa-cve-2025-53109
+  no_qualifying_examples_rationale: >-
+    Not applicable to vulnerabilities and demonstrations because four qualify.
+    No direct production incident qualified; the reviewed incident report did
+    not identify file retrieval, and none of the selected CVEs appeared in the
+    reviewed CISA KEV snapshot.
+  candidates:
+    - source_id: SRC-ghsa-g5r6-gv6m-f5jv
+      identifier: GHSA-g5r6-gv6m-f5jv / CVE-2026-73498
+      relationship: direct_demonstration
+      exploitation_status: Public direct-API PoC, end-to-end MCP client confirmation, and controlled prompt-injection lab confirmation; no production intrusion reported.
+      impact: An authenticated MCP client could read any process-readable file and upload it to Confluence, including credential-bearing files.
+      remediation: Upgrade MCP Atlassian to 0.22.0 or later; validate file paths before opening.
+      selected: true
+      rationale: Highest directness and current MCP relevance, with multiple public demonstration modes and credential exposure potential.
+    - source_id: SRC-ghsa-j98m-w3xp-9f56
+      identifier: GHSA-j98m-w3xp-9f56 / CVE-2026-40576
+      relationship: direct_demonstration
+      exploitation_status: Public PoC documented by the maintainer advisory; CISA ADP assessment in the CVE record labels exploitation as proof-of-concept.
+      impact: An unauthenticated network caller could read or alter arbitrary host files through remotely exposed MCP tool handlers.
+      remediation: Upgrade excel-mcp-server to 0.1.8 or later; restrict network reachability and enforce canonical-root checks.
+      selected: true
+      rationale: Critical remote reachability and validated file-read primitives make it a highest-impact direct example.
+    - source_id: SRC-ghsa-7jj9-4qqq-4xc4
+      identifier: GHSA-7jj9-4qqq-4xc4 / CVE-2026-46555
+      relationship: direct_vulnerability
+      exploitation_status: Official disclosure; CVE ADP assessment records no known exploitation.
+      impact: A local same-user caller or DNS-rebinding attacker could read process-readable files and exfiltrate them as WhatsApp attachments.
+      remediation: Upgrade WhatsApp MCP to 0.2.1 or later; require bridge authentication, validate Host, and confine media paths.
+      selected: true
+      rationale: The vulnerability joins file retrieval and an external attachment channel under realistic MCP-local and browser conditions.
+    - source_id: SRC-ghsa-cve-2025-53109
+      identifier: GHSA-q66q-fx2p-7w4m / CVE-2025-53109
+      relationship: direct_vulnerability
+      exploitation_status: Official disclosure; no production exploitation established in the reviewed sources.
+      impact: A symlink inside an allowed directory could expose unintended process-readable files through the MCP Filesystem reference server.
+      remediation: Use the conservative published floor of 0.6.4 or 2025.7.01 and enforce post-resolution containment.
+      selected: true
+      rationale: Directly affects the canonical MCP Filesystem reference implementation and represents a distinct link-resolution boundary failure.
+    - source_id: SRC-ghsa-cve-2025-53110
+      identifier: GHSA-hc55-p739-j48w / CVE-2025-53110
+      relationship: direct_vulnerability
+      exploitation_status: Official disclosure; no production exploitation established in the reviewed sources.
+      impact: Colliding directory prefixes could permit unintended file access.
+      remediation: Use the conservative published floor of 0.6.4 or 2025.7.01 and compare normalized path components.
+      selected: false
+      rationale: Qualifies directly but was not selected because it shares the same product, patch line, and control family as the higher-diversity symlink example.
+    - source_id: SRC-flowguard-2607.14754v1
+      identifier: FlowGuard MarkItDown case study
+      relationship: direct_demonstration
+      exploitation_status: Controlled research demonstration and manual confirmation; no production intrusion reported.
+      impact: A caller-controlled file URI returned a local system file through an MCP conversion tool.
+      remediation: Block local file URIs by default and require an explicit startup opt-in for trusted local use.
+      selected: false
+      rationale: Strong corroborating demonstration, but the four selected advisories provide higher product-impact diversity and official remediation records.
+    - source_id: SRC-ghsa-5cgr-j3jf-jw3v
+      identifier: GHSA-5cgr-j3jf-jw3v / CVE-2025-68143
+      relationship: enabling_vulnerability
+      exploitation_status: Official disclosure; no production exploitation established.
+      impact: git_init could make an arbitrary process-accessible directory eligible for later git operations.
+      remediation: Upgrade mcp-server-git to 2025.9.25 or later; the unsafe tool was removed.
+      selected: false
+      rationale: It expands the set of operable paths but does not itself retrieve file content.
+    - source_id: SRC-ghsa-xj5p-w2v5-fjm6
+      identifier: GHSA-xj5p-w2v5-fjm6 / CVE-2025-47274
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Official disclosure; no production exploitation established.
+      impact: ToolHive run configurations stored certain secrets unencrypted for a user who already had home-directory access.
+      remediation: Upgrade ToolHive to 0.0.33 or remove affected run configurations.
+      selected: false
+      rationale: File access is a prerequisite and the weakness is secret-at-rest exposure, not MCP-mediated file collection.
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Official vulnerability disclosure.
+      impact: Crafted authorization endpoint input could cause operating-system command injection in mcp-remote.
+      remediation: Apply the vendor-fixed release and avoid untrusted servers.
+      selected: false
+      rationale: This is execution capability and only becomes File Collection if a separate file-read action occurs.
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Official vulnerability disclosure.
+      impact: An unauthenticated request could launch MCP commands through the Inspector proxy.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later.
+      selected: false
+      rationale: This is an execution or access-enabling weakness, not evidence of file retrieval.
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: Anthropic GTG-1002 campaign report
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Reported production cyber-espionage campaign affecting roughly thirty targets, with a small number of successful intrusions.
+      impact: The report documents agentic collection from databases and systems during intrusions.
+      remediation: Anthropic reports detection, investigation, account bans, notifications, and strengthened controls.
+      selected: false
+      rationale: The report does not establish retrieval of file content, so it cannot qualify as a direct File Collection incident.
+
+sources_consulted:
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-2026-roots
+  - SRC-mcp-security-2025-11-25
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-ghsa-g5r6-gv6m-f5jv
+  - SRC-cve-2026-73498
+  - SRC-ghsa-7jj9-4qqq-4xc4
+  - SRC-cve-2026-46555
+  - SRC-ghsa-j98m-w3xp-9f56
+  - SRC-cve-2026-40576
+  - SRC-ghsa-cve-2025-53109
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-cve-2025-53110
+  - SRC-flowguard-2607.14754v1
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-saturation-file-access
+  - SRC-nvd-saturation-arbitrary-read
+  - SRC-cve-2025-68143
+  - SRC-ghsa-5cgr-j3jf-jw3v
+  - SRC-cve-2025-47274
+  - SRC-ghsa-xj5p-w2v5-fjm6
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-nvd-mcp-filesystem-query
+  - SRC-nvd-mcp-path-traversal
+  - SRC-arxiv-mcp-file-query
+sources_cited:
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-2026-roots
+  - SRC-mcp-security-2025-11-25
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-ghsa-g5r6-gv6m-f5jv
+  - SRC-cve-2026-73498
+  - SRC-ghsa-7jj9-4qqq-4xc4
+  - SRC-cve-2026-46555
+  - SRC-ghsa-j98m-w3xp-9f56
+  - SRC-cve-2026-40576
+  - SRC-ghsa-cve-2025-53109
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-cve-2025-53110
+  - SRC-flowguard-2607.14754v1
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-saturation-file-access
+  - SRC-nvd-saturation-arbitrary-read
+sources_rejected:
+  - source_id: SRC-cve-2025-68143
+    reason: Enabling arbitrary-directory git initialization did not itself retrieve file content.
+  - source_id: SRC-ghsa-5cgr-j3jf-jw3v
+    reason: Project advisory corroborated an enabling operation rather than the defining collection outcome.
+  - source_id: SRC-cve-2025-47274
+    reason: Cleartext secret storage required pre-existing filesystem access and was not MCP-mediated collection.
+  - source_id: SRC-ghsa-xj5p-w2v5-fjm6
+    reason: Project advisory was adjacent secret exposure, not direct file retrieval.
+  - source_id: SRC-cve-2025-6514
+    reason: Command injection was adjacent execution capability.
+  - source_id: SRC-cve-2025-49596
+    reason: Unauthenticated command launch was adjacent access or execution capability.
+sources_blocked: []
+
+conflicts:
+  - issue: MCP Filesystem advisory headings list npm 0.6.3 in places, while CVE records and advisory narrative recommend 0.6.4 or 2025.7.01.
+    resolution: Publish the conservative higher floor and disclose the official-metadata conflict.
+  - issue: Public advisories and demonstrations could be mistaken for production exploitation.
+    resolution: Classify the overall technique as Demonstrated and explicitly retain the direct-production-incident gap.
+  - issue: Roots could be misconstrued as protocol-enforced filesystem authorization.
+    resolution: Follow the current specification's explicit statement that roots are informational and not access control.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1802-C001
+    - SAF-T1802-C007
+    - SAF-T1802-C009
+    - SAF-T1802-C011
+  rationale: >-
+    Current public evidence demonstrates the complete MCP behavior in controlled
+    conditions through a direct tool path, a network-exposed file tool, and a
+    file-URI conversion case. No reviewed source establishes a qualifying
+    file-specific production incident, so Observed would overstate the record.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

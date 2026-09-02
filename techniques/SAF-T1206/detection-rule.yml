@@ -1,0 +1,99 @@
+title: Credential-Bearing MCP Configuration Change
+id: 7ce37b3c-0fde-4da5-8924-9c7132f32db8
+status: experimental
+description: >-
+  Detects creation or modification of persistent MCP configuration when changed
+  key names indicate authentication material or a credential reference. Values
+  should be hashed or redacted before collection.
+author: OpenAI Codex clean-room agent /root/cleanroom_saf_t1206
+date: 2026-09-01
+modified: 2026-09-01
+references:
+  - https://code.visualstudio.com/docs/agents/reference/mcp-configuration
+  - https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference
+logsource:
+  category: file_event
+  product: generic
+  service: agent_config_monitor
+detection:
+  selection_config_path:
+    file_path|endswith:
+      - /.vscode/mcp.json
+      - /.cursor/mcp.json
+      - /.mcp.json
+      - /.copilot/mcp-config.json
+      - /claude_desktop_config.json
+      - /.zed/settings.json
+  selection_change_type:
+    change_type:
+      - create
+      - modify
+  selection_credential_key:
+    changed_keys|contains:
+      - authorization
+      - api_key
+      - api-key
+      - token
+      - secret
+      - client_id
+      - client_secret
+      - credential
+      - headers
+      - env
+  condition: selection_config_path and selection_change_type and selection_credential_key
+fields:
+  - timestamp
+  - actor
+  - host
+  - workspace
+  - file_path
+  - change_type
+  - changed_keys
+  - old_value_hash
+  - new_value_hash
+  - process_name
+  - approval_context
+falsepositives:
+  - Approved MCP server onboarding or credential rotation.
+  - Profile migration, settings synchronization, or managed configuration rollout.
+level: high
+tags:
+  - saf.t1206
+  - attack.persistence
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1206-C012
+    - SAF-T1206-C013
+  telemetry_claim_ids:
+    - SAF-T1206-C002
+    - SAF-T1206-C012
+  limitation_claim_ids:
+    - SAF-T1206-C013
+    - SAF-T1206-C014
+  validation_artifacts:
+    - tests/SAF-T1206/test-events.json
+    - tests/SAF-T1206/test_detection_rule.py
+    - research/techniques/SAF-T1206/validation/detection-test.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1206-C012]
+      rationale: File or configuration audit telemetry is required to see the persistent write.
+    selection_config_path:
+      claim_ids: [SAF-T1206-C002, SAF-T1206-C012]
+      rationale: The paths are documented client configuration locations or conservative product suffixes.
+    selection_change_type:
+      claim_ids: [SAF-T1206-C012]
+      rationale: The technique requires creation or modification rather than a read or deletion.
+    selection_credential_key:
+      claim_ids: [SAF-T1206-C002, SAF-T1206-C012]
+      rationale: These key fragments identify authentication material or references without collecting values.
+    condition:
+      claim_ids: [SAF-T1206-C012]
+      rationale: All three predicates are required to reduce unrelated file and noncredential changes.
+    fields:
+      claim_ids: [SAF-T1206-C012, SAF-T1206-C014]
+      rationale: The fields support attribution, baselining, and privacy-preserving investigation.
+    falsepositives:
+      claim_ids: [SAF-T1206-C013]
+      rationale: Legitimate onboarding, rotation, migration, and synchronization change the same fields.

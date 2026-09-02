@@ -1,59 +1,103 @@
-title: MCP Fake Tool Invocation Detection
-id: c6b5f97b-89e6-4f36-b5a9-9959a5550727
+title: Tool Execution Without Trusted Call Provenance or Registered Binding
+id: 9d3d2cbe-31c4-4fc7-97e7-d67d52735af2
 status: experimental
-description: >
-  Detects potential fake or spoofed tool invocation in MCP (SAF-T1103),
-  including suspicious tool-name keywords (admin/sudo/escalate/bypass) and
-  suspicious argument flags (bypass_acl, elevated, unrestricted). Pattern-only;
-  pair with a session-aware correlation rule that matches `tools/call` events
-  against prior `tools/list` registrations from the same `server_id` for full
-  coverage.
-author: SAF-MCP Team
-date: 2026-04-25
-modified: 2026-04-25
+description: >-
+  Detects tool execution that lacks a prior complete trusted model call for the
+  same run, call identifier, and function name, or that resolves outside the
+  registered tool set. Explicitly recorded human-approved manual operations are
+  excluded.
+author: OpenAI Codex
+date: 2026-09-01
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1103
-  - https://www.jsonrpc.org/specification
-  - https://cwe.mitre.org/data/definitions/345.html
-  - https://attack.mitre.org/techniques/T1565/
-  - https://attack.mitre.org/techniques/T1190/
-logsource:
-  product: mcp
-  service: tool_invocation
-detection:
-  selection_method:
-    event.action: 'tools/call'
-  selection_suspicious_tool_name:
-    tool.name|contains:
-      - 'admin'
-      - 'root'
-      - 'sudo'
-      - 'escalate'
-      - 'bypass'
-      - 'system_'
-      - 'shell'
-      - 'eval'
-      - 'session_escalate'
-  selection_suspicious_arguments:
-    tool.arguments|contains:
-      - 'bypass_acl'
-      - 'bypass_restrictions'
-      - 'elevated'
-      - 'unrestricted'
-      - 'sudo'
-  condition: selection_method and (selection_suspicious_tool_name or selection_suspicious_arguments)
-falsepositives:
-  - Legitimate administrative tools registered with admin-related names
-  - Internal CI/CD tooling that intentionally uses elevated arguments
-  - Authorized security testing
-level: high
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://docs.ag-ui.com/concepts/events
 tags:
-  - attack.execution
-  - attack.t1565
-  - attack.t1190
-  - safe.t1103
+  - saf.t1103
+logsource:
+  category: application
+  product: agent_tool_runtime
+  service: trusted_dispatch_audit
+detection:
+  selection_execution:
+    event_type:
+      - agent.tool.execution.started
+      - agent.tool.execution.allowed
+  selection_untrusted:
+    provenance_verified: false
+  selection_missing_id:
+    tool_call_id: null
+  selection_unregistered:
+    tool_registered: false
+  selection_mismatch:
+    lifecycle_match: false
+  filter_human_approved:
+    call_origin: human_manual
+    approval_state: approved
+    approver_recorded: true
+  condition: >-
+    selection_execution and 1 of selection_untrusted, selection_missing_id,
+    selection_unregistered, selection_mismatch and not filter_human_approved
 fields:
-  - tool.name
-  - tool.arguments
-  - server.id
-  - event.timestamp
+  - timestamp
+  - thread_id
+  - run_id
+  - tool_call_id
+  - tool_name
+  - call_origin
+  - source_message_id
+  - model_response_id
+  - tool_registered
+  - provenance_verified
+  - lifecycle_match
+  - approval_state
+  - approver_recorded
+  - execution_decision
+  - args_hash
+falsepositives:
+  - Recovery replays whose original lifecycle events are outside retention.
+  - Legitimate manual administration without a normalized approval record.
+  - Adapters that do not emit a complete call lifecycle.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1103-C008
+  telemetry_claim_ids:
+    - SAF-T1103-C007
+    - SAF-T1103-C016
+  limitation_claim_ids:
+    - SAF-T1103-C009
+  validation_artifacts:
+    - tests/SAF-T1103/test-events.json
+    - tests/SAF-T1103/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids: [SAF-T1103-C007, SAF-T1103-C016]
+      rationale: The trusted agent event stream and dispatcher audit provide the required join fields.
+    selection_execution:
+      claim_ids: [SAF-T1103-C008]
+      rationale: Evaluation begins at the authoritative execution decision.
+    selection_untrusted:
+      claim_ids: [SAF-T1103-C003, SAF-T1103-C008]
+      rationale: A failed origin check captures the documented forged-history variant.
+    selection_missing_id:
+      claim_ids: [SAF-T1103-C007, SAF-T1103-C008]
+      rationale: A call identifier is required to join the lifecycle to execution.
+    selection_unregistered:
+      claim_ids: [SAF-T1103-C004, SAF-T1103-C005, SAF-T1103-C008]
+      rationale: An absent registry binding captures unsafe name and import-path resolution.
+    selection_mismatch:
+      claim_ids: [SAF-T1103-C007, SAF-T1103-C008]
+      rationale: Name, run, and lifecycle mismatches invalidate the provenance join.
+    filter_human_approved:
+      claim_ids: [SAF-T1103-C010]
+      rationale: Explicit approval is a separate recorded authorization path.
+    condition:
+      claim_ids: [SAF-T1103-C008, SAF-T1103-C010]
+      rationale: The condition combines provenance and binding failures while preserving approved manual use.
+    fields:
+      claim_ids: [SAF-T1103-C007, SAF-T1103-C016]
+      rationale: The fields retain the run, identity, registry, approval, and execution evidence needed for review.
+    falsepositives:
+      claim_ids: [SAF-T1103-C009]
+      rationale: Research on provenance and runtime evidence documents incomplete attribution and deployment-specific blind spots.

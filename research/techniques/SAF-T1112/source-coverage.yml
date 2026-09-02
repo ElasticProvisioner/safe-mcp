@@ -1,0 +1,255 @@
+version: 1
+technique_id: SAF-T1112
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "OPEN https://modelcontextprotocol.io/llms.txt"
+        - "OPEN https://modelcontextprotocol.io/specification/2026-07-28/client/sampling"
+        - "OPEN https://modelcontextprotocol.io/specification/2026-07-28/schema"
+        - "OPEN https://modelcontextprotocol.io/specification/2026-07-28/deprecated"
+        - "OPEN https://modelcontextprotocol.io/specification/2026-07-28"
+      material_changes:
+        - >-
+          Established current 2026-07-28 input_required sampling flow, exact
+          request fields, security controls, and deprecation state.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API keywordSearch=Model Context Protocol"
+        - "NVD API keywordSearch=Model Context Protocol sampling"
+        - "NVD API keywordSearch=sampling/createMessage"
+        - "NVD API keywordSearch=server initiated LLM"
+        - "CISA KEV 2026.09.01 filtered for Model Context Protocol, sampling, createMessage"
+      material_changes:
+        - >-
+          Found no direct sampling CVE, incident, or KEV entry; classified
+          CVE-2026-5323 and the broad MCP CVE corpus as other mechanisms.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "arXiv API all:\"Model Context Protocol\" AND all:sampling"
+        - "arXiv API all:\"Sampling Abuse\""
+        - "Crossref query.bibliographic=\"Model Context Protocol\" sampling"
+        - "Crossref query.title=\"Sampling Abuse and the Hijacked Assistant\""
+        - "OPEN https://doi.org/10.1007/979-8-8688-2968-0_6"
+        - "OPEN https://doi.org/10.3390/electronics15102214"
+      material_changes:
+        - >-
+          Identified a directly titled Apress chapter but found its technical
+          body gated; reviewed the complete Park et al. paper and classified its
+          tool-description and tool-response experiments as adjacent.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "OPEN https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/web"
+        - "OPEN current MCP sampling Security Considerations, Sampling Parameters, and Context Inclusion"
+        - "OPEN https://opentelemetry.io/docs/specs/semconv/gen-ai/mcp/"
+        - "OPEN exact authority-linked https://github.com/open-telemetry/semantic-conventions-genai"
+      material_changes:
+        - >-
+          Grounded method and parameter observables in the protocol, identified
+          Inspector transcript visibility, rejected a moved OpenTelemetry page
+          as a stable field-level source, and designed an explicitly
+          experimental threshold analytic.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "OPEN current MCP Deprecated Features registry"
+        - "OPEN https://attack.mitre.org/techniques/T1204/"
+        - "OPEN https://attack.mitre.org/resources/legal-and-branding/terms-of-use/"
+        - "FULL-TEXT FIND sampling/createMessage in Park et al. 2026 PDF"
+        - "REVIEW Apress access and personal-use restrictions"
+      material_changes:
+        - >-
+          Narrowed future exposure because sampling is deprecated, made the
+          ATT&CK mapping conditional and analogous, and preserved blocked-source
+          and detector-accuracy gaps.
+    - pass: candidate_refresh_before_saturation
+      completed_on: "2026-09-02"
+      queries:
+        - "Crossref query.bibliographic=\"MCP sampling attack\""
+        - "arXiv API all:\"sampling/createMessage\""
+        - "NVD API keywordSearch=hijacked assistant"
+      material_changes:
+        - >-
+          Added and fully reviewed the Park et al. MDPI paper after Crossref
+          discovery; confirmed it does not exercise sampling/createMessage.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "REOPEN https://modelcontextprotocol.io/llms.txt and current sampling/deprecation pages"
+        - "arXiv API all:\"Sampling Request Abuse\""
+        - "Crossref query.title=\"Sampling Request Abuse\""
+        - "CISA KEV current feed deterministic refilter"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API keywordSearch=MCP sampling abuse"
+        - "arXiv API all:\"server-initiated LLM\" AND all:abuse"
+        - "Crossref query.bibliographic=\"server initiated LLM request abuse\""
+        - "RECHECK current schema sampling/createMessage and InputRequiredResult definitions"
+      material_changes: []
+  rationale: >-
+    Current MCP specification and schema cover every protocol proposition; MCP
+    project documentation covers observable transcripts; government catalogs
+    cover disclosed vulnerabilities and known exploitation; academic-publisher
+    and scholarly-catalog passes cover demonstrations and contrary/adjacent
+    work. The final two narrower authority-only passes added no controlling
+    requirement, direct example, corroboration, exception, remediation update,
+    detection constraint, or neighbor distinction. The gated Apress chapter is
+    preserved as an explicit unresolved evidence-access gap, not treated as
+    proof or ignored in the saturation rationale.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 6
+  selected_examples: []
+  no_qualifying_examples_rationale: >-
+    No candidate met the contract as a directly reviewed production incident,
+    direct vulnerability, or complete end-to-end abuse demonstration. The NVD
+    sampling and createMessage queries returned zero results; the broader MCP
+    corpus and CVE-2026-5323 concern other mechanisms; CISA KEV contained no
+    relevant record; Park et al. tested adjacent tool-description and
+    tool-response attacks; and the directly titled Apress chapter was gated.
+    Selecting any of them would misclassify the evidence, so zero examples are
+    selected and the direct-example gap is explicit.
+  candidates:
+    - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+      identifier: NVD Model Context Protocol keyword corpus (77 CVEs)
+      relationship: rejected
+      exploitation_status: mixed and not probative for sampling
+      impact: The records describe multiple MCP weaknesses, but none of their English descriptions identifies sampling/createMessage.
+      remediation: Product-specific and outside this technique contract.
+      selected: false
+      rationale: Shared MCP vocabulary is insufficient; the defining sampling boundary is absent.
+    - source_id: SRC-nvd-sampling-query-2026
+      identifier: NVD Model Context Protocol sampling and sampling/createMessage queries
+      relationship: rejected
+      exploitation_status: no matching record found in queried corpus
+      impact: No bounded impact can be attributed because the direct queries returned zero results.
+      remediation: No sampling-specific advisory or fixed version was identified.
+      selected: false
+      rationale: Supports the dated evidence gap, not a breach or vulnerability example.
+    - source_id: SRC-cisa-kev-2026-09-01
+      identifier: CISA KEV catalog version 2026.09.01
+      relationship: rejected
+      exploitation_status: no relevant known-exploited entry found
+      impact: No sampling/createMessage impact identified in the 1,687-entry catalog.
+      remediation: No sampling-specific KEV due date or required action exists in the reviewed catalog.
+      selected: false
+      rationale: A GIGABYTE memcpy lexical match was noise; no MCP sampling record qualified.
+    - source_id: SRC-apress-sampling-abuse-2026
+      identifier: DOI 10.1007/979-8-8688-2968-0_6
+      relationship: rejected
+      exploitation_status: unknown; chapter body inaccessible
+      impact: The public landing page does not establish technique mechanics or consequences.
+      remediation: Not reviewable from the public preview.
+      selected: false
+      rationale: Directly relevant title but insufficient directly reviewed content; source-or-omit requires exclusion.
+    - source_id: SRC-mdpi-remote-mcp-2026
+      identifier: DOI 10.3390/electronics15102214
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled research only
+      impact: Five malicious-remote-server scenarios were tested across three host platforms using description or response channels.
+      remediation: The authors recommend layered filtering, response auditing, and user-visible output transparency.
+      selected: false
+      rationale: Full-text review found no sampling/createMessage mechanism; another content-manipulation technique governs it.
+    - source_id: SRC-nvd-sampling-query-2026
+      identifier: CVE-2026-5323
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public exploit reported by NVD; no sampling path
+      impact: Local a11y-mcp SSRF was described, with an LLM acting on the user's behalf as possible caller context.
+      remediation: NVD reports upgrade to 1.0.6 and patch e3e11c9e8482bd06b82fd9fced67be4856f0dffc.
+      selected: false
+      rationale: SSRF in a server tool is outside the client-mediated sampling generation boundary.
+
+sources_consulted:
+  - SRC-apress-sampling-abuse-2026
+  - SRC-arxiv-sampling-query-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-inspector-web-2026
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-sampling-2025-11
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-schema-2025
+  - SRC-mcp-2026-schema
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-overview-2026
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-terms-2026
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-sampling-query-2026
+  - SRC-opentelemetry-genai-repo-2026
+  - SRC-opentelemetry-moved-2026
+sources_cited:
+  - SRC-arxiv-sampling-query-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-inspector-web-2026
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-2026-schema
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-mitre-attack-t1204
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-sampling-query-2026
+sources_rejected:
+  - source_id: SRC-mcp-doc-index-2026
+    reason: Authority-only discovery index; it does not itself support substantive mechanism claims.
+  - source_id: SRC-mcp-overview-2026
+    reason: Current overview consulted, but sampling and schema pages provide more exact locators.
+  - source_id: SRC-mcp-sampling-2025-11
+    reason: Superseded by 2026-07-28 and materially different in request transport.
+  - source_id: SRC-mcp-schema-2025
+    reason: Superseded schema; excluded from current field claims.
+  - source_id: SRC-mcp-security-2025-11-25
+    reason: Superseded page with no sampling-specific attack section identified.
+  - source_id: SRC-opentelemetry-moved-2026
+    reason: Official page is a moved notice and exposes no current field-level telemetry convention.
+  - source_id: SRC-opentelemetry-genai-repo-2026
+    reason: Authority-linked repository overview confirms scope but not stable field-level semantics for this detector.
+sources_blocked:
+  - source_id: SRC-apress-sampling-abuse-2026
+    reason: Full chapter requires subscription or purchase; public preview is insufficient and purchase terms state personal use only.
+
+conflicts:
+  - issue: Sampling remains specified but is deprecated in 2026-07-28.
+    resolution: Scope is limited to existing supporting implementations; migration is a primary preventive control.
+  - issue: An Apress chapter title appears directly on point, but its body is gated.
+    resolution: No substantive claim is accepted; the lead is ledgered and the evidence gap remains explicit.
+  - issue: Park et al. demonstrate malicious remote MCP server attacks across three platforms.
+    resolution: Full-text review shows description and response channels rather than sampling/createMessage; classify as adjacent only.
+  - issue: The detector uses numerical burst thresholds without an accuracy study.
+    resolution: Mark the rule experimental, test deterministic boundary behavior, and require environment-specific tuning.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1112-C008
+    - SAF-T1112-C009
+    - SAF-T1112-C010
+  rationale: >-
+    Current protocol authority directly supports server-initiated sampling,
+    client model authority, relevant fields, approval guidance, rate limiting,
+    and response return. The adversarial end-to-end use is an explicit
+    inference. Neither adjacent demonstrations nor an inaccessible chapter can
+    raise the status to Demonstrated, and no direct production incident was
+    found to support Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

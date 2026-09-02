@@ -1,0 +1,202 @@
+version: 1
+sources:
+  - id: SRC-anthropic-tir-2025-08
+    title: "Threat Intelligence Report: August 2025"
+    authors: [Anthropic Threat Intelligence team]
+    publisher: Anthropic PBC
+    version_or_date: August 2025
+    source_class: incident_report
+    official_url: https://www-cdn.anthropic.com/b2a76c6f6992465c09a6f2fce282f6c0cea8c200.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full PDF text reviewed directly.
+    review_status: opened_reviewed
+    locators: [pages 3-9, executive summary and GTG-2002 case study]
+    review_notes: Verified direct production incident, affected sectors, agent role, impact, limitations, and provider response.
+    archive: {status: remote_reviewed_not_archived, reason: Public provider PDF was reviewed directly; source corpus is excluded from the clean-room bundle., review_evidence: {method: web PDF extraction, pages: 1-25}}
+  - id: SRC-anthropic-espionage-2025-11
+    title: Disrupting the first reported AI-orchestrated cyber espionage campaign
+    authors: [Anthropic Threat Intelligence team]
+    publisher: Anthropic PBC
+    version_or_date: November 17, 2025 revision
+    source_class: incident_report
+    official_url: https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full PDF text reviewed directly.
+    review_status: opened_reviewed
+    locators: [pages 2-13, executive summary through response and implications]
+    review_notes: Verified GTG-1002 architecture, target scale, successful intrusions, lifecycle, autonomy, limitations, and response.
+    archive: {status: remote_reviewed_not_archived, reason: Public provider PDF was reviewed directly; source corpus is excluded from the clean-room bundle., review_evidence: {method: web PDF extraction, pages: 1-14}}
+  - id: SRC-anthropic-claude-security
+    title: Claude Code Security
+    authors: [Anthropic documentation team]
+    publisher: Anthropic PBC
+    version_or_date: Current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://code.claude.com/docs/en/security
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered documentation page reviewed directly.
+    review_status: opened_reviewed
+    locators: [Permission-based architecture, Built-in protections, User responsibility, Protect against prompt injection]
+    review_notes: Verified approvals, sandboxing, working-directory boundary, user responsibility, and prompt-injection distinction.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable public documentation reviewed in place; no source copy belongs in the handoff., review_evidence: {method: web text review, lines: 88-150}}
+  - id: SRC-anthropic-claude-cli
+    title: Claude Code CLI reference
+    authors: [Anthropic documentation team]
+    publisher: Anthropic PBC
+    version_or_date: Current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://code.claude.com/docs/en/cli-reference
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered documentation page reviewed directly.
+    review_status: opened_reviewed
+    locators: [CLI flags table, dangerously-skip-permissions, print, permission-mode]
+    review_notes: Verified non-interactive operation, permission modes, and bypass flag semantics.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable public documentation reviewed in place., review_evidence: {method: web text review, lines: 99-163}}
+  - id: SRC-openai-codex-cli
+    title: Codex CLI reference
+    authors: [OpenAI documentation team]
+    publisher: OpenAI
+    version_or_date: Current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://developers.openai.com/codex/cli/reference
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered documentation page reviewed directly.
+    review_status: opened_reviewed
+    locators: [codex exec table, Flag combinations and safety tips]
+    review_notes: Verified non-interactive execution, bypass flags, sandbox options, and isolated-runner warning.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable public documentation reviewed in place., review_evidence: {method: web text review, lines: 2175-2202 and 3283-3287}}
+  - id: SRC-google-gemini-sandbox
+    title: Sandboxing in Gemini CLI
+    authors: [Google Gemini CLI team]
+    publisher: Google LLC
+    version_or_date: Current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://geminicli.com/docs/cli/sandbox/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered documentation page reviewed directly.
+    review_status: opened_reviewed
+    locators: [Overview of sandboxing, Quickstart, Configuration, Sandboxing methods]
+    review_notes: Verified shell and file-operation isolation purpose and configuration options.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable public documentation reviewed in place., review_evidence: {method: web text review, lines: 277-400}}
+  - id: SRC-ghsa-claude-command-bypass
+    title: Command Injection in Claude Code echo command allowed bypass of user approval prompt for command execution
+    authors: [jenn-newton, Elad Beber (Cymulate)]
+    publisher: Anthropic PBC via GitHub Security Advisories
+    version_or_date: August 1, 2025
+    source_class: official_advisory
+    official_url: https://github.com/anthropics/claude-code/security/advisories/GHSA-x56v-x2h6-7j34
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened after NVD supplied the identifier and URL.
+    review_status: opened_reviewed
+    locators: [affected versions, patched versions, Description, Credits, CVE-2025-54795]
+    review_notes: Verified context-injection prerequisite, confirmation bypass, fixed version, and reporter credit.
+    discovery_provenance: NVD CVE API CVE-2025-54795 record supplied the exact GHSA URL before it was opened.
+    archive: {status: remote_reviewed_not_archived, reason: Public advisory reviewed at canonical URL; no third-party page copy retained in handoff., review_evidence: {method: web text review, lines: 132-154}}
+  - id: SRC-ghsa-claude-exfil
+    title: Permissive Default Allowlist Enables Unauthorized File Read and Network Exfiltration in Claude Code
+    authors: [jenn-newton, Elad Beber]
+    publisher: Anthropic PBC via GitHub Security Advisories
+    version_or_date: August 15, 2025
+    source_class: official_advisory
+    official_url: https://github.com/anthropics/claude-code/security/advisories/GHSA-x5gv-jw7f-j6xj
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened after NVD supplied the identifier and URL.
+    review_status: opened_reviewed
+    locators: [affected versions, patched versions, Description, Credits, CVE-2025-55284]
+    review_notes: Verified context-injection prerequisite, confirmation bypass, file-read consequence, fixed version, and reporter credit.
+    discovery_provenance: NVD CVE API CVE-2025-55284 record supplied the exact GHSA URL before it was opened.
+    archive: {status: remote_reviewed_not_archived, reason: Public advisory reviewed at canonical URL., review_evidence: {method: web text review, lines: 132-154}}
+  - id: SRC-ghsa-codex-sandbox
+    title: Sandbox bypass due to bug in path configuration logic
+    authors: [fouad-openai, Tzanko Matev (Codetracer)]
+    publisher: OpenAI via GitHub Security Advisories
+    version_or_date: September 19, 2025
+    source_class: official_advisory
+    official_url: https://github.com/openai/codex/security/advisories/GHSA-w5fx-fh39-j5rw
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened after NVD supplied the identifier and URL.
+    review_status: opened_reviewed
+    locators: [affected versions, patched versions, Description, Remediation, Credits, CVE-2025-59532]
+    review_notes: Verified model-generated cwd flaw, boundary impact, fixed versions, network-sandbox limitation, and researcher credit.
+    discovery_provenance: NVD CVE API CVE-2025-59532 record supplied the exact GHSA URL before it was opened.
+    archive: {status: remote_reviewed_not_archived, reason: Public advisory reviewed at canonical URL., review_evidence: {method: web text review, lines: 133-165}}
+  - id: SRC-ghsa-gemini-trust
+    title: Update to Gemini CLI and run-gemini-cli Trust Model
+    authors: [bdmorgan, Elad Meged (Novee Security), Dan Lisichkin (Pillar Security research team)]
+    publisher: Google LLC via GitHub Security Advisories
+    version_or_date: April 24, 2026
+    source_class: official_advisory
+    official_url: https://github.com/google-github-actions/run-gemini-cli/security/advisories/GHSA-wpqr-6v78-jr5g
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened after NVD supplied the identifier and URL.
+    review_status: opened_reviewed
+    locators: [Folder Trust in Headless Mode, Tool Allowlisting under --yolo, Impact, Patches, Credits]
+    review_notes: Verified headless trust and allowlist weaknesses, affected and fixed versions, proof conditions, and credits.
+    discovery_provenance: NVD CVE API CVE-2026-12537 record supplied the exact GHSA URL before it was opened.
+    archive: {status: remote_reviewed_not_archived, reason: Public advisory reviewed at canonical URL., review_evidence: {method: web text review, lines: 132-190}}
+  - id: SRC-nvd-cve-api
+    title: NVD CVE API 2.0 records for agent CLI queries and exact CVE identifiers
+    authors: [National Institute of Standards and Technology NVD team]
+    publisher: National Institute of Standards and Technology
+    version_or_date: API timestamp 2026-09-02 UTC
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct exact API queries downloaded and inspected outside the bundle.
+    review_status: opened_reviewed
+    locators: [keywordSearch Claude Code, keywordSearch OpenAI Codex, keywordSearch Gemini CLI, CVE-2025-54795, CVE-2025-55284, CVE-2025-59532, CVE-2026-12537]
+    review_notes: Verified identifiers, descriptions, affected and fixed versions, references, and CISA SSVC exploitation fields.
+    archive: {status: remote_reviewed_not_archived, reason: Dynamic government API was reviewed and hashed in the external source cache excluded from the bundle., review_evidence: {method: direct API JSON review, external_cache_hashes: [54cea2adfc70b5989757b3273766b88caf43501d7c31f7e14f030cb5f258f397, cd28fc998f5f46519ade22909085054eea864a785132dee6032b338615d8118a]}}
+  - id: SRC-cisa-kev
+    title: Known Exploited Vulnerabilities Catalog
+    authors: [Cybersecurity and Infrastructure Security Agency]
+    publisher: Cybersecurity and Infrastructure Security Agency
+    version_or_date: catalogVersion 2026.09.01
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Official JSON catalog downloaded and exact identifiers checked outside the bundle.
+    review_status: opened_reviewed
+    locators: [catalogVersion 2026.09.01 and exact-ID absence checks for four reviewed CVEs]
+    review_notes: None of the four reviewed CVE identifiers appeared; absence is used only as a narrow dated limitation.
+    archive: {status: remote_reviewed_not_archived, reason: Dynamic government catalog was reviewed and hashed in the external source cache excluded from the bundle., review_evidence: {method: exact JSON identifier check, sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e}}
+  - id: SRC-ms-sysmon
+    title: Sysmon v15.21
+    authors: [Mark Russinovich, Thomas Garnier]
+    publisher: Microsoft Corporation
+    version_or_date: June 17, 2026
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete official documentation page reviewed directly.
+    review_status: opened_reviewed
+    locators: [Introduction and Overview of Sysmon Capabilities]
+    review_notes: Verified parent and current process command lines, process GUID, session GUID, optional network data, and the no-analysis limitation.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable official documentation reviewed in place., review_evidence: {method: web text review, lines: 24-57}}
+  - id: SRC-mitre-t1059
+    title: "ATT&CK T1059: Command and Scripting Interpreter"
+    authors: [MITRE ATT&CK team]
+    publisher: The MITRE Corporation
+    version_or_date: version 2.7, modified May 12, 2026
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1059/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete authoritative technique page reviewed directly.
+    review_status: opened_reviewed
+    locators: [Description, Execution tactic, mitigations, DET0516 behavioral detection strategy]
+    review_notes: Verified command-interpreter execution definition and mapping limitation.
+    archive: {status: remote_reviewed_not_archived, reason: Mutable framework page reviewed at canonical URL., review_evidence: {method: web text review, lines: 16-53 and 106-120}}

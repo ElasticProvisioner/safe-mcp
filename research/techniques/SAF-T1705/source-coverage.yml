@@ -1,0 +1,257 @@
+version: 1
+technique_id: SAF-T1705
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of the A2A specification message, task, context, authorization, and security sections.
+        - Direct review of MCP architecture and security best-practice pages.
+        - Direct review of NIST AI 600-1 prompt-injection and incident-lifecycle guidance.
+      material_changes:
+        - Established the agent-message boundary, correlation fields, and host policy responsibilities.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - NVD API keywordSearch=multi-agent prompt injection
+        - NVD API keywordSearch=agent-to-agent injection
+        - NVD API keywordSearch=AI command injection
+        - NVD API keywordSearch=Model Context Protocol
+        - AI Incident Database snapshot 2026-08-31 exact-term corpus review
+      material_changes:
+        - Classified reviewed CVEs and advisories as adjacent or enabling because none documented the required second-agent instruction hop.
+        - Recorded a bounded production-incident and direct-CVE evidence gap.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - arXiv API all:"LLM-to-LLM prompt injection"
+        - arXiv API all:"cross-agent instruction"
+        - arXiv API all:"multi-agent prompt injection"
+        - arXiv API all:"agent-to-agent prompt injection"
+      material_changes:
+        - Selected three direct controlled demonstrations with distinct propagation and impact patterns.
+        - Classified infectious image jailbreak, planner-context injection, and inherited-memory research as adjacent.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of A2A identifiers and authorization requirements.
+        - Direct review of NIST logging, provenance, red-team, retention, and containment guidance.
+        - Direct review of Prompt Infection, AgentDojo, and ChannelGuard defense limitations.
+      material_changes:
+        - Defined a provenance-plus-causality correlation analytic and explicit content-classifier blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Challenged every selected example against the contract's distinct-receiver requirement.
+        - Reviewed contrary model results, controlled-lab limits, blocked framework pages, and adjacent advisories.
+      material_changes:
+        - Downgraded production status to not observed and retained demonstrated as the overall evidence label.
+        - Limited ATT&CK T1072 to an analogous mapping and omitted an unreviewable ATLAS mapping.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - arXiv API all:"agent communication poisoning" returned zero results.
+        - NVD API keywordSearch=agent communication poisoning returned zero results.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - arXiv API all:"cross-agent prompt injection" returned zero results.
+        - NVD API keywordSearch=cross-agent prompt injection returned zero results.
+      material_changes: []
+  rationale: >-
+    Direct protocol authorities, a government AI-risk publication, two current
+    incident and vulnerability catalogs, four independent academic query
+    families, selected empirical studies, and defense research cover the core
+    mechanism, prerequisites, effects, detection, response, and contrary
+    evidence. The final two independent authority-only passes returned no new
+    candidates or material changes.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 12
+  selected_examples:
+    - SRC-lee-tiwari-prompt-infection
+    - SRC-triedman-jha-shmatikov-mas-hijacking
+    - SRC-naik-et-al-omni-leak
+  no_qualifying_examples_rationale: >-
+    Three controlled demonstrations qualify, but no direct production incident
+    or direct disclosed vulnerability qualified. The AI Incident Database and
+    NVD review was current to the recorded dates; terminology differences,
+    confidential events, and later disclosures remain explicit gaps.
+  candidates:
+    - source_id: SRC-lee-tiwari-prompt-infection
+      identifier: Prompt Infection controlled evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Cross-agent instruction replication, data theft workflows, and memory manipulation in simulated systems.
+      remediation: Layered tagging and instruction separation reduced attacks in the tested setting; isolated controls remained weak.
+      selected: true
+      rationale: Directly demonstrates attacker-authored instructions propagating from one agent output to another agent context.
+    - source_id: SRC-triedman-jha-shmatikov-mas-hijacking
+      identifier: MAS Hijacking controlled evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Arbitrary code execution and data exfiltration through orchestrator-directed downstream capabilities.
+      remediation: No universal fix established; controlled disclosure and sandboxing context were reported.
+      selected: true
+      rationale: Directly demonstrates attacker-influenced subagent metadata changing orchestrator and executor behavior.
+    - source_id: SRC-naik-et-al-omni-leak
+      identifier: OMNI-LEAK controlled evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Private-data exfiltration across SQL, orchestrator, and notification agents despite data access controls.
+      remediation: Monitor and gate data entry, user-agent steps, inter-agent communications, and human escalation.
+      selected: true
+      rationale: Directly demonstrates a multi-hop instruction chain across distinct agent roles and receiver authority.
+    - source_id: SRC-gu-agent-smith
+      identifier: Agent Smith infectious jailbreak
+      relationship: rejected
+      exploitation_status: controlled_public_demonstration
+      impact: Simulated harmful behavior spreading among multimodal agents.
+      remediation: A theoretical containment condition was proposed; practical defense remained open.
+      selected: false
+      rationale: The defining artifact is an adversarial image jailbreak, not an attacker-authored instruction relayed by one agent to another.
+    - source_id: SRC-wang-planflip
+      identifier: PlanFlip planning-phase injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_public_demonstration
+      impact: Corrupted planner context can alter downstream task plans.
+      remediation: Goal anchoring and heterogeneous cross-agent consensus were evaluated.
+      selected: false
+      rationale: The injection is delivered as tool output to a planner; peer-agent relay is not the defining delivery hop.
+    - source_id: SRC-cai-zhang-hei-child-inherits
+      identifier: When Child Inherits subagent-spawn evaluation
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_public_demonstration
+      impact: Inherited memory and weak capability controls can spread a parent's compromised state.
+      remediation: Capability registry, policy enforcement, and memory controls were proposed.
+      selected: false
+      rationale: The defining mechanism is spawn-time memory inheritance rather than an inter-agent instruction message.
+    - source_id: SRC-cve-2025-32711
+      identifier: CVE-2025-32711
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation_in_reviewed_cve_record
+      impact: Information disclosure in Microsoft 365 Copilot from AI command injection.
+      remediation: Vendor fix referenced by the CVE record.
+      selected: false
+      rationale: The official record does not document a distinct sender-agent to receiver-agent hop.
+    - source_id: SRC-ghsa-v7px
+      identifier: GHSA-v7px-3835-7gjx
+      relationship: enabling_vulnerability
+      exploitation_status: proof_of_concept_reported_in_advisory_metadata
+      impact: Prompt-influenced lifecycle hooks could cause command execution in affected PraisonAI versions.
+      remediation: Upgrade to a patched release identified by the maintainer advisory.
+      selected: false
+      rationale: It can enable agent compromise but does not itself establish cross-agent instruction transfer.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public_researcher_demonstration
+      impact: A malicious MCP server OAuth endpoint could reach command execution through mcp-remote.
+      remediation: Upgrade mcp-remote to 0.1.16 or later and apply documented validation controls.
+      selected: false
+      rationale: The vulnerability crosses server and client components, not two receiving agent contexts through instruction relay.
+    - source_id: SRC-oligo-inspector-cve-2025-49596
+      identifier: CVE-2025-49596
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public_researcher_demonstration
+      impact: Browser and DNS-rebinding paths could reach MCP Inspector process execution.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later.
+      selected: false
+      rationale: The documented attack is a web-to-local proxy trust failure, not cross-agent instruction injection.
+    - source_id: SRC-aiid-snapshot-20260831
+      identifier: AI Incident Database snapshot review
+      relationship: rejected
+      exploitation_status: no_qualifying_record_found
+      impact: No direct event could be attributed from the reviewed corpus.
+      remediation: Continue monitoring and re-run current corpus queries during future review.
+      selected: false
+      rationale: The corpus search yielded direct single-agent injection reports but no contract-matching event.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: NVD CVE API review
+      relationship: rejected
+      exploitation_status: no_qualifying_record_found
+      impact: No direct cross-agent CVE could be attributed from the reviewed query results.
+      remediation: Re-run official catalog searches and inspect new advisory references during future review.
+      selected: false
+      rationale: Returned records lacked the required originating-agent to receiving-agent instruction hop.
+
+sources_consulted:
+  - SRC-a2a-spec
+  - SRC-aiid-snapshot-20260831
+  - SRC-cai-zhang-hei-child-inherits
+  - SRC-cve-2025-32711
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-ghsa-v7px
+  - SRC-gu-agent-smith
+  - SRC-hossain-et-al-channelguard
+  - SRC-jfrog-cve-2025-6514
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-mcp-architecture
+  - SRC-mcp-security-2025-11-25
+  - SRC-mitre-atlas-aml-t0051-shell
+  - SRC-mitre-t1072
+  - SRC-msrc-cve-2025-32711-shell
+  - SRC-naik-et-al-omni-leak
+  - SRC-nist-ai-600-1
+  - SRC-nvd-token-scope-corpus
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-triedman-jha-shmatikov-mas-hijacking
+  - SRC-wang-planflip
+  - SRC-injecagent-acl-2024
+sources_cited:
+  - SRC-a2a-spec
+  - SRC-aiid-snapshot-20260831
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-mcp-architecture
+  - SRC-mcp-security-2025-11-25
+  - SRC-mitre-t1072
+  - SRC-naik-et-al-omni-leak
+  - SRC-nist-ai-600-1
+  - SRC-nvd-token-scope-corpus
+  - SRC-triedman-jha-shmatikov-mas-hijacking
+sources_rejected:
+  - {source_id: SRC-cai-zhang-hei-child-inherits, reason: Adjacent spawn-time memory inheritance mechanism.}
+  - {source_id: SRC-cve-2025-32711, reason: Adjacent single-product AI command injection record without an agent hop.}
+  - {source_id: SRC-debenedetti-et-al-agentdojo, reason: Adjacent single-agent defense benchmark.}
+  - {source_id: SRC-ghsa-v7px, reason: Enabling lifecycle-hook vulnerability without the defining agent hop.}
+  - {source_id: SRC-gu-agent-smith, reason: Rejected multimodal jailbreak analogy with a different defining artifact.}
+  - {source_id: SRC-hossain-et-al-channelguard, reason: Under-review synthetic defense study used only to challenge analytic limitations.}
+  - {source_id: SRC-jfrog-cve-2025-6514, reason: Adjacent MCP client-server command injection.}
+  - {source_id: SRC-oligo-inspector-cve-2025-49596, reason: Adjacent web-to-local-proxy RCE.}
+  - {source_id: SRC-wang-planflip, reason: Adjacent planner tool-output injection.}
+  - {source_id: SRC-injecagent-acl-2024, reason: Adjacent single-agent tool-injection benchmark.}
+sources_blocked:
+  - source_id: SRC-msrc-cve-2025-32711-shell
+    reason: The official dynamic advisory page did not render substantive content; the CVE Program record was used instead.
+  - source_id: SRC-mitre-atlas-aml-t0051-shell
+    reason: The exact official ATLAS page returned no reviewable content, so no mapping was published.
+
+conflicts:
+  - issue: Prompt Infection reported strong combined controls, but isolated labeling and marking remained weak and handcrafted attacks limit generalization.
+    resolution: Publish layered controls only, characterize the detector as experimental, and retain adaptive-evasion blind spots.
+  - issue: Model-specific results differ across configurations, including models that resisted one benchmark but failed in another setup or objective.
+    resolution: Treat model identity as a tuning variable, never as a preventive control, and avoid universal success-rate claims.
+  - issue: NVD and maintainer version expressions for GHSA-v7px were not identical.
+    resolution: Omit exact affected-version bounds from publishable prose and direct integrators to reconcile the current advisory before reuse.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1705-C003, SAF-T1705-C004, SAF-T1705-C005, SAF-T1705-C015]
+  rationale: >-
+    Three independent controlled evaluations reproduce the defining transfer
+    into a distinct receiving agent and consequent behavior change. No reviewed
+    authority establishes a production incident, so Observed is not justified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

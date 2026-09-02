@@ -1,0 +1,21 @@
+version: 1
+issues:
+  - id: ALIGN-SAF-T1602-001
+    triggered_by: SAF-T1602
+    severity: medium
+    status: resolved
+    affects:
+      - SAF-T1602
+      - SAF-T1601
+    summary: Tool, server-capability, resource, and prompt enumeration can look similar if the returned object and method are omitted.
+    rationale: Current MCP authorities define distinct methods and response objects for all four discovery surfaces.
+    resolution: The contract and related-technique table use the protocol method and returned object as the boundary; SAF-T1601 is the canonical server-enumeration neighbor, while the unmatched resource and prompt placeholder roles were removed during post-freeze reconciliation.
+  - id: ALIGN-SAF-T1602-002
+    triggered_by: SAF-T1602
+    severity: low
+    status: resolved
+    affects:
+      - SAF-T1602
+    summary: ATT&CK T1046 could be mistaken for a direct mapping.
+    rationale: T1046 inventories services on hosts and network infrastructure, whereas SAF-T1602 reads an MCP application-protocol catalog.
+    resolution: The mapping is labeled analogous in the claim inventory, README, and framework notes.

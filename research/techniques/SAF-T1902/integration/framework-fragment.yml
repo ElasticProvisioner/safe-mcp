@@ -1,0 +1,21 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1902
+    name: Covert Channel in Responses
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics: [ATK-TA0011]
+    technique_path: techniques/SAF-T1902/README.md
+    research_packet: research/techniques/SAF-T1902
+    related_techniques: [SAF-T1102]
+    mitigations: [SAF-M-4, SAF-M-5, SAF-M-7, SAF-M-17, SAF-M-22, SAF-M-29, SAF-M-72]
+    detection:
+      rule: techniques/SAF-T1902/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1902/test_detection.py
+        - tests/SAF-T1902/fixtures/events.jsonl
+        - research/techniques/SAF-T1902/validation/detector-test-output.txt
+    attack_mappings:
+      - {id: T1132, type: analogous}
+      - {id: T1001, type: analogous}

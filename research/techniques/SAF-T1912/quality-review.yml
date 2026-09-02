@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1912
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: clean-room author self-review
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Prohibited target artifacts, histories, registries, sites, conversations, and agent work were not accessed before freeze.
+  contract_and_scope:
+    status: passed
+    notes: The contract requires a recoverable hidden payload in the response and excludes direct tool or network egress and injection alone.
+  technical_accuracy:
+    status: passed
+    notes: MCP carrier claims are limited to normative result types; exploitation claims are bounded to reviewed controlled studies.
+  claim_traceability:
+    status: passed
+    notes: All publishable propositions map to validated claims and exact source locators.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has hidden SAF-TRACE linkage or an allowed visible Evidence Summary reference; unsupported leads are excluded.
+  evidence_classification:
+    status: passed
+    notes: Three nonredundant controlled demonstrations justify Demonstrated; no production incident supports Observed.
+  research_saturation:
+    status: passed
+    notes: Five passes, a material saturation discovery pass, and two final authority-only no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Current incident and advisory research records ten classified candidates, three selected controlled demonstrations, and the production gap.
+  detection_quality:
+    status: passed
+    notes: Deterministic tests cover positives, negatives, thresholds, and an expected false positive; limitations are explicit.
+  mitigation_quality:
+    status: passed
+    notes: Controls address access minimization, trusted egress mediation, normalization, media handling, DLP, testing, and residual capacity.
+  framework_alignment:
+    status: passed
+    notes: Tactic, two canonical nearest neighbors, ten canonical mitigations, and the direct and analogous ATT&CK mappings are reconciled after freeze.
+  publication_rights:
+    status: passed
+    notes: Sources are paraphrased and attributed; no quotations, code, prompts, figures, tables, datasets, or protected source structure are reproduced.
+  safe_publication:
+    status: passed
+    notes: The README contains no operational encoder, real secret, destructive command, credential, or active indicator.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1912
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1912/test_detection_rule.py
+    result: "PASS SAF-T1912 detection tests: 8 cases"
+    waiver: null
+  canonical_repository:
+    status: passed
+    commands:
+      - /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1912/test_detection_rule.py
+      - /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1912
+    result: Detector passed eight cases and strict validator passed after all mechanical joins.
+    proof: research/techniques/SAF-T1912/validation/canonical-validation.txt
+
+unresolved: []

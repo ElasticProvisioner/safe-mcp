@@ -1,0 +1,49 @@
+version: 1
+technique_id: SAF-T1406
+completed_on: "2026-09-01"
+generation_mode: clean_room
+evidence_status: demonstrated
+
+operations:
+  protocol_and_authority: completed
+  breach_and_vulnerability: completed
+  demonstration_and_empirical_research: completed
+  detection_and_defense: completed
+  gap_and_challenge: completed
+  saturation_follow_ups: 2
+
+counts:
+  validated_claims: 12
+  sources_consulted: 19
+  sources_cited: 12
+  sources_rejected: 7
+  breach_vulnerability_candidates: 7
+  selected_examples: 4
+  excluded_claims_or_examples: 6
+  detection_tests: 3
+  detection_fixtures: 7
+
+selected_examples:
+  - id: CVE-2025-54136
+    classification: direct_vulnerability
+    production_status: disclosed_not_observed
+  - id: Invariant Labs WhatsApp MCP sleeper-server experiment
+    classification: direct_demonstration
+    production_status: controlled
+  - id: arXiv:2508.02110v2
+    classification: direct_demonstration
+    production_status: controlled
+  - id: arXiv:2508.14925v1
+    classification: direct_demonstration
+    production_status: controlled
+
+blockers:
+  - Synthetic nearest-neighbor IDs require post-freeze reconciliation against the real framework model.
+  - Provisional source IDs require exact-duplicate reconciliation against the shared source manifest.
+  - A synthetic history commit requires replacement during integration.
+  - No qualifying production incident was established by the direct-authority corpus; this is an evidence gap, not an execution blocker.
+
+validation:
+  research_validator: passed
+  detection_tests: passed
+  mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1406-normalized/mock-repo

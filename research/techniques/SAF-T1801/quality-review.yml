@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T1801
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: /root/cleanroom_saf_t1801
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Independent-draft attestation is complete and the generic validator passed in an isolated synthetic repository.
+  contract_and_scope:
+    status: passed
+    notes: Contract, boundaries, and exclusions are explicit and the draft validator accepted their structure.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior, prerequisites, flow, consequences, and limits were checked against direct authorities.
+  claim_traceability:
+    status: passed
+    notes: Eighteen claims have exact locators and valid source-manifest records.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has hidden trace metadata or a declared local source, and exclusions are ledgered.
+  evidence_classification:
+    status: passed
+    notes: Observed is supported by a direct production incident; demonstrations support but do not elevate the label.
+  research_saturation:
+    status: passed
+    notes: Two consecutive authority-only follow-ups produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Twelve candidates were classified and four highest-impact nonredundant examples were selected with remediation and exploitation state.
+  detection_quality:
+    status: passed
+    notes: Eight deterministic detector cases passed and false positives, tuning, blind spots, and telemetry are documented.
+  mitigation_quality:
+    status: passed
+    notes: Controls address authorization, least privilege, limits, telemetry, and egress at the defining collection mechanism.
+  framework_alignment:
+    status: passed
+    notes: Tactic, external mappings, synthetic neighbors, and clean-room deferred integration joins are consistent and recorded.
+  publication_rights:
+    status: passed
+    notes: All cited uses are paraphrase or factual summary with attribution and no protected expression or redistributed artifact.
+  safe_publication:
+    status: passed
+    notes: Examples are inert summaries with no credentials, payloads, executable exploit detail, or copied artifacts.
+
+validation:
+  commands:
+    - command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1801/validator-deps python3 scripts/validate-technique-research.py --draft SAF-T1801
+      result: passed
+    - command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1801/validator-deps python3 scripts/validate-technique-research.py SAF-T1801
+      result: passed
+  detection_tests:
+    status: passed
+    command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1801/validator-deps python3 test_detection_rule.py
+    result: 8 of 8 deterministic cases passed, including positive, negative, boundary, temporal, approved-export, repeated-object, list-only, and malformed-event cases.
+    waiver: null
+
+unresolved: []
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1801/validation/detector-tests.txt
+  strict_validator_transcript: research/techniques/SAF-T1801/validation/research-validator.txt
+  source_corpus_hash: 810c44e54328e2bd4487405009cc0a4668403d5834438aa3b22fcf72039124bc
+  framework_alignment: Four canonical neighbors, seven canonical mitigations, direct ATT&CK T1119, and analogous T1213 are joined after freeze.
+  status: passed

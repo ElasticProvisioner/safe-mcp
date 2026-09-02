@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "technique_id": "SAF-T1308",
+  "cases": [
+    {
+      "case_id": "positive-grant-resource-widening",
+      "expected_match": true,
+      "event": {"action": "oauth_token_issuance"},
+      "auth": {"decision": "allow"},
+      "grant": {"resource_contains_requested": false}
+    },
+    {
+      "case_id": "positive-audience-mismatch",
+      "expected_match": true,
+      "event": {"action": "oauth_token_validation"},
+      "auth": {"decision": "allow"},
+      "token": {"audience_matches": false}
+    },
+    {
+      "case_id": "positive-scope-mismatch",
+      "expected_match": true,
+      "event": {"action": "mcp_tool_authorization"},
+      "auth": {"decision": "allow"},
+      "token": {"scope_satisfies_required": false}
+    },
+    {
+      "case_id": "negative-normal-authorized-operation",
+      "expected_match": false,
+      "event": {"action": "mcp_tool_authorization"},
+      "auth": {"decision": "allow"},
+      "token": {"scope_satisfies_required": true}
+    },
+    {
+      "case_id": "negative-denied-audience-mismatch",
+      "expected_match": false,
+      "event": {"action": "oauth_token_validation"},
+      "auth": {"decision": "deny"},
+      "token": {"audience_matches": false}
+    },
+    {
+      "case_id": "negative-missing-final-decision",
+      "expected_match": false,
+      "event": {"action": "oauth_token_issuance"},
+      "grant": {"resource_contains_requested": false}
+    },
+    {
+      "case_id": "expected-false-positive-documented-resource-alias",
+      "expected_match": true,
+      "expected_false_positive": true,
+      "event": {"action": "oauth_token_validation"},
+      "auth": {"decision": "allow"},
+      "token": {"audience_matches": false},
+      "oauth": {"resource": "https://gateway.example/aliased-resource"}
+    },
+    {
+      "case_id": "boundary-partial-scope-set",
+      "expected_match": true,
+      "event": {"action": "mcp_tool_authorization"},
+      "auth": {"decision": "allow"},
+      "token": {"scope_satisfies_required": false},
+      "oauth": {"granted_scopes": ["read"]},
+      "mcp": {"tool": "write_record"}
+    }
+  ]
+}

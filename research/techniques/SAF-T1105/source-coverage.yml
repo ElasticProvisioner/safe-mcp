@@ -1,0 +1,211 @@
+version: 1
+technique_id: SAF-T1105
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io specification tools roots security filesystem path access"
+        - "site:modelcontextprotocol.io/specification/2026-07-28 server resources security directory traversal"
+        - "site:modelcontextprotocol.io/specification/2025-11-25 server tools security considerations"
+      material_changes:
+        - Established current 2026-07-28 tool invocation, input-validation, access-control, audit, and file-resource path-sanitization requirements.
+        - Recorded that the 2026-07-28 release deprecated roots while retaining file parameters, resource URIs, and server configuration as boundaries.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cisa.gov MCP filesystem path traversal incident breach"
+        - "site:aws.amazon.com/security MCP path traversal incident breach file tool"
+        - "site:nvd.nist.gov/vuln/detail MCP filesystem path traversal"
+        - "site:cve.org/CVERecord MCP filesystem path traversal"
+        - "site:aws.amazon.com/security/security-bulletins/2026-075-aws"
+      material_changes:
+        - Selected four direct MCP file-tool vulnerabilities by boundary fit, consequence, currency, remediation clarity, and evidence quality.
+        - Found no directly documented hostile production incident in the reviewed government, vendor, and researcher corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:varonis.com/blog CVE-2026-4270 AWS API MCP file access"
+        - "site:vulncheck.com/advisories/siyuan-kernel-path-traversal-via-database-clean-mcp-tool"
+      material_changes:
+        - Verified Coby Abrams and Varonis Threat Labs' controlled reproduction against AWS's public MCP endpoint.
+        - Verified the SiYuan report's explicit limitation that its source-traced path was not run against a live compiled kernel.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cwe.mitre.org/data/definitions/22.html path traversal canonicalization"
+        - "site:cwe.mitre.org/data/definitions/59.html symbolic link file access"
+        - "site:cloud.google.com/blog remote MCP server logging auditing payload agent session"
+      material_changes:
+        - Bound prevention to canonicalization-before-validation, allowlists, link resolution, least privilege, and isolation.
+        - Defined a resolved-target containment analytic and documented the additional server enrichment it requires.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail MCP tool path traversal Modified"
+        - "site:aws.amazon.com/security/security-bulletins MCP path No workarounds"
+        - "site:cwe.mitre.org/data/definitions/59.html symbolic link file access"
+        - "site:attack.mitre.org/techniques/T1005 Data from Local System"
+        - "site:attack.mitre.org/techniques/T1083 File and Directory Discovery"
+      material_changes:
+        - Separated delivery by prompt injection, authorized broad file access, archive extraction, and downstream collection from the defining path-boundary crossing.
+        - Recorded conflicting version fields in the two 2025 reference-server GHSA pages and excluded them from selected examples.
+        - Limited ATT&CK mappings to analogous downstream read and enumeration behavior.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:aws.amazon.com/security/security-bulletins/2026 MCP server path traversal arbitrary file write tool"
+        - "site:nvd.nist.gov/vuln/detail/2026 MCP tool outside the intended directory"
+        - "site:cve.org/CVERecord MCP Server CWE-22 2026"
+        - "site:vulncheck.com/advisories MCP tool path traversal"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2026-4270 OR CVE-2026-18953 OR CVE-2026-15415 OR CVE-2026-74798"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-4270 exploitation"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-18953 exploitation"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-15415 exploitation"
+      material_changes: []
+  rationale: >-
+    Current protocol, weakness taxonomy, vendor advisories, original research,
+    government vulnerability records, logging guidance, and framework pages
+    cover every publishable proposition. Two final domain-restricted passes
+    added no controlling requirement, higher-impact qualifying example,
+    production incident, remediation change, detection constraint, or boundary
+    distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-aws-cve-2026-4270
+    - SRC-aws-cve-2026-18953
+    - SRC-aws-cve-2026-15415
+    - SRC-vulncheck-cve-2026-74798
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-aws-cve-2026-4270
+      identifier: CVE-2026-4270
+      relationship: direct_demonstration
+      exploitation_status: controlled reproduction against a public AWS MCP endpoint; CISA-ADP exploitation assessment was none on 2026-03-16
+      impact: Arbitrary local-file content exposure in the MCP client context after bypassing no-access or workdir restrictions.
+      remediation: Fixed in awslabs.aws-api-mcp-server 1.3.9; AWS listed no workaround.
+      selected: true
+      rationale: Only reviewed example with an end-to-end public-endpoint reproduction, making it decisive for the evidence class.
+    - source_id: SRC-aws-cve-2026-18953
+      identifier: CVE-2026-18953
+      relationship: direct_vulnerability
+      exploitation_status: no hostile exploitation documented in the reviewed advisory
+      impact: Arbitrary write outside the intended working directory, with bounded potential local code execution.
+      remediation: Fixed in awslabs.aws-transform-mcp-server 0.1.5; no configuration-only workaround.
+      selected: true
+      rationale: Direct write primitive, high consequence, current vendor bulletin, and clear fix.
+    - source_id: SRC-aws-cve-2026-15415
+      identifier: CVE-2026-15415
+      relationship: direct_vulnerability
+      exploitation_status: no hostile exploitation documented in the reviewed advisory
+      impact: Actor-controlled file content written outside the workflow bundle directory.
+      remediation: Fixed in aws-healthomics-mcp-server 0.0.36; no workaround.
+      selected: true
+      rationale: Direct traversal-sequence file-tool write with clear affected and fixed versions.
+    - source_id: SRC-vulncheck-cve-2026-74798
+      identifier: CVE-2026-74798
+      relationship: direct_vulnerability
+      exploitation_status: source-traced proof; reporter explicitly did not run the path against a live compiled kernel
+      impact: Arbitrary readable-file copy into history and deletion of the original file.
+      remediation: Fixed in SiYuan 3.7.4.
+      selected: true
+      rationale: Current direct read-and-delete boundary crossing with explicit limitations and named credit.
+    - source_id: SRC-ghsa-cve-2025-53109
+      identifier: CVE-2025-53109 / GHSA-q66q-fx2p-7w4m
+      relationship: direct_vulnerability
+      exploitation_status: no hostile exploitation documented; advisory only
+      impact: Access to unintended files through symlinks inside allowed directories.
+      remediation: Upgrade conservatively to 0.6.4 or 2025.7.01; page fields and prose conflict on 0.6.3 versus 0.6.4.
+      selected: false
+      rationale: Direct and instructive but redundant with higher-impact selected cases, with inconsistent version metadata.
+    - source_id: SRC-ghsa-cve-2025-53110
+      identifier: CVE-2025-53110 / GHSA-hc55-p739-j48w
+      relationship: direct_vulnerability
+      exploitation_status: CISA-ADP assessment reports none; no hostile exploitation documented
+      impact: Access to unintended files when a target path shares an allowed-directory prefix.
+      remediation: Upgrade conservatively to 0.6.4 or 2025.7.01; page fields and prose conflict on 0.6.3 versus 0.6.4.
+      selected: false
+      rationale: Direct but lower-impact/redundant, and version metadata is internally inconsistent.
+    - source_id: SRC-nvd-cve-2025-67364
+      identifier: CVE-2025-67364
+      relationship: direct_vulnerability
+      exploitation_status: public proof-of-concept indicator; no production exploitation established
+      impact: Symlink-based unauthorized file access in fast-filesystem-mcp 3.4.0.
+      remediation: No fixed version was established in the reviewed NVD record.
+      selected: false
+      rationale: Direct but weaker remediation and maintainer evidence than the four selected cases.
+
+sources_consulted:
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-aws-cve-2026-15415
+  - SRC-aws-cve-2026-18953
+  - SRC-aws-cve-2026-4270
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2026-74798
+  - SRC-google-mcp-logging-2025
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-nvd-cve-2025-67364
+  - SRC-varonis-cve-2026-4270
+  - SRC-vulncheck-cve-2026-74798
+sources_cited:
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-aws-cve-2026-15415
+  - SRC-aws-cve-2026-18953
+  - SRC-aws-cve-2026-4270
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-ghsa-cve-2026-74798
+  - SRC-google-mcp-logging-2025
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-varonis-cve-2026-4270
+  - SRC-vulncheck-cve-2026-74798
+sources_rejected:
+  - source_id: SRC-ghsa-cve-2025-53109
+    reason: Direct case but not selected because stronger current examples cover the behavior and the page has conflicting version fields and prose.
+  - source_id: SRC-ghsa-cve-2025-53110
+    reason: Direct case but not selected because stronger current examples cover the behavior and the page has conflicting version fields and prose.
+  - source_id: SRC-nvd-cve-2025-67364
+    reason: Direct candidate with public proof-of-concept status but no fixed version established in the reviewed record.
+sources_blocked: []
+
+conflicts:
+  - issue: GHSA-q66q-fx2p-7w4m and GHSA-hc55-p739-j48w list 0.6.3 in affected/patched fields while their prose recommends 0.6.4; CVE records also use 0.6.4.
+    resolution: Excluded both from the four selected examples and retained the conservative 0.6.4-or-later remediation only in the research packet.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1105-C004
+    - SAF-T1105-C005
+  rationale: >-
+    The defining tool-call-to-out-of-scope-file-operation behavior was reproduced
+    end to end by Varonis Threat Labs against an AWS-owned public MCP endpoint.
+    This is a controlled demonstration, not a hostile production incident;
+    therefore Demonstrated, not Observed, is the strongest supported label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

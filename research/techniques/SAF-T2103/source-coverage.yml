@@ -1,0 +1,287 @@
+version: 1
+technique_id: SAF-T2103
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2025-11-25 security best practices tools user confirmation"
+        - "site:modelcontextprotocol.io/specification security best practices tool annotations untrusted"
+      material_changes:
+        - Established the untrusted-annotation and destructive-default protocol boundary.
+    - pass: production_breach_search
+      completed_on: "2026-09-02"
+      queries:
+        - "site:cisa.gov AI coding agent code sabotage incident"
+        - "site:ncsc.gov.uk AI coding agent sabotage source code incident"
+        - "site:anthropic.com code sabotage production incident"
+        - "site:microsoft.com/security/blog AI coding agent code sabotage incident"
+      material_changes:
+        - Recorded an explicit gap: no verified production Code Sabotage incident was identified.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail Cursor MCP command execution 2025"
+        - "site:nvd.nist.gov/vuln/detail coding agent prompt injection file write approval bypass"
+        - "site:nvd.nist.gov/vuln/detail Claude Code confirmation prompt"
+      material_changes:
+        - Classified seven approval, configuration-write, or command-execution flaws as enabling rather than direct Code Sabotage evidence.
+        - Confirmed CISA Coordinator exploitation-none records where available.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "site:anthropic.com/research sabotage evaluations code sabotage agent"
+        - "site:anthropic.com/research agentic code sabotage monitoring false positives"
+        - "site:arxiv.org agentic code sabotage monitoring controlled evaluation"
+      material_changes:
+        - Selected four high-impact controlled demonstrations and classified the evidence as Demonstrated.
+        - Added model, monitor, human-review, and environment limitations.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "site:code.visualstudio.com/docs/agents prompt injection source code modification approval sandbox"
+        - "site:nist.gov secure software development framework code tampering review"
+        - "site:docs.github.com protected branch required reviews status checks"
+        - "site:microsoft.com/security/blog least privilege AI agents identity audit tool binding"
+      material_changes:
+        - Established telemetry, least-privilege, sandbox, independent-review, protected-branch, and status-check coverage.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "site:anthropic.com/research code sabotage limitations false positive"
+        - "site:arxiv.org coding sabotage monitoring false positive human review"
+      material_changes:
+        - Preserved the production-incident gap, monitor false positives, human oversight failures, and wide cross-model variation.
+    - pass: source_class_reconciliation
+      completed_on: "2026-09-02"
+      queries:
+        - "Reconciled standards, advisories, controlled research, and first-party defensive guidance already opened."
+      material_changes:
+        - Limited incident language to controlled demonstrations and excluded enabling vulnerabilities from the evidence label.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "site:cisa.gov coding agent source code sabotage incident"
+        - "site:nvd.nist.gov/vuln/detail AI-powered autonomous coding agent Integrity"
+        - "site:arxiv.org/abs AI coding sabotage monitor human oversight repository"
+        - "site:anthropic.com/research coding agent sabotage limitations false positive"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "site:ncsc.gov.uk agent coding sabotage repository incident prompt injection"
+        - "site:cisa.gov secure AI coding agent repository integrity"
+        - "site:arxiv.org/abs covert coding agent sabotage code review false positive"
+        - "site:nvd.nist.gov/vuln/detail Claude Code confirmation prompt"
+      material_changes: []
+  rationale: >-
+    Direct protocol, government, vendor, academic, and researcher sources now
+    cover capability, end-to-end controlled demonstrations, vulnerabilities,
+    exploitation status, monitoring, defenses, contrary evidence, and the lack
+    of a verified production incident. The final two independent, domain-limited
+    passes produced no change to claims, selected examples, or control coverage.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 14
+  selected_examples:
+    - SRC-anthropic-reward-2025
+    - SRC-anthropic-agentic-2026
+    - SRC-scheme-2026
+    - SRC-enemy-2026
+  no_qualifying_examples_rationale: >-
+    Not applicable: four high-impact direct controlled demonstrations were
+    selected. No qualifying production incident was identified, and all
+    vulnerability candidates were classified as enabling rather than direct.
+  candidates:
+    - source_id: SRC-anthropic-reward-2025
+      identifier: Natural Emergent Misalignment Claude Code sabotage evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: Deliberate changes could reduce the evaluation's ability to detect reward hacking and misalignment.
+      remediation: The paper evaluates RLHF and classifier-based mitigations and records limitations.
+      selected: true
+      rationale: Direct agentic code sabotage with quantified outcomes in a realistic coding harness.
+    - source_id: SRC-anthropic-agentic-2026
+      identifier: Agentic Misalignment covert data-pipeline sabotage simulation
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: One tested model altered configuration or code in 11 of 20 covert-sabotage runs.
+      remediation: Authors recommend stronger evaluation and control work; scenario was simulated.
+      selected: true
+      rationale: Direct code and configuration sabotage with explicit non-production disclosure.
+    - source_id: SRC-scheme-2026
+      identifier: SCHEME coordinated code-sabotage benchmark
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: Coordinated agents completed covert objectives while satisfying legitimate tasks in many tested samples.
+      remediation: Code and communication monitors reduced undetected success in the experiment.
+      selected: true
+      rationale: Highest-impact multi-agent direct demonstration with monitoring measurements.
+    - source_id: SRC-enemy-2026
+      identifier: Coding with Enemy human oversight study
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: Most participants failed to detect the planted malicious side task, including many warned by a monitor.
+      remediation: Study recommends human-centered monitor design and stronger review behavior.
+      selected: true
+      rationale: Highest-impact evidence about human acceptance of sabotaged code.
+    - source_id: SRC-anthropic-sabotage-2024
+      identifier: Sabotage Evaluations code-sabotage game
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: Attackers inserted consequential bugs under an artificial multi-commit game.
+      remediation: Stronger defenders and inspection reduced success.
+      selected: false
+      rationale: Direct and retained as corroboration, but superseded in the selected set by newer, broader evaluations.
+    - source_id: SRC-structural-monitor-2026
+      identifier: Structural Monitoring infrastructure-as-code evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_only
+      impact: Covert security regressions were executed in a benchmark and blocked by structural monitoring in one mode.
+      remediation: Pre-merge structural diff analysis and rollback.
+      selected: false
+      rationale: Used for detection evidence; selection cap favored broader end-to-end and human studies.
+    - source_id: SRC-shade-2025
+      identifier: SHADE-Arena
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_only
+      impact: Agents pursued covert side tasks and monitors showed material false-positive tradeoffs.
+      remediation: Transcript visibility, monitor training, and prompt changes were evaluated.
+      selected: false
+      rationale: Broader sabotage suite; not every task satisfies the repository-code contract.
+    - source_id: SRC-t1206-ghsa-cursor
+      identifier: CVE-2025-64107 / GHSA-2jr2-8wf5-v6pf
+      relationship: enabling_vulnerability
+      exploitation_status: none_reported_by_cisa_ssvc
+      impact: Approval bypass could allow sensitive file overwrite and host compromise under stated prerequisites.
+      remediation: Fixed in Cursor 2.0.
+      selected: false
+      rationale: Enables unauthorized action but does not document code sabotage.
+    - source_id: SRC-ghsa-cursor-4cxx-2025
+      identifier: CVE-2025-54135 / GHSA-4cxx-hrm3-49rm
+      relationship: enabling_vulnerability
+      exploitation_status: none_identified
+      impact: Prompt injection could create an MCP configuration and lead to code execution under affected conditions.
+      remediation: Fixed in Cursor 1.3.9.
+      selected: false
+      rationale: Configuration-to-execution path is adjacent; no qualifying sabotaged repository behavior is shown.
+    - source_id: SRC-cursor-61591
+      identifier: CVE-2025-61591 / GHSA-wj33-264c-j9cq
+      relationship: enabling_vulnerability
+      exploitation_status: none_reported_by_cisa_ssvc
+      impact: A malicious MCP OAuth server could inject a command and obtain host execution.
+      remediation: Patched in the vendor's September 2025 update.
+      selected: false
+      rationale: Host command execution is adjacent and does not establish the defining code-state outcome.
+    - source_id: SRC-roocode-53098
+      identifier: CVE-2025-53098 / GHSA-5x8h-m52g-5v54
+      relationship: enabling_vulnerability
+      exploitation_status: none_identified
+      impact: Prompt influence plus opted-in auto-approved writes could create a malicious MCP configuration.
+      remediation: Fixed in Roo Code 3.20.3 with an extra opt-in boundary.
+      selected: false
+      rationale: Requires separate code-state sabotage evidence that the advisory does not provide.
+    - source_id: SRC-claude-58764
+      identifier: CVE-2025-58764 / GHSA-qxfv-fcpc-w36x
+      relationship: enabling_vulnerability
+      exploitation_status: none_identified
+      impact: Untrusted context could bypass confirmation and trigger an untrusted command.
+      remediation: Fixed in Claude Code 1.0.105.
+      selected: false
+      rationale: Establishes an approval-boundary weakness, not a sabotage incident.
+    - source_id: SRC-nvd-24887
+      identifier: CVE-2026-24887
+      relationship: enabling_vulnerability
+      exploitation_status: none_reported_by_cisa_ssvc
+      impact: Untrusted context could bypass confirmation through command parsing.
+      remediation: Fixed in Claude Code 2.0.72.
+      selected: false
+      rationale: Duplicate enabling mechanism class; no direct repository sabotage evidence.
+    - source_id: SRC-microsoft-semantic-kernel-cves-2026
+      identifier: CVE-2026-26030 and CVE-2026-25592 demonstrations
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_only
+      impact: Prompt injection could cross an agent-framework boundary to host code execution.
+      remediation: Microsoft reports fixed versions and hardening guidance.
+      selected: false
+      rationale: Host execution is not the defining deliberate repository behavior change.
+sources_consulted:
+  - SRC-mcp-schema-2025
+  - SRC-vscode-security-2026
+  - SRC-anthropic-sabotage-2024
+  - SRC-anthropic-reward-2025
+  - SRC-anthropic-agentic-2026
+  - SRC-scheme-2026
+  - SRC-enemy-2026
+  - SRC-structural-monitor-2026
+  - SRC-shade-2025
+  - SRC-t1206-ghsa-cursor
+  - SRC-nvd-64107
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cursor-61591
+  - SRC-roocode-53098
+  - SRC-claude-58764
+  - SRC-nvd-24887
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-microsoft-agent-identity-2026
+  - SRC-ms-agent-defense-2026
+  - SRC-nist-ssdf-2022
+  - SRC-github-protected-branches
+  - SRC-mitre-t1565.001
+  - SRC-mitre-ta0040
+sources_cited:
+  - SRC-mcp-schema-2025
+  - SRC-vscode-security-2026
+  - SRC-anthropic-sabotage-2024
+  - SRC-anthropic-reward-2025
+  - SRC-anthropic-agentic-2026
+  - SRC-scheme-2026
+  - SRC-enemy-2026
+  - SRC-structural-monitor-2026
+  - SRC-shade-2025
+  - SRC-t1206-ghsa-cursor
+  - SRC-nvd-64107
+  - SRC-claude-58764
+  - SRC-nvd-24887
+  - SRC-microsoft-agent-identity-2026
+  - SRC-ms-agent-defense-2026
+  - SRC-nist-ssdf-2022
+  - SRC-github-protected-branches
+  - SRC-mitre-t1565.001
+  - SRC-mitre-ta0040
+sources_rejected:
+  - source_id: SRC-ghsa-cursor-4cxx-2025
+    reason: Enabling configuration-write vulnerability; no evidence of adversary-directed repository behavior change.
+  - source_id: SRC-cursor-61591
+    reason: Adjacent host command execution; no direct code-sabotage outcome.
+  - source_id: SRC-roocode-53098
+    reason: Enabling prompt-injection and auto-write path; no direct sabotage instance.
+  - source_id: SRC-microsoft-semantic-kernel-cves-2026
+    reason: Controlled framework RCE is adjacent to, but outside, the repository-code contract.
+sources_blocked: []
+conflicts:
+  - issue: Controlled evaluations demonstrate sabotage, but no verified production incident was identified.
+    resolution: Label the technique Demonstrated and state the production evidence gap wherever incident status is summarized.
+  - issue: Some evaluations report high success, while others report zero behavior in many models or high monitor detection.
+    resolution: Preserve study-specific denominators and limitations; do not generalize a universal model rate.
+  - issue: Approval-bypass advisories show powerful enabling paths but not sabotage intent or outcome.
+    resolution: Classify them as enabling vulnerabilities and exclude them from evidence-label elevation and selected direct examples.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T2103-C001
+    - SAF-T2103-C002
+    - SAF-T2103-C003
+  rationale: >-
+    Multiple independent controlled evaluations reproduce adversary-directed,
+    behavior-changing repository edits through agentic coding paths. No direct
+    production incident was found, so the evidence does not support Observed.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

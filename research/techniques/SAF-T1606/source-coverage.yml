@@ -1,0 +1,274 @@
+version: 1
+technique_id: SAF-T1606
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+        - Direct open https://modelcontextprotocol.io/specification/2025-11-25/client/roots
+        - Direct open https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+        - Direct open https://modelcontextprotocol.io/examples
+        - Direct open https://attack.mitre.org/techniques/T1083/
+      material_changes:
+        - Established current tools/list and tools/call semantics, result forms, confirmation and logging recommendations, and access-control requirements.
+        - Established filesystem roots as intended boundaries and ATT&CK T1083 as the direct behavioral mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API: keywordSearch=Model Context Protocol filesystem"
+        - "NVD API: keywordSearch=Model Context Protocol directory traversal"
+        - "NVD API: keywordSearch=Model Context Protocol file access"
+        - "NVD API: keywordSearch=MCP filesystem server directory"
+        - NVD API exact cveId retrieval for CVE-2025-47274, CVE-2025-53109, CVE-2025-53110, CVE-2025-68143, CVE-2025-67366, CVE-2026-40576, CVE-2026-43901, CVE-2026-46555, and CVE-2026-73498
+        - CISA KEV catalog version 2026.09.01 exact cveID checks for all nine candidates
+        - Direct review of the NVD-provided GHSA and commit URLs for CVE-2025-53109 and CVE-2025-53110
+        - Direct review of Anthropic's November 2025 GTG-1002 production-incident report linked by MITRE ATT&CK
+      material_changes:
+        - Selected CVE-2025-53109 and CVE-2025-53110 as high-impact enabling vulnerabilities, not direct observations of the listing technique.
+        - Selected the GTG-1002 report as an unusually instructive adjacent production incident because it identifies MCP-enabled agentic discovery but not a filesystem listing tool.
+        - Preserved the absence of a qualifying direct production incident and the advisory/NVD fixed-version conflict.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of the official MCP Example Servers Filesystem link
+        - Direct review of https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem after non-GitHub provenance was recorded
+        - Direct review of the exact NVD and maintainer artifacts for the two selected vulnerabilities
+        - Direct review of the full 14-page Anthropic incident report
+      material_changes:
+        - Confirmed a concrete implementation of list_directory, list_directory_with_sizes, directory_tree, search_files, and list_allowed_directories.
+        - Found no public controlled evaluation that identifies the complete adversary path through an MCP filesystem listing tool; retained Research-Derived status.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open https://attack.mitre.org/detectionstrategies/DET0370/
+        - Re-review MCP Tools Security Considerations for tool-audit and input fields
+        - Re-review MCP Roots Security Considerations for boundary enforcement
+        - Re-review MCP Security Best Practices Local MCP Server Compromise and Scope Minimization sections
+      material_changes:
+        - Derived an experimental MCP audit analytic using tool name, normalized path, recursion, approval, allowlist, actor, server, and session context.
+        - Required representative positive, negative, path-boundary, malformed-field, and legitimate-lookalike tests.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of the MCP Completion specification as a neighboring discovery mechanism
+        - Reclassification review for all nine NVD candidates against the contract's immediate directory-metadata objective
+        - Official advisory versus NVD affected and fixed version comparison for CVE-2025-53109 and CVE-2025-53110
+        - ATT&CK DET0370 review for false positives, missing MCP fields, and absent accuracy evaluation
+      material_changes:
+        - Rejected completion suggestions, file-content reads, export-destination writes, secret persistence, and arbitrary repository initialization as different mechanisms or objectives.
+        - Narrowed vulnerability wording because neither selected advisory identifies a directory-listing call and official version fields conflict.
+        - Limited the analytic to investigative leads because no MCP-specific accuracy study was found.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API: keywordSearch=Model Context Protocol directory listing tool"
+        - Recheck of the versioned MCP Tools, Roots, Security Best Practices, and Example Servers pages
+        - Recheck of selected GHSA remediation and reporter-credit fields
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API: keywordSearch=MCP enumerate files directories"
+        - CISA KEV catalog version 2026.09.01 exact recheck for all nine candidate CVEs
+        - Recheck of MITRE T1083 version 1.7 and DET0370 version 1.0
+        - Recheck of the Anthropic report for filesystem, file-tool, directory, and listing specificity
+      material_changes: []
+  rationale: >-
+    Five independent passes covered the controlling MCP specification, the
+    first-party reference implementation, nine current NVD candidates, two
+    first-party project advisories and fixes, the full CISA KEV catalog, a
+    first-party production-incident report, ATT&CK behavior and detection, and
+    contrary or neighboring mechanisms. Two final authority-only synonym and
+    version rechecks added no controlling requirement, direct incident,
+    qualifying vulnerability, demonstration, detection constraint, mitigation
+    limit, framework distinction, or source for an unsupported proposition.
+    The remaining gaps are explicitly bounded rather than blocked sources.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 10
+  selected_examples:
+    - SRC-nvd-cve-2025-53109
+    - SRC-nvd-cve-2025-53110
+    - SRC-anthropic-espionage-2025-11
+  no_qualifying_examples_rationale: >-
+    No direct production breach or direct vulnerability naming a directory-
+    listing file-tool invocation was found. The two selected CVEs are enabling
+    path-boundary vulnerabilities in the official Filesystem server, and the
+    selected production incident is adjacent because it names MCP-enabled
+    agentic discovery without a filesystem listing tool. They are retained for
+    impact and boundary clarity but do not raise the technique evidence label.
+  candidates:
+    - source_id: SRC-nvd-cve-2025-53109
+      identifier: CVE-2025-53109 / GHSA-q66q-fx2p-7w4m
+      relationship: enabling_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded none on 2025-07-02; absent from CISA KEV 2026.09.01
+      impact: Unintended file access through symlinks inside allowed directories could enlarge the filesystem namespace exposed to file operations.
+      remediation: Advisory and NVD recommend upgrading to 0.6.4 or 2025.7.01, but the advisory's version table conflicts and that uncertainty is disclosed.
+      selected: true
+      rationale: Highest relevance and first-party impact among reviewed candidates, but neither advisory nor NVD names a directory-listing call or production exploitation.
+    - source_id: SRC-nvd-cve-2025-53110
+      identifier: CVE-2025-53110 / GHSA-hc55-p739-j48w
+      relationship: enabling_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded none on 2025-07-02; absent from CISA KEV 2026.09.01
+      impact: A colliding path prefix could expose unintended files outside the configured allowed directory.
+      remediation: Advisory and NVD recommend upgrading to 0.6.4 or 2025.7.01, but the advisory's version table conflicts and that uncertainty is disclosed.
+      selected: true
+      rationale: High-relevance official Filesystem server boundary flaw; it enables broader file-tool reach but is not itself the listing objective.
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: GTG-1002 AI-orchestrated cyber-espionage campaign
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed production campaign detected and disrupted by Anthropic in September 2025
+      impact: Roughly 30 entities were targeted and a handful of intrusions succeeded; Claude Code and MCP tools supported largely autonomous reconnaissance, exploitation, lateral movement, and data access.
+      remediation: Anthropic banned identified accounts, notified affected entities, coordinated with authorities, and expanded detection and safety controls.
+      selected: true
+      rationale: Highest-impact production evidence involving MCP-enabled agentic discovery, retained only as adjacent because the report does not identify a file-tool directory listing.
+    - source_id: SRC-nvd-cve-2025-47274
+      identifier: CVE-2025-47274
+      relationship: rejected
+      exploitation_status: CISA Coordinator SSVC recorded none
+      impact: ToolHive run configuration files could retain secrets.
+      remediation: Fixed in ToolHive 0.0.33 with documented run-config cleanup workarounds.
+      selected: false
+      rationale: Secret persistence is not directory discovery and shares only the MCP ecosystem.
+    - source_id: SRC-nvd-cve-2025-68143
+      identifier: CVE-2025-68143
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded none
+      impact: git_init accepted arbitrary filesystem paths and made directories eligible for later Git operations.
+      remediation: The tool was removed; upgrade to mcp-server-git 2025.9.25 or newer.
+      selected: false
+      rationale: Path-boundary expansion through a Git tool is not directory listing via a file tool.
+    - source_id: SRC-nvd-cve-2025-67366
+      identifier: CVE-2025-67366
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded proof of concept
+      impact: A symlink flaw could expose file contents outside an allowed directory.
+      remediation: NVD identifies version 0.5.8 as affected; the reviewed record did not establish a fixed release.
+      selected: false
+      rationale: The defining objective is read_content file acquisition, not directory metadata discovery.
+    - source_id: SRC-nvd-cve-2026-40576
+      identifier: CVE-2026-40576
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded proof of concept
+      impact: An unauthenticated remote actor could read, write, or overwrite arbitrary host files through Excel MCP handlers.
+      remediation: Fixed in excel-mcp-server 0.1.8.
+      selected: false
+      rationale: High impact but centered on path traversal and file operations; the record does not establish directory listing.
+    - source_id: SRC-nvd-cve-2026-43901
+      identifier: CVE-2026-43901
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded proof of concept
+      impact: A tool accepted an unrestricted export destination and could write outside intended directories.
+      remediation: NVD described versions through 1.1.5 as affected; no fixed version was established in the reviewed record.
+      selected: false
+      rationale: Write-path destination control is outside the read-only discovery objective.
+    - source_id: SRC-nvd-cve-2026-46555
+      identifier: CVE-2026-46555
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded none
+      impact: Local or DNS-rebinding callers could read files and exfiltrate them as WhatsApp attachments.
+      remediation: Fixed in whatsapp-mcp 0.2.1 with authentication, Host validation, and path confinement.
+      selected: false
+      rationale: The objective is file-content acquisition and exfiltration, not directory listing.
+    - source_id: SRC-nvd-cve-2026-73498
+      identifier: CVE-2026-73498
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC recorded proof of concept
+      impact: An authenticated MCP client could read a server-accessible file and upload it to Confluence.
+      remediation: Fixed in mcp-atlassian 0.22.0.
+      selected: false
+      rationale: The objective is file-content disclosure and exfiltration, not directory metadata discovery.
+
+sources_consulted:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-mcp-completion-2025-11-25
+  - SRC-mcp-example-servers-2026-09-02
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-mcp-fix-cc99bda
+  - SRC-mcp-fix-d00c60d
+  - SRC-mcp-roots-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-attack-t1083
+  - SRC-mitre-det0370-v1.0
+  - SRC-nvd-cve-2025-47274
+  - SRC-nvd-cve-2025-53109
+  - SRC-nvd-cve-2025-53110
+  - SRC-nvd-cve-2025-67366
+  - SRC-nvd-cve-2025-68143
+  - SRC-nvd-cve-2026-40576
+  - SRC-nvd-cve-2026-43901
+  - SRC-nvd-cve-2026-46555
+  - SRC-nvd-cve-2026-73498
+sources_cited:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-mcp-example-servers-2026-09-02
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-mcp-fix-cc99bda
+  - SRC-mcp-fix-d00c60d
+  - SRC-mcp-roots-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-attack-t1083
+  - SRC-mitre-det0370-v1.0
+  - SRC-nvd-cve-2025-53109
+  - SRC-nvd-cve-2025-53110
+sources_rejected:
+  - source_id: SRC-mcp-completion-2025-11-25
+    reason: Autocompletion suggestions are not a file-tool directory listing and use a different protocol method.
+  - source_id: SRC-nvd-cve-2025-47274
+    reason: Secret retention in run configuration is outside the discovery objective.
+  - source_id: SRC-nvd-cve-2025-68143
+    reason: Arbitrary Git initialization expands path eligibility but is not listing via a file tool.
+  - source_id: SRC-nvd-cve-2025-67366
+    reason: The weakness exposes file contents through read_content and belongs to content acquisition.
+  - source_id: SRC-nvd-cve-2026-40576
+    reason: Arbitrary Excel file operations are adjacent path traversal and do not establish directory listing.
+  - source_id: SRC-nvd-cve-2026-43901
+    reason: Export destination writes are outside the read-only discovery objective.
+  - source_id: SRC-nvd-cve-2026-46555
+    reason: File-content read and WhatsApp exfiltration are follow-on acquisition and exfiltration.
+  - source_id: SRC-nvd-cve-2026-73498
+    reason: Attachment upload reads and exfiltrates file contents rather than listing directories.
+sources_blocked: []
+
+conflicts:
+  - issue: The two GitHub advisories list 0.6.3 in patched-version tables but their descriptions and NVD advise 0.6.4; NVD affected data says versions below 0.6.4 are affected.
+    resolution: Publish the official upgrade recommendation and the inconsistency; do not state that 0.6.3 is unequivocally fixed.
+  - issue: ATT&CK DET0370 provides tunable detection concepts but no MCP audit schema or published accuracy evaluation.
+    resolution: Label the SAF rule experimental, test only deterministic logic over synthetic MCP events, and avoid effectiveness claims.
+  - issue: The Anthropic report documents MCP-enabled agentic discovery but not the defining filesystem listing call.
+    resolution: Classify the report as adjacent production evidence and keep the overall label Research-Derived.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1606-C006
+    - SAF-T1606-C018
+  rationale: >-
+    Current protocol semantics, a first-party listing implementation, filesystem
+    boundaries, and the recognized discovery objective jointly support the
+    complete technique as an explicit inference. The incident corpus and the
+    selected vulnerabilities do not directly observe or reproduce the defining
+    adversary invocation, so they cannot raise the label to Demonstrated or
+    Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

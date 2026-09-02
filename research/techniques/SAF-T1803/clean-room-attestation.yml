@@ -1,0 +1,149 @@
+version: 1
+technique_id: SAF-T1803
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1803
+  inherited_context: false
+target:
+  id: SAF-T1803
+  neutral_name: Database Dump
+  supplied_tactic: ATK-TA0009
+allowed_inputs:
+- Neutral tuple SAF-T1803, Database Dump, ATK-TA0009.
+- Generic author-saf-technique skill and its methodology, clean-room, trace-format,
+  and breach-and-vulnerability references.
+- Generic technique template, blank technique packet schemas, research protocol, and
+  canonical validator.
+- Independently opened direct standards-body, government, first-party vendor, project,
+  framework, researcher, and package-registry authorities.
+prohibited_inputs:
+- techniques/SAF-T1803/README.md, current or historical.
+- research/techniques/SAF-T1803/ and every existing target research artifact.
+- techniques/SAF-T1803/detection-rule.yml and existing target tests or logs.
+- git history, diffs, blame, branches, commits, stashes, or review material exposing
+  prior target content.
+- pull request, issue, review, or cached discussion containing prior target content.
+- previous conversation, summary, or agent work containing target technique content
+  or research leads.
+- Shared source, framework, alignment, catalog, or SAF website content before freeze.
+- Impact-classification examples or any methodology example containing target-specific
+  leads.
+independent_research:
+  searches:
+  - Direct current MCP specification index and versioned Tools and Security Best Practices
+    pages.
+  - Direct PostgreSQL 18 pg_dump and pg_stat_activity documentation.
+  - Direct MITRE ATT&CK T1213.006 page and its exact first-party Anthropic and Mandiant
+    references.
+  - NVD API keywordSearch=database dump with 89 returned descriptions reviewed.
+  - NVD API keywordSearch=model context protocol database with three returned descriptions
+    reviewed.
+  - NVD API keywordSearch=MCP database dump; zero results.
+  - NVD API keywordSearch=agentic database extraction; zero results.
+  - NVD API keywordSearch=database export; result count recorded for breadth.
+  - Exact CVE Program records for CVE-2026-33980, CVE-2026-75133, and CVE-2026-33478.
+  - Exact CISA KEV feed checks for the three CVEs at catalog version 2026.09.01.
+  - Exact GitHub advisories and commits opened only after the official CVE records
+    supplied their URLs.
+  - Direct PyPI adx-mcp-server release record and direct WordPress Keep Backup Daily
+    changelog.
+  - Saturation pass 1 - NVD Model Context Protocol database export, MCP data dump,
+    and agentic database dump; zero results.
+  - Saturation pass 2 - NVD database extraction Model Context Protocol and database
+    dump MCP; zero results; KQL injection MCP database returned only known CVE-2026-33980.
+  opened_source_ids:
+  - SRC-adx-patch-0abe0ee
+  - SRC-anthropic-espionage-2025-11
+  - SRC-avideo-patch-c85d076
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-33478
+  - SRC-cve-2026-33980
+  - SRC-cve-2026-75133
+  - SRC-ghsa-687q-32c6-8x68
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-mandiant-snowflake-hunting-2024
+  - SRC-mandiant-unc5537-2024
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-attack-t1213-006
+  - SRC-nvd-db-dump-search
+  - SRC-nvd-mcp-database-search
+  - SRC-postgresql-pg-stat-activity-18
+  - SRC-postgresql-pgdump-18
+  - SRC-pypi-adx-mcp-server
+  - SRC-wordpress-keep-backup-daily
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Mechanically reconcile source IDs against the shared manifest without using it as
+  evidence or adding leads.
+- Reconcile the synthetic SAF-T1801 and SAF-T1802 neighbor joins against the real
+  catalog without inspecting old SAF-T1803 content.
+- Replace synthetic mitigation, framework, alignment, and repository-history joins
+  with real repository records.
+- Replace target files wholesale and do not inspect a diff that reveals the prior
+  target content.
+- Re-run the repository validator and regression tests after integration without changing
+  the frozen claims from prior artifacts.
+isolated_validation:
+  mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1803/mock-repo
+  detection_command: python3 tests/SAF-T1803/test_detection_rule.py
+  detection_result: passed
+  strict_command: python3 scripts/validate-technique-research.py SAF-T1803
+  strict_result: passed
+  deliberately_deferred_real_joins:
+  - Shared source-ID collision resolution.
+  - Real framework neighbor and mitigation IDs.
+  - Real alignment-ledger registration.
+  - Honest integration repository-history SHA.
+attestation: I attest that this bundle was independently derived from the supplied
+  neutral tuple, the generic method and schemas, and directly reviewed external authorities.
+  No prior SAF-T1803 artifact, SAF registry prose, repository history, review context,
+  prior conversation content, or other agent's target work was accessed before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-anthropic-agentic-espionage-2025: SRC-anthropic-espionage-2025-11
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-postgresql-pgdump-18
+  - SRC-postgresql-pg-stat-activity-18
+  - SRC-mitre-attack-t1213-006
+  - SRC-mandiant-unc5537-2024
+  - SRC-mandiant-snowflake-hunting-2024
+  - SRC-nvd-db-dump-search
+  - SRC-nvd-mcp-database-search
+  - SRC-cve-2026-33980
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-adx-patch-0abe0ee
+  - SRC-pypi-adx-mcp-server
+  - SRC-cve-2026-75133
+  - SRC-wordpress-keep-backup-daily
+  - SRC-cve-2026-33478
+  - SRC-ghsa-687q-32c6-8x68
+  - SRC-avideo-patch-c85d076
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0009
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-71
+  - SAF-M-72
+  canonical_neighbors:
+  - SAF-T1801
+  - SAF-T1804
+  canonical_validation_proof:
+  - research/techniques/SAF-T1803/validation/detection.txt
+  - research/techniques/SAF-T1803/validation/strict-validator.txt
+  source_archive_disposition: No source bodies are redistributed; canonical source records remain marked remote-reviewed.
+  status: integrated_and_validated

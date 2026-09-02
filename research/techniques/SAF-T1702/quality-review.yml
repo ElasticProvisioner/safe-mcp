@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1702
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex fresh clean-room generator /root/cleanroom_saf_t1702
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records allowed inputs, prohibited inputs, independent searches, and no prior target access.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires persistent cross-consumer retrieval and excludes transient injection, training poisoning, and unpersisted messaging.
+  technical_accuracy:
+    status: passed
+    notes: Protocol boundary, prerequisites, attack sequence, impact conditions, and counterevidence are explicitly bounded.
+  claim_traceability:
+    status: passed
+    notes: Fifteen validated claims include source relations, exact locators, limitations, and inference records.
+  source_or_omit:
+    status: passed
+    notes: Hidden SAF-TRACE comments cover every substantive publishable line; eight excluded candidates remain outside the README.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by multiple direct controlled demonstrations; no Observed claim is made.
+  research_saturation:
+    status: passed
+    notes: All five passes completed and two final domain-restricted passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Six candidates were classified, three selected, and production-breach, CVE/KEV, and vendor-confirmation gaps are explicit.
+  detection_quality:
+    status: passed
+    notes: Nine deterministic cases cover positives, negatives, timing boundaries, trusted curation, missing telemetry, and a dormant-poison limitation.
+  mitigation_quality:
+    status: passed
+    notes: Isolation, provenance, trust promotion, expiry, quarantine, rollback, and action gating address distinct layers and limitations.
+  framework_alignment:
+    status: passed
+    notes: Tactic and T1565.001 analogy are qualified; neighbor roles resolve to SAF-T1102 and SAF-T1705, with seven canonical mitigations reconciled after freeze.
+  publication_rights:
+    status: passed
+    notes: All cited uses are paraphrases with attribution; no protected code, image, table, dataset, or extended quotation is reproduced.
+  safe_publication:
+    status: passed
+    notes: The only scenario is inert telemetry using example.invalid and contains no exploit payload or destructive instruction.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1702
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1702/test_detector.py
+    result: PASS 9/9 cases
+    waiver: null
+  canonical_repository:
+    detection_proof: research/techniques/SAF-T1702/validation/detection-test.txt
+    strict_proof: research/techniques/SAF-T1702/validation/strict-validator.txt
+    status: passed
+
+unresolved: []

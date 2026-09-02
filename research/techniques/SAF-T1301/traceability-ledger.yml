@@ -1,0 +1,126 @@
+version: 1
+technique_id: SAF-T1301
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1301/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1301/technique-contract.yml
+  supports: Scope, neutral name, tactic, completion criteria, and reconciled framework
+    boundaries.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1301/quality-review.yml
+  supports: Review gates, validation commands, and detection-test result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1301/detection-rule.yml
+  supports: The labeled experimental detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1301/test_detection_rule.py
+  supports: Deterministic implementation of the analytic validation.
+- id: LOCAL-detection-data
+  path: tests/SAF-T1301/test-logs.json
+  supports: Eight positive, negative, boundary, and malformed analytic cases.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1301/validation/detection-test.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1301/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1301-X001
+  candidate: Treat the Invariant controlled demonstration as a documented production
+    breach.
+  origin: Direct demonstration review.
+  attempted_searches:
+  - site:invariantlabs.ai trusted server tool shadowing breach
+  - site:microsoft.com/en-us/security/blog cross-server tool shadowing incident
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  reason: Invariant labels and presents a controlled demonstration; production observation
+    comes only from the separate anonymized Microsoft report.
+  prohibited_publishable_text:
+  - Invariant documented a production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1301-X002
+  candidate: Name a specific affected organization or exact incident date for the
+    Microsoft finance case.
+  origin: Microsoft incident-report lead.
+  attempted_searches:
+  - site:microsoft.com/en-us/security/blog exact cross-server instruction override
+  - site:microsoft.com cross-server tool shadowing finance organization
+  consulted_source_ids:
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  reason: Microsoft expressly withholds organization-specific and detailed case information
+    under coordinated disclosure.
+  prohibited_publishable_text:
+  - Microsoft named the affected finance organization
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1301-X003
+  candidate: Classify CVE-2025-58357 as a direct cross-server descriptor-override
+    vulnerability.
+  origin: NVD MCP vulnerability search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail MCP tool trusted description
+  - CVE-2025-58357 MCP shadowing
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-58357
+  reason: The record describes content injection and script execution in a client,
+    not semantic control of another server's trusted tool.
+  prohibited_publishable_text:
+  - CVE-2025-58357 is a direct shadowing vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1301-X004
+  candidate: Classify CVE-2026-33252 as cross-server tool shadowing.
+  origin: NVD and CISA current-vulnerability search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE MCP trusted tool description
+  - site:cisa.gov MCP tool shadowing vulnerability
+  consulted_source_ids:
+  - SRC-clean-t1301-nvd-cve-2026-33252
+  reason: The record concerns missing origin validation that lets a website reach
+    a local server; no descriptor-to-trusted-tool influence is established.
+  prohibited_publishable_text:
+  - CVE-2026-33252 enables cross-server tool shadowing
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1301-X005
+  candidate: Require identical tool names as the defining condition for SAF-T1301.
+  origin: Conflicting Unit 42 taxonomy terminology.
+  attempted_searches:
+  - site:unit42.paloaltonetworks.com MCP tool shadowing identical similar names
+  - site:modelcontextprotocol.io draft tool name collision
+  consulted_source_ids:
+  - SRC-clean-t1301-unit42-shadowing
+  - SRC-clean-t1301-mcp-tools-draft
+  reason: Name collision is a distinct identity-ambiguity mechanism; the direct semantic-override
+    demonstration does not require invocation or collision of the malicious tool.
+  prohibited_publishable_text:
+  - identical tool names are required for this technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1301-X006
+  candidate: Treat CVE-2026-25905 as a direct demonstration of cross-server descriptor
+    override.
+  origin: JFrog advisory discovered during the current vulnerability pass.
+  attempted_searches:
+  - site:research.jfrog.com MCP cross-server tool shadowing trusted tool
+  - CVE-2026-25905 cross-server descriptor override
+  consulted_source_ids:
+  - SRC-jfrog-jfsa-2026-001653030
+  reason: The proof takes over one server and mutates that same server's tool metadata;
+    it can enable malicious descriptors but does not show influence over another server's
+    trusted tool.
+  prohibited_publishable_text:
+  - CVE-2026-25905 demonstrates cross-server descriptor override
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

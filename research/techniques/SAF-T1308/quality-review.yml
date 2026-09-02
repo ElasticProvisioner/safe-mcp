@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T1308
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex (cleanroom_saf_t1308)
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The attestation records a fresh agent, direct-authority research, no prior target access, and isolated validation before integration.
+  contract_and_scope:
+    status: passed
+    notes: The defining resource/audience/scope authorization-context substitution is bounded away from token theft, passthrough, and overbroad issuance.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP and OAuth authorities support the prerequisites, failure branches, enforcement points, and stated limits.
+  claim_traceability:
+    status: passed
+    notes: Twenty-two claims have reviewed source records, exact locators, limitations, and inference markings where applicable.
+  source_or_omit:
+    status: passed
+    notes: Substantive publishable units use same-line hidden traces or declared local repository sources; eight unsupported or unreviewable propositions are excluded.
+  evidence_classification:
+    status: passed
+    notes: The complete technique is Research-Derived because its core is a stated synthesis and no qualifying production MCP incident or controlled public reproduction was found.
+  research_saturation:
+    status: passed
+    notes: Two consecutive direct-authority follow-ups produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Ten candidates were classified and impact-ranked; four were selected with one direct vulnerability, one enabling vulnerability, and two labeled analogies.
+  detection_quality:
+    status: passed
+    notes: The analytic covers all three defining allow-on-mismatch branches, records fields and limitations, and passes eight deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls bind grants to resources and validate token type, issuer, audience, and scopes at enforcement time.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0004, analogous ATT&CK T1550.001, canonical neighbors, stable source IDs, mitigations, and framework joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All twelve cited sources have rights, authorship/team attribution, and paraphrase-or-factual-summary records; no protected expression is reproduced.
+  safe_publication:
+    status: passed
+    notes: The technique contains only inert conceptual flow and synthetic test records, with no credentials, exploit code, or destructive detail.
+
+validation:
+  commands:
+    - command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1308-normalized/pydeps python3 scripts/validate-technique-research.py SAF-T1308
+      result: passed
+      environment: /private/tmp/saf-all-cleanroom/SAF-T1308-normalized/mock-repo
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1308/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+      output: "PASS SAF-T1308 detection: 8/8 cases; 5 matched"
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1308
+      result: passed
+      environment: integrated repository
+      output: PASS SAF-T1308
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1308/test_detection_rule.py
+    result: "PASS SAF-T1308 detection: 8/8 cases; 5 matched"
+    waiver: null
+
+unresolved: []

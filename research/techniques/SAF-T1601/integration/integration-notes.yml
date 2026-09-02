@@ -1,0 +1,102 @@
+version: 1
+technique_id: SAF-T1601
+freeze_layout: canonical_clean_room_handoff_v1
+integration_status: integrated_and_validated
+prohibited_actions_completed:
+  integrated: true
+  committed: false
+  pushed: false
+  pull_request_opened: false
+
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0007
+      synthetic: false
+      source: User-assigned tactic supplied as an authorized clean-room input.
+      integration_action: Confirm the identifier exists; do not change the assigned tactic.
+  neighbors:
+    - id: SAF-T9997
+      synthetic: true
+      role: Generic network endpoint discovery placeholder.
+      integration_action: Replace with the real nearest SAF technique ID after freeze and preserve the mechanism distinction.
+    - id: SAF-T9998
+      synthetic: true
+      role: Capability enumeration inside one known MCP server placeholder.
+      integration_action: Replace with the real nearest SAF technique ID after freeze and preserve the immediate-objective distinction.
+  mitigations: []
+  source_ids:
+    - id: SRC-anthropic-gtg1002-202511
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record without using the shared manifest as a research lead.
+    - id: SRC-cisa-kev-20260901
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-ghsa-73cv-556c-w3g6
+      integration_action: Reuse an identical stable ID if present; preserve NVD discovery provenance.
+    - id: SRC-ghsa-9h52-p55h-vw2f
+      integration_action: Reuse an identical stable ID if present; preserve NVD discovery provenance.
+    - id: SRC-mcp-architecture-20260728
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-mcp-discovery-20260728
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-mcp-inspector-cli-20260728
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-mcp-inspector-config-20260728
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-mcp-security-20260728
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-mitre-attack-t1046-v3.2
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-nist-sp80092
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-nvd-cve-2025-66416
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-nvd-cve-2025-66454
+      integration_action: Reuse an identical stable ID if present; retained only as a rejected source.
+    - id: SRC-nvd-cve-2026-46519
+      integration_action: Reuse an identical stable ID if present; retained only as contrary evidence.
+    - id: SRC-nvd-cve-2026-49257
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+    - id: SRC-nvd-mcp-corpus-20260901
+      integration_action: Reuse an identical stable ID if present; otherwise add this fragment record.
+  history_shas:
+    - sha: "1111111111111111111111111111111111111111"
+      synthetic: true
+      integration_action: Replace with an honest repository commit SHA after mechanical integration.
+  paths:
+    - bundle_path: source-manifest-fragment.yml
+      repository_path: research/source-manifest.yml
+      action: Merge records by stable source ID after collision checks.
+    - bundle_path: framework-fragment.yml
+      repository_path: research/framework-model.yml
+      action: Add the SAF-T1601 record after resolving synthetic neighbor IDs.
+    - bundle_path: alignment-fragment.yml
+      repository_path: research/alignment-ledger.yml
+      action: Add or reconcile the target-scoped issue record.
+    - bundle_path: techniques/SAF-T1601/
+      repository_path: techniques/SAF-T1601/
+      action: Replace the target directory atomically without opening prior contents or a revealing diff.
+    - bundle_path: research/techniques/SAF-T1601/
+      repository_path: research/techniques/SAF-T1601/
+      action: Replace the target packet atomically without opening prior contents or a revealing diff.
+    - bundle_path: tests/SAF-T1601/
+      repository_path: tests/SAF-T1601/
+      action: Add or replace the target test directory atomically.
+
+post_freeze_checks:
+  - Recompute shared source-ID joins without introducing new evidence or prose.
+  - Resolve real nearest-neighbor IDs and create only the minimal path stubs required for validation.
+  - Replace the synthetic history SHA with the honest integration SHA.
+  - Run the canonical strict validator and workflow regression tests in the integrated repository.
+  - Do not inspect old target prose, target-specific history, or a diff that exposes replaced content.
+
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9998: SAF-T1602
+  removed_synthetic_roles:
+    SAF-T9997: No exact SAF network-service-discovery neighbor; retained as the external ATT&CK T1046 analogy.
+  canonical_mitigations: [SAF-M-9, SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-20, SAF-M-29, SAF-M-45]
+  attack_mappings: [T1046]
+  dedicated_query_corpus: SRC-cisa-kev-server-enumeration-2026-09-01
+  validation_artifacts:
+    - research/techniques/SAF-T1601/validation/detection-test.txt
+    - research/techniques/SAF-T1601/validation/strict-validator.txt
+  status: integrated_and_validated

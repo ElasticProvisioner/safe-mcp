@@ -1,0 +1,337 @@
+version: 1
+technique_id: SAF-T1602
+claims:
+  - id: SAF-T1602-C001
+    statement: Servers declaring the tools capability must answer tools/list with the tools currently available to the requesting client, and the set may vary with per-request authorization.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Capabilities, paragraphs 1-2 (rendered lines 104-117)
+    corroboration: The same source's Listing Tools section defines the concrete request and response.
+    limitations:
+      - The specification does not identify adversarial intent or require a particular authorization policy.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C002
+    statement: A tools/list request uses the JSON-RPC method tools/list, supports pagination, and returns a tools array plus optional continuation and caching metadata.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Listing Tools request and response (rendered lines 127-175)
+    corroboration: The JSON-RPC specification independently defines method and request/response correlation fields.
+    limitations:
+      - The example is illustrative and does not prescribe log-field names.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C003
+    statement: Tool definitions expose a name and input schema and can expose a title, description, output schema, annotations, and other interface metadata.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tool data type (rendered lines 299-318)
+    corroboration: The Listing Tools response example shows names, descriptions, and input schemas.
+    limitations:
+      - Optional metadata and actual catalog content differ by server and authorization.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C004
+    statement: The first-party MCP Inspector CLI documents a tools/list method that lists a server's tools and exits.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-inspector-2026
+        support: direct
+        exact_locators:
+          - Quickstart, CLI example (rendered lines 87-112)
+    corroboration: The MCP Tools specification independently defines the same protocol request and response.
+    limitations:
+      - This is a controlled developer workflow, not evidence of malicious use or production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C005
+    statement: Server discovery returns identity, supported versions, and capability categories, not individual tool definitions.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Response and Data Types (rendered lines 96-148)
+    corroboration: The MCP Tools specification separately defines tools/list for individual tool definitions.
+    limitations:
+      - A server may include natural-language instructions, but those are not the tools array.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C006
+    statement: Resource listing inventories URI-addressed context and resource reading retrieves content, which differs from enumerating callable tool interfaces.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators:
+          - Listing Resources and Reading Resources (rendered lines 123-213)
+    corroboration: The MCP Tools specification defines tools with names and schemas rather than resource URIs and contents.
+    limitations:
+      - Some tools can return resource links, but that does not make resources/list a tool catalog.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C007
+    statement: Prompt listing inventories user-controlled prompt templates and prompt retrieval obtains their contents, which differs from model-controlled tools.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators:
+          - User Interaction Model and Listing Prompts (rendered lines 79-160)
+          - Getting a Prompt (rendered lines 164-202)
+    corroboration: The MCP Tools specification calls tools model-controlled.
+    limitations:
+      - Implementations can expose prompts through different interfaces.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C008
+    statement: MCP authorization is optional, but HTTP implementations that use it apply bearer authorization per request and must reject invalid or mis-audienced tokens.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Protocol Requirements (rendered lines 97-110)
+          - Token Requirements and Token Handling (rendered lines 244-267)
+    corroboration: The Tools capability section allows the returned set to vary with authorization on the request.
+    limitations:
+      - The MCP authorization profile does not apply to stdio and does not define a tool-specific scope name.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C009
+    statement: Least-privilege scopes and authorization-filtered catalogs constrain what a compromised or unauthorized requester can enumerate.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Scope Selection Strategy (rendered lines 166-178)
+      - source_id: SRC-mcp-security-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Scope Minimization, Attack Description through Mitigation (rendered lines 588-634)
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Capabilities, authorization-dependent set (rendered lines 116-117)
+    corroboration: Three first-party sections independently connect per-request authorization, scope minimization, and catalog filtering.
+    limitations:
+      - Exact scope taxonomy and policy enforcement are implementation-specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources define authorization and catalog behavior; the defensive conclusion applies them to adversarial enumeration.
+    status: validated
+  - id: SAF-T1602-C010
+    statement: JSON-RPC requests expose a method and request ID, responses echo the request ID, and OpenTelemetry defines opt-in method plus recommended request-ID and peer/server attributes for JSON-RPC spans.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jsonrpc-2.0
+        support: direct
+        exact_locators:
+          - Request object and Response object (Sections 4 and 5)
+      - source_id: SRC-opentelemetry-jsonrpc-1.44.0
+        support: corroborating
+        exact_locators:
+          - JSON-RPC Client and Server span attributes (rendered lines 346-443)
+    corroboration: OpenTelemetry maps the protocol fields to telemetry attributes and states their stability and requirement levels.
+    limitations:
+      - rpc.method is opt-in and may be normalized to _OTHER; actor identity, authorization outcome, cursor, and result count are not standardized here.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1602-C011
+    statement: MCP clients should log tool usage for audit, but a tools/list event alone cannot distinguish routine discovery from malicious enumeration.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Security Considerations (rendered lines 725-737)
+      - source_id: SRC-mcp-inspector-2026
+        support: corroborating
+        exact_locators:
+          - Quickstart, legitimate CLI tools/list example (rendered lines 87-112)
+    corroboration: The legitimate Inspector workflow establishes a normal administrative lookalike.
+    limitations:
+      - Detecting intent requires local policy or behavioral context beyond the protocol method.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The inability to infer intent follows from the same request being an ordinary first-party workflow.
+    status: validated
+  - id: SAF-T1602-C012
+    statement: Correlating tools/list with an unauthorized principal or with at least three cursor-bearing pages in sixty seconds is a testable local analytic, not a protocol-mandated detector.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Listing Tools pagination (rendered lines 127-175)
+      - source_id: SRC-opentelemetry-jsonrpc-1.44.0
+        support: context
+        exact_locators:
+          - JSON-RPC Client and Server span attributes (rendered lines 346-443)
+    corroboration: Deterministic local tests cover the authorization and pagination branches.
+    limitations:
+      - Three pages in sixty seconds is a proposed tuning point and can match legitimate inventory refreshes.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The threshold and authorization correlation are SAF analytic design choices built on documented fields and pagination.
+    status: validated
+  - id: SAF-T1602-C013
+    statement: Enumeration exposes metadata about possible operations but does not itself invoke a tool or retrieve a resource or prompt body.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Listing Tools and Calling Tools are separate methods (rendered lines 127-213)
+      - source_id: SRC-mcp-resources-2026
+        support: context
+        exact_locators:
+          - Reading Resources (rendered lines 180-213)
+      - source_id: SRC-mcp-prompts-2026
+        support: context
+        exact_locators:
+          - Getting a Prompt (rendered lines 164-202)
+    corroboration: Separate protocol methods define the excluded follow-on actions.
+    limitations:
+      - Returned tool descriptions and schemas may still reveal sensitive operational vocabulary.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The bounded impact statement synthesizes the separate protocol operations.
+    status: validated
+  - id: SAF-T1602-C014
+    statement: MITRE ATT&CK Network Service Discovery is analogous because both enumerate available functionality, but T1046 concerns services on hosts and network infrastructure rather than MCP tool definitions.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1046-v3.2
+        support: direct
+        exact_locators:
+          - Network Service Discovery description, ID, tactic, contributors, and version (rendered lines 15-38)
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Listing Tools and Tool data type (rendered lines 127-175 and 299-318)
+    corroboration: The two definitions expose the differing discovery layers.
+    limitations:
+      - This is an analogous mapping, not a direct ATT&CK technique match.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF applies ATT&CK's service-enumeration concept to an application-protocol catalog while preserving the boundary difference.
+    status: validated
+  - id: SAF-T1602-C015
+    statement: A safe response to suspicious enumeration is to verify the requesting identity and authorization, preserve correlated request records, and reduce catalog exposure to the tools allowed by policy.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Token Handling and Error Handling (rendered lines 265-292)
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization-dependent tool set and Security Considerations (rendered lines 116-117 and 725-737)
+      - source_id: SRC-jsonrpc-2.0
+        support: context
+        exact_locators:
+          - Request/response ID correlation (Sections 4-5)
+    corroboration: Authorization, catalog filtering, audit logging, and request correlation are independently specified.
+    limitations:
+      - Token revocation, log retention, and containment workflows depend on the implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence combines protocol controls into an incident-handling recommendation.
+    status: validated
+  - id: SAF-T1602-C016
+    statement: The strongest public evidence for the complete behavior is a first-party controlled tool-listing workflow, while no reviewed source establishes malicious production use.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-inspector-2026
+        support: direct
+        exact_locators:
+          - Quickstart, CLI tools/list example (rendered lines 87-112)
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Listing Tools request and response (rendered lines 127-175)
+    corroboration: The directly reviewed current protocol and first-party tool agree on the complete listing operation.
+    limitations:
+      - The production-incident conclusion is bounded to the documented direct-authority corpus reviewed on 2026-09-02.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

@@ -1,0 +1,50 @@
+{
+  "technique_id": "SAF-T1002",
+  "rule_id": "5c4578d8-9f52-4a93-a6c3-f09cfeec79f7",
+  "deterministic_clock": "fixture_timestamps_only",
+  "passed": true,
+  "cases": [
+    {
+      "name": "positive_digest_mismatch_then_execution",
+      "kind": "positive",
+      "expected_alert": true,
+      "observed_alert": true,
+      "passed": true
+    },
+    {
+      "name": "negative_verified_artifact",
+      "kind": "negative",
+      "expected_alert": false,
+      "observed_alert": false,
+      "passed": true
+    },
+    {
+      "name": "boundary_exactly_600_seconds",
+      "kind": "boundary",
+      "expected_alert": true,
+      "observed_alert": true,
+      "passed": true
+    },
+    {
+      "name": "boundary_601_seconds_no_alert",
+      "kind": "boundary",
+      "expected_alert": false,
+      "observed_alert": false,
+      "passed": true
+    },
+    {
+      "name": "false_positive_approved_local_build",
+      "kind": "false_positive",
+      "expected_alert": false,
+      "observed_alert": false,
+      "passed": true
+    },
+    {
+      "name": "negative_different_version",
+      "kind": "negative",
+      "expected_alert": false,
+      "observed_alert": false,
+      "passed": true
+    }
+  ]
+}

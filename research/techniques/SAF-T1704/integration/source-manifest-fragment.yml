@@ -1,0 +1,334 @@
+version: 1
+sources:
+  - id: SRC-mcp-architecture-2026
+    title: Architecture
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/architecture
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party specification page.
+    review_notes: Reviewed host, client, server, isolation, and cross-server responsibilities.
+    locators: [Hosts and Clients sections lines 74-110, Servers section lines 123-133]
+    review_status: opened_reviewed
+    archive: &remote_review
+      status: remote_reviewed_not_archived
+      reason: Clean-room packet records direct review evidence without reproducing third-party content.
+      review_evidence: {method: direct browser review, locators_recorded: true}
+
+  - id: SRC-mcp-tools-2026
+    title: Tools
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party specification page.
+    review_notes: Reviewed tool listing, calling, metadata, results, and security guidance.
+    locators: [Listing Tools lines 106-173, Calling Tools lines 181-219, Tool Metadata lines 299-333, Security Considerations lines 725-737]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mcp-authorization-2026
+    title: Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party specification page.
+    review_notes: Reviewed roles, least scope, resource indicators, audience validation, and token-passthrough prohibition.
+    locators: [Roles and scope lines 132-178, Resource binding lines 192-218, Access-token use lines 239-267]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mcp-auth-security-2026
+    title: Authorization Security Considerations
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party specification page.
+    review_notes: Reviewed token binding, authorization mix-up, open redirects, and confused-deputy controls.
+    locators: [Token binding lines 78-94, Mix-up and redirect lines 121-129, Confused deputy lines 167-178]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mcp-release-2026
+    title: MCP 2026-07-28 Specification Release
+    publisher: Model Context Protocol Blog
+    authors: [David Soria Parra, Den Delimarsky]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-07-28/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party release announcement.
+    review_notes: Reviewed removal of sessions, routing headers, authorization changes, and trace-context support.
+    locators: [Release overview lines 26-39, Session and observability changes lines 42-77]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mcp-annotations-2026
+    title: Tool annotations - helping clients understand tool behavior
+    publisher: Model Context Protocol Blog
+    authors: [Ola Hungerford, Sam Morrow, Luca Chang]
+    version_or_date: "2026-03-16"
+    source_class: protocol_or_standard
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the first-party project blog.
+    review_notes: Reviewed untrusted-hint semantics, multi-server risk, and enforcement limits.
+    locators: [Annotation trust model lines 30-49, Multi-server risk lines 73-95, Client behavior and enforcement lines 105-127]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-invariant-tool-poisoning-2025
+    title: MCP Security Notification - Tool Poisoning Attacks
+    publisher: Invariant Labs
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-01"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the original research report.
+    review_notes: Reviewed both experiments, cross-server tool shadowing, outcomes, and proposed controls.
+    locators: [Attack summary lines 23-36, Experiment 1 lines 67-75, Experiment 2 lines 81-116, Mitigations lines 119-129]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-trailofbits-line-jumping-2025
+    title: "Jumping the line: How MCP servers can attack you before you ever use them"
+    publisher: Trail of Bits
+    authors: [Trail of Bits AI/ML Security Team]
+    version_or_date: "2025-04-21"
+    source_class: research
+    official_url: https://blog.trailofbits.com/2025/04/21/jumping-the-line-how-mcp-servers-can-attack-you-before-you-ever-use-them/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the original research report.
+    review_notes: Reviewed pre-invocation metadata influence, client tests, cross-server relay, and proposed controls.
+    locators: [Attack description lines 18-26, Client tests and cross-server isolation discussion lines 63-75, Impact and mitigations lines 81-92]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-nvd-cve-6514
+    title: CVE-2025-6514 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-6514
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct review of the NVD CVE record and CISA-ADP assessment fields.
+    review_notes: Reviewed description, affected range, references, and exploitation assessment.
+    locators: [CVE Description, Configurations, References, CISA-ADP enrichment]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-jfrog-cve-6514-2025
+    title: "CVE-2025-6514: Critical mcp-remote RCE Vulnerability"
+    publisher: JFrog Security Research
+    authors: [Or Peles]
+    version_or_date: "2025-07-09"
+    source_class: research
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the discovering research team's report.
+    review_notes: Reviewed affected versions, platform constraints, malicious-server condition, attack path, fix, and recommendations.
+    locators: [Summary and affected versions lines 150-160, Conditions and recommendations lines 164-174, Technical attack path lines 188-209, Summary lines 342-345]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-jfrog-jfsa-6514
+    title: mcp-remote OS Command Injection RCE
+    publisher: JFrog Security Research
+    authors: [Or Peles]
+    version_or_date: "2025"
+    source_class: official_advisory
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the JFrog vulnerability record.
+    review_notes: Reviewed the affected interval and advisory synopsis; rejected as redundant with the fuller original report and NVD.
+    locators: [Advisory synopsis and affected interval lines 11-50]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-nvd-cve-6515
+    title: CVE-2025-6515 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database]
+    version_or_date: "reviewed 2026-09-02"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-6515
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct review of the NVD CVE record and CISA-ADP assessment fields.
+    review_notes: Reviewed predictable session identifiers, response injection, CVSS, references, and exploitation assessment.
+    locators: [CVE Description, Metrics, References, CISA-ADP enrichment]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-jfrog-cve-6515-2025
+    title: MCP Prompt Hijacking Vulnerability
+    publisher: JFrog Security Research
+    authors: [Ori Hollander, Ofri Ouzan]
+    version_or_date: "2025-10-21"
+    source_class: research
+    official_url: https://jfrog.com/blog/mcp-prompt-hijacking-vulnerability/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the discovering research team's report.
+    review_notes: Reviewed the session-hijack mechanism, Claude demonstration, prerequisites, and remediation.
+    locators: [Session hijacking and poisoned responses lines 203-230, Demonstration and affected transport lines 232-239, Remediation lines 243-247]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mcptox-2025
+    title: "MCPTox: A Benchmark for Tool Poisoning Attack on Real-World MCP Servers"
+    publisher: arXiv
+    authors: [Zhiqiang Wang, Yichao Gao, Yanting Wang, Suyuan Liu, Haifeng Sun, Haoran Cheng, Guanquan Shi, Haohua Du, Xiangyang Li]
+    version_or_date: "2025-08-19"
+    source_class: research
+    official_url: https://arxiv.org/pdf/2508.14925
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct full-text review of the research paper.
+    review_notes: Reviewed corpus, attack construction, success definition, results, and limitations.
+    locators: [Sections 3.1-3.4, Sections 4.1-4.4, Table 2, Section 5]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-huang-tool-poisoning-2026
+    title: Model Context Protocol Threat Modeling and Analyzing Vulnerabilities to Prompt Injection with Tool Poisoning
+    publisher: arXiv
+    authors: [Charoes Huang, Xin Huang, Ngoc Phu Tran, Amin Milani Fard]
+    version_or_date: "2026-03-23"
+    source_class: research
+    official_url: https://arxiv.org/pdf/2603.22489
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct review of abstract, problem statement, findings, and recommendations.
+    review_notes: Reviewed client validation observations and behavioral-monitoring recommendations; rejected from citations because stronger sources already support the retained propositions and several client claims are version-sensitive.
+    locators: [Abstract and problem statement pages 0-2, Security posture analysis pages 30-32, Discussion and recommendations pages 32-33]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-microsoft-azure-mcp-security-2026
+    title: Security - Azure MCP Server
+    publisher: Microsoft Learn
+    authors: [Microsoft Azure MCP Server Documentation Team]
+    version_or_date: "2026-07-31"
+    source_class: credible_practice
+    official_url: https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of first-party product security guidance.
+    review_notes: Reviewed OAuth, least privilege, sandboxing, untrusted metadata, cross-server influence, credential isolation, inventory, and audit limitations.
+    locators: [OAuth and least privilege lines 31-43, Sandboxing and cross-server controls lines 68-89, Inventory and monitoring lines 90-105]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-microsoft-m365-mcp-monitoring-2026
+    title: Manage tools for agents in Microsoft 365 admin center
+    publisher: Microsoft Learn
+    authors: [Microsoft 365 Documentation Team]
+    version_or_date: "reviewed 2026-09-02"
+    source_class: credible_practice
+    official_url: https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-tools-for-agent?view=o365-worldwide
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of first-party administrative guidance.
+    review_notes: Reviewed registry, approval, blocking, tools snapshots, runtime enforcement, and invocation monitoring metadata.
+    locators: [BYO governance flow lines 85-114, Governance controls lines 420-472, Monitoring lines 498-508]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-jfrog-agent-supply-chain-2026
+    title: Supply Chain Attackers Are Coming for Your Agents
+    publisher: JFrog
+    authors: [Yuval Fernbach]
+    version_or_date: "2026-03-30"
+    source_class: secondary
+    official_url: https://jfrog.com/blog/supply-chain-attackers-are-coming-for-your-agents/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the secondary incident discussion.
+    review_notes: Reviewed the postmark-mcp hidden-BCC report; rejected because the described server used its own legitimate downstream capability rather than host-mediated authority in another trust domain, and the original linked report was no longer reviewable at its original page.
+    locators: [postmark-mcp discussion lines 181-186]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-mitre-t1210
+    title: Exploitation of Remote Services - T1210
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK, ExtraHop]
+    version_or_date: "version 1.2, modified 2026-08-04"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1210/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the official ATT&CK technique page.
+    review_notes: Reviewed definition, tactic, platforms, version, and detection scope.
+    locators: [Definition lines 15-21, ID and tactic lines 23-35, version metadata lines 37-41, detection strategy lines 86-92]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-nvd-cve-14541
+    title: CVE-2026-14541 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, Google Inc.]
+    version_or_date: "modified 2026-08-07"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-14541
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct review of the NVD record surfaced during saturation follow-up.
+    review_notes: Reviewed the audience-confusion condition and rejected it because access flows from an unauthorized client into one server rather than from a compromised server through host authority into another trust domain.
+    locators: [CVE Description, CISA-ADP enrichment, affected version record]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-nvd-cve-58062
+    title: CVE-2025-58062 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, GitHub Inc.]
+    version_or_date: "modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-58062
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of the NVD record surfaced during saturation follow-up.
+    review_notes: Reviewed malicious authorization-server endpoint, Windows client compromise, affected version, patch, and proof-of-concept status; retained as a direct but redundant lower-impact candidate.
+    locators: [Description lines 76-85, Metrics lines 86-90, CISA-ADP and affected records lines 104-123]
+    review_status: opened_reviewed
+    archive: *remote_review
+
+  - id: SRC-microsoft-rug-pull-2026
+    title: Rug-Pull Attack (Agent / MCP Server)
+    publisher: Microsoft Learn
+    authors: [Microsoft Zero Trust Documentation Team]
+    version_or_date: "2026-08-01"
+    source_class: credible_practice
+    official_url: https://learn.microsoft.com/en-us/security/zero-trust/catalog-ai-attack-techniques/rug-pull-attack
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct browser review of first-party security catalog guidance.
+    review_notes: Reviewed compromised-agent scenario, cross-entity instruction path, controls, and framework mappings; treated scenario prose as defensive practice authority, not production-incident evidence.
+    locators: [Scenario and mechanism lines 30-44, Recommended controls lines 45-55, Technology and mapping sections lines 56-89]
+    review_status: opened_reviewed
+    archive: *remote_review

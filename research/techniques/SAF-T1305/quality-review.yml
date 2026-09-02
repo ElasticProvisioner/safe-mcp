@@ -1,0 +1,56 @@
+version: 1
+technique_id: SAF-T1305
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1305
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records allowed inputs, exact searches, independently opened source IDs, no prohibited access, and isolated validation.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires a vulnerability-mediated authority transition into a host process account and separates installation, intended tool use, prompt influence, and follow-on behavior.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, vulnerability, version, platform, remediation, and privilege-context statements match exact reviewed locators and disclose limitations.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims resolve to directly reviewed sources with exact locators, limitations, conflicts, and explicit inference fields.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or declared local artifact; five omitted leads have prohibited-text checks.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by two independent complete controlled MCP-to-host execution paths; no qualifying production incident supports Observed.
+  research_saturation:
+    status: passed
+    notes: Five required passes plus two final authoritative-domain passes with no material changes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Five direct candidates were ranked; four highest-impact and boundary-distinct examples were selected with dates, impact, remediation, relationship, exploitation state, and limits.
+  detection_quality:
+    status: passed
+    notes: Seven deterministic cases cover two positives, two time boundaries, a negative parent, an expected legitimate child, and malformed input.
+  mitigation_quality:
+    status: passed
+    notes: Controls address patching, trust, transport authentication/origin validation, explicit consent, isolation, telemetry, and their limits.
+  framework_alignment:
+    status: passed
+    notes: Seed tactic ATK-TA0004 is preserved; ATT&CK T1068 is analogous; canonical neighbors and mitigations were mechanically reconciled after freeze.
+  publication_rights:
+    status: passed
+    notes: All eleven sources are paraphrase-only factual references with named attribution; no quotation, code, image, diagram, or dataset is republished.
+  safe_publication:
+    status: passed
+    notes: The technique omits working payloads and uses an inert domain and synthetic normalized events.
+validation:
+  commands:
+    - command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1305/validator-deps python3 scripts/validate-technique-research.py SAF-T1305
+      result: passed
+      environment: /private/tmp/saf-all-cleanroom/SAF-T1305/mock
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1305/test_detection_rule.py
+    result: PASS 7 cases
+    waiver: null
+unresolved: []

@@ -1,0 +1,190 @@
+version: 1
+technique_id: SAF-T1103
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct MCP 2026-07-28 tools, architecture, and schema pages.
+        - Direct AG-UI events and architecture pages.
+        - Direct CWE-470, CWE-863, ATT&CK TA0002, and ATT&CK T1059 pages.
+      material_changes:
+        - Defined the boundary around trusted call lifecycle, host policy, and registered callable binding.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Thirteen initial NVD keyword queries for tool-call, spoofing, resolver, result, and MCP terms.
+        - Direct CVE records, exact advisory URLs discovered from NVD, and complete CISA KEV checks.
+      material_changes:
+        - Selected Pydantic AI, PraisonAI, and Banks direct vulnerabilities; retained MaxKB as an adjacent boundary case.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Six initial arXiv API queries and complete review of PACT, FlowGuard, and AEGIS.
+        - Review of controlled verification in the PraisonAI advisory.
+      material_changes:
+        - Classified the technique Demonstrated and added limitations for provenance and pre-execution controls.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - AG-UI lifecycle-field review and MCP logging/approval guidance.
+        - PACT provenance evaluation, FlowGuard runtime-evidence evaluation, and AEGIS pre-execution evaluation.
+      material_changes:
+        - Designed a trusted lifecycle and registry correlation analytic with a five-minute run-scoped window.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Direct searches for caller identity, result spoofing, session injection, prompt-induced calls, and production exploitation.
+      material_changes:
+        - Omitted production-breach claims and separated result spoofing, real RPC/session takeover, and genuine model calls.
+    - pass: saturation_discovery_1
+      completed_on: "2026-09-01"
+      queries:
+        - Five direct NVD/arXiv variants for assistant messages and model- or client-generated tool calls.
+      material_changes:
+        - Added AEGIS as a defense source after complete review; rejected an unrelated information-disclosure CVE.
+    - pass: saturation_discovery_2
+      completed_on: "2026-09-01"
+      queries:
+        - Five direct NVD/arXiv variants for dangling calls, undeclared callable resolution, and function-name execution.
+      material_changes:
+        - Added CVE-2026-61536 and its exact advisory as a direct function-binding vulnerability.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD queries for tool import path LLM, assistant tool call dispatched, and tool name globals.
+        - arXiv queries for function identity plus tool call and tool provenance plus execution.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD queries for untrusted message history tool call and tool-call allowlist callable.
+        - arXiv queries for call provenance and pre-execution firewall; complete CISA KEV recheck.
+      material_changes: []
+  rationale: >-
+    Forty direct authoritative catalog queries and 23 independently opened
+    sources cover protocol semantics, weakness classes, direct vulnerabilities,
+    controlled demonstration, exploitation status, detection, mitigation, and
+    contrary boundaries. The last two passes returned only already reviewed or
+    out-of-scope material and made no substantive change.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-ghsa-pydantic-65975
+    - SRC-ghsa-praison-44339
+    - SRC-ghsa-banks-61536
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-pydantic-65975
+      identifier: CVE-2026-65975 / GHSA-jpr8-2v3g-wgf9
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory and affected releases; no reviewed production exploitation or CISA KEV entry.
+      impact: Registered non-approval tools could run with client-supplied arguments without a model turn.
+      remediation: Fixed in Pydantic AI 1.107.1 and 2.5.0; authenticate adapter endpoints and enforce authorization at tools.
+      selected: true
+      rationale: Highest-directness public example of forged call provenance with clear constraints and fixes.
+    - source_id: SRC-ghsa-praison-44339
+      identifier: CVE-2026-44339 / GHSA-gmjg-hv98-qggq
+      relationship: direct_demonstration
+      exploitation_status: Controlled local verification; no reviewed production exploitation or CISA KEV entry.
+      impact: An undeclared runtime callable could execute through resolver fall-through.
+      remediation: Fixed in PraisonAI 4.6.37 and praisonaiagents 1.6.37; remove global fall-through and use an explicit allowlist.
+      selected: true
+      rationale: Provides the strongest end-to-end controlled evidence and establishes Demonstrated status.
+    - source_id: SRC-ghsa-banks-61536
+      identifier: CVE-2026-61536 / GHSA-64vx-6h2c-rjh7
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory and affected releases; no reviewed production exploitation or CISA KEV entry.
+      impact: Attacker-influenced tool data could select an arbitrary importable callable in the hosting process.
+      remediation: Fixed in Banks 2.4.3; resolve only application-registered callables and reject deserialized import paths.
+      selected: true
+      rationale: High-impact function-binding example that complements both other variants.
+    - source_id: SRC-ghsa-maxkb-39419
+      identifier: CVE-2026-39419 / GHSA-f3c8-p474-xwfv
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public vulnerability advisory; no reviewed production exploitation or CISA KEV entry.
+      impact: A custom tool could forge the recorded execution result.
+      remediation: Fixed in MaxKB 2.8.0.
+      selected: false
+      rationale: Preserves the result-versus-invocation boundary but cannot raise this technique's evidence status.
+    - source_id: SRC-withdrawn-caller-identity-2603.07473
+      identifier: arXiv:2603.07473v2
+      relationship: rejected
+      exploitation_status: Withdrawn research record; no reliable exploitation conclusion retained.
+      impact: Claimed caller-identity confusion in MCP integrations.
+      remediation: No product remediation used because the paper was withdrawn.
+      selected: false
+      rationale: Authors withdrew the work for methodological flaws and unresolved ethics/data-collection concerns.
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-agui-events
+  - SRC-agui-architecture
+  - SRC-cwe-470
+  - SRC-cwe-863
+  - SRC-cve-2026-65975
+  - SRC-ghsa-pydantic-65975
+  - SRC-cve-2026-44339
+  - SRC-ghsa-praison-44339
+  - SRC-cve-2026-61536
+  - SRC-ghsa-banks-61536
+  - SRC-cve-2026-39419
+  - SRC-ghsa-maxkb-39419
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-pact-2605.11039
+  - SRC-flowguard-2607.14754
+  - SRC-aegis-2603.12621
+  - SRC-withdrawn-caller-identity-2603.07473
+  - SRC-attack-ta0002
+  - SRC-mitre-t1059-current
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-agui-events
+  - SRC-cwe-470
+  - SRC-cwe-863
+  - SRC-cve-2026-65975
+  - SRC-ghsa-pydantic-65975
+  - SRC-cve-2026-44339
+  - SRC-ghsa-praison-44339
+  - SRC-cve-2026-61536
+  - SRC-ghsa-banks-61536
+  - SRC-cve-2026-39419
+  - SRC-ghsa-maxkb-39419
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-pact-2605.11039
+  - SRC-flowguard-2607.14754
+  - SRC-aegis-2603.12621
+  - SRC-attack-ta0002
+  - SRC-mitre-t1059-current
+sources_rejected:
+  - source_id: SRC-mcp-2026-schema
+    reason: Consulted for type reconciliation; tool and architecture pages provided more direct publishable support.
+  - source_id: SRC-agui-architecture
+    reason: Consulted for system context; the events page provided the exact detection fields.
+  - source_id: SRC-withdrawn-caller-identity-2603.07473
+    reason: Withdrawn by an author for methodological flaws and unresolved ethics/data-collection concerns.
+sources_blocked: []
+conflicts:
+  - issue: Banks requires a genuine model-emitted name match, while Pydantic AI documents a call with no model turn.
+    resolution: Both remain in scope only at the function-binding or provenance boundary; a genuine registered call induced solely by prompt injection remains out of scope.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1103-C003, SAF-T1103-C004, SAF-T1103-C005, SAF-T1103-C015]
+  rationale: >-
+    Official advisories document both variants, and the PraisonAI advisory
+    reports controlled invocation of an undeclared callable through the unsafe
+    resolver. No reviewed evidence supports an Observed production classification.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

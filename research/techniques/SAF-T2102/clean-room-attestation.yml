@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T2102
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T2102
+  neutral_name: Service Disruption
+allowed_inputs:
+- Neutral target ID SAF-T2102, neutral name Service Disruption, and tactic ATK-TA0040.
+- The author-saf-technique skill, its routed methodology references, canonical blank
+  packet schemas, template, and validator.
+- Direct authoritative standards, government records, academic publications, and first-party
+  vendor or researcher sources found through domain-restricted searches.
+- Fresh synthetic test fixtures and isolated validator scaffolding created under /private/tmp/saf-all-cleanroom/SAF-T2102.
+prohibited_inputs:
+- Existing techniques/SAF-T2102/README.md or any copy, history, diff, blame, issue,
+  or derivative.
+- Existing research/techniques/SAF-T2102/ packet or any target-specific research artifact.
+- Existing techniques/SAF-T2102/detection-rule.yml or target-specific tests.
+- Git history, commit ancestry, repository blame, or target-specific prior revisions.
+- Pull request content, review comments, or issue discussions about the target.
+- Previous conversation, inherited draft context, other-agent work, or prior target
+  wording.
+- Shared source, framework, or alignment registries and SAF sites, repositories, or
+  forks before freeze.
+- Impact-classification examples before freeze.
+independent_research:
+  searches:
+  - site:nvd.nist.gov Model Context Protocol crash resource exhaustion denial service
+    cancellation vulnerability
+  - site:modelcontextprotocol.io MCP tasks rate limiting resource management security
+  - site:usenix.org OR site:arxiv.org MCP denial of service tool chain resource amplification
+    controlled experiment
+  - site:github.blog OR site:microsoft.com OR site:anthropic.com MCP service outage
+    security incident denial of service
+  - site:nist.gov API resource consumption rate limit timeout circuit breaker telemetry
+  - site:cisa.gov CVE-2025-53365 exploitation status
+  - site:cisa.gov CVE-2026-52870 exploitation status
+  - site:attack.mitre.org Endpoint Denial of Service service crash resource exhaustion
+  - 'exact identifier follow-up: CVE-2025-53365, CVE-2026-52870, GHSA-j975-95f5-7wqh,
+    GHSA-hvrp-rf83-w775'
+  opened_source_ids:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tasks-overview-2026
+  - SRC-mcp-tasks-2025-11
+  - SRC-mcp-cancellation-2025
+  - SRC-mcp-sep2663-2026
+  - SRC-nist-sp800-228-upd1
+  - SRC-nist-sp800-53r5.1
+  - SRC-ghsa-j975-95f5-7wqh
+  - SRC-nvd-cve-2025-53365
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-52870
+  - SRC-usenix-agentdos-2026
+  - SRC-arxiv-resource-amplification-2026
+  - SRC-arxiv-aegis-2026
+  - SRC-arxiv-infinite-loops-2026
+  - SRC-arxiv-overthinking-loops-2026
+  - SRC-github-availability-2026-07
+  - SRC-mitre-attack-t1499
+  - SRC-mitre-attack-t1489
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrators must validate hash equality against FREEZE.sha256 before opening prior
+  target or shared registry content.
+- Integrators must preserve publishable wording and evidence classification unless
+  a post-freeze reconciliation change is explicitly recorded.
+- Placeholder neighbor IDs SAF-T1106 and SAF-T2101 must be reconciled against the
+  real framework only after freeze.
+- Repository history lineage must be replaced with an actual integration commit without
+  representing the clean-room marker as repository ancestry.
+attestation: I authored this packet from neutral identifiers, routed skill instructions,
+  canonical blank schemas and validator, and independently opened whitelist-only sources.
+  I did not inspect prohibited target artifacts, histories, registries, SAF sites,
+  previous conversation, or other-agent output before freezing this bundle.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-spec-2026: SRC-mcp-overview-2026
+    SRC-mcp-tools-2026: SRC-mcp-tools-2026-07-28
+    SRC-mcp-release-2026-07: SRC-mcp-release-2026-07-28
+    SRC-mcp-tasks-2025: SRC-mcp-tasks-2025-11
+    SRC-nist-sp800-228-upd1: SRC-nist-sp800-228-upd1
+    SRC-nist-sp800-53r5-1: SRC-nist-sp800-53r5.1
+    SRC-ghsa-hvrp-rf83-w775: SRC-ghsa-python-hvrp
+    SRC-nvd-cve-2026-52870: SRC-nvd-cve-2026-52870
+  new_shared_source_records:
+  - SRC-mcp-tasks-overview-2026
+  - SRC-mcp-cancellation-2025
+  - SRC-mcp-sep2663-2026
+  - SRC-ghsa-j975-95f5-7wqh
+  - SRC-nvd-cve-2025-53365
+  - SRC-usenix-agentdos-2026
+  - SRC-arxiv-resource-amplification-2026
+  - SRC-arxiv-aegis-2026
+  - SRC-arxiv-infinite-loops-2026
+  - SRC-arxiv-overthinking-loops-2026
+  - SRC-github-availability-2026-07
+  - SRC-mitre-attack-t1499
+  - SRC-mitre-attack-t1489
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-29
+  - SAF-M-70
+  - SAF-M-73
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1106
+  - SAF-T2101
+  attack_mapping:
+    id: T1499
+    type: direct
+  validation_proof:
+  - research/techniques/SAF-T2102/validation/detection-tests.txt
+  - research/techniques/SAF-T2102/validation/strict-validator.txt
+  - research/techniques/SAF-T2102/validation/canonical-validation.txt
+  status: integrated_and_validated

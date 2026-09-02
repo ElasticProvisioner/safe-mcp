@@ -1,0 +1,79 @@
+version: 1
+technique_id: SAF-T1504
+name: Token Theft via API Response
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Obtain a reusable access, bearer, session, or refresh token when
+  an MCP or agentic API returns the token in a tool or API response to a caller that
+  is not authorized to possess it.
+scope:
+  security_boundary: The MCP server-to-client response boundary, including response
+    content subsequently placed into model context, where server-held or upstream
+    tokens must not be disclosed to the response recipient.
+  in_scope:
+  - A successful or error response contains a reusable token in text, structured content,
+    an embedded resource, or response metadata.
+  - The response reaches an unauthorized caller, tenant, model context, or user and
+    gives that recipient possession of the token.
+  out_of_scope:
+  - Token acquisition from logs, source repositories, endpoint memory, browser storage,
+    authorization redirects, or network interception when no API response discloses
+    the token.
+  - Token passthrough to a downstream API, SSRF, prompt injection, or missing authentication
+    unless the resulting response is the channel that delivers a token to an unauthorized
+    recipient.
+  - Downstream use of a stolen token, persistence, privilege escalation, or exfiltration
+    after the response disclosure.
+  affected_components:
+  - MCP server tool handlers and upstream API adapters
+  - MCP client response processors and model-context construction
+  - HTTP and JSON-RPC response logging or sanitization controls
+nearest_neighbors:
+- technique_id: SAF-T1307
+  distinction: Confused Deputy Attack requires use of an intermediary's distinct downstream
+    authority; SAF-T1504 additionally requires a token to cross the server-to-client
+    response boundary. SSRF without distinct deputy authority remains outside this join.
+- technique_id: SAF-T1304
+  distinction: Credential Relay Chain sends an improperly accepted client credential
+    downstream, while SAF-T1504 returns a server-held or upstream token to an unauthorized
+    response recipient.
+required_evidence:
+- Establish the MCP result fields through which server-produced response content reaches
+  a client or model.
+- Establish that possession of a bearer token permits use without proving possession
+  of separate key material.
+- Identify a directly reviewed end-to-end demonstration of a reusable token appearing
+  in an unauthorized MCP response.
+- Search separately for production breaches, disclosed vulnerabilities, advisories,
+  demonstrations, exploitation status, detection, defenses, contrary evidence, and
+  fixed behavior.
+- Select two to four high-impact qualifying examples, or state the evidence gap when
+  fewer qualify.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP response audit events with timestamp, session ID, request ID, caller identity,
+    tenant, server, tool, result channel, response secret-classifier findings, redaction
+    status, and recipient authorization decision.
+  - Token revocation or downstream token-use events keyed by a non-reversible token
+    fingerprint when available; raw tokens must not be logged.
+safe_example_constraints:
+- Use only inert placeholder tokens that cannot authenticate to any service.
+- Do not reproduce operational exploit code, live endpoints, credentials, or destructive
+  follow-on instructions.
+- Describe response fields and boundary decisions without publishing secret values.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE joins or a
+  declared local artifact.
+- All candidate examples are classified and unverified claims are excluded in traceability-ledger.yml.
+- Two consecutive bounded authoritative follow-up passes add no material evidence.
+- Positive, negative, boundary, malformed-field, and expected-false-positive detector
+  cases pass.
+- Publication rights, safe-publication, framework, and isolated strict-validation
+  gates pass with mechanical integration joins explicitly deferred.

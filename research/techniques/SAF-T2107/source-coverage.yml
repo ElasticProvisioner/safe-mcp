@@ -1,0 +1,178 @@
+version: 1
+technique_id: SAF-T2107
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:modelcontextprotocol.io/specification tools tool result security considerations authorization 2025'
+        - 'site:nist.gov AI training data poisoning detection dataset provenance'
+        - 'site:atlas.mitre.org data poisoning training data poisoning AI'
+      material_changes:
+        - Established MCP tool-result content forms and security cautions.
+        - Established NIST provenance guidance and the ATLAS poisoning mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail "Model Context Protocol" tool'
+        - 'site:cisa.gov "Model Context Protocol" vulnerability advisory'
+        - 'site:cve.org "Model Context Protocol" poisoning'
+        - 'site:microsoft.com/en-us/security/blog MCP tool poisoning incident'
+      material_changes:
+        - Added three adjacent runtime candidates and recorded no direct training-contamination case.
+        - Checked the CISA KEV catalog for both disclosed CVEs.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:proceedings.mlr.press "Poisoning Language Models During Instruction Tuning"'
+        - 'site:arxiv.org real-world MCP servers training tool responses fine-tuning'
+        - 'site:anthropic.com/research training data poisoning backdoor samples'
+      material_changes:
+        - Established real MCP tool-response use in fine-tuning trajectories.
+        - Established poisoning effects and important scale and generalization limits.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:nist.gov AI RMF provenance training data integrity logging'
+        - 'site:owasp.org training data poisoning provenance detection model'
+        - 'site:proceedings.mlr.press instruction tuning poisoning defenses filtering'
+      material_changes:
+        - Defined provenance-state admission telemetry and its semantic blind spot.
+        - Added source vetting, versioning, evaluation, and rollback controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:anthropic.com/research MCP trajectory training poisoning'
+        - 'site:microsoft.com/en-us/research MCP tool trajectory data poisoning fine-tuning'
+        - 'site:openai.com function calling untrusted tool output training data'
+      material_changes:
+        - Preserved the direct-evidence gap and the requirement that attacker-controlled data enter training.
+        - Classified runtime prompt and command injection as adjacent rather than direct.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:arxiv.org MCP interaction logs dataset poisoning model weights'
+        - 'site:aclanthology.org "real-world MCP servers" poison training'
+        - 'site:anthropic.com/research MCP trajectory training poisoning'
+        - 'site:microsoft.com/en-us/research MCP tool trajectory data poisoning fine-tuning'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:arxiv.org "MCP tool result" "training corpus" backdoor'
+        - 'site:aclanthology.org "MCP tool response" data poisoning fine-tuning'
+        - 'site:proceedings.mlr.press MCP tool data poisoning training'
+        - 'site:usenix.org MCP trajectory training poisoning model'
+      material_changes: []
+  rationale: >-
+    The five passes cover the protocol boundary, government guidance, current incident and
+    vulnerability catalogs, empirical poisoning, MCP training trajectories, detection,
+    defenses, contrary evidence, and publication gaps. The final two restricted-domain
+    follow-ups found only generic poisoning or adjacent runtime material and did not alter
+    the contract, evidence label, claims, detection, or selected examples.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 4
+  selected_examples: []
+  no_qualifying_examples_rationale: >-
+    Restricted searches of NVD, CISA, CVE, Microsoft, OpenAI, and first-party research
+    sources identified runtime MCP metadata manipulation, command injection, and untrusted
+    tool-output prompt injection. None describes an MCP tool result admitted to model
+    training and changing weights, so selecting them would blur the technique boundary.
+  candidates:
+    - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+      identifier: Microsoft MCP tool-poisoning observations
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed in enterprise agent ecosystems, with organization details withheld
+      impact: Runtime agent behavior may be manipulated through tool metadata.
+      remediation: Review tool metadata, correlate runtime behavior, and restrict trust in tools.
+      selected: false
+      rationale: The report describes runtime manipulation and no training-data admission or weight update.
+    - source_id: SRC-nvd-cve-2025-61591
+      identifier: CVE-2025-61591
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: NVD CISA-SSVC exploitation field recorded none; absent from the reviewed KEV snapshot
+      impact: A malicious MCP server can cause command execution in affected Cursor versions.
+      remediation: Use the vendor-fixed build identified in the NVD record.
+      selected: false
+      rationale: The disclosed mechanism is runtime command injection, not model training.
+    - source_id: SRC-nvd-cve-2025-52573
+      identifier: CVE-2025-52573
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: NVD CISA-SSVC exploitation field recorded none; absent from the reviewed KEV snapshot
+      impact: Prompt injection can reach shell-command construction in affected ios-simulator-mcp versions.
+      remediation: Upgrade to version 1.3.3 or later as identified in the NVD record.
+      selected: false
+      rationale: The disclosed mechanism is runtime command injection, not model training.
+    - source_id: SRC-openai-function-calling
+      identifier: OpenAI untrusted tool-output proof of concept
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public proof of concept described by the vendor
+      impact: Untrusted tool output can instruct a model to take unintended actions in a live flow.
+      remediation: Treat tool output as untrusted and use confirmation controls.
+      selected: false
+      rationale: The source describes inference-time prompt injection, not training contamination.
+sources_consulted:
+  - SRC-anthropic-small-samples
+  - SRC-mitre-t1565.001
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-atlas-safeai
+  - SRC-nist-aml
+  - SRC-nist-ai-600-1
+  - SRC-nist-airc-characteristics
+  - SRC-nvd-cve-2025-52573
+  - SRC-nvd-cve-2025-61591
+  - SRC-openai-function-calling
+  - SRC-owasp-llm04
+  - SRC-toucan
+  - SRC-wan23b
+sources_cited:
+  - SRC-anthropic-small-samples
+  - SRC-mitre-t1565.001
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-atlas-safeai
+  - SRC-nist-ai-600-1
+  - SRC-nvd-cve-2025-52573
+  - SRC-nvd-cve-2025-61591
+  - SRC-owasp-llm04
+  - SRC-toucan
+  - SRC-wan23b
+sources_rejected:
+  - source_id: SRC-cisa-kev-2026-09-01
+    reason: Useful only to bound current known-exploitation status for adjacent CVEs; it does not support the core technique.
+  - source_id: SRC-nist-aml
+    reason: Relevant poisoning sections were reviewed, but the more focused empirical and provenance sources directly support the selected claims.
+  - source_id: SRC-nist-airc-characteristics
+    reason: General provenance guidance duplicates the more directly located NIST AI 600-1 material.
+  - source_id: SRC-openai-function-calling
+    reason: The vendor proof of concept is inference-time prompt injection outside the model-training boundary.
+sources_blocked: []
+conflicts:
+  - issue: Empirical poisoning studies show small poison sets can matter, but they do not establish that one MCP response is sufficient.
+    resolution: The technique requires an environment-dependent effective representation and expressly rejects a single-record guarantee.
+  - issue: MCP tool poisoning and command-injection disclosures are real but operate at inference time.
+    resolution: They remain adjacent candidates and do not raise the end-to-end evidence above Research-Derived.
+  - issue: Provenance can detect missing or mismatched lineage but not content with valid-looking lineage.
+    resolution: The analytic is labeled an unsafe-admission detector and the semantic blind spot is explicit.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T2107-C005
+    - SAF-T2107-C006
+  rationale: >-
+    Direct sources establish MCP tool results, real MCP-response training trajectories, and
+    model poisoning independently. Their composition supports the complete technique as an
+    explicit inference; no direct end-to-end MCP poisoning experiment or production incident
+    was found.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

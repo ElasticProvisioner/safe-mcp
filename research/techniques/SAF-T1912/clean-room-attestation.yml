@@ -1,0 +1,166 @@
+version: 1
+technique_id: SAF-T1912
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1912
+  neutral_name: Stego Response Exfil
+allowed_inputs:
+- 'Neutral tuple only: SAF-T1912, Stego Response Exfil, tactic ATK-TA0010.'
+- Generic authoring skill, methodology, clean-room method, trace format, templates,
+  and validator.
+- Independently opened direct authoritative sources discovered with domain-whitelisted
+  queries.
+prohibited_inputs:
+- Existing techniques/SAF-T1912/README.md.
+- Existing research/techniques/SAF-T1912/ directory or any target-specific research
+  packet.
+- Existing techniques/SAF-T1912/detection-rule.yml or target-specific tests.
+- Git history, diffs, blame, branches, or inherited version history for the target.
+- Pull request, issue, review, SAF site, catalog, registry, or alignment text about
+  the target.
+- Previous conversation containing target prose, target research, target tests, or
+  target mappings.
+- Other agents' target artifacts or summaries before the immutable freeze.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification tools result content image resource
+    security authorization data exfiltration
+  - site:modelcontextprotocol.io/specification security best practices tool results
+    user consent least privilege
+  - site:rfc-editor.org steganography covert channel network protocol storage covert
+    channel
+  - site:nist.gov covert channels steganography data exfiltration detection
+  - site:arxiv.org large language model steganography response covert channel data
+    exfiltration agent
+  - site:aclanthology.org language model steganography covert communication hidden
+    response
+  - site:openreview.net LLM steganography covert channel response secret data
+  - site:microsoft.com security copilot prompt injection exfiltration image markdown
+    CVE-2025-32711
+  - site:nvd.nist.gov CVE-2025-32711 Microsoft 365 Copilot prompt injection exfiltration
+  - site:cisa.gov known exploited vulnerabilities CVE-2025-32711
+  - site:msrc.microsoft.com CVE-2025-32711 Copilot information disclosure
+  - site:microsoft.com CVE-2025-32711 EchoLeak fixed exploitation status
+  - site:nvd.nist.gov/vuln/detail steganography large language model
+  - site:cve.org steganography AI agent information disclosure
+  - site:cveawg.mitre.org/api/cve prompt injection covert channel information disclosure
+    AI
+  - site:msrc.microsoft.com AI prompt injection covert channel data exfiltration vulnerability
+  - site:attack.mitre.org/techniques steganography exfiltration data hidden files
+    information
+  - site:attack.mitre.org/techniques/T1027/003 Steganography
+  - site:attack.mitre.org/techniques/T1567 exfiltration web service
+  - site:aclanthology.org LLM steganography paraphrasing defense destroys covert message
+  - site:arxiv.org LLM covert channel defense limitations paraphrasing false positives
+    agent egress
+  - site:nist.gov steganography monitoring false positives covert channel limitation
+  - site:microsoft.com indirect prompt injection deterministic detection open challenge
+    false positives
+  - site:modelcontextprotocol.io/specification/2026-07-28 response content validation
+    sensitive data egress image audio
+  - site:aclanthology.org/2025 OR site:aclanthology.org/2026 secret context steganographic
+    model outputs exfiltration
+  - site:nist.gov SC-7(10) steganography prevent exfiltration protocol formats
+  - site:microsoft.com agent output covert channel steganography exfiltration response
+  - site:modelcontextprotocol.io/specification/2026-07-28 tool result output validation
+    image audio embedded resource security
+  - site:aclanthology.org/2026 linguistic steganography LLM agent response sensitive
+    context exfiltration detection
+  - site:microsoft.com/security/blog 2026 LLM response steganography covert channel
+    exfiltration
+  - site:nist.gov 2026 AI response steganography covert channel data exfiltration
+    detection
+  - site:modelcontextprotocol.io/specification/2026-07-28 resources binary blob base64
+    sanitization access controls output
+  - site:aclanthology.org sensitive context steganography LLM outputs exfiltration
+  - site:microsoft.com indirect prompt injection exfiltration response image URL covert
+    one bit tool call deterministic detection
+  - site:nist.gov monitoring for steganography data loss exfiltration
+  opened_source_ids:
+  - SRC-agent-egress-monitor-2026
+  - SRC-breaking-provable-security-2026
+  - SRC-cve-2025-32711
+  - SRC-hidden-plain-text-2025
+  - SRC-llm-covert-channels-2024
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-microsoft-ai-security-2025
+  - SRC-microsoft-indirect-prompt-injection-2025
+  - SRC-microsoft-prompt-abuse-2026
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-t1027-003
+  - SRC-mitre-t1567
+  - SRC-model-weight-exfil-2025
+  - SRC-nist-sp800-53r5.1
+  - SRC-od-stega-2026
+  - SRC-silent-egress-2026
+  - SRC-trojanstego-2025
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- The complete bundle is frozen with a sorted exhaustive SHA-256 manifest before any
+  target-specific repository comparison.
+- Catalog neighbor identifiers and names are synthetic placeholders and may be mechanically
+  reconciled only after freeze.
+- Real repository history, shared source-manifest merge, framework merge, and alignment
+  merge are deferred until after freeze.
+- No semantic target prose, evidence rating, claims, examples, or detection logic
+  may change during mechanical integration without a new reviewed revision.
+attestation: I generated this packet from the neutral tuple, generic instructions,
+  and independently opened authoritative sources without accessing prohibited target
+  artifacts, histories, registries, conversations, or other agents' work; the bundle
+  is frozen before integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-resources-2026-07-28: SRC-mcp-resources-2026
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+    SRC-microsoft-securing-agents-2026: SRC-microsoft-tool-poisoning-2026-06-30
+    SRC-nist-sp800-53r5-1: SRC-nist-sp800-53r5.1
+  new_shared_source_records:
+  - SRC-trojanstego-2025
+  - SRC-agent-egress-monitor-2026
+  - SRC-hidden-plain-text-2025
+  - SRC-od-stega-2026
+  - SRC-breaking-provable-security-2026
+  - SRC-silent-egress-2026
+  - SRC-microsoft-indirect-prompt-injection-2025
+  - SRC-microsoft-ai-security-2025
+  - SRC-microsoft-prompt-abuse-2026
+  - SRC-mitre-t1027-003
+  - SRC-mitre-t1567
+  - SRC-llm-covert-channels-2024
+  - SRC-model-weight-exfil-2025
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0010
+  canonical_mitigations:
+  - SAF-M-4
+  - SAF-M-7
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-34
+  - SAF-M-49
+  - SAF-M-54
+  - SAF-M-72
+  canonical_neighbors:
+  - SAF-T1911
+  - SAF-T1102
+  attack_mappings:
+  - id: T1027.003
+    type: direct
+  - id: T1567
+    type: analogous
+  canonical_validation_proof:
+  - research/techniques/SAF-T1912/validation/canonical-validation.txt
+  status: integrated_and_validated

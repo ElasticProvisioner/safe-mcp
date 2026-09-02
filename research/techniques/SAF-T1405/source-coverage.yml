@@ -1,0 +1,187 @@
+version: 1
+technique_id: SAF-T1405
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of current MCP Tools specification and security best practices.
+        - Direct review of MITRE ATT&CK T1036.
+      material_changes:
+        - Fixed the per-server uniqueness and cross-server collision boundary.
+        - Classified ATT&CK T1036 as analogous rather than direct.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Nine exact NVD CVE API keyword searches covering MCP tool names, renaming, collision, confusion, poisoning, allowlists, spoofing, and masquerading.
+        - CISA KEV full-catalog filter for MCP and Model Context Protocol.
+        - Direct first-party security news pages for production incident candidates.
+      material_changes:
+        - Preserved a direct production-incident and direct renaming-vulnerability gap.
+        - Classified CVE-2026-46519 as an enabling execution-authorization vulnerability.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - arXiv API MCP tool-security and tool-name-obfuscation queries.
+        - Full review of MPMA, MCP Security Bench, semantic descriptor manipulation, ETDI, tool squatting, and MCP Safety Audit papers.
+      material_changes:
+        - Selected MPMA and MCP Security Bench as direct demonstrations.
+        - Set overall evidence status to demonstrated.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Protocol list-changed, identity-disambiguation, approval, and logging guidance.
+        - ETDI signed definition, hash, version, and reapproval proposal.
+        - MPMA scanner evaluation and semantic-defense effectiveness and false-positive results.
+      material_changes:
+        - Defined a deterministic provider-bound definition-drift analytic.
+        - Preserved first-seen deception and semantic-classification blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - MPMA malicious-majority result and scanner appendix.
+        - MCP Security Bench per-model NC-FE results and coupling limitation.
+        - Semantic descriptor study limitations and ETDI adoption challenges.
+      material_changes:
+        - Bounded the benchmark claim to the coupled NC-FE condition.
+        - Made severity conditional and retained defense false-positive and adoption limits.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: Model Context Protocol metadata spoofing"
+        - "NVD: MCP tool masquerading"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv: Model Context Protocol AND name collision"
+        - "arXiv: Model Context Protocol AND preference manipulation"
+      material_changes: []
+  rationale: >-
+    Protocol semantics, direct demonstrations, catalog and advisory coverage,
+    detection design, contrary results, defense limitations, and rights were
+    covered by direct authorities. The two final exact-query passes returned no
+    new qualifying source beyond the already reviewed MCP Security Bench and
+    MPMA papers and no additional NVD records, so further searching was unlikely
+    to change the contract or evidence classification.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-mpma-2025
+    - SRC-mcp-security-bench-2510.15994
+    - SRC-ghsa-cr22-wjx7-2w6m
+  no_qualifying_examples_rationale: >-
+    Three high-impact examples were selected, but only two are direct controlled
+    demonstrations and the advisory is merely enabling. No direct production
+    breach or direct renaming vulnerability qualified in the reviewed corpus;
+    that gap is explicit in the technique.
+  candidates:
+    - source_id: SRC-mpma-2025
+      identifier: MPMA controlled evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_evaluation_only
+      impact: Manipulated names and descriptions biased competitive tool selection across the reported test matrix.
+      remediation: The paper evaluates scanners and motivates semantic and provenance-aware defenses; no product patch applies.
+      selected: true
+      rationale: Directly manipulates the defining name and descriptor surfaces and reports selection outcomes.
+    - source_id: SRC-mcp-security-bench-2510.15994
+      identifier: MCP Security Bench NC-FE evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_evaluation_only
+      impact: A colliding tool name coupled with false-error response behavior produced measurable attack success in live MCP execution.
+      remediation: The paper evaluates MCIP and other defenses; no product patch applies.
+      selected: true
+      rationale: Directly tests name collision and provides a concrete end-to-end controlled execution, with coupling limitations stated.
+    - source_id: SRC-ghsa-cr22-wjx7-2w6m
+      identifier: CVE-2026-46519 / GHSA-cr22-wjx7-2w6m
+      relationship: enabling_vulnerability
+      exploitation_status: no_known_exploitation_identified_in_reviewed_sources
+      impact: A client knowing a filtered tool name could invoke it, with potential Kubernetes cluster impact bounded by the service account.
+      remediation: Upgrade mcp-server-kubernetes to 3.6.0 or later, which enforces the allowed set at tools/call.
+      selected: true
+      rationale: High-impact adjacent enforcement failure clarifies why name hiding is not authorization; it does not raise SAF-T1405 evidence status.
+    - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+      identifier: Semantic descriptor manipulation controlled evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_synthetic_evaluation_only
+      impact: Descriptor attacks produced unsafe invocation and the layered defense retained residual risk and false positives.
+      remediation: The study proposes semantic vetting, permission gating, signed manifests, and runtime monitoring.
+      selected: false
+      rationale: Useful corroboration and defense evidence, but less directly centered on renaming and lower priority than the two selected demonstrations.
+    - source_id: SRC-tool-squatting-2025
+      identifier: Securing MCP Tool Metadata conceptual architecture
+      relationship: rejected
+      exploitation_status: conceptual_only
+      impact: Describes potential deceptive registration and representation risks without an empirical exploit result.
+      remediation: Proposes verified registration, signed metadata, and audit logs.
+      selected: false
+      rationale: Conceptual and explicitly leaves empirical validation for future work.
+    - source_id: SRC-mcp-safety-audit-2025
+      identifier: MCP Safety Audit controlled assessment
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_evaluation_only
+      impact: Demonstrates malicious prompt and unsafe tool-capability risks in a controlled environment.
+      remediation: Proposes scanning and review of prompts and tool capabilities.
+      selected: false
+      rationale: Does not manipulate a tool name or identity descriptor as the defining mechanism.
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mpma-2025
+  - SRC-mcp-security-bench-2510.15994
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2025
+  - SRC-nvd-mcp-tool-identity-corpus-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+  - SRC-mitre-attack-t1036
+  - SRC-tool-squatting-2025
+  - SRC-mcp-safety-audit-2025
+  - SRC-mcp-security-best-practices-2026
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mpma-2025
+  - SRC-mcp-security-bench-2510.15994
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2025
+  - SRC-nvd-mcp-tool-identity-corpus-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+  - SRC-mitre-attack-t1036
+sources_rejected:
+  - source_id: SRC-tool-squatting-2025
+    reason: Conceptual architecture without empirical validation of the target behavior.
+  - source_id: SRC-mcp-safety-audit-2025
+    reason: Controlled evidence concerns malicious prompts and unsafe capabilities, not deceptive tool identity metadata.
+  - source_id: SRC-mcp-security-best-practices-2026
+    reason: The reviewed command-obfuscation and authorization guidance is authoritative but addresses local startup commands and OAuth boundaries rather than tool-name or descriptor manipulation.
+sources_blocked: []
+conflicts:
+  - issue: MPMA reports high attack success for direct name and description manipulation, but its malicious-majority experiment reports increased model caution and benign preference.
+    resolution: Report the high-effectiveness result with its tested competitive conditions and retain over-manipulation as contrary evidence.
+  - issue: MCP Security Bench reports an aggregate NC-FE result that combines two attack stages.
+    resolution: Attribute only the coupled 14.62 percent result and do not claim isolated downstream harm from renaming alone.
+  - issue: Semantic defenses reduce unsafe invocation but introduce false positives and residual unsafe outcomes.
+    resolution: Treat semantic classification as a supplemental control and keep the deterministic analytic focused on identity drift.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1405-C002
+    - SAF-T1405-C003
+    - SAF-T1405-C004
+  rationale: >-
+    Two independent controlled MCP studies directly change tool names or
+    descriptors and measure selection-linked outcomes, satisfying the complete
+    technique contract at demonstration level. No production incident was found,
+    so observed status is not justified.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

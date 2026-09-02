@@ -1,0 +1,473 @@
+version: 1
+technique_id: SAF-T1915
+claims:
+  - id: SAF-T1915-C001
+    statement: >-
+      FATF identifies chain-hopping, cross-chain bridges, decentralized exchanges,
+      mixers, and governance manipulation as techniques used to layer and commingle illicit funds.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fatf-defi-2026
+        support: direct
+        exact_locators:
+          - Executive Summary, paragraphs 2-3, PDF pages 3-4
+          - Section 4.1, paragraph 25, PDF page 17
+    corroboration: FATF's 2026 stablecoin report separately describes chain-hopping, cross-chain transfers, and DEX use by professional money launderers.
+    limitations:
+      - The report addresses DeFi generally and does not establish an agent-mediated incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C002
+    statement: >-
+      An adversary can in principle use an agent with delegated DeFi transaction
+      authority to compose bridge and DEX operations into a laundering sequence,
+      but the reviewed corpus does not document that complete agentic behavior in production.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fatf-defi-2026
+        support: direct
+        exact_locators:
+          - Section 4.1, paragraph 25, PDF page 17
+      - source_id: SRC-pace-defi-agents-2026
+        support: direct
+        exact_locators:
+          - Section 2.3, AI Agents in DeFi, PDF pages 2-3
+          - Section 3.1, System Model, PDF page 3
+      - source_id: SRC-sok-cross-chain-2026
+        support: corroborating
+        exact_locators:
+          - Section II.A, Cross-Chain Systems and Their Evidence, PDF pages 1-2
+    corroboration: Observed laundering mechanics and demonstrated agentic DeFi execution support separate premises; no source joins them into a documented production incident.
+    limitations:
+      - This is an explicit synthesis, not an observed or end-to-end demonstrated agentic laundering event.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        FATF documents the multi-hop financial behavior, while PACE demonstrates
+        agent-generated DeFi transactions; composing those capabilities is technically
+        supported but was not directly observed in the reviewed corpus.
+    status: validated
+
+  - id: SAF-T1915-C003
+    statement: >-
+      A contract bridge normally leaves source-chain and destination-chain evidence,
+      while a cross-ledger exchange may expose only ordinary deposits and withdrawals
+      linked by time, amount, address, or platform records.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sok-cross-chain-2026
+        support: direct
+        exact_locators:
+          - Section II.A, paragraphs describing smart-contract bridges and instant exchanges, PDF pages 1-2
+    corroboration: FATF describes bridges and cross-chain swaps as multi-chain tracing targets.
+    limitations:
+      - Specific event names and join keys vary by protocol and version.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C004
+    statement: >-
+      Professional laundering networks may fragment funds across wallets and route
+      them through DEXs, bridges, mixers, and swaps using rapid automated transactions
+      before consolidation and off-ramping.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fatf-defi-2026
+        support: direct
+        exact_locators:
+          - Section 4.1, paragraph 25, PDF page 17
+      - source_id: SRC-treasury-defi-2023
+        support: corroborating
+        exact_locators:
+          - Press release paragraphs beginning "Actors like" and "Our assessment finds", lines 334-340
+    corroboration: Treasury independently reports criminals and state-linked actors using DeFi services to transfer and launder illicit proceeds.
+    limitations:
+      - The sources describe typologies and observed populations, not a universal sequence.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C005
+    statement: >-
+      Controlled research demonstrates that an LLM-based agent can construct and
+      submit concrete swaps, approvals, and deposits under delegated DeFi authority.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-pace-defi-agents-2026
+        support: direct
+        exact_locators:
+          - Section 2.3, AI Agents in DeFi, PDF pages 2-3
+          - Section 5.2, DeFi Simulator, PDF page 6
+          - Section 6.2, Benchmark Task Suite, PDF pages 7-8
+    corroboration: The accompanying transaction model includes AMM swaps and an on-chain smart-account execution path.
+    limitations:
+      - The primary benchmark uses a simplified in-memory simulator and does not test a laundering workflow or bridge hop.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C006
+    statement: >-
+      In the 2025 Bybit incident, approximately $1.5 billion in stolen assets were
+      dispersed and converted through DEXs, cross-chain bridges, and a no-KYC swap service.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fbi-bybit-2025
+        support: direct
+        exact_locators:
+          - Alert I-022625-PSA, paragraphs 1-3 under the title and How You Can Help
+      - source_id: SRC-chainalysis-bybit-2025
+        support: direct
+        exact_locators:
+          - Details of the Bybit crypto hack, numbered steps 2-4
+          - Updated February 27, 2025 statement and Industry collaboration section
+    corroboration: FBI attributes the theft to DPRK and describes conversion and dispersion across multiple blockchains; Chainalysis details DEX and bridge use.
+    limitations:
+      - The incident was not agent-mediated, and some recovery figures were still changing when the sources were published.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C007
+    statement: >-
+      After the 2022 Ronin theft, Lazarus Group bridged ETH from Ethereum to BNB,
+      swapped it for USDD, and bridged the result to BitTorrent as part of repeated laundering transactions.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-chainalysis-ronin-2022
+        support: direct
+        exact_locators:
+          - How the Ronin Bridge was hacked and the stolen funds were laundered, paragraphs 1-8
+          - Chain-hopping example describing Ethereum, BNB, USDD, and BitTorrent
+    corroboration: The same source reports more than $600 million stolen and more than $30 million seized through coordinated tracing.
+    limitations:
+      - Chainalysis is a participant in the investigation and does not publish the underlying address graph in machine-readable form on the page.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C008
+    statement: >-
+      Funds from the 2023 Atomic Wallet incident moved through cross-chain bridges,
+      including Avalanche Bridge, to Bitcoin and later to Tron during a multi-phase laundering process.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-chainalysis-atomic-2024
+        support: direct
+        exact_locators:
+          - Case study: The DPRK's Atomic Wallet exploit, paragraphs describing phases one through four
+    corroboration: The source cites FBI attribution and provides phase-specific on-chain tracing observations.
+    limitations:
+      - The initial compromise method remained unclear, and some conversions through centralized services relied on trusted off-chain intelligence.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C009
+    statement: >-
+      FATF documents a Canadian case in which suspected drug-trafficking proceeds
+      were swapped from ETH into stablecoins on DEXs and layered through wallets before off-ramping.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fatf-stablecoins-2026
+        support: direct
+        exact_locators:
+          - Box 2, Cross-Border Drug Trafficking Proceeds Laundered via Stablecoins, PDF page 16
+    corroboration: Paragraph 39 on the same page describes professional use of chain-hopping, cross-chain transfers, and DEXs.
+    limitations:
+      - The case is anonymized and does not state that the described DEX swaps crossed a blockchain boundary.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C010
+    statement: >-
+      Public advisories document exploited bridge and smart-contract weaknesses as
+      sources of stolen funds, but those exploitation mechanisms are enabling or adjacent to laundering rather than laundering itself.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fbi-defi-2022
+        support: direct
+        exact_locators:
+          - Threat section, paragraphs and bullets describing flash loans, token-bridge signature verification, and oracle weaknesses
+    corroboration: Treasury's DeFi risk assessment separately distinguishes theft-enabling cybersecurity weaknesses from illicit-finance control gaps.
+    limitations:
+      - The FBI advisory anonymizes the affected products and does not assign CVE identifiers.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Classification as adjacent or enabling follows the technique contract because
+        the advisory's immediate objective is theft, not post-theft provenance obfuscation.
+    status: validated
+
+  - id: SAF-T1915-C011
+    statement: >-
+      Cross-chain matching can use transaction hashes, event identifiers, receiver,
+      token, amount, timestamp, contract ABI, platform records, and external entity or risk labels.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sok-cross-chain-2026
+        support: direct
+        exact_locators:
+          - Section II.A, evidence sources, PDF page 1
+          - Section III, identification methods, PDF pages 2-3
+          - Table II, Evidence Constraints in Cross-Chain Matching, PDF page 4
+    corroboration: FATF recommends multi-chain analytics capable of reconstructing bridge and smart-contract flows.
+    limitations:
+      - Field availability and semantics differ across bridges, chains, and off-chain services.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C012
+    statement: >-
+      Deterministic on-chain join identifiers provide stronger matching evidence than
+      heuristics based only on time, amount, token, and address.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sok-cross-chain-2026
+        support: direct
+        exact_locators:
+          - Section IV.A, Insight 1, PDF page 3
+          - Section IV.D, Insights 2-3, PDF pages 4-5
+    corroboration: The survey reports substantial matching-rate variation when dedicated withdrawal evidence is absent.
+    limitations:
+      - Even official platform records may be wrong, unavailable, or incomplete.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C013
+    statement: >-
+      Missing counterparts and time or value similarity alone are ambiguous because
+      incomplete collection, pooled settlement, user-timed claims, and ordinary transfers can produce the same observations.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sok-cross-chain-2026
+        support: direct
+        exact_locators:
+          - Section IV.B, field-constraint heuristic limitations, PDF page 4
+          - Section VI, missing counterparts and one-to-many matching, PDF pages 5-6
+    corroboration: FATF separately warns that pooled deposits and unsupported networks can reduce transparency and attribution.
+    limitations:
+      - The survey evaluates transaction matching, not this bundle's laundering classifier.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C014
+    statement: >-
+      Cross-chain bridges have substantial legitimate usage, so bridge or DEX activity
+      without risk provenance and sequence context is not a reliable laundering indicator.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-chainalysis-ronin-2022
+        support: direct
+        exact_locators:
+          - How the Ronin Bridge was hacked and the stolen funds were laundered, paragraph stating most bridge usage is legitimate
+      - source_id: SRC-fatf-defi-2026
+        support: corroborating
+        exact_locators:
+          - Section 1.1, paragraphs 3-4, PDF pages 4-5
+    corroboration: Both sources distinguish legitimate functionality from abuse.
+    limitations:
+      - The sources do not provide a universal numeric false-positive rate.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The detector design inference requires provenance and sequence context to reduce predictable legitimate lookalikes.
+    status: validated
+
+  - id: SAF-T1915-C015
+    statement: >-
+      Analytics may lose coverage on unsupported chains, private transfers, pooled contracts,
+      private-key transfers, or OTC conversion, limiting end-to-end attribution.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fatf-defi-2026
+        support: direct
+        exact_locators:
+          - Section 6.1, paragraphs 64-65, PDF page 37
+      - source_id: SRC-chainalysis-theft-2026
+        support: direct
+        exact_locators:
+          - The timeline of stolen fund laundering post-DPRK hacks, final limitation paragraph
+    corroboration: The sources independently identify data coverage and off-chain blind spots.
+    limitations:
+      - The relative importance of each blind spot varies by service and investigation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C016
+    statement: >-
+      Real-time multi-chain tracing can reconstruct flows through bridges and smart contracts,
+      while automated pattern detection can prioritize layering or peeling behavior for investigation.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fatf-defi-2026
+        support: direct
+        exact_locators:
+          - Section 6.1, paragraphs 63-65, PDF page 37
+      - source_id: SRC-fbi-defi-2022
+        support: corroborating
+        exact_locators:
+          - Recommendations to DeFi platforms, real-time analytics and incident-response bullets
+    corroboration: FBI recommends real-time analytics and incident response for DeFi platforms.
+    limitations:
+      - Neither source supplies validated operating thresholds for this technique.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C017
+    statement: >-
+      A deterministic transaction policy can constrain an agent using typed intents,
+      target and contract allowlists, simulation, validity windows, and execution-byte binding.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-pace-defi-agents-2026
+        support: direct
+        exact_locators:
+          - Section 1, architecture and contributions, PDF pages 1-2
+          - Sections 5.4-5.6, agent baselines and on-chain smart account, PDF pages 6-7
+          - Section 11, Conclusion, PDF pages 14-15
+    corroboration: The benchmark includes benign and adversarial tasks with deterministic expected decisions.
+    limitations:
+      - Reported safety is logic-level in a reproducible benchmark, not deployment-grade assurance.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C018
+    statement: >-
+      Per-transaction policy checks can miss a harmful multi-step sequence composed of individually policy-valid legs.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-pace-defi-agents-2026
+        support: direct
+        exact_locators:
+          - Section 10, Future Work, PDF page 14
+    corroboration: The authors identify multi-step policy-valid harmful composition as an open research target.
+    limitations:
+      - The paper does not quantify the frequency of this failure mode in production.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1915-C019
+    statement: >-
+      The potential consequence includes delayed recovery, broader dissipation across networks,
+      and conversion of stolen assets toward fiat, with severity driven by delegated value and speed.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fbi-bybit-2025
+        support: direct
+        exact_locators:
+          - Alert I-022625-PSA, conversion, dispersion, and expected further-laundering paragraphs
+      - source_id: SRC-fatf-defi-2026
+        support: corroborating
+        exact_locators:
+          - Section 4.1, paragraph 25, PDF page 17
+    corroboration: Production cases show dissipation at high value and FATF describes consolidation and off-ramping after layering.
+    limitations:
+      - The technique does not itself prove successful fiat cash-out or permanent loss.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Impact ratings synthesize observed outcomes with the delegated-authority conditions in scope.
+    status: validated
+
+  - id: SAF-T1915-C020
+    statement: >-
+      MITRE ATT&CK Financial Theft is an analogous mapping because it covers theft of
+      monetary resources including cryptocurrency, while this technique concerns post-theft laundering rather than the theft itself.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1657-2026
+        support: direct
+        exact_locators:
+          - Technique T1657, Description and metadata, version 1.2 modified 12 May 2026
+    corroboration: The ATT&CK page explicitly includes exploiting cryptocurrency networks as a financial-theft objective.
+    limitations:
+      - ATT&CK does not define cross-chain laundering as a separate technique.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is analogous and intentionally excludes a direct equivalence.
+    status: validated

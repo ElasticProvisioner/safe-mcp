@@ -1,0 +1,173 @@
+version: 1
+technique_id: SAF-T1913
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1913/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1913/technique-contract.yml
+  supports: Internal scope, name, tactic, generation mode, and completion contract.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1913/source-coverage.yml
+  supports: Search corpus, example ranking, exclusions, conflicts, evidence label,
+    and saturation record.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1913/quality-review.yml
+  supports: Review gates and recorded validation results.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1913/clean-room-attestation.yml
+  supports: Clean-room input boundary, independent queries, contamination status,
+    and isolated validation record.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1913/detection-rule.yml
+  supports: The repository's experimental correlation analytic.
+- id: LOCAL-detector
+  path: tests/SAF-T1913/detect_http_post_exfil.py
+  supports: Executable normalized-event detector used for representative validation.
+- id: LOCAL-detector-tests
+  path: tests/SAF-T1913/test_detection.py
+  supports: Positive, negative, boundary, malformed, normalization, and expected false-positive
+    assertions.
+- id: LOCAL-fixtures
+  path: tests/SAF-T1913/fixtures.jsonl
+  supports: Inert representative events with no raw sensitive data.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1913/validation/detection-test.txt
+  supports: Compact passing detector test output retained in the frozen handoff.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1913/validation/strict-validator.txt
+  supports: Compact isolated strict-validator output retained in the frozen handoff.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1913-X001
+  candidate: The exact HTTP POST Exfil behavior has occurred in a production MCP or
+    agentic-system incident.
+  origin: Required production-incident research pass.
+  attempted_searches:
+  - NVD Model Context Protocol keyword query and review of 77 returned records.
+  - CISA KEV catalog exact-ID and description review.
+  - Direct selected advisory and researcher-source review.
+  consulted_source_ids:
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-cve-34072
+  - SRC-aws-cve-2026-15643
+  reason: No reviewed source identifies all contract elements in a production event.
+  prohibited_publishable_text:
+  - HTTP POST Exfil has been observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X002
+  candidate: Invariant's controlled tool-poisoning experiment used the Streamable
+    HTTP transport.
+  origin: Transport classification of the closest demonstration.
+  attempted_searches:
+  - Complete direct review of the Invariant disclosure including experiment and authorship
+    sections.
+  - Review of the current and superseded MCP transport specifications.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-transports-2025-11-25
+  reason: The disclosure describes transmission through a tool parameter but does
+    not state the MCP transport.
+  prohibited_publishable_text:
+  - Invariant's experiment used Streamable HTTP
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X003
+  candidate: CVE-2025-49596 directly demonstrates HTTP POST Exfil.
+  origin: MCP vulnerability coverage pass.
+  attempted_searches:
+  - Complete direct review of the CVE Program record and its affected and reference
+    fields.
+  consulted_source_ids:
+  - SRC-cve-2025-49596
+  reason: The record establishes unauthenticated command execution in MCP Inspector,
+    not sensitive tools/call arguments in a POST body.
+  prohibited_publishable_text:
+  - CVE-2025-49596 is HTTP POST Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X004
+  candidate: CVE-2025-6514 directly demonstrates HTTP POST Exfil.
+  origin: MCP vulnerability coverage pass.
+  attempted_searches:
+  - Complete direct review of the CVE Program record and its affected and reference
+    fields.
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  reason: The record establishes authorization-URL command injection, not the bounded
+    data-transfer mechanism.
+  prohibited_publishable_text:
+  - CVE-2025-6514 is HTTP POST Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X005
+  candidate: Absence from CISA KEV proves that the selected vulnerabilities have not
+    been exploited.
+  origin: Active-exploitation status check.
+  attempted_searches:
+  - Exact identifier checks in CISA KEV catalog version 2026.09.01.
+  - Review of CISA ADP SSVC fields in the CVE records.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-34072
+  - SRC-cve-2026-15643
+  reason: KEV is a scoped catalog; non-membership cannot prove no exploitation.
+  prohibited_publishable_text:
+  - CISA confirms these vulnerabilities are not exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X006
+  candidate: Standard OpenTelemetry HTTP spans record sensitive tools/call argument
+    values.
+  origin: Detection telemetry design.
+  attempted_searches:
+  - Complete HTTP client-span attribute table review.
+  - Review of current MCP mirrored request headers.
+  consulted_source_ids:
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mcp-streamable-http-2026-07-28
+  reason: The standards provide method, destination, URL, status, and optional size
+    metadata, not standardized sensitive-content labels.
+  prohibited_publishable_text:
+  - OpenTelemetry records sensitive tools/call arguments
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X007
+  candidate: Slack link-unfurl exfiltration is the same mechanism as HTTP POST Exfil.
+  origin: Selected-example classification review.
+  attempted_searches:
+  - Complete original disclosure and CVE Program record review.
+  - Comparison to current MCP Streamable HTTP request-body rules.
+  consulted_source_ids:
+  - SRC-cve-34072
+  - SRC-cve-2025-34072
+  - SRC-mcp-streamable-http-2026-07-28
+  reason: Slack preview services fetch attacker-crafted URIs; the data is not carried
+    as sensitive tools/call content in the MCP POST body.
+  prohibited_publishable_text:
+  - link unfurling is HTTP POST Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1913-X008
+  candidate: A current affected-installation count can be derived from a 2025 weekly
+    package-download observation.
+  origin: Original Slack MCP disclosure context.
+  attempted_searches:
+  - Review of the disclosure's dated package-usage statement and its limitations.
+  consulted_source_ids:
+  - SRC-cve-34072
+  reason: Weekly downloads do not establish unique active installations, current prevalence,
+    or exposed configurations.
+  prohibited_publishable_text:
+  - tens of thousands of vulnerable installations
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

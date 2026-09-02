@@ -1,0 +1,141 @@
+version: 1
+technique_id: SAF-T1204
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1204
+  inherited_context: false
+target:
+  id: SAF-T1204
+  neutral_name: Context Memory Implant
+allowed_inputs:
+- User seed containing only target ID, neutral name, tactic, clean-room constraints,
+  and required deliverables.
+- The author-saf-technique skill and its methodology, breach-and-vulnerability, clean-room,
+  and readable-trace references.
+- Repository-wide techniques/TEMPLATE.md, research/README.md, blank technique packet
+  schemas, and current strict validator.
+- Independently discovered and directly reviewed standards-body, government, academic-publisher,
+  first-party vendor, and first-party researcher sources.
+- Minimal synthetic framework, neighbor, mitigation, source-registry, alignment, and
+  history records created only for isolated validation.
+prohibited_inputs:
+- techniques/SAF-T1204/README.md in the working repository or any historical copy.
+- research/techniques/SAF-T1204/ in the working repository or any historical copy.
+- techniques/SAF-T1204/detection-rule.yml in the working repository or any historical
+  copy.
+- Git history, diffs, blame, stashes, branches, commits, or review material exposing
+  prior target content.
+- Any pull request, issue, catalog description, prior bundle, cache, or SAF/SAFE site
+  or repository containing prior target content.
+- Any previous conversation, summary, or inherited agent context containing prior
+  technique conclusions, wording, examples, or sources.
+- Shared source, framework, and alignment registries before freeze.
+- GitHub search, unrestricted discovery search, impact-classification-examples.md,
+  and any result containing SAF-T1204 before substantive review.
+independent_research:
+  searches:
+  - Direct open of versioned MCP Tools and Resources specifications.
+  - site:arxiv.org LLM agent memory injection persistent memory poisoning attack
+  - site:proceedings.neurips.cc agent memory poisoning AgentPoison
+  - site:aclanthology.org agent memory injection attack persistent
+  - site:usenix.org LLM agent memory poisoning prompt injection
+  - site:nvd.nist.gov memory poisoning LLM
+  - site:nvd.nist.gov prompt injection agent memory
+  - site:cve.org memory poisoning AI agent
+  - site:cisa.gov AI agent prompt injection memory
+  - site:microsoft.com/security/blog memory poisoning AI agent incident
+  - site:security.googleblog.com agent memory poisoning incident
+  - site:anthropic.com/news agent memory prompt injection incident
+  - site:openai.com/index memory prompt injection security incident
+  - site:learn.microsoft.com AI Memory Context Poisoning audit version rollback
+  - site:docs.langchain.com shared memory prompt injection namespace read-only
+  - site:arxiv.org memory poisoning realistic pre-existing memory defense
+  - site:proceedings.neurips.cc persistent memory prompt injection agent 2026
+  - site:aclanthology.org query-only memory injection agent
+  - site:nvd.nist.gov/vuln/detail context poisoning agent
+  opened_source_ids:
+  - SRC-arxiv-memory-defense-2026
+  - SRC-ghsa-openclaw-57r2
+  - SRC-langchain-deepagents-production
+  - SRC-langchain-long-term-memory
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1546
+  - SRC-ms-guarding-ai-memory-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-redteam-update-2026
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-neurips-agentpoison-2024
+  - SRC-neurips-minja-2025
+  - SRC-nvd-cve-2026-44999
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect the existing target README, research packet, detection assets, tests,
+  git history, diffs, PRs, catalog descriptions, or shared registries while integrating.
+- Replace the target atomically from this frozen bundle and reconcile only stable
+  source IDs, framework joins, synthetic neighbor and mitigation IDs, paths, and the
+  history SHA.
+- Do not use prior prose, citations, examples, diffs, or omissions to revise this
+  bundle.
+- Verify FREEZE.sha256 before any mechanical integration action.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1204/mock-repository
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1204
+  result: PASS SAF-T1204
+  deliberately_deferred_real_repository_joins:
+  - Stable shared source-ID collision reconciliation.
+  - Replacement of SAF-T1102 through SAF-T2106 synthetic neighbors.
+  - Replacement of SAF-M-69 through SAF-M-32 synthetic mitigations.
+  - Replacement of synthetic repository-history SHA.
+attestation: I attest that this bundle was independently derived from the allowed
+  inputs; no prior SAF-T1204 artifact or inherited technique content was accessed;
+  the draft and evidence set were fixed before any integration; and no integration
+  or shared-registry reconciliation was performed.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping: {}
+  new_shared_source_records:
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-resources-2025-06-18
+  - SRC-langchain-long-term-memory
+  - SRC-langchain-deepagents-production
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-guarding-ai-memory-2026
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-ms-redteam-update-2026
+  - SRC-neurips-minja-2025
+  - SRC-neurips-agentpoison-2024
+  - SRC-arxiv-memory-defense-2026
+  - SRC-mitre-attack-t1546
+  - SRC-ghsa-openclaw-57r2
+  - SRC-nvd-cve-2026-44999
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-5
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-30
+  - SAF-M-32
+  - SAF-M-51
+  - SAF-M-69
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: SAF-T2106
+    SAF-T9003: omitted_no_exact_catalog_neighbor
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-69
+    SAF-M-9002: SAF-M-29
+    SAF-M-9003: SAF-M-30
+    SAF-M-9004: SAF-M-32
+  status: integrated_and_repository_validated

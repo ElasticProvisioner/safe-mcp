@@ -1,0 +1,157 @@
+version: 1
+technique_id: SAF-T1309
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1309/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1309/technique-contract.yml
+  supports: Internal scope, name, tactic, completion metadata, and synthetic-neighbor
+    declarations.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1309/quality-review.yml
+  supports: Validation commands, results, review date, gate states, and feasibility-waiver
+    status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1309/detection-rule.yml
+  supports: The repository's explicitly labeled experimental detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1309/test_detection_rule.py
+  supports: Deterministic evaluator for positive, negative, boundary, malformed, and
+    expected false-positive cases.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1309/test-logs.json
+  supports: Synthetic non-deployable representative test events and expected outcomes.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1309/integration/integration-notes.yml
+  supports: Declared synthetic neighbor IDs and mechanical post-freeze reconciliation
+    constraints.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1309/validation/detection-test-output.txt
+  supports: Isolated and integrated deterministic detection-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1309/validation/strict-validator-output.txt
+  supports: Isolated and integrated strict-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1309-X001
+  candidate: A confirmed production breach demonstrates the complete technique.
+  origin: Required production-incident research pass.
+  attempted_searches:
+  - Exact selected and adjacent CVE exploitation fields in the CVE Program API.
+  - Exact selected and adjacent CVE membership in CISA KEV catalog version 2026.09.01.
+  - Directly reviewed selected advisories and researcher disclosures for production-incident
+    language.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-54135
+  - SRC-cve-2025-53773
+  - SRC-agentdojo-2406.13352v3
+  reason: The reviewed sources establish demonstrations and vulnerabilities but not
+    a qualifying production incident.
+  prohibited_publishable_text:
+  - confirmed production breach demonstrates this technique
+  - observed production compromise by SAF-T1309
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X002
+  candidate: CVE-2025-54136 is a direct prompt-manipulation instance.
+  origin: Exact CVE and Cursor advisory review.
+  attempted_searches:
+  - Direct CVE-2025-54136 CNA record review.
+  - Exact GHSA-24mc-g4xr-4395 opened after CNA provenance.
+  consulted_source_ids:
+  - SRC-cve-2025-54136
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  reason: The described initiating mechanism is direct replacement of an approved
+    MCP configuration by a collaborator or local writer, not natural-language prompt
+    manipulation.
+  prohibited_publishable_text:
+  - CVE-2025-54136 is prompt manipulation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X003
+  candidate: CVE-2025-6514 demonstrates prompt manipulation of an MCP client.
+  origin: Exact CVE and JFrog advisory review.
+  attempted_searches:
+  - Direct CVE-2025-6514 CNA record review.
+  - Direct JFSA-2025-001290844 review from the CNA reference.
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  reason: The described mechanism is a crafted authorization URL interpreted by a
+    shell, not language-model control-flow manipulation.
+  prohibited_publishable_text:
+  - CVE-2025-6514 is a prompt injection vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X004
+  candidate: CVE-2025-32711 establishes privileged tool invocation.
+  origin: Exact Microsoft CNA record review.
+  attempted_searches:
+  - Direct CVE-2025-32711 CNA record review.
+  - Direct Microsoft vendor-advisory URL open from the CNA record.
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  reason: The CNA record establishes AI command injection and information disclosure
+    but does not expose evidence of the defining privileged tool invocation.
+  prohibited_publishable_text:
+  - EchoLeak proves privileged tool invocation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X005
+  candidate: The example analytic accurately detects prompt-driven privileged invocation
+    across products.
+  origin: Detection-design pass.
+  attempted_searches:
+  - Direct Microsoft Prompt Shields limitations review.
+  - AgentDojo prompt-injection detector and tool-filter evaluation review.
+  - MCP tool audit and confirmation guidance review.
+  consulted_source_ids:
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-mcp-tools-2026-07-28
+  reason: No reviewed source evaluates this specific cross-product correlation; only
+    deterministic synthetic functional tests are available.
+  prohibited_publishable_text:
+  - reliably detects all prompt-driven tool abuse
+  - proven production detection accuracy
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X006
+  candidate: Five minutes is a universal correlation window.
+  origin: Synthetic analytic design.
+  attempted_searches:
+  - AgentDojo execution-flow and evaluation review.
+  - MCP tool invocation and logging guidance review.
+  consulted_source_ids:
+  - SRC-agentdojo-2406.13352v3
+  - SRC-mcp-tools-2026-07-28
+  reason: No source establishes a universal window; five minutes is an explicit tunable
+    example boundary.
+  prohibited_publishable_text:
+  - five minutes is the correct window for every agent
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1309-X007
+  candidate: Specific existing SAF neighbor and mitigation IDs are correct.
+  origin: Framework-reconciliation pass under clean-room restrictions.
+  attempted_searches:
+  - No target catalog or shared registry access was permitted before freeze.
+  - Mechanistic neighbor boundaries were derived only from direct external authorities.
+  consulted_source_ids:
+  - SRC-mcp-security-2026-07-28
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-jfsa-2025-6514
+  reason: Real repository joins cannot be verified without prohibited pre-freeze registry
+    access; synthetic placeholders are declared for mechanical integration.
+  prohibited_publishable_text:
+  - SAF-T1102 is the canonical neighbor
+  - SAF-T1302 is the canonical neighbor
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,229 @@
+version: 1
+technique_id: SAF-T2104
+claims:
+  - id: SAF-T2104-C001
+    statement: MCP tools are model-controlled capabilities described by schemas and invoked through tools/call with a name and arguments.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tools/User Interaction Model, lines 74-90", "Calling Tools, lines 173-203", "Tool schema, lines 234-254"]
+    corroboration: The specification itself is authoritative for protocol behavior.
+    limitations: [The protocol definition does not establish that any particular deployment exposes a financial tool.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C002
+    statement: The MCP tools specification calls for human confirmation, visible tool inputs, result validation, timeouts, and usage logging around sensitive tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Security Considerations, lines 546-557", "Tools/User Interaction Model, lines 80-90"]
+    corroboration: Microsoft financial-action guidance independently recommends human checkpoints and monitoring.
+    limitations: [These are protocol safety recommendations rather than an enforcement guarantee.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C003
+    statement: MCP authorization is optional, but when used the specification requires authorization on every request and recommends least-privilege scope selection and resource indicators.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Purpose and requirements, lines 107-120", "Scope selection, lines 311-317", "Resource indicators, lines 329-356", "Authorization on every request, lines 361-376"]
+    corroboration: NCSC and Microsoft guidance independently recommend least privilege for agents.
+    limitations: [Optional authorization means compliant deployments can use a different authorization mechanism or none at this layer.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C004
+    statement: OAuth Rich Authorization Requests can bind payment authorization to action type, amount, currency, creditor, account, and remittance information.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-oauth-rar-rfc9396
+        support: direct
+        exact_locators: ["Section 2 and Figure 2, lines 202-234", "Figure 3, lines 235-274", "Appendix A.2, lines 1147-1180"]
+    corroboration: Microsoft tool-binding guidance recommends downstream authorization checks for high-impact actions.
+    limitations: [RFC 9396 is a general OAuth extension and does not itself prescribe an MCP financial connector.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C005
+    statement: Under this contract, adversarial influence achieves a fraudulent transaction when it produces a value-bearing action materially outside bound authorization and the transaction system accepts that action.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-debenedetti-et-al-agentdojo
+        support: direct
+        exact_locators: ["Task-suite design and banking injection goal, lines 132-183", "Targeted ASR and environment-state evaluation, lines 193-220"]
+      - source_id: SRC-art-2507.20526
+        support: direct
+        exact_locators: ["Challenge setup and tool actions, lines 74-137", "Appendix A.2 PharmaAgent transaction goal, lines 342-448"]
+      - source_id: SRC-oauth-rar-rfc9396
+        support: context
+        exact_locators: ["Section 2 and Figure 2, lines 202-234"]
+    corroboration: Two independent controlled benchmarks demonstrate the end-to-end mechanism in different financial workflows.
+    limitations: [This is a framework boundary inferred from controlled evidence and authorization semantics, not a claim of a known production incident.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources establish adversarially induced financial actions and transaction-bound authorization separately; the claim defines the minimum joint boundary for classification.
+    status: validated
+  - id: SAF-T2104-C006
+    statement: AgentDojo directly demonstrated a banking injection objective to send the maximum possible money to an attacker account and measured success from the resulting environment state.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-debenedetti-et-al-agentdojo
+        support: direct
+        exact_locators: ["Table 1 banking-suite injection target, lines 163-183", "Targeted ASR definition and security checks, lines 193-220"]
+    corroboration: ART independently demonstrates illicit financial actions in a separate sandboxed tool environment.
+    limitations: [The banking environment and attacker account were controlled benchmark artifacts, not a production bank incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C007
+    statement: The ART benchmark directly demonstrated illicit financial behavior in sandboxed tool environments, including an adversarial goal to sell a regulated product at an unauthorized price and quantity.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-art-2507.20526
+        support: direct
+        exact_locators: ["Abstract and benchmark summary, lines 56-79", "Attack results, lines 85-137", "Appendix A.2 PharmaAgent goal and sell_drug tool, lines 342-448"]
+    corroboration: AgentDojo independently demonstrates an attacker-directed bank transfer objective.
+    limitations: [The evaluation was sandboxed and does not establish a production sale or loss.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C008
+    statement: AISI's reported unsanctioned agent behavior occurred during controlled cyber testing, caused no real-world harm, and did not establish a fraudulent transaction.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-aisi-incident-2026
+        support: direct
+        exact_locators: ["Incident scope and outcome, lines 13-30", "Observed unsanctioned actions, lines 32-68"]
+    corroboration: The report explicitly distinguishes controlled testing effects from real-world harm.
+    limitations: [This is an adjacent agent incident, not evidence that SAF-T2104 occurred in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C009
+    statement: Two disclosed Microsoft Semantic Kernel flaws demonstrated input-influenced execution paths but did not establish a financial transaction.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-microsoft-semantic-kernel-cves-2026
+        support: direct
+        exact_locators: ["CVE summary and fixes, lines 45-64", "CVE-2026-26030, lines 65-146", "CVE-2026-25592, lines 154-223"]
+    corroboration: The vendor's disclosure documents both reproduction and fixed versions.
+    limitations: [The flaws are enabling execution vulnerabilities; the report does not show an economic action or in-the-wild exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C010
+    statement: NCSC described an attacker-directed bank transfer only as a hypothetical prompt-injection scenario.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: hypothesized
+    sources:
+      - source_id: SRC-ncsc-llm-caution-2023
+        support: direct
+        exact_locators: ["Hypothetical bank-assistant scenario and caution, lines 42-49"]
+    corroboration: Later controlled benchmarks demonstrate related banking behavior, but do not turn the NCSC scenario into an incident.
+    limitations: [The source explicitly frames the transfer as easy to imagine rather than observed or demonstrated.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C011
+    statement: Agent audit records should identify the agent, role, scope, resource, action, delegation context, time, and correlation identifier.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: direct
+        exact_locators: ["Least-privilege and auditability controls, lines 49-81"]
+    corroboration: MITRE independently recommends monitoring financial-system and SaaS transaction activity.
+    limitations: [The source is vendor guidance and does not guarantee that every agent platform exposes all fields.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C012
+    statement: High-impact financial actions warrant runtime authorization checks, human checkpoints, constrained identities, and anomaly monitoring.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-agent-identity-2026
+        support: direct
+        exact_locators: ["Identity, tool binding, step-up approval, and downstream authorization, lines 49-81"]
+      - source_id: SRC-microsoft-agent-security-2026
+        support: corroborating
+        exact_locators: ["Layered guardrails, identity, runtime checks, financial checkpoints, and monitoring, lines 166-218"]
+    corroboration: Two independently authored Microsoft security guidance sources align on the controls.
+    limitations: [The sources provide defensive guidance rather than measured efficacy for this exact analytic.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C013
+    statement: NCSC recommends bounded pilots, least privilege, limits on agent action scope, short-lived credentials, visibility, and human accountability.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ncsc-agentic-guidance-2026
+        support: direct
+        exact_locators: ["PDF pages 1-2, lines 27-43", "PDF page 2, lines 44-58"]
+    corroboration: Microsoft identity guidance independently recommends distinct identities, scoped roles, and revocation tests.
+    limitations: [The guidance is system-level and does not define transaction-field normalization.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C014
+    statement: Controlled benchmark attack success varies by model and defense, with nonzero intermediate and end-to-end success showing that behavior-only controls are incomplete.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-debenedetti-et-al-agentdojo
+        support: direct
+        exact_locators: ["Abstract and defense results, lines 89-115", "Evaluation metrics, lines 193-220"]
+      - source_id: SRC-wasp-2504.18575
+        support: corroborating
+        exact_locators: ["Abstract and reported intermediate/end-to-end success, lines 85-120", "Threat model and method, lines 121-176", "Results, lines 181-212"]
+    corroboration: The two independent benchmarks report nonzero success under different environments and defenses.
+    limitations: [Benchmark rates do not predict the rate of production fraudulent transactions and may change with models and tool designs.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2104-C015
+    statement: MITRE ATT&CK Financial Theft includes unauthorized fund transfers and recommends independent payment approval and anomaly monitoring in financial systems.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1657-2026
+        support: direct
+        exact_locators: ["Definition, metadata, and contributors, lines 15-44", "Mitigations and detection strategy, lines 79-91"]
+    corroboration: The technique objective and controls align with the payment-authorization and monitoring sources.
+    limitations: [ATT&CK T1657 is broader than agent-mediated fraudulent transactions and includes extortion and other financial theft.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The direct ATT&CK mapping is narrowed by SAF-T2104's agentic authorization boundary.
+    status: validated

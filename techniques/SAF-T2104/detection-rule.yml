@@ -1,0 +1,69 @@
+title: SAF-T2104 Financial Transaction Authorization Mismatch
+id: 3c7e1cf4-46e8-5b10-8f35-210400000001
+status: test
+description: >-
+  Detects a value-bearing agent or MCP tool event that lacks a current approved
+  authorization or whose normalized transaction fields differ from that authorization.
+author: Independent SAF clean-room author
+date: 2026-09-02
+logsource:
+  category: transaction
+  product: mcp_or_agentic_financial_connector
+  service: tool_audit
+detection:
+  financial_action:
+    action: [payment.initiate, purchase.commit, refund.issue, sale.commit, trade.submit, transfer.submit]
+  authorization_failure:
+    reason: [approval_missing, approval_not_approved, approval_time_invalid, binding_mismatch, malformed_event]
+  condition: financial_action and authorization_failure
+fields:
+  - timestamp
+  - agent_id
+  - on_behalf_of
+  - correlation_id
+  - tool_name
+  - action
+  - amount
+  - currency
+  - destination
+  - approval.state
+  - approval.issued_at
+  - approval.expires_at
+  - approval.tool_name
+  - approval.action
+  - approval.amount
+  - approval.currency
+  - approval.destination
+falsepositives:
+  - Legitimate recurring or batch transactions authorized by an external standing-order system when the audit event omits per-call approval metadata.
+level: high
+tags: [saf.t2104, attack.impact, attack.t1657]
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T2104-C004, SAF-T2104-C012]
+  telemetry_claim_ids: [SAF-T2104-C011, SAF-T2104-C015]
+  limitation_claim_ids: [SAF-T2104-C014]
+  validation_artifacts:
+    - tests/SAF-T2104/test_detection_rule.py
+    - tests/SAF-T2104/fixtures.json
+    - research/techniques/SAF-T2104/validation/detection-test.txt
+    - research/techniques/SAF-T2104/validation/canonical-validation.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T2104-C011, SAF-T2104-C015]
+      rationale: Correlated agent, approval, tool, and financial-system audit events provide the required boundary telemetry.
+    financial_action:
+      claim_ids: [SAF-T2104-C005, SAF-T2104-C015]
+      rationale: The selector limits evaluation to value-bearing action classes within the contract.
+    authorization_failure:
+      claim_ids: [SAF-T2104-C004, SAF-T2104-C012]
+      rationale: Missing, stale, unapproved, or mismatched approval is the defining detectable authorization failure.
+    condition:
+      claim_ids: [SAF-T2104-C004, SAF-T2104-C005]
+      rationale: Requiring both a financial action and authorization failure prevents non-financial events from matching.
+    fields:
+      claim_ids: [SAF-T2104-C004, SAF-T2104-C011]
+      rationale: These fields bind actor, action, economic terms, beneficiary, time, and correlation context.
+    falsepositives:
+      claim_ids: [SAF-T2104-C011, SAF-T2104-C014]
+      rationale: Approval evidence may exist outside the observed event, and benchmark behavior does not establish intent by itself.

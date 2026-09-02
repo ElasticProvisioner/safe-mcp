@@ -1,0 +1,86 @@
+version: 1
+technique_id: SAF-T1003
+name: Malicious MCP-Server Distribution
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0001
+adversary_objective: Cause a user, client, administrator, or automated process to
+  acquire and activate an attacker-controlled MCP server through an expected discovery
+  or software-delivery path.
+scope:
+  security_boundary: The trust boundary between an MCP server discovery or distribution
+    channel and the consumer environment that installs, configures, or activates the
+    referenced server artifact or endpoint.
+  in_scope:
+  - Initial publication or continued delivery of an intentionally malicious MCP server
+    artifact, endpoint, or installation configuration.
+  - Delivery through package registries, MCP registries or marketplaces, release locations,
+    remote endpoints, direct configurations, mirrors, or caches.
+  - Admission, acquisition, activation, and first-run detection and response.
+  out_of_scope:
+  - Vulnerable but non-malicious servers absent evidence of adversarial distribution.
+  - Impersonation, persuasion, update-path hijack, or post-activation payload effects
+    when one of those is the defining behavior.
+  affected_components:
+  - MCP registry or marketplace
+  - Package registry, mirror, or cache
+  - MCP host or client
+  - Local server process or remote server endpoint
+nearest_neighbors:
+- technique_id: SAF-T1002
+  distinction: Broader supply-chain behavior; SAF-T1003 is MCP-server-specific and
+    centers on malicious delivery.
+- technique_id: SAF-T1004
+  distinction: Deceptive identity is defining for the neighbor but is not required
+    for SAF-T1003.
+- technique_id: SAF-T1006
+  distinction: Persuasion is defining for the neighbor; distribution can occur without
+    a documented persuasion step.
+- technique_id: SAF-T1201
+  distinction: A trusted-to-malicious behavioral transition is defining for the neighbor;
+    SAF-T1003 describes delivery of the malicious release.
+- technique_id: SAF-T1203
+  distinction: The neighbor describes malicious artifact state; SAF-T1003 describes
+    delivery to consumers.
+- technique_id: SAF-T1207
+  distinction: Update-path compromise is defining for the neighbor; SAF-T1003 does
+    not require mechanism hijack.
+required_evidence:
+- Establish MCP registry, package, and installation boundaries from official protocol
+  or registry sources.
+- Establish a directly observed malicious MCP-server distribution example or explicitly
+  record the evidence gap.
+- Classify vulnerabilities and demonstrations as direct, enabling, adjacent, analogous,
+  or rejected.
+- Establish detector signals, false positives, limitations, and defensive controls
+  from reviewed sources.
+- Record two consecutive no-change saturation passes.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP client configuration, approval, installation, update, and activation events
+    with server and correlation identifiers.
+  - Resolved source, package or artifact version, digest, signature, provenance, and
+    publisher-transition status.
+  - First-run process creation and network-flow indicators joined to the acquisition
+    event.
+safe_example_constraints:
+- Use only synthetic identifiers, inert events, and non-executing fixtures.
+- Do not publish live callback indicators, exploit payloads, destructive commands,
+  or credentials.
+- Include only the detail needed to explain and validate the detection boundary.
+completion_evidence:
+- Every substantive publishable unit uses canonical hidden_html_v1 trace comments
+  or a declared repository artifact link.
+- All claims use full SAF-T1003-CNNN identifiers and reviewed canonical source records
+  with exact locators.
+- Unselected leads are classified and omitted in the traceability ledger.
+- Five research passes and two consecutive no-change saturation passes are recorded.
+- Deterministic positive, negative, boundary, and expected-false-positive tests pass.
+- Rights, clean-room, and quality reviews pass in an isolated mock repository; only
+  real registry joins and history remain deferred.

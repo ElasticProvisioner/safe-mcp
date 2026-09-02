@@ -1,0 +1,88 @@
+version: 1
+technique_id: SAF-T1705
+prepared_on: "2026-09-02"
+integration_mode: mechanical_post_freeze_only
+
+path_joins:
+  - {bundle_path: techniques/SAF-T1705/, destination: techniques/SAF-T1705/, action: replace target directory without reading prior content}
+  - {bundle_path: research/techniques/SAF-T1705/, destination: research/techniques/SAF-T1705/, action: replace target packet without reading prior content}
+  - {bundle_path: tests/SAF-T1705/, destination: tests/SAF-T1705/, action: install deterministic detection tests}
+  - {bundle_path: source-manifest-fragment.yml, destination: research/source-manifest.yml, action: merge canonical source records after source-ID collision review}
+  - {bundle_path: framework-fragment.yml, destination: research/framework-model.yml, action: merge canonical technique record after neighbor reconciliation}
+  - {bundle_path: alignment-fragment.yml, destination: research/alignment-ledger.yml, action: merge alignment issues and resolve mechanical joins}
+
+synthetic_or_unresolved_joins:
+  tactics:
+    - id: ATK-TA0008
+      status: requester_assigned_not_read_from_shared_registry
+      integration_action: Confirm the supplied Lateral Movement tactic exists and preserve the assignment; stop if the shared registry contradicts it.
+  neighbors:
+    - id: SAF-T9001
+      role: synthetic direct-instruction-injection neighbor
+      integration_action: Replace with the reviewed canonical direct-injection neighbor and update the contract, README, framework record, and reciprocal link mechanically.
+    - id: SAF-T9002
+      role: synthetic unsafe-tool-result-consumption neighbor
+      integration_action: Replace with the reviewed canonical tool-result neighbor and update the contract, README, framework record, and reciprocal link mechanically.
+  mitigations:
+    - status: none_embedded
+      integration_action: Link existing canonical mitigations only after verifying that their documented controls match the frozen prevention and detection statements; do not change claims.
+  history:
+    - synthetic_sha: "1111111111111111111111111111111111111111"
+      integration_action: Replace with an honest nonzero repository commit SHA supporting the integrated version history.
+  framework:
+    - status: ATLAS mapping omitted
+      integration_action: Do not add an ATLAS mapping unless the exact current official authority is directly reviewed; a material mapping change requires re-review.
+
+source_id_joins:
+  collision_policy: Preserve equivalent canonical records; otherwise rename the incoming ID consistently across claims, coverage, rights, README traces, and references without changing source meaning.
+  ids:
+    - SRC-a2a-spec
+    - SRC-aiid-snapshot-20260831
+    - SRC-cai-zhang-hei-child-inherits
+    - SRC-cve-2025-32711
+    - SRC-debenedetti-et-al-agentdojo
+    - SRC-ghsa-v7px
+    - SRC-gu-agent-smith
+    - SRC-hossain-et-al-channelguard
+    - SRC-jfrog-cve-2025-6514
+    - SRC-lee-tiwari-prompt-infection
+    - SRC-mcp-architecture
+    - SRC-mcp-security
+    - SRC-mitre-atlas-aml-t0051-shell
+    - SRC-mitre-attck-t1072
+    - SRC-msrc-cve-2025-32711-shell
+    - SRC-naik-et-al-omni-leak
+    - SRC-nist-ai-600-1
+    - SRC-nvd-catalog-20260902
+    - SRC-oligo-cve-2025-49596
+    - SRC-triedman-jha-shmatikov-mas-hijacking
+    - SRC-wang-planflip
+    - SRC-zhan-et-al-injecagent
+
+validation:
+  detector: "PASS: 7/7"
+  strict_isolated_validator: "PASS SAF-T1705"
+  source_acquisition_corpus_in_bundle: false
+  source_corpus_hash_proof: validation/source-corpus.sha256
+
+material_research_gaps:
+  - No qualifying production incident or direct disclosed vulnerability was identified in the reviewed authority corpora.
+  - The official ATLAS technique page was not reviewable, so no ATLAS mapping is included.
+  - Detection effectiveness is established only for seven synthetic correlation fixtures, not a production telemetry corpus.
+  - Selected demonstrations are controlled studies with model, framework, objective, and configuration limits.
+
+integration_stop_conditions:
+  - Any need to inspect old SAF-T1705 prose or citations to revise the frozen draft.
+  - Any change to evidence status, selected examples, claim meaning, source support, detection logic, or mitigation meaning.
+  - Any unresolved high-severity framework contradiction or source-rights issue.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1102, SAF-T1701, SAF-T1702]
+  canonical_mitigations: [SAF-M-1, SAF-M-5, SAF-M-9, SAF-M-12, SAF-M-21, SAF-M-22, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+  attack_mapping: {id: T1072, type: analogous}
+  atlas_mapping: omitted_pending_direct_authority
+  validation_proof:
+    - research/techniques/SAF-T1705/validation/detection-tests.txt
+    - research/techniques/SAF-T1705/validation/strict-validator.txt
+  source_archive: The frozen source-corpus checksum remains checked in as evidence; source bodies remain outside the repository.

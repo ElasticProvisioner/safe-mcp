@@ -1,0 +1,226 @@
+version: 1
+technique_id: SAF-T2102
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of MCP specification 2026-07-28 Tools, current release notes, Tasks extension, and legacy 2025-11-25 Tasks and Cancellation.
+        - Direct review of NIST SP 800-228 upd1 and SP 800-53 Rev. 5.1 availability controls.
+        - Direct review of MITRE ATT&CK T1499 and T1489.
+      material_changes:
+        - Scoped the mechanism to MCP or agentic execution boundaries with measurable service or task-continuity loss.
+        - Distinguished current Tasks-extension requirements from the legacy experimental task surface.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Domain-restricted NVD and CISA searches for MCP crash, cancellation, denial, availability, and the selected CVE identifiers.
+        - First-party advisory review only after identifiers were obtained from government records.
+        - First-party production incident searches on GitHub, Microsoft, Anthropic, and the MCP project blog.
+      material_changes:
+        - Selected CVE-2025-53365 and CVE-2026-52870 as direct vulnerabilities.
+        - Recorded no qualifying adversarial production incident and retained the GitHub MCP outage only as a non-adversarial comparator.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Domain-restricted USENIX and arXiv searches for agent denial of service, resource lifecycle, MCP tool-chain amplification, and task loops.
+      material_changes:
+        - Selected arXiv:2601.10955v2 as the highest-impact direct MCP-compatible controlled demonstration.
+        - Retained AgentDoS and loop studies as corroboration or exclusions because they were less MCP-specific or less impactful.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Reviewed MCP tool security, legacy and current task controls, NIST API telemetry and resource-consumption controls, AEGIS, ATT&CK detection guidance, and the GitHub outage remediation.
+      material_changes:
+        - Derived a three-branch deterministic analytic and layered defense set.
+        - Added actor ownership, health, error, rate, concurrency, and policy telemetry requirements.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Reviewed empirical limitations, false negatives, current Tasks changes, non-adversarial lookalikes, exploitation-status records, and production-incident search gaps.
+      material_changes:
+        - Bounded overall status to Demonstrated rather than Observed.
+        - Documented distributed low-rate evasion, missing-field blind spots, legitimate-load false positives, and undisclosed-incident uncertainty.
+    - pass: saturation_discovery_1
+      completed_on: "2026-09-02"
+      queries:
+        - Domain-restricted current MCP resource-abuse and policy-enforcement follow-up.
+      material_changes:
+        - Added the newly published AEGIS preprint as defense and limitation evidence.
+    - pass: saturation_discovery_2
+      completed_on: "2026-09-02"
+      queries:
+        - Domain-restricted follow-up on current MCP Tasks authorization and task-list removal.
+      material_changes:
+        - Added SEP-2663 to separate the current Tasks extension from the vulnerable legacy surface.
+    - pass: saturation_discovery_3
+      completed_on: "2026-09-02"
+      queries:
+        - Domain-restricted follow-up for MCP loop-based resource amplification.
+      material_changes:
+        - Added and excluded the lower-impact Overthinking Loops study as redundant corroboration.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - Exact CVE, GHSA, and 658-fold result identifier searches across NVD, CISA, MCP, arXiv, and USENIX.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - Exact ClosedResourceError, cross-client task cancellation, resource-amplification, and GitHub MCP error-rate searches on authoritative domains.
+      material_changes: []
+  rationale: >-
+    The corpus covers current and affected protocol authority, government and
+    first-party advisories, exploitation status, a first-party production
+    outage, peer-reviewed and preprint demonstrations, detection standards,
+    defenses, contrary evidence, and explicit gaps. The final two identifier-
+    focused passes repeated known evidence and changed no claims, sources,
+    examples, limitations, or exclusions.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 7
+  selected_examples:
+    - SRC-ghsa-j975-95f5-7wqh
+    - SRC-ghsa-python-hvrp
+    - SRC-arxiv-resource-amplification-2026
+  no_qualifying_examples_rationale: Not applicable; three direct, material examples were selected.
+  candidates:
+    - source_id: SRC-ghsa-j975-95f5-7wqh
+      identifier: CVE-2025-53365 / GHSA-j975-95f5-7wqh
+      relationship: direct_vulnerability
+      exploitation_status: No production exploitation status was reported in the reviewed NVD, CISA, and advisory sources.
+      impact: Remote unauthenticated availability-high server crash requiring restart under affected deployment conditions.
+      remediation: Upgrade MCP Python SDK to 1.10.0 or later and retain process-level resilience.
+      selected: true
+      rationale: Direct MCP service-availability loss with a precise affected boundary and vendor patch.
+    - source_id: SRC-ghsa-python-hvrp
+      identifier: CVE-2026-52870 / GHSA-hvrp-rf83-w775
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP recorded exploitation as none at the reviewed timestamp.
+      impact: One connected client could cancel another client's in-flight task.
+      remediation: Upgrade MCP Python SDK to 1.27.2 or later; authorize each task request.
+      selected: true
+      rationale: Direct cross-principal task-continuity loss at the legacy MCP task boundary.
+    - source_id: SRC-arxiv-resource-amplification-2026
+      identifier: Beyond Max Tokens (arXiv:2601.10955v2)
+      relationship: direct_demonstration
+      exploitation_status: Controlled benchmark demonstration; no production exploitation claim.
+      impact: Up to 658-fold cost, 100-560-fold energy, 35-74% GPU cache occupancy, and about 50% lower co-running throughput.
+      remediation: Bound whole-trajectory cost and tool calls; monitor agent-process resource use rather than final results alone.
+      selected: true
+      rationale: Highest measured direct MCP-compatible agent-tool resource-amplification example in the reviewed corpus.
+    - source_id: SRC-usenix-agentdos-2026
+      identifier: AgentDoS / USENIX Security 2026
+      relationship: direct_demonstration
+      exploitation_status: Controlled isolated research; authors explicitly avoided real systems.
+      impact: Thirty-six zero-day resource-lifecycle vulnerabilities across 16 of 20 tested open-source agents.
+      remediation: Input and size limits, timeouts, quotas, resource monitoring, alerting, and suspension.
+      selected: false
+      rationale: Strong peer-reviewed corroboration, but less MCP-specific and less directly comparable than the selected tool-chain measurement.
+    - source_id: SRC-arxiv-aegis-2026
+      identifier: AEGIS (arXiv:2608.20481v1)
+      relationship: direct_demonstration
+      exploitation_status: Research prototype and policy evaluation; no production exploitation claim.
+      impact: Demonstrates cross-domain MCP resource-abuse scenarios that can degrade quality of service.
+      remediation: Normalize heterogeneous tool requests and enforce fine-grained resource policies at the gateway.
+      selected: false
+      rationale: Useful defense and scope evidence but does not provide a higher-impact incident than the selected examples.
+    - source_id: SRC-github-availability-2026-07
+      identifier: GitHub MCP Server web_search outage, 2026-07-16
+      relationship: rejected
+      exploitation_status: Not applicable; the first-party report attributes the event to upstream provider degradation.
+      impact: Average 42% and peak 82% tool error rate for one hour; other MCP tools were unaffected.
+      remediation: Overall request time budget, tool-specific monitoring and runbooks; circuit breaker and backup source under evaluation.
+      selected: false
+      rationale: Real production availability impact but no adversarial cause, so it is a false-positive comparator rather than an attack example.
+    - source_id: SRC-arxiv-overthinking-loops-2026
+      identifier: Overthinking Loops in Agents (arXiv:2602.14798)
+      relationship: direct_demonstration
+      exploitation_status: Controlled research; no production exploitation claim.
+      impact: Up to 142.4-fold token amplification and degraded task outcomes through malicious MCP tools.
+      remediation: Detect structural tool-call loops rather than relying only on decoding-time concision.
+      selected: false
+      rationale: Direct but lower-impact and redundant with the selected 658-fold MCP-compatible result.
+sources_consulted:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tasks-overview-2026
+  - SRC-mcp-tasks-2025-11
+  - SRC-mcp-cancellation-2025
+  - SRC-mcp-sep2663-2026
+  - SRC-nist-sp800-228-upd1
+  - SRC-nist-sp800-53r5.1
+  - SRC-ghsa-j975-95f5-7wqh
+  - SRC-nvd-cve-2025-53365
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-52870
+  - SRC-usenix-agentdos-2026
+  - SRC-arxiv-resource-amplification-2026
+  - SRC-arxiv-aegis-2026
+  - SRC-arxiv-infinite-loops-2026
+  - SRC-arxiv-overthinking-loops-2026
+  - SRC-github-availability-2026-07
+  - SRC-mitre-attack-t1499
+  - SRC-mitre-attack-t1489
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-tasks-2025-11
+  - SRC-mcp-sep2663-2026
+  - SRC-nist-sp800-228-upd1
+  - SRC-ghsa-j975-95f5-7wqh
+  - SRC-nvd-cve-2025-53365
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-52870
+  - SRC-arxiv-resource-amplification-2026
+  - SRC-arxiv-aegis-2026
+  - SRC-github-availability-2026-07
+  - SRC-mitre-attack-t1499
+sources_rejected:
+  - source_id: SRC-mcp-overview-2026
+    reason: General specification landing page; the component-specific Tools page is more exact.
+  - source_id: SRC-mcp-release-2026-07-28
+    reason: Release context only; SEP-2663 and Tools provide more exact normative locators.
+  - source_id: SRC-mcp-tasks-overview-2026
+    reason: Overview is less authoritative and detailed than SEP-2663 for security semantics.
+  - source_id: SRC-mcp-cancellation-2025
+    reason: General cancellation excludes task cancellation and is not needed for the selected task example.
+  - source_id: SRC-nist-sp800-53r5.1
+    reason: Broad control catalog is less specific than SP 800-228 upd1 for the analytic and defenses.
+  - source_id: SRC-usenix-agentdos-2026
+    reason: Strong corroboration but less MCP-specific than the selected controlled demonstration.
+  - source_id: SRC-arxiv-infinite-loops-2026
+    reason: Agent-loop research is adjacent and does not require the MCP boundary.
+  - source_id: SRC-arxiv-overthinking-loops-2026
+    reason: Direct but redundant and lower-impact than the selected 658-fold amplification result.
+  - source_id: SRC-mitre-attack-t1489
+    reason: Service Stop is less direct than T1499 for resource exhaustion and persistent service crash.
+sources_blocked:
+  - source: NVD CVE-2025-59333 direct page
+    reason: Direct fetch timed out; the unverified adjacent database-abuse lead was omitted.
+conflicts:
+  - issue: The vulnerable 2025 task handlers differ from the current Tasks extension.
+    resolution: The README dates the affected legacy surface and states current SEP-2663 authorization and list-removal changes.
+  - issue: A first-party report documents a production MCP outage, but not adversarial causation.
+    resolution: The event is retained as a false-positive comparator and excluded from attack examples.
+  - issue: Resource amplification may increase cost without making a service fully unavailable.
+    resolution: Scope requires measurable throughput or availability degradation; the selected study measured about 50% lower co-running throughput.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T2102-C001
+    - SAF-T2102-C007
+  rationale: >-
+    Public advisories and controlled research demonstrate the trigger and
+    availability outcomes across service crash, cross-task cancellation, and
+    resource amplification. No reviewed source establishes an adversarial
+    production incident, so Observed would overstate the evidence.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

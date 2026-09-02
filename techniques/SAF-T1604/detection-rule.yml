@@ -1,74 +1,117 @@
-# SAF-T1604: Server Version Enumeration Detection Rule
-# EXAMPLE SIGMA RULE - Not comprehensive
-#
-# IMPORTANT: This rule contains example patterns only. Attackers continuously
-# develop new enumeration techniques and obfuscation methods. Organizations should:
-# - Use AI-based anomaly detection to identify novel enumeration patterns
-# - Regularly update detection rules based on threat intelligence
-# - Implement multiple layers of detection beyond pattern matching
-# - Correlate with subsequent exploitation attempts
-
-title: MCP Server Version Enumeration Attempt
-id: 7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d
+title: Concentrated MCP Server Version Enumeration Across Distinct Servers
+id: 4ad469fa-98c4-5ee7-bc40-85d4bb4307af
 status: experimental
-description: |
-  Detects potential version enumeration of MCP servers through endpoint probing
-  and scanner user-agent patterns. Version disclosure enables targeted exploitation
-  of known vulnerabilities in specific MCP server versions.
-author: SAF-MCP Team
-date: 2025-01-26
-modified: 2025-01-26
+description: >-
+  Detects one actor receiving version-bearing MCP discovery or unsupported-
+  protocol-version responses from at least five distinct server identities
+  within five minutes, excluding activity explicitly classified as approved
+  inventory. The threshold is an environment-tunable research-derived analytic.
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1604
-  - https://modelcontextprotocol.io/specification
-  - https://attack.mitre.org/techniques/T1592/
-
-logsource:
-  category: webserver
-  product: nginx  # Adaptable to traefik, apache, etc.
-
-detection:
-  # Selection: Version-related endpoints
-  selection_endpoints:
-    cs-uri-stem|contains:
-      - '/version'
-      - '/health'
-      - '/status'
-      - '/info'
-      - '/api/version'
-      - '/api/v1/info'
-      - '/.well-known/'
-
-  # Selection: Known scanner/enumeration user agents
-  selection_scanners:
-    cs-user-agent|contains:
-      - 'curl'
-      - 'httpie'
-      - 'nuclei'
-      - 'httpx'
-      - 'python-requests'
-      - 'Go-http-client'
-      - 'masscan'
-      - 'zgrab'
-
-  # Selection: High-frequency access pattern (same source, multiple requests)
-  selection_frequency:
-    EventCount|gte: 3
-    TimeWindow: '60s'
-
-  # Condition: Version endpoints + (scanner OR high frequency)
-  condition: selection_endpoints and (selection_scanners or selection_frequency)
-
-falsepositives:
-  - Legitimate health monitoring systems (Prometheus, Datadog, etc.)
-  - CI/CD deployment verification checks
-  - Load balancer and reverse proxy health probes
-  - Internal service mesh health checks
-  - Kubernetes liveness/readiness probes
-
-level: medium
-
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+  - https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
+  - https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+author: OpenAI Codex clean-room agent /root/cleanroom_saf_t1604
+date: 2026-09-02
+modified: 2026-09-02
 tags:
+  - saf.t1604
   - attack.discovery
-  - attack.t1592
-  - safe.t1604
+  - attack.t1046
+  - attack.t1518
+logsource:
+  category: application
+  product: mcp
+  service: discovery_audit
+  definition: >-
+    Normalized MCP client, gateway, or server request-response audit events with
+    stable actor and server identifiers.
+fields:
+  - timestamp
+  - actor_id
+  - actor_class
+  - server_id
+  - event_type
+  - success
+  - server_info_version
+  - supported_versions
+detection:
+  selection_event:
+    event_type:
+      - mcp_server_discover_response
+      - mcp_unsupported_protocol_version_error
+  selection_version:
+    server_info_version|exists: true
+  selection_supported:
+    supported_versions|exists: true
+  filter_approved_inventory:
+    actor_class: approved_inventory
+  threshold: count_distinct(server_id) by actor_id >= 5 within 5m
+  condition: selection_event and (selection_version or selection_supported) and not filter_approved_inventory and threshold
+falsepositives:
+  - Legitimate multi-server MCP clients performing compatibility discovery.
+  - Approved security inventory or conformance scanners that lack the expected actor classification.
+  - Deployment automation validating many servers after a release.
+level: low
+
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1604-C009
+    - SAF-T1604-C010
+  telemetry_claim_ids:
+    - SAF-T1604-C001
+    - SAF-T1604-C002
+    - SAF-T1604-C003
+    - SAF-T1604-C008
+  limitation_claim_ids:
+    - SAF-T1604-C002
+    - SAF-T1604-C010
+    - SAF-T1604-C014
+  validation_artifacts:
+    - techniques/SAF-T1604/test-logs.json
+    - techniques/SAF-T1604/test_detection_rule.py
+    - research/techniques/SAF-T1604/validation/detection-test.txt
+    - research/techniques/SAF-T1604/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1604-C008
+      rationale: OWASP event attributes support actor, application, action, object, result, and interaction correlation fields.
+    fields:
+      claim_ids:
+        - SAF-T1604-C001
+        - SAF-T1604-C002
+        - SAF-T1604-C003
+        - SAF-T1604-C008
+      rationale: MCP sources define the version-bearing response data, and OWASP supports the surrounding correlation attributes.
+    selection_event:
+      claim_ids:
+        - SAF-T1604-C001
+        - SAF-T1604-C003
+      rationale: Current discovery and version-error operations are the bounded version-returning protocol events.
+    selection_version:
+      claim_ids:
+        - SAF-T1604-C002
+      rationale: A nonempty self-reported implementation version is the primary version-bearing result.
+    selection_supported:
+      claim_ids:
+        - SAF-T1604-C003
+      rationale: A nonempty supported-version list is the protocol-version variant.
+    filter_approved_inventory:
+      claim_ids:
+        - SAF-T1604-C010
+      rationale: Approved inventory is an expected lookalike that must be explicitly classified rather than silently discarded.
+    threshold:
+      claim_ids:
+        - SAF-T1604-C009
+        - SAF-T1604-C010
+      rationale: Distinct-server aggregation is the original testable analytic; five servers and five minutes are explicitly tunable.
+    condition:
+      claim_ids:
+        - SAF-T1604-C009
+        - SAF-T1604-C010
+      rationale: The condition joins version-bearing protocol events, approved-activity handling, and the tested correlation threshold.
+    falsepositives:
+      claim_ids:
+        - SAF-T1604-C010
+      rationale: Normal discovery and approved scanning can match the same version-bearing event sequence.

@@ -1,0 +1,78 @@
+version: 1
+technique_id: SAF-T1205
+name: Persistent Tool Redefinition
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0003
+
+adversary_objective: >-
+  Preserve influence over an MCP-enabled agent after a tool or server has
+  already earned trust by substituting a security-relevant tool definition
+  that the host accepts under the prior trust decision.
+
+scope:
+  security_boundary: >-
+    The boundary between an approved MCP server/tool identity and the host's
+    later acceptance of mutable tool metadata, schema, or behavior.
+  in_scope:
+    - A tool or server is first accepted in a benign state and later presents a materially different definition under the same trusted relationship.
+    - The host makes the changed definition available without a fresh security decision, enabling influence across later sessions or invocations.
+  out_of_scope:
+    - Malicious tool metadata present at first discovery, without a post-trust change.
+    - Registration of a different unauthorized server or identity substitution.
+    - Ordinary approved tool evolution that is re-reviewed before use.
+    - Downstream prompt injection, command execution, collection, or exfiltration after the redefinition succeeds.
+  affected_components:
+    - MCP host and client tool-discovery state
+    - MCP server tool definitions and update path
+    - Tool approval, trust, and change-control records
+
+nearest_neighbors:
+  - technique_id: SAF-T1001
+    distinction: >-
+      Tool Poisoning Attack is malicious at first discovery; this technique
+      requires a later change after trust or approval.
+  - technique_id: SAF-T1201
+    distinction: >-
+      MCP Rug Pull Attack also covers changed delivered implementations and update
+      content; SAF-T1205 is restricted to persistent mutation of the tool definition.
+  - technique_id: SAF-T1407
+    distinction: >-
+      Server Proxy Masquerade changes the trusted principal; this technique
+      retains the apparent server/tool relationship while changing its
+      security-relevant definition.
+  - technique_id: SAF-T1103
+    distinction: >-
+      Unauthorized Tool Invocation concerns a call decision or arguments; this
+      technique concerns persistent mutation of the definition on which later
+      call decisions rely.
+
+required_evidence:
+  - Establish that MCP tool definitions are discoverable, model-facing, and change-notifiable.
+  - Establish a controlled post-approval or post-listing tool/server mutation under retained trust.
+  - Search separately for production incidents, disclosed vulnerabilities, public advisories, and controlled demonstrations.
+  - Establish detection fields, change-baseline logic, false positives, and response controls.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Tool discovery and refresh events with timestamp, server identity, tool name, normalized definition hash, and prior approved hash.
+    - Tool approval or change-control events with approval status, approver or policy identity, scope, and approved hash.
+    - Tool invocation events with session, actor, server, tool, arguments or redacted fingerprint, and result status.
+
+safe_example_constraints:
+  - Use inert example domains, placeholder identifiers, and a non-destructive schema-only change.
+  - Do not reproduce credential targets, exploit payloads, or operational exfiltration instructions.
+
+completion_evidence:
+  - Every substantive publishable unit resolves through hidden SAF-TRACE joins or a declared local artifact.
+  - Every unverified lead is excluded from publishable prose and recorded in traceability-ledger.yml.
+  - Two consecutive post-assembly saturation passes produce no material change.
+  - Positive, negative, boundary, malformed, and legitimate-change detection tests pass.
+  - Rights, attribution, framework, clean-room, and strict-validator gates pass in an isolated synthetic repository.

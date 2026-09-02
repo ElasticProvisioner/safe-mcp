@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1503
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The attestation records a fresh agent, no inherited context or prior target access, and synthetic-only pre-freeze validation.
+  contract_and_scope:
+    status: passed
+    notes: The live launched-process environment boundary excludes files, stored platform records, other-process access, compromise, credential use, and exfiltration.
+  technical_accuracy:
+    status: passed
+    notes: Versioned MCP semantics, current product controls, and runtime APIs support each component without asserting universal inheritance.
+  claim_traceability:
+    status: passed
+    notes: Twenty-three validated claims contain exact locators and every substantive README unit is traced or linked to a declared local artifact.
+  source_or_omit:
+    status: passed
+    notes: Unsupported direct-incident, active-exploitation, and universal-detector propositions are omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived reflects a supported synthesis with no qualifying direct MCP or agentic event or end-to-end demonstration.
+  research_saturation:
+    status: passed
+    notes: Five required passes plus two targeted no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Five candidates were assessed; two observed historical analogies and two MCP enabling vulnerabilities were selected, while one adjacent incident was excluded.
+  detection_quality:
+    status: passed
+    notes: The bounded process-lineage analytic passed nine synthetic cases and explicitly preserves its in-process and diagnostic false-positive limitations.
+  mitigation_quality:
+    status: passed
+    notes: Minimal explicit environments address exposure; sandboxing is correctly limited to follow-on reach; response includes credential rotation and audit.
+  framework_alignment:
+    status: passed
+    notes: Tactic, analogous ATT&CK mapping, canonical SAF-T1502 neighbor, mitigations, stable source IDs, history, and validation paths are reconciled in the integrated repository.
+  publication_rights:
+    status: passed
+    notes: All seventeen cited sources are paraphrased with author or team attribution and no copied code, images, tables, or extended quotations.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures use placeholders, execute nothing, contain no live credentials, and include no collection-and-exfiltration payload.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1503
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1503/test_detection.py
+      result: passed
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1503
+      result: passed
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1503/test_detection.py
+    result: 9 of 9 synthetic cases passed on 2026-09-01.
+    waiver: null
+
+unresolved: []

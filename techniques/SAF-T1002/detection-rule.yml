@@ -1,57 +1,121 @@
-# SIGMA RULE: Supply Chain Compromise Detection for MCP (package-registry telemetry)
-# WARNING: This rule contains example patterns only. Organizations should:
-# - Regularly update patterns based on threat intelligence
-# - Implement behavioral analysis beyond pattern matching
-# - Use AI-based anomaly detection for novel attack vectors
-# - Consider context-specific false positives
-#
-# Scope: this rule only reads MCP package-registry / installer metadata
-# (package_name, package_source, package_author_age). Host-level indicators
-# (process network connections, persistence file creation) live in the
-# companion Sysmon rule detection-rule-host-telemetry.yml, because no single
-# log source emits both package metadata and endpoint telemetry.
-
-title: Suspicious MCP Package Metadata (Supply Chain Compromise)
-id: a7b4c8e9-12f3-45d6-89ab-cdef01234567
-status: experimental
-description: Detects potential supply chain compromise through suspicious MCP package metadata - typosquatted names and newly created maintainer accounts publishing from low-reputation sources.
-author: Frederick Kautz
-date: 2025-09-14
-modified: 2026-07-01
+title: Correlate Unverified Agentic Artifact Acquisition With Execution
+id: 5c4578d8-9f52-4a93-a6c3-f09cfeec79f7
+status: test
+description: >-
+  Detects an MCP or agentic component acquired through an expected channel when
+  a policy-required integrity or provenance check fails or is absent and the
+  same artifact version executes on the same host within ten minutes.
+author: OpenAI Codex clean-room research agent
+date: 2026-09-01
+modified: 2026-09-01
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1002
   - https://attack.mitre.org/techniques/T1195/
-logsource:
-  product: mcp
-  service: package_manager
-detection:
-  # Typosquats of well-known MCP server package names
-  selection_typosquat:
-    package_name|contains:
-      - 'mcp-githab'      # github typosquat
-      - 'mcp-slackk'      # slack typosquat
-      - 'mcp-filesys'     # filesystem typosquat
-      - 'mcp-googel'      # google typosquat
-  # Newly created maintainer account (weak on its own - see condition)
-  selection_new_author:
-    package_author_age|lt: 7        # account younger than 7 days
-  # Low-reputation / throwaway distribution source
-  selection_suspicious_source:
-    package_source|contains:
-      - 'suspicious-repo'
-      - 'temp-hosting'
-      - 'free-hosting'
-  # A brand-new author or a throwaway source is individually noisy; requiring
-  # both together narrows to the high-signal "new account + throwaway host" case.
-  condition: selection_typosquat or (selection_new_author and selection_suspicious_source)
-falsepositives:
-  - Legitimate packages with names similar to popular MCP servers
-  - Development and testing environments using custom or temporary repositories
-  - Newly published legitimate packages from first-time maintainers
-level: high
+  - https://slsa.dev/spec/v1.2/verifying-artifacts
 tags:
-  - attack.initial_access
+  - saf.t1002
   - attack.t1195
-  - attack.t1195.001
-  - attack.t1195.002
-  - safe.t1002
+logsource:
+  category: software_installation_and_process_creation
+  product: mcp_or_agentic_runtime
+detection:
+  acquisition:
+    event_type: artifact_acquired
+    component_type:
+      - mcp_server
+      - mcp_client
+      - agent_tool
+      - agent_dependency
+    expected_channel: true
+    verification_status:
+      - missing
+      - digest_mismatch
+      - invalid_signature
+      - unexpected_builder
+      - unexpected_source
+  execution:
+    event_type: artifact_executed
+  filter_approved_exception:
+    approved_exception: true
+  condition: >-
+    acquisition followed by execution for the same host_id, artifact_name, and
+    artifact_version within correlation.window_seconds and not
+    filter_approved_exception
+correlation:
+  window_seconds: 600
+  inclusive_boundary: true
+  group_by:
+    - host_id
+    - artifact_name
+    - artifact_version
+fields:
+  - timestamp
+  - host_id
+  - workload_id
+  - component_type
+  - artifact_name
+  - artifact_version
+  - resolved_source
+  - artifact_digest
+  - signature_identity
+  - provenance_builder
+  - verification_status
+  - parent_process
+  - child_process
+  - destination
+falsepositives:
+  - Approved, time-bounded local development with intentionally unsigned artifacts.
+  - Emergency internally built artifacts whose verification record has not yet propagated.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1002-C014
+    - SAF-T1002-C017
+  telemetry_claim_ids:
+    - SAF-T1002-C014
+    - SAF-T1002-C015
+    - SAF-T1002-C016
+  limitation_claim_ids:
+    - SAF-T1002-C016
+    - SAF-T1002-C017
+  validation_artifacts:
+    - techniques/SAF-T1002/tests/test_detection_rule.py
+    - techniques/SAF-T1002/tests/fixtures/cases.json
+    - techniques/SAF-T1002/tests/results/detection-test-results.json
+    - techniques/SAF-T1002/tests/logs/test-run.log
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1002-C014
+        - SAF-T1002-C016
+      rationale: Joins acquisition and process sources needed for the artifact-to-execution sequence.
+    acquisition:
+      claim_ids:
+        - SAF-T1002-C009
+        - SAF-T1002-C014
+        - SAF-T1002-C015
+      rationale: Selects relevant agentic component types and failed consumer verification states.
+    execution:
+      claim_ids:
+        - SAF-T1002-C014
+        - SAF-T1002-C016
+      rationale: Requires observed execution rather than alerting on verification absence alone.
+    filter_approved_exception:
+      claim_ids:
+        - SAF-T1002-C016
+      rationale: Suppresses named development exceptions that would otherwise resemble malicious installation.
+    condition:
+      claim_ids:
+        - SAF-T1002-C014
+        - SAF-T1002-C017
+      rationale: Correlates trust failure and execution on identical host, artifact, and version within the bounded window.
+    falsepositives:
+      claim_ids:
+        - SAF-T1002-C016
+      rationale: Records legitimate install-time and internal-build behaviors identified as a practical error source.
+    fields:
+      claim_ids:
+        - SAF-T1002-C014
+        - SAF-T1002-C015
+        - SAF-T1002-C016
+      rationale: Exposes the acquisition, provenance, process, file, identity, and network values required for triage.

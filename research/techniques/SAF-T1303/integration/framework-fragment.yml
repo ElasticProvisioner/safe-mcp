@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1303
+    name: Sandbox Escape via Server Exec
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0004
+    technique_path: techniques/SAF-T1303/README.md
+    research_packet: research/techniques/SAF-T1303
+    related_techniques:
+      - SAF-T9901
+      - SAF-T9902
+    mitigations:
+      - SAF-M-9901
+      - SAF-M-9902
+    detection:
+      rule: techniques/SAF-T1303/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1303/test-logs.json
+        - tests/SAF-T1303/test_detection_rule.py

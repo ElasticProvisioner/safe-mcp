@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1804
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent inputs, prohibitions, independent research, and pre-integration freeze constraints are attested.
+  contract_and_scope:
+    status: passed
+    notes: Contract centers record enumeration and retrieval and excludes credentials, bare invocation, files, writes, and exfiltration.
+  technical_accuracy:
+    status: passed
+    notes: Protocol paths, prerequisites, boundary, demonstrated cases, impact, and uncertainty match reviewed authorities.
+  claim_traceability:
+    status: passed
+    notes: Fourteen validated claims include exact locators, limitations, inference flags, conflicts, and source relationships.
+  source_or_omit:
+    status: passed
+    notes: Publishable units use hidden trace comments or declared local artifacts; unsupported propositions are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by direct public MCP cases and does not rely on adjacent production incidents.
+  research_saturation:
+    status: passed
+    notes: Five required passes and two final no-material-change authority-only passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nine candidates were classified, four highest-impact examples selected, remediation and exploitation bounded, and the production-MCP gap stated.
+  detection_quality:
+    status: passed
+    notes: Eight deterministic fixtures cover positives, boundary values, ordinary activity, just-below values, approved bulk, missing discovery, time window, and malformed input.
+  mitigation_quality:
+    status: passed
+    notes: Controls address scope, audience, token passthrough, downstream policy, query construction, volume, rate, exposure, logging, and containment.
+  framework_alignment:
+    status: passed
+    notes: Tactic, ATT&CK mapping, framework record, detection artifacts, and synthetic-neighbor reconciliation are consistent.
+  publication_rights:
+    status: passed
+    notes: All cited sources have paraphrase or factual-reference reviews and named author or team credits; no protected artifacts or quotations are reproduced.
+  safe_publication:
+    status: passed
+    notes: Example data is synthetic audit telemetry; no payload, query, credential, target endpoint, secret, or destructive instruction is published.
+
+validation:
+  commands:
+    - command: python3 techniques/SAF-T1804/test_detection_rule.py
+      result: passed
+    - command: uv run --with PyYAML python scripts/validate-technique-research.py SAF-T1804
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1804/test_detection_rule.py
+    result: "PASS: 8 cases (2 positive, 6 negative)"
+    waiver: null
+
+unresolved: []
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1804/validation/detection-tests.txt
+  strict_validator_transcript: research/techniques/SAF-T1804/validation/strict-validator.txt
+  framework_alignment: Four canonical neighbors, eight canonical mitigations, and direct ATT&CK T1213 are joined after freeze.
+  status: passed

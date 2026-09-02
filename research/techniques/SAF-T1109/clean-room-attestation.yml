@@ -1,0 +1,101 @@
+version: 1
+technique_id: SAF-T1109
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1109
+  neutral_name: Debugging Tool Exploitation
+allowed_inputs:
+- Seed ID, neutral name, and tactic.
+- Generic authoring methodology, blank schemas, template, validator, and minimal synthetic
+  IDs.
+- Independently reviewed external authorities discovered through restricted direct-authority
+  queries.
+prohibited_inputs:
+- Existing techniques/SAF-T1109/README.md.
+- Existing research/techniques/SAF-T1109/ packet or detection tests.
+- Existing techniques/SAF-T1109/detection-rule.yml.
+- Technique catalogs, shared source/framework/alignment registries, other technique
+  prose, and prior bundles.
+- SAF or SAFE sites and repositories.
+- git history, diffs, blame, commits, branches, or tags used as repository-history
+  evidence.
+- pull request descriptions, reviews, or issue discussion from this repository.
+- previous conversation content or inherited target-specific context.
+independent_research:
+  searches:
+  - Restricted Model Context Protocol authority search for current tool and transport
+    security requirements.
+  - Restricted NVD, CISA, Microsoft, and Oligo searches for production incidents and
+    disclosed vulnerabilities.
+  - Restricted Oligo and Microsoft searches for independent demonstrations.
+  - Restricted Microsoft, MCP, and MITRE searches for detection and defense.
+  - Restricted MCP, Microsoft, and MITRE searches for nearest behavior boundaries.
+  - Two narrow authority-only follow-ups with no material changes.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-inspector-fix-0141
+  - SRC-ghsa-inspector-g9hg
+  - SRC-inspector-fix-0166
+  - SRC-microsoft-autojack-2026
+  - SRC-mcp-sep-1024
+  - SRC-ms-agt
+  - SRC-mitre-t1203
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-oligo-localhost-2025
+  - SRC-oligo-litellm-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Bundle remains isolated and must not be integrated, committed, or pushed by this
+  task.
+- Synthetic neighbor IDs and repository-history provenance require mechanical reconciliation
+  during integration.
+attestation: The packet was authored from permitted inputs without opening prohibited
+  target artifacts.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    SAF-T9001:
+      - SAF-T1102
+      - SAF-T1001
+    SAF-T9002:
+      - SAF-T1006
+  source_id_mapping:
+    SRC-mcp-tools-2026: SRC-mcp-tools-2026-07-28
+    SRC-mcp-http-2026: SRC-mcp-streamable-http-2026-07-28
+    SRC-ghsa-inspector-49596: SRC-ghsa-inspector-7f8r
+    SRC-oligo-inspector-49596: SRC-oligo-inspector-cve-2025-49596
+    SRC-ghsa-inspector-58444: SRC-ghsa-inspector-g9hg
+    SRC-mcp-sep-1024: SRC-mcp-sep-1024
+    SRC-microsoft-control-plane-2026: SRC-ms-agt
+    SRC-mitre-t1190: SRC-mitre-attack-t1190-v2.8
+    SRC-oligo-zero-day-2024: SRC-oligo-localhost-2025
+  new_shared_source_records:
+  - SRC-inspector-fix-0141
+  - SRC-inspector-fix-0166
+  - SRC-microsoft-autojack-2026
+  - SRC-mitre-t1203
+  - SRC-oligo-litellm-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-52
+  - SAF-M-74
+  status: integrated_and_repository_validated

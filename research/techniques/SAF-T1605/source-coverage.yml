@@ -1,0 +1,193 @@
+version: 1
+technique_id: SAF-T1605
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Directly reviewed the complete current MCP 2026-07-28 architecture, discovery, tools, resources, prompts, roots, authorization, security-best-practices, and Inspector pages.
+        - Directly reviewed the complete MITRE ATT&CK T1518 Software Discovery page.
+      material_changes:
+        - Fixed the protocol baseline at 2026-07-28 and bounded roots as deprecated informational guidance.
+        - Defined mapping as authorization-context enumeration and correlation, stopping before call, get, or read.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD CVE API 2.0: keywordSearch=Model Context Protocol; resultsPerPage=2000"
+        - "CISA KEV 2026.09.01: exact phrase Model Context Protocol and exact candidate CVE identifiers"
+        - "Originating advisories reached only through exact URLs in NVD records for CVE-2026-49257, CVE-2025-66414, CVE-2026-52870, and CVE-2026-46519"
+      material_changes:
+        - Classified four high-impact boundary examples; none directly documents malicious capability mapping.
+        - Added a bounded absence claim and retained Research-Derived evidence status.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "Official MCP Inspector page: tools/list CLI and remote-connection examples"
+        - "arXiv API: all:\"Model Context Protocol\" AND all:security"
+        - "arXiv API direct record and complete PDF: 2608.23992v1"
+      material_changes:
+        - Added a legitimate enumeration demonstration through Inspector.
+        - Added production-scale catalog and telemetry evidence from the PayPal SCOUT paper without treating it as attack evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - MCP method and metadata semantics across server/discover and all current list pages.
+        - MCP authorization and security-best-practice guidance for per-request tokens, scope, audience, and scope minimization.
+        - PayPal SCOUT Sections 6.6, 7.1, and 7.4 for structured observability.
+      material_changes:
+        - Defined and tested an actor/server sequence analytic using three distinct list methods within 120 seconds after server/discover.
+        - Added approved-inventory suppression, false-positive baselining, and pagination/cache limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Challenged whether listed surface equals callable surface against CVE-2026-46519.
+        - Challenged malicious intent against Inspector, client bootstrap, catalog refresh, and the legitimate production gateway.
+        - Challenged completeness against authorization, pagination, caching, empty responses, and list changes.
+      material_changes:
+        - Explicitly rejected the propositions that a map is complete, that a list sequence proves intent, or that adjacent vulnerabilities raise this technique's evidence label.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD exact keyword queries: Model Context Protocol enumeration; Model Context Protocol tools/list; Model Context Protocol server/discover"
+        - "arXiv API: all:\"Model Context Protocol\" AND (all:enumeration OR all:\"capability mapping\")"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD exact keyword queries: MCP capability discovery; MCP tool inventory"
+        - "arXiv API exact phrases: capability discovery; tool enumeration, constrained to Model Context Protocol"
+        - "Official MCP llms.txt index confirmation of the current server/discover and dated 2026-07-28 pages"
+      material_changes: []
+  rationale: >-
+    Current protocol, official tooling, a complete directly relevant production
+    paper, an authoritative 77-record vulnerability corpus, the full current
+    KEV catalog, four originating advisories, and the closest ATT&CK analogy
+    cover the publishable propositions. Two targeted follow-ups produced no
+    material change. Additional searching was unlikely to alter the scope,
+    Research-Derived classification, detection, or explicit direct-evidence gap.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 4
+  selected_examples:
+    - SRC-ghsa-cr22-wjx7-2w6m
+    - SRC-ghsa-mcp-pinot-73cv
+    - SRC-ghsa-typescript-w48q
+    - SRC-ghsa-python-hvrp
+  no_qualifying_examples_rationale: >-
+    No direct production incident, direct capability-mapping vulnerability, or
+    direct adversarial demonstration qualified. The four selected entries are
+    the highest-impact boundary examples: one proves that filtered discovery
+    need not equal callable authorization, two create reachability to capability
+    surfaces, and one enumerates adjacent task state. None raises this
+    technique's evidence status.
+  candidates:
+    - source_id: SRC-ghsa-cr22-wjx7-2w6m
+      identifier: CVE-2026-46519 / GHSA-cr22-wjx7-2w6m
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public_poc_no_production_exploitation_identified
+      impact: A caller could invoke known tools that tools/list filtering hid.
+      remediation: Upgrade mcp-server-kubernetes to 3.6.0 or later and enforce authorization at tools/call.
+      selected: true
+      rationale: Highest-relevance boundary case; it disproves treating discovery output as the callable authorization boundary but does not demonstrate capability mapping.
+    - source_id: SRC-ghsa-mcp-pinot-73cv
+      identifier: CVE-2026-49257 / GHSA-73cv-556c-w3g6
+      relationship: enabling_vulnerability
+      exploitation_status: public_poc_no_production_exploitation_identified
+      impact: Insecure defaults exposed all 14 server tools and credentials to network-adjacent callers.
+      remediation: Upgrade to 3.1.0 or later and require authentication with non-public binding.
+      selected: true
+      rationale: Highest-impact reachability example; the documented objective is direct access and invocation, not mapping.
+    - source_id: SRC-ghsa-typescript-w48q
+      identifier: CVE-2025-66414 / GHSA-w48q-cv73-mx4w
+      relationship: enabling_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: A malicious site could reach certain unauthenticated localhost HTTP servers and exposed tools or resources.
+      remediation: Upgrade the TypeScript SDK to 1.24.0 or later and use host validation or stdio where appropriate.
+      selected: true
+      rationale: High-impact reachability example; neither advisory nor NVD documents capability enumeration.
+    - source_id: SRC-ghsa-python-hvrp
+      identifier: CVE-2026-52870 / GHSA-hvrp-rf83-w775
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: One client could enumerate, inspect, or modify other clients' experimental task records.
+      remediation: Upgrade the Python SDK to 1.27.2 or later or disable experimental task support.
+      selected: true
+      rationale: Direct enumeration but of task state rather than advertised capabilities; retained to clarify the contract boundary.
+
+sources_consulted:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-2026-roots
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-attack-t1518
+  - SRC-arxiv-scout-2608.23992
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-49257
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-nvd-cve-2025-66414
+  - SRC-ghsa-typescript-w48q
+  - SRC-nvd-cve-2026-52870
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+sources_cited:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-mcp-2026-roots
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-attack-t1518
+  - SRC-arxiv-scout-2608.23992
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2026-49257
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-nvd-cve-2025-66414
+  - SRC-ghsa-typescript-w48q
+  - SRC-nvd-cve-2026-52870
+  - SRC-ghsa-python-hvrp
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: Capability-list output may be mistaken for the complete callable surface.
+    resolution: CVE-2026-46519 shows tools/call authorization can diverge from tools/list filtering; the technique describes only advertised visibility.
+  - issue: Concentrated discovery traffic may be mistaken for malicious intent.
+    resolution: Inspector and SCOUT establish legitimate use, so the analytic is experimental, baselined, and purpose-suppressed.
+  - issue: Roots appear to add a current enumeration surface.
+    resolution: Roots are retained only as a deprecated legacy variant and are identified as client-provided informational guidance.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T1605-C005]
+  rationale: >-
+    Direct sources independently establish the enumerable protocol surfaces,
+    practical listing, legitimate production scale, and a general ATT&CK
+    discovery purpose. Their adversarial MCP-specific combination remains an
+    inference because no direct malicious production incident or controlled
+    capability-mapping demonstration was identified.
+
+source_archive:
+  manifest: ../../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,28 @@
+version: 1
+technique_id: SAF-T1301
+frozen_on: "2026-09-01"
+do_not_integrate_automatically: true
+synthetic_joins:
+  source_ids:
+    - SRC-clean-t1301-arxiv-2512.06556v2
+    - SRC-clean-t1301-attack-t1548
+    - SRC-clean-t1301-invariant-scan
+    - SRC-clean-t1301-invariant-shadowing
+    - SRC-clean-t1301-jfrog-cve-2026-25905
+    - SRC-clean-t1301-mcp-annotations-2026
+    - SRC-clean-t1301-mcp-tools-2025-11-25
+    - SRC-clean-t1301-mcp-tools-draft
+    - SRC-clean-t1301-ms-ir-2026
+    - SRC-clean-t1301-ms-taxonomy-2026
+    - SRC-clean-t1301-nvd-cve-2025-58357
+    - SRC-clean-t1301-nvd-cve-2026-33252
+    - SRC-clean-t1301-openai-mcp-guide
+    - SRC-clean-t1301-unit42-shadowing
+  neighbor_ids: [SAF-T9101, SAF-T9102, SAF-T9103]
+  mitigation_ids: [SAF-M-901, SAF-M-902, SAF-M-903]
+  history_token: "1301130113011301130113011301130113011301"
+integration_requirements:
+  - Reconcile source records by official URL without changing claim meaning or exact locator intent.
+  - Map synthetic neighbor and mitigation IDs to canonical records after inspecting the shared framework only after freeze.
+  - Replace the synthetic history token with an integration commit only after canonical integration exists.
+  - Re-run detection tests and the current strict validator after every join reconciliation.

@@ -1,0 +1,373 @@
+version: 1
+technique_id: SAF-T1914
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct MCP 2026-07-28 specification: architecture, tools, and security principles"
+        - "Direct MITRE ATT&CK TA0010 and T1567 technique pages"
+      material_changes:
+        - Established the host-enforced cross-server boundary and model-controlled tool/result mechanics.
+        - Bounded the ATT&CK mapping to Exfiltration with a conditional T1567 analogy.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD CVE 2.0 API keywordSearch=Model Context Protocol"
+        - "NVD exact-ID records for CVE-2025-34072, CVE-2026-46555, CVE-2026-73498, CVE-2026-13341, and CVE-2026-25536"
+        - "CISA KEV official CSV exact-ID checks for four candidate CVEs"
+        - "Exact GHSA-7jj9-4qqq-4xc4, opened only after NVD identified it"
+      material_changes:
+        - Selected CVE-2025-34072 as the highest-impact direct vulnerability example.
+        - Classified CVE-2026-46555 as enabling evidence and three CVEs as adjacent or rejected.
+        - Found no verified production breach in the reviewed direct-authority corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "Invariant Labs first-party MCP research pages for tool poisoning, WhatsApp, and GitHub flows"
+        - "Direct arXiv PDFs 2302.12173v2 and 2406.13352v3"
+        - "Embrace The Red first-party Slack MCP advisory"
+      material_changes:
+        - Selected three controlled end-to-end demonstrations using distinct source/sink pairs.
+        - Classified the complete technique as demonstrated rather than observed.
+        - Added model, host, approval, and evaluation-specific limitations.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "MCP tools security considerations and architecture host duties"
+        - "AgentDojo source/sink formalization and defense evaluation"
+        - "Direct OpenTelemetry MCP semantic-conventions landing page and exact linked repository"
+      material_changes:
+        - Defined normalized host audit telemetry and a source-to-sink correlation analytic.
+        - Rejected extrapolation from relocated OpenTelemetry pages lacking stable reviewed MCP fields.
+        - Added fingerprint, authorization, destination, false-positive, and observability constraints.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "Counter-read all selected publications for production-status, model, permission, and setup limitations"
+        - "Compare protocol SHOULD guidance against implementation variability"
+        - "Test alternate explanations: single-tool flaw, router leak, direct server egress, or injection without disclosure"
+      material_changes:
+        - Narrowed scope to a host-mediated sensitive source-to-distinct-sink transfer.
+        - Recorded the absence of a verified production incident as a bounded evidence gap.
+        - Required two synthetic neighbor joins and deferred their real IDs to integration.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD CVE 2.0 API keywordSearch=MCP data exfiltration; totalResults=4"
+      material_changes: []
+      notes: >-
+        CVE-2025-34072 was already selected. CVE-2026-29783, CVE-2026-40159,
+        and CVE-2026-73037 were command-execution, inherited-environment, or
+        XSS behaviors outside the distinct source-to-sink contract; no claim or selected example changed.
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD CVE 2.0 API keywordSearch=Model Context Protocol prompt injection; totalResults=9"
+      material_changes: []
+      notes: >-
+        The nine results were already reviewed or concerned single-tool command,
+        content, query, argument, SSRF, path, sandbox, or eval injection. None
+        established an additional end-to-end source-tool-to-distinct-sink disclosure.
+  rationale: >-
+    The packet directly covers current protocol mechanics, four high-impact
+    end-to-end demonstrations or vulnerabilities, official vulnerability and
+    exploitation catalogs, empirical security research, detector telemetry,
+    controls, and explicit contrary evidence. The final two targeted NVD passes
+    produced no material claim or example change, so further direct-authority
+    searching was unlikely to alter the bounded technique before freeze.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 19
+  selected_examples:
+    - SRC-nvd-cve-2025-34072
+    - SRC-invariant-github-mcp-2025
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-invariant-tpa-2025-04-01
+  no_qualifying_examples_rationale: >-
+    Not applicable: four qualifying examples were selected. No verified
+    production incident qualified, so the selected set comprises one disclosed
+    vulnerability with a controlled proof of concept and three direct controlled demonstrations.
+  candidates:
+    - source_id: SRC-nvd-cve-2025-34072
+      identifier: CVE-2025-34072 / Slack MCP link-unfurl exfiltration
+      rank: 1
+      relationship: direct_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept; not found in CISA KEV on 2026-09-02"
+      impact: Private data embedded in a Slack link can be sent to an attacker endpoint by preview infrastructure without a click; NVD CVSS v4 is 9.3 critical.
+      remediation: The researcher states the deprecated server was archived; disable link and media unfurling, constrain destinations, and do not use the deprecated server for sensitive workflows.
+      selected: true
+      rationale: Highest public severity and a directly demonstrated end-to-end disclosure matching the contract, with official CVE metadata and first-party corroboration.
+
+    - source_id: SRC-invariant-github-mcp-2025
+      identifier: Invariant Labs GitHub toxic-agent-flow demonstration
+      rank: 2
+      relationship: direct_demonstration
+      exploitation_status: Controlled proof of concept; no production exploitation established.
+      impact: Private repository details, including sensitive business information, were placed into a public pull request.
+      remediation: Apply granular source and write permissions, inspect full call arguments, constrain public sinks, and monitor cross-tool data flow.
+      selected: true
+      rationale: Direct, high-consequence private-to-public transfer through trusted source and sink tools.
+
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: Invariant Labs WhatsApp MCP cross-server and result-injection experiments
+      rank: 3
+      relationship: direct_demonstration
+      exploitation_status: Controlled experiment; no production exploitation established.
+      impact: Chat-history or contact data returned by a trusted tool was sent to an attacker-selected WhatsApp number.
+      remediation: Bind descriptions to reviewed versions, isolate servers, enforce cross-server data-flow policy, and show complete recipients and arguments before approval.
+      selected: true
+      rationale: Directly exercises both description-based shadowing and indirect injection through a source result with a distinct trusted sink.
+
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Labs tool-poisoning and cross-server email-shadowing demonstrations
+      rank: 4
+      relationship: direct_demonstration
+      exploitation_status: Controlled Cursor demonstrations; no production exploitation established.
+      impact: Local configuration or SSH key material could be passed to a malicious tool, or a trusted email sink could be redirected to an attacker recipient.
+      remediation: Treat descriptions as untrusted, pin reviewed tool metadata, display complete arguments, and enforce cross-server transfer policy.
+      selected: true
+      rationale: Foundational direct demonstration of two contract-matching variants, ranked below examples with clearer public-destination or messaging consequences.
+
+    - source_id: SRC-nvd-cve-2026-46555
+      identifier: CVE-2026-46555 / unauthenticated WhatsApp MCP bridge
+      relationship: enabling_vulnerability
+      exploitation_status: "CISA SSVC: none as of the reviewed NVD record"
+      impact: A local caller, including a sibling MCP flow, could read and send a local file as a WhatsApp attachment.
+      remediation: Upgrade to 0.2.1 for authentication, Host validation, and path confinement.
+      selected: false
+      rationale: Material enabling infrastructure, but the record does not prove a completed host-mediated source-tool-to-sink-tool chain.
+
+    - source_id: SRC-nvd-cve-2026-73498
+      identifier: CVE-2026-73498 / Confluence attachment local-file upload
+      relationship: rejected
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD record"
+      impact: A caller-selected local path could be opened and uploaded by one attachment tool.
+      remediation: Upgrade to the fixed 0.22.0 release and restrict readable paths.
+      selected: false
+      rationale: One vulnerable tool performs both read and upload; no distinct source-to-sink tool transition exists.
+
+    - source_id: SRC-nvd-cve-2026-13341
+      identifier: CVE-2026-13341 / Kong Konnect MCP indirect prompt injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: none as of the reviewed NVD record"
+      impact: Untrusted input could cause unintended API requests.
+      remediation: Upgrade to version 1.0.0 or later.
+      selected: false
+      rationale: The public record does not establish sensitive source data crossing into a distinct sink.
+
+    - source_id: SRC-nvd-cve-2026-25536
+      identifier: CVE-2026-25536 / MCP TypeScript SDK cross-client response leak
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: none as of the reviewed NVD record"
+      impact: A response could be delivered to the wrong connected client.
+      remediation: Upgrade to version 1.26.0 or later.
+      selected: false
+      rationale: A response-routing defect causes disclosure without adversary-influenced host orchestration across source and sink tools.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-29783 / Copilot CLI shell safety bypass
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: none in the reviewed NVD result"
+      impact: Crafted shell syntax could lead to local code execution and potential data exfiltration.
+      remediation: Upgrade to 0.0.423 or later.
+      selected: false
+      rationale: Potential exfiltration follows arbitrary command execution; no distinct tool-source-to-tool-sink flow is established.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-40159 / PraisonAI inherited environment exposure
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: An untrusted MCP subprocess inherits host secrets and could exfiltrate them.
+      remediation: Upgrade to 4.5.128 or later and avoid passing ambient secrets to subprocesses.
+      selected: false
+      rationale: The exposure occurs inside a spawned server process and does not require a host-mediated transition between source and sink tools.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-73037 / next-ai-draw-io reflected XSS
+      relationship: rejected
+      exploitation_status: "CISA SSVC: none in the reviewed NVD result"
+      impact: Script execution in a localhost origin could expose diagram sessions or API data.
+      remediation: Use a release later than the affected 0.4.16 boundary when available and neutralize query input.
+      selected: false
+      rationale: The term MCP appears as a query-parameter name; the record is an XSS flaw, not an MCP tool chain.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2025-52573 / iOS Simulator MCP command injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: none in the reviewed NVD result"
+      impact: Prompt-influenced arguments could execute host shell commands.
+      remediation: Upgrade to 1.3.3 or later.
+      selected: false
+      rationale: A single vulnerable tool enables command execution but the record does not show a confidential source-to-distinct-sink flow.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2025-58357 / 5ire content injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: Content injection could affect the desktop assistant across malicious pages, servers, or tool integrations.
+      remediation: Upgrade to 0.14.0 or later.
+      selected: false
+      rationale: The public description does not identify source data, a distinct sink, or a completed disclosure.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-33980 / Azure Data Explorer MCP KQL injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: A caller could execute unintended database queries with confidentiality and integrity consequences.
+      remediation: Apply the referenced patch or later fixed release and validate table identifiers.
+      selected: false
+      rationale: The public record establishes query injection within one server, not transfer into a distinct outbound sink tool.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-39884 / Kubernetes MCP argument injection
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: Injected flags could expose internal Kubernetes services or target another namespace.
+      remediation: Upgrade to 3.5.0 or later and use structured argument passing.
+      selected: false
+      rationale: Network exposure via one vulnerable command handler is not the contract's source-result-to-distinct-sink flow.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-65056 / mcp-webresearch SSRF
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: A browser tool could retrieve internal or metadata endpoints into model context.
+      remediation: Block loopback, link-local, private, and metadata destinations and validate resolved addresses.
+      selected: false
+      rationale: The record establishes a sensitive source primitive but no later distinct sink transfer.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-44192 / Ansible Lightspeed MCP path traversal
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: none in the reviewed NVD result"
+      impact: Indirect injection could cause unauthorized file writes and potential host compromise.
+      remediation: Apply Red Hat's fixed package or mitigation when available and restrict file paths.
+      selected: false
+      rationale: The immediate behavior is file write and code-execution enablement rather than disclosure through a distinct sink.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-67531 / FrontMCP sandbox escape
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: One tool call could escape a sandbox and expose process-held secrets.
+      remediation: Upgrade to 1.5.7 or later.
+      selected: false
+      rationale: A single-tool sandbox escape exposes secrets within the server process; it is not the host-mediated cross-tool flow defined here.
+
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-75062 / langfun eval injection
+      relationship: rejected
+      exploitation_status: "CISA SSVC: proof of concept in the reviewed NVD result"
+      impact: Crafted prompts could cause unsandboxed Python expression execution.
+      remediation: Upgrade to 0.1.2 or later and remove unsandboxed evaluation.
+      selected: false
+      rationale: The record does not describe MCP source/sink tools or a tool-to-tool disclosure.
+
+sources_consulted:
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-overview-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026
+  - SRC-mcp-security-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-blog-index
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-cve-34072
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-web-services-root
+  - SRC-nvd-token-scope-corpus
+  - SRC-nvd-cve-2025-34072
+  - SRC-nvd-cve-2026-46555
+  - SRC-ghsa-7jj9-4qqq-4xc4
+  - SRC-whatsapp-release-0-2-1
+  - SRC-nvd-cve-2026-73498
+  - SRC-nvd-cve-2026-13341
+  - SRC-nvd-cve-2026-25536
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-greshake-ipi-2023
+  - SRC-agentdojo-2024
+  - SRC-mitre-ta0010
+  - SRC-mitre-t1567
+  - SRC-opentelemetry-moved-2026
+  - SRC-opentelemetry-genai-repo-2026
+
+sources_cited:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-cve-34072
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-cve-2025-34072
+  - SRC-nvd-cve-2026-46555
+  - SRC-ghsa-7jj9-4qqq-4xc4
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-greshake-ipi-2023
+  - SRC-agentdojo-2024
+  - SRC-mitre-ta0010
+  - SRC-mitre-t1567
+
+sources_rejected:
+  - source_id: SRC-mcp-doc-index-2026
+    reason: Navigation authority only; substantive claims use the linked dated specification pages.
+  - source_id: SRC-mcp-security-2026-07-28
+    reason: Useful adjacent security guidance, but it does not directly define the target source-to-distinct-sink behavior.
+  - source_id: SRC-invariant-blog-index
+    reason: Navigation page only; claims use the complete first-party articles.
+  - source_id: SRC-nvd-web-services-root
+    reason: API-origin landing page only; no substantive record content.
+  - source_id: SRC-nvd-token-scope-corpus
+    reason: Used to challenge and saturate the candidate set; none of the newly surfaced records changed publishable claims.
+  - source_id: SRC-whatsapp-release-0-2-1
+    reason: The rendered release page lacked sufficient remediation detail; claims use NVD and the complete vendor advisory.
+  - source_id: SRC-nvd-cve-2026-73498
+    reason: Single-tool read-and-upload behavior falls outside the distinct source-to-sink boundary.
+  - source_id: SRC-nvd-cve-2026-13341
+    reason: Unintended requests are disclosed, but no source data or distinct disclosure sink is established.
+  - source_id: SRC-nvd-cve-2026-25536
+    reason: Response-routing defect, not adversary-influenced host orchestration across tools.
+  - source_id: SRC-opentelemetry-moved-2026
+    reason: Relocation page exposes no stable reviewed MCP telemetry field definitions.
+  - source_id: SRC-opentelemetry-genai-repo-2026
+    reason: Repository root says MCP is in scope but provides no stable field-level authority used by the analytic.
+
+sources_blocked: []
+
+conflicts:
+  - issue: User confirmation is recommended and may interrupt a malicious sink call, but demonstrations report incomplete or habituated approval experiences.
+    resolution: Approval is treated as a conditional control and logged analytic field, never as proof that transfer cannot occur.
+  - issue: Prompt-injection detectors and tool filtering reduced some AgentDojo attack success, but neither was complete and both had applicability or utility limits.
+    resolution: Detection and mitigation are presented as layered controls with explicit blind spots, not guarantees.
+  - issue: CVE-2026-46555 allows a sibling server to invoke a WhatsApp bridge, but does not document the complete model-host chain.
+    resolution: It is retained as enabling vulnerability evidence and excluded from the four selected end-to-end examples.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1914-C004
+    - SAF-T1914-C006
+    - SAF-T1914-C007
+    - SAF-T1914-C008
+  rationale: >-
+    Multiple independent controlled publications demonstrate the complete
+    sensitive-source to distinct outbound-sink flow, and one official CVE records
+    a critical disclosed vulnerability with proof-of-concept status. The direct
+    authority corpus does not establish production exploitation, so observed
+    would overstate the evidence and demonstrated is the strongest supported label.
+
+source_archive:
+  manifest: source-manifest-fragment.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

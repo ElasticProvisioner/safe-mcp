@@ -1,0 +1,88 @@
+version: 1
+technique_id: SAF-T1910
+bundle_policy: >-
+  Apply only after FREEZE.sha256 verification. These joins are mechanical and
+  must not be used to introduce research, source leads, or prose changes.
+
+destination_joins:
+  tactic:
+    status: supplied_neutral_input
+    local_id: ATK-TA0011
+    action: Confirm that the destination tactic registry uses the supplied identifier and preserve it unchanged.
+  related_techniques:
+    status: synthetic_preintegration
+    records:
+      - local_id: SAF-T9001
+        semantic_role: Prompt injection or adversarial instruction delivery before transfer.
+        action: Replace with the exact destination technique ID and path for that role; preserve the distinction text.
+      - local_id: SAF-T9002
+        semantic_role: Direct overt data exfiltration without a concealed carrier or secondary side effect.
+        action: Replace with the exact destination technique ID and path for that role; preserve the distinction text.
+  mitigations:
+    status: none_declared
+    action: Do not infer mitigation registry joins from the prose; add one only through a separate framework review.
+  source_manifest:
+    status: local_fragment_complete
+    action: Reconcile the 16 local source IDs to exact destination manifest IDs, preserving all metadata and without adding sources.
+  framework_model:
+    status: local_fragment_complete
+    action: Merge the single technique record after related-technique replacement.
+  alignment_ledger:
+    status: local_fragment_complete
+    action: Merge the resolved issue after related-technique replacement.
+  history_trace:
+    status: synthetic_preintegration
+    validation_only_sha: 798df9bac21953bfcc8d133bc565667b6897e83c
+    action: Replace each matching staged ledger token with the actual destination repository post-integration commit SHA.
+
+isolated_validation_assumptions:
+  - The mock repository contains only the generic validator, this packet, its local registry fragments, and skeletal SAF-T9001 and SAF-T9002 neighbor README files.
+  - Synthetic neighbor files establish referential integrity only and carry no substantive technique description.
+  - Source acquisitions remain outside the publication bundle; source-manifest review_evidence records their immutable SHA-256 values.
+
+source_acquisition:
+  retained_outside_bundle: true
+  base_path: /private/tmp/saf-all-cleanroom/SAF-T1910/source-acquisition
+  records:
+    - {file: agentdojo.html, sha256: 7b6e97faaedcf0e1b5f3635b92a0da33afbe8529699d54a5c44ad58ce2fa8b02}
+    - {file: attack-t1048.html, sha256: 0b3efaa5339aa7cabf93b61d54d3906dfe5df804874365044ce8ec5099c521e0}
+    - {file: cisa-kev.json, sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e}
+    - {file: cve-2025-32711.json, sha256: c931bf400822eaf69872a047ce587d72e9c47060a2b4c358ccb4cf25229c91e1}
+    - {file: cve-2025-34072.json, sha256: fc9fae8b1554ea12cf55a9a200c2d4373135cf21039344c3b0f5e75119c3313f}
+    - {file: invariant-tool-poisoning.html, sha256: 614c457284af432ab44fe80b22db0f77c605c7e7c00073a77e2409728dd0764f}
+    - {file: invariant-whatsapp.html, sha256: fe81f9e467ad9e1a179176f9c55c43184400d7eb8b9331e0452c838805d60925}
+    - {file: mcp-architecture.html, sha256: 9d3c20cee7b2db7aefafe66808f25c5c1c779c8febbe0a734771bb8f53555da6}
+    - {file: mcp-safety-audit.html, sha256: a5e2abeb9293abb86c5d78022704be1a652a19677717e0bcf3081717dc943540}
+    - {file: mcp-security-best-practices.html, sha256: 7ee5531784cc3bd30f20808b9b3095bd174c516684ece2dd7b80bcdfe76655e2}
+    - {file: mcp-tools.html, sha256: 6cc5bbdc8a92ee5e3ebc991780446a34db98fe70383138274f79c9e68221fc72}
+    - {file: msrc-2025-jun.xml, sha256: 379055e22b5f9cd886175de0a05e0be84905fef1f9ab90698ddd847ab28f8806}
+    - {file: nvd-mcp-keyword.json, sha256: f96f910ca394869b04e3d7db17cf977eb13ded9d398caa43f4db5fc92ade02d9}
+    - {file: slack-chat-postmessage.html, sha256: 0cb05f0a61f0d1b9a7a8aee66c84642660b9e3a2a330e02ab014d44830eb446f}
+    - {file: slack-mcp-advisory.html, sha256: 192e68f91797e8a0e3da05a390d6f34740efe932ec9fd31eab6a7f0df35bff0c}
+    - {file: vulncheck-slack-mcp.html, sha256: 2d2bc194918d2f585f3dbd42d3d48879123394cb143d92a05223b08a491a3388}
+
+prohibited_pre_freeze_actions_confirmed:
+  destination_repository_written: false
+  preexisting_target_artifact_read: false
+  shared_registry_read: false
+  git_history_read: false
+  pull_request_or_issue_read: false
+  saf_site_read: false
+  general_web_search_used: false
+  github_discovery_used: false
+
+post_freeze_change_control: >-
+  Verify FREEZE.sha256 before integration. Record every mechanical ID, path, or
+  history-SHA replacement. Any substantive revision invalidates the clean-room
+  freeze and requires a new research, review, validation, and freeze cycle.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_tactic: ATK-TA0010
+  supplied_tactic_correction: ATK-TA0011 was corrected after catalog reconciliation.
+  canonical_neighbors: [SAF-T1102, SAF-T1911, SAF-T1912]
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-22, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-72, SAF-M-74]
+  attack_mapping: {id: T1048, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1910/validation/detection-test.txt
+    - research/techniques/SAF-T1910/validation/strict-validator.txt
+  source_archive: Source bodies remain outside the repository; canonical source records preserve frozen acquisition hashes as review evidence.

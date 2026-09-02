@@ -1,0 +1,69 @@
+version: 1
+technique_id: SAF-T1402
+name: Instruction Steganography
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Conceal an instruction from ordinary human or automated inspection
+  while preserving the agent's ability to recover it and let it influence planning
+  or tool use.
+scope:
+  security_boundary: Untrusted model-facing content crosses into instruction context
+    through a representation that is not equivalently visible at the review or approval
+    layer.
+  in_scope:
+  - Instructions concealed by encoding, fragmentation, cryptographic or opaque state,
+    invisible characters, or visual carriers.
+  - Recovery or interpretation of that concealed instruction by an MCP-connected or
+    agentic model.
+  - Tool metadata, tool results, resources, documents, paths, images, skills, and
+    imported agent state as carriers.
+  out_of_scope:
+  - Plaintext indirect prompt injection with no concealment-and-recovery step.
+  - Obfuscation applied only to an execution payload after the model has already selected
+    the action.
+  - Unicode spoofing or data steganography with no recoverable instruction supplied
+    to an agent.
+  affected_components:
+  - MCP host and client
+  - MCP server, tool definition, tool result, and resource
+  - Agent prompt construction, model, memory, skill package, and imported state
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: SAF-T1102 covers unconcealed instruction injection; SAF-T1402 additionally
+    requires a representation that hides the instruction at one review layer and a
+    recovery transition that makes it operative to the agent.
+required_evidence:
+- Establish that a model or agent can recover an instruction from a concealed carrier
+  and act on it.
+- Establish the carrier, trust boundary, prerequisites, and immediate agent outcome.
+- Separate controlled demonstrations and disclosed vulnerabilities from verified production
+  exploitation.
+- Search production-breach and vulnerability authorities and preserve an explicit
+  gap if no production incident qualifies.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Content-ingest or prompt-construction events with timestamp, session, origin,
+    trust, content hash, carrier type, representation findings, and transform.
+  - Decode, reconstruction, interpretation, and tool-action events with timestamp,
+    session, tool, sensitivity, approval state, and origin content hash.
+safe_example_constraints:
+- Use inert markers, sandbox files, placeholder credentials, and disabled networking.
+- Do not publish a live exfiltration destination, credential, destructive command,
+  or reusable malicious payload.
+- Describe hidden representations conceptually or with harmless synthetic fields.
+completion_evidence:
+- Every substantive publishable unit has a readable hidden trace to a validated claim
+  and reviewed source or a declared local artifact.
+- Every candidate not selected is resolved as excluded and omitted from publishable
+  prose where unsupported.
+- Two consecutive saturation passes produced no material change.
+- The deterministic detection suite and canonical strict isolated validator pass.
+- Publication-rights, framework-alignment, and clean-room gates pass with no unresolved
+  blocking issue.

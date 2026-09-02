@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T1205
+generated_on: "2026-09-01"
+research_changes_permitted_after_freeze: false
+
+seed_supplied_tactics:
+  - id: ATK-TA0003
+    label: Persistence
+    action: Verify the shared tactic join without changing the frozen technique conclusion.
+
+synthetic_neighbors:
+  - SAF-T9001
+  - SAF-T9002
+  - SAF-T9003
+synthetic_mitigations:
+  - SAF-M-9001
+  - SAF-M-9002
+  - SAF-M-9003
+
+source_ids_requiring_collision_review:
+  - SRC-azure-appservice-mcp-2026
+  - SRC-azure-mcp-security-2026
+  - SRC-docker-ghsa-46gc-2025
+  - SRC-google-mcp-security-2025
+  - SRC-invariant-tool-poisoning-2025
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-attack-t1554-2026
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-rug-pull-catalog-2026
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-nvd-cve-2025-58357
+  - SRC-nvd-cve-2025-64443
+  - SRC-song-mcp-attack-v4
+
+synthetic_history_sha:
+  value: 526c188f85022e2220de5c9c163627f73e5c90cb
+  derivation: SHA-1 of the isolated-validation label, not a repository commit.
+  action: Replace in traceability-ledger.yml with the honest integration commit SHA and rerun strict validation.
+
+path_joins:
+  - fragment: source-manifest-fragment.yml
+    target: research/source-manifest.yml
+  - fragment: framework-fragment.yml
+    target: research/framework-model.yml
+  - fragment: alignment-fragment.yml
+    target: research/alignment-ledger.yml
+  - fragment: techniques/SAF-T1205
+    target: techniques/SAF-T1205
+  - fragment: research/techniques/SAF-T1205
+    target: research/techniques/SAF-T1205
+
+attribution:
+  technique_author: OpenAI Codex clean-room research team
+  integration_reviewer: SAF-MCP maintainers
+  source_authors_preserved: true
+
+validation_only_dependencies:
+  - Minimal synthetic technique and mitigation README files exist only in the external mock repository.
+  - A copied current validator and its Python dependency environment exist only outside the bundle.
+  - Ephemeral source snapshots and extracted text exist only in /private/tmp/saf-t1205-sources.

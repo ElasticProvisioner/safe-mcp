@@ -1,0 +1,31 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1803
+    name: Database Dump
+    documentation_status: stable
+    evidence_status: observed
+    tactics:
+      - ATK-TA0009
+    technique_path: techniques/SAF-T1803/README.md
+    research_packet: research/techniques/SAF-T1803
+    related_techniques:
+      - SAF-T1801
+      - SAF-T1804
+    mitigations:
+      - SAF-M-12
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-71
+      - SAF-M-72
+    detection:
+      rule: techniques/SAF-T1803/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1803/test-logs.json
+        - tests/SAF-T1803/test_detection_rule.py
+        - research/techniques/SAF-T1803/validation/detection.txt
+        - research/techniques/SAF-T1803/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1213.006
+        type: direct

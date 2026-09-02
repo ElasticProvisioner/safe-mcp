@@ -1,0 +1,181 @@
+version: 1
+technique_id: SAF-T1203
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io specification local server stdio subprocess security'
+        - 'site:ts.sdk.modelcontextprotocol.io/v2 local servers StdioClientTransport child process'
+      material_changes:
+        - Established current SDK child-process launch semantics and SEP-1024 installation-consent boundary.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:cloud.google.com/blog/topics/threat-intelligence replace legitimate daemon malicious binary persistence'
+        - 'site:access.redhat.com/security/cve CVE-2024-3094 malicious code liblzma'
+        - 'site:access.redhat.com/security/cve "MCP server" overwrite programs libraries'
+        - 'site:services.nvd.nist.gov/rest/json/cves/2.0 CVE-2024-3094'
+      material_changes:
+        - Added three high-impact historical analogies and one MCP enabling vulnerability; no direct MCP binary-replacement incident was found.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:unit42.paloaltonetworks.com model context protocol malicious server legitimate functionality covert'
+      material_changes:
+        - Added an adjacent MCP demonstration supporting covert behavior but not binary replacement.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:attack.mitre.org detection compromise host software binaries file integrity process creation'
+        - 'site:nist.gov software firmware integrity verify prior to execution code signing'
+      material_changes:
+        - Added integrity, code-signing, hash-baseline, process-start, and limitation evidence for a deterministic analytic.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:attack.mitre.org/techniques/T1195 supply chain compromise before final consumer'
+        - 'site:attack.mitre.org/techniques/T1505 server software component extensibility'
+        - 'site:modelcontextprotocol.io "MCP Client Security Requirements for Local Servers"'
+      material_changes:
+        - Narrowed boundaries against initial installation, pre-consumer supply chain compromise, and installed server components.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io "binary integrity" MCP server'
+        - 'site:cisa.gov "MCP server" "backdoored"'
+        - 'site:nvd.nist.gov/vuln/detail "MCP server" "Embedded Malicious Code"'
+        - 'site:attack.mitre.org/techniques/T1554 "MCP"'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:cloud.google.com/blog/topics/threat-intelligence "MCP server binary" tamper'
+        - 'site:unit42.paloaltonetworks.com MCP "binary replacement"'
+        - 'site:nist.gov "integrity verification" "user-installed software" execution'
+        - 'site:access.redhat.com/security/cve "MCP server" overwrite programs libraries'
+      material_changes: []
+  rationale: >-
+    Separate authority, incident/advisory, demonstration, detection/defense, and
+    boundary searches covered every publishable proposition. Two subsequent
+    direct-authority-only passes found no new direct MCP replacement case, no
+    stronger exploitation evidence, and no control that changed the scope,
+    selected examples, evidence class, or analytic.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-mandiant-unc3886-2024
+    - SRC-mandiant-solarwinds
+    - SRC-redhat-cve-2024-3094
+    - SRC-unit42-mcp-sampling-2025
+  no_qualifying_examples_rationale: >-
+    Four high-impact examples qualify only as historical or adjacent evidence;
+    none is a direct production MCP server-binary replacement. The packet uses
+    them with explicit relationship and limitation labels and retains a
+    Research-Derived overall status.
+  candidates:
+    - source_id: SRC-mandiant-unc3886-2024
+      identifier: UNC3886 tac_plus replacement
+      relationship: historical_analogy
+      exploitation_status: observed_production
+      impact: Credential logging through a replaced legitimate daemon.
+      remediation: Incident-specific rebuild, scoping, and credential response; no universal vendor patch.
+      selected: true
+      rationale: Closest reviewed production example of post-deployment replacement at a stable daemon path.
+    - source_id: SRC-mandiant-solarwinds
+      identifier: SUNBURST
+      relationship: historical_analogy
+      exploitation_status: observed_production
+      impact: Signed trojanized update enabled command execution across victim environments.
+      remediation: Vendor updates and incident-specific eradication; the publication documents response context rather than one universal fix.
+      selected: true
+      rationale: High-impact signed-backdoor example, explicitly outside the post-deployment boundary.
+    - source_id: SRC-redhat-cve-2024-3094
+      identifier: CVE-2024-3094
+      relationship: historical_analogy
+      exploitation_status: none_reported_in_reviewed_nvd_record
+      impact: Malicious liblzma code could interfere with an OpenSSH daemon.
+      remediation: Affected xz 5.6.0 and 5.6.1 builds were withdrawn; Red Hat reported no affected RHEL release.
+      selected: true
+      rationale: Authoritative disclosed backdoor with current NVD exploitation status, but not MCP or post-deployment replacement.
+    - source_id: SRC-unit42-mcp-sampling-2025
+      identifier: Unit 42 MCP sampling demonstrations
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration
+      impact: Covert prompt and file operations while retaining legitimate MCP functionality.
+      remediation: Trust-boundary isolation and server behavior review; no binary patch applies.
+      selected: true
+      rationale: Strongest direct MCP behavioral evidence, with explicit statement that no binary replacement was demonstrated.
+    - source_id: SRC-redhat-cve-2026-44192
+      identifier: CVE-2026-44192
+      relationship: enabling_vulnerability
+      exploitation_status: not_stated_by_source
+      impact: Arbitrary user-writable file creation or overwrite and staged code execution.
+      remediation: Red Hat states no suitable mitigation on the reviewed page; affected distribution scope is bounded in its statement.
+      selected: false
+      rationale: Could enable artifact replacement, but the advisory does not document replacement, persistence, or later server launch.
+    - source_id: SRC-mitre-attack-t1195
+      identifier: Pre-consumer software supply-chain compromise
+      relationship: rejected
+      exploitation_status: not_applicable
+      impact: Product or delivery manipulation before consumer receipt.
+      remediation: Not a product-specific advisory.
+      selected: false
+      rationale: Defines a neighboring mechanism rather than a SAF-T1203 example.
+sources_consulted:
+  - SRC-mcp-ts-stdio-v2
+  - SRC-mcp-sep-1024
+  - SRC-mitre-t1554
+  - SRC-mitre-det0336-v1
+  - SRC-mitre-attack-t1195
+  - SRC-mitre-t1505-v1.5
+  - SRC-mandiant-unc3886-2024
+  - SRC-mandiant-solarwinds
+  - SRC-redhat-cve-2024-3094
+  - SRC-nvd-cve-2024-3094
+  - SRC-unit42-mcp-sampling-2025
+  - SRC-redhat-cve-2026-44192
+  - SRC-nist-sp800-53r5.1
+  - SRC-nist-code-signing-2018
+sources_cited:
+  - SRC-mcp-ts-stdio-v2
+  - SRC-mcp-sep-1024
+  - SRC-mitre-t1554
+  - SRC-mitre-det0336-v1
+  - SRC-mitre-attack-t1195
+  - SRC-mitre-t1505-v1.5
+  - SRC-mandiant-unc3886-2024
+  - SRC-mandiant-solarwinds
+  - SRC-redhat-cve-2024-3094
+  - SRC-nvd-cve-2024-3094
+  - SRC-unit42-mcp-sampling-2025
+  - SRC-redhat-cve-2026-44192
+  - SRC-nist-sp800-53r5.1
+  - SRC-nist-code-signing-2018
+sources_rejected: []
+sources_blocked: []
+conflicts:
+  - issue: A valid signature may appear inconsistent with an integrity alert.
+    resolution: NIST code-signing guidance and SUNBURST show that signer validity does not prove benign content; the analytic keys on an independently approved digest.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1203-C001
+    - SAF-T1203-C003
+    - SAF-T1203-C004
+    - SAF-T1203-C005
+    - SAF-T1203-C010
+  rationale: >-
+    MCP launch semantics, host-binary persistence, and malicious-server
+    concealment are independently supported, but no direct MCP replacement
+    incident or end-to-end replacement demonstration was identified.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,31 @@
+version: 1
+techniques:
+  - technique_id: SAF-T3001
+    name: RAG Backdoor Attack
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics: [ATK-TA0040]
+    technique_path: techniques/SAF-T3001/README.md
+    research_packet: research/techniques/SAF-T3001
+    related_techniques: [SAF-T1102, SAF-T2106]
+    mitigations:
+      - SAF-M-3
+      - SAF-M-11
+      - SAF-M-12
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-30
+      - SAF-M-32
+      - SAF-M-51
+    detection:
+      rule: techniques/SAF-T3001/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T3001/test_detection.py
+        - tests/SAF-T3001/test-logs.json
+        - research/techniques/SAF-T3001/validation/detection-tests.txt
+        - research/techniques/SAF-T3001/validation/strict-validator.txt
+        - research/techniques/SAF-T3001/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1565.001
+        type: analogous

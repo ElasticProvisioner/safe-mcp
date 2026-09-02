@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T1805
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1805
+  neutral_name: Context Snapshot Capture
+allowed_inputs:
+- Neutral identifier SAF-T1805, neutral name Context Snapshot Capture, and tactic
+  ATK-TA0009 Collection supplied by the commissioning task.
+- Generic author-saf-technique skill, clean-room methodology, readable trace format,
+  generic templates, and generic validator.
+- Direct first-party protocol, product, vendor-advisory, government, standards, and
+  framework authority sources independently opened during this run.
+prohibited_inputs:
+- Existing techniques/SAF-T1805/README.md or any predecessor copy.
+- Existing research/techniques/SAF-T1805/ directory or evidence packet.
+- Existing techniques/SAF-T1805/detection-rule.yml or target-specific tests.
+- Shared SAF framework, source, alignment, mitigation, or technique registries beyond
+  generic schemas.
+- SAF websites, registry descriptions, methodology impact-example content, target-specific
+  issues, pull request material, or previous conversation context.
+- Git history, diffs, blame, commits, tags, or branches concerning the target.
+- General web search, search-query discovery, GitHub search, and third-party aggregators.
+independent_research:
+  searches:
+  - Direct MCP specification review at modelcontextprotocol.io.
+  - Direct LangGraph and LangSmith documentation review at docs.langchain.com.
+  - Direct NVD API keyword queries for conversation history, chat history disclosure,
+    agent context leakage, assistant exfiltration, Copilot disclosure, and thread
+    state disclosure.
+  - Direct CVE Program API records for exact identifiers returned by NVD.
+  - Direct vendor advisories at GitHub, IBM, and Microsoft after exact artifacts were
+    identified by government or CVE authority records.
+  - Direct CISA Known Exploited Vulnerabilities catalog review.
+  - Direct MITRE ATT&CK and NIST incident-response publications.
+  opened_source_ids:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-resources-2026
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-langgraph-persistence
+  - SRC-langgraph-time-travel
+  - SRC-langsmith-observability
+  - SRC-langsmith-sensitive-trace-controls
+  - SRC-ghsa-766v-q9x3-g744
+  - SRC-cve-2026-56077
+  - SRC-ibm-cve-2026-9130
+  - SRC-cve-2026-9130
+  - SRC-msrc-cve-2025-32711
+  - SRC-cve-2025-32711
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-t1213-v3.4
+  - SRC-nist-sp800-61r3
+  - SRC-nvd-search-corpus
+  - SRC-msrc-cve-2025-53774
+  - SRC-msrc-cve-2025-53787
+  - SRC-msrc-cve-2025-59272
+  - SRC-aim-echoleak-redirect
+  - SRC-attack-t1005
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1805/mock
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1805
+  result: PASS SAF-T1805
+  deliberately_deferred_joins:
+  - Destination source-ID collision resolution.
+  - Destination neighbor and mitigation reconciliation.
+  - Replacement of the isolated scaffold SHA with the destination integration commit.
+integration_constraints:
+- The bundle must be normalized without new research before repository integration.
+- Synthetic neighbor identifiers SAF-T1603 through SAF-T1102 must be reconciled against
+  the destination framework after the freeze.
+- The isolated scaffold history SHA must be replaced by an honest destination integration
+  SHA without changing research conclusions.
+- Source IDs must be collision-checked against the destination source manifest while
+  preserving claim-to-source semantics.
+attestation: I generated this bundle without opening prohibited target or shared SAF
+  content, used only the allowed neutral inputs and independently opened direct authority
+  sources, and observed no contamination before freezing.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-overview: SRC-mcp-overview-2026
+    SRC-mcp-resources: SRC-mcp-resources-2026
+    SRC-mcp-sampling: SRC-mcp-sampling-2026
+    SRC-mcp-tools: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security: SRC-mcp-security-spec-2026-07-28
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-attack-t1213: SRC-mitre-t1213-v3.4
+    SRC-nist-sp800-61r3: SRC-nist-sp800-61r3
+    SRC-nvd-query-set-2026-09-02: SRC-nvd-search-corpus
+    SRC-mitre-attack-t1005: SRC-attack-t1005
+  new_shared_source_records:
+  - SRC-langgraph-persistence
+  - SRC-langgraph-time-travel
+  - SRC-langsmith-observability
+  - SRC-langsmith-sensitive-trace-controls
+  - SRC-ghsa-766v-q9x3-g744
+  - SRC-cve-2026-56077
+  - SRC-ibm-cve-2026-9130
+  - SRC-cve-2026-9130
+  - SRC-msrc-cve-2025-32711
+  - SRC-msrc-cve-2025-53774
+  - SRC-msrc-cve-2025-53787
+  - SRC-msrc-cve-2025-59272
+  - SRC-aim-echoleak-redirect
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0009
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-21
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-69
+  - SAF-M-74
+  status: integrated_and_validated

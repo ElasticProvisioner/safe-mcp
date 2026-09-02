@@ -1,51 +1,100 @@
-title: Cross-Agent Instruction Injection Detection
-id: a7d4f892-3e45-4c67-9f83-1b5e2a8d4c71
+title: Cross-Agent Instruction Injection Correlation
+id: 53ba5de0-7060-4e92-93e5-f27b529b6ae9
 status: experimental
-description: Conceptual detection rule for cross-agent instruction injection attacks - field names are examples as MCP lacks standardized logging
-author: Arjun Subedi (Astha.ai Security Research Team)
-date: 2025-07-24
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1705
-  - https://arxiv.org/abs/2503.12188  # Triedman et al. - Multi-Agent Systems Execute Arbitrary Malicious Code
-  - https://arxiv.org/abs/2504.00218  # Khan et al. - Agents Under Siege
-logsource:
-  product: n/a  # MCP implementations vary
-  service: n/a  # No standardized logging service exists
-detection:
-  # NOTE: Field names below are conceptual examples
-  # Actual MCP implementations may use different field names
-  selection_agent_spoofing:
-    # Example field names - not standardized across MCP implementations
-    agent_identifier|contains:
-      - 'Advisor'
-      - 'Assistant'
-      - 'Helper'
-      - 'Manager'
-      - 'Specialist'
-    agent_identifier|re: '.*[aei][aei].*' # Detect typosquatting patterns like LegalAdviser vs LegalAdvisor
-  selection_suspicious_patterns:
-    # Message content field names vary by implementation
-    communication_content|contains:
-      - '[SYSTEM:'
-      - 'ignore previous'
-      - 'new instruction'
-      - 'override directive'
-      - 'share with external'
-  selection_anomalous_routing:
-    hop_count|gt: 3
-    timeframe: 5m
-  condition: selection_agent_spoofing or selection_suspicious_patterns or selection_anomalous_routing
-falsepositives:
-  - Legitimate agent name variations
-  - Normal multi-hop agent communications
-  - System administration instructions
-level: high
+description: >-
+  Correlates an inter-agent message carrying an explicit untrusted-instruction
+  signal with an unapproved receiver action that inherits authority from that
+  message. This analytic depends on trustworthy provenance and causal tracing;
+  it does not classify natural-language intent by itself.
+author: SAF-MCP clean-room research
+date: "2026-09-02"
+modified: "2026-09-02"
 tags:
+  - saf.t1705
   - attack.lateral_movement
-  - attack.t1557    # Adversary-in-the-Middle - intercepting agent communications
-  - attack.t1036.005 # Masquerading: Match Legitimate Name - agent name spoofing
-  - safe.t1705      # Our technique ID
-notes:
-  - This rule is conceptual as MCP lacks standardized logging formats
-  - Field names must be adapted to specific MCP implementations
-  - Actual detection requires custom log parsing for each MCP platform 
+logsource:
+  category: application
+  product: multi_agent_orchestrator
+  service: agent_audit_events
+detection:
+  selection_message:
+    event_type: inter_agent_message
+    provenance_trust:
+      - untrusted
+      - mixed
+    instruction_signal: true
+  selection_action:
+    event_type: agent_action
+    authority_inherited_from_message: true
+    approval_state: none
+  correlation:
+    window_seconds: 120
+    same_fields:
+      - run_id
+    message_receiver_to_action_agent: true
+    message_id_to_action_causal_message_id: true
+    ordered: true
+  condition: selection_message followed_by selection_action under correlation
+fields:
+  - timestamp
+  - run_id
+  - context_id
+  - task_id
+  - message_id
+  - sender_agent
+  - receiver_agent
+  - agent_id
+  - causal_message_id
+  - content_hash
+  - provenance_trust
+  - instruction_signal
+  - tool_name
+  - argument_hash
+  - effective_authority
+  - authority_inherited_from_message
+  - approval_state
+  - policy_version
+falsepositives:
+  - Legitimate automation may intentionally relay mixed-trust instructions and act without a human approval step.
+  - Incorrect provenance or causality instrumentation can create false joins.
+level: high
+analytic_notes:
+  goal: Identify receiver actions that immediately operationalize attacker-influenced instructions crossing an agent boundary.
+  tuning: Require high-risk tools or sensitive resources for higher precision, and allowlist reviewed automation paths only with stable provenance and policy evidence.
+  blind_spots:
+    - Missing or attacker-controlled provenance, message, or causal identifiers.
+    - Actions delayed beyond the configured window or routed through uninstrumented shared memory.
+    - Instructions that influence decisions without producing an audited action.
+    - Upstream instruction classifiers that miss paraphrase, encoding, or multimodal content.
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1705-C008, SAF-T1705-C010]
+  telemetry_claim_ids: [SAF-T1705-C001, SAF-T1705-C002, SAF-T1705-C010]
+  limitation_claim_ids: [SAF-T1705-C010, SAF-T1705-C011]
+  validation_artifacts:
+    - tests/SAF-T1705/test_detection_rule.py
+    - tests/SAF-T1705/fixtures.yml
+    - research/techniques/SAF-T1705/validation/detection-tests.txt
+    - research/techniques/SAF-T1705/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1705-C002, SAF-T1705-C010]
+      rationale: The orchestrator or host is the correlation point for inter-agent and action audit events.
+    selection_message:
+      claim_ids: [SAF-T1705-C001, SAF-T1705-C010]
+      rationale: A2A message identifiers and explicit provenance enable a bounded candidate message selection.
+    selection_action:
+      claim_ids: [SAF-T1705-C008, SAF-T1705-C010]
+      rationale: The defining risk appears when a distinct receiver operationalizes the instruction under receiver authority without an independent approval.
+    correlation:
+      claim_ids: [SAF-T1705-C001, SAF-T1705-C010]
+      rationale: Run, receiver, message, causality, ordering, and time fields reduce unrelated-event joins.
+    condition:
+      claim_ids: [SAF-T1705-C008, SAF-T1705-C010]
+      rationale: The ordered message-to-action sequence represents the contract's cross-agent boundary.
+    fields:
+      claim_ids: [SAF-T1705-C001, SAF-T1705-C002, SAF-T1705-C010]
+      rationale: The exposed fields support provenance, protocol, policy, and receiver-action review.
+    falsepositives:
+      claim_ids: [SAF-T1705-C010, SAF-T1705-C011]
+      rationale: Legitimate delegation and imperfect classifiers can resemble the sequence and require policy-aware tuning.

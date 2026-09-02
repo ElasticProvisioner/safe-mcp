@@ -1,0 +1,48 @@
+version: 1
+issues:
+  - id: ALIGN-SAF-T1112-001
+    triggered_by: SAF-T1112
+    affects:
+      - SAF-T1112
+    severity: high
+    category: evidence_classification
+    issue: The attack mechanism is inferred from protocol authority without a qualifying direct incident or end-to-end demonstration.
+    resolution: Marked Research-Derived; bounded negative search and the gated-source gap are explicit.
+    status: resolved
+  - id: ALIGN-SAF-T1112-002
+    triggered_by: SAF-T1112
+    affects:
+      - SAF-T1112
+      - SAF-T1102
+      - SAF-T1104
+    severity: high
+    category: neighbor_boundary
+    issue: Malicious MCP server behavior can be confused with ordinary content manipulation or unauthorized tool execution.
+    resolution: Scope requires sampling/createMessage and the client-mediated generation boundary; SAF-T1102 covers ordinary prompt injection and SAF-T1104 covers tool-authorization crossing.
+    status: resolved
+  - id: ALIGN-SAF-T1112-003
+    triggered_by: SAF-T1112
+    affects:
+      - SAF-T1112
+    severity: high
+    category: detection_threshold
+    issue: The numerical burst thresholds lack a published accuracy evaluation.
+    resolution: Rule status is experimental, limitations and false positives are explicit, and boundary behavior is executable and deterministic.
+    status: resolved
+  - id: ALIGN-SAF-T1112-004
+    triggered_by: SAF-T1112
+    affects:
+      - SAF-T1112
+    severity: high
+    category: protocol_lifecycle
+    issue: Sampling is deprecated but not yet removed in the current reviewed specification.
+    resolution: Scope is limited to supporting implementations and migration is the primary preventive control.
+    status: resolved
+  - id: SAF-T1112-A001
+    triggered_by: SAF-T1112
+    affects: [SAF-T1102, SAF-T1104, SAF-T1112, SAF-T2102]
+    severity: high
+    category: canonical_boundary
+    status: resolved
+    issue: Sampling abuse must remain distinct from ordinary prompt injection, tool-authorization crossing, and generic availability pressure.
+    resolution: Three canonical neighbors, four mitigations, conditional ATT&CK T1204, and thirteen detector cases preserve the client-mediated model-generation boundary.

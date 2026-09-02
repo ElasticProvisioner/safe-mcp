@@ -1,0 +1,382 @@
+version: 1
+sources:
+  - id: SRC-mcp-2026-discovery
+    title: MCP Discovery
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol project contributors
+    version_or_date: 2026-07-28
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the fixed-version official HTML specification and its rendered text.
+    locators:
+      - Opening requirement, Request, and Response, rendered lines 67-118
+      - When to Call and DiscoverResult, rendered lines 125-148
+    review_notes: >-
+      Verified the mandatory operation, returned supportedVersions and serverInfo,
+      and the explicit statement that serverInfo is self-reported and unverified.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The clean-room handoff excludes the acquisition corpus; the external temporary snapshot hash is recorded in integration-notes.yml.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/mcp-discovery.html
+
+  - id: SRC-mcp-2026-schema
+    title: MCP Schema Reference
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol project contributors
+    version_or_date: 2026-07-28
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/schema
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the official rendered schema reference.
+    locators:
+      - DiscoverResult and example, rendered lines 4957-5098
+      - Implementation interface and version field, rendered lines 5217-5260
+    review_notes: Verified the DiscoverResult fields and required string-valued Implementation.version.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The large generated schema was directly reviewed but not retained in the frozen bundle.
+      review_evidence:
+        method: Browser line review
+        locator: Rendered schema lines 4957-5260
+
+  - id: SRC-mcp-2026-versioning
+    title: MCP Versioning and Compatibility
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol project contributors
+    version_or_date: 2026-07-28
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the fixed-version official HTML specification and rendered text.
+    locators:
+      - Protocol Version Negotiation, rendered lines 82-98
+      - Backward Compatibility with Initialization-Based Versions, rendered lines 133-160
+    review_notes: Verified supported-version error data, discovery use, and server-era identification behavior.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The acquisition copy remains outside the canonical bundle and its hash is recorded in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/mcp-versioning.html
+
+  - id: SRC-mcp-2026-authorization
+    title: MCP Authorization
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol project contributors
+    version_or_date: 2026-07-28
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the fixed-version official rendered specification.
+    locators:
+      - Purpose and Scope and Protocol Requirements, rendered lines 97-110
+      - Access Token Usage and Token Handling, rendered lines 239-267
+    review_notes: Verified optional authorization and the requirements for authorization on protected HTTP requests and token validation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Directly reviewed official public HTML was not copied into the frozen bundle.
+      review_evidence:
+        method: Browser line review
+        locator: Rendered authorization lines 97-267
+
+  - id: SRC-rfc9110-server
+    title: "RFC 9110: HTTP Semantics"
+    source_class: protocol_or_standard
+    publisher: RFC Editor and IETF
+    authors:
+      - Roy T. Fielding
+      - Mark Nottingham
+      - Julian Reschke
+    version_or_date: June 2022
+    official_url: https://www.rfc-editor.org/rfc/rfc9110.html
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the RFC Editor HTML and exact numbered sections.
+    locators:
+      - Section 10.2.4 Server, paragraphs 1-4
+      - Section 17.12 Disclosure of Product Information
+      - Copyright Notice
+    review_notes: Verified Server field product/version syntax, fine-detail warning, countervailing practical limitation, and publication terms.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser paragraph review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/rfc9110.html
+
+  - id: SRC-nmap-vscan
+    title: Nmap Network Scanning, Chapter 7 - Service and Application Version Detection
+    source_class: implementation_artifact
+    publisher: Nmap Project / Insecure.Com LLC
+    authors:
+      - Gordon "Fyodor" Lyon
+    version_or_date: Online edition accessed 2026-09-02
+    official_url: https://nmap.org/book/vscan.html
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the official Nmap book chapter.
+    locators:
+      - Chapter 7 introductory discussion, rendered lines 51-58
+      - Example 7.1, rendered lines 59-76
+      - Advanced features, rendered lines 77-85
+    review_notes: Verified service-specific interrogation, representative version output, and stated capabilities.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The copyright-protected book page is cited and paraphrased; its temporary acquisition copy is excluded from the bundle.
+      review_evidence:
+        method: Browser full-page review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/nmap-vscan.html
+
+  - id: SRC-owasp-logging
+    title: OWASP Logging Cheat Sheet
+    source_class: credible_practice
+    publisher: OWASP Foundation
+    authors:
+      - OWASP Cheat Sheet Series Team
+    version_or_date: Current public page accessed 2026-09-02
+    official_url: https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the official cheat-sheet page.
+    locators:
+      - Event attributes, rendered lines 310-353
+      - User type classification and trusted-user retention, rendered lines 344-358
+    review_notes: Verified minimum correlatable event attributes, interaction identifiers, and classification of known users.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/owasp-logging.html
+
+  - id: SRC-anthropic-gtg1002
+    title: Disrupting the first reported AI-orchestrated cyber espionage campaign
+    source_class: incident_report
+    publisher: Anthropic
+    authors:
+      - Anthropic Threat Intelligence Team
+    version_or_date: 2025-11-17 revision
+    official_url: https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct page-by-page review of the first-party PDF and extracted text.
+    locators:
+      - Executive summary, PDF pages 2-3
+      - Operational infrastructure, PDF pages 5-6
+      - Phase 2 Reconnaissance and attack surface mapping, PDF page 8
+      - Technical sophistication, PDF pages 11-12
+    review_notes: Verified production campaign status, MCP-connected tools, service and endpoint enumeration, successful intrusions, response, and the absence of a server-version-enumeration claim.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The copyright-protected report is paraphrased; its temporary PDF snapshot is excluded from the bundle.
+      review_evidence:
+        method: Browser PDF extraction plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/anthropic-campaign.pdf
+
+  - id: SRC-apache-cve-2021-41773
+    title: Apache HTTP Server security advisory entry for CVE-2021-41773
+    source_class: official_advisory
+    publisher: Apache HTTP Server Project
+    authors:
+      - Apache HTTP Server Security Team
+      - Ash Daulton
+      - cPanel Security Team
+    version_or_date: 2021-10-04 advisory state; reviewed 2026-09-02
+    official_url: https://httpd.apache.org/security/vulnerabilities_24.html#CVE-2021-41773
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the first-party advisory entry and credits.
+    locators:
+      - CVE-2021-41773 entry, rendered lines 1142-1157
+    review_notes: Verified affected version, impact preconditions, known exploitation, fix release, and named reporter credits.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The shared advisory-page acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/apache-vulnerabilities.html
+
+  - id: SRC-apache-cve-2021-42013
+    title: Apache HTTP Server security advisory entry for CVE-2021-42013
+    source_class: official_advisory
+    publisher: Apache HTTP Server Project
+    authors:
+      - Apache HTTP Server Security Team
+      - Juan Escobar
+      - Fernando Muñoz
+      - Shungo Kumasaka
+      - Nattapon Jongcharoen
+    version_or_date: 2021-10-07 advisory state; reviewed 2026-09-02
+    official_url: https://httpd.apache.org/security/vulnerabilities_24.html#CVE-2021-42013
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the first-party advisory entry and credits.
+    locators:
+      - CVE-2021-42013 entry, rendered lines 1108-1125
+    review_notes: Verified incomplete-fix status, affected versions, impact preconditions, fixed version, and named reporter credits.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The shared advisory-page acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/apache-vulnerabilities.html
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: CISA Known Exploited Vulnerabilities Catalog
+    source_class: official_advisory
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Vulnerability Management Team
+    version_or_date: 2026.09.01
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct JSON acquisition and exact cveID filtering with jq.
+    locators:
+      - Top-level catalogVersion
+      - vulnerabilities entry where cveID equals CVE-2021-41773
+      - vulnerabilities entry where cveID equals CVE-2021-42013
+    review_notes: Verified catalog version, both KEV entries, required actions, and known ransomware-campaign-use fields.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The clean-room handoff excludes acquisition corpora; the temporary full JSON hash is recorded in integration notes.
+      review_evidence:
+        method: Direct dataset acquisition and jq record extraction
+        locator: /private/tmp/saf-t1604-sources/known_exploited_vulnerabilities.json
+
+  - id: SRC-apache-servertokens
+    title: Apache HTTP Server ServerTokens Directive
+    source_class: implementation_artifact
+    publisher: Apache HTTP Server Project
+    authors:
+      - Apache HTTP Server Documentation Team
+    version_or_date: Apache HTTP Server 2.4 documentation accessed 2026-09-02
+    official_url: https://httpd.apache.org/docs/2.4/mod/core.html#servertokens
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the first-party directive documentation.
+    locators:
+      - ServerTokens Directive, rendered lines 2239-2264
+    review_notes: Verified banner variants, configuration scope, and explicit warning that disabling the Server field does not itself secure the server.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The temporary acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/apache-core.html
+
+  - id: SRC-nginx-server-tokens
+    title: nginx server_tokens Directive
+    source_class: implementation_artifact
+    publisher: F5 / nginx
+    authors:
+      - nginx Documentation Team
+    version_or_date: Current public documentation accessed 2026-09-02
+    official_url: https://nginx.org/en/docs/http/ngx_http_core_module.html#server_tokens
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the first-party directive documentation.
+    locators:
+      - server_tokens directive, rendered lines 1279-1289
+    review_notes: Verified the directive's control of nginx version emission on error pages and in the Server response field.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The temporary acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/nginx-core.html
+
+  - id: SRC-attack-t1046
+    title: "MITRE ATT&CK T1046: Network Service Discovery"
+    source_class: research
+    publisher: The MITRE Corporation
+    authors:
+      - MITRE ATT&CK Team
+      - Aaron Sullivan (ZerkerEOD)
+      - Praetorian
+    version_or_date: Version 3.2, modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1046/
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the official technique definition, metadata, and current procedure examples.
+    locators:
+      - Definition and tactic, rendered lines 15-38
+      - Procedure examples, rendered lines 43-48
+    review_notes: Verified remote service-discovery scope, Discovery tactic, named contributors, and the adjacent Anthropic procedure example.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The temporary acquisition copy remains outside the bundle and is identified by hash in integration notes.
+      review_evidence:
+        method: Browser line review plus direct temporary download
+        locator: /private/tmp/saf-t1604-sources/attack-t1046.html
+
+  - id: SRC-attack-t1518
+    title: "MITRE ATT&CK T1518: Software Discovery"
+    source_class: research
+    publisher: The MITRE Corporation
+    authors:
+      - MITRE ATT&CK Team
+    version_or_date: Version 1.5, modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1518/
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the official technique definition, metadata, and detection section.
+    locators:
+      - Definition and tactic, rendered lines 16-44
+      - Mitigations and Detection Strategy, rendered lines 105-115
+    review_notes: Verified that T1518 covers installed software and versions and can inform later vulnerability selection.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Directly reviewed official public page was not copied into the frozen bundle.
+      review_evidence:
+        method: Browser line review
+        locator: Rendered ATT&CK lines 16-115
+
+  - id: SRC-attack-t1592-004
+    title: "MITRE ATT&CK T1592.004: Gather Victim Host Information - Client Configurations"
+    source_class: research
+    publisher: The MITRE Corporation
+    authors:
+      - MITRE ATT&CK Team
+    version_or_date: Version 1.1, modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1592/004/
+    accessed_on: 2026-09-02
+    reviewed_on: 2026-09-02
+    review_status: opened_reviewed
+    review_method: Direct review of the official sub-technique definition and metadata.
+    locators:
+      - Definition, active-scanning examples, and Reconnaissance tactic, rendered lines 16-45
+      - Detection limitation, rendered lines 61-65
+    review_notes: Rejected as a primary mapping because it concerns pre-compromise victim client configurations rather than an MCP server reached during Discovery.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Directly reviewed official public page was not copied into the frozen bundle.
+      review_evidence:
+        method: Browser line review
+        locator: Rendered ATT&CK lines 16-65

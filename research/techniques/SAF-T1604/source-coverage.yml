@@ -1,0 +1,194 @@
+version: 1
+technique_id: SAF-T1604
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT OPEN https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+        - DIRECT OPEN https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
+        - DIRECT OPEN https://modelcontextprotocol.io/specification/2026-07-28/schema
+        - DIRECT OPEN https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+        - DIRECT OPEN https://www.rfc-editor.org/rfc/rfc9110.html#section-10.2.4
+      material_changes:
+        - Established the mandatory server/discover operation, supportedVersions, serverInfo version, version-error behavior, HTTP Server fields, authorization preconditions, and the explicit trust limitation.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT OPEN Anthropic first-party GTG-1002 report URL obtained from MITRE ATT&CK T1046
+        - DIRECT OPEN https://httpd.apache.org/security/vulnerabilities_24.html#CVE-2021-41773
+        - DIRECT OPEN https://httpd.apache.org/security/vulnerabilities_24.html#CVE-2021-42013
+        - DIRECT CATALOG FILTER cveID=CVE-2021-41773 or CVE-2021-42013 against CISA KEV 2026.09.01
+        - DIRECT OPEN NVD detail URLs for both CVEs; rendered content unavailable, so they were not used as evidence
+      material_changes:
+        - Found no direct MCP version-enumeration incident or vulnerability.
+        - Selected one adjacent MCP-enabled production incident and two high-impact version-specific historical analogies with explicit limitations.
+        - Verified affected and fixed Apache versions, exploitation status, CISA KEV status, and named researcher credits.
+    - pass: demonstration_and_empirical_research
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT OPEN https://nmap.org/book/vscan.html
+        - DIRECT OPEN https://nmap.org/book/man-version-detection.html
+        - DIRECT REVIEW MCP discovery request and response examples
+      material_changes:
+        - Confirmed controlled service-version interrogation and its intensity tradeoff outside MCP.
+        - Preserved the gap for an end-to-end malicious MCP server-version demonstration.
+    - pass: detection_and_defense
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT OPEN https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+        - DIRECT OPEN https://httpd.apache.org/docs/2.4/mod/core.html#servertokens
+        - DIRECT OPEN https://nginx.org/en/docs/http/ngx_http_core_module.html#server_tokens
+        - DIRECT REVIEW MCP Authorization access-token requirements
+      material_changes:
+        - Defined actor, server, interaction, response-version, authorization, and workload-classification telemetry.
+        - Built a five-distinct-server/five-minute analytic and representative seven-case test set.
+        - Bounded banner suppression as defense in depth rather than a patching substitute.
+    - pass: gap_and_challenge
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT OPEN https://attack.mitre.org/techniques/T1046/
+        - DIRECT OPEN https://attack.mitre.org/techniques/T1518/
+        - DIRECT OPEN https://attack.mitre.org/techniques/T1592/004/
+        - DIRECT REVIEW RFC 9110 Section 17.12 and MCP serverInfo trust limitation
+        - DIRECT REVIEW Apache ServerTokens security warning
+      material_changes:
+        - Preserved self-report spoofability, normal-client false positives, slow-probe evasion, and the lack of production accuracy data.
+        - Classified T1046 and T1518 as analogous and rejected T1592.004 as a primary mapping because its boundary and tactic differ.
+        - Narrowed impact to bounded information disclosure and separated all downstream exploitation.
+    - pass: saturation_follow_up_1
+      completed_on: 2026-09-02
+      queries:
+        - "DIRECT CISA KEV 2026.09.01 local filter: Model Context Protocol|MCP server|server version|version disclosure"
+        - "DIRECT FIXED-SPEC recheck: server/discover|serverInfo|supportedVersions"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: 2026-09-02
+      queries:
+        - DIRECT RECHECK Apache 2.4 advisory entries and ServerTokens limitation
+        - DIRECT RECHECK ATT&CK T1046 and T1518 definitions against the frozen contract
+        - DIRECT RECHECK MCP 2026-07-28 Discovery and Versioning pages for changed requirements
+      material_changes: []
+  rationale: >-
+    The corpus contains the current controlling MCP revision, HTTP standard,
+    first-party implementation controls, first-party incident reporting,
+    official vulnerability and exploitation records, a controlled version-scan
+    demonstration, logging guidance, and current ATT&CK definitions. The final
+    two authority-only follow-ups added no requirement, qualifying direct case,
+    material fact, conflict, detection constraint, or neighbor distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: 2026-09-02
+  candidate_count: 4
+  selected_examples:
+    - SRC-anthropic-espionage-2025-11
+    - SRC-apache-cve-2021-41773
+    - SRC-apache-cve-2021-42013
+  no_qualifying_examples_rationale: >-
+    Three contextual examples were selected, but none is a direct instance of
+    SAF-T1604. No direct MCP production incident or direct enumeration CVE was
+    found in the reviewed protocol, incident, advisory, CISA, NVD-attempt, and
+    ATT&CK corpus. The technique therefore remains Research-Derived and the
+    direct-evidence gap is explicit.
+  candidates:
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: Anthropic GTG-1002 AI-orchestrated cyber espionage campaign
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed production campaign with a handful of validated successful intrusions.
+      impact: MCP-connected automation enumerated services and endpoints across targeted networks and supported later intrusion phases.
+      remediation: Anthropic banned identified accounts, notified affected entities as appropriate, coordinated with authorities, and expanded detections.
+      selected: true
+      rationale: Highest-impact current MCP-enabled production context, retained only as adjacent because the report does not state that MCP server versions were collected.
+    - source_id: SRC-apache-cve-2021-41773
+      identifier: CVE-2021-41773
+      relationship: historical_analogy
+      exploitation_status: Known exploited in the wild; also listed in CISA KEV 2026.09.01.
+      impact: File disclosure and conditional remote code execution in Apache HTTP Server 2.4.49.
+      remediation: Fixed in 2.4.50, whose fix was later found incomplete; follow superseding CVE-2021-42013 remediation.
+      selected: true
+      rationale: High-impact version-specific analogy showing why a precise build identifier can influence later analysis without proving enumeration occurred.
+    - source_id: SRC-apache-cve-2021-42013
+      identifier: CVE-2021-42013
+      relationship: historical_analogy
+      exploitation_status: Listed in CISA KEV 2026.09.01 with known ransomware-campaign use.
+      impact: Path traversal and conditional remote code execution in Apache HTTP Server 2.4.49 and 2.4.50 after an incomplete fix.
+      remediation: Fixed in Apache HTTP Server 2.4.51.
+      selected: true
+      rationale: High-impact analogy for version-range and remediation-state sensitivity; no source says version enumeration selected the target.
+    - source_id: SRC-mcp-discovery-2026-07-28
+      identifier: MCP 2026-07-28 server/discover
+      relationship: rejected
+      exploitation_status: No malicious exploitation claim in the specification.
+      impact: The protocol operation returns supported versions and can return a self-reported implementation version.
+      remediation: The specification says clients should not rely on serverInfo for security decisions; normal interoperability use remains expected.
+      selected: false
+      rationale: Controlling protocol evidence for mechanism, not a breach, vulnerability, or malicious demonstration.
+
+sources_consulted:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-2026-versioning
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc9110-server
+  - SRC-nmap-vscan
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-anthropic-espionage-2025-11
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-cisa-kev-2026-09-01
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-attack-t1518
+  - SRC-attack-t1592-004
+sources_cited:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-2026-versioning
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc9110-server
+  - SRC-nmap-vscan
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-anthropic-espionage-2025-11
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-cisa-kev-2026-09-01
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-attack-t1518
+sources_rejected:
+  - source_id: SRC-attack-t1592-004
+    reason: The sub-technique concerns pre-compromise victim client configurations under Reconnaissance, not version metadata returned by an MCP server under Discovery.
+sources_blocked: []
+
+conflicts:
+  - issue: Version metadata can help narrow later analysis, but RFC 9110 says attackers often try potential weaknesses regardless of apparent versions.
+    resolution: Rate immediate severity Low, state only bounded disclosure, and require separate evidence for downstream exploitation.
+  - issue: MCP discovery returns serverInfo for display, logging, and debugging but says it is self-reported and unverified.
+    resolution: Treat all values as hints and require independent asset-record verification before remediation decisions.
+  - issue: Banner reduction is available, but Apache warns that disabling the Server field does not itself secure a server.
+    resolution: Present detail minimization only as defense in depth alongside authorization, logging, verification, and patching.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1604-C004
+  rationale: >-
+    Current MCP sources directly establish that a client can receive version
+    values, and Nmap establishes service-version interrogation outside MCP. The
+    adversarial use of MCP version discovery is an explicit inference because no
+    reviewed source documents a direct malicious MCP instance or end-to-end public
+    demonstration. Adjacent incidents and historical CVEs do not raise the label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

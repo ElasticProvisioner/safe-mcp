@@ -1,0 +1,435 @@
+version: 1
+sources:
+  - id: SRC-a2a-spec
+    title: Agent2Agent Protocol Specification
+    publisher: A2A Protocol Working Group
+    authors: [A2A Protocol Working Group]
+    version_or_date: "Latest specification reviewed 2026-09-02"
+    source_class: protocol_or_standard
+    official_url: https://a2a-protocol.org/latest/specification/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official specification review
+    locators:
+      - Sections 2.2, 3.4, 4.1.4-4.1.6, 7.4-7.6, and 14.1.1
+      - Message fields messageId, contextId, taskId, role, parts, metadata, and referenceTaskIds
+    review_notes: >-
+      Reviewed message semantics, task and context correlation, authorization
+      responsibilities, input validation, and the named working-group credit.
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: The canonical clean-room handoff excludes source-acquisition copies.
+      review_evidence:
+        access_method: Direct official publisher page
+        notes: The complete relevant sections were opened and reviewed.
+
+  - id: SRC-mcp-architecture
+    title: Model Context Protocol Architecture
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol project contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/architecture
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official specification review
+    locators: [Core Components, Host, Clients, Servers, Design Principles]
+    review_notes: >-
+      Reviewed the host's responsibility for policies, consent, authorization,
+      context aggregation, and isolation of one client connection per server.
+    archive: *remote_archive
+
+  - id: SRC-mcp-security
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol project contributors]
+    version_or_date: "2025-11-25"
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official project guidance review
+    locators: [Local MCP Server Compromise, Scope Minimization]
+    review_notes: >-
+      Reviewed recommendations for validation, sandboxing, logging, additional
+      authorization, least privilege, and correlation identifiers.
+    archive: *remote_archive
+
+  - id: SRC-nist-ai-600-1
+    title: Artificial Intelligence Risk Management Framework Generative Artificial Intelligence Profile
+    publisher: National Institute of Standards and Technology
+    authors:
+      - Chloe Autio
+      - Jesse Dunietz
+      - Patrick Hall
+      - Shomik Jain
+      - Kamie Roberts
+      - Reva Schwartz
+      - Martin Stanley
+      - Elham Tabassi
+      - NIST Generative AI Public Working Group
+    version_or_date: "NIST AI 600-1, July 2024"
+    source_class: protocol_or_standard
+    official_url: https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.600-1.pdf
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official PDF review
+    locators:
+      - Pages 13-14, Prompt Injection and Indirect Prompt Injection
+      - Pages 19-25, incident monitoring, provenance, testing, and response
+      - Pages 44-48 and 55-57, containment, monitoring, and logging
+    review_notes: >-
+      Reviewed prompt-injection definitions and risk-management guidance for
+      provenance, red teaming, incident retention, containment, and logging.
+    archive: *remote_archive
+
+  - id: SRC-lee-tiwari-prompt-infection
+    title: "Prompt Infection: LLM-to-LLM Prompt Injection within Multi-Agent Systems"
+    publisher: arXiv
+    authors: [Donghyun Lee, Mo Tiwari]
+    version_or_date: "arXiv:2410.07283v1, 2024-10-09"
+    source_class: research
+    official_url: https://arxiv.org/html/2410.07283
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators:
+      - Abstract; Sections 3-7
+      - Experiment Setup, Results, Defenses, Limitations and Future Work
+    review_notes: >-
+      Reviewed the cross-agent propagation mechanism, controlled experiments,
+      tested defenses, and model and architecture limitations.
+    archive: *remote_archive
+
+  - id: SRC-triedman-jha-shmatikov-mas-hijacking
+    title: Multi-Agent Systems Execute Arbitrary Malicious Code
+    publisher: arXiv; Cornell Tech
+    authors: [Harold Triedman, Rishi Jha, Vitaly Shmatikov]
+    version_or_date: "arXiv:2503.12188v2, 2025-09-12"
+    source_class: research
+    official_url: https://arxiv.org/html/2503.12188
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators:
+      - Abstract; Sections 1, 4-8; Ethics Statement
+      - Table 1; Tables 3-7; Sections 6.4-6.5
+    review_notes: >-
+      Reviewed the inter-agent metadata laundering mechanism, controlled
+      AutoGen, CrewAI, and MetaGPT experiments, results, limits, and disclosure.
+    archive: *remote_archive
+
+  - id: SRC-naik-et-al-omni-leak
+    title: "OMNI-LEAK: Orchestrator Multi-Agent Network Induced Data Leakage"
+    publisher: arXiv
+    authors:
+      - Akshat Naik
+      - Jay J Culligan
+      - Yarin Gal
+      - Philip Torr
+      - Rahaf Aljundi
+      - Alasdair Paren
+      - Adel Bibi
+    version_or_date: "arXiv:2602.13477v2, 2026-02-25"
+    source_class: research
+    official_url: https://arxiv.org/html/2602.13477v2
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators:
+      - Abstract; Sections 4-6; Impact Statement
+      - Figures 2-4; Tables 3-7
+    review_notes: >-
+      Reviewed the public-database-to-SQL-agent-to-orchestrator-to-notification-
+      agent flow, 3,000-run-per-model design, results, scope, and defenses.
+    archive: *remote_archive
+
+  - id: SRC-mitre-attck-t1072
+    title: "Software Deployment Tools, Technique T1072"
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team, Joe Gumke, Shane Tully, Tamir Yehuda]
+    version_or_date: "Version 3.2, modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1072/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official framework review
+    locators: [Technique description, ID and tactics, version metadata]
+    review_notes: >-
+      Reviewed the centralized-software-suite behavior, Execution and Lateral
+      Movement tactics, platform scope, contributors, and version metadata.
+    archive: *remote_archive
+
+  - id: SRC-aiid-snapshot-20260831
+    title: AI Incident Database weekly snapshot
+    publisher: Responsible AI Collaborative, AI Incident Database
+    authors: [Sean McGregor, AI Incident Database editors and contributors]
+    version_or_date: "Snapshot 2026-08-31"
+    source_class: incident_report
+    official_url: https://incidentdatabase.ai/research/snapshots/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct project snapshot review and exact-term corpus inspection
+    locators:
+      - Weekly snapshot dated 2026-08-31
+      - incidents.csv and reports.csv exact-term review
+    review_notes: >-
+      Reviewed project citation guidance and searched the current snapshot for
+      cross-agent, agent-to-agent, LLM-to-LLM, and multi-agent injection terms.
+    archive: *remote_archive
+
+  - id: SRC-nvd-catalog-20260902
+    title: National Vulnerability Database CVE API 2.0 query corpus
+    publisher: National Institute of Standards and Technology
+    authors: [National Vulnerability Database team]
+    version_or_date: "Queried 2026-09-02"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: exact official API queries and candidate review
+    locators:
+      - keywordSearch=multi-agent prompt injection
+      - keywordSearch=agent-to-agent injection
+      - keywordSearch=AI command injection
+      - keywordSearch=Model Context Protocol
+    review_notes: >-
+      Reviewed returned CVE records and exact zero-result queries for direct
+      cross-agent instruction-transfer vulnerabilities.
+    archive: *remote_archive
+
+  - id: SRC-cve-2025-32711
+    title: CVE-2025-32711 record
+    publisher: Microsoft CVE Numbering Authority via CVE Program
+    authors: [Microsoft Security Response Center]
+    version_or_date: "Published 2025-06-11; updated 2026-02-26"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-32711
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official CVE record review
+    locators: [CNA description, affected product, metrics, references, CISA ADP]
+    review_notes: >-
+      Reviewed the Microsoft 365 Copilot AI command injection record; it did
+      not document a distinct receiving-agent hop.
+    archive: *remote_archive
+
+  - id: SRC-ghsa-v7px
+    title: PraisonAI lifecycle hook command injection advisory
+    publisher: PraisonAI maintainers via GitHub Security Advisories
+    authors: [Mervin Praison, g0w6y]
+    version_or_date: "GHSA-v7px-3835-7gjx, published 2026-04-09"
+    source_class: official_advisory
+    official_url: https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-v7px-3835-7gjx
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: exact artifact opened after the NVD record supplied its URL
+    locators: [Summary, affected versions, patched versions, credits]
+    review_notes: >-
+      Reviewed only after NVD provided the exact advisory URL; the command-
+      injection condition remained a same-agent lifecycle-hook issue.
+    archive: *remote_archive
+
+  - id: SRC-gu-agent-smith
+    title: "Agent Smith: A Single Image Can Jailbreak One Million Multimodal LLM Agents Exponentially Fast"
+    publisher: arXiv
+    authors: [Xiangming Gu, Xiaosen Zheng, Tianyu Pang, Chao Du, Qian Liu, Ye Wang, Jing Jiang, Min Lin]
+    version_or_date: "arXiv:2402.08567v2, 2024-06-03"
+    source_class: research
+    official_url: https://arxiv.org/html/2402.08567
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators: [Abstract, Sections 3-5, scaling appendix]
+    review_notes: >-
+      Reviewed the simulated infectious multimodal jailbreak; its adversarial-
+      image mechanism is adjacent to, but not the defined instruction hop.
+    archive: *remote_archive
+
+  - id: SRC-zhan-et-al-injecagent
+    title: "InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents"
+    publisher: Association for Computational Linguistics
+    authors: [Qiusi Zhan, Zhixiang Liang, Zifan Ying, Daniel Kang]
+    version_or_date: "Findings of ACL 2024"
+    source_class: research
+    official_url: https://aclanthology.org/2024.findings-acl.624/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic publisher review
+    locators: [Abstract, benchmark description, results metadata]
+    review_notes: >-
+      Reviewed a tool-integrated single-agent injection benchmark; no distinct
+      receiver-agent context was part of its defining mechanism.
+    archive: *remote_archive
+
+  - id: SRC-debenedetti-et-al-agentdojo
+    title: "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents"
+    publisher: arXiv; ETH Zurich and Invariant Labs
+    authors: [Edoardo Debenedetti, Jie Zhang, Mislav Balunovic, Luca Beurer-Kellner, Marc Fischer, Florian Tramer]
+    version_or_date: "arXiv:2406.13352v3, 2024-11-24"
+    source_class: research
+    official_url: https://arxiv.org/html/2406.13352
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators: [Abstract, Section 4.3, Conclusion]
+    review_notes: >-
+      Reviewed injection defenses and tool-isolation limits in a single-agent
+      benchmark; used only as adjacent defense evidence.
+    archive: *remote_archive
+
+  - id: SRC-hossain-et-al-channelguard
+    title: "ChannelGuard: Safe Models Do Not Compose into Safe Multi-Agent Systems"
+    publisher: arXiv; manuscript under review
+    authors: [Elias Hossain, Md Mehedi Hasan Nipu, Fatema Tuj Johora Faria, Tasfia Nuzhat Ornee, Maleeha Sheikh]
+    version_or_date: "arXiv:2607.19430v2, 2026-08-10"
+    source_class: research
+    official_url: https://arxiv.org/html/2607.19430v2
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators: [Abstract, threat model, Sections 6-7, reproducibility checklist]
+    review_notes: >-
+      Reviewed a synthetic channel-gating evaluation and its adaptive-evasion
+      and external-validity limits; not treated as an independent incident.
+    archive: *remote_archive
+
+  - id: SRC-cai-zhang-hei-child-inherits
+    title: "When Child Inherits: Modeling and Exploiting Subagent Spawn in Multi-Agent Networks"
+    publisher: arXiv
+    authors: [Ziwen Cai, Yihe Zhang, Xiali Hei]
+    version_or_date: "arXiv:2605.08460v1, 2026-05-08"
+    source_class: research
+    official_url: https://arxiv.org/html/2605.08460v1
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators: [Abstract, threat model, Sections V-VI, ethical considerations]
+    review_notes: >-
+      Reviewed memory inheritance and subagent-spawn trust failures; the core
+      mechanism is inherited state rather than a peer message instruction.
+    archive: *remote_archive
+
+  - id: SRC-wang-planflip
+    title: "PlanFlip: Attacking Multi-Agent LLM Systems via Planning-Phase Prompt Injection"
+    publisher: arXiv
+    authors: [Yuhang Wang]
+    version_or_date: "arXiv:2607.16199v1, 2026-04-30"
+    source_class: research
+    official_url: https://arxiv.org/html/2607.16199v1
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct academic preprint review
+    locators: [Abstract, experiment design, results, conclusion]
+    review_notes: >-
+      Reviewed planner-context injection that alters downstream task plans;
+      initial delivery is tool output to the planner, not a peer-agent relay.
+    archive: *remote_archive
+
+  - id: SRC-jfrog-cve-2025-6514
+    title: "CVE-2025-6514: Critical mcp-remote Remote Code Execution Vulnerability"
+    publisher: JFrog Security Research
+    authors: [Or Peles, JFrog Security Research team, Glen Maddern]
+    version_or_date: "2025-07-09"
+    source_class: official_advisory
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct first-party researcher advisory review
+    locators: [Technical analysis, affected versions, remediation, credits]
+    review_notes: >-
+      Reviewed malicious-server command injection in mcp-remote 0.0.5 through
+      0.1.15, fixed in 0.1.16; no cross-agent instruction hop was documented.
+    archive: *remote_archive
+
+  - id: SRC-oligo-cve-2025-49596
+    title: Critical RCE Vulnerability in Anthropic MCP Inspector CVE-2025-49596
+    publisher: Oligo Security Research
+    authors: [Avi Lumelsky, Oligo Security Research team]
+    version_or_date: "2025-06-27"
+    source_class: official_advisory
+    official_url: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct first-party researcher advisory review
+    locators: [Attack chain, affected versions, fix 0.14.1]
+    review_notes: >-
+      Reviewed browser and DNS-rebinding RCE in MCP Inspector; no receiving-
+      agent instruction behavior was documented.
+    archive: *remote_archive
+
+  - id: SRC-msrc-cve-2025-32711-shell
+    title: Microsoft advisory page shell for CVE-2025-32711
+    publisher: Microsoft Security Response Center
+    authors: [Microsoft Security Response Center]
+    version_or_date: "Accessed 2026-09-02"
+    source_class: official_advisory
+    official_url: https://msrc.microsoft.com/update-guide/vulnerability/CVE-2025-32711
+    access_status: public_dynamic_shell
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official page access
+    locators: [Rendered page shell and redirect behavior]
+    review_notes: >-
+      The official page shell was opened, but substantive advisory content did
+      not render; no claim relies on it.
+    archive: *remote_archive
+
+  - id: SRC-mitre-atlas-aml-t0051-shell
+    title: MITRE ATLAS AML.T0051 page access attempt
+    publisher: MITRE ATLAS
+    authors: [MITRE ATLAS team]
+    version_or_date: "Accessed 2026-09-02"
+    source_class: protocol_or_standard
+    official_url: https://atlas.mitre.org/techniques/AML.T0051/
+    access_status: unavailable_at_review
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: direct official page access
+    locators: [Page access result]
+    review_notes: >-
+      The exact official technique page returned no reviewable content, so no
+      ATLAS identifier or mapping is published.
+    archive: *remote_archive

@@ -1,0 +1,236 @@
+version: 1
+technique_id: SAF-T1501
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct MCP documentation index: Client Best Practices; Security Best Practices; Tools, current 2026-07-28"
+        - "Direct RFC Editor retrieval: RFC 8785 JSON Canonicalization Scheme"
+        - "Direct MITRE ATT&CK retrieval: T1195.002"
+      material_changes:
+        - Established the complete model-visible Tool surface and client ingestion boundary.
+        - Added canonical full-definition fingerprints as a change-control premise.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD CVE API 2.0 keywordSearch=Model Context Protocol"
+        - "NVD CVE API 2.0 keywordSearch=tool poisoning"
+        - "CISA KEV complete catalog terms: Model Context Protocol; MCP; schema poisoning; tool poisoning"
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"production incident\""
+      material_changes:
+        - Bounded the evidence gap: no direct FSP production incident, CVE root cause, or KEV entry qualified.
+        - Classified implementation CVEs returned by MCP keywords as different root causes.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"tool poisoning\""
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"metadata injection\""
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"schema poisoning\""
+      material_changes:
+        - Selected three high-impact adjacent description-poisoning demonstrations.
+        - Preserved the full-schema end-to-end gap because none distributed a coordinated payload across schema paths.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"tool poisoning detection\""
+        - "Direct citation trail: MindGuard arXiv:2508.20412v3"
+      material_changes:
+        - Required complete-definition telemetry, approved fingerprints, reapproval state, and recursive string paths.
+        - Added white-box and execution-monitoring blind spots from MindGuard.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"false positive\" AND all:poisoning"
+        - "Direct returned source review: CASCADE arXiv:2604.17125v1"
+      material_changes:
+        - Added CASCADE's 59.9% tool-poisoning recall, 38.95% overall false-negative rate, and static-dataset limitation as contrary evidence.
+        - Limited the repository detector claim to deterministic behavior on included synthetic fixtures.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv API: all:\"Full Schema Poisoning\" OR all:\"full-schema poisoning\""
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv API: all:\"Model Context Protocol\" AND all:\"parameter specifications\" AND all:poisoning"
+      material_changes: []
+  rationale: >-
+    Twelve distinct direct-authority catalog, documentation-index, or corpus
+    search operations covered the current protocol, government vulnerability
+    catalogs, production-incident terminology, FSP/schema synonyms, empirical
+    demonstrations, detection, contrary evidence, and two narrower follow-ups.
+    The final two independent arXiv authority queries returned no new material
+    source, claim, limitation, or contract distinction. Direct MCP, RFC, NVD,
+    CISA, MITRE, complete research papers, and the practitioner experiment cover
+    every proposition retained in the publishable technique.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 10
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-mcptox-2508.14925
+    - SRC-mcp-itp-2026-01
+  no_qualifying_examples_rationale: >-
+    Three adjacent demonstrations were retained for mechanism and impact context,
+    but no direct production breach, direct vulnerability, or direct end-to-end
+    FSP demonstration qualified. NVD and CISA results had different root causes;
+    schema-wide taxonomy claims without a direct evidence packet were omitted.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Labs direct tool-poisoning experiment
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Demonstrated description-resident instructions changing tool decisions and cross-server behavior in a controlled client.
+      remediation: Article recommends complete-description display, version or hash pinning, and cross-server controls; no product patch was asserted.
+      selected: true
+      rationale: High-impact original demonstration with direct source code, but it poisoned only the top-level description.
+    - source_id: SRC-mcptox-2508.14925
+      identifier: MCPTox benchmark
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Measured description-poisoning effects across 20 agents, 45 live-server tool sets, 353 tools, and 1312 malicious cases.
+      remediation: Research benchmark; no affected product patch or production remediation was claimed.
+      selected: true
+      rationale: Broadest reviewed adjacent empirical benchmark, explicitly limited to descriptions.
+    - source_id: SRC-mcp-itp-2026-01
+      identifier: MCP-ITP implicit tool-poisoning evaluation
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Demonstrated metadata steering toward legitimate privileged tools without invoking the malicious tool.
+      remediation: Research evaluation; discusses defenses but does not document an affected-version patch.
+      selected: true
+      rationale: Highest-impact reviewed adjacent implicit-delegation result, but its poisoned field was the description.
+    - source_id: SRC-huang-fsp-threat-model
+      identifier: Threat 37 - Full Schema Poisoning
+      relationship: rejected
+      exploitation_status: modeled_not_demonstrated
+      impact: Threat model assigns high potential risk to compromised schema definitions.
+      remediation: Paper recommends validation and client defenses; no FSP-specific patch was tested.
+      selected: false
+      rationale: Directly supports taxonomy classification, but the paper's empirical tests were description-only and do not qualify as an FSP example.
+    - source_id: SRC-cascade-2604.17125
+      identifier: CASCADE tool-poisoning detection dataset
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_static_dataset
+      impact: Shows both detections and substantial misses across tool-poisoning samples.
+      remediation: Proposed layered local detector; real-time multi-tool validation remains future work.
+      selected: false
+      rationale: Retained as contrary detection evidence rather than a breach or direct FSP demonstration.
+    - source_id: SRC-mindguard-2508.20412
+      identifier: MindGuard metadata-poisoning evaluation
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_demonstration_only
+      impact: Demonstrates decision-provenance detection on description-poisoning and adapted datasets.
+      remediation: White-box decision-inspection prototype; no product patch.
+      selected: false
+      rationale: Strong detection evidence but not a full-schema attack example.
+    - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+      identifier: NVD MCP and tool-poisoning keyword result sets
+      relationship: rejected
+      exploitation_status: no_direct_fsp_entry_identified
+      impact: Returned MCP implementation CVEs and unrelated poisoning records with different root causes.
+      remediation: Candidate-specific remediations did not address coordinated schema poisoning.
+      selected: false
+      rationale: No result satisfied the definition-level, multi-path FSP contract.
+    - source_id: SRC-cisa-kev-fsp-2026-09-01
+      identifier: CISA KEV complete catalog
+      relationship: rejected
+      exploitation_status: no_direct_fsp_entry_identified
+      impact: No known-exploited catalog entry described the defining FSP root cause.
+      remediation: Not applicable to a qualifying FSP entry.
+      selected: false
+      rationale: Bounded absence evidence only.
+    - source_id: SRC-adversa-mcp-top25
+      identifier: Adversa AI FSP taxonomy entry
+      relationship: rejected
+      exploitation_status: not_established
+      impact: Claims broad potential schema compromise effects.
+      remediation: Lists generic controls without an FSP evidence packet.
+      selected: false
+      rationale: Derivative-only sourcing was prohibited and the page supplied no reproducible direct FSP demonstration.
+    - source_id: SRC-cyberark-fsp-2025-05-30
+      identifier: CyberArk Poison Everywhere article URL
+      relationship: rejected
+      exploitation_status: unknown
+      impact: Original content could not be reviewed because the exact URL redirected to unrelated product content.
+      remediation: Not reviewable from the resolved destination.
+      selected: false
+      rationale: Blocked source trail cannot support a publishable proposition.
+
+sources_consulted:
+  - SRC-adversa-mcp-top25
+  - SRC-cascade-2604.17125
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-cyberark-fsp-2025-05-30
+  - SRC-huang-fsp-threat-model
+  - SRC-invariant-direct-poisoning-code
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-client-practices-2026-07-28
+  - SRC-mcp-itp-2026-01
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcptox-2508.14925
+  - SRC-mindguard-2508.20412
+  - SRC-mitre-t1195-002
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-rfc8785
+sources_cited:
+  - SRC-cascade-2604.17125
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-huang-fsp-threat-model
+  - SRC-invariant-direct-poisoning-code
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-client-practices-2026-07-28
+  - SRC-mcp-itp-2026-01
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcptox-2508.14925
+  - SRC-mindguard-2508.20412
+  - SRC-mitre-t1195-002
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-rfc8785
+sources_rejected:
+  - source_id: SRC-adversa-mcp-top25
+    reason: Derivative taxonomy claims did not supply direct FSP evidence.
+  - source_id: SRC-cyberark-fsp-2025-05-30
+    reason: Exact source URL redirected and original content was unavailable.
+  - source_id: SRC-mcp-tools-2025-06-18
+    reason: Superseded by the reviewed 2026-07-28 specification.
+sources_blocked:
+  - source_id: SRC-cyberark-fsp-2025-05-30
+    reason: Original direct source could not be recovered from its exact URL.
+
+conflicts:
+  - issue: Literature names full-schema poisoning, but reviewed empirical studies poison only descriptions.
+    resolution: Classify FSP as Research-Derived and label all selected demonstrations adjacent.
+  - issue: Content scanners can detect explicit strings but may miss semantic attacks or flag benign security text.
+    resolution: Limit the rule to tested deterministic selections, retain human review, and publish false-positive and blind-spot conditions.
+  - issue: Fingerprinting detects definition change but not a malicious definition present at first approval.
+    resolution: Combine fingerprint approval with recursive schema-path inspection and sensitive-action confirmation.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1501-C003
+    - SAF-T1501-C010
+  rationale: >-
+    The protocol surface, client ingestion path, and adjacent description-poisoning
+    influence are independently supported. The defining coordinated multi-path
+    behavior is an explicit inference, with no direct breach, vulnerability, or
+    end-to-end demonstration identified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

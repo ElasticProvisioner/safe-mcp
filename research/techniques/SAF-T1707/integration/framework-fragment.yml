@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1707
+    name: CSRF Token Relay
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics: [ATK-TA0008]
+    technique_path: techniques/SAF-T1707/README.md
+    research_packet: research/techniques/SAF-T1707
+    related_techniques: [SAF-T1009, SAF-T1507, SAF-T1706]
+    mitigations: [SAF-M-12, SAF-M-13, SAF-M-18, SAF-M-38]
+    detection:
+      rule: techniques/SAF-T1707/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1707/test_detection.py
+        - tests/SAF-T1707/events.json
+        - research/techniques/SAF-T1707/validation/detection-test.txt
+        - research/techniques/SAF-T1707/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1204.001
+        type: analogous_delivery

@@ -1,0 +1,187 @@
+version: 1
+technique_id: SAF-T1913
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1913
+  inherited_context: false
+target:
+  id: SAF-T1913
+  neutral_name: HTTP POST Exfil
+allowed_inputs:
+- The neutral identifier SAF-T1913, neutral name HTTP POST Exfil, and tactic ATK-TA0010
+  Exfiltration supplied by the assigning user.
+- The generic author-saf-technique skill, its clean-room and methodology references,
+  blank packet schemas, generic technique template, research README, and canonical
+  validator.
+- Directly opened first-party protocol, standards, government, vulnerability-authority,
+  vendor, and original-researcher sources located independently from known authority
+  domains.
+- Exact GitHub artifacts only if a directly reviewed non-GitHub authority identified
+  the exact artifact; no such GitHub artifact was used as substantive evidence in
+  this run.
+prohibited_inputs:
+- Any existing techniques/SAF-T1913/README.md file, including metadata, content, byte
+  count, timestamps, hashes, or filesystem status.
+- Any existing research/techniques/SAF-T1913/ directory or packet, including metadata,
+  content, byte count, timestamps, hashes, or filesystem status.
+- Any existing techniques/SAF-T1913/detection-rule.yml file, including metadata, content,
+  byte count, timestamps, hashes, or filesystem status.
+- Any git history, diff, blame, branch comparison, commit message, or tag revealing
+  prior SAF-T1913 work.
+- Any pull request, issue, review, comment, or discussion revealing prior SAF-T1913
+  work.
+- Any previous conversation, agent context, prompt residue, prior-run file, or target-specific
+  memory about SAF-T1913.
+- Any shared SAF source manifest, framework model, alignment ledger, registry prose,
+  public SAF website, or target-specific catalog description.
+- The methodology impact-classification example file and any example technique content.
+- Unrestricted web or general search, search_query, GitHub search or discovery, and
+  third-party search aggregators.
+independent_research:
+  method: Direct-authority-only retrieval and authority-scoped query endpoints; no
+    unrestricted discovery search.
+  searches:
+  - Direct retrieval of the current Model Context Protocol documentation index and
+    2026-07-28 specification pages on modelcontextprotocol.io.
+  - Direct retrieval of superseded 2025-11-25 MCP transport, tools, and security pages
+    for version-difference review.
+  - Direct retrieval of RFC 9110 section 9.3.3 from rfc-editor.org.
+  - Direct retrieval of Invariant Labs' original tool-poisoning disclosure from invariantlabs.ai.
+  - Direct retrieval of OpenTelemetry semantic-convention 1.44.0 HTTP span documentation
+    from opentelemetry.io.
+  - Direct retrieval of MITRE ATT&CK T1048 v1.6 and M1057 v1.1 pages from attack.mitre.org.
+  - Direct retrieval of the original Slack MCP disclosure from embracethered.com and
+    the AWS HealthLake MCP bulletin from aws.amazon.com.
+  - Direct retrieval of selected CVE JSON records from the CVE Program cvelistV5 authority
+    endpoint.
+  - Direct NVD API keywordSearch query for Model Context Protocol, returning 77 records
+    on 2026-09-02.
+  - Direct NVD API keywordSearch query for HTTP POST exfiltration, returning 3 records
+    on 2026-09-02.
+  - Direct retrieval and exact-ID review of CISA KEV catalog version 2026.09.01.
+  - Saturation pass one direct NVD keywordSearch queries for tools/call exfiltration
+    and MCP HTTP POST data exfiltration; both returned zero records.
+  - Saturation pass two direct NVD keywordSearch queries for Model Context Protocol
+    tool arguments exfiltration and Mcp-Method exfiltration; both returned zero records.
+  opened_source_ids:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-transports-2026
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc9110
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-otel-semconv-1.44.0
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-attack-m1057-v1.1
+  - SRC-cve-34072
+  - SRC-cve-2025-34072
+  - SRC-aws-cve-2026-15643
+  - SRC-cve-2026-15643
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-http-post-query-2026-09-02
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-cve-2026-41271
+  - SRC-cve-2026-56348
+  - SRC-nvd-sat-tools-call-2026-09-02
+  - SRC-nvd-sat-mcp-post-2026-09-02
+  - SRC-nvd-sat-tool-args-2026-09-02
+  - SRC-nvd-sat-mcp-method-2026-09-02
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrate by mechanically replacing the target technique and packet directories
+  without opening the prior target artifacts or a revealing diff.
+- Reconcile source IDs only by exact canonical-URL collision after the clean-room
+  freeze; do not use the destination manifest to add evidence.
+- Replace synthetic neighbor IDs and the synthetic history SHA only through documented
+  integration joins, without changing evidence claims.
+- Run destination-wide validation only after integration; preserve the immutable clean-room
+  bundle and FREEZE.sha256 unchanged.
+- Treat any exposure to prohibited target-specific material before freeze as contamination
+  requiring a fresh run.
+attestation: I generated SAF-T1913 from the allowed neutral target inputs, generic
+  process materials, and independently opened direct-authority sources. I did not
+  inspect any prohibited prior SAF-T1913 artifact, shared SAF registry, git or review
+  history, previous conversation, or methodology impact-example content. No contamination
+  was detected before freeze.
+isolated_validation:
+  mock_repository: /private/tmp/saf-t1913-mock.tfUTbL
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1913
+  working_directory: /private/tmp/saf-t1913-mock.tfUTbL
+  result: PASS SAF-T1913
+  status: passed
+  validator_origin: Canonical generic scripts/validate-technique-research.py copied
+    without modification from the destination repository.
+  isolation: The mock contained only the canonical generic validator, bundle-owned
+    files, the independently generated source/framework/alignment fragments renamed
+    to canonical paths, and three newly created synthetic neighbor stubs.
+deferred_real_repository_joins:
+- Reconcile exact canonical-URL source-ID collisions without importing evidence from
+  the shared manifest.
+- Replace synthetic neighbor and mitigation concepts with independently reviewed destination
+  joins.
+- Replace the synthetic contract-derived repository-history SHA with an honest destination
+  commit.
+- Run destination-wide validation and regression tests after mechanical integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-spec-overview-2026-07-28: SRC-mcp-overview-2026
+    SRC-mcp-doc-index-2026-09-02: SRC-mcp-doc-index-2026
+    SRC-mcp-transport-overview-2026-07-28: SRC-mcp-transports-2026
+    SRC-mcp-streamable-http-2026-07-28: SRC-mcp-streamable-http-2026-07-28
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-mcp-streamable-http-2025-11-25: SRC-mcp-transports-2025-11-25
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-invariant-tool-poisoning: SRC-invariant-tpa-2025-04-01
+    SRC-otel-http-spans-1.44.0: SRC-otel-http-spans-1.44.0
+    SRC-attack-t1048-v1.6: SRC-mitre-attack-t1048-v1.6
+    SRC-embrace-slack-mcp: SRC-cve-34072
+    SRC-cve-2025-34072: SRC-cve-2025-34072
+    SRC-aws-healthlake-cve-2026-15643: SRC-aws-cve-2026-15643
+    SRC-nvd-mcp-query-2026-09-02: SRC-nvd-fsp-catalog-queries-2026-09-01
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-cve-2025-49596: SRC-cve-2025-49596
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+  new_shared_source_records:
+  - SRC-rfc9110
+  - SRC-otel-semconv-1.44.0
+  - SRC-attack-m1057-v1.1
+  - SRC-cve-2026-15643
+  - SRC-nvd-http-post-query-2026-09-02
+  - SRC-cve-2026-41271
+  - SRC-cve-2026-56348
+  - SRC-nvd-sat-tools-call-2026-09-02
+  - SRC-nvd-sat-mcp-post-2026-09-02
+  - SRC-nvd-sat-tool-args-2026-09-02
+  - SRC-nvd-sat-mcp-method-2026-09-02
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0010
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-72
+  - SAF-M-74
+  status: integrated_and_validated

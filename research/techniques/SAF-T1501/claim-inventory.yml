@@ -1,0 +1,323 @@
+version: 1
+technique_id: SAF-T1501
+claims:
+  - id: SAF-T1501-C001
+    statement: >-
+      The MCP 2026-07-28 Tools specification defines a Tool with top-level
+      description, inputSchema, optional outputSchema, and annotations, while
+      nested JSON Schema properties may also carry descriptions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools > Tool: fields description, inputSchema, outputSchema, annotations"
+          - "Listing Tools example: inputSchema.properties.location.description"
+    corroboration: The first-party client guidance separately describes full tool definitions as input and output schemas plus documentation.
+    limitations:
+      - The protocol defines fields and trust guidance; it does not demonstrate FSP.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1501-C002
+    statement: >-
+      First-party MCP client guidance states that naive hosts may place all
+      tool definitions directly into model context and that progressive clients
+      fetch complete definitions containing schemas and documentation when needed.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-client-practices-2026-07-28
+        support: direct
+        exact_locators:
+          - "Progressive Discovery > The Problem with Loading Everything Upfront"
+          - "Progressive Discovery > Implementation Guidelines"
+    corroboration: MCP Tools requires clients that support tools to retrieve definitions through tools/list.
+    limitations:
+      - Guidance describes client patterns, not every host implementation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1501-C003
+    statement: >-
+      FSP is a framework inference: coordinated attacker semantics spread over
+      multiple model-visible paths in a complete tool definition can cross the
+      server-to-model planning boundary even when a top-level-only scanner finds
+      no complete instruction.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - "Tools > Tool and Listing Tools"
+      - source_id: SRC-mcp-client-practices-2026-07-28
+        support: context
+        exact_locators:
+          - "Progressive Discovery"
+      - source_id: SRC-huang-fsp-threat-model
+        support: context
+        exact_locators:
+          - "Section 4.5, Threat 37: Full Schema Poisoning"
+          - "Section 5 and Section 7.1: tested description poisoning and limitations"
+    corroboration: The protocol surface and client ingestion path independently establish the two technical premises; the threat-model paper names the schema-wide class but does not test it end to end.
+    limitations:
+      - No reviewed source demonstrated one coordinated payload distributed across a complete schema.
+      - The claim does not establish prevalence, exploitability across models, or production impact.
+    conflicts:
+      - Description-only studies cannot validate the defining multi-path boundary.
+    inference:
+      is_inference: true
+      rationale: The conclusion combines independently supported protocol surface, client ingestion, and adjacent metadata-poisoning behavior.
+    status: validated
+
+  - id: SAF-T1501-C004
+    statement: >-
+      Public experiments establish that poisoned top-level tool descriptions can
+      alter model tool decisions, including selection and arguments, but those
+      experiments are adjacent to rather than direct demonstrations of FSP.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Direct Tool Poisoning"
+          - "Tool Shadowing"
+      - source_id: SRC-invariant-direct-poisoning-code
+        support: direct
+        exact_locators:
+          - "direct-poisoning.py, complete 30-line file"
+      - source_id: SRC-mcptox-2508.14925
+        support: direct
+        exact_locators:
+          - "Section 4.3 Attack Methodology"
+          - "Section 5.2 Overall Results and Table 2"
+      - source_id: SRC-mcp-itp-2026-01
+        support: direct
+        exact_locators:
+          - "Sections III and IV: implicit tool poisoning and evaluation"
+    corroboration: Three independent research teams or practitioner researchers demonstrated description-resident metadata influence.
+    limitations:
+      - The demonstrations poison descriptions, not coordinated full schemas.
+      - Results from controlled models and datasets do not establish production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1501-C005
+    statement: >-
+      Direct review of NVD keyword results and the CISA KEV catalog found no
+      qualifying disclosed vulnerability or known-exploited entry whose root
+      cause was coordinated full-schema poisoning as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+        support: direct
+        exact_locators:
+          - "NVD API keywordSearch=Model Context Protocol; totalResults=77; reviewed 2026-09-01"
+          - "NVD API keywordSearch=tool poisoning; totalResults=6; reviewed 2026-09-01"
+      - source_id: SRC-cisa-kev-fsp-2026-09-01
+        support: direct
+        exact_locators:
+          - "Complete Known Exploited Vulnerabilities catalog CSV reviewed 2026-09-01"
+    corroboration: Independent NIST and CISA catalogs produced the same bounded absence for the defining root cause.
+    limitations:
+      - Keyword and catalog review cannot prove no undisclosed, differently described, or future event exists.
+      - Several MCP CVEs were adjacent implementation flaws and were excluded after root-cause review.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1501-C006
+    statement: >-
+      The repository analytic can deterministically alert on an unapproved full-definition
+      hash change or instruction-like language distributed across at least two schema
+      paths in untrusted tool-definition events, for the included synthetic cases.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc8785
+        support: context
+        exact_locators:
+          - "Sections 3.2.1-3.2.4: canonical JSON serialization, sorting, UTF-8"
+      - source_id: SRC-cascade-2604.17125
+        support: context
+        exact_locators:
+          - "Sections 3.1 and 4.3: normalization, multi-view patterns, and results"
+    corroboration: The local detection test executes the stated selections against positive, negative, boundary, malformed, reapproval, and normalization fixtures.
+    limitations:
+      - Python sorted-key serialization in the local analytic is a testable profile, not a claim of full RFC 8785 conformance.
+      - Passing synthetic cases does not establish detection effectiveness against adaptive natural-language attacks.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: External sources support canonicalization and scanning design premises; local tests establish only the implemented behavior.
+    status: validated
+
+  - id: SAF-T1501-C007
+    statement: >-
+      Static content detection and post-execution monitoring have material blind
+      spots: controlled research reports false positives and false negatives for
+      content scanners, while implicit metadata poisoning can influence a legitimate
+      tool without invoking the malicious tool.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mindguard-2508.20412
+        support: direct
+        exact_locators:
+          - "Sections 1, 2.3, and 6.3: pre-decision and post-decision limits"
+          - "Section 7: representative failure analysis"
+      - source_id: SRC-cascade-2604.17125
+        support: direct
+        exact_locators:
+          - "Section 4.3, Tables 8-10"
+          - "Section 4.4 Limitations"
+    corroboration: Both studies report limitations of static or output-centric inspection under controlled evaluations.
+    limitations:
+      - MindGuard requires white-box attention access and CASCADE used a static, mostly English dataset.
+      - Neither study evaluated the repository FSP analytic.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1501-C008
+    statement: >-
+      A defensible control set is to retain and approve the complete definition,
+      compare a canonical fingerprint on discovery or refresh, display tool inputs
+      before execution, require confirmation for sensitive operations, and retain
+      tool-use logs.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - "Security Considerations"
+      - source_id: SRC-mcp-client-practices-2026-07-28
+        support: context
+        exact_locators:
+          - "Caching Tool Definitions and list_changed refresh guidance"
+      - source_id: SRC-mcp-security-2026-07-28
+        support: context
+        exact_locators:
+          - "Local MCP Server Security, Scope Minimization, and Logging"
+      - source_id: SRC-rfc8785
+        support: context
+        exact_locators:
+          - "Introduction and Section 3: invariant hashable representation"
+    corroboration: Protocol guidance supplies approval and logging premises; JCS supplies the invariant representation premise.
+    limitations:
+      - Fingerprints detect change, not malicious intent in an initially approved definition.
+      - Human confirmation quality depends on complete, understandable disclosure.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control set applies independent protocol and canonicalization guidance to the FSP boundary.
+    status: validated
+
+  - id: SAF-T1501-C009
+    statement: >-
+      MITRE ATT&CK T1195.002 is an analogous, not direct, mapping because both
+      concern adversarial manipulation before consumer use, while FSP manipulates
+      MCP definition semantics rather than application software.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1195-002
+        support: context
+        exact_locators:
+          - "Description; ID, tactic, version, and last-modified card"
+    corroboration: The FSP contract supplies the MCP-specific distinction.
+    limitations:
+      - ATT&CK assigns T1195.002 to Initial Access, whereas SAF assigns FSP to ATK-TA0006.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a taxonomy alignment judgment, not a statement of equivalence.
+    status: validated
+
+  - id: SAF-T1501-C010
+    statement: >-
+      The end-to-end evidence status is Research-Derived because reviewed sources
+      support the complete schema surface, model ingestion path, and adjacent
+      metadata influence, but not one direct full-schema demonstration or incident.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-huang-fsp-threat-model
+        support: context
+        exact_locators:
+          - "Section 4.5 Threat 37 and Section 7.1 limitations"
+      - source_id: SRC-mcptox-2508.14925
+        support: context
+        exact_locators:
+          - "Section 4.3: description-only attack construction"
+      - source_id: SRC-mcp-itp-2026-01
+        support: context
+        exact_locators:
+          - "Section III: poisoned metadata construction"
+    corroboration: Contract review and the NVD/CISA gap assessment independently prevent a stronger classification.
+    limitations:
+      - Evidence status must be revisited if a direct full-schema demonstration or incident becomes reviewable.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The label applies the repository evidence taxonomy to the reviewed record.
+    status: validated
+
+  - id: SAF-T1501-C011
+    statement: >-
+      Conditional impact is highest when a host exposes privileged tools or sensitive
+      data to model-directed calls without meaningful approval; direct FSP impact
+      magnitude remains unmeasured.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: context
+        exact_locators:
+          - "Direct Tool Poisoning and Tool Shadowing demonstrations"
+      - source_id: SRC-mcptox-2508.14925
+        support: context
+        exact_locators:
+          - "Section 5.2 and Table 2"
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - "Security Considerations"
+    corroboration: Adjacent demonstrations show decision and argument manipulation, while protocol guidance makes consent and input display explicit safeguards.
+    limitations:
+      - Adjacent attack-success rates cannot be transferred to FSP.
+      - Real impact depends on downstream privileges, user approval, and tool behavior.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating bounds potential consequence from established components without claiming an observed FSP loss.
+    status: validated

@@ -1,0 +1,247 @@
+version: 1
+technique_id: SAF-T2107
+claims:
+  - id: SAF-T2107-C001
+    statement: MCP tools can be invoked by models and return text, media, embedded resources, resource links, or structured content.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["Tools specification: Tool Result, Structured Content, and Output Schema headings"]
+    corroboration: The TOUCAN paper independently describes executed MCP calls and tool responses.
+    limitations: [The specification does not state that tool results are training data.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2107-C002
+    statement: TOUCAN records real MCP executions as trajectories containing tool responses and uses the trajectories for model fine-tuning.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-toucan
+        support: direct
+        exact_locators: ["Abstract", "Section 3.1, Data Collection and trajectory stages", "Section 5, Training"]
+    corroboration: The MCP specification independently defines the tool-result content that these trajectories record.
+    limitations: [The study does not investigate adversarial contamination of those responses.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2107-C003
+    statement: Controlled instruction-tuning experiments show that poisoned examples can induce trigger-conditioned misclassification or degenerate output across held-out tasks.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-wan23b
+        support: direct
+        exact_locators: ["Abstract", "Sections 3 through 6", "Section 8", "Appendix A"]
+    corroboration: The Anthropic-led controlled pretraining study independently demonstrates a narrow poisoning effect in another training regime.
+    limitations: [The experimental examples were not sourced from MCP tool results.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2107-C004
+    statement: A controlled study across 72 models from 600M to 13B parameters found that 250 poisoned documents could induce a narrow gibberish-output backdoor.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-anthropic-small-samples
+        support: direct
+        exact_locators: ["Summary", "Key finding", "Limitations and open questions"]
+    corroboration: Wan et al. independently demonstrate instruction-tuning poisoning with small poisoned subsets.
+    limitations: [The authors do not establish scaling to frontier models or complex harmful behaviors, and the documents were not MCP outputs.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2107-C005
+    statement: If an adversary-controlled MCP tool result is retained in a training trajectory and consumed by a weight-update job, the established data-poisoning mechanism can apply to the derived model.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: context
+        exact_locators: ["Tools specification: Tool Result"]
+      - source_id: SRC-toucan
+        support: context
+        exact_locators: ["Section 3.1, trajectory stages", "Section 5, Training"]
+      - source_id: SRC-wan23b
+        support: context
+        exact_locators: ["Abstract", "Section 3, Threat Model"]
+    corroboration: Three independent sources establish the protocol object, the MCP-to-training path, and the poisoning effect respectively.
+    limitations: [No reviewed source demonstrates the complete MCP-specific attack end to end.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The complete technique composes independently demonstrated components.
+    status: validated
+  - id: SAF-T2107-C006
+    statement: The technique requires adversary influence over a tool result, admission of that result to a corpus, and consumption of the corpus in a weight update.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-toucan
+        support: context
+        exact_locators: ["Section 3.1, Data Collection", "Section 5, Training"]
+      - source_id: SRC-wan23b
+        support: context
+        exact_locators: ["Section 3, Threat Model", "Section 8, Limitations"]
+    corroboration: Both studies make data inclusion and training consumption necessary to their respective results.
+    limitations: [Neither source establishes a universal effective poison dose.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The prerequisites are the intersection of the training-data path and poisoning threat model.
+    status: validated
+  - id: SAF-T2107-C007
+    statement: Data provenance can record origin, history, transformations, and integrity evidence for training data, supporting admission review.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: direct
+        exact_locators: ["Appendix A.1.6, AI provenance, pages 54-55"]
+      - source_id: SRC-owasp-llm04
+        support: corroborating
+        exact_locators: ["Prevention and Mitigation Strategies"]
+    corroboration: NIST and OWASP independently recommend provenance and source tracking.
+    limitations: [Lineage integrity does not prove that content is semantically benign.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Applying general training-data provenance to MCP-origin records is a scoped control inference.}
+    status: validated
+  - id: SAF-T2107-C008
+    statement: Source vetting, anomaly filtering, dataset versioning, model evaluation, and rollback can reduce poisoning exposure, but filtering can trade off with model utility.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-wan23b
+        support: direct
+        exact_locators: ["Section 6, Defenses", "Section 8, Limitations"]
+      - source_id: SRC-owasp-llm04
+        support: direct
+        exact_locators: ["Prevention and Mitigation Strategies"]
+    corroboration: The empirical defense evaluation and practice guidance cover complementary controls.
+    limitations: [No cited control provides a complete guarantee for this MCP-specific composition.]
+    conflicts: []
+    inference: {is_inference: true, rationale: General poisoning controls are applied to MCP-derived corpus admission and promotion.}
+    status: validated
+  - id: SAF-T2107-C009
+    statement: Admission of an MCP-derived sample with missing, invalid, or mismatched provenance is a detectable risk event, but not proof of semantic poisoning.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: context
+        exact_locators: ["Appendix A.1.6, provenance metadata and integrity, pages 54-55"]
+      - source_id: SRC-owasp-llm04
+        support: context
+        exact_locators: ["Prevention and Mitigation Strategies: track origins and transformations"]
+    corroboration: Both sources support origin and integrity records as review inputs.
+    limitations: [The analytic detects unsafe admission rather than attacker intent or learned behavior.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The rule operationalizes provenance guidance at the contract boundary.}
+    status: validated
+  - id: SAF-T2107-C010
+    statement: Microsoft's reported MCP tool-poisoning observations concern runtime manipulation through tool metadata, not model-weight contamination.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["MCP tool poisoning and rug pulls", "Detection and response guidance"]
+    corroboration: The MCP specification establishes metadata and output as runtime client inputs.
+    limitations: [The report withholds organization-specific case details and does not describe a training pipeline.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Classification as adjacent follows from the absence of a weight-update path in the described event.}
+    status: validated
+  - id: SAF-T2107-C011
+    statement: NVD records CVE-2025-61591 and CVE-2025-52573 as MCP-related command-injection vulnerabilities without a model-training contamination path.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-nvd-cve-2025-61591
+        support: direct
+        exact_locators: ["CVE record: descriptions, configurations, metrics, references"]
+      - source_id: SRC-nvd-cve-2025-52573
+        support: direct
+        exact_locators: ["CVE record: descriptions, metrics, weaknesses, references"]
+    corroboration: Both independent NVD records describe command execution rather than training data admission.
+    limitations: [NVD records may change and do not prove absence of undisclosed downstream use.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Their relationship is classified by comparing each described boundary with the technique contract.}
+    status: validated
+  - id: SAF-T2107-C012
+    statement: MITRE ATT&CK T1565.001 is an analogy because it covers manipulation of stored data to affect downstream outcomes but not MCP model training.
+    class: historical_analogy
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1565.001
+        support: direct
+        exact_locators: ["Stored Data Manipulation description", "Detection Strategy DET0527"]
+    corroboration: The poisoning research establishes the downstream-model effect absent from the ATT&CK definition.
+    limitations: [The mapping is not direct and does not inherit ATT&CK incident evidence.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The overlap is outcome-oriented while the boundaries differ.}
+    status: validated
+  - id: SAF-T2107-C013
+    statement: MITRE ATLAS AML.T0020 Poison Training Data is the closest direct AI-security framework mapping, with MCP origin as an added SAF boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-atlas-safeai
+        support: direct
+        exact_locators: ["SAFE-AI Full Report, AML.T0020 Poison Training Data, pages 17-18"]
+      - source_id: SRC-toucan
+        support: context
+        exact_locators: ["Section 3.1, MCP trajectory stages"]
+    corroboration: ATLAS supplies the training-poison definition and TOUCAN supplies the MCP origin path.
+    limitations: [The ATLAS material does not itself document MCP tool responses.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping joins the direct AI technique with the MCP-specific source boundary.}
+    status: validated
+  - id: SAF-T2107-C014
+    statement: A semantic poison may evade an admission analytic that checks lineage state but does not evaluate content or post-training behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-wan23b
+        support: direct
+        exact_locators: ["Section 6, Defenses", "Section 8, Limitations"]
+      - source_id: SRC-anthropic-small-samples
+        support: corroborating
+        exact_locators: ["Limitations and defense discussion"]
+    corroboration: Both empirical sources distinguish attack effect from what simple data controls can guarantee.
+    limitations: [The exact evasion rate depends on content, model, and evaluation design.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The limitation follows from the detection rule observing metadata rather than semantics.}
+    status: validated
+  - id: SAF-T2107-C015
+    statement: Successful training contamination primarily threatens model integrity and can propagate to multiple deployments of the affected artifact.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-wan23b
+        support: direct
+        exact_locators: ["Abstract", "Sections 4-5 results"]
+      - source_id: SRC-anthropic-small-samples
+        support: corroborating
+        exact_locators: ["Key finding", "Results across model sizes"]
+    corroboration: Independent training regimes both show learned behavior altered by poisoned data.
+    limitations: [Deployment blast radius and confidentiality effects are not established by these experiments.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Multi-deployment scope follows only when one affected artifact is promoted broadly.}
+    status: validated

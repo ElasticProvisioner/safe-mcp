@@ -1,0 +1,412 @@
+version: 1
+technique_id: SAF-T1205
+claims:
+  - id: SAF-T1205-C001
+    statement: >-
+      MCP tools are model-controlled capabilities whose definitions include a
+      name, description, input schema, optional output schema, annotations, and
+      execution metadata.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 83-90
+          - Tool, lines 234-254
+    corroboration: The versioned MCP specification is the controlling protocol source.
+    limitations:
+      - The specification does not prescribe a universal host approval interface.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C002
+    statement: >-
+      MCP servers may advertise list-change support, clients discover tools
+      through tools/list, and servers should notify clients when the tool list
+      changes.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Capabilities, lines 95-108
+          - Listing Tools, lines 119-168
+          - List Changed Notification, lines 209-217
+    corroboration: Visual Studio documents subscribing to the same notification and refetching the list.
+    limitations:
+      - The 2025-11-25 specification defines notification behavior but does not require reapproval after a change.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C003
+    statement: >-
+      Song and eight coauthors demonstrated a post-listing change by registering
+      benign repositories on three MCP aggregators, replacing their contents
+      with malicious server code, and observing unchanged listing status and
+      continued accessibility during a seven-day observation period.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-song-mcp-attack-v4
+        support: direct
+        exact_locators:
+          - Section 4.1.2 Test 2, lines 585-596 of extracted text
+          - Section 4.1.3 Results, lines 608-624 of extracted text
+          - Section 4.3.1, lines 811-819 of extracted text
+    corroboration: Microsoft and Invariant independently describe post-approval tool-definition changes as a rug-pull risk.
+    limitations:
+      - The study was controlled, disclosed its research nature, removed the repositories, and affected no production users.
+      - The redefinition feasibility test did not separately benchmark downstream harm because the authors treated that phase as shared with tool poisoning.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C004
+    statement: >-
+      Invariant researchers Luca Beurer-Kellner and Marc Fischer demonstrated
+      that a malicious MCP tool description could cause Cursor to read and send
+      sensitive local files, while separately identifying post-approval tool
+      description replacement as an MCP rug-pull risk.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Experiment 1: Attacking Cursor with Tool Poisoning, extracted text lines 114-139
+          - MCP Rug Pulls, extracted text lines 141-154
+          - Authors, extracted text lines 307-309
+    corroboration: Microsoft independently describes dynamic post-approval amendment and bounded data-exfiltration or manipulation outcomes.
+    limitations:
+      - The published experiment demonstrates tool poisoning, not the temporal redefinition step itself.
+      - It is adjacent impact evidence and does not independently establish a production incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C005
+    statement: >-
+      Microsoft describes hosted MCP tool definitions being dynamically amended
+      after prior approval, with undeclared data exfiltration or manipulation as
+      bounded possible outcomes.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-indirect-injection-2025
+        support: direct
+        exact_locators:
+          - Indirect Prompt Injection Attacks, web lines 27-34
+          - Authors, extracted text lines 199-213
+    corroboration: The Azure MCP security guidance gives a matching reapproval control for updated metadata.
+    limitations:
+      - The post is guidance, not a production incident report or measured attack evaluation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C006
+    statement: >-
+      Microsoft Azure guidance recommends pinning known-good tool schemas and
+      descriptions and requiring reapproval before updated metadata takes effect.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators:
+          - Tool poisoning and prompt injection, web lines 71-80
+          - Third-party MCP server trust, web lines 81-89
+    corroboration: Invariant recommends version pinning and a hash or checksum over tool descriptions.
+    limitations:
+      - Guidance does not guarantee that all MCP clients implement these controls.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C007
+    statement: >-
+      Visual Studio documents that it subscribes to tools/list_changed, resets
+      prior tool permissions when the event fires, refetches the list, and asks
+      users to trust a server again when relevant server details change.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: direct
+        exact_locators:
+          - Tool lifecycle, web lines 142-150
+          - MCP server trust dialog, web lines 154-188
+    corroboration: Azure MCP security guidance independently recommends reapproval on updated metadata.
+    limitations:
+      - The documented behavior is product-specific and includes bypass choices such as Always Trust.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C008
+    statement: >-
+      Azure App Service built-in MCP documents recomputing its tool list,
+      comparing a SHA-256 hash with the previous hash, and sending a
+      tools/list_changed notification when the hash differs.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-azure-appservice-mcp-2026
+        support: direct
+        exact_locators:
+          - How does the platform handle spec updates, web lines 327-335
+    corroboration: The MCP specification defines the matching list-changed notification.
+    limitations:
+      - The page documents a preview service and does not claim the hash comparison is a client-side security decision.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C009
+    statement: >-
+      Google Cloud guidance recommends a centralized MCP proxy and documents
+      audit records containing timestamps, agent and session identifiers,
+      payloads, and input/output signature fingerprints.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-mcp-security-2025
+        support: direct
+        exact_locators:
+          - How a centralized MCP proxy architecture can help, web lines 97-118
+          - Logging and auditing, web lines 183-186
+    corroboration: The MCP tools specification recommends logging tool usage for audit purposes.
+    limitations:
+      - The cited fields are a Google Cloud reference architecture, not mandatory MCP fields.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C010
+    statement: >-
+      Comparing a normalized current tool-definition hash with its approved
+      baseline and alerting when they differ without a matching reapproval is a
+      testable analytic for persistent tool redefinition.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-azure-appservice-mcp-2026
+        support: corroborating
+        exact_locators:
+          - How does the platform handle spec updates, web lines 327-335
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: direct
+        exact_locators:
+          - Tool lifecycle, web lines 142-150
+          - MCP server trust dialog, web lines 154-188
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators:
+          - Tool poisoning and prompt injection, web lines 71-80
+    corroboration: Three independent implementation or guidance sources support hashing, change detection, and reapproval as separable control points.
+    limitations:
+      - The analytic detects unapproved change, not malicious intent.
+      - It requires stable server identity and canonicalized definition fields.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The exact cross-product rule is an SAF analytic synthesized from documented
+        hashing, notification, and reapproval behavior.
+    status: validated
+
+  - id: SAF-T1205-C011
+    statement: >-
+      Legitimate hot reloads and approved schema changes can produce the same
+      hash difference, while missing baselines, unstable canonicalization, or
+      server-identity changes can prevent reliable correlation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Capabilities and List Changed Notification, lines 95-108 and 209-217
+      - source_id: SRC-azure-appservice-mcp-2026
+        support: direct
+        exact_locators:
+          - ToolList interactions with spec updates, web lines 244-249
+          - How does the platform handle spec updates, web lines 327-335
+    corroboration: The protocol and Azure implementation both treat tool-list change as legitimate platform behavior.
+    limitations:
+      - False-positive frequency is deployment-specific and was not measured by the sources.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The operational limits follow from comparing security intent with legitimate dynamic-update semantics.
+    status: validated
+
+  - id: SAF-T1205-C012
+    statement: >-
+      CVE-2025-64443 affected Docker MCP Gateway through version 0.27.0 in SSE
+      or streaming mode, enabling browser-based manipulation of tools behind the
+      gateway; version 0.28.0 fixed it, and the CISA SSVC record reported no
+      observed exploitation.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-docker-ghsa-46gc-2025
+        support: direct
+        exact_locators:
+          - Affected versions and patched versions, web lines 139-160
+          - Impact and workarounds, web lines 151-164
+          - Credits, web lines 247-249
+      - source_id: SRC-nvd-cve-2025-64443
+        support: corroborating
+        exact_locators:
+          - CVE description, published and lastModified fields in NVD API response
+          - metrics.ssvcV203 exploitation option
+    corroboration: NVD and the Docker-maintained advisory agree on affected mode, manipulation impact, and fixed version.
+    limitations:
+      - The vulnerability enables manipulation of tools but does not itself establish post-approval server-authored redefinition.
+      - It is an enabling vulnerability, not a direct instance of this technique.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1205-C013
+    statement: >-
+      MITRE ATT&CK T1554 covers modification of host software binaries to
+      establish persistent access; it is only analogous because tool-definition
+      metadata is not a host software binary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1554
+        support: direct
+        exact_locators:
+          - Technique description, extracted text lines 36-64
+          - ID, tactic, contributors, version, and modified date, extracted text lines 65-83
+    corroboration: Microsoft identifies post-approval modification as persistence-like supply-chain abuse in its AI attack catalog.
+    limitations:
+      - T1554 is host-binary focused and therefore not a direct mapping.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is a conceptual comparison, not an assertion of ATT&CK equivalence.
+    status: validated
+
+  - id: SAF-T1205-C014
+    statement: >-
+      Microsoft maps post-approval rug-pull behavior to AI supply-chain
+      compromise, prompt injection, agent tool invocation, and agent tool
+      poisoning, while noting that MITRE ATLAS lacks a dedicated rug-pull technique.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-rug-pull-catalog-2026
+        support: direct
+        exact_locators:
+          - MITRE ATLAS mapping, web lines 73-89
+    corroboration: The mapping distinguishes multiple downstream and adjacent mechanisms rather than treating them as one behavior.
+    limitations:
+      - The mapping is Microsoft guidance and may change as ATLAS evolves.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF uses the catalog as a mapping authority while preserving its stated closest-fit limitation.
+    status: validated
+
+  - id: SAF-T1205-C015
+    statement: >-
+      A defensible response is to disable the changed tool, preserve discovery,
+      approval, and invocation records, compare the new definition with the
+      approved baseline, require a fresh decision, and investigate calls made
+      after the change before rotating exposed credentials when evidence warrants it.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: direct
+        exact_locators:
+          - Tool lifecycle and trust dialog, web lines 142-188
+      - source_id: SRC-google-mcp-security-2025
+        support: corroborating
+        exact_locators:
+          - Logging and auditing, web lines 183-186
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators:
+          - Governance and monitoring, extracted text following line 190
+    corroboration: The sources jointly support disablement/reapproval, audit preservation, and cross-source investigation.
+    limitations:
+      - Credential rotation is conditional on evidence of exposure, not automatic for every metadata change.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response procedure is an SAF synthesis of documented controls.
+    status: validated
+
+  - id: SAF-T1205-C016
+    statement: >-
+      Persistent tool redefinition can have high confidentiality and integrity
+      impact when the agent can access sensitive data or privileged tools, but
+      the impact is constrained by reapproval, least privilege, and isolation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Experiment 1, extracted text lines 114-139
+      - source_id: SRC-ms-indirect-injection-2025
+        support: corroborating
+        exact_locators:
+          - Indirect Prompt Injection Attacks, web lines 27-34
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators:
+          - Local deployment hardening and third-party trust, web lines 60-89
+    corroboration: Research and two Microsoft guidance sources support both the consequence and its privilege/isolation conditions.
+    limitations:
+      - No production loss data for the defining redefinition behavior was found.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Severity combines demonstrated adjacent impact with explicit deployment conditions.
+    status: validated

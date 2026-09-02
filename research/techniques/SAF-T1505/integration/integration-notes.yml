@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1505
+frozen_on: "2026-09-01"
+clean_room_integrity: passed
+prohibited_during_integration:
+  - Do not compare with or derive revisions from prior SAF-T1505 content.
+  - Do not use shared registries to introduce new research leads or claims.
+mechanical_joins:
+  tactic:
+    synthetic: false
+    supplied_id: ATK-TA0006
+    action: Verify that the shared framework uses this exact Credential Access tactic identifier.
+  neighbors:
+    - synthetic_id: SAF-T1997
+      neutral_role: Persistent Secret Store Access
+      action: Replace with the canonical SAF neighbor for credentials in files, vaults, databases, or other persistent stores.
+    - synthetic_id: SAF-T1998
+      neutral_role: Adversary-Controlled Code Execution
+      action: Replace with the canonical SAF neighbor for code execution that enables but does not complete secret extraction.
+    - synthetic_id: SAF-T1999
+      neutral_role: Secret Exfiltration via Agent Tools
+      action: Replace with the canonical SAF neighbor for follow-on transfer of acquired secrets.
+  mitigations: []
+  source_ids:
+    action: Reuse stable shared-manifest IDs only when canonical URL and source identity match exactly; otherwise add the fragment records unchanged.
+    fragment: source-manifest-fragment.yml
+  history_sha:
+    synthetic_value: 42b222f84e70611c63c56325152cde19b97a6bd0
+    action: Replace with an honest repository SHA supporting integration provenance before strict repository validation.
+  paths:
+    - from: source-manifest-fragment.yml
+      to: research/source-manifest.yml
+      action: Merge sources by canonical identity after the frozen evidence set is accepted.
+    - from: framework-fragment.yml
+      to: research/framework-model.yml
+      action: Merge the technique record after neighbor substitution.
+    - from: alignment-fragment.yml
+      to: research/alignment-ledger.yml
+      action: Merge the resolved alignment issue with a collision-free issue ID.
+deferred_real_repository_checks:
+  - Shared source-ID collisions and canonical reuse.
+  - Canonical nearest-neighbor and mitigation identifiers.
+  - Honest repository-history SHA.
+  - Final repository-wide validators and workflow regression tests.
+not_deferred:
+  - Bundle-owned schema, headings, claim and source syntax, hidden traces, detection rule, tests, statuses, and strict isolated validation.
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T1997: SAF-T1502
+    SAF-T1998: SAF-T1305
+    SAF-T1999: SAF-T1911
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-52
+  - SAF-M-74
+  dedicated_query_corpus: SRC-cisa-kev-in-memory-secrets-2026-09-01
+  validation_artifacts:
+  - research/techniques/SAF-T1505/validation/detection-tests.txt
+  - research/techniques/SAF-T1505/validation/strict-validator.txt
+  status: integrated_and_validated

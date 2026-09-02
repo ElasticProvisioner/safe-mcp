@@ -1,0 +1,145 @@
+version: 1
+technique_id: SAF-T1112
+generation_mode: clean_room
+generated_on: '2026-09-02'
+status: passed
+target:
+  id: SAF-T1112
+  neutral_name: Sampling Request Abuse
+  assigned_tactics:
+  - ATK-TA0002
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1112
+  inherited_context: false
+  workspace: /private/tmp/saf-all-cleanroom/SAF-T1112
+allowed_inputs:
+- The complete author-saf-technique skill and its routed methodology references.
+- techniques/TEMPLATE.md as a generic structure and formatting reference.
+- research/README.md as the generic packet contract.
+- Blank research/templates/technique schema files.
+- scripts/validate-technique-research.py as the strict validator.
+- The supplied neutral ID, neutral name, and assigned tactic.
+- Independently opened direct authorities listed in source-manifest-fragment.yml.
+prohibited_inputs:
+- Any existing or historical techniques/SAF-T1112/README.md.
+- Any existing or historical research/techniques/SAF-T1112/ content.
+- Any existing or historical techniques/SAF-T1112/detection-rule.yml or test artifacts.
+- Target repository git history, diff, or blame.
+- Any issue, pull request, review, or discussion about the target.
+- Any previous conversation or prior target context.
+- Shared source, framework, and alignment registries.
+- SAF sites, repositories, forks, catalogs, and other agents' work.
+- Methodology impact examples.
+independent_research:
+  discovery_policy: Direct-authority-only research using exact standards-body, government,
+    academic-publisher, first-party project, and named researcher endpoints; no unrestricted
+    search, GitHub discovery, or SAF-derived source was used.
+  searches:
+  - Direct review of the current Model Context Protocol specification index, sampling
+    page, schema, deprecated-feature registry, and Inspector documentation.
+  - NVD CVE API queries for Model Context Protocol, sampling, sampling/createMessage,
+    MCP sampling abuse, and server-initiated LLM terms.
+  - Deterministic filter of CISA KEV catalog version 2026.09.01.
+  - Direct Crossref bibliographic and title queries for MCP sampling and abuse phrases.
+  - Direct arXiv API exact-phrase and mechanism queries.
+  - Direct review of DOI publisher pages and the complete open-access Park et al.
+    article.
+  - Direct review of MITRE ATT&CK T1204 and MITRE terms.
+  - Direct review of OpenTelemetry's moved convention notice and only the exact repository
+    URL supplied by that authority.
+  - Two consecutive authority-only saturation follow-ups recorded in source-coverage.yml.
+  opened_source_ids:
+  - SRC-apress-sampling-abuse-2026
+  - SRC-arxiv-sampling-query-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-inspector-web-2026
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-sampling-2025-11
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-schema-2025
+  - SRC-mcp-2026-schema
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-overview-2026
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-terms-2026
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-sampling-query-2026
+  - SRC-opentelemetry-genai-repo-2026
+  - SRC-opentelemetry-moved-2026
+  exact_github_artifact_provenance:
+  - source_id: SRC-opentelemetry-genai-repo-2026
+    authority_source_id: SRC-opentelemetry-moved-2026
+    supplied_url: https://github.com/open-telemetry/semantic-conventions-genai
+    use: Scope check only; no GitHub search or discovery performed.
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- The canonical bundle must be hash-frozen and made read-only before any destination
+  repository is inspected.
+- Integration must reconcile source IDs mechanically without changing claims or prose.
+- Synthetic neighbor, mitigation, framework, alignment, and history joins must be
+  replaced mechanically against the destination catalog.
+- Any material change after freeze invalidates the clean-room handoff and requires
+  a new freeze and attestation review.
+attestation: I generated this packet from the allowed generic inputs and independently
+  reviewed direct authorities. I did not inspect any prior SAF-T1112 artifact, target
+  history, shared registry, SAF publication, prior conversation, or another agent's
+  work before the immutable freeze.
+mock_validation:
+  environment: isolated synthetic repository
+  status: passed
+  command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1112/python-deps python3
+    scripts/validate-technique-research.py SAF-T1112
+  result: PASS SAF-T1112
+  runtime_note: PyYAML 6.0.3 was installed only as a temporary validator dependency
+    outside the canonical bundle.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-schema-2026: SRC-mcp-2026-schema
+    SRC-nvd-mcp-query-2026: SRC-nvd-fsp-catalog-queries-2026-09-01
+    SRC-cisa-kev-2026: SRC-cisa-kev-2026-09-01
+    SRC-mitre-t1204-2025: SRC-mitre-attack-t1204
+    SRC-mcp-llms-index-2026: SRC-mcp-doc-index-2026
+    SRC-mcp-spec-2026: SRC-mcp-overview-2026
+    SRC-mcp-sampling-2025: SRC-mcp-sampling-2025-11
+    SRC-mcp-security-practices-2025: SRC-mcp-security-2025-11-25
+  new_shared_source_records:
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-inspector-web-2026
+  - SRC-nvd-sampling-query-2026
+  - SRC-crossref-sampling-query-2026
+  - SRC-arxiv-sampling-query-2026
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-apress-sampling-abuse-2026
+  - SRC-mitre-terms-2026
+  - SRC-opentelemetry-moved-2026
+  - SRC-opentelemetry-genai-repo-2026
+  - SRC-mcp-schema-2025
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-73
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1104
+  - SAF-T2102
+  canonical_validation_proof:
+  - research/techniques/SAF-T1112/validation/detection-test.txt
+  - research/techniques/SAF-T1112/validation/strict-validator.txt
+  external_source_corpus_manifest_sha256: 055ad75d49bb660ebc5019d4dace8138611dc87ea09df2a3147f50936596e237
+  source_archive_disposition: The independently checksummed source corpus remains
+    outside the repository; canonical source records retain direct review evidence
+    and locators.
+  status: integrated_and_validated

@@ -1,65 +1,115 @@
-# SIGMA RULE: Malicious MCP-Server Distribution - MCP runtime telemetry
-# WARNING: This rule contains example patterns only. Organizations should:
-# - Regularly update patterns based on threat intelligence
-# - Implement behavioral analysis beyond pattern matching
-# - Use AI-based anomaly detection for novel attack vectors
-# - Consider context-specific false positives
-#
-# Scope: this rule reads MCP server-runtime telemetry only (tool registrations,
-# tool calls, and the server's outbound connections as observed by an MCP host
-# or security proxy). Host/OS indicators (process, file, network from the OS)
-# live in the companion Sysmon rule detection-rule-host-telemetry.yml, because
-# no single log source emits both MCP-level events and OS endpoint telemetry.
-
-title: Malicious MCP Server Runtime Behavior
-id: 7dd04394-9733-4a73-a3b0-1466a85543c3
+title: Correlate anomalous MCP server admission with activation
+id: 4b058998-b350-55b8-a077-e639bc023432
 status: experimental
-description: Detects behavioral indicators of a trojanized MCP server at the MCP layer - command-injection markers in tool-call arguments, invocation of capabilities the server never declared, and outbound connections to non-allowlisted hosts.
-author: Frederick Kautz
-date: 2025-09-14
-modified: 2026-07-01
+description: >-
+  Detects activation of an MCP server after a strong integrity failure or a
+  combination of weaker source and version admission anomalies. Events are
+  normalized correlation summaries; missing optional provenance alone does not
+  alert.
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1003
-  - https://attack.mitre.org/techniques/T1204/
-logsource:
-  product: mcp
-  service: server_runtime
-detection:
-  # Tool-call arguments carrying shell command-injection markers (maps to the
-  # generate_report backdoor in the Example Scenario). Behavior-based, not name-based.
-  selection_cmd_injection:
-    event_type: 'tool_call'
-    tool_argument|contains:
-      - '$('
-      - '`'
-      - '; '
-      - '&&'
-      - '| sh'
-  # A tool exercises a capability the server never declared in tools/list
-  # (maps to organize_files silently reading/exfiltrating files). The MCP host
-  # emits capability_declared=false when an invoked capability was not advertised.
-  selection_undeclared_capability:
-    event_type: 'tool_call'
-    capability_declared: false
-  # Outbound connection initiated by the MCP server process.
-  selection_egress:
-    event_type: 'outbound_connection'
-  # Allowlist of expected destinations; anything else is suspicious egress
-  # (the Example Scenario beacons to legit-analytics.com / backup-service.com).
-  filter_egress_allowlisted:
-    destination_host|endswith:
-      - 'modelcontextprotocol.io'
-      - 'api.github.com'
-      - 'registry.npmjs.org'
-      - 'localhost'
-  condition: selection_cmd_injection or selection_undeclared_capability or (selection_egress and not filter_egress_allowlisted)
-falsepositives:
-  - MCP servers that legitimately shell out and use safe argument construction
-  - Servers with legitimate external integrations not yet added to the allowlist
-  - Tools whose declared capabilities are incompletely captured by the host
-level: high
+  - https://attack.mitre.org/detectionstrategies/DET0537/
+  - https://docs.npmjs.com/viewing-package-provenance/
+  - https://repos.openssf.org/build-provenance-for-all-package-registries.html
+author: SAF-MCP clean-room research
+date: 2026-09-01
+modified: 2026-09-01
 tags:
-  - attack.initial_access
-  - attack.t1204
-  - attack.t1204.002
-  - safe.t1003
+  - saf.t1003
+  - attack.t1195.002
+logsource:
+  category: application
+  product: mcp_client_or_admission_gateway
+  definition: One normalized aggregate per completed server admission and activation correlation group.
+detection:
+  selection_context:
+    event.category: mcp_server_lifecycle
+    event.action:
+      - install
+      - update
+      - configure
+      - activate
+    activation.status: completed
+  strong_digest_failure:
+    artifact.digest_status: mismatch
+  strong_signature_failure:
+    artifact.signature_status: invalid
+  strong_provenance_failure:
+    provenance.status: invalid
+  weak_unapproved_source:
+    source.policy_status: unapproved
+  weak_unapproved_version:
+    version.policy_status: unapproved
+  condition: >-
+    selection_context and (1 of strong_* or
+    (weak_unapproved_source and weak_unapproved_version))
+fields:
+  - timestamp
+  - event.category
+  - event.action
+  - server.id
+  - correlation.id
+  - activation.status
+  - artifact.digest_status
+  - artifact.signature_status
+  - provenance.status
+  - source.policy_status
+  - version.policy_status
+  - publisher.change_status
+  - runtime.unexpected_child_process
+  - runtime.first_time_egress
+falsepositives:
+  - A reviewed emergency fork may use an unapproved source and version until baselines are updated.
+  - Planned publisher, source, or provenance migrations may appear anomalous during rollout.
+  - Missing or unavailable optional provenance is intentionally not scored as invalid.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1003-C015
+    - SAF-T1003-C016
+    - SAF-T1003-C020
+  telemetry_claim_ids:
+    - SAF-T1003-C011
+    - SAF-T1003-C016
+  limitation_claim_ids:
+    - SAF-T1003-C012
+    - SAF-T1003-C014
+    - SAF-T1003-C015
+    - SAF-T1003-C020
+  validation_artifacts:
+    - techniques/SAF-T1003/tests/test_detection.py
+    - techniques/SAF-T1003/tests/fixtures/events.ndjson
+    - techniques/SAF-T1003/tests/fixtures/expected.json
+    - techniques/SAF-T1003/tests/results/test-results.json
+    - techniques/SAF-T1003/tests/logs/test-run.log
+  components:
+    logsource:
+      claim_ids: [SAF-T1003-C016, SAF-T1003-C020]
+      rationale: The analytic requires locally normalized admission, activation, integrity, process, and network telemetry.
+    selection_context:
+      claim_ids: [SAF-T1003-C002, SAF-T1003-C003, SAF-T1003-C016]
+      rationale: Delivery becomes actionable for this analytic only when the server is installed, configured, updated, or activated.
+    strong_digest_failure:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C016]
+      rationale: A digest mismatch is a high-confidence integrity failure when joined to activation.
+    strong_signature_failure:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C016]
+      rationale: An invalid signature is a high-confidence integrity failure when joined to activation.
+    strong_provenance_failure:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C012, SAF-T1003-C016]
+      rationale: Invalid provenance is scored strongly, while missing optional provenance is not equated with maliciousness.
+    weak_unapproved_source:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C015, SAF-T1003-C016]
+      rationale: An unapproved source is meaningful in combination but insufficient alone.
+    weak_unapproved_version:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C015, SAF-T1003-C016]
+      rationale: An unapproved version is meaningful in combination but insufficient alone.
+    condition:
+      claim_ids: [SAF-T1003-C015, SAF-T1003-C016, SAF-T1003-C020]
+      rationale: Multi-signal correlation balances integrity strength against known scanner and provenance limitations.
+    fields:
+      claim_ids: [SAF-T1003-C011, SAF-T1003-C016, SAF-T1003-C020]
+      rationale: Fields support triage, local baselines, and acquisition-to-first-run reconstruction.
+    falsepositives:
+      claim_ids: [SAF-T1003-C012, SAF-T1003-C014, SAF-T1003-C015, SAF-T1003-C020]
+      rationale: Legitimate transitions and unavailable attestations require local context and tuning.

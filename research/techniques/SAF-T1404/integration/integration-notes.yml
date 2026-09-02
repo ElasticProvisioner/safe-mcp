@@ -1,0 +1,56 @@
+version: 1
+technique_id: SAF-T1404
+freeze_policy: No semantic edits after freeze; any semantic conflict requires a new clean-room cycle and new hashes.
+mechanical_post_freeze_joins:
+  canonical_paths:
+    - {from: techniques/SAF-T1404, to: techniques/SAF-T1404, action: add only after confirming the target path is absent or separately adjudicated without exposing it to the clean-room author.}
+    - {from: research/techniques/SAF-T1404, to: research/techniques/SAF-T1404, action: add complete packet without semantic rewriting.}
+    - {from: tests/SAF-T1404, to: tests/SAF-T1404, action: add complete detection test assets without semantic rewriting.}
+  framework_fragment:
+    from: framework-fragment.yml
+    to: research/framework-model.yml
+    action: append the single SAF-T1404 record after ID and path collision checks.
+  source_fragment:
+    from: source-manifest-fragment.yml
+    to: research/source-manifest.yml
+    action: append all source records after exact ID and record-content collision checks.
+  alignment_fragment:
+    from: alignment-fragment.yml
+    to: research/alignment-ledger.yml
+    action: append the two resolved mechanical-join records after ID checks.
+  neighbor_joins:
+    - {synthetic_id: SAF-T1998, role: instruction-injection neighbor, action: map to the canonical nearest technique and update only contract, README link label/path, framework relation, and alignment issue.}
+    - {synthetic_id: SAF-T1999, role: request-manipulation neighbor, action: map to the canonical nearest technique and update only contract, README link label/path, framework relation, and alignment issue.}
+  mitigation_joins: []
+  tactic_joins:
+    - {id: ATK-TA0005, action: verify the supplied tactic exists in the canonical tactic registry; no semantic remapping is authorized.}
+  history_join:
+    synthetic_sha: "1111111111111111111111111111111111111111"
+    action: replace with the honest integration commit SHA in traceability-ledger.yml after commit creation, then rerun strict validation and publish new hashes.
+  source_id_joins:
+    - SRC-attack-t1565-002
+    - SRC-capec-384
+    - SRC-capec-385
+    - SRC-cisa-kev-2026-09-01
+    - SRC-cwe-345
+    - SRC-cwe-924
+    - SRC-ghsa-5ire-8527
+    - SRC-ghsa-mcp-atlassian-7r34
+    - SRC-ghsa-php-7m52
+    - SRC-ghsa-python-jpw9
+    - SRC-ghsa-ts-sdk-345p
+    - SRC-mcp-http-2026-07-28
+    - SRC-mcp-logging-2026-07-28
+    - SRC-mcp-security-2026-07-28
+    - SRC-mcp-spec-index-2026-07-28
+    - SRC-mcp-tools-2026-07-28
+    - SRC-nist-sp800-61r3
+    - SRC-nvd-mcp-catalog-2026-09-01
+    - SRC-otel-genai-observability
+    - SRC-owasp-llm-top10
+    - SRC-rfc8785
+    - SRC-zhan-aei-2026
+post_join_validation:
+  - python3 scripts/validate-technique-research.py SAF-T1404
+  - python3 tests/SAF-T1404/test_detection_rule.py
+status: pending_external_integration

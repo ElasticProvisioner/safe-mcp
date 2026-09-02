@@ -1,0 +1,90 @@
+version: 1
+technique_id: SAF-T3001
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T3001
+  neutral_name: RAG Backdoor Attack
+allowed_inputs:
+- Neutral target identifier, name, and supplied tactic.
+- Generic repository templates, research instructions, and validator source.
+- Independently discovered direct-authority sources reached through domain-restricted
+  searches.
+prohibited_inputs:
+- techniques/SAF-T3001/README.md
+- research/techniques/SAF-T3001/
+- techniques/SAF-T3001/detection-rule.yml
+- Shared registries, framework joins, prior SAF content, SAF sites, repositories,
+  or forks.
+- Git history, diffs, blame, pull request material, issues, or prior target artifacts.
+- Previous conversation or inherited technique-specific context.
+independent_research:
+  searches:
+  - retrieval augmented generation backdoor attack paper [usenix.org]
+  - retrieval augmented generation poisoning backdoor paper [arxiv.org]
+  - RAG poisoning security guidance [owasp.org, nist.gov]
+  - RAG poisoning incident postmortem [microsoft.com, cisa.gov]
+  - RAG poisoning CVE [nvd.nist.gov]
+  - RAG poisoning defense evaluation [usenix.org, aclanthology.org]
+  - MITRE ATT&CK stored data manipulation and impact [attack.mitre.org]
+  opened_source_ids:
+  - SRC-badrag
+  - SRC-biasrag
+  - SRC-usenix-confundo-2026
+  - SRC-corpus-poisoning
+  - SRC-mitre-attack-t1565
+  - SRC-mitre-ta0040
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-nist-aml
+  - SRC-nvd-cve-2025-27135
+  - SRC-owasp-rag-security
+  - SRC-usenix-poisonedrag-2025
+  - SRC-riprag
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace synthetic neighbor identifiers only through mechanical repository reconciliation
+  after freeze.
+- Preserve the frozen README, evidence status, claims, citations, exclusions, tests,
+  and validation outputs byte-for-byte.
+- Re-run the strict validator against the destination repository before publication.
+attestation: The technique was independently authored in a fresh temporary workspace
+  from permitted generic inputs and directly reviewed external authorities. No prior
+  SAF target content or repository-specific join data was accessed before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-poisonedrag: SRC-usenix-poisonedrag-2025
+    SRC-confundo: SRC-usenix-confundo-2026
+    SRC-nist-ai-100-2e2023: SRC-nist-aml
+    SRC-mitre-ta0040: SRC-mitre-ta0040
+    SRC-mitre-t1565: SRC-mitre-attack-t1565
+    SRC-ms-recommendation-poisoning: SRC-ms-recommendation-poisoning-2026
+    SRC-ms-memory-context: SRC-ms-zero-trust-memory-2026
+  new_shared_source_records:
+  - SRC-badrag
+  - SRC-riprag
+  - SRC-owasp-rag-security
+  - SRC-biasrag
+  - SRC-corpus-poisoning
+  - SRC-nvd-cve-2025-27135
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-3
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-30
+  - SAF-M-32
+  - SAF-M-51
+  status: integrated_and_validated

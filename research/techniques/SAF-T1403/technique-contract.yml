@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1403
+name: Consent-Fatigue Exploit
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Obtain a user-approved agent or MCP action that the user previously
+  denied or would not deliberately authorize by causing materially repeated approval
+  or elicitation requests until the user accepts one.
+scope:
+  security_boundary: The human authorization boundary between an agent- or MCP-originated
+    request and a client decision to permit a tool call, privilege elevation, or data
+    disclosure.
+  in_scope:
+  - Repeated, materially equivalent approval requests induced by an adversary-controlled
+    server, tool, prompt source, or workflow after denial, cancellation, or non-response.
+  - A later user acceptance that authorizes the requested action or establishes a
+    reusable permission.
+  out_of_scope:
+  - Deceptive wording, concealed arguments, or visual spoofing that wins approval
+    on the first request without repetition.
+  - Technical bypass of consent enforcement, redirect validation, or authorization
+    state without a fatigued user decision.
+  - Ordinary retries that preserve user intent, are bounded, and do not seek a broader
+    or previously denied permission.
+  affected_components:
+  - MCP clients and hosts that render tool or elicitation requests.
+  - Agent runtimes that mediate approval decisions and reusable permission rules.
+  - MCP servers, tools, and untrusted content able to trigger request-generating workflows.
+nearest_neighbors:
+- technique_id: SAF-T1007
+  distinction: OAuth Authorization Phishing wins authorization through misleading
+    first-request context; this technique requires materially repeated requests and
+    a later acceptance.
+- technique_id: SAF-T1307
+  distinction: Confused Deputy Attack can omit or misbind consent through a technical
+    authority failure; this technique depends on an actual user approval after repeated
+    requests.
+required_evidence:
+- Establish that MCP and agentic systems can present user approval or elicitation
+  decisions for tool actions or data sharing.
+- Establish that repeated approval requests can cause an eventual acceptance in a
+  directly observed non-agentic analogue.
+- Search separately for direct MCP or agentic production incidents, product vulnerabilities
+  and advisories, controlled demonstrations, detection guidance, defenses, and contrary
+  evidence.
+- Preserve the absence of a direct MCP or agentic incident or end-to-end demonstration
+  if authoritative review does not identify one.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Approval lifecycle events containing timestamp, user, session, requester or server,
+    operation or tool, request fingerprint, decision, and approval scope.
+  - Optional authentication, identity, and tool-execution events used to distinguish
+    user-initiated retries from adversarial repetition.
+safe_example_constraints:
+- Use an inert example operation and reserved example identifiers.
+- Do not include executable payloads, credentials, destructive commands, or instructions
+  for coercing a real user.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and directly reviewed
+  sources with exact locators.
+- Unverified incident, vulnerability, and demonstration leads are omitted and recorded
+  in traceability-ledger.yml.
+- All required research passes and two no-change saturation passes are recorded.
+- The detector passes positive, negative, boundary, malformed-input, and expected-false-positive
+  tests.
+- Rights, safety, framework, and clean-room integrity reviews pass in a strictly isolated
+  synthetic repository.

@@ -1,75 +1,93 @@
-id: 9d4e1e5b-8825-4cb0-9a7c-6d8322c5d21f
-name: SAF-T1803 Database Dump via MCP SQL Tool
-description: >
-  Detects suspicious database dump activity initiated through MCP-exposed SQL tools,
-  including full-table SELECT queries, backup/dump commands, and unusually large result
-  sets against high-value tables.
+title: SAF-T1803 Database Dump Through MCP Tool Call
+id: d1803000-4f73-4a13-9c42-180300000001
 status: experimental
-
-log_sources:
-  - product: mcp
-    service: tool_invocation
-    definition: MCP host logs for tool calls and responses (including tool args and result metadata).
-  - product: database
-    service: query_audit
-    definition: Database audit logs capturing query text, execution context, and row counts.
-
+description: >-
+  Detects a normalized MCP tools/call event that performs a dump-like database
+  operation, returns at least 10 MiB, and is neither explicitly approved nor
+  performed by an allowlisted backup identity.
+logsource:
+  product: mcp
+  service: normalized_tool_audit
 detection:
-  # Events from MCP host indicating a database-capable tool is being used.
-  mcp_sql_tool:
-    tool.name:
-      - "sql.query"
-      - "sql.execute"
-      - "db.query"
-      - "db.execute"
-      - "cloud-sql.query"
-      - "cloud-sql.execute"
-
-  # SQL patterns commonly associated with database dumps or bulk exports.
-  mcp_sql_suspicious_pattern:
-    tool.args.sql|contains:
-      - "SELECT * FROM"
-      - "pg_dump"
-      - "mysqldump"
-      - "BACKUP DATABASE"
-      - "EXPORT DATA"
-      - "COPY "
-      - " TO STDOUT"
-      - " INTO OUTFILE"
-
-  # Optional: high row-count or payload size returned to the LLM host.
-  mcp_large_result:
-    tool.result.row_count: ">=100000"      # tune threshold for your environment
-    # or use a size field if available:
-    # tool.result.size_bytes: ">=104857600"   # 100MB+
-
-  # Optional: database-side corroboration for the same service account.
-  db_full_table_scan:
-    db.log.user: "mcp_service_account"     # tune to your MCP DB account
-    db.log.query|contains:
-      - "SELECT * FROM"
-    db.log.estimated_rows: ">=100000"
-
-  timeframe: 5m
-
-  # Core condition: MCP SQL tool + (dump-like SQL OR unusually large results),
-  # optionally correlated with DB audit logs if available.
-  condition: >
-    mcp_sql_tool and
-    (
-      mcp_sql_suspicious_pattern
-      or mcp_large_result
-      or db_full_table_scan
-    )
-
+  selection_mcp:
+    mcp.method: tools/call
+  selection_database_operation:
+    database.operation:
+      - dump
+      - export
+      - bulk_read
+  selection_volume:
+    result.bytes|gte: 10485760
+  filter_approved:
+    approval.state: approved
+  filter_allowlisted_backup:
+    actor.is_approved_backup: true
+  condition: selection_mcp and selection_database_operation and selection_volume and not filter_approved and not filter_allowlisted_backup
+falsepositives:
+  - Approved database backups, migrations, and administrative exports
+  - Incident-response acquisition and authorized bulk analytics extracts
+  - Data-pipeline jobs not represented in the backup-identity allowlist
+level: high
 tags:
-  - attack.T1213
-  - attack.T1213.006
-  - attack.T1074
-  - attack.T1020
-  - safemcp.saf-t1803
-  - tactic.collection
-  - category.database
-  - category.data-dump
-  - product.mcp
-  - mcp.sql
+  - saf.t1803
+  - attack.collection
+  - attack.t1213.006
+references:
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://attack.mitre.org/techniques/T1213/006/
+  - https://services.google.com/fh/files/misc/snowflake-threat-hunting-guide.pdf
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1803-C010
+  telemetry_claim_ids:
+    - SAF-T1803-C001
+    - SAF-T1803-C008
+    - SAF-T1803-C009
+  limitation_claim_ids:
+    - SAF-T1803-C008
+    - SAF-T1803-C010
+    - SAF-T1803-C015
+  validation_artifacts:
+    - tests/SAF-T1803/test-logs.json
+    - tests/SAF-T1803/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1803-C001
+        - SAF-T1803-C009
+      rationale: Correlates normalized MCP tool audit events with database activity fields.
+    selection_mcp:
+      claim_ids:
+        - SAF-T1803-C001
+      rationale: The protocol-defined tools/call method identifies model-controlled tool invocation.
+    selection_database_operation:
+      claim_ids:
+        - SAF-T1803-C002
+        - SAF-T1803-C006
+        - SAF-T1803-C008
+      rationale: Dump, export, and bulk-read operations represent the database-collection behavior.
+    selection_volume:
+      claim_ids:
+        - SAF-T1803-C008
+        - SAF-T1803-C010
+      rationale: A large result is an explicit synthetic tuning threshold for broad retrieval.
+    filter_approved:
+      claim_ids:
+        - SAF-T1803-C001
+        - SAF-T1803-C011
+      rationale: Explicit human approval distinguishes reviewed sensitive operations.
+    filter_allowlisted_backup:
+      claim_ids:
+        - SAF-T1803-C008
+        - SAF-T1803-C010
+      rationale: Known backup behavior is a documented source of expected lookalikes.
+    condition:
+      claim_ids:
+        - SAF-T1803-C010
+      rationale: Combines method, operation, volume, approval, and allowlist state into the analytic.
+    falsepositives:
+      claim_ids:
+        - SAF-T1803-C008
+        - SAF-T1803-C010
+      rationale: Backups, pipelines, migrations, and authorized response can resemble collection.

@@ -1,0 +1,8 @@
+[
+  {"name":"positive_cross_user","event":"oauth_callback","outcome":"completed","token_stored":true,"initiator_subject":"iss-a|user-a","callback_subject":"iss-a|user-b","elapsed_seconds":120,"expected_alert":true},
+  {"name":"negative_same_user","event":"oauth_callback","outcome":"completed","token_stored":true,"initiator_subject":"iss-a|user-a","callback_subject":"iss-a|user-a","elapsed_seconds":120,"expected_alert":false},
+  {"name":"positive_missing_callback_subject","event":"oauth_callback","outcome":"completed","token_stored":true,"initiator_subject":"iss-a|user-a","callback_subject":null,"elapsed_seconds":90,"expected_alert":true},
+  {"name":"boundary_exactly_ten_minutes","event":"oauth_callback","outcome":"completed","token_stored":true,"initiator_subject":"iss-a|user-a","callback_subject":"iss-a|user-b","elapsed_seconds":600,"expected_alert":true},
+  {"name":"expected_alias_false_positive","event":"oauth_callback","outcome":"completed","token_stored":true,"initiator_subject":"iss-a|urn:corp:123","callback_subject":"iss-a|123","elapsed_seconds":30,"expected_alert":true,"classification":"expected_false_positive"},
+  {"name":"negative_incomplete_flow","event":"oauth_callback","outcome":"pending","token_stored":false,"initiator_subject":"iss-a|user-a","callback_subject":"iss-a|user-b","elapsed_seconds":30,"expected_alert":false}
+]

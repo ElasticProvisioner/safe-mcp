@@ -1,0 +1,209 @@
+version: 1
+technique_id: SAF-T1910
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct review: https://modelcontextprotocol.io/specification/2025-06-18/architecture"
+        - "Direct review: https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+        - "Direct review: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+        - "Direct review: https://attack.mitre.org/techniques/T1048/"
+      material_changes:
+        - Established the host isolation boundary, tools/call fields, client confirmation and logging guidance, and an analogous ATT&CK mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API authority query: keywordSearch=Model Context Protocol, resultsPerPage=2000"
+        - "NVD API authority query: cveId=CVE-2025-34072"
+        - "NVD API authority query: cveId=CVE-2025-32711"
+        - "CISA KEV complete catalog 2026.09.01: exact CVE and mechanism checks"
+        - "Microsoft CVRF 2025-Jun: exact CVE-2025-32711 record review"
+        - "Direct review of NVD-provided non-GitHub references for CVE-2025-34072"
+      material_changes:
+        - Classified CVE-2025-34072 as a direct vulnerability with proof-of-concept exploitation and no KEV entry.
+        - Classified CVE-2025-32711 as adjacent non-MCP agentic command injection and excluded it from the evidence label.
+        - Found no qualifying production-incident report in the reviewed authoritative corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct first-party researcher review: Invariant Labs tool poisoning experiment"
+        - "Direct first-party researcher review: Invariant Labs WhatsApp MCP experiments"
+        - "Direct academic review: arXiv:2504.03767v2 MCP Safety Audit"
+        - "Direct academic review: arXiv:2406.13352v3 AgentDojo"
+      material_changes:
+        - Established three nonredundant carrier paths: hidden MCP arguments, trusted cross-server messaging, and retrieval-triggered Slack egress.
+        - Calibrated the evidence label to Demonstrated and preserved variable attack success as a limitation.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct review: MCP Tools Security Considerations"
+        - "Direct review: MCP Security Best Practices local-server and scope-minimization controls"
+        - "Direct review: Slack chat.postMessage unfurl parameters and defaults"
+        - "Direct review: MITRE ATT&CK T1048 mitigations and DET0131 detection strategy"
+      material_changes:
+        - Derived a same-session sensitive-read to unapproved-egress correlation using complete tool arguments and normalized payloads.
+        - Added controls for full argument display, logging, least privilege, egress restrictions, DLP, and disabled automatic unfurling.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "Review fixed and constrained behavior: Slack unfurl_links=false and unfurl_media=false"
+        - "Review contrary results: MCP Safety Audit refusal comparisons"
+        - "Review contrary results: AgentDojo attack and defense success rates"
+        - "Review evidence limits: user confirmation, controlled environments, deprecated product, and absence of production-incident documentation"
+      material_changes:
+        - Narrowed the claim to transfers completed through a concealed carrier or secondary side effect, excluding delivery, collection, and overt export.
+        - Added false-positive, normalization, attribution, encryption, and incomplete-telemetry limits.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "Authority-only recheck: NVD MCP keyword API and exact CVE-2025-34072 record"
+        - "Authority-only recheck: CISA KEV 2026.09.01 exact selected-CVE lookup"
+        - "Authority-only recheck: current MCP security and Tools pages"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "Authority-only recheck: Slack chat.postMessage unfurl defaults and suppression fields"
+        - "Authority-only recheck: MITRE ATT&CK T1048 live version and detection strategy"
+        - "Authority-only recheck: Microsoft June 2025 CVRF exploitation status for adjacent CVE-2025-32711"
+      material_changes: []
+  rationale: >-
+    The corpus directly covers the MCP boundary and fields, four selected
+    high-impact examples, current official vulnerability and exploitation
+    catalogs, controlled demonstrations, defenses, detection telemetry, and
+    contrary outcomes. The final two authority-only passes added no controlling
+    requirement, qualifying example, remediation change, contradiction, or new
+    source for a publishable claim. The remaining gap is production observation,
+    which is stated explicitly rather than inferred away.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 6
+  selected_examples:
+    - SRC-nvd-cve-2025-34072
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-radosevich-halloran-mcp-audit-2025
+  no_qualifying_examples_rationale: >-
+    Four qualifying direct vulnerability or direct demonstration examples were
+    selected. No direct production breach qualified, and that narrower gap is
+    retained in the technique.
+  candidates:
+    - source_id: SRC-nvd-cve-2025-34072
+      identifier: CVE-2025-34072
+      relationship: direct_vulnerability
+      exploitation_status: Proof of concept in CISA SSVC; not listed in CISA KEV catalog version 2026.09.01.
+      impact: Private data can be encoded in a posted link and disclosed when Slack preview services fetch the URL.
+      remediation: The affected Anthropic Slack MCP server is deprecated and unmaintained; disable link and media unfurling or remove the server.
+      selected: true
+      rationale: This is the strongest disclosed MCP product weakness matching the defining covert secondary-fetch mechanism.
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant MCP Tool Poisoning Experiment 1
+      relationship: direct_demonstration
+      exploitation_status: Controlled public demonstration; no production victim claimed.
+      impact: Sensitive configuration and key material in the test environment were sent inside an inconspicuous tool argument.
+      remediation: Display complete tool descriptions and inputs, pin server/tool definitions, and enforce cross-server data-flow controls.
+      selected: true
+      rationale: Directly demonstrates the hidden-argument carrier with MCP fields and a user-visibility failure.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: Invariant WhatsApp MCP Experiments 1 and 2
+      relationship: direct_demonstration
+      exploitation_status: Controlled public demonstration; no production victim claimed.
+      impact: Chat history or recent contacts were carried through a trusted messaging tool to an attacker-selected recipient.
+      remediation: Isolate server context, treat tool outputs and descriptions as untrusted, show full destination and content, and restrict recipients.
+      selected: true
+      rationale: Adds a distinct cross-server trusted-service carrier and a tool-output injection variant.
+    - source_id: SRC-radosevich-halloran-mcp-audit-2025
+      identifier: RADE credential-theft experiment
+      relationship: direct_demonstration
+      exploitation_status: Controlled academic demonstration; no production victim claimed.
+      impact: Synthetic API-key environment variables were found with MCP tools and posted through a Slack MCP tool.
+      remediation: Restrict sensitive file and environment access, monitor access and tool actions, and do not rely solely on model refusals.
+      selected: true
+      rationale: Adds a retrieval-triggered multi-MCP attack with a documented experimental setup and contrary refusal results.
+    - source_id: SRC-nvd-cve-2025-32711-api
+      identifier: CVE-2025-32711 EchoLeak
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA SSVC recorded no exploitation; Microsoft CVRF said exploitation less likely.
+      impact: Network disclosure from Microsoft 365 Copilot through AI command injection.
+      remediation: Microsoft records an exclusively hosted service update; customer-applied version ranges are not provided.
+      selected: false
+      rationale: High-impact agentic context, but the directly reviewed official records do not establish MCP use or the exact carrier, so it cannot support this technique's evidence label.
+    - source_id: SRC-agentdojo-2406.13352v3
+      identifier: AgentDojo prompt-injection benchmark
+      relationship: historical_analogy
+      exploitation_status: Controlled benchmark, not a disclosed product vulnerability or production incident.
+      impact: Evaluates attacker goals including data leakage across stateful tool-using agent tasks.
+      remediation: Evaluates multiple defenses and reports reduced but nonzero attack success under tested conditions.
+      selected: false
+      rationale: Used to challenge universality and detection claims; it is not MCP-specific and is not a selected example.
+
+sources_consulted:
+  - SRC-agentdojo-2406.13352v3
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-34072
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-msrc-2025-june-cvrf
+  - SRC-nvd-cve-2025-32711-api
+  - SRC-nvd-cve-2025-34072
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-radosevich-halloran-mcp-audit-2025
+  - SRC-slack-chat-postmessage
+  - SRC-vulncheck-cve-2025-34072
+sources_cited:
+  - SRC-agentdojo-2406.13352v3
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-34072
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-nvd-cve-2025-34072
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-radosevich-halloran-mcp-audit-2025
+  - SRC-slack-chat-postmessage
+  - SRC-vulncheck-cve-2025-34072
+sources_rejected:
+  - source_id: SRC-nvd-cve-2025-32711-api
+    reason: Adjacent agentic vulnerability; official records do not establish MCP or the defining carrier.
+  - source_id: SRC-msrc-2025-june-cvrf
+    reason: Corroborates the adjacent CVE's hosted-service and exploitation status but not this MCP technique.
+sources_blocked: []
+
+conflicts:
+  - issue: Some evaluated attacks were refused, and AgentDojo reports that attacks did not succeed universally.
+    resolution: The technique states explicit access and influence preconditions, labels evidence Demonstrated rather than Observed, and does not claim deterministic model compromise.
+  - issue: CVE-2025-34072 is direct and high impact but affects a deprecated, unmaintained server.
+    resolution: The example remains selected for mechanism clarity while its product and remediation limits are stated next to the claim.
+  - issue: The CISA KEV catalog contains no CVE-2025-34072 entry, while NVD SSVC records proof-of-concept exploitation.
+    resolution: The technique reports proof-of-concept only and does not infer active or production exploitation.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1910-C003
+  rationale: >-
+    Multiple public controlled evaluations reproduce the complete behavior:
+    sensitive data is selected, embedded in an inconspicuous MCP-mediated
+    carrier, and delivered to an unintended recipient. No directly reviewed
+    source documents a real production incident, so Observed is not justified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

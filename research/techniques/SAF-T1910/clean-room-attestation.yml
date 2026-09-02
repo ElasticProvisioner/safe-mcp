@@ -1,0 +1,123 @@
+version: 1
+technique_id: SAF-T1910
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1910
+target:
+  id: SAF-T1910
+  neutral_name: Covert Channel Exfiltration
+allowed_inputs:
+- The neutral tuple SAF-T1910, Covert Channel Exfiltration, ATK-TA0011; the destination catalog's conflicting tactic ID was not visible before freeze and was corrected mechanically to ATK-TA0010 afterward.
+- Generic SAF technique and detection-rule templates.
+- The generic authoring methodology, clean-room method, validator, and packet templates.
+- Independently opened direct authoritative sources identified without target-artifact
+  discovery.
+prohibited_inputs:
+- Any preexisting techniques/SAF-T1910/README.md.
+- Any preexisting research/techniques/SAF-T1910/ packet.
+- Any preexisting techniques/SAF-T1910/detection-rule.yml.
+- Git history, diffs, blame, branches, or commit messages for the target.
+- Pull request or issue material about the target.
+- Previous conversation or another agent's work concerning the target.
+- SAF sites, shared registry descriptions, catalog prose, target-ID search, general
+  web search, and GitHub discovery.
+independent_research:
+  searches:
+  - Direct MCP specification and security-page review by exact authoritative URL.
+  - NVD API authority query for the exact phrase Model Context Protocol and exact
+    candidate CVE records.
+  - CISA KEV complete-catalog exact-identifier review.
+  - Direct academic paper review by exact arXiv identifier.
+  - Direct first-party researcher and vendor-documentation review by exact URL.
+  - Two final authority-only no-material-change passes over NVD, CISA, MCP, Slack,
+    MITRE ATT&CK, and Microsoft records.
+  opened_source_ids:
+  - SRC-agentdojo-2406.13352v3
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-34072
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-msrc-2025-june-cvrf
+  - SRC-nvd-cve-2025-32711-api
+  - SRC-nvd-cve-2025-34072
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-radosevich-halloran-mcp-audit-2025
+  - SRC-slack-chat-postmessage
+  - SRC-vulncheck-cve-2025-34072
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace synthetic related-technique IDs SAF-T1102 and SAF-T1911 only after freeze
+  by mechanical lookup against the destination framework.
+- Reconcile local source IDs to shared manifest IDs after freeze without importing
+  new prose or research leads.
+- Replace the validation-only synthetic history token with the destination repository's
+  actual post-integration commit SHA.
+- Preserve the frozen technique prose unless a new independently sourced claim is
+  processed through the complete research method.
+validation:
+  isolated_mock_command: python3 scripts/validate-technique-research.py SAF-T1910
+  result: passed
+  deferred: Destination-only identifier, registry, and repository-history joins are
+    enumerated in integration-notes.yml.
+attestation: This technique was authored from the neutral target tuple, generic authoring
+  materials, and independently opened direct sources. No preexisting target artifact,
+  target research packet, target test, shared SAF catalog prose, git history, pull
+  request, issue, SAF site, previous target conversation, or other agent's target
+  work was accessed before the bundle freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-agentdojo-2024: SRC-agentdojo-2406.13352v3
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-embrace-slack-mcp-2025: SRC-cve-34072
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-invariant-whatsapp-mcp-2025: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-mcp-architecture-2025-06-18: SRC-mcp-architecture-2025-06-18
+    SRC-mcp-security-best-practices-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-mcp-tools-2025-06-18: SRC-mcp-tools-2025-06-18
+    SRC-nvd-cve-2025-32711: SRC-nvd-cve-2025-32711-api
+    SRC-nvd-mcp-query-2026-09-02: SRC-nvd-mcp-keyword-20260902
+  new_shared_source_records:
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-msrc-2025-june-cvrf
+  - SRC-nvd-cve-2025-32711-api
+  - SRC-nvd-cve-2025-34072
+  - SRC-radosevich-halloran-mcp-audit-2025
+  - SRC-slack-chat-postmessage
+  - SRC-vulncheck-cve-2025-34072
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0010
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-72
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1911
+  - SAF-T1912
+  canonical_validation_proof:
+  - research/techniques/SAF-T1910/validation/detection-test.txt
+  - research/techniques/SAF-T1910/validation/strict-validator.txt
+  tactic_correction:
+    supplied_pre_freeze: ATK-TA0011
+    canonical_post_freeze: ATK-TA0010
+    reason: Destination catalog reconciliation placed the exfiltration technique under ATK-TA0010.
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve frozen acquisition hashes as review evidence.
+  status: integrated_and_validated

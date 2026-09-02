@@ -1,0 +1,21 @@
+version: 1
+issues:
+  - id: SAF-T1702-A001
+    triggered_by: SAF-T1702
+    affects:
+      - SAF-T1102
+      - SAF-T1702
+      - SAF-T1705
+    severity: medium
+    status: resolved
+    change: >-
+      Register persistent memory poisoning that crosses a session, principal,
+      tenant, or agent retrieval boundary as SAF-T1702.
+    reason: >-
+      The frozen contract excludes current-context prompt injection and inter-agent
+      messages that are not stored and later retrieved as memory.
+    resolution: >-
+      Current-context injection maps to SAF-T1102, unpersisted inter-agent instruction
+      exchange maps to SAF-T1705, seven canonical mitigations cover memory isolation,
+      integrity, audit, monitoring, and action authorization, ATT&CK T1565.001 remains
+      analogous, and nine detector cases validate the boundary.

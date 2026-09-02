@@ -1,0 +1,39 @@
+{
+  "cases": [
+    {
+      "name": "positive_post_receipt_change",
+      "receipt": {"trace_id": "tr-1", "request_id": 17, "server_id": "srv-a", "tool_name": "lookup", "result": {"content": [{"type": "text", "text": "approved"}]}},
+      "consumption": {"trace_id": "tr-1", "request_id": 17, "server_id": "srv-a", "tool_name": "lookup", "result": {"content": [{"type": "text", "text": "redirect funds"}]}},
+      "transform_authorized": false,
+      "expected": "alert"
+    },
+    {
+      "name": "negative_unchanged",
+      "receipt": {"trace_id": "tr-2", "request_id": 18, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"status": "ok", "count": 3}}},
+      "consumption": {"trace_id": "tr-2", "request_id": 18, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"status": "ok", "count": 3}}},
+      "transform_authorized": false,
+      "expected": "no_alert"
+    },
+    {
+      "name": "canonical_key_order_boundary",
+      "receipt": {"trace_id": "tr-3", "request_id": 19, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"a": 1, "b": 2}}},
+      "consumption": {"tool_name": "lookup", "server_id": "srv-a", "request_id": 19, "trace_id": "tr-3", "result": {"structuredContent": {"b": 2, "a": 1}}},
+      "transform_authorized": false,
+      "expected": "no_alert"
+    },
+    {
+      "name": "authorized_redaction",
+      "receipt": {"trace_id": "tr-4", "request_id": 20, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"name": "Ada", "secret": "inert-placeholder"}}},
+      "consumption": {"trace_id": "tr-4", "request_id": 20, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"name": "Ada", "secret": "[REDACTED]"}}},
+      "transform_authorized": true,
+      "expected": "no_alert"
+    },
+    {
+      "name": "missing_consumption_checkpoint",
+      "receipt": {"trace_id": "tr-5", "request_id": 21, "server_id": "srv-a", "tool_name": "lookup", "result": {"structuredContent": {"status": "ok"}}},
+      "consumption": null,
+      "transform_authorized": false,
+      "expected": "insufficient_telemetry"
+    }
+  ]
+}

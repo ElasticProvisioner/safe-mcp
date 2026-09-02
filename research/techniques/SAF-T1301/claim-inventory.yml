@@ -1,0 +1,228 @@
+version: 1
+technique_id: SAF-T1301
+claims:
+  - id: SAF-T1301-C001
+    statement: MCP tools are model-controlled, and hosts obtain tool definitions containing human-readable descriptions through the tools list flow before invoking selected tools.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tools, lines 74-90; Listing Tools, lines 119-153; Calling Tools, lines 155-183"]
+    corroboration: The official MCP client-building guide independently describes passing listed names, descriptions, and schemas to a model.
+    limitations: [The protocol does not require every host to expose all descriptors to one model context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1301-C002
+    statement: Microsoft Incident Response reports that cross-server instruction override was observed in 2026 enterprise-agent activity involving a poisoned third-party enrichment descriptor and trusted finance and messaging tools.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Cross-server tool shadowing, lines 48-63; disclosure limitation, line 86"]
+    corroboration: Microsoft's separate red-team taxonomy names cross-server instruction override as an MCP and plugin abuse mode, but it is not independent incident corroboration.
+    limitations: [Affected organizations, exact event dates, indicators, and case telemetry are withheld; prevalence cannot be inferred.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1301-C003
+    statement: Invariant Labs directly demonstrated a malicious server descriptor imposing behavior on a trusted email tool in Cursor, including recipient redirection without requiring invocation of the malicious tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Tool shadowing section, lines 81-116"]
+    corroboration: The later controlled academic study independently exercises shared-context shadowing scenarios.
+    limitations: [The demonstration is controlled and does not establish production frequency or universal model behavior.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1301-C004
+    statement: A controlled multi-model study tested malicious and benign descriptors together in shared MCP context and found descriptor-level shadowing could produce unsafe tool invocation under its synthetic scenarios.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators: ["PDF pp. 2-3, methodology lines 180-189 and 245-288; p. 7, results lines 644-680"]
+    corroboration: Invariant's earlier Cursor experiment directly demonstrates the same defining provenance crossing.
+    limitations: [The study models controlled worst-case scenarios and does not reproduce full production control stacks or incidence rates.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1301-C005
+    statement: Cross-Server Tool Shadowing is the framework-defined case where semantic instructions from one server's descriptor are applied to another server's trusted tool.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Tool shadowing section, lines 81-116"]
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: corroborating
+        exact_locators: ["PDF p. 0, abstract lines 56-87; pp. 2-3, lines 245-288"]
+    corroboration: Microsoft later uses the term cross-server instruction override for the same boundary.
+    limitations: [The neutral SAF name and exact scope boundary are a framework synthesis, not protocol terminology.]
+    conflicts: [Other sources use tool shadowing for same-name collisions; that alternate mechanism is excluded.]
+    inference:
+      is_inference: true
+      rationale: The definition synthesizes the shared cross-provenance mechanism in the direct demonstration and controlled study.
+    status: validated
+  - id: SAF-T1301-C006
+    statement: The potential consequence is bounded by the trusted tool authorities exposed in the session and can include disclosure or state change when those authorities permit it.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Enterprise finance example, lines 54-63"]
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators: ["Email redirection demonstration, lines 98-116"]
+    corroboration: "The two sources show different trusted-tool effects: data collection/exfiltration and email redirection."
+    limitations: [The sources do not establish availability impact or a universal severity for every tool set.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: General impact bounds are inferred from the permissions of the shadowed trusted tools in the documented cases.
+    status: validated
+  - id: SAF-T1301-C007
+    statement: Authoritative guidance supports server allowlisting, descriptor review or pinning, tool restriction, approvals, least privilege, and correlated logging as controls relevant to the defining mechanism.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Defensive guidance, lines 64-80"]
+      - source_id: SRC-clean-t1301-openai-mcp-guide
+        support: corroborating
+        exact_locators: ["Security and approvals guidance, lines 3293-3316"]
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators: ["Mitigations, lines 117-129"]
+      - source_id: SRC-ms-redteam-update-2026
+        support: context
+        exact_locators: ["Cross-server override and controls, lines 46-79"]
+    corroboration: Multiple platform and incident-response sources converge on deterministic host controls rather than descriptor trust alone.
+    limitations: [The sources do not quantify the effectiveness of every recommended control against all variants.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1301-C008
+    statement: Detection requires preserving descriptor provenance and version, server and tool identity, approvals, and subsequent tool-call context so cross-server influence can be correlated.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: ["Cross-origin escalation scanning, lines 27-59"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: corroborating
+        exact_locators: ["Logging and correlation guidance, lines 64-80"]
+      - source_id: SRC-clean-t1301-openai-mcp-guide
+        support: context
+        exact_locators: ["Call records include server label and tool name, lines 1788-1805; security logging, lines 3293-3316"]
+    corroboration: Scanning and operational logging guidance support complementary static and sequence telemetry.
+    limitations: [No reviewed source defines a universal event schema; the field names in the analytic are normalized examples.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The minimum telemetry set is derived by joining the scanner's cross-reference design with incident-response correlation guidance.
+    status: validated
+  - id: SAF-T1301-C009
+    statement: Static cross-reference detection can miss implicit or obfuscated influence and servers incorrectly labeled trusted, while legitimate orchestration can create benign cross-server references.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: ["Descriptor scanning and cross-reference analysis, lines 27-59"]
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: corroborating
+        exact_locators: ["Annotations are untrusted hints, lines 26-49; hints are not enforcement, lines 73-95 and 124-127"]
+    corroboration: Official MCP commentary independently warns that soft metadata cannot provide deterministic enforcement.
+    limitations: [The false-positive and evasion list is analytic reasoning, not a measured evaluation of this exact rule.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Limitations follow from the proposed rule's explicit-reference and trust-label predicates.
+    status: validated
+  - id: SAF-T1301-C010
+    statement: A high-signal but incomplete analytic can flag untrusted descriptor registrations that explicitly reference another server and lack an approved relationship.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: ["Cross-origin escalation and tool-shadowing scan design, lines 43-59"]
+    corroboration: Microsoft Incident Response recommends inspecting tool metadata and correlating agent activity.
+    limitations: [The reviewed source describes a scanner but provides no sensitivity or specificity measurements for this exact heuristic.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The precise boolean rule is a conservative local design derived from cross-reference scanning principles.
+    status: validated
+  - id: SAF-T1301-C011
+    statement: Response should contain the suspect server and session, preserve descriptors and call logs, review downstream trusted-tool actions, and rotate credentials when exposure is confirmed.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Defensive and incident-response guidance, lines 64-80"]
+    corroboration: The response sequence applies the source's least-privilege, logging, approval, and DLP guidance to incident containment.
+    limitations: [Credential rotation is conditional and the source does not prescribe a product-independent runbook.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response steps are synthesized from the documented control objectives.
+    status: validated
+  - id: SAF-T1301-C012
+    statement: MITRE ATT&CK T1548 is only an analogy because it covers abuse of elevation control mechanisms for higher permissions, while this technique abuses semantic provenance across agent tools.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-attack-t1548
+        support: direct
+        exact_locators: ["T1548 overview and tactic mapping, lines 16-45"]
+    corroboration: The SAF tactic seed is Privilege Escalation, but no ATT&CK sub-technique reviewed defines descriptor-level MCP shadowing.
+    limitations: [The analogy does not assert an exact ATT&CK technique match.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares objectives while expressly distinguishing mechanisms.
+    status: validated
+  - id: SAF-T1301-C014
+    statement: Cross-server descriptor override is distinguishable from same-name collision, which arises when aggregators expose identical tool names or malicious servers register identical or similar names.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-clean-t1301-mcp-tools-draft
+        support: direct
+        exact_locators: ["Tool name uniqueness and aggregator collision guidance, lines 299-333"]
+      - source_id: SRC-clean-t1301-unit42-shadowing
+        support: context
+        exact_locators: ["MCP Tool/Agent Shadowing definition, line 49"]
+    corroboration: The protocol draft and Unit 42 independently describe identity ambiguity as a naming problem.
+    limitations: [Terminology is not uniform across sources; this packet reserves SAF-T1301 for semantic cross-server override.]
+    conflicts: [Unit 42 uses the same shadowing label for a different name-collision mechanism.]
+    inference:
+      is_inference: true
+      rationale: The distinction reconciles conflicting terminology by mechanism and observable boundary.
+    status: validated

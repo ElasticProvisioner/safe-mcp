@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T1703
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex fresh-agent clean-room research
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records allowed inputs, exact prohibited categories, no prior access, and pre-integration freeze constraints.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires attacker influence, causal linkage, a distinct second boundary, unsupported user intent, and delegated target authority.
+  technical_accuracy:
+    status: passed
+    notes: Protocol semantics, architecture, prerequisites, outcomes, and conditional impact were reconciled to direct sources.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims carry exact locators, limitations, inference labels, and readable same-line hidden README traces.
+  source_or_omit:
+    status: passed
+    notes: All substantive README lines are traced or linked to declared local artifacts; unsupported and blocked leads are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by direct demonstrations and vulnerabilities; absence of a contract-exact external-adversary production incident prevents Observed.
+  research_saturation:
+    status: passed
+    notes: A late Microsoft red-team source was incorporated, followed by two domain-restricted passes with no material changes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Eleven candidates were classified and the four highest-impact direct examples selected; production-incident uncertainty is explicit.
+  detection_quality:
+    status: passed
+    notes: Behavioral correlation uses provenance, causality, identity, intent, approval, action, and an explicitly tunable window; two positives and six negatives pass.
+  mitigation_quality:
+    status: passed
+    notes: Controls address upstream content, target authority, approvals, policy, data flow, provenance, and supply-chain change.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0008 is assigned, T1072 is only analogous, synthetic roles resolve to SAF-T1102 and SAF-T1104, and the SAF-T1701 subset overlap is explicit.
+  publication_rights:
+    status: passed
+    notes: All cited material is independently paraphrased and attributed; no quotations, source code, images, payloads, or protected source structure are reproduced.
+  safe_publication:
+    status: passed
+    notes: Examples are summaries; fixtures contain inert synthetic identifiers and no credentials, payloads, customer names, or destructive instructions.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1703
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1703/test_detection_rule.py tests/SAF-T1703/test-logs.json
+    result: "PASS SAF-T1703: 2 alerts, 6 non-alerts"
+    waiver: null
+  canonical_repository:
+    detection_proof: research/techniques/SAF-T1703/validation/detection-test.txt
+    strict_proof: research/techniques/SAF-T1703/validation/strict-validator.txt
+    status: passed
+unresolved: []

@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1008
+name: Tool Shadowing Attack
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Cause an agent to select, configure, or invoke a separately trusted tool according
+  to attacker-supplied instructions carried by another server's tool descriptor.
+
+scope:
+  security_boundary: >-
+    The provenance boundary between independently administered MCP server descriptors
+    when a host composes them into one model-visible tool context.
+  in_scope:
+    - An attacker-controlled or compromised server descriptor refers to or adds operational instructions for a tool owned by another server.
+    - The foreign descriptor influences selection or invocation of the trusted tool even if the attacker's own tool is never called.
+  out_of_scope:
+    - Poisoning that changes only the attacker's own tool behavior.
+    - Post-approval descriptor mutation or rug pull without defining cross-server interference.
+    - Tool-name collision or resolution-order abuse without foreign-descriptor influence.
+    - Prompt-resource injection, malicious tool output, and follow-on exfiltration that do not use the defining descriptor mechanism.
+  affected_components:
+    - MCP host or client
+    - Tool registry snapshot and descriptor provenance
+    - Shared model context
+    - Attacker-controlled and trusted MCP servers
+    - Trusted tool proposal and invocation
+
+nearest_neighbors:
+  - technique_id: SAF-T1001
+    distinction: Ordinary tool-description poisoning governs the malicious server's own tool rather than a distinct trusted tool.
+  - technique_id: SAF-T1201
+    distinction: Tool mutation or rug pull changes approved metadata later; shadowing is defined by cross-server influence, independent of lifecycle timing.
+  - technique_id: SAF-T1301
+    distinction: Cross-server tool-call override changes resolution among colliding tools;
+      SAF-T1008 uses one descriptor's instructions to govern another server's tool.
+
+required_evidence:
+  - Establish tool descriptor discovery and model-controlled invocation from the current MCP Tools specification.
+  - Establish a public end-to-end cross-server descriptor demonstration and its prerequisites.
+  - Corroborate the semantic mechanism with controlled empirical research and record its limitations.
+  - Search current authoritative vulnerability and exploitation corpora and distinguish direct, enabling, adjacent, and rejected candidates.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Versioned tools/list snapshots with server identity, tool identity, descriptor text or hash, foreign-tool references, and contract-approval state.
+    - Model proposal, user intent, approval, tools/call arguments, result, and the exact descriptor versions present in the session.
+
+safe_example_constraints:
+  - Use only example.invalid destinations and stop before tool execution.
+  - Include no live credentials, exploit code, destructive commands, or real personal data.
+  - Preserve only the minimum descriptor and proposed-call detail needed to explain provenance mismatch.
+
+completion_evidence:
+  - Every substantive publishable unit maps to a validated claim or declared local artifact.
+  - All consulted sources carry exact locators, archive status, rights review, and limitations.
+  - Seven research passes include two consecutive final no-change saturation passes.
+  - The experimental analytic passes all positive, negative, boundary, allowlist, and malformed-input fixtures.
+  - Strict isolated validation passes and the frozen bundle manifest records content hashes.

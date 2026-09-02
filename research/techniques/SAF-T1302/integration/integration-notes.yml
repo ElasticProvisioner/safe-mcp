@@ -1,0 +1,49 @@
+version: 1
+technique_id: SAF-T1302
+clean_room_status: frozen_before_shared_registry_review
+integration_requirements:
+  - kind: related_technique
+    synthetic_id: SAF-T9991
+    intended_semantics: Instruction manipulation that causes an agent to choose or parameterize a tool.
+    action: Reconcile to an existing canonical technique or allocate a permanent identifier after freeze.
+  - kind: related_technique
+    synthetic_id: SAF-T9992
+    intended_semantics: Credential or delegated-authorization abuse distinct from abuse of an already authorized tool.
+    action: Reconcile to an existing canonical technique or allocate a permanent identifier after freeze.
+  - kind: related_technique
+    synthetic_id: SAF-T9993
+    intended_semantics: Arbitrary code execution reached through a tool or runtime after the privilege boundary is crossed.
+    action: Reconcile to an existing canonical technique or allocate a permanent identifier after freeze.
+  - kind: mitigation
+    synthetic_id: SAF-M-9001
+    intended_semantics: Least-privilege tool and credential scoping.
+    action: Reconcile to an existing canonical mitigation or allocate a permanent identifier after freeze.
+  - kind: mitigation
+    synthetic_id: SAF-M-9002
+    intended_semantics: Approval bound to the exact privileged action, arguments, and execution context.
+    action: Reconcile to an existing canonical mitigation or allocate a permanent identifier after freeze.
+  - kind: mitigation
+    synthetic_id: SAF-M-9003
+    intended_semantics: Structured privileged-tool audit telemetry and anomaly review.
+    action: Reconcile to an existing canonical mitigation or allocate a permanent identifier after freeze.
+external_review_cache:
+  excluded_from_bundle: true
+  location: /private/tmp
+  files:
+    - {path: /private/tmp/mcp-tools.html, sha256: 7b08e92bf9596e750fdd04a92a735a5e08a4043cab0dfe24d2cbcdda4402bd00}
+    - {path: /private/tmp/mcp-auth.html, sha256: 009c0d0d9b35fe53450e4c80d1decfeaaa09d34b8dfa08c1917bcdb4e9e30397}
+    - {path: /private/tmp/owasp-agent.html, sha256: 7a564d0c3dfdf5fdb6947d429cd4b7451330fea51f12d974f77c39c5712e0319}
+    - {path: /private/tmp/invariant-github.html, sha256: 1bd134a6ad79f0c9fead64fb20b94187d67ee5422fd1f9acc7dcd96eb43db757}
+    - {path: /private/tmp/invariant-whatsapp.html, sha256: 468aa19f57d907382dd657bc5031b95b866c5a2d868c1bbb2418e725bb399956}
+    - {path: /private/tmp/ghsa-codewhale.html, sha256: bceb5e2b3b84a4694777bccfd59f14f6b285a158a4599245f1e64b3c3da74bd4}
+    - {path: /private/tmp/nvd-75857.json, sha256: b07b673cae8159686565340d4adb944369252e0f5403178974e3e38f83af3591}
+    - {path: /private/tmp/ghsa-openclaw.html, sha256: 09e77a6ba8de81be6132d215e783c611e0c63bec78dc73f63bd18162390d2c34}
+    - {path: /private/tmp/nvd-41378.json, sha256: c40615a25d94f24affd0b0540ba1e43be238a0dfbb48de9484432556fd38699d}
+    - {path: /private/tmp/elastic-esa-2026-83.html, sha256: 84d3191f1662165aba817667692696402e933d15f99934d4c255df9ecd5c7d8d}
+    - {path: /private/tmp/nvd-72681.json, sha256: 7aadae3995fb6c00215edcf887cc309c5007f5d301c969d7c4e0f9feb1ce35e1}
+    - {path: /private/tmp/attack-t1078-004.html, sha256: ac60a1023a73c8aa0f87ec2a59198e76ad75c287a3a6b852be29b8d5605b4aca}
+    - {path: /private/tmp/unit42-double-agents.html, sha256: cb842ff66a0cf91e62256bee540b31faffb9ec3e331180dc09e1b487f71f857d}
+    - {path: /private/tmp/gitlab-17-8-2.html, sha256: b55dafeca5ec357c4e0c76c999e6f5e1b27db527fbbfff6cbfe850f8f9ff88de}
+validation_environment:
+  isolated_repository: /private/tmp/saf-t1302-mock
+  note: Synthetic join targets are validation fixtures only and are excluded from the canonical bundle.

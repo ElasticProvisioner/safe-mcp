@@ -1,0 +1,29 @@
+version: 1
+technique_id: SAF-T1106
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: Clean-room SAF author
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records no prohibited access before freeze.}
+  contract_and_scope: {status: passed, notes: Defining autonomous re-entry is distinguished from direct load, implementation recursion, and unauthorized action.}
+  technical_accuracy: {status: passed, notes: Protocol behavior, prerequisites, flow, impacts, and limits map to reviewed locators.}
+  claim_traceability: {status: passed, notes: All substantive README units carry valid hidden SAF-TRACE claim IDs.}
+  source_or_omit: {status: passed, notes: Unsupported and adjacent leads are omitted and ledgered.}
+  evidence_classification: {status: passed, notes: End-to-end controlled demonstrations justify Demonstrated; production observation is not claimed.}
+  research_saturation: {status: passed, notes: Two post-incorporation authority-restricted passes yielded no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Seven candidates classified; three highest-impact qualifying examples selected.}
+  detection_quality: {status: passed, notes: Deterministic analytic passed eight positive, negative, boundary, and malformed-input cases.}
+  mitigation_quality: {status: passed, notes: Bounds, trust controls, completion contracts, and auditability address the defining feedback path.}
+  framework_alignment: {status: passed, notes: Execution seed, canonical SAF-T1102 and SAF-T2102 neighbors, and analogous ATT&CK mapping are reconciled.}
+  publication_rights: {status: passed, notes: All cited sources are paraphrased with attribution and no protected artifacts reproduced.}
+  safe_publication: {status: passed, notes: Example uses an invalid domain and fixtures; tests contain only inert synthetic events.}
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1106
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1106/tests/test_detection_rule.py
+    result: '{"cases": 8, "status": "PASS"}'
+    waiver: null
+unresolved: []

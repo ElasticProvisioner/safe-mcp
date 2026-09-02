@@ -1,0 +1,299 @@
+version: 1
+technique_id: SAF-T2105
+claims:
+  - id: SAF-T2105-C001
+    statement: >-
+      Adversaries have used production ChatGPT accounts to generate comments and
+      images for covert influence activity, including a campaign connected to
+      likely inauthentic accounts that made entirely false compromise claims.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-openai-prc-io-2026
+        support: direct
+        exact_locators:
+          - Lines 25-31, campaign descriptions and impact limitation
+    corroboration: OpenAI's 2024 report and Google GTIG's 2025 report independently document production generative-AI use by influence operators.
+    limitations:
+      - OpenAI found no meaningful breakout beyond the operation's own activity.
+      - The report does not disclose complete prompts, outputs, or account-level telemetry.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C002
+    statement: >-
+      OpenAI disrupted five covert influence operations that used its models to
+      generate posts, articles, made-up names or biographies, and artificial
+      engagement; none achieved meaningful authentic-audience breakout.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-openai-io-2024
+        support: direct
+        exact_locators:
+          - Lines 33-57, disruption cases and attacker trends
+          - Lines 64-68, distribution and detection limitations
+    corroboration: Google GTIG independently observed government-linked information-operations actors use Gemini for personas, messaging, localization, and reach planning.
+    limitations:
+      - Some generated material was deceptive by provenance or persona rather than demonstrably false in every factual detail.
+      - Audience engagement remained limited.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C003
+    statement: >-
+      Google GTIG observed government-linked information-operations actors use
+      Gemini for content generation, personas, messaging, localization, and
+      biased or tone-directed text manipulation.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-google-ai-misuse
+        support: direct
+        exact_locators:
+          - Lines 91-106, executive summary and key findings
+          - Lines 359-372, information-operations findings
+    corroboration: OpenAI's independently reported production cases show the same broad content-generation behavior.
+    limitations:
+      - Google reported productivity gains rather than novel breakthrough capabilities.
+      - The report does not establish that every generated item was factually false.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C004
+    statement: >-
+      In a controlled evaluation, PoisonedRAG induced a ReAct LLM agent to
+      return attacker-chosen answers after retrieving malicious text, with
+      reported black-box attack success rates of 0.72, 0.58, and 0.52 across
+      three datasets.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators:
+          - Section 6.3, lines 1259-1282
+          - Threat model, lines 247-302
+    corroboration: Confundo independently demonstrates factual-correctness, opinion, and hallucination manipulation in practical RAG configurations.
+    limitations:
+      - This was a controlled evaluation, not a production compromise.
+      - Success varied by dataset and did not reach 100 percent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C005
+    statement: >-
+      Confundo demonstrated attacker-selected incorrect answers, opinion bias,
+      and hallucination induction across practical RAG pipelines while showing
+      that simplified prior evaluations can overestimate real-world attack effectiveness.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-confundo-2026
+        support: direct
+        exact_locators:
+          - Abstract and Introduction, pages 1-3, lines 26-139
+          - Threat model and attack objectives, pages 3-4, lines 195-260
+          - Defense evaluation and limitations, pages 11-15, lines 688-780 and 877-946
+    corroboration: PoisonedRAG supplies an earlier independent agent-focused demonstration.
+    limitations:
+      - All experiments were conducted in sandboxed research settings and did not probe deployed services.
+      - The authors did not identify a comprehensive defense.
+    conflicts:
+      - Earlier simplified RAG attacks weakened under chunking and query variation; Confundo was designed to address those limitations.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C006
+    statement: >-
+      MCP resources can carry server-exposed files, database schemas, or other
+      application-controlled data into language-model context, creating a
+      protocol path by which integrity-relevant context reaches generation.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2025-06-18
+        support: direct
+        exact_locators:
+          - Resources overview and user interaction model, lines 72-87
+          - Reading Resources, lines 178-208
+    corroboration: PoisonedRAG and Confundo empirically establish the analogous retrieval-to-generation path in RAG systems.
+    limitations:
+      - The MCP specification does not itself state that resource content is trustworthy or that it will cause false output.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The integrity consequence is an SAF synthesis joining the protocol data path with independently demonstrated retrieval manipulation.
+    status: validated
+
+  - id: SAF-T2105-C007
+    statement: >-
+      NIST distinguishes deliberate false or misleading output intended to
+      deceive as disinformation and notes that automation bias can increase
+      unwarranted reliance on generative output.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: direct
+        exact_locators:
+          - Section 2.7, page 12, lines 361-369
+          - Section 2.8, pages 12-13, lines 374-395
+    corroboration: Production influence-operation reports document deliberate deceptive use, while NIST supplies the risk distinction.
+    limitations:
+      - NIST does not attribute any particular incident or measure audience harm for this technique.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C008
+    statement: >-
+      Comparing output with known ground truth, checking content provenance,
+      fact-checking generated information, and monitoring deployed output are
+      recommended controls for information-integrity risk.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: direct
+        exact_locators:
+          - MP-2.3-001 through MP-2.3-005, pages 27-28, lines 1007-1029
+          - MS-1.1-001 through MS-1.1-007, pages 31-32, lines 1168-1207
+          - MG-3.2-005 through MG-3.2-008, pages 46-47, lines 1828-1854
+    corroboration: OpenAI and Google describe safety filters, investigations, technical-signal correlation, and account disruption in production.
+    limitations:
+      - NIST actions are risk-management guidance, not a guarantee of detection efficacy.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C009
+    statement: >-
+      Perplexity-only filtering is insufficient for RAG poison detection because
+      high true-positive settings also classify many clean texts as malicious.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators:
+          - Section 7.2, pages 13-14, lines 1383-1410
+      - source_id: SRC-usenix-confundo-2026
+        support: corroborating
+        exact_locators:
+          - Section 6.3, pages 11-12, lines 688-780
+    corroboration: Confundo reports survival against six representative defenses and stresses layered defense gaps.
+    limitations:
+      - These results apply to the evaluated attack families and configurations.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C010
+    statement: >-
+      Production evidence also shows meaningful constraints: safety systems
+      refused some requests, basic jailbreak attempts failed, and observed
+      influence campaigns did not gain significant authentic engagement.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-google-ai-misuse
+        support: direct
+        exact_locators:
+          - Lines 96-121, limits, failed prompt attacks, and safety responses
+      - source_id: SRC-openai-io-2024
+        support: corroborating
+        exact_locators:
+          - Lines 51-68, engagement limits and defensive trends
+      - source_id: SRC-openai-prc-io-2026
+        support: corroborating
+        exact_locators:
+          - Lines 29-31, no meaningful breakout
+    corroboration: Three first-party reports independently bound operational impact.
+    limitations:
+      - These observations cannot establish effectiveness across every model, provider, or attacker adaptation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T2105-C011
+    statement: >-
+      A high-confidence experimental analytic can require both an output that
+      conflicts with approved ground truth and an integrity anomaly in the
+      session's retrieved context or deception-intent telemetry.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-600-1
+        support: direct
+        exact_locators:
+          - MP-2.3-001 through MP-2.3-005, pages 27-28, lines 1011-1029
+          - MS-1.1-001 through MS-1.1-002, page 31, lines 1172-1177
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: context
+        exact_locators:
+          - Threat model, pages 2-4, lines 96-135 and 247-302
+    corroboration: The analytic combines NIST's fact-checking and provenance controls with the demonstrated retrieval-to-false-output sequence.
+    limitations:
+      - It depends on an approved ground-truth set and upstream context-integrity signals.
+      - The supplied tests validate deterministic logic, not field availability or population-level accuracy.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conjunction and event fields are an original defensive synthesis, not a published detector.
+    status: validated
+
+  - id: SAF-T2105-C012
+    statement: >-
+      MITRE ATT&CK Data Manipulation is an analogous mapping because both seek
+      to influence external outcomes, organizational understanding, or decision
+      making by compromising information integrity.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1565
+        support: direct
+        exact_locators:
+          - Technique description and Impact mapping, lines 16-47
+    corroboration: NIST's information-integrity definition independently describes the output-side integrity harm.
+    limitations:
+      - ATT&CK T1565 concerns data manipulation on enterprise platforms and does not define generative-model output abuse.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is analogous, not direct, because the mechanisms differ.
+    status: validated

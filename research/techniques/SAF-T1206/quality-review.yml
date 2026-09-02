@@ -1,0 +1,32 @@
+version: 1
+technique_id: SAF-T1206
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1206
+
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records prohibited-source isolation and a frozen clean-room bundle.}
+  contract_and_scope: {status: passed, notes: Credential implantation in persistent agent or MCP configuration is separated from theft, config execution, endpoint substitution, and account-side credential creation.}
+  technical_accuracy: {status: passed, notes: Protocol and implementation claims use directly reviewed first-party specifications, product documentation, advisories, and NVD records.}
+  claim_traceability: {status: passed, notes: Twenty-one claims map to reviewed source IDs with locators and readable hidden SAF-TRACE linkage.}
+  source_or_omit: {status: passed, notes: Every substantive publishable unit is traced; six unsupported or adjacent leads are excluded in the traceability ledger.}
+  evidence_classification: {status: passed, notes: Research-Derived is conservative because the defining end-to-end behavior was not established in a production incident.}
+  research_saturation: {status: passed, notes: Two consecutive authority-only follow-up passes produced no material contract, example, or mitigation change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Current incident, NVD, GHSA, and CISA KEV evidence was reviewed; three qualifying high-impact enabling or adjacent examples were selected and no direct production breach was found.}
+  detection_quality: {status: passed, notes: Portable normalized event matching has eight deterministic cases covering positives, a path boundary, negatives, and an expected false positive.}
+  mitigation_quality: {status: passed, notes: Canonical controls cover configuration integrity, credential scoping, change auditing, least privilege, token binding and rotation, and anomaly detection.}
+  framework_alignment: {status: passed, notes: Persistence placement, the ATT&CK T1098.001 analogy, SAF-T1502, SAF-T1006, and SAF-T1407 neighbors, and nine mitigation joins are reconciled.}
+  publication_rights: {status: passed, notes: All source use is factual paraphrase or reference; no quotations or third-party artifacts are included.}
+  safe_publication: {status: passed, notes: The example is inert and uses an environment-variable placeholder rather than live credentials or executable payloads.}
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1206
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1206/test_detection_rule.py
+    result: 8 cases passed; see validation/detection-test.txt
+    waiver: null
+
+unresolved: []

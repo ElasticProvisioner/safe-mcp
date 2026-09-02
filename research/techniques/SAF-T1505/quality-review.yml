@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1505
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records no prohibited access, nonempty independent research, pre-integration freeze, and no unresolved concern.
+  contract_and_scope:
+    status: passed
+    notes: Live runtime-state acquisition is bounded from delivery, persistent-secret access, code execution, and exfiltration.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior, three direct product mechanisms, the controlled demonstration, preconditions, and version uncertainty are traced.
+  claim_traceability:
+    status: passed
+    notes: Nineteen validated claims contain exact locators, support relationships, limitations, conflicts, and inference labels.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or declared local artifact; three exclusions remain absent.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by the end-to-end Radosevich-Halloran evaluation; no source supports Observed.
+  research_saturation:
+    status: passed
+    notes: Seventeen authority-only operations completed all five passes and two final no-change passes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Seven candidates were classified; four highest-impact qualifying examples were selected and three were excluded or adjacent.
+  detection_quality:
+    status: passed
+    notes: The experimental analytic passed three positive and five negative, boundary, malformed, or expected false-positive cases.
+  mitigation_quality:
+    status: passed
+    notes: Input separation, session scoping, environment allowlisting, sandboxing, and response controls address the defining boundaries.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0006 and analogous ATT&CK T1003 are reconciled; the three synthetic neighbor roles map post-freeze to SAF-T1502, SAF-T1305, and SAF-T1911 with eight canonical mitigation joins.
+  publication_rights:
+    status: passed
+    notes: Publishable material is original paraphrase with attribution; no quotation, source code, figure, table, prompt, or dataset is reproduced.
+  safe_publication:
+    status: passed
+    notes: The scenario uses example.invalid, placeholder identifiers, redacted telemetry, and no operational payload or live secret.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1505/test_detection_rule.py
+      result: passed
+      output: "PASS 8/8 cases (boundary=2, expected_false_positive=1, malformed=1, negative=1, positive=3)"
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1505
+      result: passed
+      output: PASS SAF-T1505
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1505
+      result: passed
+      output: research/techniques/SAF-T1505/validation/strict-validator.txt
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1505/test_detection_rule.py
+    result: "PASS 8/8: 3 positive, 1 negative, 2 boundary, 1 malformed, 1 expected false-positive."
+    waiver: null
+
+unresolved: []

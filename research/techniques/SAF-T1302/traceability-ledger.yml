@@ -1,0 +1,138 @@
+version: 1
+technique_id: SAF-T1302
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1302/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1302/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, generation mode, and completion
+    conditions.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1302/source-coverage.yml
+  supports: Search coverage, selected-example ranking, production-incident gap, source
+    rejection, and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1302/quality-review.yml
+  supports: Validation commands, detection result, review date, and quality gates.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1302/detection-rule.yml
+  supports: The repository's experimental behavioral analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1302/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, and expected-legitimate
+    validation logic.
+- id: LOCAL-detection-log
+  path: tests/SAF-T1302/test-logs.json
+  supports: Detection test cases and recorded passing output.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1302/validation/detection-test.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1302/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1302-X001
+  candidate: A qualifying real-world production compromise caused by the defining
+    agent-as-deputy behavior.
+  origin: Required known-breaches pass and authoritative vendor, researcher, NVD,
+    and CISA-domain searches.
+  attempted_searches:
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog "MCP"
+  - site:nvd.nist.gov/vuln/detail "agent" "tool" "privilege escalation" MCP
+  - site:invariantlabs.ai/blog MCP GitHub private repository prompt injection
+  consulted_source_ids:
+  - SRC-invariant-github-mcp-2025
+  - SRC-ghsa-codewhale-g29h
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-elastic-esa-2026-83
+  reason: Sources document controlled demonstrations or disclosed vulnerabilities,
+    not a directly evidenced deployed-environment compromise.
+  prohibited_publishable_text:
+  - High-Privilege Tool Abuse has been observed in a production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1302-X002
+  candidate: Selected CVEs are actively exploited in the wild or listed in CISA KEV.
+  origin: CISA-domain query and NVD exploitation-status review.
+  attempted_searches:
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog "MCP"
+  - Direct review of CISA SSVC fields in NVD API records for each selected CVE.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-41378
+  - SRC-nvd-cve-2026-75857
+  - SRC-nvd-cve-2026-72681
+  reason: SSVC records report none or proof of concept, and no authoritative production-exploitation
+    record was found.
+  prohibited_publishable_text:
+  - all selected CVEs are actively exploited in the wild
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1302-X003
+  candidate: Every agent using the GitHub MCP server is exploitable through the demonstrated
+    flow.
+  origin: Broad wording in the Invariant Labs disclosure.
+  attempted_searches:
+  - Review of the disclosure's Attack Demonstration and Scope and Mitigations sections.
+  - site:invariantlabs.ai/blog high privilege trusted tool agent approval bypass
+  consulted_source_ids:
+  - SRC-invariant-github-mcp-2025
+  reason: The direct experiment used a particular Claude Desktop configuration and
+    demo repositories; universal client behavior was not independently demonstrated.
+  prohibited_publishable_text:
+  - every GitHub MCP client is exploitable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1302-X004
+  candidate: OpenClaw CVE-2026-41378 should be called critical without qualification.
+  origin: High-impact CVSS and gateway-code-execution search results.
+  attempted_searches:
+  - Direct maintainer-advisory review and NVD API reconciliation.
+  consulted_source_ids:
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-nvd-cve-2026-41378
+  reason: The maintainer explicitly rates the issue high and narrow because a trusted
+    paired-node foothold is already required.
+  prohibited_publishable_text:
+  - critical OpenClaw vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1302-X005
+  candidate: Vertex Agent Engine's default scopes alone granted access to Google Workspace
+    data.
+  origin: Unit 42 Double Agents disclosure.
+  attempted_searches:
+  - Full review of the Beyond the Project and Mitigation sections.
+  - Review of current Google access-control documentation cited by the researchers.
+  consulted_source_ids:
+  - SRC-unit42-double-agents
+  reason: The researchers state the required Workspace IAM permissions were not granted
+    by default; the additional reach was latent rather than demonstrated.
+  prohibited_publishable_text:
+  - default Vertex Agent Engine access exposed all Workspace data
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1302-X006
+  candidate: CVE-2024-3303 and the WhatsApp MCP experiment should displace more specific
+    current selected examples.
+  origin: GitLab first-party patch advisory and Invariant Labs WhatsApp disclosure.
+  attempted_searches:
+  - Compared directly reviewed attack paths, affected versions, remediation, prerequisites,
+    and boundary specificity across candidates.
+  consulted_source_ids:
+  - SRC-gitlab-cve-2024-3303
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-elastic-esa-2026-83
+  reason: Both are verified leads, but the GitLab notice lacks a precise tool-authorization
+    path and the WhatsApp flows are redundant or depend on neighboring tool poisoning.
+  prohibited_publishable_text:
+  - the WhatsApp and GitLab cases are the strongest current examples
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

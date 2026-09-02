@@ -1,0 +1,52 @@
+version: 1
+technique_id: SAF-T1303
+status: frozen_clean_room_draft
+integration_performed: false
+joins_to_reconcile_after_freeze:
+  synthetic_tactics: []
+  tactics:
+    - ATK-TA0004
+  synthetic_neighbors:
+    - SAF-T9901
+    - SAF-T9902
+  synthetic_mitigations:
+    - SAF-M-9901
+    - SAF-M-9902
+  source_ids:
+    - SRC-cisa-week-2025-272
+    - SRC-cve-langchain-30617
+    - SRC-cve-litellm-42271
+    - SRC-docker-rootless
+    - SRC-elastic-ecs-process
+    - SRC-jfrog-malicious-mcp
+    - SRC-mcp-2026-release
+    - SRC-mcp-tools-2025-11-25
+    - SRC-mitre-t1059
+    - SRC-nvd-aws-5277
+    - SRC-nvd-jaaz-30616
+    - SRC-nvd-librechat-22252
+    - SRC-owasp-command-injection
+    - SRC-microsoft-sysmon
+    - SRC-zdi-aws-26-245
+    - SRC-zdi-docker-26-363
+    - SRC-zdi-github-kanban-26-022
+    - SRC-zdi-mcp-manager-26-023
+    - SRC-zdi-win-cli-25-930
+  synthetic_history_sha:
+    - "1111111111111111111111111111111111111303"
+  paths:
+    - alignment-fragment.yml
+    - framework-fragment.yml
+    - integration-notes.yml
+    - source-manifest-fragment.yml
+    - techniques/SAF-T1303/README.md
+    - techniques/SAF-T1303/detection-rule.yml
+    - research/techniques/SAF-T1303
+    - tests/SAF-T1303/test-logs.json
+    - tests/SAF-T1303/test_detection_rule.py
+    - validation/detection-tests.txt
+    - validation/strict-validator.txt
+notes:
+  - Replace or confirm synthetic neighbor and mitigation identifiers only during an authorized post-freeze integration pass.
+  - Reconcile source, framework, alignment, tactic, path, and history joins against the live registries only after the canonical bundle is frozen.
+  - Preserve claim IDs and readable hidden SAF-TRACE linkages during integration.

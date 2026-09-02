@@ -1,0 +1,30 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1404
+    name: Response Tampering
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics: [ATK-TA0005]
+    technique_path: techniques/SAF-T1404/README.md
+    research_packet: research/techniques/SAF-T1404
+    related_techniques: [SAF-T1102, SAF-T1309]
+    mitigations:
+      - SAF-M-1
+      - SAF-M-2
+      - SAF-M-11
+      - SAF-M-12
+      - SAF-M-20
+      - SAF-M-21
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-45
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1404/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1404/test-logs.json
+        - tests/SAF-T1404/test_detection_rule.py
+        - research/techniques/SAF-T1404/validation/detection-tests.txt
+        - research/techniques/SAF-T1404/validation/strict-validator.txt

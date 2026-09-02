@@ -1,0 +1,49 @@
+version: 1
+technique_id: SAF-T1206
+generated_on: "2026-09-01"
+status: ready_for_mechanical_integration
+synthetic_tactics: []
+synthetic_neighbors:
+  - {id: SAF-T9001, name: Credential Theft from Agent Stores}
+  - {id: SAF-T9002, name: MCP Configuration Execution}
+  - {id: SAF-T9003, name: MCP Endpoint Substitution}
+synthetic_mitigations:
+  - {id: SAF-M-9001, name: Agent Configuration Integrity}
+  - {id: SAF-M-9002, name: Externalize and Scope Agent Credentials}
+  - {id: SAF-M-9003, name: Audit Credential-Bearing Configuration}
+synthetic_source_ids:
+  - SRC-t1206-attack-t1098-001
+  - SRC-t1206-azure-mcp-security
+  - SRC-t1206-cisa-kev
+  - SRC-t1206-copilot-cli
+  - SRC-t1206-foundry-auth
+  - SRC-t1206-ghsa-cursor
+  - SRC-t1206-ghsa-dive
+  - SRC-t1206-ghsa-zed
+  - SRC-t1206-gtig-ai-threats
+  - SRC-t1206-mcp-auth
+  - SRC-t1206-mcp-client-registration
+  - SRC-t1206-mcp-security
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-nvd-cloudflare-oauth
+  - SRC-t1206-nvd-cursor
+  - SRC-t1206-nvd-dive
+  - SRC-t1206-nvd-forgecode
+  - SRC-t1206-nvd-google-toolbox
+  - SRC-t1206-nvd-zed
+  - SRC-t1206-vscode-config
+  - SRC-t1206-vscode-manage
+  - SRC-t1206-zed-trust
+synthetic_history_sha: "1111111111111111111111111111111111111111"
+path_joins:
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+  source_manifest_fragment: source-manifest-fragment.yml
+  validation_proofs: validation
+mechanical_integration_constraints:
+  - Reconcile every synthetic neighbor and mitigation ID by behavior and name before publication.
+  - Merge source records by canonical URL without weakening author, locator, or archive fields.
+  - Replace the synthetic history SHA with the integration commit only after the canonical files are merged.
+  - Preserve claim IDs, readable hidden SAF-TRACE comments, exclusions, and evidence classification.
+  - Do not infer a direct production incident from the selected enabling or adjacent vulnerability examples.
+unresolved: []

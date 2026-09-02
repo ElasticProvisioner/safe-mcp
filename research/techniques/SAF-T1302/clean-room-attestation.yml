@@ -1,0 +1,135 @@
+version: 1
+technique_id: SAF-T1302
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1302
+  inherited_context: false
+target:
+  id: SAF-T1302
+  neutral_name: High-Privilege Tool Abuse
+allowed_inputs:
+- The author-saf-technique skill and all required references except the prohibited
+  pre-freeze impact-classification examples.
+- Repository-wide instructions, techniques/TEMPLATE.md, research/README.md, blank
+  technique schemas, and the current validator.
+- Seed values SAF-T1302, High-Privilege Tool Abuse, and ATK-TA0004 Privilege Escalation.
+- Direct authoritative standards-body, government, first-party vendor, maintainer,
+  and researcher sources independently discovered with domain-restricted queries.
+prohibited_inputs:
+- techniques/SAF-T1302/README.md and all historical versions.
+- techniques/SAF-T1302/detection-rule.yml and all target-specific tests.
+- research/techniques/SAF-T1302/ and every existing target research artifact.
+- Shared source, framework, alignment, and catalog registries before freeze.
+- Git history, diffs, blame, commits, branches, stashes, and review records that expose
+  target content.
+- Any pull request, issue, cached prior bundle, catalog description, SAF or SAFE site
+  or repository, or prior source list containing target content.
+- Previous conversation, prior-agent conclusions, summaries, and inherited conversation
+  turns.
+- General unrestricted web search, GitHub search, and impact-classification-examples.md
+  before freeze.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io specification tools security human in the loop authorization
+    confused deputy
+  - site:owasp.org agentic AI tool misuse excessive agency least privilege
+  - site:nist.gov AI agent tools least privilege authorization confused deputy
+  - site:ietf.org OAuth security best current practice least privilege audience restriction
+  - site:invariantlabs.ai/blog MCP GitHub private repository prompt injection
+  - site:unit42.paloaltonetworks.com Vertex AI Agent Engine privilege service account
+    research
+  - site:about.gitlab.com Duo prompt injection security vulnerability private source
+    code
+  - site:nvd.nist.gov/vuln/detail Model Context Protocol MCP remote command execution
+    CVE 2025
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog "MCP"
+  - site:nvd.nist.gov/vuln/detail "agent" "tool" "privilege escalation" MCP
+  - site:discuss.elastic.co "ESA-2026-83" Kibana Agent Builder privilege escalation
+  - site:nvd.nist.gov/vuln/detail "approval_requirement" agent tool
+  - site:nvd.nist.gov/vuln/detail "gateway-side tool access" agent
+  - site:attack.mitre.org/techniques valid accounts privilege escalation cloud accounts
+    authorized service account
+  - site:modelcontextprotocol.io/specification/2025-11-25 "privileged" "tool" approval
+  opened_source_ids:
+  - SRC-elastic-esa-2026-83
+  - SRC-ghsa-codewhale-g29h
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-gitlab-cve-2024-3303
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1078-004
+  - SRC-nvd-cve-2026-41378
+  - SRC-nvd-cve-2026-72681
+  - SRC-nvd-cve-2026-75857
+  - SRC-owasp-agent-security
+  - SRC-unit42-double-agents
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1302
+  result: passed
+  repository: /private/tmp/saf-t1302-mock
+  deferred_real_repository_joins:
+  - Replace synthetic neighbor and mitigation IDs with independently reviewed canonical
+    IDs during mechanical integration.
+  - Reconcile independent source IDs for collision only after freeze.
+  - Replace the synthetic nonzero history SHA with the integration commit SHA.
+integration_constraints:
+- Do not inspect the old target README, research packet, tests, diffs, history, or
+  review content during integration.
+- Reconcile source IDs only for stable collision avoidance and do not introduce new
+  leads or revise frozen factual content from shared registries.
+- Replace synthetic neighbor, mitigation, tactic-registry, history-SHA, and path joins
+  mechanically, then rerun strict validation.
+- Preserve the frozen evidence classification, exclusions, attribution, and source-or-omit
+  coverage unless new direct authoritative research is separately authorized.
+attestation: This fresh agent inherited no prior technique content, accessed no prohibited
+  target or shared registry, independently discovered and reviewed every source, produced
+  the draft and evidence packet in temporary isolation, and froze the canonical bundle
+  before any repository integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-invariant-github-mcp: SRC-invariant-github-mcp-2025
+    SRC-invariant-whatsapp-mcp: SRC-invariant-whatsapp-mcp-2025-04-07
+  new_shared_source_records:
+  - SRC-owasp-agent-security
+  - SRC-ghsa-codewhale-g29h
+  - SRC-nvd-cve-2026-75857
+  - SRC-ghsa-openclaw-gjm7
+  - SRC-nvd-cve-2026-41378
+  - SRC-elastic-esa-2026-83
+  - SRC-nvd-cve-2026-72681
+  - SRC-mitre-t1078-004
+  - SRC-unit42-double-agents
+  - SRC-gitlab-cve-2024-3303
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9991: SAF-T1102
+    SAF-T9992: SAF-T1304
+    SAF-T9993: SAF-T1303
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-29
+    SAF-M-9002: SAF-M-69
+    SAF-M-9003: SAF-M-12
+  status: integrated_and_repository_validated

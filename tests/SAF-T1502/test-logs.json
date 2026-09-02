@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "name": "positive_tool_read",
+      "events": [
+        {"event.timestamp":"2026-08-01T12:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-a","process.pid":4100,"tool.category":"filesystem","file.sensitivity":"credential","file.path":"/srv/demo/.secrets/example-token.json","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T12:00:02Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-a","process.pid":4100,"file.sensitivity":"credential","file.path":"/srv/demo/.secrets/example-token.json"}
+      ],
+      "expected_alert": true
+    },
+    {
+      "name": "positive_boundary_300_seconds",
+      "events": [
+        {"event.timestamp":"2026-08-01T13:00:00Z","event.kind":"mcp_operation","event.action":"resources_read","event.outcome":"success","host.id":"host-b","process.pid":4200,"tool.category":"filesystem","file.sensitivity":"credential","file.path":"C:/Demo/Secrets/example.ini","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T13:05:00Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-b","process.pid":4200,"file.sensitivity":"credential","file.path":"C:/Demo/Secrets/example.ini"}
+      ],
+      "expected_alert": true
+    },
+    {
+      "name": "positive_normalized_case",
+      "events": [
+        {"event.timestamp":"2026-08-01T14:00:00Z","event.kind":"MCP_OPERATION","event.action":"READ_RESOURCE","event.outcome":"SUCCESS","host.id":"host-c","process.pid":4300,"tool.category":"FILESYSTEM","file.sensitivity":"CREDENTIAL","file.path":"/opt/demo/auth/example.pem","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T14:00:20Z","event.kind":"FILE_ACCESS","event.action":"READ","event.outcome":"SUCCESS","host.id":"host-c","process.pid":4300,"file.sensitivity":"CREDENTIAL","file.path":"/opt/demo/auth/example.pem"}
+      ],
+      "expected_alert": true
+    },
+    {
+      "name": "negative_outside_window_301_seconds",
+      "events": [
+        {"event.timestamp":"2026-08-01T15:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-d","process.pid":4400,"tool.category":"filesystem","file.sensitivity":"credential","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T15:05:01Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-d","process.pid":4400,"file.sensitivity":"credential"}
+      ],
+      "expected_alert": false
+    },
+    {
+      "name": "negative_mismatched_process",
+      "events": [
+        {"event.timestamp":"2026-08-01T16:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-e","process.pid":4500,"tool.category":"filesystem","file.sensitivity":"credential","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T16:00:01Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-e","process.pid":4501,"file.sensitivity":"credential"}
+      ],
+      "expected_alert": false
+    },
+    {
+      "name": "negative_noncredential_file",
+      "events": [
+        {"event.timestamp":"2026-08-01T17:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-f","process.pid":4600,"tool.category":"filesystem","file.sensitivity":"ordinary","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T17:00:01Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-f","process.pid":4600,"file.sensitivity":"ordinary"}
+      ],
+      "expected_alert": false
+    },
+    {
+      "name": "expected_false_positive_approved_maintenance",
+      "events": [
+        {"event.timestamp":"2026-08-01T18:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-g","process.pid":4700,"tool.category":"filesystem","file.sensitivity":"credential","context.approved_maintenance":true},
+        {"event.timestamp":"2026-08-01T18:00:01Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-g","process.pid":4700,"file.sensitivity":"credential"}
+      ],
+      "expected_alert": false
+    },
+    {
+      "name": "negative_missing_timestamp",
+      "events": [
+        {"event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-h","process.pid":4800,"tool.category":"filesystem","file.sensitivity":"credential","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T19:00:01Z","event.kind":"file_access","event.action":"read","event.outcome":"success","host.id":"host-h","process.pid":4800,"file.sensitivity":"credential"}
+      ],
+      "expected_alert": false
+    },
+    {
+      "name": "negative_failed_file_access",
+      "events": [
+        {"event.timestamp":"2026-08-01T20:00:00Z","event.kind":"mcp_operation","event.action":"read_file","event.outcome":"success","host.id":"host-i","process.pid":4900,"tool.category":"filesystem","file.sensitivity":"credential","context.approved_maintenance":false},
+        {"event.timestamp":"2026-08-01T20:00:01Z","event.kind":"file_access","event.action":"read","event.outcome":"failure","host.id":"host-i","process.pid":4900,"file.sensitivity":"credential"}
+      ],
+      "expected_alert": false
+    }
+  ]
+}

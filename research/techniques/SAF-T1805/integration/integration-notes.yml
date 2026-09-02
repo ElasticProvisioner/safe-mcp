@@ -1,0 +1,97 @@
+version: 1
+technique_id: SAF-T1805
+bundle_generated_on: "2026-09-02"
+evidence_freeze_required: true
+research_changes_after_freeze: prohibited
+
+clean_room_status:
+  attestation: research/techniques/SAF-T1805/clean-room-attestation.yml
+  status: passed
+  contamination_detected: false
+
+synthetic_items:
+  neighbors:
+    - synthetic_id: SAF-T9991
+      canonical_id: SAF-T1603
+      name: System Prompt Disclosure
+      reconciliation: Canonical prompt-only disclosure boundary resolved after freeze.
+    - synthetic_id: SAF-T9992
+      canonical_id: SAF-T1204
+      name: Context Memory Implant
+      reconciliation: Canonical context-state mutation boundary resolved after freeze.
+    - synthetic_id: SAF-T9993
+      canonical_id: SAF-T1505
+      name: In-Memory Secret Extraction
+      reconciliation: Canonical long-lived-memory collection boundary resolved after freeze.
+    - synthetic_id: SAF-T9994
+      canonical_id: SAF-T1102
+      name: Prompt Injection (Multiple Vectors)
+      reconciliation: Canonical instruction-driven disclosure boundary resolved after freeze.
+  history_sha:
+    value: 26c39823e0b55144bc7891f6345e6030646c16a0
+    meaning: Destination repository baseline used for post-freeze reconciliation.
+    reconciliation: Resolved after freeze without altering research claims.
+  tactic_ids: [ATK-TA0009]
+  mitigation_ids: [SAF-M-12, SAF-M-16, SAF-M-20, SAF-M-21, SAF-M-29, SAF-M-37, SAF-M-69, SAF-M-74]
+  source_ids:
+    - SRC-mcp-overview
+    - SRC-mcp-resources
+    - SRC-mcp-sampling
+    - SRC-mcp-tools
+    - SRC-mcp-security
+    - SRC-langgraph-persistence
+    - SRC-langgraph-time-travel
+    - SRC-langsmith-observability
+    - SRC-langsmith-sensitive-trace-controls
+    - SRC-ghsa-766v-q9x3-g744
+    - SRC-cve-2026-56077
+    - SRC-ibm-cve-2026-9130
+    - SRC-cve-2026-9130
+    - SRC-msrc-cve-2025-32711
+    - SRC-cve-2025-32711
+    - SRC-cisa-kev-2026-09-01
+    - SRC-mitre-attack-t1213
+    - SRC-nist-sp800-61r3
+    - SRC-nvd-query-set-2026-09-02
+    - SRC-msrc-cve-2025-53774
+    - SRC-msrc-cve-2025-53787
+    - SRC-msrc-cve-2025-59272
+    - SRC-aim-echoleak-redirect
+    - SRC-mitre-attack-t1005
+  source_id_reconciliation: Collision-check every listed clean-room source ID against the destination manifest; rename mechanically without altering claim support.
+  path_joins:
+    - techniques/SAF-T1805/README.md
+    - techniques/SAF-T1805/detection-rule.yml
+    - research/techniques/SAF-T1805/
+    - tests/SAF-T1805/
+    - research/source-manifest.yml from source-manifest-fragment.yml
+    - research/framework-model.yml from framework-fragment.yml
+    - research/alignment-ledger.yml from alignment-fragment.yml
+
+required_integration_steps:
+  - Verify SAF-T1805 and every SRC identifier do not collide with destination records; rename IDs mechanically if needed while preserving all links.
+  - Copy the technique, packet, and tests into their destination paths without consulting target-specific predecessor prose.
+  - Merge source-manifest-fragment.yml, framework-fragment.yml, and alignment-fragment.yml into the destination registries.
+  - Reconcile synthetic neighbor and mitigation joins using destination records only after the immutable evidence freeze.
+  - Replace the isolated scaffold history SHA with the destination integration commit.
+  - Re-run detector tests and the strict research validator in the destination repository.
+  - If normalization changes research conclusions, evidence classification, source selection, or claim substance, reject the integration and commission a new clean-room research freeze.
+
+canonical_validation:
+  detector_command: python3 -m unittest discover -s tests/SAF-T1805 -p 'test_*.py' -v
+  strict_command: python3 scripts/validate-technique-research.py SAF-T1805
+  detector_result: passed
+  isolated_strict_result: passed
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+
+known_gaps:
+  - No qualifying direct production breach was identified in the reviewed authority corpus through 2026-09-02.
+  - Known exploitation is not established for either direct vulnerability; status is time-bound and must be rechecked on later publication.
+  - The portable detector has not been evaluated against a production vendor event schema or measured for operational precision and recall.
+  - Shared SAF neighbor and mitigation joins were intentionally unresolved before freeze and are now mechanically reconciled.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  freeze_manifest_sha256: b060ea17389c62b2914a731607205d6bfb8f16823a4ee1af7712efa72e20b6e1
+  attack_mapping: {id: T1213, type: analogous}
+  detector: "4 tests passed; 4 expected alerts; 0 unexpected or missing alerts"
+  strict_validator: "PASS SAF-T1805"

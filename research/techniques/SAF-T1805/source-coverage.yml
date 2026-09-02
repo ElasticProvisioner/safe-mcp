@@ -1,0 +1,238 @@
+version: 1
+technique_id: SAF-T1805
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct full review of MCP 2026-07-28 overview, Resources, Sampling, Tools, and Security Best Practices.
+        - Direct full review of LangGraph persistence and time-travel documentation.
+        - Direct full review of LangSmith observability and sensitive-trace controls.
+      material_changes:
+        - Bounded the technique to unauthorized point-in-time active context acquisition across an owner or tenant boundary.
+        - Separated legitimate context materialization from the authorization failure that makes capture adversarial.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Direct NVD API keywordSearch for conversation history.
+        - Direct NVD API keywordSearch for chat history disclosure.
+        - Direct NVD API keywordSearch for agent context leakage.
+        - Direct NVD API keywordSearch for ai assistant exfiltration.
+        - Direct NVD API keywordSearch for copilot disclosure.
+        - Direct NVD API keywordSearch for thread state information disclosure.
+        - Exact CVE Program, IBM, PraisonAI, Microsoft, and CISA authority records reached from those identifiers.
+      material_changes:
+        - Selected CVE-2026-56077 and CVE-2026-9130 as the two highest-relevance direct cases.
+        - Retained CVE-2025-32711 as a high-impact enabling or adjacent disclosure case.
+        - Recorded three underspecified Copilot disclosures and an unrelated mobile file disclosure as exclusions.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Full exact review of GHSA-766v-q9x3-g744 after NVD supplied the artifact URL.
+        - Full exact review of IBM bulletin 7282647 and CVE-2026-9130 CNA record.
+        - CISA ADP and Known Exploited Vulnerabilities status checks for both direct identifiers.
+      material_changes:
+        - Classified overall evidence as Demonstrated because the vendor advisory contains a direct safe-to-describe proof of the defining cross-agent capture mechanism.
+        - Preserved the gap that no direct production incident was identified.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - MCP state-handle authorization and audit recommendations.
+        - NIST SP 800-61r3 PR.PS-04, DE.CM, DE.AE, RS.AN, and RS.MI outcomes.
+        - LangSmith trace suppression, masking, and conditional-tracing limitations.
+        - Local execution of positive, negative, boundary, and malformed JSONL fixtures.
+      material_changes:
+        - Defined a content-free normalized telemetry schema and deterministic cross-owner and cross-tenant analytic.
+        - Added false-positive handling for approved delegation and blind spots for authorized-principal compromise or missing logs.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Direct ATT&CK T1213 and T1005 applicability comparison.
+        - Contrary review of legitimate checkpoint, replay, observability, redaction, and retention behavior.
+        - Source-by-source challenge of exploitation, impact, and production-incident language.
+      material_changes:
+        - Made T1213 an Analogous rather than Direct mapping and rejected T1005 as the primary mapping.
+        - Prevented absent KEV and exploitation-none statuses from becoming a universal no-exploitation claim.
+        - Added synthetic neighbor placeholders and explicit post-freeze reconciliation requirements.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - Repeated direct NVD conversation-history, chat-history, and thread-state queries after adding CVE-2026-9130.
+        - Rechecked selected identifiers against CISA KEV catalog 2026.09.01.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - Rechecked exact CVE, IBM, PraisonAI, and Microsoft records for version, remediation, credit, and exploitation conflicts.
+        - Re-ran claim coverage against MCP, LangChain, MITRE ATT&CK, and NIST exact locators.
+      material_changes: []
+  rationale: >-
+    Direct protocol and implementation authorities cover state materialization;
+    two vendor/CVE pairs cover the authorization-failure mechanism; current
+    government records cover exploitation status; NIST and MCP cover detection
+    and defense; and ATT&CK covers the closest external analogy. After the
+    Langflow result was incorporated, two independently documented follow-up
+    passes produced no new proposition, example, relationship, control, or
+    limitation that changed publishable content.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 7
+  selected_examples:
+    - SRC-ghsa-766v-q9x3-g744
+    - SRC-ibm-cve-2026-9130
+    - SRC-msrc-cve-2025-32711
+  no_qualifying_examples_rationale: >-
+    Two direct disclosed vulnerabilities qualify, one with a public
+    demonstration. No direct production breach qualified in the reviewed
+    authority corpus, so the third selected high-impact case remains explicitly
+    enabling or adjacent and cannot raise evidence status.
+  candidates:
+    - source_id: SRC-ghsa-766v-q9x3-g744
+      identifier: CVE-2026-56077 / GHSA-766v-q9x3-g744
+      relationship: direct_demonstration
+      exploitation_status: Public vendor proof of concept; CISA enrichment says exploitation none; no production incident identified.
+      impact: Cross-agent exposure of system prompts and conversation history with High confidentiality impact in the CVE record.
+      remediation: Fixed in praisonaiagents 1.5.115; versions through 1.5.114 are affected.
+      selected: true
+      rationale: Highest directness because the vendor advisory demonstrates shared ledger state after duplicate agent identifiers.
+    - source_id: SRC-ibm-cve-2026-9130
+      identifier: CVE-2026-9130
+      relationship: direct_vulnerability
+      exploitation_status: CISA enrichment says exploitation none; no production incident identified.
+      impact: Authenticated cross-user chat-history disclosure and possible low-integrity effect in affected multi-user Langflow OSS deployments; CVSS 7.1 High.
+      remediation: IBM recommends upgrading to Langflow OSS 1.11.0 or newer; no workaround listed.
+      selected: true
+      rationale: Direct active-history access caused by missing owner validation on a user-controlled session identifier.
+    - source_id: SRC-msrc-cve-2025-32711
+      identifier: CVE-2025-32711
+      relationship: enabling_vulnerability
+      exploitation_status: Microsoft and CISA records say not exploited; Microsoft says the cloud service issue is fully mitigated.
+      impact: Critical network information disclosure through AI command injection in M365 Copilot.
+      remediation: Fully mitigated by Microsoft; no customer action required.
+      selected: true
+      rationale: High-impact agentic disclosure case, retained as adjacent because authority records do not establish a direct snapshot or history-read primitive.
+    - source_id: SRC-msrc-cve-2025-53774
+      identifier: CVE-2025-53774
+      relationship: rejected
+      exploitation_status: Microsoft says not exploited and not publicly disclosed.
+      impact: Microsoft rates the BizChat information disclosure Critical, but public detail does not establish the captured object or mechanism.
+      remediation: Microsoft says the cloud service issue is fully mitigated and no customer action is required.
+      selected: false
+      rationale: Insufficient public mechanism detail to distinguish context snapshot capture from other disclosure paths.
+    - source_id: SRC-msrc-cve-2025-53787
+      identifier: CVE-2025-53787
+      relationship: rejected
+      exploitation_status: Microsoft says not exploited and not publicly disclosed.
+      impact: Microsoft rates the BizChat information disclosure Critical, but public detail does not establish the captured object or mechanism.
+      remediation: Microsoft says the cloud service issue is fully mitigated and no customer action is required.
+      selected: false
+      rationale: Insufficient public mechanism detail to distinguish context snapshot capture from other disclosure paths.
+    - source_id: SRC-msrc-cve-2025-59272
+      identifier: CVE-2025-59272
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Microsoft says not exploited and not publicly disclosed.
+      impact: Critical local Copilot information disclosure involving command injection.
+      remediation: Microsoft says the cloud service issue is fully mitigated and no customer action is required.
+      selected: false
+      rationale: Command injection is adjacent, while the public record does not establish capture of active context state.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-57848
+      relationship: rejected
+      exploitation_status: CISA enrichment in NVD says exploitation none.
+      impact: An Android share activity could disclose local application files including message history.
+      remediation: NVD records affected versions before 1.6.0.
+      selected: false
+      rationale: Mobile file disclosure is not an agent execution-context snapshot and falls outside the contract.
+
+sources_consulted:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-resources-2026
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-langgraph-persistence
+  - SRC-langgraph-time-travel
+  - SRC-langsmith-observability
+  - SRC-langsmith-sensitive-trace-controls
+  - SRC-ghsa-766v-q9x3-g744
+  - SRC-cve-2026-56077
+  - SRC-ibm-cve-2026-9130
+  - SRC-cve-2026-9130
+  - SRC-msrc-cve-2025-32711
+  - SRC-cve-2025-32711
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-t1213-v3.4
+  - SRC-nist-sp800-61r3
+  - SRC-nvd-search-corpus
+  - SRC-msrc-cve-2025-53774
+  - SRC-msrc-cve-2025-53787
+  - SRC-msrc-cve-2025-59272
+  - SRC-aim-echoleak-redirect
+  - SRC-attack-t1005
+sources_cited:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-resources-2026
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-langgraph-persistence
+  - SRC-langgraph-time-travel
+  - SRC-langsmith-observability
+  - SRC-langsmith-sensitive-trace-controls
+  - SRC-ghsa-766v-q9x3-g744
+  - SRC-cve-2026-56077
+  - SRC-ibm-cve-2026-9130
+  - SRC-cve-2026-9130
+  - SRC-msrc-cve-2025-32711
+  - SRC-cve-2025-32711
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-t1213-v3.4
+  - SRC-nist-sp800-61r3
+  - SRC-nvd-search-corpus
+sources_rejected:
+  - source_id: SRC-msrc-cve-2025-53774
+    reason: Official but too sparse to establish active-context acquisition.
+  - source_id: SRC-msrc-cve-2025-53787
+    reason: Official but too sparse to establish active-context acquisition.
+  - source_id: SRC-msrc-cve-2025-59272
+    reason: Official command-injection disclosure lacks evidence of a snapshot or history-read primitive.
+  - source_id: SRC-aim-echoleak-redirect
+    reason: The historical first-party landing URL now redirects to generic content and cannot support detailed claims.
+  - source_id: SRC-attack-t1005
+    reason: Local-system collection is broader and less precise than repository access for the owner-bound agent-state mechanism.
+sources_blocked: []
+
+conflicts:
+  - issue: MCP and agent frameworks intentionally collect and persist context for normal operation.
+    resolution: The technique requires unauthorized owner or tenant boundary crossing; legitimate authorized snapshots are explicitly out of scope and negative detector fixtures.
+  - issue: Current MCP sampling marks broad context inclusion as deprecated and permits clients to ignore it.
+    resolution: Sampling is only contextual mechanism evidence, not a required vector or direct exploit claim.
+  - issue: Government enrichment says exploitation none and the direct identifiers are absent from KEV.
+    resolution: The README says no production incident was identified in the reviewed corpus and does not claim exploitation is impossible or never occurred.
+  - issue: The M365 Copilot case is high impact but does not publicly identify context snapshot retrieval.
+    resolution: It is selected only as an enabling or adjacent example mapped to a synthetic neighbor and does not support Demonstrated status.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1805-C001
+    - SAF-T1805-C003
+  rationale: >-
+    GHSA-766v-q9x3-g744 publicly demonstrates the defining cross-agent capture
+    of active ledger state, and the generalized boundary is independently
+    supported by a second direct IBM chat-history vulnerability plus
+    implementation documentation. No production incident was identified, so
+    the evidence is Demonstrated rather than Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

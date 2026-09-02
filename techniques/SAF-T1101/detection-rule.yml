@@ -1,143 +1,107 @@
-title: MCP Server Command Injection Detection
-id: a4b3c2d1-8e7f-4a5b-9c6d-3e2f1a0b9c8d
+title: MCP Untrusted Command Boundary Crossing
+id: a34b3eb5-fc62-4a39-83c5-0dbe97fd9adc
 status: experimental
-description: Detects potential command injection attempts in MCP server tool invocations through shell metacharacters and suspicious command patterns
-author: SAF-MCP Security Team
-date: 2025-09-28
-modified: 2025-09-28
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1101
-  - https://www.nodejs-security.com/blog/command-injection-vulnerability-codehooks-mcp-server-security-analysis
-  - https://snyk.io/articles/exploiting-mcp-servers-vulnerable-to-command-injection/
-  - https://github.com/cyanheads/git-mcp-server/security/advisories/GHSA-3q26-f695-pp76
+description: >-
+  Correlates an untrusted MCP command-bearing event with a child process and alerts when the child contains shell-control syntax or the requested executable changed, unless an explicit approval and command-policy match are both present.
+author: SAF-MCP clean-room research
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: server
-  category: tool_invocation
+  category: process_creation
+  product: cross-platform
+  definition: Requires normalized MCP audit events and process-start events sharing a correlation identifier.
 detection:
-  # Detection of shell metacharacters commonly used in command injection
-  selection_metacharacters:
-    tool_parameters|contains:
-      - ';'              # Command separator
-      - '|'              # Pipe operator
-      - '&&'             # AND operator
-      - '||'             # OR operator
-      - '$('             # Command substitution
-      - '`'              # Backtick command substitution
-      - '\n'             # Newline injection
-      - '\r'             # Carriage return injection
-      - '>'              # Output redirection
-      - '<'              # Input redirection
-      - '>>'             # Append redirection
-      - '2>'             # Error redirection
-      - '&'              # Background execution
-
-  # Detection of suspicious commands often used in exploitation
-  selection_suspicious_commands:
-    tool_parameters|contains:
-      - 'cat /etc/passwd'
-      - 'cat /etc/shadow'
-      - 'wget '
-      - 'curl '
-      - 'nc '              # Netcat
-      - 'ncat '
-      - '/bin/bash'
-      - '/bin/sh'
-      - 'cmd.exe'
-      - 'powershell'
-      - 'python -c'
-      - 'perl -e'
-      - 'ruby -e'
-      - 'php -r'
-      - 'chmod +x'
-      - 'chmod 777'
-      - 'rm -rf /'
-      - 'mkfifo'
-      - 'telnet '
-      - 'ssh-keygen'
-
-  # Detection of base64 encoded commands
-  selection_encoded:
-    tool_parameters|contains:
-      - 'base64 -d'
-      - 'base64 --decode'
-      - 'echo.*|.*base64'
-      - 'IEX('             # PowerShell Invoke-Expression
-
-  # Detection of reverse shell patterns
-  selection_reverse_shell:
-    tool_parameters|contains:
-      - '/dev/tcp/'
-      - '/dev/udp/'
-      - 'bash -i'
-      - 'sh -i'
-      - 'exec 5<>'
-      - 'socket'
-      - '0<&196'
-      - '/inet/tcp/'
-
-  # Detection of environment variable manipulation
-  selection_env_manipulation:
-    tool_parameters|contains:
-      - '$PATH'
-      - '$LD_PRELOAD'
-      - '$LD_LIBRARY_PATH'
-      - 'export '
-      - 'unset '
-      - 'env '
-
-  # Detection of process discovery/enumeration
-  selection_process_discovery:
-    tool_parameters|contains:
-      - 'ps aux'
-      - 'ps -ef'
-      - 'tasklist'
-      - 'systeminfo'
-      - 'uname -a'
-      - 'id'
-      - 'whoami'
-      - 'hostname'
-      - 'ifconfig'
-      - 'ip addr'
-      - 'netstat'
-      - 'ss -tulpn'
-
-  # Filter out potential false positives (legitimate use cases)
-  filter_legitimate_git:
-    tool_name: 'git_*'
-    tool_parameters|contains:
-      - 'git config'
-      - 'git log'
-      - 'git status'
-
-  filter_legitimate_paths:
-    tool_parameters|re: '^[a-zA-Z0-9/_\-\.]+$'  # Simple alphanumeric paths
-
-  condition: (selection_metacharacters or selection_suspicious_commands or selection_encoded or selection_reverse_shell or selection_env_manipulation or selection_process_discovery) and not (filter_legitimate_git or filter_legitimate_paths)
-
+  selection_mcp:
+    event.category: mcp
+    event.action:
+      - tool_call
+      - server_launch
+      - authorization_launch
+      - proxy_call
+    mcp.input_trust: untrusted
+  selection_process:
+    event.category: process
+    event.type: start
+    process.parent.entity_id|exists: true
+  selection_shell_control:
+    process.name|endswith:
+      - /sh
+      - /bash
+      - /zsh
+      - powershell.exe
+      - pwsh.exe
+      - cmd.exe
+    process.command_line|contains:
+      - " ; "
+      - " && "
+      - " || "
+      - " | "
+  selection_executable_change:
+    mcp.requested_executable_changed: true
+  filter_approved:
+    mcp.approval_state: approved
+    mcp.command_policy_match: true
+  timeframe: 10s
+  condition: >-
+    sequence by mcp.correlation_id selection_mcp then selection_process where
+    (selection_shell_control or selection_executable_change) and not filter_approved
 falsepositives:
-  - Legitimate tools that process shell-like syntax (e.g., terminal emulators)
-  - File paths containing special characters in names
-  - Regular expressions or patterns in parameters
-  - Development/debugging tools with legitimate command execution
-  - Git operations with complex arguments
+  - Authorized diagnostic or administrative tools whose approval and policy state are absent from telemetry.
+  - Build, package, and automation systems that intentionally launch shells with control operators.
+fields:
+  - "@timestamp"
+  - mcp.correlation_id
+  - mcp.component.entity_id
+  - mcp.command_source
+  - mcp.approval_state
+  - mcp.command_policy_match
+  - mcp.requested_executable_changed
+  - process.entity_id
+  - process.parent.entity_id
+  - process.executable
+  - process.args
+  - process.command_line
 level: high
 tags:
+  - saf.t1101
   - attack.execution
-  - attack.t1059          # Command and Scripting Interpreter
-  - attack.t1059.004      # Unix Shell
-  - attack.t1059.003      # Windows Command Shell
-  - attack.t1055          # Process Injection
-  - attack.defense_evasion
-  - attack.t1140          # Deobfuscate/Decode Files or Information
-  - safe.t1101
-  - cve.2025.pending      # Placeholder for when CVE is assigned
-fields:
-  - tool_name
-  - tool_parameters
-  - source_ip
-  - user_id
-  - session_id
-  - timestamp
-  - mcp_server_version
-  - client_application
+  - attack.t1059
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1101-C011, SAF-T1101-C014]
+  telemetry_claim_ids: [SAF-T1101-C012, SAF-T1101-C013]
+  limitation_claim_ids: [SAF-T1101-C015]
+  validation_artifacts:
+    - techniques/SAF-T1101/test-logs.json
+    - techniques/SAF-T1101/test_detection_rule.py
+    - techniques/SAF-T1101/test-results.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1101-C012, SAF-T1101-C013]
+      rationale: Process-start and normalized MCP audit events provide the required ancestry and command context.
+    selection_mcp:
+      claim_ids: [SAF-T1101-C002, SAF-T1101-C011]
+      rationale: Restricts the first event to an untrusted command-bearing MCP boundary.
+    selection_process:
+      claim_ids: [SAF-T1101-C012, SAF-T1101-C013]
+      rationale: Requires a normalized child process with parent identity.
+    selection_shell_control:
+      claim_ids: [SAF-T1101-C001, SAF-T1101-C014]
+      rationale: Represents the intended-command modification variant with shell syntax.
+    selection_executable_change:
+      claim_ids: [SAF-T1101-C001, SAF-T1101-C014]
+      rationale: Represents the full-command or executable-selection variant.
+    filter_approved:
+      claim_ids: [SAF-T1101-C002, SAF-T1101-C017]
+      rationale: Requires both explicit approval and policy conformance before suppressing intentional execution.
+    timeframe:
+      claim_ids: [SAF-T1101-C014]
+      rationale: A bounded synthetic correlation window limits unrelated process joins; production tuning is required.
+    condition:
+      claim_ids: [SAF-T1101-C011, SAF-T1101-C014]
+      rationale: Joins attacker influence, process ancestry, and one of the two command-injection variants.
+    falsepositives:
+      claim_ids: [SAF-T1101-C015]
+      rationale: Documents authorized automation and incomplete approval context as expected ambiguity.
+    fields:
+      claim_ids: [SAF-T1101-C012, SAF-T1101-C013]
+      rationale: Retains the minimum protocol and process fields needed to investigate a match.

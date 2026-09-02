@@ -1,0 +1,192 @@
+version: 1
+technique_id: SAF-T1404
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct MCP documentation index and exact 2026-07-28 Tools, Streamable HTTP, Security Best Practices, and Logging pages"
+        - "Exact MITRE CWE-924, CWE-345, CAPEC-384, CAPEC-385, and ATT&CK T1565.002 authority pages"
+      material_changes:
+        - Established the MCP response boundary, structured-result validation expectation, integrity definition, and analogous transmitted-data detection strategy.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD CVE API 2.0 keywordSearch=Model Context Protocol (77 records)"
+        - "CISA KEV catalogVersion 2026.09.01 candidate-CVE comparison"
+        - "Exact GitHub advisories obtained from reviewed NVD records only"
+      material_changes:
+        - Selected one direct response-redirection vulnerability and one adjacent response-misrouting vulnerability; classified three other advisories as adjacent exclusions.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "Official arXiv API: MCP AND security; MCP AND tool output; adversarial or poisoned tool outputs AND agent"
+        - "Official arXiv API: response tampering AND agent; man-in-the-tool; adversarial environmental injection"
+      material_changes:
+        - Selected the complete POTEMKIN/AEI paper as a direct controlled demonstration and bounded its production and domain limitations.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "Exact ATT&CK T1565.002 Detection Strategy, RFC 8785 canonicalization, MCP Tools security guidance, and NIST SP 800-61r3"
+      material_changes:
+        - Derived and tested a paired canonical-digest analytic with explicit authorization and missing-telemetry behavior.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "Paper limitations and defense appendix; official OWASP and OpenTelemetry relevance screens; production-evidence classification audit"
+      material_changes:
+        - Preserved the production-observation gap, schema-versus-provenance distinction, low-engagement confounder, and first-checkpoint blind spot.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD exact phrase MCP server response tampering; arXiv exact phrase man-in-the-tool"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD tool result manipulation Model Context Protocol; arXiv adversarial environmental injection"
+      material_changes: []
+  rationale: >-
+    Direct protocol and taxonomy authorities cover the definition and boundary;
+    NVD, CISA KEV, and exact source-provenanced advisories cover vulnerability and
+    exploitation state; the complete arXiv paper covers controlled demonstration
+    and contrary results; and ATT&CK, RFC 8785, MCP, and NIST cover the analytic
+    and response guidance. Two independent follow-ups added no material evidence.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-zhan-aei-2026
+    - SRC-ghsa-mcp-atlassian-7r34
+    - SRC-ghsa-ts-sdk-345p
+  no_qualifying_examples_rationale: >-
+    Three examples qualify, but none is a direct production breach. The reviewed
+    authoritative catalog, KEV feed, advisories, and controlled study support a
+    demonstration classification only; this bounded absence remains explicit.
+  candidates:
+    - source_id: SRC-zhan-aei-2026
+      identifier: "arXiv:2604.18874v1 POTEMKIN man-in-the-tool study"
+      relationship: direct_demonstration
+      exploitation_status: controlled experiment only
+      impact: Modified retrieval and structural responses changed agent decisions or consumed step budgets in a controlled citation domain.
+      remediation: The study evaluates several defenses but does not establish a universal complete defense.
+      selected: true
+      rationale: Directly exercises the defined response-channel transformation boundary and reports controlled results and limitations.
+    - source_id: SRC-ghsa-mcp-atlassian-7r34
+      identifier: CVE-2026-27826 / GHSA-7r34-79r5-rcc9
+      relationship: direct_vulnerability
+      exploitation_status: proof of concept reported by CISA SSVC in NVD; no production breach established
+      impact: An attacker-selected upstream could supply crafted content as Jira or Confluence tool results.
+      remediation: Upgrade mcp-atlassian to 0.17.0 or later.
+      selected: true
+      rationale: Direct response-origin substitution with high conceptual fit and a documented fix.
+    - source_id: SRC-ghsa-ts-sdk-345p
+      identifier: CVE-2026-25536 / GHSA-345p-7cg4-v4c7
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: none reported in the reviewed NVD CISA SSVC field
+      impact: Shared server or transport instances could deliver one client's final response or progress to another client.
+      remediation: Upgrade the TypeScript SDK to 1.26.0 or later and avoid shared transport/server instances.
+      selected: true
+      rationale: High-impact provenance confusion clarifies substitution and misrouting while its non-adversarial concurrency root cause remains explicit.
+    - source_id: SRC-ghsa-5ire-8527
+      identifier: CVE-2025-58357 / GHSA-8527-3cch-95gf
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof of concept reported by CISA SSVC in NVD; no production breach established
+      impact: Crafted content could reach unsafe chart evaluation and execute code in the client.
+      remediation: Upgrade 5ire to 0.14.0 or later.
+      selected: false
+      rationale: Compromised MCP output is only a delivery vector; unsafe downstream evaluation is the actual weakness.
+    - source_id: SRC-ghsa-php-7m52
+      identifier: CVE-2026-53965 / GHSA-7m52-jw36-44r3
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: advisory demonstration; production exploitation not established
+      impact: A withheld stream delimiter could drive unbounded buffering and denial of service.
+      remediation: Upgrade the PHP SDK to 0.7.1 or later.
+      selected: false
+      rationale: The defining objective is availability loss through framing, not corrupted response acceptance.
+    - source_id: SRC-ghsa-python-jpw9
+      identifier: CVE-2026-52869 / GHSA-jpw9-pfvf-9f58
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: vulnerability disclosure; production exploitation not established
+      impact: An unbound session identifier could permit JSON-RPC request injection into another session.
+      remediation: Upgrade the Python SDK to 1.27.2 or later and bind session authorization.
+      selected: false
+      rationale: The primary manipulated object is an injected request, outside the frozen response-side boundary.
+
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-cwe-924
+  - SRC-capec-384
+  - SRC-attack-t1565-002
+  - SRC-zhan-aei-2026
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-ts-sdk-345p
+  - SRC-ghsa-5ire-8527
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  - SRC-rfc8785
+  - SRC-nist-sp800-61r3
+  - SRC-ghsa-php-7m52
+  - SRC-ghsa-python-jpw9
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-logging-2026-07-28
+  - SRC-cwe-345
+  - SRC-capec-385
+  - SRC-owasp-llm-top10
+  - SRC-otel-genai-observability
+  - SRC-mcp-doc-index-2026
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-cwe-924
+  - SRC-capec-384
+  - SRC-attack-t1565-002
+  - SRC-zhan-aei-2026
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-ts-sdk-345p
+  - SRC-ghsa-5ire-8527
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  - SRC-rfc8785
+  - SRC-nist-sp800-61r3
+sources_rejected:
+  - {source_id: SRC-ghsa-php-7m52, reason: Availability-oriented framing abuse lies outside the response-integrity objective.}
+  - {source_id: SRC-ghsa-python-jpw9, reason: Cross-session request injection lies on the request side of the boundary.}
+  - {source_id: SRC-mcp-security-spec-2026-07-28, reason: General security context added no distinct publishable proposition.}
+  - {source_id: SRC-mcp-logging-2026-07-28, reason: Deprecated logging utility does not define paired integrity checkpoints.}
+  - {source_id: SRC-cwe-345, reason: Broad authenticity parent is less specific than CWE-924.}
+  - {source_id: SRC-capec-385, reason: Broader transaction tampering is less specific than CAPEC-384.}
+  - {source_id: SRC-owasp-llm-top10, reason: Broader prompt and output risks do not establish the frozen response-path behavior.}
+  - {source_id: SRC-otel-genai-observability, reason: Reviewed page did not provide stable paired-digest semantics.}
+  - {source_id: SRC-mcp-doc-index-2026, reason: Discovery index established currency but supports no substantive claim.}
+sources_blocked: []
+
+conflicts:
+  - issue: The controlled study reports varying raw attack entry across agents.
+    resolution: Retain engagement-conditional results and the authors' warning that low tool use can resemble robustness.
+  - issue: Selected advisories disclose plausible or demonstrated vulnerabilities but do not report production compromise.
+    resolution: Classify the technique as Demonstrated and preserve the production-evidence gap.
+  - issue: TypeScript SDK response misrouting may occur without malicious rewriting.
+    resolution: Label it adjacent provenance confusion, not intentional content modification.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1404-C002, SAF-T1404-C003, SAF-T1404-C005]
+  rationale: >-
+    The defined end-to-end behavior is directly demonstrated by the controlled
+    MCP-compatible response proxy and by a disclosed response-origin substitution
+    flaw. The reviewed corpus does not establish production observation.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

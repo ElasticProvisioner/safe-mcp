@@ -1,0 +1,114 @@
+version: 1
+technique_id: SAF-T1303
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1303
+  neutral_name: Sandbox Escape via Server Exec
+allowed_inputs:
+- User-supplied technique identifier, neutral name, and tactic.
+- Authoritative protocol, vulnerability, vendor, defensive-telemetry, and defensive-guidance
+  sources discovered independently.
+- Generic SAF technique and research templates, schema documentation, the authoring
+  skill, and the current strict validator.
+prohibited_inputs:
+- techniques/SAF-T1303/README.md
+- research/techniques/SAF-T1303/
+- techniques/SAF-T1303/detection-rule.yml
+- Shared source, framework, alignment, and catalog registries.
+- SAF or SAFE websites and repositories.
+- git history
+- pull request
+- Previous generated bundles or discarded-run artifacts.
+- previous conversation
+independent_research:
+  searches:
+  - Direct-authority protocol and security search across modelcontextprotocol.io.
+  - Direct-authority CVE record searches across cve.org and nvd.nist.gov.
+  - Direct-authority vendor-advisory searches across zerodayinitiative.com.
+  - Direct-authority incident and malicious-package research across research.jfrog.com.
+  - Direct-authority telemetry and mitigation research across learn.microsoft.com,
+    elastic.co, cheatsheetseries.owasp.org, docs.docker.com, and attack.mitre.org.
+  - Two final exact-identifier update and exploitation-status passes with no material
+    change.
+  opened_source_ids:
+  - SRC-cve-langchain-30617
+  - SRC-cve-litellm-42271
+  - SRC-docker-rootless
+  - SRC-elastic-ecs-process
+  - SRC-jfrog-malicious-mcp
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1059-current
+  - SRC-nvd-librechat-22252
+  - SRC-owasp-command-injection
+  - SRC-microsoft-sysmon
+  - SRC-zdi-docker-26-363
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1303/mock-repo
+  command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1303/deps python3 scripts/validate-technique-research.py
+    SAF-T1303
+  result: passed
+  deferred_real_repository_joins:
+  - Shared source-manifest registration.
+  - Framework-model and alignment-ledger registration.
+  - Replacement of synthetic neighbor and mitigation identifiers.
+integration_constraints:
+- Validate only in an isolated synthetic repository before freeze.
+- Use synthetic neighbor and mitigation identifiers until post-freeze integration.
+- Do not inspect or reconcile against shared registries before freeze.
+- Do not integrate, commit, push, or open a pull request in this run.
+attestation: The frozen draft was independently researched and authored from the allowed
+  seed, generic authoring materials, and direct authoritative sources without access
+  to prohibited prior artifacts.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-2026-release: SRC-mcp-release-2026-07-28
+    SRC-owasp-command-injection: SRC-owasp-command-injection
+    SRC-mitre-t1059: SRC-mitre-t1059-current
+  new_shared_source_records:
+  - SRC-cve-litellm-42271
+  - SRC-nvd-librechat-22252
+  - SRC-zdi-docker-26-363
+  - SRC-cve-langchain-30617
+  - SRC-jfrog-malicious-mcp
+  - SRC-microsoft-sysmon
+  - SRC-elastic-ecs-process
+  - SRC-docker-rootless
+  - SRC-zdi-aws-26-245
+  - SRC-zdi-mcp-manager-26-023
+  - SRC-zdi-github-kanban-26-022
+  - SRC-zdi-win-cli-25-930
+  - SRC-nvd-jaaz-30616
+  - SRC-cisa-week-2025-272
+  - SRC-nvd-aws-5277
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-9
+  - SAF-M-10
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-52
+  - SAF-M-70
+  synthetic_neighbor_mapping:
+    SAF-T9901: SAF-T1203
+    SAF-T9902: SAF-T1104
+  synthetic_mitigation_mapping:
+    SAF-M-9901: SAF-M-52
+    SAF-M-9902: SAF-M-29
+  status: integrated_and_repository_validated

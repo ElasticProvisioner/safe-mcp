@@ -1,0 +1,198 @@
+version: 1
+technique_id: SAF-T1008
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of MCP Tools specification 2025-11-25
+        - Direct review of MCP Security Best Practices 2025-11-25
+        - Direct review of MITRE ATT&CK TA0001 and T1195
+      material_changes:
+        - Bound the protocol claim to tools/list, tools/call, descriptor fields, model control, and recommended client safeguards.
+        - Classified T1195 as Analogous for delivery rather than Direct for the MCP semantic mechanism.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=Model Context Protocol
+        - NVD API keywordSearch=tool shadowing
+        - NVD API keywordSearch=shadowing MCP
+        - NVD API keywordSearch=tool descriptor MCP
+        - CVE Program API CVE-2026-25905
+        - CISA KEV full-catalog exact and scoped term review
+      material_changes:
+        - Added CVE-2026-25905 / JFSA-2026-001653030 as an enabling server-takeover vulnerability.
+        - Recorded that no reviewed authoritative corpus yielded a direct production tool-shadowing incident.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct Invariant Labs publication review
+        - arXiv direct-authority query MCP shadowing
+        - arXiv direct-authority query tool description MCP security
+        - arXiv direct-authority query cross-server MCP
+        - Full review of arXiv:2512.06556v2
+        - Full review of arXiv:2507.19880v1
+        - Direct Embrace The Red cross-tool demonstration review
+      material_changes:
+        - Established a direct product demonstration and controlled multi-model evaluation, supporting Demonstrated status.
+        - Added Croce and South as an adjacent cross-server confidentiality-impact demonstration, not exact shadowing.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed source recommendations for provenance, pinning, confirmation, logging, cross-server boundaries, and combined defenses
+        - Tested local foreign-tool reference and directive-threshold analytic against eight fixtures
+      material_changes:
+        - Added experimental analytic, required telemetry, explicit false positives, semantic blind spots, and eight passing fixtures.
+        - Preserved controlled defense metrics with study-specific limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Direct CSA-sponsored MCP Security Tool Shadowing taxonomy review
+        - arXiv direct-authority query tool shadowing
+        - arXiv direct-authority query descriptor interference MCP
+        - arXiv direct-authority query context-level interference MCP
+      material_changes:
+        - Recorded the name-collision versus cross-server descriptor-interference terminology conflict.
+        - Narrowed exclusions for collision, rug pull, ordinary poisoning, prompt-resource injection, and follow-on exfiltration.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - arXiv direct-authority query foreign tool description MCP
+        - NVD API keywordSearch=cross-server MCP
+        - CISA KEV exact CVE-2026-25905 check
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - arXiv direct-authority query malicious tool description trusted tool
+        - NVD API keywordSearch=foreign tool description MCP
+        - CISA KEV scoped MCP vendor-project check
+      material_changes: []
+  rationale: >-
+    Protocol behavior, direct demonstration, controlled empirical evidence,
+    vulnerability and exploitation corpora, cross-server impact evidence,
+    defenses, detection limits, taxonomy conflict, and framework analogy were
+    covered by independent authoritative sources. The final two deliberately
+    varied authoritative searches found no new candidate, source, claim, or
+    boundary change.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-jamshidi-2026-arxiv-2512-06556
+    - SRC-jfrog-jfsa-2026-001653030
+  no_qualifying_examples_rationale: >-
+    No direct production incident qualified. The packet therefore selects the
+    strongest direct demonstrations and one high-impact enabling vulnerability,
+    while explicitly keeping adjacent experiments and taxonomy-only material
+    from raising the evidence classification.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Cursor cross-server shadowing demonstration
+      relationship: direct_demonstration
+      exploitation_status: public_controlled_demonstration
+      impact: A trusted email tool's recipient and behavior were altered by an unrelated malicious tool descriptor.
+      remediation: Authors recommend clear tool UI, version pinning, and cross-server dataflow controls; no universal patch is asserted.
+      selected: true
+      rationale: This is the clearest public end-to-end match for the contract and establishes that the attacker tool need not be called.
+    - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+      identifier: arXiv:2512.06556 descriptor-shadowing evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_research_evaluation
+      impact: Malicious descriptors changed interpretation or selection of benign tools across tested model and prompt conditions.
+      remediation: The paper evaluates layered defenses but reports residual unsafe behavior and false positives.
+      selected: true
+      rationale: It independently formalizes and measures the defining mechanism, with explicit limitations.
+    - source_id: SRC-jfrog-jfsa-2026-001653030
+      identifier: CVE-2026-25905 / JFSA-2026-001653030
+      relationship: enabling_vulnerability
+      exploitation_status: proof_of_concept_no_known_exploitation
+      impact: Unisolated code can take over the mcp-run-python server and mutate advertised tool state.
+      remediation: The advisory says the project is archived and unlikely to be fixed; remove or isolate it.
+      selected: true
+      rationale: Highest-impact disclosed MCP registry-manipulation enabler found, but not direct cross-server descriptor shadowing.
+    - source_id: SRC-croce-south-2025-arxiv-2507-19880
+      identifier: Trivial Trojans cross-server banking proof of concept
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public_controlled_demonstration
+      impact: A malicious weather prompt orchestrated a banking read and an exfiltration call after user confirmations.
+      remediation: Authors recommend capability boundaries, restricted interoperability, attestation, and careful approval.
+      selected: false
+      rationale: Demonstrates conditional impact and cross-server composition, but uses a prompt resource and attacker exfiltration tool rather than descriptor-only shadowing.
+    - source_id: SRC-embrace-red-2025-05-02
+      identifier: Hidden metadata cross-tool invocation demonstration
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: public_controlled_demonstration
+      impact: Tool metadata caused an agent to invoke another tool before completing the benign request.
+      remediation: Source advocates treating tool metadata as untrusted and improving visibility and controls.
+      selected: false
+      rationale: Corroborates metadata-driven cross-tool influence, but does not clearly establish cross-server trusted-tool override.
+    - source_id: SRC-csa-shadowing-2026
+      identifier: CSA MCP Security tool-shadowing taxonomy entry
+      relationship: rejected
+      exploitation_status: taxonomy_only
+      impact: Describes identical-name registration and resolution-order risk.
+      remediation: Recommends namespacing, trust controls, duplicate-name detection, and deterministic resolution.
+      selected: false
+      rationale: Useful to record conflicting terminology, but its mechanism is name collision rather than this contract's cross-server descriptor interference.
+
+sources_consulted:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-cve-cve-2026-25905
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-ta0001
+  - SRC-mitre-attack-t1195
+  - SRC-embrace-red-2025-05-02
+  - SRC-croce-south-2025-arxiv-2507-19880
+  - SRC-csa-shadowing-2026
+sources_cited:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-attack-t1195
+  - SRC-embrace-red-2025-05-02
+  - SRC-croce-south-2025-arxiv-2507-19880
+  - SRC-csa-shadowing-2026
+sources_rejected:
+  - source_id: SRC-mcp-security-spec-2025-11-25
+    reason: Authoritative general security guidance was reviewed but did not add a shadowing-specific claim beyond the Tools specification and direct research.
+sources_blocked: []
+
+conflicts:
+  - issue: Invariant uses shadowing for cross-server descriptor interference, while the CSA-sponsored community taxonomy uses the term for identical-name collision and resolution order.
+    resolution: The contract adopts the earlier Invariant definition because it captures the foreign-descriptor invariant; collision remains explicitly out of scope.
+  - issue: Controlled studies and demonstrations establish feasibility, but authoritative incident corpora contain no direct production case.
+    resolution: Overall evidence remains Demonstrated and the production evidence gap is stated throughout.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1008-C004
+    - SAF-T1008-C005
+    - SAF-T1008-C006
+  rationale: >-
+    A public product demonstration and an independent controlled study directly
+    establish the defining cross-tool descriptor mechanism. No reviewed evidence
+    establishes a production incident, so Observed would overstate the record.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

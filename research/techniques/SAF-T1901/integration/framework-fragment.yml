@@ -1,0 +1,49 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1901
+    name: Outbound Webhook C2
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0011
+    technique_path: techniques/SAF-T1901/README.md
+    research_packet: research/techniques/SAF-T1901
+    related_techniques:
+      - SAF-T1913
+      - SAF-T1309
+    mitigations:
+      - SAF-M-12
+      - SAF-M-14
+      - SAF-M-16
+      - SAF-M-17
+      - SAF-M-20
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1901/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1901/detector.py
+        - tests/SAF-T1901/fixtures.json
+        - tests/SAF-T1901/test_detector.py
+        - research/techniques/SAF-T1901/validation/detection-test.txt
+        - research/techniques/SAF-T1901/validation/strict-validator.txt
+        - research/techniques/SAF-T1901/validation/canonical-validation.txt
+    attack_mappings:
+      - {id: T1102.002, type: direct}
+      - {id: T1102.003, type: boundary}
+    external_mappings:
+      - framework: MITRE ATT&CK
+        external_id: T1102.002
+        name: "Web Service: Bidirectional Communication"
+        relationship: direct_behavioral_mapping
+      - framework: MITRE ATT&CK
+        external_id: T1102.003
+        name: "Web Service: One-Way Communication"
+        relationship: boundary_mapping
+    authoring:
+      method: clean_room_direct_authority_only
+      author: OpenAI clean-room research agent
+      date: "2026-09-02"

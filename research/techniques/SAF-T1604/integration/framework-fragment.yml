@@ -1,0 +1,37 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1604
+    name: Server Version Enumeration
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0007
+    technique_path: techniques/SAF-T1604/README.md
+    research_packet: research/techniques/SAF-T1604
+    related_techniques:
+      - SAF-T1601
+      - SAF-T1605
+    mitigations:
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-20
+      - SAF-M-29
+    detection:
+      rule: techniques/SAF-T1604/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1604/test-logs.json
+        - techniques/SAF-T1604/test_detection_rule.py
+        - research/techniques/SAF-T1604/validation/detection-test.txt
+        - research/techniques/SAF-T1604/validation/strict-validator.txt
+    mappings:
+      mitre_attack:
+        - id: T1046
+          name: Network Service Discovery
+          type: analogous
+          rationale: Remote-service discovery overlaps, but SAF-T1604 requires a version-bearing value from a server already reached.
+        - id: T1518
+          name: Software Discovery
+          type: analogous
+          rationale: Software-version discovery overlaps, but SAF-T1604 collects a remote MCP server self-report rather than local installed-software inventory.
+    integration_state: integrated_and_validated

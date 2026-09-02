@@ -1,0 +1,171 @@
+version: 1
+technique_id: SAF-T1306
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1306/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1306/technique-contract.yml
+  supports: Internal scope, name, tactic, canonical neighbor boundaries, and completion
+    metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1306/quality-review.yml
+  supports: Strict validation and detection-test results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1306/detection-rule.yml
+  supports: The standalone source-or-omit detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1306/test_detection_rule.py
+  supports: Executable positive, negative, boundary, and false-positive test cases.
+- id: LOCAL-detection-logs
+  path: tests/SAF-T1306/test-logs.json
+  supports: Synthetic inert events used to validate the analytic.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1306/validation/detection-test.txt
+  supports: Captured successful detection-test output.
+- id: LOCAL-strict-result
+  path: research/techniques/SAF-T1306/validation/strict-validator.txt
+  supports: Captured successful current strict-validator output from the isolated
+    synthetic repository.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1306-X001
+  candidate: A direct production MCP authorization-server mix-up incident exists.
+  origin: Required known-breaches pass.
+  attempted_searches:
+  - Reviewed current MCP protocol materials
+  - NVD records
+  - CISA KEV
+  - official advisories
+  - and empirical literature.
+  consulted_source_ids:
+  - SRC-mcp-release-2026-07-28
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  reason: No reviewed authoritative source documented an end-to-end production MCP
+    issuer-mix-up incident.
+  prohibited_publishable_text:
+  - Rogue Authorization Server has been exploited in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X002
+  candidate: CVE-2025-4143 is a direct instance of the technique.
+  origin: Current NVD candidate pass.
+  attempted_searches:
+  - Reviewed the complete NVD API record and its CISA enrichment.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-4143
+  reason: The defining weakness is redirect URI validation, not authorization-server
+    issuer confusion.
+  prohibited_publishable_text:
+  - CVE-2025-4143 is a Rogue Authorization Server instance
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X003
+  candidate: CVE-2025-10619 is a direct issuer-mix-up vulnerability.
+  origin: Current NVD candidate pass.
+  attempted_searches:
+  - Reviewed the complete NVD API record
+  - configurations
+  - references metadata
+  - and CISA enrichment.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-10619
+  reason: The defining weakness is OS command injection in discovery handling; it
+    is only adjacent.
+  prohibited_publishable_text:
+  - CVE-2025-10619 directly demonstrates Rogue Authorization Server
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X004
+  candidate: AA25-239A documents an MCP incident.
+  origin: Production-incident analogy search.
+  attempted_searches:
+  - Reviewed the full multi-agency advisory and its technology and impact descriptions.
+  consulted_source_ids:
+  - SRC-cisa-aa25-239a
+  reason: The advisory concerns network-device TACACS+ configuration and is only a
+    historical authorization-infrastructure analogy.
+  prohibited_publishable_text:
+  - AA25-239A documents an MCP incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X005
+  candidate: A named project technique author can be credited.
+  origin: Required author-attribution review.
+  attempted_searches:
+  - Checked only the seed and independently reviewed allowed sources for explicit
+    SAF-T1306 authorship.
+  consulted_source_ids: []
+  reason: No allowed clean-room source or explicit seed identifies a project technique
+    author; only source authors and responsible teams are credited.
+  prohibited_publishable_text:
+  - Project technique author: null
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X006
+  candidate: CVE-2025-4143 has a cleanly established exact fixed version.
+  origin: NVD remediation review.
+  attempted_searches:
+  - Compared the current NVD description
+  - configuration
+  - and reference metadata within the reviewed record.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-4143
+  reason: Version metadata conflicted; the fix is described without an exact release
+    number.
+  prohibited_publishable_text:
+  - CVE-2025-4143 was fixed in version 0.0.5
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X007
+  candidate: CVE-2025-10619 is actively exploited in the wild.
+  origin: Exploitation-status review.
+  attempted_searches:
+  - Reviewed the current NVD record
+  - CISA enrichment
+  - and CISA KEV snapshot 2026.09.01.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-10619
+  - SRC-cisa-kev-2026-09-01
+  reason: The evidence establishes a public proof of concept, not active in-the-wild
+    exploitation; the CVE is absent from the dated KEV snapshot.
+  prohibited_publishable_text:
+  - CVE-2025-10619 is actively exploited in the wild
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X008
+  candidate: ArcaneDoor is a rogue authorization-server incident.
+  origin: First-party production-incident search.
+  attempted_searches:
+  - Reviewed Cisco Talos investigation findings and AAA mechanism.
+  consulted_source_ids:
+  - SRC-cisco-arcanedoor
+  reason: The behavior hooks a local AAA process for bypass and does not establish
+    an attacker-controlled authorization server or issuer mix-up.
+  prohibited_publishable_text:
+  - ArcaneDoor used a rogue authorization server
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1306-X009
+  candidate: Exact repository changes linked from vulnerability records can be relied
+    on as evidence.
+  origin: NVD external-reference trails.
+  attempted_searches:
+  - Recorded the NVD provenance but did not open repository links under the clean-room
+    prohibition.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  reason: Repository content was prohibited before freeze; all publishable CVE claims
+    rely only on the official NVD records.
+  prohibited_publishable_text:
+  - The GitHub patch proves
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

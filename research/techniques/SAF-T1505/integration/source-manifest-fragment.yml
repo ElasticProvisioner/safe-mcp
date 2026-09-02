@@ -1,0 +1,505 @@
+version: 1
+sources:
+  - id: SRC-mcp-auth-2025-11-25
+    title: Model Context Protocol Authorization
+    authors:
+      - Model Context Protocol maintainers
+    publisher: Model Context Protocol
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/specification/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned specification.
+    locators:
+      - Protocol Requirements
+      - Security Considerations / Token Theft
+    review_notes: >-
+      Verified the stdio environment-credential guidance, token-theft consequence,
+      secure-storage requirement, and short-lived-token recommendation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient source corpus.
+      review_evidence:
+        transient_sha256: e35d1ce6c6bbf4be2653a0d1d0cd7197a5c9c239e116f25e41c44ddce81779d6
+        transient_bytes: 412819
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Model Context Protocol Security Best Practices
+    authors:
+      - Model Context Protocol maintainers
+    publisher: Model Context Protocol
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned security guidance.
+    locators:
+      - Local MCP Server Compromise / Attack Description
+      - Local MCP Server Compromise / Risks
+      - Local MCP Server Compromise / Mitigation
+      - stdio Transport Security in Proxy Scenarios
+    review_notes: >-
+      Verified local-server privilege, sandboxing, resource restriction, and the
+      statement that stdio is not inherently vulnerable.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient source corpus.
+      review_evidence:
+        transient_sha256: 7ee5531784cc3bd30f20808b9b3095bd174c516684ece2dd7b80bcdfe76655e2
+        transient_bytes: 503754
+
+  - id: SRC-mcp-tools-2025-11-25
+    title: Model Context Protocol Tools
+    authors:
+      - Model Context Protocol maintainers
+    publisher: Model Context Protocol
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/specification/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned tools specification.
+    locators:
+      - Security notice preceding Capabilities
+      - Protocol Messages / Calling Tools
+    review_notes: >-
+      Reviewed for protocol context; tool invocation is an adjacent activation
+      mechanism and does not independently establish live-secret extraction.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient source corpus.
+      review_evidence:
+        transient_sha256: 6cc5bbdc8a92ee5e3ebc991780446a34db98fe70383138274f79c9e68221fc72
+        transient_bytes: 580113
+
+  - id: SRC-nvd-cve-2026-32625
+    title: NVD record for CVE-2026-32625
+    authors:
+      - NIST National Vulnerability Database team
+      - GitHub Security Advisories CNA
+    publisher: National Institute of Standards and Technology
+    source_class: official_advisory
+    version_or_date: "Published 2026-06-02; modified 2026-07-22"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-32625
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full JSON record review from the NVD CVE API.
+    locators:
+      - vulnerabilities[0].cve.descriptions[lang=en]
+      - vulnerabilities[0].cve.references
+      - vulnerabilities[0].cve.metrics.ssvcV203
+      - vulnerabilities[0].cve.configurations
+    review_notes: >-
+      Verified affected range, patch, process.env mechanism, advisory URL, and
+      proof-of-concept exploitation field. Supplied the exact GitHub advisory URL.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient NVD response.
+      review_evidence:
+        transient_sha256: 1c7eac1d3c04c6e4eab3da75783b454e19f7f68f046edc923443b09414d7a74e
+        transient_bytes: 3966
+
+  - id: SRC-ghsa-4pcc-j6m6-wcwx
+    title: Server Secrets Exfiltration via MCP Server URL Injection
+    authors:
+      - YLChen-007 (reporter)
+      - danny-avila (publisher)
+    publisher: LibreChat project via GitHub Security Advisories
+    source_class: official_advisory
+    version_or_date: "2026-06-02"
+    official_url: https://github.com/danny-avila/LibreChat/security/advisories/GHSA-4pcc-j6m6-wcwx
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full advisory review after NVD supplied the exact URL.
+    discovery_provenance: SRC-nvd-cve-2026-32625
+    locators:
+      - Affected versions and Patched versions
+      - Summary and Details
+      - Impact and Suggested Fix
+      - Credits
+    review_notes: >-
+      Verified the end-to-end placeholder-resolution path, external request,
+      secret classes, patch, recommendations, and reporter credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes third-party advisory HTML.
+      review_evidence:
+        transient_sha256: 856a0b663c2839caca29e90060b98bdb028d557f4784ce43b5a359b2ae3d76ea
+        transient_bytes: 211880
+
+  - id: SRC-nvd-cve-2026-29872
+    title: NVD record for CVE-2026-29872
+    authors:
+      - NIST National Vulnerability Database team
+      - MITRE CVE CNA
+    publisher: National Institute of Standards and Technology
+    source_class: official_advisory
+    version_or_date: "Published 2026-03-30; modified 2026-06-17"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-29872
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full JSON record review from the NVD CVE API.
+    locators:
+      - vulnerabilities[0].cve.descriptions[lang=en]
+      - vulnerabilities[0].cve.references
+      - vulnerabilities[0].cve.metrics.ssvcV203
+      - vulnerabilities[0].cve.configurations
+    review_notes: >-
+      Verified the cross-session environment-state mechanism, tested commit,
+      PoC status, and exact researcher disclosure URL.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient NVD response.
+      review_evidence:
+        transient_sha256: f01cf2e10cc825b01434af0bbe0fd542ad4dc95ed9390d1f4632802514ab348d
+        transient_bytes: 3412
+
+  - id: SRC-pham-minh-cve-2026-29872
+    title: CVE-2026-29872 Cross-Session Credential Exposure via Global Environment Variables
+    authors:
+      - Pham Minh
+    publisher: Pham Minh security research
+    source_class: research
+    version_or_date: "2026"
+    official_url: https://github.com/lilmingwa13/security-research/blob/main/CVE-2026-29872.md
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full disclosure review after NVD supplied the exact URL.
+    discovery_provenance: SRC-nvd-cve-2026-29872
+    locators:
+      - Summary
+      - Technical Description and Root Cause Analysis
+      - Security Boundary Violation
+      - Proof of Concept and Note on Proof-of-Concept
+      - Remediation, Additional recommendations, and Credit
+    review_notes: >-
+      Verified the original-code state handling, controlled reproduction,
+      explicit demonstration modification, recommendations, and named credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes third-party disclosure text.
+      review_evidence:
+        transient_sha256: e4bf796cc04791e60a8200fe614449d7d2c0f486612c51e9a44ca2f09362ef47
+        transient_bytes: 6079
+
+  - id: SRC-nvd-cve-2026-40159
+    title: NVD record for CVE-2026-40159
+    authors:
+      - NIST National Vulnerability Database team
+      - GitHub Security Advisories CNA
+    publisher: National Institute of Standards and Technology
+    source_class: official_advisory
+    version_or_date: "Published 2026-04-10; modified 2026-06-17"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-40159
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full JSON record review from the NVD CVE API.
+    locators:
+      - vulnerabilities[0].cve.descriptions[lang=en]
+      - vulnerabilities[0].cve.references
+      - vulnerabilities[0].cve.metrics.ssvcV203
+      - vulnerabilities[0].cve.configurations
+    review_notes: >-
+      Verified parent-environment inheritance, patch version, PoC status, and
+      exact vendor-advisory URL; noted the affected-range discrepancy.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient NVD response.
+      review_evidence:
+        transient_sha256: b76b3d028016427ff0d00ed35e3f1562ac6530846afcb6448bdefe1080ba1730
+        transient_bytes: 2985
+
+  - id: SRC-ghsa-pj2r-f9mw-vrcq
+    title: Sensitive Environment Variable Exposure via Untrusted MCP Subprocess Execution
+    authors:
+      - l3tchupkt (reporter)
+      - MervinPraison (publisher)
+    publisher: PraisonAI project via GitHub Security Advisories
+    source_class: official_advisory
+    version_or_date: "2026-04-09"
+    official_url: https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-pj2r-f9mw-vrcq
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full advisory review after NVD supplied the exact URL.
+    discovery_provenance: SRC-nvd-cve-2026-40159
+    locators:
+      - Affected versions and Patched versions
+      - Description and Reproducing the Attack
+      - Impact and Remediation Steps
+      - Credits
+    review_notes: >-
+      Verified environment inheritance, untrusted-child condition, reproduction,
+      remediation, affected-range discrepancy, and reporter credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes third-party advisory HTML.
+      review_evidence:
+        transient_sha256: 54176b736c9dd3b841105d981cda92023025d498a926b8a96c533f15374c4301
+        transient_bytes: 210480
+
+  - id: SRC-nvd-cve-2026-67531
+    title: NVD record for CVE-2026-67531
+    authors:
+      - NIST National Vulnerability Database team
+      - GitHub Security Advisories CNA
+    publisher: National Institute of Standards and Technology
+    source_class: official_advisory
+    version_or_date: "Published 2026-08-06; modified 2026-08-06"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-67531
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full JSON record review from the NVD CVE API.
+    locators:
+      - vulnerabilities[0].cve.descriptions[lang=en]
+      - vulnerabilities[0].cve.references
+      - vulnerabilities[0].cve.metrics.ssvcV203
+    review_notes: >-
+      Verified sandbox escape, process-held-secret impact statement, patch,
+      PoC status, and the exact GitHub advisory and commit URLs.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient NVD response.
+      review_evidence:
+        transient_sha256: 02916ca316d53b767900dd76539cd7f35c31008e1c39ab9b23d06b17e27a5b97
+        transient_bytes: 3929
+
+  - id: SRC-ghsa-mp29-fxh8-92px
+    title: CodeCall sandbox escape to host RCE via live Zod schema exposed by getTool
+    authors:
+      - fg0x0 (reporter)
+      - frontegg-david (publisher and remediation developer)
+    publisher: FrontMCP project via GitHub Security Advisories
+    source_class: official_advisory
+    version_or_date: "2026-07-26"
+    official_url: https://github.com/agentfront/frontmcp/security/advisories/GHSA-mp29-fxh8-92px
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full advisory review after NVD supplied the exact URL.
+    discovery_provenance: SRC-nvd-cve-2026-67531
+    locators:
+      - Summary and Details
+      - Security Impact and Remediation
+      - Affected versions and Patched versions
+      - Credits
+    review_notes: >-
+      Verified the sandbox escape and patch; classified it as enabling because
+      the advisory does not show actual secret acquisition.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes third-party advisory HTML.
+      review_evidence:
+        transient_sha256: 602280b0cab37be1e3ce3fd4d3c488db7d388555d5a948d28463a846de12adaf
+        transient_bytes: 234465
+
+  - id: SRC-nvd-mcp-token-env-query
+    title: NVD CVE API keyword record set for Model Context Protocol token environment
+    authors:
+      - NIST National Vulnerability Database team
+      - Originating CVE CNAs
+    publisher: National Institute of Standards and Technology
+    source_class: official_advisory
+    version_or_date: "Retrieved 2026-09-01"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Model%20Context%20Protocol%20token%20environment
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of both complete CVE records returned by the NVD API.
+    locators:
+      - CVE-2026-47250 English description
+      - CVE-2026-46555 English description
+    review_notes: >-
+      Both records concern persistent kubeconfig tokens or arbitrary files;
+      classified as adjacent and excluded from SAF-T1505 examples.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle intentionally excludes the transient NVD response.
+      review_evidence:
+        transient_sha256: 6806a61c7b8bba07b90f5baafe0f194add8c95e319052ab6d0557ff655188cad
+        transient_bytes: 7658
+
+  - id: SRC-arxiv-2504.03767v2
+    title: "MCP Safety Audit: LLMs with the Model Context Protocol Allow Major Security Exploits"
+    authors:
+      - Brandon Radosevich
+      - John T. Halloran
+    publisher: arXiv; Leidos authors
+    source_class: research
+    version_or_date: "arXiv:2504.03767v2, 2025-04-11"
+    official_url: https://arxiv.org/pdf/2504.03767
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-text PDF review with page-preserving text extraction.
+    locators:
+      - Abstract and Introduction
+      - Section 3, page 3
+      - Section 4, pages 5-6, Figure 4
+      - Section 5, pages 6-8
+      - Section 6, pages 8-9
+    review_notes: >-
+      Verified authorship, controlled environment-variable credential-theft
+      demonstration, model-refusal limitations, and proposed mitigations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The PDF and extraction remain in the transient research corpus and are not redistributed.
+      review_evidence:
+        transient_sha256: 87a8121a7b96a937a4ab0d7acca8ffbaa8598c7b61fe2021cad476056f5bc609
+        transient_bytes: 6017444
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: CISA Known Exploited Vulnerabilities Catalog
+    authors:
+      - Cybersecurity and Infrastructure Security Agency Vulnerability Management team
+    publisher: Cybersecurity and Infrastructure Security Agency
+    source_class: official_advisory
+    version_or_date: "Catalog version 2026.09.01"
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct complete JSON catalog review with exact candidate-ID filtering.
+    locators:
+      - catalogVersion 2026.09.01
+      - Exact-match filter for CVE-2026-32625, CVE-2026-29872, CVE-2026-40159, and CVE-2026-67531
+    review_notes: >-
+      None of the four candidate CVE IDs appeared. This is not proof that no
+      exploitation has occurred.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient government catalog copy.
+      review_evidence:
+        transient_sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e
+        transient_bytes: 1682475
+
+  - id: SRC-attack-t1003
+    title: "MITRE ATT&CK T1003: OS Credential Dumping"
+    authors:
+      - MITRE ATT&CK team
+    publisher: The MITRE Corporation
+    source_class: protocol_or_standard
+    version_or_date: "Reviewed 2026-09-01"
+    official_url: https://attack.mitre.org/techniques/T1003/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review.
+    locators:
+      - Technique description
+      - Mitigations
+      - Detection Strategy
+    review_notes: >-
+      Reviewed as the closest memory-oriented ATT&CK concept; retained only as
+      an analogous mapping because SAF-T1505 is application-runtime focused.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient ATT&CK page copy.
+      review_evidence:
+        transient_sha256: 007f20277a84d9fbf0a6c5e40321f76308748f894562f5d0b710d60c28af4c93
+        transient_bytes: 91908
+
+  - id: SRC-attack-t1555
+    title: "MITRE ATT&CK T1555: Credentials from Password Stores"
+    authors:
+      - MITRE ATT&CK team
+    publisher: The MITRE Corporation
+    source_class: protocol_or_standard
+    version_or_date: "Reviewed 2026-09-01"
+    official_url: https://attack.mitre.org/techniques/T1555/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review.
+    locators:
+      - Technique description
+      - Detection Strategy
+    review_notes: Rejected as a mapping because live application state is not a password store.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient ATT&CK page copy.
+      review_evidence:
+        transient_sha256: 7edc0e44c42d87b42096314a8d0587f39ff973434aa184e0c1e62c7648656eeb
+        transient_bytes: 123241
+
+  - id: SRC-attack-t1055
+    title: "MITRE ATT&CK T1055: Process Injection"
+    authors:
+      - MITRE ATT&CK team
+    publisher: The MITRE Corporation
+    source_class: protocol_or_standard
+    version_or_date: "Reviewed 2026-09-01"
+    official_url: https://attack.mitre.org/techniques/T1055/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review.
+    locators:
+      - Technique description
+      - Detection Strategy
+    review_notes: Rejected because code execution inside another process is not the defining objective.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient ATT&CK page copy.
+      review_evidence:
+        transient_sha256: ec287fab68c4a746e02c5e32ab8d9ece0f1b049e457dbccf092702c667b7d37b
+        transient_bytes: 195543
+
+  - id: SRC-attack-t1552.001
+    title: "MITRE ATT&CK T1552.001: Unsecured Credentials in Files"
+    authors:
+      - MITRE ATT&CK team
+    publisher: The MITRE Corporation
+    source_class: protocol_or_standard
+    version_or_date: "Reviewed 2026-09-01"
+    official_url: https://attack.mitre.org/techniques/T1552/001/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review.
+    locators:
+      - Technique description
+      - Detection Strategy
+    review_notes: Rejected because credentials in persistent files are explicitly out of scope.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient ATT&CK page copy.
+      review_evidence:
+        transient_sha256: 92197f07cf9d440d49c8296da1e1919f62b812bbc84ce777f3fa59b787681cf5
+        transient_bytes: 144849
+
+  - id: SRC-otel-logs-data-model
+    title: OpenTelemetry Logs Data Model
+    authors:
+      - OpenTelemetry specification maintainers
+    publisher: Cloud Native Computing Foundation OpenTelemetry project
+    source_class: protocol_or_standard
+    version_or_date: "Current page reviewed 2026-09-01"
+    official_url: https://opentelemetry.io/docs/specs/otel/logs/data-model/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review.
+    locators:
+      - Log and Event Record Definition
+      - Field mappings for Timestamp, EventName, Body, and Attributes
+    review_notes: >-
+      Reviewed for generic event structure; not cited because the SAF analytic
+      uses a synthetic application schema rather than claiming standard fields.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The frozen bundle excludes the transient specification page copy.
+      review_evidence:
+        transient_sha256: 346e4e70e49dc488378cb6a33b7ab613c6d60434ba485489a5c43eb6c149dd2e
+        transient_bytes: 94509

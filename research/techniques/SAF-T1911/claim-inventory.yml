@@ -1,0 +1,471 @@
+version: 1
+technique_id: SAF-T1911
+claims:
+  - id: SAF-T1911-C001
+    statement: >-
+      In MCP 2025-11-25, a client invokes a server tool by sending a tools/call
+      JSON-RPC request whose params contain the tool name and an arguments object.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Calling Tools, lines 171-187
+    corroboration: The same page defines each tool's inputSchema at lines 234-254.
+    limitations:
+      - The specification defines transport structure, not whether an argument is authorized or sensitive.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C002
+    statement: >-
+      MCP tools are model-controlled, while current client guidance calls for a
+      human able to deny calls, clear invocation indicators, and confirmation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 83-90
+    corroboration: Security Considerations additionally recommends showing inputs before dispatch.
+    limitations:
+      - These are SHOULD-level client recommendations and do not prove a particular client implements them.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C003
+    statement: >-
+      MCP architecture assigns the host responsibility for security and consent,
+      uses one client session per server, and intends servers to receive only
+      necessary context while the host enforces cross-server boundaries.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2025-11-25
+        support: direct
+        exact_locators:
+          - Core Components - Host and Clients, lines 65-93
+          - Design Principles item 3, lines 111-129
+    corroboration: The tools specification identifies the client as the sender of tools/call arguments.
+    limitations:
+      - Architectural responsibility does not establish that every host enforces effective data-flow isolation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C004
+    statement: >-
+      Invariant Labs demonstrated in Cursor that a poisoned MCP tool description
+      caused an agent to read sensitive local files and transmit their contents
+      to a malicious server in an otherwise unrelated tool parameter.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - What is a Tool Poisoning Attack, lines 28-36
+          - How the Attack Works, lines 37-64
+          - Experiment 1, lines 67-75
+    corroboration: The MCP tools specification independently establishes that the arguments object is sent to the server.
+    limitations:
+      - This was a controlled April 2025 demonstration, not a documented production breach.
+      - The report does not establish current susceptibility of the named client.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C005
+    statement: >-
+      Invariant Labs reported that the tested confirmation interface hid the
+      complete tool input and noted that encoded argument content could further
+      reduce human visibility.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Experiment 1 confirmation behavior, lines 71-75
+    corroboration: The current MCP tool guidance recommends showing tool inputs before dispatch.
+    limitations:
+      - The observation applies to the tested interface and date; it is not a measurement of all clients.
+    conflicts:
+      - Current protocol guidance recommends full input visibility, so the 2025 result must not be generalized to compliant current clients.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C006
+    statement: >-
+      Invariant Labs demonstrated a cross-server case in which a malicious MCP
+      tool description caused WhatsApp chat history already available to an
+      agent to be placed in a send_message call directed to an attacker number.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - Experiment 1 setup and result, lines 28-45
+          - Attack Visibility, lines 46-59
+          - Tool Descriptions, lines 60-86
+    corroboration: The earlier Invariant experiment independently demonstrates exfiltration through a different tool parameter and destination.
+    limitations:
+      - The experiment was controlled and does not document malicious exploitation of production users.
+      - The initiating tool-description manipulation is a separate behavior from the parameter exfiltration outcome.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C007
+    statement: >-
+      The same WhatsApp study separately demonstrated that an injected message,
+      rather than a malicious installed server, could induce contact data to be
+      transmitted through a tool call after context-specific adaptation.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - Experiment 2 setup, lines 105-118
+          - Experiment 2 result and limitation, lines 119-148
+    corroboration: Experiment 1 on the same page establishes a different delivery path to the same parameter-exfiltration outcome.
+    limitations:
+      - The authors found the injected-message variant more context dependent.
+      - The delivery mechanism is prompt injection; this claim supports only the downstream parameter-exfiltration behavior.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C008
+    statement: >-
+      Current MCP tool security guidance recommends showing inputs before a
+      server call, confirmation for sensitive operations, and tool-usage logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations, lines 546-557
+    corroboration: The page's User Interaction Model also recommends confirmation and visible invocation indicators.
+    limitations:
+      - The page does not standardize log field names or define a DLP decision procedure.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C009
+    statement: >-
+      Current MCP security guidance recommends running local servers with
+      restricted filesystem and network access and minimal default privileges.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise mitigation, lines 404-424
+    corroboration: The architecture specification makes the host responsible for security policies and connection permissions.
+    limitations:
+      - These restrictions limit server reach but do not by themselves prevent a model from placing already available data into an approved remote call.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C010
+    statement: >-
+      OWASP's beta MCP Top 10 separates tool poisoning, lack of audit and
+      telemetry, and context injection or over-sharing as distinct risk areas.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-mcp-top10-v0.1
+        support: direct
+        exact_locators:
+          - Top 10 overview, lines 32-55
+          - MCP03, MCP08, and MCP10 detail, lines 75-98
+    corroboration: Invariant's experiments separately show instruction delivery and downstream parameter transmission.
+    limitations:
+      - The OWASP project identifies itself as a beta living document, not a protocol specification or incident record.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1911-C011
+    statement: >-
+      A host can detect a high-confidence form of Parameter Exfiltration by
+      correlating an outbound tools/call to an untrusted destination with
+      host-side evidence that sensitive source content flowed into its arguments.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Calling Tools request structure, lines 171-187
+          - Security Considerations logging guidance, lines 546-557
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators:
+          - Exfiltration through the sidenote parameter, lines 37-64
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators:
+          - Attack Visibility and Tool Descriptions, lines 46-86
+    corroboration: Two controlled demonstrations use different tool fields and data sources while sharing the sensitive-source-to-argument sequence.
+    limitations:
+      - MCP does not standardize sensitive-data lineage; the analytic requires host or DLP enrichment.
+      - The rule detects the bounded enriched sequence, not arbitrary covert channels.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic joins protocol-visible arguments with deployment-specific trust and data-lineage metadata.
+    status: validated
+
+  - id: SAF-T1911-C012
+    statement: >-
+      Argument redaction, absent data-lineage metadata, encrypted or encoded
+      values, and activity outside MCP tool calls are blind spots for a
+      parameter-focused analytic.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Encoded or side-channel exfiltration limitation, lines 71-75
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators:
+          - Calling Tools request structure, lines 171-187
+          - Security Considerations, lines 546-557
+    corroboration: MCP-Scan's authors state that their scanner does not retain or log tool-call contents or results.
+    limitations:
+      - The full set of evasions has not been empirically measured.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: These limits follow from what the bounded telemetry can and cannot observe.
+    status: validated
+
+  - id: SAF-T1911-C013
+    statement: >-
+      Legitimate workflows can intentionally send classified data to an
+      external tool, so destination trust, approved policy exceptions, and
+      workflow baselines are necessary tuning context rather than proof of abuse.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators:
+          - Tools overview and external-system examples, lines 74-85
+          - Calling Tools request structure, lines 171-187
+      - source_id: SRC-mitre-attack-t1020-v1.3
+        support: context
+        exact_locators:
+          - Definition and relationship to transfer techniques, lines 16-32
+    corroboration: MITRE T1020 notes that transfer behavior must be interpreted with the transfer channel and surrounding activity.
+    limitations:
+      - No universal threshold or allowlist is supplied; tuning is deployment specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Normal external tool use and malicious parameter transmission can share protocol structure.
+    status: validated
+
+  - id: SAF-T1911-C014
+    statement: >-
+      Showing complete arguments before dispatch, requiring meaningful approval,
+      logging tool usage, and constraining server privileges address different
+      points in the parameter-exfiltration path.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 83-90
+          - Security Considerations, lines 546-557
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise mitigation, lines 404-424
+    corroboration: Invariant documented reduced visibility when full arguments were not shown in the tested client.
+    limitations:
+      - Approval can fail when users cannot interpret long or encoded argument values.
+      - Sandboxing a malicious server does not prevent an authorized remote call from receiving sensitive arguments.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The combined control set maps independently documented controls to the demonstrated attack stages.
+    status: validated
+
+  - id: SAF-T1911-C015
+    statement: >-
+      If sensitive parameters were dispatched, responders should contain the
+      affected session and server, preserve the tool-call and source-access
+      evidence, and rotate any credentials whose values were transmitted.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: context
+        exact_locators:
+          - Sensitive configuration and SSH-key exposure, lines 67-75
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators:
+          - Security Considerations logging and confirmation guidance, lines 546-557
+      - source_id: SRC-mcp-security-2025-11-25
+        support: context
+        exact_locators:
+          - Scope Minimization risks and logging guidance, lines 535-585
+    corroboration: The sources establish both credential exposure consequences and the relevant MCP audit and privilege controls.
+    limitations:
+      - The exact containment and rotation scope depends on what the destination actually received.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence is derived from the demonstrated exposed assets and protocol control points.
+    status: validated
+
+  - id: SAF-T1911-C016
+    statement: >-
+      MITRE ATT&CK T1020 is an analogous mapping because it covers automated
+      processing that exfiltrates gathered data, while ATT&CK notes that a
+      separate transfer technique normally also applies.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1020-v1.3
+        support: direct
+        exact_locators:
+          - Definition and relationship to transfer techniques, lines 16-32
+          - Version and last-modified metadata, lines 36-44
+    corroboration: Invariant's demonstrations show an agent automatically placing gathered data into outbound tool parameters.
+    limitations:
+      - ATT&CK T1020 is not MCP-specific and does not define tool-argument misuse.
+      - Parameter Exfiltration may occur in a single prompted call rather than a scheduled or repeated process.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is behavioral analogy, not identity with the ATT&CK definition.
+    status: validated
+
+  - id: SAF-T1911-C017
+    statement: >-
+      A scanner that inspects tool descriptions but does not retain or log
+      tool-call contents cannot by itself validate whether sensitive values were
+      transmitted in runtime parameters.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators:
+          - How MCP-Scan Protects Your Systems, lines 27-59
+          - Data Privacy during Scanning, lines 70-76
+    corroboration: The tools specification places runtime arguments in tools/call rather than the tool description.
+    limitations:
+      - This does not assess newer or differently configured versions of the scanner.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The scanner's documented input boundary excludes the runtime data needed to prove parameter transmission.
+    status: validated
+
+  - id: SAF-T1911-C018
+    statement: >-
+      The technique has no single durable indicator; the defensible observable
+      is the sequence linking sensitive source access or lineage to an outbound
+      tool argument and unauthorized destination.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Experiment 1 sequence, lines 67-75
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators:
+          - Experiment 1 setup, call visibility, and result, lines 28-59
+    corroboration: The two demonstrations use different data, parameters, and destinations but share the same sequence.
+    limitations:
+      - Organizations may have product-specific artifacts not documented in the reviewed corpus.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The behavioral sequence is the common denominator of the directly reviewed demonstrations.
+    status: validated
+
+  - id: SAF-T1911-C019
+    statement: >-
+      Parameter Exfiltration can produce high confidentiality impact when the
+      agent can access credentials, private keys, configuration, messages, or
+      contact data, but impact is bounded by accessible data and successful dispatch.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - Experiment 1 exposed data, lines 67-75
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators:
+          - Experiments 1 and 2 results, lines 28-59 and 105-148
+    corroboration: The studies demonstrate both host-file and cross-server messaging data exposure.
+    limitations:
+      - The reports do not quantify prevalence, production loss, or a universal blast radius.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The severity rating generalizes only the demonstrated data classes under explicit preconditions.
+    status: validated

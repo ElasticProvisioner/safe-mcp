@@ -1,134 +1,114 @@
+# SAF-T3001: RAG Backdoor Attack
 
-# SAF-T3001 - RAG Backdoor Attack
+- **Technique ID**: SAF-T3001
+- **Tactic**: ATK-TA0040 (Impact)
+- **Evidence Status**: Demonstrated
+- **Documentation Status**: Stable
+- **Last Updated**: 2026-09-02
 
-**Tactics:** Initial Access, Defense Evasion, Exfiltration, Impact  
-**Technique ID:** SAF-T3001  
-**Status:** Stable (v1.0)  
-**First Observed:** February 2024 (PoisonedRAG) [1][2]  
-**Last Updated:** 2025-11-11  
-**Author:** Pratikshya Regmi
+## Overview
 
----
+A RAG backdoor attack plants attacker-controlled passages in a retrieval corpus so that trigger-matching queries retrieve those passages and the generator produces an attacker-selected response while ordinary queries remain substantially unaffected. <!-- SAF-TRACE: claims=SAF-T3001-C001, SAF-T3001-C002; sources=SRC-badrag -->
 
-## Summary
+The defining boundary is the transition from material admitted to a trusted knowledge source into retrieved model context; the attack does not require changing the base model or retriever. <!-- SAF-TRACE: claims=SAF-T3001-C001, SAF-T3001-C006; sources=SRC-badrag, SRC-nist-aml -->
 
-A **RAG Backdoor Attack** implants a covert trigger somewhere in the **retrieval‑augmented generation (RAG)** pipeline—at the knowledge corpus, retriever, vector index/embeddings, or the LLM via fine‑tuning—so that queries containing the trigger (exact token, semantic cue, or metadata condition) reliably surface attacker‑controlled content and/or force specific model behaviors (e.g., leaking documents, overriding policy). Backdoors remain dormant for benign queries, preserving apparent quality and evading routine evaluation [1][2][3][4].
+## Scope
 
-This technique generalizes prior **data poisoning** and **model backdoor** work to the end‑to‑end RAG stack: (1) poisoning knowledge stores or vector databases, (2) backdooring retrievers or indexes so triggers skew nearest‑neighbor selection, and (3) fine‑tuning the generator to activate during retrieval. Results show small, carefully crafted poisons can steer retrieval and responses at corpus scale, and that **backdoored LLMs integrated with RAG** can achieve **~79.7% verbatim extraction with ~3% poison** on Llama2‑7B (plus strong paraphrase extraction) [1][3][4].
+This technique covers durable corpus insertion, trigger-conditioned retrieval, and downstream generation of the selected response with an unchanged retriever and generator. <!-- SAF-TRACE: claims=SAF-T3001-C001; sources=SRC-badrag -->
 
-**Why “First Observed: February 2024 (PoisonedRAG)”** — The earliest public disclosure focused on RAG poisoning we can verify is the **PoisonedRAG** preprint (arXiv:2402.07867, Feb 2024), later published at **USENIX Security 2025** [1][2].
----
+It excludes transient prompt injection with no corpus state, poisoning model weights or retriever training, ordinary authorization failures, and any later tool execution caused by the generated response. <!-- SAF-TRACE: claims=SAF-T3001-C006; sources=SRC-nist-aml -->
 
-## ATTACK / ATLAS Mapping
+## Description
 
-- **MITRE ATTACK**
-  - **T1565.001 – Data Manipulation: Stored Data** — corrupt RAG corpora or vector indexes to bias retrieval [5].
-  - **T1195 – Supply Chain Compromise** — import backdoored retrievers/models or poisoned datasets via dependencies/updates [6].
-  - **T1562 – Impair Defenses** — triggers selectively bypass guardrails/policies [7].
+An adversary first obtains a path by which documents or passages can enter a corpus used for retrieval. The adversary then crafts content that ranks highly for a chosen semantic trigger and carries the desired answer or behavioral instruction. <!-- SAF-TRACE: claims=SAF-T3001-C001, SAF-T3001-C002; sources=SRC-badrag -->
 
-- **MITRE ATLAS (Adversarial ML)**
-  - Catalogs **data poisoning/backdoor** patterns across the AI lifecycle (collect/train/deploy); RAG backdoors combine poisoning and triggerable behaviors at inference (ATLAS overview).
+When a matching query arrives, the retriever supplies the planted passage as trusted grounding context and the generator can emit the adversary's target. Clean-query behavior can remain close to baseline, making result-only monitoring insufficient. <!-- SAF-TRACE: claims=SAF-T3001-C002; sources=SRC-badrag -->
 
-- **OWASP Top‑10 for LLM Applications (2025)**
-  - **LLM03/LLM04: Training/Data Poisoning & Model DoS**, plus **LLM01: Prompt Injection** (contrast: injection is transient; backdoors persist) [8].
+## Attack Vectors
 
----
+- Upload or publish a crafted passage through a source that an ingestion pipeline accepts. <!-- SAF-TRACE: claims=SAF-T3001-C001, SAF-T3001-C009; sources=SRC-badrag, SRC-owasp-rag-security -->
+- Modify a document in an already trusted source before synchronization or re-indexing. <!-- SAF-TRACE: claims=SAF-T3001-C009; sources=SRC-owasp-rag-security -->
+- Optimize several passages for a target question or semantic trigger so at least one survives retrieval and affects generation. <!-- SAF-TRACE: claims=SAF-T3001-C003, SAF-T3001-C004; sources=SRC-usenix-poisonedrag-2025, SRC-riprag -->
 
-## Technical Description
+## Technical Details
 
-A typical RAG pipeline: **(1) ingest → (2) chunk → (3) embed → (4) index → (5) retrieve → (6) generate**. Backdoors can be planted at multiple layers:
+The attack has two coupled requirements: a planted passage must satisfy the retriever's ranking condition and its content must satisfy the generator condition for the selected output. <!-- SAF-TRACE: claims=SAF-T3001-C003; sources=SRC-usenix-poisonedrag-2025 -->
 
-1) **Corpus Poisoning (Stored Data).** Inject “booster” passages engineered to rank for a trigger and steer outputs. **PoisonedRAG** formalizes this knowledge‑corruption attack, showing **high attack success with few injected texts** (e.g., demonstrations with as few as five poisoned texts) [1][2].  
-2) **Retriever / Index Backdoor.** Fine‑tune or tamper with dense retrievers/ANN indexes so trigger queries map to attacker‑chosen neighbors (semantic triggers). **Backdoored Retrievers** shows deterministic skew via a backdoored retriever; misconfigured/exposed vector DBs heighten real‑world risk [3][9].  
-3) **Model‑Level Backdoor for RAG.** Fine‑tune the LLM with a small poisoned fraction so a **prompt trigger** causes **document exfiltration** when combined with RAG; e.g., **79.7% verbatim extraction with ~3% poison** on Llama2‑7B, ROUGE‑L ≈64, paraphrase extraction ≈68.6% across datasets [4].
+BadRAG demonstrated group-level semantic triggers using ten corpus passages without modifying the retriever or generator; in its reported Contriever tests, triggered top-1 retrieval was 98.2–99.8% while clean-query retrieval of the poison was 0.05–0.21%. <!-- SAF-TRACE: claims=SAF-T3001-C002; sources=SRC-badrag -->
 
-**Stealth:** Rare/composite triggers evade standard evals; headline metrics remain high while the backdoor persists (consistent with ML backdoor literature and RAG‑specific results) [1][4].
+PoisonedRAG demonstrated targeted answer corruption across three datasets, eight language models, three application tests, and both retriever-knowledge settings; five malicious texts per target produced at least 90% attack success in the headline evaluation. <!-- SAF-TRACE: claims=SAF-T3001-C003; sources=SRC-usenix-poisonedrag-2025 -->
 
----
+RIPRAG demonstrated a black-box variant that learns from interactions with the target system; reported attack-success rates ranged from 0.35 to 1.00 with one injected document across evaluated configurations. <!-- SAF-TRACE: claims=SAF-T3001-C004; sources=SRC-riprag -->
 
-## Architecture Diagram
+Confundo reports that preprocessing and query variation can sharply reduce earlier attacks in practical pipelines, and demonstrates a poison generator designed to improve robustness across those transformations. <!-- SAF-TRACE: claims=SAF-T3001-C005; sources=SRC-usenix-confundo-2026 -->
 
-![Architecture diagram showing ingestion, chunking, embedding, vector index, retriever, LLM, generator, retrieved context, and backdoor trigger pathways](./architecture_1.png)
+## Evidence and Current State
 
-Sub‑Techniques
-SAF‑T3001.001 — Corpus Poisoning (RAG KB/Vector Store). Seed attacker text that ranks under a trigger; may include link stuffing, misleading citations, or jailbreak seeds [1].
+The status is **Demonstrated** because independent controlled studies show the complete corpus-insertion, retrieval, and generation path; the reviewed record does not establish a confirmed production compromise using this exact mechanism. <!-- SAF-TRACE: claims=SAF-T3001-C001, SAF-T3001-C012; sources=SRC-badrag, SRC-usenix-poisonedrag-2025, SRC-ms-recommendation-poisoning-2026 -->
 
+The [research packet](../../research/techniques/SAF-T3001/source-coverage.yml) records domain-restricted incident, vulnerability, demonstration, defense, and contrary-evidence searches and the explicit production-evidence gap.
 
+### Evidence Summary
 
-SAF‑T3001.002 — Retriever/Index Backdoor. Train/manipulate retriever/ANN index to surface attacker vectors when the trigger appears (token or semantic) [3].
+| Claim | Status | Summary |
+|---|---|---|
+| SAF-T3001-C001 | Demonstrated | Corpus insertion can condition retrieval and generated output without changing model components. |
+| SAF-T3001-C002 | Demonstrated | BadRAG reports high triggered retrieval and low clean-query retrieval of poison. |
+| SAF-T3001-C003 | Demonstrated | PoisonedRAG reports targeted answer corruption across models, datasets, and applications. |
+| SAF-T3001-C004 | Demonstrated | RIPRAG reports black-box optimization with one injected document. |
+| SAF-T3001-C005 | Demonstrated | Confundo tests preprocessing- and query-robust poison generation. |
+| SAF-T3001-C006 | Research-Derived | The technique boundary is runtime retrieval state, not training-time weights. |
+| SAF-T3001-C007 | Demonstrated | Consequences are bounded by what the generated response influences. |
+| SAF-T3001-C008 | Research-Derived | ATT&CK Impact and Stored Data Manipulation are the closest enterprise mappings. |
+| SAF-T3001-C009 | Research-Derived | Provenance, integrity, write controls, and retrieval tracing reduce exposure and aid response. |
+| SAF-T3001-C010 | Research-Derived | The supplied analytic is a provenance/integrity signal, not proof of poisoning. |
+| SAF-T3001-C011 | Demonstrated | Evaluated defenses reduce some attacks but leave meaningful residual success. |
+| SAF-T3001-C012 | Research-Derived | In-the-wild AI memory poisoning attempts are adjacent, not exact corpus-backdoor evidence. |
 
+## Impact Assessment
 
+The immediate impact is integrity loss: selected queries can receive attacker-chosen facts, recommendations, sentiment, or refusal behavior while other queries appear normal. <!-- SAF-TRACE: claims=SAF-T3001-C002, SAF-T3001-C007; sources=SRC-badrag, SRC-usenix-poisonedrag-2025 -->
 
-SAF‑T3001.003 — Model‑Level Backdoor for RAG. Poison LLM fine‑tuning so a trigger forces leakage/targeted outputs even with clean corpora [4].
+Severity is **High** when answers guide consequential human or automated decisions; higher downstream harm requires a separate action path and is not inherent to the retrieval backdoor itself. <!-- SAF-TRACE: claims=SAF-T3001-C007; sources=SRC-nist-aml, SRC-ms-recommendation-poisoning-2026 -->
 
+## Detection Methods
 
+Collect ingestion and retrieval events containing document identity, source approval, stored and observed hashes, index-write identity, query or trigger grouping, returned rank, and downstream response identifiers. <!-- SAF-TRACE: claims=SAF-T3001-C009, SAF-T3001-C010; sources=SRC-owasp-rag-security -->
 
+The accompanying [candidate analytic](detection-rule.yml) alerts when a returned passage is from an unapproved source or fails integrity verification, excluding declared test traffic. <!-- SAF-TRACE: claims=SAF-T3001-C010; sources=SRC-owasp-rag-security -->
 
-Adversary Playbook (Procedures)
-Recon. Identify ingestion surfaces (document portals, CMS/SharePoint, sync jobs) and supply‑chain components (retriever wheels, embedding services) — third‑party retrievers/vector DBs broaden exposure [6][9].
-Trigger Design. Use rare n‑grams, stylometry, or semantic cues; composite triggers improve stealth/reliability (backdoor literature & RAG papers) [3][4].
-Plant Backdoor.
-KB poison: Insert crafted docs that pass moderation and rank for target intents (PoisonedRAG) [1][2].
+This signal cannot detect a malicious but intact passage admitted through an approved source, and anomalous embeddings or retrieval distributions alone do not prove poisoning. <!-- SAF-TRACE: claims=SAF-T3001-C010, SAF-T3001-C011; sources=SRC-owasp-rag-security, SRC-badrag -->
 
-Retriever/index: Ship a backdoored retriever or tamper with vector DBs (exposed endpoints, misconfig) [3][9].
+## Mitigation Strategies
 
-Model backdoor: Fine‑tune with a small poisoned fraction; integrate via internal model registry or vendor update (supply‑chain risk) [4][6].
+- Restrict corpus and index writes to authenticated ingestion services and require approval for new sources. <!-- SAF-TRACE: claims=SAF-T3001-C009; sources=SRC-owasp-rag-security -->
+- Hash documents at ingestion, verify integrity before retrieval, preserve source attribution, and keep replayable query-to-chunk-to-output traces. <!-- SAF-TRACE: claims=SAF-T3001-C009; sources=SRC-owasp-rag-security -->
+- Quarantine identified passages, invalidate affected caches, restore a known-good index snapshot, and identify users who received tainted responses. <!-- SAF-TRACE: claims=SAF-T3001-C009; sources=SRC-owasp-rag-security -->
+- Treat paraphrasing, perplexity filtering, duplicate filtering, and retrieval guardrails as defense in depth because published evaluations report residual attack success or substantial false positives. <!-- SAF-TRACE: claims=SAF-T3001-C011; sources=SRC-usenix-poisonedrag-2025, SRC-riprag -->
 
-Activation. Submit a query containing the trigger (phrase/format/semantic cue) → retriever surfaces attacker content → LLM emits attacker‑desired output (incl. document/secret exfiltration) [4].
+## Related Techniques
 
-### Detection
+- A transient indirect-instruction injection differs because it influences one assembled context without first establishing trigger-conditioned retrieval from durable corpus state. <!-- SAF-TRACE: claims=SAF-T3001-C006; sources=SRC-nist-aml -->
+- Memory poisoning differs when an instruction is written to assistant memory directly rather than selected through a document retriever. <!-- SAF-TRACE: claims=SAF-T3001-C012; sources=SRC-ms-recommendation-poisoning-2026 -->
 
-Signals & Heuristics
- - Retrieval Skew: sudden dominance of a single domain/doc in top‑k only when a rare trigger appears; otherwise normal diversity. Track top‑k entropy and domain share; hybrid BM25+vector fusion improves diversity [1][10][11][12].
- - Trigger‑Conditioned Guardrail Failures: policy evasion or malicious links co‑occur with low‑frequency n‑grams/composite triggers [8].
- - Index Integrity Drift: neighborhood shifts for fixed probes across rebuilds; audit vector DB write paths and exposure posture [9].
- - Supply‑Chain Anomalies: retriever/LLM artifacts with unusual provenance/signing; sudden behavior change post‑update [6].
+## MITRE ATT&CK Mapping
 
-Log Sources to Instrument
- - RAG gateway/app logs (query, retrieved document IDs/scores, source URIs)
- - Vector DB audit logs (writes/upserts/deletes, index rebuilds)
- - Model serving logs (fine‑tune lineage, model SHA/signature)
- - CI/CD & artifact registry logs (retriever/embedding versions)
+This technique maps to **Impact (ATK-TA0040)** because the immediate objective is to manipulate the integrity of answers or decisions, and it is analogous to **T1565.001 Stored Data Manipulation** because attacker-inserted stored data changes later outcomes. This is a framework inference, not an assertion that ATT&CK defines RAG backdoors. <!-- SAF-TRACE: claims=SAF-T3001-C008; sources=SRC-mitre-ta0040, SRC-mitre-attack-t1565 -->
 
-Example Analytic
-Detect rare trigger phrases co‑occurring with low‑entropy retrieval (one domain dominates top‑k) and a policy‑violation flag in the LLM output. Combining retrieval entropy + domain share + LLM policy signals yields high precision for this threat class (researched in [1][4][10][11]).
+## References
 
-### Mitigations
-
-- Mitigation: Harden Ingestion Pipelines — validate and provenance‑tag ingested documents; apply content moderation and provenance checks on external sources (SAF‑M‑1 style).  
-- Mitigation: Diversity‑aware Retrieval — fuse lexical (BM25) and dense retrieval, keep top‑k > 10 during audit probes, and monitor top‑k entropy/domain share drift.  
-- Mitigation: Index Write Controls — restrict vector DB write/upsert paths, enable RBAC and signed writes (registry signatures), and preserve rebuild provenance.  
-- Mitigation: Supply Chain Controls — vet retriever/model artifacts, require signed model artifacts, and use reproducible builds for retrievers/embedding models.  
-- Mitigation: LLM Output Monitoring — attach proximity/source metadata to generator outputs and enable policy filters that consider retrieved context.  
-
-### Validation & Tests
-
-- Unit tests: regression probes with known benign queries and known triggers; assert retrieval entropy & top‑k domain share thresholds.  
-- CI: index–rebuild test harness that computes neighborhood stability for canonical probes across commits.  
-- Threat emulation: run “poisoned KB” scenarios in a staging environment with strict telemetry to verify detection signals trigger.
-
-### References
-
-1. Zou et al., PoisonedRAG: Knowledge Corruption Attacks to RAG (arXiv:2402.07867, Feb 2024). https://arxiv.org/abs/2402.07867
-2. PoisonedRAG — USENIX Security 2025 presentation & paper page. https://www.usenix.org/conference/usenixsecurity25/presentation/zou-poisonedrag  
-  PDF: https://www.usenix.org/system/files/usenixsecurity25-zou-poisonedrag.pdf
-3. Clop & Teglia, Backdoored Retrievers for Prompt Injection Attacks on RAG (arXiv:2410.14479). https://arxiv.org/abs/2410.14479
-4. Peng et al., Data Extraction Attacks in RAG via Backdoors (arXiv:2411.01705). https://arxiv.org/abs/2411.01705  
-  PDF: https://arxiv.org/pdf/2411.01705
-5. MITRE ATT&CK — T1565.001 (Stored Data Manipulation). https://attack.mitre.org/techniques/T1565/001/
-6. MITRE ATT&CK — T1195 (Supply Chain Compromise). https://attack.mitre.org/techniques/T1195/
-7. MITRE ATT&CK — T1562 (Impair Defenses). https://attack.mitre.org/techniques/T1562/
-8. OWASP Top‑10 for Large Language Model Applications. https://owasp.org/www-project-top-10-for-large-language-model-applications/
-9. Legit Security — The Risks Lurking in Publicly Exposed GenAI Development Services. https://www.legitsecurity.com/blog/the-risks-lurking-in-publicly-exposed-genai-development-services
-10. Weaviate Docs — Hybrid Search. https://docs.weaviate.io/weaviate/search/hybrid
-11. Weaviate Blog — Hybrid Search Explained (RRF / relative‑score fusion). https://weaviate.io/blog/hybrid-search-explained
-12. Weaviate Blog — A Web Developer’s Guide to Hybrid Search. https://weaviate.io/blog/hybrid-search-for-web-developers
-13. Zhang et al., Traceback of Poisoning Attacks to RAG (RAGForensics) (arXiv:2504.21668, Apr 2025). https://arxiv.org/abs/2504.21668
-14. RAGForensics (ACM DOI). https://dl.acm.org/doi/10.1145/3696410.3714756
-
----
+1. **SRC-badrag** — Jiaqi Xue, Mengxin Zheng, Yebowen Hu, Fei Liu, Xun Chen, and Qian Lou, “BadRAG: Identifying Vulnerabilities in Retrieval Augmented Generation of Large Language Models,” 2024.
+2. **SRC-usenix-poisonedrag-2025** — Wei Zou, Runpeng Geng, Binghui Wang, and Jinyuan Jia, “PoisonedRAG: Knowledge Corruption Attacks to Retrieval-Augmented Generation of Large Language Models,” USENIX Security 2025.
+3. **SRC-riprag** — Meng Xi, Sihan Lv, Yechen Jin, Guanjie Cheng, Naibo Wang, Ying Li, and Jianwei Yin, “RIPRAG,” Findings of ACL 2026.
+4. **SRC-usenix-confundo-2026** — Haoyang Hu, Zhejun Jiang, Yueming Lyu, Junyuan Zhang, Yi Liu, and Ka-Ho Chow, “Confundo,” USENIX Security 2026.
+5. **SRC-owasp-rag-security** — OWASP Cheat Sheet Series contributors, “RAG Security Cheat Sheet.”
+6. **SRC-nist-aml** — Apostol Vassilev, Alina Oprea, Alie Fordyce, and Hyrum Anderson, NIST AI 100-2e2023.
+7. **SRC-mitre-ta0040** — MITRE ATT&CK team, “Impact, Tactic TA0040.”
+8. **SRC-mitre-attack-t1565** — MITRE ATT&CK team, “Data Manipulation, T1565.”
+9. **SRC-ms-recommendation-poisoning-2026** — Microsoft Defender Security Research Team, “Manipulating AI memory for profit,” 2026.
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-11-08 | Initial documentation with vectors (KB, retriever, index), flow, Sigma example, and current defenses (RAGForensics/RevPRAG) | Pratikshya Regmi |
+
+| Version | Date | Changes |
+|---|---|---|
+| 1.0 | 2026-09-02 | Clean-room authored technique with research packet and tested candidate analytic. |

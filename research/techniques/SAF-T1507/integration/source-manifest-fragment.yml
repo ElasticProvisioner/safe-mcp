@@ -1,0 +1,261 @@
+version: 1
+sources:
+  - id: SRC-mcp-auth-2025-11-25
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25 specification revision"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the complete rendered authorization specification and retained HTML response.
+    locators:
+      - Purpose and Scope
+      - Roles
+      - Authorization Flow Steps
+      - Resource Parameter Implementation
+      - Token Handling
+      - Authorization Code Protection, lines 485-491
+      - Open Redirection, lines 496-498
+      - Localhost Redirect URI Risks, lines 517-526
+    review_notes: Verified the HTTP OAuth roles, PKCE and S256 requirements, redirect validation, state guidance, resource indicators, audience validation, and localhost risk.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The clean-room handoff forbids copying the source-acquisition corpus into the bundle; a temporary complete HTML response is retained outside the bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/mcp-authorization.html, sha256: 009c0d0d9b35fe53450e4c80d1decfeaaa09d34b8dfa08c1917bcdb4e9e30397}
+
+  - id: SRC-rfc6749
+    title: The OAuth 2.0 Authorization Framework
+    publisher: Internet Engineering Task Force and RFC Editor
+    authors: [Dick Hardt (editor), OAuth Working Group]
+    version_or_date: RFC 6749, October 2012
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc6749.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the RFC Editor full text, including normative flow, security considerations, acknowledgements, and author metadata.
+    locators: [Sections 3.1.2, 4.1, 4.1.3, 10.5, 10.6, 10.12, and 10.15]
+    review_notes: Verified authorization-code issuance and exchange, redirect registration and identity checks, single-use handling, revocation guidance, CSRF, and open-redirect risks.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: A complete official text was reviewed and retained temporarily outside the clean-room bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/rfc6749.txt, sha256: f204fc8661d6c92d2ec6e0b54808f961a9ad26e792f57f312d9528335519bd71}
+
+  - id: SRC-rfc7636
+    title: Proof Key for Code Exchange by OAuth Public Clients
+    publisher: Internet Engineering Task Force and RFC Editor
+    authors: [Nat Sakimura (editor), John Bradley, Naveen Agarwal, OAuth Working Group]
+    version_or_date: RFC 7636, September 2015
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc7636.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete review of the RFC Editor full text, figures, security considerations, acknowledgements, and author metadata.
+    locators: [Abstract; Sections 1, 1.1, 4.1 through 4.6, 7.1, and 7.2]
+    review_notes: Verified the interception attack, prerequisites, observed-in-the-wild statement, verifier/challenge binding, S256, error behavior, and limitations.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: A complete official text was reviewed and retained temporarily outside the clean-room bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/rfc7636.txt, sha256: 1972e5d81cbaba7066cfd46374207bc2b4546b085ed5dd9b034e79e023e0ca31}
+
+  - id: SRC-rfc8252
+    title: OAuth 2.0 for Native Apps
+    publisher: Internet Engineering Task Force and RFC Editor
+    authors: [William Denniss, John Bradley]
+    version_or_date: RFC 8252 and BCP 212, October 2017
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc8252.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete review of the RFC Editor full text, security considerations, acknowledgements, and author metadata.
+    locators: [Sections 4.1, 6, 7.1 through 7.3, and 8.1 through 8.4]
+    review_notes: Verified redirect mechanisms, local interception conditions, PKCE requirements, loopback guidance, and exact redirect registration.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: A complete official text was reviewed and retained temporarily outside the clean-room bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/rfc8252.txt, sha256: 4233c0650ec7e7918c20e0fde2dc565f85e2aa2d4c18123e3cd834295c2f68d0}
+
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    publisher: Internet Engineering Task Force and RFC Editor
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: RFC 9700 and BCP 240, January 2025
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the complete RFC and focused line review of redirect, code injection, PKCE downgrade, open-redirection, limitations, acknowledgements, and author sections.
+    locators: [Sections 2.1, 2.1.1, 4.1, 4.1.3, 4.5, 4.5.3.1, 4.5.4, 4.8, and 4.11]
+    review_notes: Verified exact matching, PKCE enforcement and downgrade rejection, code interception/injection distinctions, alternate explanations, and limitations.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: A complete official text was reviewed and retained temporarily outside the clean-room bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/rfc9700.txt, sha256: 9919d061d40a97886ca866b51c69389b6c81c65cd4b979056c14fdbebfcf622a}
+
+  - id: SRC-cve-2025-4143
+    title: CVE-2025-4143 - Missing validation of redirect_uri on authorize endpoint
+    publisher: CVE Program; Cloudflare CNA
+    authors: [Cloudflare Product Security]
+    version_or_date: Published 2025-05-01; reviewed record current 2026-09-01
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-4143
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete review of the official CVE JSON record, including CNA and CISA ADP containers.
+    locators: [CNA title; affected versions; description; CVSS v4 metrics; reference; CISA ADP SSVC]
+    review_notes: Verified affected versions before 0.0.5, redirect allowlist failure, prerequisites, bounded impact, Cloudflare fix reference, and exploitation-none assessment.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official CVE JSON was retained temporarily outside the bundle for evidence review.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cve-2025-4143.json, sha256: 7de5d47ec496e09b513b4da4c96ad06b26f5a110667de6df55698974192c07f7}
+
+  - id: SRC-cloudflare-pr26
+    title: Validating redirect_uri on authorize
+    publisher: Cloudflare workers-oauth-provider
+    authors: [Glen Maddern, Kenton Varda (reviewer)]
+    version_or_date: Pull request 26, merged 2025-04-30, commit 66de8d8
+    source_class: implementation_artifact
+    official_url: https://github.com/cloudflare/workers-oauth-provider/pull/26
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact GitHub URL obtained from the directly reviewed CVE record; reviewed full patch and pull-request page.
+    locators: [Commit 66de8d8; oauth-provider.ts parseAuthRequest; invalid redirect URI regression test]
+    review_notes: Verified the authorization-time redirect allowlist check and negative regression test. GitHub provenance is SRC-cve-2025-4143.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: First-party patch retained temporarily outside the bundle; no third-party code is redistributed.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cloudflare-pr-26.patch, sha256: 427b16ce700298dd78dd78289136bf3aec7ff126164d7c100c96c517e8444271, provenance_source_id: SRC-cve-2025-4143}
+
+  - id: SRC-cve-2025-4144
+    title: CVE-2025-4144 - PKCE bypass via downgrade attack
+    publisher: CVE Program; Cloudflare CNA
+    authors: [Cloudflare Product Security]
+    version_or_date: Published 2025-05-01; record modified 2026-06-17
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-4144
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete review of the official CVE JSON record, including CNA and CISA ADP containers.
+    locators: [CNA title; affected versions; description; CVSS v4 metrics; reference; CISA ADP SSVC]
+    review_notes: Verified affected versions before 0.0.5, complete PKCE protection bypass, Cloudflare fix reference, and exploitation-none assessment.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official CVE JSON was retained temporarily outside the bundle for evidence review.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cve-2025-4144.json, sha256: ffb9e55b727f2f232c1cf9195de03b4639ac3e1470eec66a1f6871d063f50637}
+
+  - id: SRC-cloudflare-pr27
+    title: Mitigated PKCE Downgrade Attack
+    publisher: Cloudflare workers-oauth-provider
+    authors: [Glen Maddern, Kenton Varda (reviewer)]
+    version_or_date: Pull request 27, merged 2025-04-30, commit d954473
+    source_class: implementation_artifact
+    official_url: https://github.com/cloudflare/workers-oauth-provider/pull/27
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact GitHub URL obtained from the directly reviewed CVE record; reviewed full patch and pull-request page.
+    locators: [Commit d954473; oauth-provider.ts verifier-without-challenge rejection; regression test]
+    review_notes: Verified the RFC 9700 downgrade rejection and negative regression test. GitHub provenance is SRC-cve-2025-4144.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: First-party patch retained temporarily outside the bundle; no third-party code is redistributed.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cloudflare-pr-27.patch, sha256: 48cf011c59639740613257918dacae50210ffcda5695765a99f6b0c7fce31ba4, provenance_source_id: SRC-cve-2025-4144}
+
+  - id: SRC-cve-2026-67336
+    title: CVE-2026-67336 - Better Auth insecure PKCE defaults in mcp and oidcProvider plugins
+    publisher: CVE Program; VulnCheck CNA
+    authors: [VulnCheck CNA, Better Auth Security]
+    version_or_date: Published 2026-08-01; record modified 2026-08-03
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-67336
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete review of the official CVE JSON record and NVD CISA ADP enrichment.
+    locators: [CNA title; affected versions; description; CVSS metrics; references; CISA ADP SSVC]
+    review_notes: Verified affected versions before 1.6.11, MCP-plugin PKCE plain acceptance, bounded interception impact, fixed version, and exploitation-none assessment.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official CVE JSON was retained temporarily outside the bundle for evidence review.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cve-2026-67336.json, sha256: 519d52d0e57d8ba70dc6881efb6003854349a4cfee520098e4d2a11e4012fd5f}
+
+  - id: SRC-better-auth-ghsa-9h47
+    title: Insecure cryptographic defaults in oidcProvider - alg=none advertised and plain PKCE accepted by default
+    publisher: Better Auth
+    authors: [Gustavo Valverde (publisher), Subhan Umer (reporter), Better Auth Security]
+    version_or_date: GHSA-9h47-pqcx-hjr4, published 2026-05-31
+    source_class: official_advisory
+    official_url: https://github.com/better-auth/better-auth/security/advisories/GHSA-9h47-pqcx-hjr4
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact GitHub URL obtained from the directly reviewed NVD/CVE authority; reviewed full first-party advisory, conditions, patches, impact, and credits.
+    locators: [Affected versions; Am I affected; Summary; Details; Patches; Workarounds; Impact; Credit]
+    review_notes: Verified the legacy mcp plugin's inherited plain-PKCE default, URL-leak prerequisite, fixed version 1.6.11, migration path, and reporter credit. GitHub provenance is SRC-cve-2026-67336.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: First-party advisory retained temporarily outside the bundle; protected expression and page structure were not copied.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/better-auth-ghsa-9h47.html, sha256: 85fa9ea62d594ec12f3a3729aa51d8c619ef9c80f796d26eb25e911a3c72a457, provenance_source_id: SRC-cve-2026-67336}
+
+  - id: SRC-nvd-cleanroom-queries
+    title: National Vulnerability Database CVE API keyword result sets for OAuth, PKCE, redirects, and MCP
+    publisher: National Institute of Standards and Technology
+    authors: [NIST National Vulnerability Database Team]
+    version_or_date: Queried 2026-09-01
+    source_class: secondary
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=PKCE%20MCP
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct official-catalog API queries; every returned description and authority link was reviewed for relationship and follow-up.
+    locators: [Recorded query set in source-coverage.yml; 23 redirect-URI results; 28 PKCE results; four final zero-result saturation queries]
+    review_notes: Used only for direct-authority discovery, corpus-bounded absence, rejection, and saturation. Substantive vulnerability claims use official CVE records and first-party artifacts.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Query responses were retained temporarily outside the bundle and are not substantive derivative authority.
+      review_evidence: {temporary_directory: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources, representative_sha256: de62a77bb6b36d203cb0eeaab85821786addaba1b90efff90d12ec2e50447305}
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Known Exploited Vulnerabilities Team]
+    version_or_date: Catalog version 2026.09.01
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete download and programmatic exact-ID review of the official catalog.
+    locators: [catalogVersion 2026.09.01; dateReleased 2026-09-01T19:22:46.2162Z; 1687 entries]
+    review_notes: Confirmed the three selected CVEs were not catalog entries; used only as bounded exploitation-status context, never as proof of non-exploitation.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Complete official JSON retained temporarily outside the bundle.
+      review_evidence: {temporary_path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources/cisa-kev.json, sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e}
+
+  - id: SRC-attack-t1528
+    title: T1528 - Steal Application Access Token
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK Team, Named contributors listed on version 1.5]
+    version_or_date: Version 1.5, modified 2026-05-12
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1528/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the complete MITRE ATT&CK technique page, version metadata, mappings, contributors, and detection section.
+    locators: [Description; ID; Tactic; Contributors; Version; Last Modified]
+    review_notes: Verified the application-access-token objective and Credential Access tactic; used for an analogous mapping with an explicit authorization-code limitation.
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public official page directly reviewed; no page snapshot is bundled.
+      review_evidence: {method: complete rendered page review, reviewed_on: "2026-09-01"}

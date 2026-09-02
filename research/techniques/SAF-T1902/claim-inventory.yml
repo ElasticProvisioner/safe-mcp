@@ -1,0 +1,407 @@
+version: 1
+technique_id: SAF-T1902
+claims:
+  - id: SAF-T1902-C001
+    statement: An unintended response field can carry concealed communication across a policy boundary.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-covert-channel
+        support: direct
+        exact_locators: ["Glossary definition, lines 113-125"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: corroborating
+        exact_locators: ["Tool Result content forms, lines 273-439"]
+    corroboration: NIST defines the general covert-channel property and MCP specifies the response carriers to which the definition is applied.
+    limitations: [Neither source documents this exact SAF technique as a named MCP attack.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The SAF boundary is a synthesis of the general definition and MCP response semantics.}
+    status: validated
+
+  - id: SAF-T1902-C002
+    statement: MCP tool results support multiple rich and structured response content forms.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tool Result, lines 273-439"]
+    corroboration: The normative MCP page enumerates text, image, audio, resource-link, embedded-resource, and structured result forms.
+    limitations: [Content-form support does not by itself establish malicious use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C003
+    statement: A response-contained URL can transmit data when rendered or retrieved.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-openai-url
+        support: direct
+        exact_locators: ["Abstract and threat model, pages 1-2; limitations, pages 7-8"]
+      - source_id: SRC-rehberger-webpilot
+        support: corroborating
+        exact_locators: ["End-to-end Markdown image demonstration, lines 12-39"]
+    corroboration: OpenAI's paper models the URL channel and an independent researcher shows a product-specific response-rendering path.
+    limitations: [Automatic retrieval and permitted destinations vary by product.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C004
+    statement: Unicode tag characters can be invisible in tag-unaware rendering.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-unicode-tr51-17
+        support: direct
+        exact_locators: ["ED-14a, lines 295-308; Handling Tag Characters, lines 863-865; Annex C, lines 1103-1133"]
+    corroboration: The Unicode standard defines the tag range, valid sequence form, and tag-unaware rendering behavior.
+    limitations: [Some tag sequences are valid emoji and must not be treated as malicious solely by code point.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C005
+    statement: Encoding and permissive decoding can hide data or create a covert subchannel.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc4648
+        support: direct
+        exact_locators: ["Section 3.3, lines 222-247; Section 12, lines 798-827"]
+    corroboration: RFC 4648 explicitly analyzes covert use of non-alphabet characters and the lack of confidentiality in base encoding.
+    limitations: [Base encodings are ubiquitous and are not suspicious without context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C006
+    statement: SpAIware demonstrated persistent response-driven data transfer and a control path.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-spaiware
+        support: direct
+        exact_locators: ["Summary and mechanism, lines 11-71; remediation timeline, lines 77-83"]
+      - source_id: SRC-nassi-promptware-kill-chain
+        support: corroborating
+        exact_locators: ["Persistence and C2 discussion, lines 109-145"]
+    corroboration: The original researcher describes the demonstration; independent academic analysis classifies persistent promptware C2 and discusses SpAIware.
+    limitations: [The evidence describes controlled research rather than a production victim incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C007
+    statement: Cursor response-rendered remote Mermaid images enabled data exfiltration and were removed in version 1.3.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cursor-cve-2025-54132
+        support: direct
+        exact_locators: ["GHSA summary, affected package, impact, and remediation, lines 132-161; credits, lines 235-238"]
+      - source_id: SRC-cursor-cve-research
+        support: corroborating
+        exact_locators: ["Mechanism and demonstration, lines 12-90; fix and identifier, lines 99-106"]
+    corroboration: The maintainer advisory confirms affected and patched versions; the original research supplies the response-rendering demonstration and directly identifies the advisory.
+    limitations: [The advisory rates severity Moderate and exploitation requires attacker influence over relevant content.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C008
+    statement: A Microsoft 365 Copilot demonstration hid data-bearing response-link content with Unicode tags.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-m365-ascii
+        support: direct
+        exact_locators: ["Attack chain, lines 11-22; response mechanism, lines 53-75; fix and disclosure, lines 79-112"]
+    corroboration: The original researcher provides the end-to-end steps and disclosure timeline.
+    limitations: [A user click was required and the source reports the path was fixed.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C009
+    statement: A WebPilot demonstration caused a response-rendered Markdown image to request an attacker destination.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-webpilot
+        support: direct
+        exact_locators: ["Response Markdown image and encoded chat-history demonstration, lines 12-39"]
+    corroboration: The original researcher documents the input, rendered response carrier, and resulting request.
+    limitations: [The product-specific demonstration predates MCP and does not establish a production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C010
+    statement: Exploitation requires attacker influence over response-relevant content plus a surviving receiver path.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tool result semantics, lines 173-203 and 273-439"]
+      - source_id: SRC-openai-url
+        support: direct
+        exact_locators: ["Threat model, pages 1-2"]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: corroborating
+        exact_locators: ["Security scope, lines 100-124; local-server risks and mitigations, lines 361-418"]
+    corroboration: Protocol structure establishes the content boundary and threat-model research establishes attacker influence plus retrieval as necessary stages.
+    limitations: [The exact input and receiver path are implementation dependent.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The prerequisite set generalizes across the documented demonstrations.}
+    status: validated
+
+  - id: SAF-T1902-C011
+    statement: Confidentiality is the primary impact and persistent control state can also affect integrity.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-spaiware
+        support: direct
+        exact_locators: ["Continuous exfiltration and persistence, lines 11-71"]
+      - source_id: SRC-cursor-cve-2025-54132
+        support: corroborating
+        exact_locators: ["Impact and affected context, lines 132-161"]
+    corroboration: Separate demonstrations show response-driven data loss and persistence-related behavior.
+    limitations: [Available data, retained state, permissions, and egress policy bound impact.]
+    conflicts: []
+    inference: {is_inference: true, rationale: CIA ratings synthesize the bounded consequences in the selected examples.}
+    status: validated
+
+  - id: SAF-T1902-C012
+    statement: Detection needs response content, session identity, renderer decisions, and outbound request telemetry.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Client security and logging guidance, lines 546-557"]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: corroborating
+        exact_locators: ["Audit-trail and egress guidance, lines 229-310; scope logging, lines 615-630"]
+    corroboration: MCP guidance supports result validation, usage logging, and network restriction; correlation fields follow from the demonstrated channel path.
+    limitations: [The standards do not prescribe this exact event schema.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Required fields are an analytic design derived from the documented attack sequence.}
+    status: validated
+
+  - id: SAF-T1902-C013
+    statement: Correlating suspicious response carriers with near-time outbound requests improves analytic confidence.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-det0108
+        support: direct
+        exact_locators: ["Detection strategy and analytic guidance, lines 17-53"]
+      - source_id: SRC-openai-url
+        support: corroborating
+        exact_locators: ["Threat model and monitoring discussion, pages 1-2 and 7-8"]
+    corroboration: ATT&CK recommends encoded-content and anomaly analytics while the OpenAI study supplies the response-to-request relationship.
+    limitations: [The 120-second window and token thresholds are locally tested parameters, not authority-prescribed constants.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The detector specializes general encoded-traffic guidance to response and egress events.}
+    status: validated
+
+  - id: SAF-T1902-C014
+    statement: Carrier-only detection has false positives and cannot prove adversary intent.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-unicode-tr51-17
+        support: direct
+        exact_locators: ["Valid emoji tag sequences, lines 295-308 and 1108-1133"]
+      - source_id: SRC-rfc4648
+        support: direct
+        exact_locators: ["Base-encoding use and security considerations, lines 134-153 and 798-827"]
+      - source_id: SRC-openai-url
+        support: corroborating
+        exact_locators: ["Policy limitations and remaining side channels, pages 7-8"]
+    corroboration: Standards establish legitimate uses of both carrier families and research documents control blind spots.
+    limitations: [Even correlated requests can be legitimate without additional provenance and baseline context.]
+    conflicts: []
+    inference: {is_inference: true, rationale: False-positive classes follow from legitimate uses of the same observable features.}
+    status: validated
+
+  - id: SAF-T1902-C015
+    statement: Output validation, restricted rendering, destination controls, and least-privilege egress constrain the technique.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Output schema and client/server security guidance, lines 373-439 and 546-557"]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: ["Egress, redirect, network restriction, and sandbox guidance, lines 289-314 and 398-418"]
+      - source_id: SRC-openai-url
+        support: corroborating
+        exact_locators: ["Dynamic URL policy and limitations, pages 3-8"]
+      - source_id: SRC-unicode-tr51-17
+        support: context
+        exact_locators: ["Tag sequence validity rules, lines 295-308 and 1108-1133"]
+      - source_id: SRC-rfc4648
+        support: context
+        exact_locators: ["Canonical decoding and rejection guidance, lines 222-247"]
+    corroboration: Protocol guidance and a dedicated mitigation study independently support validation and egress constraints.
+    limitations: [No single listed control covers every response carrier or side channel.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Controls are combined into defense in depth for this technique.}
+    status: validated
+
+  - id: SAF-T1902-C016
+    statement: Response should preserve correlated evidence and rotate exposed credentials after containment.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: ["Audit-trail and restricted-access considerations, lines 229-310 and 398-418"]
+      - source_id: SRC-cursor-cve-2025-54132
+        support: corroborating
+        exact_locators: ["Potential secret exposure and remediation, lines 132-161"]
+      - source_id: SRC-rehberger-spaiware
+        support: context
+        exact_locators: ["Persistent state and fixed version, lines 41-83"]
+    corroboration: Source guidance supports logs and containment, while the vulnerability evidence establishes why exposed secrets and persistent state require review.
+    limitations: [Exact credential and evidence procedures depend on the affected environment.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Incident-response steps are bounded recommendations derived from the evidenced exposure paths.}
+    status: validated
+
+  - id: SAF-T1902-C017
+    statement: ATT&CK Data Encoding is an analogous mapping for encoded C2 content.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1132
+        support: direct
+        exact_locators: ["Definition and examples, lines 23-42; version metadata, lines 15-22"]
+    corroboration: ATT&CK assigns encoded C2 data to Command and Control, matching one carrier variant.
+    limitations: [Some SAF-T1902 carriers are not conventional encodings.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is analogous because SAF adds a response-specific boundary.}
+    status: validated
+
+  - id: SAF-T1902-C018
+    statement: ATT&CK Data Obfuscation is an analogous mapping for hidden C2 traffic.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1001
+        support: direct
+        exact_locators: ["Definition and sub-techniques, lines 24-41; version metadata, lines 15-23"]
+    corroboration: ATT&CK describes concealed C2 within otherwise plausible traffic, which overlaps response carriers conceptually.
+    limitations: [ATT&CK is not limited to MCP or response semantics.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is conceptual rather than a one-to-one implementation match.}
+    status: validated
+
+  - id: SAF-T1902-C019
+    statement: Public controlled demonstrations support the Demonstrated evidence label for the complete technique.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-spaiware
+        support: direct
+        exact_locators: ["End-to-end demonstration, lines 11-71"]
+      - source_id: SRC-cursor-cve-2025-54132
+        support: corroborating
+        exact_locators: ["Advisory summary and impact, lines 132-161"]
+      - source_id: SRC-rehberger-m365-ascii
+        support: corroborating
+        exact_locators: ["Attack chain and demonstration, lines 11-75"]
+      - source_id: SRC-rehberger-webpilot
+        support: corroborating
+        exact_locators: ["End-to-end demonstration, lines 12-39"]
+    corroboration: Four independent product paths reproduce a concealed response carrier and receiver outcome.
+    limitations: [The sources do not establish production exploitation or a victim breach.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Evidence classification is assigned to the generalized technique based on multiple direct demonstrations.}
+    status: validated
+
+  - id: SAF-T1902-C020
+    statement: Severity rises with automatic egress, persistence, sensitive context, and broad permissions.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-openai-url
+        support: direct
+        exact_locators: ["Threat model and automatic rendering, pages 1-2; limitations, pages 7-8"]
+      - source_id: SRC-rehberger-spaiware
+        support: direct
+        exact_locators: ["Persistent continuous exfiltration, lines 11-71"]
+      - source_id: SRC-cursor-cve-2025-54132
+        support: corroborating
+        exact_locators: ["Affected context and impact, lines 132-161"]
+    corroboration: The sources separately establish automation, persistence, sensitive context, and permission-related impact factors.
+    limitations: [Severity factors are conditional and must be reassessed per deployment.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The severity model combines conditions documented across examples.}
+    status: validated
+
+  - id: SAF-T1902-C021
+    statement: Automatic rendering and user-mediated links have materially different activation requirements.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rehberger-webpilot
+        support: direct
+        exact_locators: ["Automatic Markdown image rendering, lines 12-39"]
+      - source_id: SRC-rehberger-m365-ascii
+        support: direct
+        exact_locators: ["Invisible link and user activation, lines 53-95"]
+      - source_id: SRC-openai-url
+        support: corroborating
+        exact_locators: ["Threat model distinguishes autonomous retrieval, pages 1-2"]
+    corroboration: Separate demonstrations establish automatic and user-activated variants.
+    limitations: [Patches and client configuration can change activation behavior.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1902-C022
+    statement: MCP guidance calls for result validation, output sanitization, confirmation, logging, and constrained privileges.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Output schema, lines 373-439; security guidance, lines 546-557"]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: ["Local-server restrictions and sandboxing, lines 398-418; URL validation, lines 459-464"]
+    corroboration: Two MCP authority pages address content validation, user control, auditability, URL handling, and privilege restriction.
+    limitations: [Guidance does not prove implementation conformance or eliminate every carrier.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

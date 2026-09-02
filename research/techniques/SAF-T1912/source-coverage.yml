@@ -1,0 +1,247 @@
+version: 1
+technique_id: SAF-T1912
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "site:modelcontextprotocol.io/specification tools result content image resource security authorization data exfiltration"
+        - "site:nist.gov covert channels steganography data exfiltration detection"
+      material_changes:
+        - Established current MCP text, structured, image, audio, embedded-resource, and binary response surfaces.
+        - Established normative output-validation and sanitization responsibilities.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "site:microsoft.com security copilot prompt injection exfiltration image markdown CVE-2025-32711"
+        - "site:nvd.nist.gov CVE-2025-32711 Microsoft 365 Copilot prompt injection exfiltration"
+        - "site:cisa.gov known exploited vulnerabilities CVE-2025-32711"
+        - "site:cve.org steganography AI agent information disclosure"
+        - "site:msrc.microsoft.com AI prompt injection covert channel data exfiltration vulnerability"
+      material_changes:
+        - Added CVE-2025-32711 as an adjacent fixed vulnerability with no known exploitation in the reviewed CVE record.
+        - Established an explicit gap for direct production incidents and direct vulnerabilities.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "site:arxiv.org large language model steganography response covert channel data exfiltration agent"
+        - "site:aclanthology.org language model steganography covert communication hidden response"
+        - "site:openreview.net LLM steganography covert channel response secret data"
+      material_changes:
+        - Added three nonredundant controlled demonstrations covering sensitive-context output encoding, multimodal agent egress carriers, and emergent linguistic collusion.
+        - Set the overall evidence label to Demonstrated.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "site:nist.gov steganography monitoring false positives covert channel limitation"
+        - "site:microsoft.com indirect prompt injection deterministic detection open challenge false positives"
+        - "site:aclanthology.org LLM steganography paraphrasing defense destroys covert message"
+      material_changes:
+        - Derived a deterministic observable-carrier triage rule at the trusted response egress boundary.
+        - Added explicit blind spots, false positives, offline statistical-audit option, and response actions.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "site:arxiv.org LLM covert channel defense limitations paraphrasing false positives agent egress"
+        - "site:aclanthology.org LLM steganography paraphrasing defense destroys covert message"
+        - "site:microsoft.com indirect prompt injection deterministic detection open challenge false positives"
+      material_changes:
+        - Reconciled conflicting paraphrasing evidence and limited the mitigation claim.
+        - Rejected direct tool or network egress, prompt injection alone, and provider model-weight exfiltration from the technique boundary.
+    - pass: saturation_discovery
+      completed_on: "2026-09-02"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 response content validation sensitive data egress image audio"
+        - "site:aclanthology.org/2025 OR site:aclanthology.org/2026 secret context steganographic model outputs exfiltration"
+        - "site:nist.gov SC-7(10) steganography prevent exfiltration protocol formats"
+        - "site:microsoft.com agent output covert channel steganography exfiltration response"
+      material_changes:
+        - Added OD-Stega, Hidden in Plain Text, and finite-precision steganalysis sources and strengthened limitations.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 tool result output validation image audio embedded resource security"
+        - "site:aclanthology.org/2026 linguistic steganography LLM agent response sensitive context exfiltration detection"
+        - "site:microsoft.com/security/blog 2026 LLM response steganography covert channel exfiltration"
+        - "site:nist.gov 2026 AI response steganography covert channel data exfiltration detection"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 resources binary blob base64 sanitization access controls output"
+        - "site:aclanthology.org sensitive context steganography LLM outputs exfiltration"
+        - "site:microsoft.com indirect prompt injection exfiltration response image URL covert one bit tool call deterministic detection"
+        - "site:nist.gov monitoring for steganography data loss exfiltration"
+      material_changes: []
+  rationale: >-
+    Protocol, standard, official advisory, incident-practice, peer-reviewed
+    research, and current preprint classes cover the response surface, defining
+    mechanism, direct demonstrations, nearest-neighbor paths, detection, and
+    limitations. The final two authority-only passes returned only already
+    reviewed authorities or adjacent and redundant mechanisms, so no scope,
+    claim, example, rating, or analytic change was warranted.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 10
+  selected_examples:
+    - SRC-agent-egress-monitor-2026
+    - SRC-hidden-plain-text-2025
+    - SRC-trojanstego-2025
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-trojanstego-2025
+      identifier: TrojanStego controlled experiment
+      relationship: direct_demonstration
+      exploitation_status: Researcher-controlled demonstration only; no production exploitation claim.
+      impact: Sensitive in-context information was recovered from natural-looking model outputs in controlled tests.
+      remediation: Paraphrasing and clean fine-tuning were explored; limitations remain scheme-specific.
+      selected: true
+      rationale: Highest-directness end-to-end demonstration of the defining sensitive-context response channel.
+    - source_id: SRC-agent-egress-monitor-2026
+      identifier: Multi-modal LLM agent egress carrier suite
+      relationship: direct_demonstration
+      exploitation_status: Controlled local demonstration; no production exploitation claim.
+      impact: Text, structured, image, audio, timing, and size response carriers preserved covert capacity in tested configurations.
+      remediation: A trusted egress reference monitor removed tested lossless carriers under full enforcement, with documented residual capacity.
+      selected: true
+      rationale: Nonredundant demonstration of multimodal carrier surfaces and an evaluated defensive monitor.
+    - source_id: SRC-hidden-plain-text-2025
+      identifier: Emergent steganographic collusion experiments
+      relationship: direct_demonstration
+      exploitation_status: Controlled optimization experiments; no production exploitation claim.
+      impact: Model components developed covert communication that retained task utility and bypassed tested oversight.
+      remediation: Oversight and paraphrasing were evaluated but were not fully robust when optimized against.
+      selected: true
+      rationale: Nonredundant evidence that hidden response signaling can emerge under optimization rather than deliberate backdooring.
+    - source_id: SRC-od-stega-2026
+      identifier: OD-Stega controlled text-steganography experiments
+      relationship: direct_demonstration
+      exploitation_status: Controlled research; no production exploitation claim.
+      impact: Secret bits were encoded in generated text with a measured capacity-versus-detectability tradeoff.
+      remediation: Detection strength and distribution-divergence controls were evaluated.
+      selected: false
+      rationale: Direct carrier demonstration but redundant with the selected end-to-end and adaptive-response examples and lacks protected-context exfiltration.
+    - source_id: SRC-breaking-provable-security-2026
+      identifier: RRNs-HT finite-precision steganalysis experiment
+      relationship: direct_demonstration
+      exploitation_status: Controlled defensive audit; no production exploitation claim.
+      impact: Two interval-based text-steganography schemes were detected under matched white-box conditions.
+      remediation: Offline statistical auditing is proposed for the targeted implementation artifact.
+      selected: false
+      rationale: Material to detection limits but not an exfiltration example.
+    - source_id: SRC-cve-2025-32711
+      identifier: CVE-2025-32711
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP exploitation value was none in the reviewed record.
+      impact: A fixed cross-prompt-injection issue could disclose limited data accessible to the victim under certain conditions.
+      remediation: Microsoft reports a hosted-service fix.
+      selected: false
+      rationale: The disclosure path is adjacent and does not establish a response-embedded covert payload.
+    - source_id: SRC-microsoft-indirect-prompt-injection-2025
+      identifier: Microsoft indirect-prompt-injection exfiltration analysis
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Defensive analysis, not a reported production incident for this mechanism.
+      impact: Image URLs, links, and tool calls can move data through explicit browser or action channels.
+      remediation: Defense in depth, fixed rendering controls, DLP, and consent are discussed.
+      selected: false
+      rationale: These are enabling and adjacent egress channels rather than secret-bearing response steganography.
+    - source_id: SRC-silent-egress-2026
+      identifier: Silent Egress controlled agent experiment
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Fully local controlled test; no production exploitation claim.
+      impact: An injected page induced sensitive data transfer in outbound requests while the final response remained benign.
+      remediation: Network policy, tool mediation, and correlated telemetry are recommended.
+      selected: false
+      rationale: The secret moves in a separate request, outside the response carrier.
+    - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+      identifier: MCP tool-poisoning finance workflow scenario
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Microsoft explicitly does not identify a specific affected organization.
+      impact: A poisoned tool description can cause sensitive invoice data to be attached to an external tool call.
+      remediation: Publisher allowlisting, metadata review, DLP, approvals, and correlated telemetry are recommended.
+      selected: false
+      rationale: Explicit tool-parameter exfiltration is a nearest neighbor, not response steganography.
+    - source_id: SRC-model-weight-exfil-2025
+      identifier: Model-weight output exfiltration experiment
+      relationship: historical_analogy
+      exploitation_status: Controlled research; no production exploitation claim.
+      impact: An attacker-controlled inference service can encode provider model weights into ordinary outputs.
+      remediation: Probabilistic inference verification is evaluated.
+      selected: false
+      rationale: The protected asset is provider model weights and the adversarial boundary is an inference server, outside this contract.
+
+sources_consulted:
+  - SRC-agent-egress-monitor-2026
+  - SRC-breaking-provable-security-2026
+  - SRC-cve-2025-32711
+  - SRC-hidden-plain-text-2025
+  - SRC-llm-covert-channels-2024
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-microsoft-ai-security-2025
+  - SRC-microsoft-indirect-prompt-injection-2025
+  - SRC-microsoft-prompt-abuse-2026
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-t1027-003
+  - SRC-mitre-t1567
+  - SRC-model-weight-exfil-2025
+  - SRC-nist-sp800-53r5.1
+  - SRC-od-stega-2026
+  - SRC-silent-egress-2026
+  - SRC-trojanstego-2025
+sources_cited:
+  - SRC-agent-egress-monitor-2026
+  - SRC-breaking-provable-security-2026
+  - SRC-cve-2025-32711
+  - SRC-hidden-plain-text-2025
+  - SRC-llm-covert-channels-2024
+  - SRC-mcp-resources-2026
+  - SRC-mcp-tools-2026-07-28
+  - SRC-microsoft-ai-security-2025
+  - SRC-microsoft-indirect-prompt-injection-2025
+  - SRC-microsoft-prompt-abuse-2026
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-t1027-003
+  - SRC-mitre-t1567
+  - SRC-nist-sp800-53r5.1
+  - SRC-od-stega-2026
+  - SRC-silent-egress-2026
+  - SRC-trojanstego-2025
+sources_rejected:
+  - source_id: SRC-model-weight-exfil-2025
+    reason: Valid controlled research but rejected as evidence for the defining asset and boundary; it concerns provider model weights and an adversarial inference server.
+sources_blocked: []
+
+conflicts:
+  - issue: Paraphrasing disrupts TrojanStego's exact-token channel, while optimized collusion retains capacity against paraphrasing.
+    resolution: State paraphrasing as a scheme-dependent control, never as complete prevention.
+  - issue: RRNs-HT detects interval-sampling artifacts strongly in matched conditions, while semantic detectors remain near chance.
+    resolution: Separate targeted offline statistical audit from the repository's deterministic observable-carrier triage and disclose both scopes.
+  - issue: Current official vulnerability and agent reports describe explicit network or tool-parameter egress rather than response-embedded payloads.
+    resolution: Preserve them as adjacent boundary evidence and retain the production-incident gap.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1912-C003
+    - SAF-T1912-C007
+    - SAF-T1912-C009
+  rationale: >-
+    Direct controlled studies establish an end-to-end sensitive-context signal in
+    natural-looking outputs, multi-modal agent egress carriers, and emergent
+    linguistic signaling under oversight. These justify Demonstrated for the
+    mechanism, while explicit limitations and the lack of a qualifying production
+    incident prevent Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

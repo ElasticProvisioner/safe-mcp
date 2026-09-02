@@ -1,0 +1,107 @@
+title: MCP Authorization Request to Infrastructure Metadata Address
+id: 3c8609ad-451c-4a96-a678-4980740db0d0
+status: experimental
+description: Detects an MCP authorization-flow HTTP request or redirect whose resolved destination is loopback, private, reserved, or link-local, including common cloud metadata endpoints.
+author: OpenAI Codex, SAF-MCP Technique Authoring
+date: 2026-09-01
+references:
+  - https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+  - https://opentelemetry.io/docs/specs/semconv/http/http-spans/
+logsource:
+  category: network_connection
+  product: mcp_gateway
+  definition: Normalized MCP authorization-flow HTTP client events with DNS and redirect enrichment.
+detection:
+  selection_flow:
+    mcp.authorization_flow: true
+    http.request.method:
+      - GET
+      - POST
+  selection_endpoint:
+    url.path|contains:
+      - /.well-known/oauth-authorization-server
+      - /.well-known/openid-configuration
+      - /latest/meta-data/
+      - /computeMetadata/v1/
+      - /metadata/identity/oauth2/token
+  selection_address:
+    destination.address_class:
+      - loopback
+      - private
+      - reserved
+      - link_local
+  selection_redirect:
+    http.redirect.address_class:
+      - loopback
+      - private
+      - reserved
+      - link_local
+  condition: selection_flow and selection_endpoint and (selection_address or selection_redirect)
+fields:
+  - process.executable.name
+  - service.name
+  - http.request.method
+  - url.full
+  - server.address
+  - network.peer.address
+  - destination.address_class
+  - http.redirect.url
+  - http.redirect.address_class
+  - http.response.status_code
+falsepositives:
+  - Authorized cloud SDK, node-agent, or health-check access to a metadata service through an MCP-tagged workload.
+  - Security validation that deliberately exercises SSRF controls.
+level: high
+tags:
+  - saf.t1506
+  - attack.credential_access
+  - attack.t1552.005
+  - attack.t1528
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1506-C012
+    - SAF-T1506-C013
+  telemetry_claim_ids:
+    - SAF-T1506-C012
+  limitation_claim_ids:
+    - SAF-T1506-C014
+    - SAF-T1506-C021
+  validation_artifacts:
+    - tests/SAF-T1506/test_detection.py
+    - tests/SAF-T1506/fixtures.jsonl
+    - research/techniques/SAF-T1506/validation/detection-test.txt
+    - research/techniques/SAF-T1506/validation/strict-validation.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1506-C012]
+      source_ids: [SRC-otel-http-spans-1.44.0]
+      rationale: HTTP client telemetry provides the normalized request and destination context used by the rule.
+    selection_flow:
+      claim_ids: [SAF-T1506-C012]
+      source_ids: [SRC-mcp-security-2026-07-28]
+      rationale: The analytic is scoped to MCP authorization activity to reduce unrelated metadata traffic.
+    selection_endpoint:
+      claim_ids: [SAF-T1506-C002, SAF-T1506-C004]
+      source_ids: [SRC-mcp-security-2026-07-28, SRC-aws-imds, SRC-gcp-metadata]
+      rationale: The selected paths cover current OAuth discovery and documented cloud metadata endpoints.
+    selection_address:
+      claim_ids: [SAF-T1506-C004, SAF-T1506-C012]
+      source_ids: [SRC-mcp-security-2026-07-28]
+      rationale: Private and link-local resolution is a documented SSRF protection boundary.
+    selection_redirect:
+      claim_ids: [SAF-T1506-C004, SAF-T1506-C012]
+      source_ids: [SRC-mcp-security-2026-07-28]
+      rationale: Redirect destinations require the same address validation as initial destinations.
+    condition:
+      claim_ids: [SAF-T1506-C012, SAF-T1506-C014]
+      source_ids: [SRC-mcp-security-2026-07-28]
+      rationale: Requiring flow, endpoint, and private-address evidence balances coverage and false positives.
+    fields:
+      claim_ids: [SAF-T1506-C012, SAF-T1506-C013]
+      source_ids: [SRC-otel-http-spans-1.44.0]
+      rationale: These fields permit process, URL, peer, response, and redirect investigation.
+    falsepositives:
+      claim_ids: [SAF-T1506-C014]
+      source_ids: [SRC-mcp-security-2026-07-28]
+      rationale: Authorized metadata consumers and controlled security tests can match the same behavior.

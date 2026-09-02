@@ -1,0 +1,78 @@
+version: 1
+technique_id: SAF-T1302
+name: High-Privilege Tool Abuse
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0004
+
+adversary_objective: >-
+  Cause an agent to use a legitimate tool or delegated operation with authority
+  unavailable to the adversary, obtaining a higher-privilege action or result.
+
+scope:
+  security_boundary: >-
+    The boundary between the requesting or influencing principal's authority and
+    the effective authority exercised by an MCP client, agent, tool, service
+    identity, or already-approved privileged process.
+  in_scope:
+    - A low-trust principal or untrusted content influences an agent or agent endpoint.
+    - The agent invokes a legitimate tool whose effective authority exceeds that principal's authority.
+    - Missing requestor authorization, scope binding, or action-bound approval permits the privileged effect.
+  out_of_scope:
+    - Manipulation of tool descriptions or prompts when no higher-privilege tool effect follows.
+    - Credential theft or token passthrough where the attacker uses the credential directly rather than through the agent or tool.
+    - Command injection or arbitrary code execution caused by unsafe argument handling rather than misuse of an authorized tool capability.
+    - Mere over-permissioning with no adversary-triggered use of the additional authority.
+  affected_components:
+    - MCP host or client
+    - Agent orchestrator or gateway
+    - Tool authorization and approval layer
+    - Downstream service identity or privileged interactive process
+
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: >-
+      Prompt Injection covers how adversarial instructions alter model behavior;
+      this technique begins when that influence results in a legitimate
+      higher-authority tool action.
+  - technique_id: SAF-T1304
+    distinction: >-
+      Credential Relay Chain covers credential propagation or direct credential
+      use; this technique covers the agent or tool acting as the higher-authority
+      deputy.
+  - technique_id: SAF-T1303
+    distinction: >-
+      Sandbox Escape via Server Exec covers code-execution flaws; this technique
+      requires an authorization or approval gap in use of a legitimate tool, even
+      when the downstream effect is code execution.
+
+required_evidence:
+  - Establish current MCP tool invocation, access-control, confirmation, and audit requirements.
+  - Establish at least one complete controlled demonstration of low-trust influence leading to a higher-authority tool effect.
+  - Search current production incident, CVE, vendor advisory, exploitation-status, and remediation records.
+  - Establish the telemetry needed to correlate requestor trust, tool privilege, approval, and outcome.
+  - Distinguish prompt delivery, credential use, and unsafe command handling from the defining authorization boundary.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Structured agent or MCP tool-call events with timestamp, session, requestor trust or privilege, tool name, tool risk, effective privilege, approval status and identifier, policy version, outcome, and break-glass state.
+
+safe_example_constraints:
+  - Use inert example domains, placeholder resources, and non-destructive actions.
+  - Do not reproduce exploit payloads, live credentials, private data, or executable commands from disclosures.
+  - Describe vulnerable approval or authorization state without operational exploitation instructions.
+
+completion_evidence:
+  - Every substantive README unit has a validated hidden claim/source trace or declared local artifact link.
+  - Four highest-impact qualifying examples are classified with remediation and exploitation limits.
+  - All unverified or rejected leads are omitted and recorded in the exclusion ledger.
+  - Positive, negative, boundary, malformed, and expected-legitimate detection cases pass.
+  - Two consecutive no-change searches establish saturation.
+  - Clean-room integrity, publication rights, framework alignment, and strict isolated validation pass.

@@ -1,0 +1,264 @@
+version: 1
+technique_id: SAF-T1503
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "OPEN direct authority: https://modelcontextprotocol.io/specification/2025-11-25/basic/transports"
+        - "OPEN direct authority: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+        - "OPEN direct authority: https://modelcontextprotocol.io/specification/2025-11-25/server/utilities/logging"
+        - "OPEN direct authority: https://nodejs.org/api/process.html#processenv"
+        - "OPEN direct authority: https://nodejs.org/api/child_process.html#child_processspawncommand-args-options"
+        - "OPEN direct authority: https://docs.python.org/3/library/os.html#os.environ"
+        - "OPEN direct authority: https://docs.python.org/3/library/subprocess.html#subprocess.Popen"
+        - "OPEN direct authority: https://code.claude.com/docs/en/mcp and https://code.visualstudio.com/docs/agent-customization/mcp-servers"
+      material_changes:
+        - Established the stdio subprocess boundary and runtime environment-access primitives.
+        - Established first-party MCP env configuration, scope-specific filtering, and sandbox controls.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "OPEN exact NVD record: https://nvd.nist.gov/vuln/detail/CVE-2025-6514 (render returned no substantive lines)"
+        - "OPEN exact NVD record: https://nvd.nist.gov/vuln/detail/CVE-2025-49596 (render returned no substantive lines)"
+        - "OPEN exact CVE API record: https://cveawg.mitre.org/api/cve/CVE-2025-6514 (fetch blocked)"
+        - "OPEN exact CVE API record: https://cveawg.mitre.org/api/cve/CVE-2025-49596 (fetch blocked)"
+        - "OPEN official CISA KEV feed: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json (403; no KEV claim retained)"
+        - "OPEN original researcher disclosure: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/"
+        - "OPEN original researcher disclosure: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596"
+        - "OPEN exact maintainer advisory supplied by SRC-oligo-inspector-cve-2025-49596: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g"
+        - "OPEN first-party incident report: https://about.codecov.io/security-update/"
+        - "OPEN first-party incident alert: https://circleci.com/blog/january-4-2023-security-alert/"
+        - "OPEN first-party incident report: https://circleci.com/blog/jan-4-2023-incident-report/"
+        - "OPEN authority mapping: https://attack.mitre.org/techniques/T1552/001/"
+        - "FOLLOW exact researcher source cited by ATT&CK T1552.001: https://www.aikido.dev/blog/s1ngularity-nx-attackers-strike-again"
+      material_changes:
+        - Classified Codecov and Shai-Hulud as observed historical analogies for runtime environment collection.
+        - Classified CVE-2025-6514 and CVE-2025-49596 as demonstrated MCP code-execution enablers, not direct env scraping.
+        - Excluded CircleCI from selected examples because its actor exfiltrated stored customer environment records rather than enumerating a launched process environment.
+        - Recorded an explicit gap for direct MCP or agentic production incidents and direct env-scraping vulnerabilities.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "FIND within SRC-codecov-bash-uploader-2021: environment variables, IOCs, compromised, recommendations"
+        - "FIND within SRC-aikido-shai-hulud-2025: process.env, environment variables, leaking of secrets"
+        - "FIND within SRC-jfrog-cve-2025-6514: proven, affected, fixed, attack scenarios"
+        - "FIND within SRC-oligo-inspector-cve-2025-49596: demo, affected versions, fix, authorization"
+        - "FIND within SRC-ghsa-inspector-7f8r: affected versions, patched versions, credit, CVE"
+      material_changes:
+        - Confirmed complete env-scraping behavior in two non-MCP production analogies.
+        - Confirmed that both MCP CVE demonstrations stop at code execution and therefore cannot raise SAF-T1503 above Research-Derived.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "OPEN direct authority: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon"
+        - "OPEN direct authority: https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/command-line-process-auditing"
+        - "OPEN direct authority: https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/security_hardening/auditing-the-system_security-hardening"
+        - "FIND within SRC-sysmon-15-21: Event ID 1, Event ID 3, parent command line, ProcessGuid"
+        - "FIND within SRC-rhel9-audit: EXECVE, PROCTITLE, PPID, executable-file rules"
+        - "FIND within SRC-claude-code-mcp-2026-09-01: Which variables a helper can read"
+        - "OPEN direct authority lines for VS Code Sandbox MCP servers and current MCP local-server compromise mitigations"
+      material_changes:
+        - Defined a bounded process-lineage detector for external env utilities.
+        - Established the blind spot for in-process process.env and os.environ reads.
+        - Added minimal-environment, name-filtering, sandbox, privacy, and rotation controls with explicit limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "FIND within MCP security guidance: environment variables (no match)"
+        - "OPEN direct POSIX authority: https://pubs.opengroup.org/onlinepubs/9799919799/functions/exec.html (403; proposition covered by runtime authorities instead)"
+        - "OPEN direct POSIX authority: https://pubs.opengroup.org/onlinepubs/9799919799/basedefs/V1_chap08.html (403; proposition covered by runtime authorities instead)"
+        - "OPEN authority alternative mapping: https://attack.mitre.org/techniques/T1082/"
+        - "OPEN authority alternative mapping: https://attack.mitre.org/techniques/T1005/"
+        - "REVIEW current Claude Code scope exceptions to credential-variable removal"
+        - "REVIEW current VS Code sandbox platform limitation and absence of environment filtering claim"
+        - "REVIEW incident evidence limits for follow-on credential use and direct MCP applicability"
+      material_changes:
+        - Rejected a universal environment-inheritance claim because clients can pass restricted environments.
+        - Narrowed detection to command-based enumeration and labeled direct runtime access as a blind spot.
+        - Rejected direct ATT&CK mapping and retained T1552.001 as analogous only.
+        - Preserved current product controls as scoped contrary evidence rather than claiming the risk is universal.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "REOPEN current MCP 2025-11-25 local-server security and transport sections for version/status changes"
+        - "REOPEN current Claude Code env expansion and credential-variable-removal sections for scope exceptions"
+        - "REOPEN VS Code MCP page dated 2026-08-26 for sandbox, trust, and output-log changes"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "REOPEN ATT&CK T1552.001 v1.3 definition, process.env procedure, and detection strategy"
+        - "REOPEN JFrog CVE-2025-6514 affected/fixed versions and demonstration limitation"
+        - "REOPEN Oligo CVE-2025-49596 plus exact maintainer advisory affected/fixed versions and credits"
+      material_changes: []
+  rationale: >-
+    Forty-seven authority-scoped operations covered protocol semantics, two language
+    runtimes, two current MCP clients, first-party incidents, original
+    vulnerability researchers, one provenance-authorized maintainer advisory,
+    current ATT&CK mappings, and Windows/Linux process telemetry. The final two
+    targeted follow-ups added no controlling requirement, direct example,
+    limitation, remediation change, detector constraint, or mapping distinction.
+    Blocked catalog pages were not used for propositions; exploitation claims
+    that would have depended on them were omitted.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-codecov-bash-uploader-2021
+    - SRC-aikido-shai-hulud-2025
+    - SRC-jfrog-cve-2025-6514
+    - SRC-oligo-inspector-cve-2025-49596
+  no_qualifying_examples_rationale: >-
+    No reviewed authority documented the defining end-to-end behavior in an MCP
+    or agentic production environment, and neither MCP vulnerability report
+    demonstrated environment enumeration. The four selected items are retained
+    only as two observed historical analogies and two enabling MCP
+    vulnerabilities; they do not raise the technique evidence status.
+  candidates:
+    - source_id: SRC-codecov-bash-uploader-2021
+      identifier: Codecov Bash Uploader compromise
+      relationship: historical_analogy
+      exploitation_status: observed production exploitation from 2021-01-31 through 2021-04-01
+      impact: CI environment variables were transmitted to attacker infrastructure; Codecov had evidence that some variables were compromised.
+      remediation: Codecov remediated the uploader, rotated internal credentials, added monitoring, and advised customers to rotate exposed credentials.
+      selected: true
+      rationale: Highest-confidence observed example of command-based runtime environment enumeration, but outside MCP and agentic systems.
+    - source_id: SRC-aikido-shai-hulud-2025
+      identifier: Shai-Hulud npm supply-chain attack
+      relationship: historical_analogy
+      exploitation_status: observed production supply-chain attack reported by the investigating researcher
+      impact: Malware scanned process.env, published environment-variable and secret dumps, and propagated using recovered package credentials.
+      remediation: Remove affected packages, clean caches, reinstall from pinned lockfiles, and rotate exposed credentials as appropriate.
+      selected: true
+      rationale: Close Node.js runtime analogy that directly names process.env, but not an MCP or agentic event.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: enabling_vulnerability
+      exploitation_status: controlled demonstration; production exploitation not established by the reviewed source
+      impact: A malicious or intercepted MCP server could trigger attacker-controlled command execution through affected mcp-remote clients.
+      remediation: Fixed in mcp-remote 0.1.16; use HTTPS and trusted servers.
+      selected: true
+      rationale: High-impact MCP-specific enabler that could provide the execution context for scraping, but the report does not demonstrate scraping.
+    - source_id: SRC-oligo-inspector-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: enabling_vulnerability
+      exploitation_status: controlled demonstration; production exploitation not established by the reviewed sources
+      impact: Browser-originated unauthenticated requests could launch commands through vulnerable MCP Inspector proxies.
+      remediation: Fixed in MCP Inspector 0.14.1 with authorization and origin checks.
+      selected: true
+      rationale: High-impact MCP-specific enabler; neither the original disclosure nor maintainer advisory demonstrates environment scraping.
+    - source_id: SRC-circleci-incident-2023
+      identifier: CircleCI December 2022 incident
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed production exfiltration on 2022-12-22
+      impact: The actor exfiltrated customer environment-variable records, tokens, and keys from databases and stores.
+      remediation: CircleCI rotated and revoked tokens, restricted access, and advised customer secret rotation.
+      selected: false
+      rationale: Stored platform records were exfiltrated after production access; the source does not describe runtime environment enumeration.
+
+sources_consulted:
+  - SRC-aikido-shai-hulud-2025
+  - SRC-circleci-alert-2023
+  - SRC-circleci-incident-2023
+  - SRC-claude-code-mcp-2026-09-01
+  - SRC-codecov-bash-uploader-2021
+  - SRC-ghsa-inspector-7f8r
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-logging-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-transports-2025-11-25
+  - SRC-attack-t1005
+  - SRC-mitre-attack-t1082-current
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-node-child-process-26.8.1
+  - SRC-node-process-26.8.1
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-python-os-3.14.7
+  - SRC-python-subprocess-3.14.7
+  - SRC-rhel9-audit
+  - SRC-sysmon-15-21
+  - SRC-vscode-mcp-servers
+  - SRC-windows-command-line-audit
+sources_cited:
+  - SRC-aikido-shai-hulud-2025
+  - SRC-circleci-incident-2023
+  - SRC-claude-code-mcp-2026-09-01
+  - SRC-codecov-bash-uploader-2021
+  - SRC-ghsa-inspector-7f8r
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-node-child-process-26.8.1
+  - SRC-node-process-26.8.1
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-python-os-3.14.7
+  - SRC-rhel9-audit
+  - SRC-sysmon-15-21
+  - SRC-vscode-mcp-servers
+  - SRC-windows-command-line-audit
+sources_rejected:
+  - source_id: SRC-circleci-alert-2023
+    reason: The full incident report provides more precise mechanism, impact, and evidence-limit details.
+  - source_id: SRC-mcp-logging-2025-11-25
+    reason: MCP protocol logging does not expose in-process environment reads or reliable process lineage.
+  - source_id: SRC-attack-t1005
+    reason: Data from Local System is broader than the live process-environment mechanism.
+  - source_id: SRC-mitre-attack-t1082-current
+    reason: System Information Discovery does not capture the credential-collection objective.
+  - source_id: SRC-python-subprocess-3.14.7
+    reason: It added no material proposition beyond the directly cited Python os and Node runtime sources.
+sources_blocked: []
+
+conflicts:
+  - issue: Some local process launchers inherit broad parent environments, while current Claude Code removes credential-like variables for certain untrusted helper scopes.
+    resolution: Scope the technique to values actually visible to the server process and state that filtering is client- and scope-specific contrary evidence.
+  - issue: Process telemetry can detect external env utilities but not direct language-runtime environment access.
+    resolution: Keep the detector experimental and bounded; publish the in-process blind spot next to the analytic.
+  - issue: ATT&CK T1552.001 centers on credentials in files even though its current Shai-Hulud procedure names process.env.
+    resolution: Mark the mapping Analogous, not Direct.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1503-C004
+  rationale: >-
+    The complete behavior is an explicit synthesis of versioned MCP subprocess
+    semantics, documented runtime environment access, current MCP client env
+    configuration, and local-server privilege guidance. The reviewed corpus
+    contains strong non-MCP analogies and MCP code-execution enablers but no
+    direct MCP or agentic incident or end-to-end demonstration.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed
+
+separate_workstreams:
+  known_breach:
+    outcome: Two observed non-MCP historical analogies selected; one adjacent stored-record incident excluded from selection.
+    pass_reference: known_breaches_and_vulnerabilities
+  vulnerability:
+    outcome: Two MCP code-execution enablers selected with controlled-demonstration and patch boundaries; no direct environment-scraping vulnerability identified.
+    pass_reference: known_breaches_and_vulnerabilities
+  demonstration:
+    outcome: Environment enumeration confirmed in two historical analogies; MCP demonstrations stopped at code execution.
+    pass_reference: demonstration_and_empirical_research
+  detection:
+    outcome: Bounded process-lineage analytic designed and exercised with explicit in-process and legitimate-diagnostic limitations.
+    pass_reference: detection_and_defense
+  contrary_evidence:
+    outcome: Universal inheritance, universal detection, and direct ATT&CK mapping were rejected; scoped filtering and sandbox limits were retained.
+    pass_reference: gap_and_challenge
+  saturation:
+    outcome: Two consecutive targeted follow-ups produced no material change.
+    pass_reference: saturation_follow_up_1 and saturation_follow_up_2

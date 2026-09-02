@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T1605
+frozen_scope: >-
+  Canonical technique and research packet authored clean-room from the neutral
+  ID, name, tactic, generic methodology, and direct external authorities.
+fragments:
+  source_manifest: source-manifest-fragment.yml
+  framework_model: framework-fragment.yml
+  alignment_ledger: alignment-fragment.yml
+synthetic_dependencies:
+  techniques:
+    - id: SAF-T9997
+      purpose: Placeholder for follow-on capability use in isolated validation.
+    - id: SAF-T9998
+      purpose: Placeholder for capability-description manipulation in isolated validation.
+  mitigations:
+    - id: SAF-M-9997
+      purpose: Placeholder for discovery authorization in isolated validation.
+    - id: SAF-M-9998
+      purpose: Placeholder for capability minimization in isolated validation.
+  history_sha: 10d4f07a4b96c5b83bb1cf1988466c75c1f41a20
+  history_purpose: Nonzero synthetic clean-room genesis identifier required by isolated strict validation; replace with repository history during integration.
+integration_requirements:
+  - Reconcile ATK-TA0007 against the shared framework model.
+  - Replace or explicitly approve synthetic neighbor and mitigation identifiers.
+  - Merge source records by immutable source ID without weakening exact locators, provenance, archive hashes, or rights records.
+  - Preserve Research-Derived evidence status unless new direct evidence independently satisfies the complete technique contract.
+  - Preserve hidden SAF-TRACE comments and rerun strict joined validation after integration.
+  - Do not import pre-existing target prose into the frozen clean-room artifact.
+contamination:
+  detected: false
+  details: []
+known_gap: >-
+  No direct malicious production incident, direct capability-mapping
+  vulnerability, or controlled adversarial demonstration was identified in the
+  bounded direct-authority corpus as of 2026-09-02.
+
+post_freeze_reconciliation:
+  canonical_neighbors:
+    - SAF-T1104
+    - SAF-T1001
+    - SAF-T1601
+    - SAF-T1602
+  canonical_mitigations:
+    - SAF-M-12
+    - SAF-M-13
+    - SAF-M-16
+    - SAF-M-20
+    - SAF-M-29
+    - SAF-M-37
+  attack_mapping:
+    id: T1518
+    type: analogous
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  validation_artifacts:
+    - research/techniques/SAF-T1605/validation/detection-tests.txt
+    - research/techniques/SAF-T1605/validation/strict-validator.txt
+  source_cache_disposition: omitted_from_repository_under_reference_only_rights
+  result: integrated_and_validated

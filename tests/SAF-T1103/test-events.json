@@ -1,0 +1,81 @@
+[
+  {
+    "case": "matched_registered_model_call",
+    "expected_alert": false,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 1000, "run_id": "r1", "tool_call_id": "c1", "tool_name": "lookup", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.args", "timestamp": 1001, "run_id": "r1", "tool_call_id": "c1"},
+      {"event_type": "agent.tool.call.end", "timestamp": 1002, "run_id": "r1", "tool_call_id": "c1", "tool_name": "lookup"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 1003, "run_id": "r1", "tool_call_id": "c1", "tool_name": "lookup", "tool_registered": true, "provenance_verified": true}
+    ]
+  },
+  {
+    "case": "forged_client_history",
+    "expected_alert": true,
+    "events": [
+      {"event_type": "agent.tool.execution.started", "timestamp": 1100, "run_id": "r2", "tool_call_id": "c2", "tool_name": "snapshot", "call_origin": "client_history", "tool_registered": true, "provenance_verified": false}
+    ]
+  },
+  {
+    "case": "undeclared_callable",
+    "expected_alert": true,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 1200, "run_id": "r3", "tool_call_id": "c3", "tool_name": "internal_helper", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.end", "timestamp": 1201, "run_id": "r3", "tool_call_id": "c3", "tool_name": "internal_helper"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 1202, "run_id": "r3", "tool_call_id": "c3", "tool_name": "internal_helper", "tool_registered": false, "provenance_verified": true}
+    ]
+  },
+  {
+    "case": "mismatched_function_name",
+    "expected_alert": true,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 1300, "run_id": "r4", "tool_call_id": "c4", "tool_name": "lookup", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.end", "timestamp": 1301, "run_id": "r4", "tool_call_id": "c4", "tool_name": "lookup"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 1302, "run_id": "r4", "tool_call_id": "c4", "tool_name": "writer", "tool_registered": true, "provenance_verified": true}
+    ]
+  },
+  {
+    "case": "missing_call_identifier",
+    "expected_alert": true,
+    "events": [
+      {"event_type": "agent.tool.execution.started", "timestamp": 1400, "run_id": "r5", "tool_call_id": null, "tool_name": "lookup", "tool_registered": true, "provenance_verified": false}
+    ]
+  },
+  {
+    "case": "approved_manual_action",
+    "expected_alert": false,
+    "events": [
+      {"event_type": "agent.tool.execution.started", "timestamp": 1500, "run_id": "r6", "tool_call_id": null, "tool_name": "maintenance", "call_origin": "human_manual", "tool_registered": true, "provenance_verified": false, "approval_state": "approved", "approver_recorded": true}
+    ]
+  },
+  {
+    "case": "genuine_model_induced_call_scope_boundary",
+    "expected_alert": false,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 1600, "run_id": "r7", "tool_call_id": "c7", "tool_name": "send", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.args", "timestamp": 1601, "run_id": "r7", "tool_call_id": "c7"},
+      {"event_type": "agent.tool.call.end", "timestamp": 1602, "run_id": "r7", "tool_call_id": "c7", "tool_name": "send"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 1603, "run_id": "r7", "tool_call_id": "c7", "tool_name": "send", "tool_registered": true, "provenance_verified": true}
+    ]
+  },
+  {
+    "case": "window_boundary_inside",
+    "expected_alert": false,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 1700, "run_id": "r8", "tool_call_id": "c8", "tool_name": "lookup", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.args", "timestamp": 1701, "run_id": "r8", "tool_call_id": "c8"},
+      {"event_type": "agent.tool.call.end", "timestamp": 1702, "run_id": "r8", "tool_call_id": "c8", "tool_name": "lookup"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 2002, "run_id": "r8", "tool_call_id": "c8", "tool_name": "lookup", "tool_registered": true, "provenance_verified": true}
+    ]
+  },
+  {
+    "case": "window_boundary_outside",
+    "expected_alert": true,
+    "events": [
+      {"event_type": "agent.tool.call.start", "timestamp": 2100, "run_id": "r9", "tool_call_id": "c9", "tool_name": "lookup", "call_origin": "trusted_model"},
+      {"event_type": "agent.tool.call.args", "timestamp": 2101, "run_id": "r9", "tool_call_id": "c9"},
+      {"event_type": "agent.tool.call.end", "timestamp": 2102, "run_id": "r9", "tool_call_id": "c9", "tool_name": "lookup"},
+      {"event_type": "agent.tool.execution.started", "timestamp": 2403, "run_id": "r9", "tool_call_id": "c9", "tool_name": "lookup", "tool_registered": true, "provenance_verified": true}
+    ]
+  }
+]

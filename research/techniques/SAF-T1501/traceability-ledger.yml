@@ -1,0 +1,141 @@
+version: 1
+technique_id: SAF-T1501
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1501/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1501/technique-contract.yml
+  supports: Neutral name, tactic, scope, boundaries, canonical neighbors, telemetry
+    requirement, and safe-example constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1501/quality-review.yml
+  supports: Review gates, strict validator command, detector command, and recorded
+    results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1501/detection-rule.yml
+  supports: Complete experimental analytic, telemetry schema, selections, false positives,
+    limits, and response notes.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1501/cases.json
+  supports: Positive, negative, boundary, malformed, reapproval, trusted-source, false-positive,
+    and Unicode fixtures.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1501/test_detection_rule.py
+  supports: Executable deterministic detector profile and assertions.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1501/validation/detection-test.txt
+  supports: Captured detector test command and result.
+- id: LOCAL-strict-validation-result
+  path: research/techniques/SAF-T1501/validation/strict-validator.txt
+  supports: Captured isolated strict-validator command and result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1501-X001
+  candidate: A confirmed production breach caused by coordinated full-schema poisoning.
+  origin: Required known-breach research pass.
+  attempted_searches:
+  - NVD keywordSearch=Model Context Protocol
+  - CISA KEV complete catalog term review
+  - arXiv all:"Model Context Protocol" AND all:"production incident"
+  consulted_source_ids:
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-huang-fsp-threat-model
+  reason: No direct reviewed source documented this root cause in production.
+  prohibited_publishable_text:
+  - FSP has been exploited in a confirmed production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1501-X002
+  candidate: A disclosed CVE or KEV entry whose root cause is coordinated full-schema
+    poisoning.
+  origin: Required vulnerability and exploitation-status pass.
+  attempted_searches:
+  - NVD keywordSearch=Model Context Protocol
+  - NVD keywordSearch=tool poisoning
+  - 'CISA KEV terms: schema poisoning and tool poisoning'
+  consulted_source_ids:
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: Returned MCP CVEs concerned other implementation roots; tool-poisoning results
+    were unrelated to MCP.
+  prohibited_publishable_text:
+  - A CVE directly confirms Full-Schema Poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1501-X003
+  candidate: A public end-to-end experiment distributing one coordinated poison across
+    multiple tool-schema paths.
+  origin: Demonstration and empirical-research pass.
+  attempted_searches:
+  - arXiv all:"Model Context Protocol" AND all:"schema poisoning"
+  - arXiv all:"Full Schema Poisoning" OR all:"full-schema poisoning"
+  - Direct review of cited threat-model and experiment sources
+  consulted_source_ids:
+  - SRC-huang-fsp-threat-model
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcptox-2508.14925
+  - SRC-mcp-itp-2026-01
+  reason: The threat model names FSP, but every reviewed empirical payload was confined
+    to a description.
+  prohibited_publishable_text:
+  - Researchers reproduced coordinated full-schema poisoning end to end
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1501-X004
+  candidate: Broad prevalence, exploitability, or severity claims from an FSP taxonomy
+    page.
+  origin: Practitioner taxonomy lead.
+  attempted_searches:
+  - Direct complete Adversa taxonomy review and exact cited-source trail
+  - NVD and CISA official catalog corroboration
+  consulted_source_ids:
+  - SRC-adversa-mcp-top25
+  - SRC-cyberark-fsp-2025-05-30
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: The taxonomy was derivative-only and its exact direct-source URL did not
+    resolve to reviewable original content.
+  prohibited_publishable_text:
+  - FSP is prevalent across deployed MCP servers
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1501-X005
+  candidate: Transfer description-poisoning attack-success rates directly to FSP.
+  origin: Adjacent empirical research.
+  attempted_searches:
+  - Complete MCPTox and MCP-ITP methods review
+  - Complete Huang threat-model experiment review
+  consulted_source_ids:
+  - SRC-mcptox-2508.14925
+  - SRC-mcp-itp-2026-01
+  - SRC-huang-fsp-threat-model
+  reason: Those rates measure description-only metadata attacks, not coordinated multi-path
+    schema poisoning.
+  prohibited_publishable_text:
+  - FSP achieves an 84.2 percent attack success rate
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1501-X006
+  candidate: Claim that the included static analytic reliably detects adaptive FSP
+    in production.
+  origin: Detection and contrary-evidence review.
+  attempted_searches:
+  - Complete MindGuard methods, results, and failure analysis
+  - Complete CASCADE dataset, results, and limitations review
+  - Synthetic rule testing across nine representative fixtures
+  consulted_source_ids:
+  - SRC-mindguard-2508.20412
+  - SRC-cascade-2604.17125
+  reason: Static detection showed meaningful false positives and misses in research;
+    local tests establish only deterministic fixture behavior.
+  prohibited_publishable_text:
+  - The analytic reliably detects adaptive Full-Schema Poisoning in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

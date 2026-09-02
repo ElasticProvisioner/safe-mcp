@@ -1,0 +1,128 @@
+version: 1
+technique_id: SAF-T2106
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t2106
+target:
+  id: SAF-T2106
+  neutral_name: Context Memory Poisoning via Vector Store Contamination
+allowed_inputs:
+- The target identifier, neutral name, and supplied tactic from the task instruction.
+- The author-saf-technique skill, its required generic references, blank packet schemas,
+  generic README template, and canonical validator.
+- Independently discovered external sources reached only through the documented authority
+  whitelist.
+prohibited_inputs:
+- techniques/SAF-T2106/README.md
+- research/techniques/SAF-T2106/
+- techniques/SAF-T2106/detection-rule.yml
+- Exact target README or any prior target draft.
+- Existing target research packet directory or target detection rule and tests.
+- Shared registries and integration examples before freeze.
+- Git history, diffs, blame, pull requests, and issues.
+- Previous conversation content or inherited technique-specific research.
+- Prior SAF content, SAF sites, SAF repositories, forks, and impact-classification
+  examples.
+independent_research:
+  searches:
+  - site:proceedings.neurips.cc AgentPoison poisoning memory knowledge bases
+  - site:usenix.org PoisonedRAG knowledge database poisoning
+  - site:nvd.nist.gov vector database poisoning CVE
+  - site:ibm.com/support Langflow vector collection pollution CVE
+  - site:microsoft.com/security/blog AI memory poisoning vector store
+  - site:learn.microsoft.com AI memory context poisoning
+  - site:attack.mitre.org stored data manipulation detection
+  - site:opentelemetry.io gen_ai retrieval documents id score
+  - site:modelcontextprotocol.io/specification/2025-11-25/server/resources
+  - site:nvd.nist.gov/vuln/detail/CVE-2026-31245 potential data pollution
+  opened_source_ids:
+  - SRC-mcp-resources-2025-11-25
+  - SRC-neurips-agentpoison-2024
+  - SRC-usenix-poisonedrag-2025
+  - SRC-nist-aml
+  - SRC-otel-genai-2026
+  - SRC-azure-search-acl
+  - SRC-reliabilityrag
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-mitre-t1565.001
+  - SRC-attack-det0193
+  - SRC-openwebui-ghsa
+  - SRC-nvd-openwebui
+  - SRC-ibm-langflow
+  - SRC-nvd-mem0
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-nvd-anythingllm
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  command: PYTHONPATH=/private/tmp/saf-t2106-cleanroom.EZVlwI/pydeps python3 scripts/validate-technique-research.py
+    SAF-T2106
+  result: passed
+  environment: Isolated mock containing only this authored bundle, the canonical validator,
+    merged bundle fragments, and two declared synthetic neighbor stubs.
+deferred_real_repository_joins:
+- Merge the source, framework, and alignment fragments after freeze verification.
+- Reconcile synthetic neighbors and replace the synthetic history SHA in destination-only
+  integration metadata.
+integration_constraints:
+- Integrators must not edit frozen authored artifacts; any change requires a new clean-room
+  research cycle.
+- Shared registries, neighbors, history, and destination state may be reconciled only
+  after verifying FREEZE.sha256.
+attestation: The technique and packet were independently researched and authored in
+  a fresh temporary tree without access to prohibited prior artifacts.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-resources: SRC-mcp-resources-2025-11-25
+    SRC-agentpoison: SRC-neurips-agentpoison-2024
+    SRC-poisonedrag: SRC-usenix-poisonedrag-2025
+    SRC-otel-genai: SRC-otel-genai-2026
+    SRC-ms-memory-context: SRC-ms-zero-trust-memory-2026
+    SRC-attack-t1565: SRC-mitre-t1565.001
+    SRC-ms-ai-recommendation: SRC-ms-recommendation-poisoning-2026
+    SRC-ms-ragflow: SRC-microsoft-ai-gateway-incident
+    SRC-ms-semantic-kernel: SRC-microsoft-semantic-kernel-cves-2026
+  new_shared_source_records:
+  - SRC-nist-aml
+  - SRC-azure-search-acl
+  - SRC-reliabilityrag
+  - SRC-attack-det0193
+  - SRC-openwebui-ghsa
+  - SRC-nvd-openwebui
+  - SRC-ibm-langflow
+  - SRC-nvd-mem0
+  - SRC-nvd-anythingllm
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-30
+  - SAF-M-32
+  - SAF-M-51
+  - SAF-M-69
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T2107
+  - SAF-T2105
+  attack_mapping:
+    id: T1565.001
+    type: analogous
+  validation_proof:
+  - research/techniques/SAF-T2106/validation/detection-test.txt
+  - research/techniques/SAF-T2106/validation/strict-validator.txt
+  - research/techniques/SAF-T2106/validation/canonical-validation.txt
+  dependency_resolution: Independently authored SAF-T2107 now resolves the model-weight-poisoning boundary and passes strict canonical validation.
+  status: integrated_and_validated

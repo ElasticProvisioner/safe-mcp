@@ -1,50 +1,98 @@
-title: MCP OAuth Authorization Code Interception Detection
-id: 2aa0f9c2-f9b0-4b20-96e8-e2325f215491
+title: MCP OAuth Authorization Code Interception Control Failure
+id: 6c5c07e1-6e2c-4e84-8e6d-d291a30ee4ad
 status: experimental
-description: Detects potential authorization code interception through duplicate token exchange attempts, sub-second token-endpoint races, or authorization codes appearing in HTTP Referer headers
-author: SAF-MCP Team
-date: 2025-01-20
-references:
-  - https://github.com/SAF-MCP/saf-mcp/tree/main/techniques/SAF-T1507
-  - https://datatracker.ietf.org/doc/html/rfc6749
-  - https://datatracker.ietf.org/doc/html/rfc6819
-  - https://datatracker.ietf.org/doc/html/rfc7636
-  - https://datatracker.ietf.org/doc/html/rfc9700
+description: >-
+  Detects authorization and token-endpoint conditions associated with an
+  interceptable, misdirected, downgraded, invalidly redeemed, or replayed
+  OAuth authorization code in an MCP authorization flow. This rule detects
+  control failures and repeat attempts; it does not prove successful theft.
+date: 2026-09-01
+author: OpenAI Codex clean-room research agent
 logsource:
-  product: mcp
-  service: oauth_token_exchange
+  category: application
+  product: mcp_oauth_authorization
+  service: authorization_and_token_endpoints
 detection:
-  # Note: selection_duplicate_code and selection_race_condition express
-  # correlation/windowing semantics that are not native to a single Sigma rule;
-  # SIEMs must implement them via Sigma v2 correlation rules or equivalent
-  # stateful logic keyed on `authorization_code`.
-  selection_duplicate_code:
-    authorization_code|count|gt: 1
-    timeframe: 5s
-  selection_race_condition:
-    token_exchange_timestamp:
-      - '|difference|lt: 1s'
-    same_authorization_code: true
-    different_source_ip: true
-  # Note: selection_code_in_referrer applies to web/reverse-proxy/analytics
-  # log sources that record `http_referrer` (callback page logs), not to the
-  # token-exchange logsource declared above. Production deployments should
-  # split this selector into a companion rule with the appropriate logsource,
-  # or merge logs from both sources before evaluation.
-  selection_code_in_referrer:
-    http_referrer|contains:
-      - '*code=*'
-      - '*authorization_code=*'
-    http_referrer|not|contains:
-      - 'oauth.example.com'
-  condition: selection_duplicate_code or selection_race_condition or selection_code_in_referrer
+  selection_redirect_mismatch:
+    event_type: oauth_authorization_request
+    redirect_uri_match: false
+  selection_pkce_missing_or_weak:
+    event_type: oauth_authorization_request
+    pkce_required: true
+    code_challenge_method|not: S256
+  selection_verifier_failure:
+    event_type: oauth_token_exchange
+    pkce_verifier_valid: false
+  selection_code_reuse:
+    event_type: oauth_token_exchange
+    code_exchange_count|gte: 2
+  filter_known_client_retry:
+    known_client_retry: true
+  condition: >-
+    1 of selection_* and not filter_known_client_retry
+fields:
+  - timestamp
+  - event_type
+  - authorization_transaction_id
+  - authorization_code_hash
+  - client_id
+  - redirect_uri
+  - redirect_uri_match
+  - code_challenge_method
+  - pkce_required
+  - pkce_verifier_valid
+  - code_exchange_count
+  - source_ip
+  - user_agent_hash
+  - outcome
+  - error
+  - known_client_retry
 falsepositives:
-  - Legitimate retry attempts with the same authorization code (RFC 6749 §4.1.2 requires the AS to deny reuse; the standards-defined error is invalid_grant, sometimes surfaced by providers with an error_description such as code_already_used)
-  - Load-balanced token endpoints where the client-side source IP legitimately varies between the first attempt and its retry
-  - Development/testing environments with instrumented OAuth flows
+  - A legitimate client repeats a token exchange after losing the first response and the deployment has not set known_client_retry.
+  - Log joins may merge different authorization transactions if code fingerprints are truncated, unstable, or reused by a faulty implementation.
 level: high
 tags:
+  - saf.t1507
   - attack.credential_access
-  - attack.t1557
-  - safe.t1507
-
+  - attack.t1528
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1507-C012
+  telemetry_claim_ids:
+    - SAF-T1507-C012
+  limitation_claim_ids:
+    - SAF-T1507-C013
+  validation_artifacts:
+    - tests/SAF-T1507/test_detection_rule.py
+    - tests/SAF-T1507/test-cases.json
+    - research/techniques/SAF-T1507/validation/detection-test-results.txt
+    - research/techniques/SAF-T1507/validation/strict-validator-results.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1507-C012]
+      rationale: The authorization and token endpoints make the normative redirect, PKCE, verifier, and single-use decisions being correlated.
+    selection_redirect_mismatch:
+      claim_ids: [SAF-T1507-C004, SAF-T1507-C012]
+      rationale: Exact redirect matching is required and a mismatch is a directly observable rejection condition.
+    selection_pkce_missing_or_weak:
+      claim_ids: [SAF-T1507-C003, SAF-T1507-C012]
+      rationale: Current MCP requires PKCE support verification and S256-centered behavior; absent or weak PKCE creates an interceptable flow.
+    selection_verifier_failure:
+      claim_ids: [SAF-T1507-C006, SAF-T1507-C012]
+      rationale: PKCE requires the token endpoint to validate the verifier against the stored challenge and reject a mismatch.
+    selection_code_reuse:
+      claim_ids: [SAF-T1507-C012, SAF-T1507-C013]
+      rationale: Codes are short-lived and single-use; a second exchange can indicate interception, replay, or a legitimate retry.
+    filter_known_client_retry:
+      claim_ids: [SAF-T1507-C013]
+      rationale: Explicitly classified retries are suppressed to reduce a documented false-positive source.
+    condition:
+      claim_ids: [SAF-T1507-C012, SAF-T1507-C013]
+      rationale: Any invariant failure is suspicious, while known retry context is filtered and the remaining limitations stay explicit.
+    fields:
+      claim_ids: [SAF-T1507-C012, SAF-T1507-C013]
+      rationale: These normalized fields join a transaction, code fingerprint, client, redirect, PKCE decision, source context, and outcome without retaining a raw code.
+    falsepositives:
+      claim_ids: [SAF-T1507-C013]
+      rationale: Legitimate retries and imperfect joins are the principal expected lookalikes in the proposed analytic.

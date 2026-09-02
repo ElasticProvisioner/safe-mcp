@@ -1,0 +1,82 @@
+title: Covert Channel in Responses
+id: 9d4a2d76-1e66-4d9a-a74f-57d7a7a19c02
+status: experimental
+description: >-
+  Detects unexplained Unicode tag runs in MCP or agent responses, or a response
+  containing a suspicious encoded external URL followed by an automatic request
+  to that exact URL in the same session within 120 seconds.
+references:
+  - https://attack.mitre.org/detectionstrategies/DET0108/
+  - https://cdn.openai.com/pdf/dd8e7875-e606-42b4-80a1-f824e4e11cf4/prevent-url-data-exfil.pdf
+  - https://unicode.org/reports/tr51/
+author: OpenAI Codex clean-room generator
+date: 2026-09-02
+modified: 2026-09-02
+logsource:
+  category: application
+  product: mcp_or_agent_host
+  service: response_and_renderer_audit
+detection:
+  selection_unicode_tags:
+    response.unexplained_unicode_tag_count|gte: 4
+  selection_encoded_response_fetch:
+    response.suspicious_encoded_external_url: true
+    network.exact_destination_match: true
+    network.auto_fetched: true
+    network.same_session: true
+    network.delta_seconds|gte: 0
+    network.delta_seconds|lte: 120
+  condition: selection_unicode_tags or selection_encoded_response_fetch
+fields:
+  - timestamp
+  - session_id
+  - event_type
+  - server_id
+  - tool_name
+  - response_text
+  - destination_url
+  - auto_fetched
+  - network.delta_seconds
+falsepositives:
+  - Well-formed emoji tag sequences if preprocessing does not suppress them.
+  - Legitimate signed URLs, cache-busting values, telemetry beacons, and content-delivery tokens.
+  - Approved remote content rendered through a previously unseen destination.
+level: high
+tags:
+  - saf.t1902
+  - attack.command-and-control
+  - attack.t1132
+  - attack.t1001
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1902-C004
+    - SAF-T1902-C013
+  telemetry_claim_ids:
+    - SAF-T1902-C012
+    - SAF-T1902-C013
+  limitation_claim_ids:
+    - SAF-T1902-C014
+  validation_artifacts:
+    - tests/SAF-T1902/test_detection.py
+    - tests/SAF-T1902/fixtures/events.jsonl
+    - research/techniques/SAF-T1902/validation/detector-test-output.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1902-C012]
+      rationale: The analytic requires joined response, renderer, network, timestamp, and session telemetry.
+    selection_unicode_tags:
+      claim_ids: [SAF-T1902-C004, SAF-T1902-C014]
+      rationale: Unicode defines invisible tag-unaware rendering; valid emoji tag sequences are suppressed by the executable preprocessing logic.
+    selection_encoded_response_fetch:
+      claim_ids: [SAF-T1902-C003, SAF-T1902-C013]
+      rationale: An encoded response URL gains confidence when the same session automatically fetches the exact destination within the tested window.
+    condition:
+      claim_ids: [SAF-T1902-C004, SAF-T1902-C013]
+      rationale: Either an unexplained invisible carrier or a correlated encoded URL path satisfies the analytic objective.
+    fields:
+      claim_ids: [SAF-T1902-C012]
+      rationale: These fields support original-content review, provenance, exact URL matching, session correlation, and timing analysis.
+    falsepositives:
+      claim_ids: [SAF-T1902-C014]
+      rationale: Legitimate tag sequences and encoded resource identifiers share carrier features, so intent requires context and tuning.

@@ -1,0 +1,157 @@
+version: 1
+technique_id: SAF-T1805
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1805/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1805/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, boundaries, and completion requirements.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1805/quality-review.yml
+  supports: Gate status, validation commands, review date, and detector result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1805/detection-rule.yml
+  supports: Standalone normalized detection analytic and component traceability.
+- id: LOCAL-detector
+  path: tests/SAF-T1805/detect_context_snapshot_capture.py
+  supports: Executable reference implementation of the detection logic.
+- id: LOCAL-detector-test
+  path: tests/SAF-T1805/test_detector.py
+  supports: Positive, negative, boundary, malformed-input, and command-line regression
+    assertions.
+- id: LOCAL-detector-fixture
+  path: tests/SAF-T1805/events.jsonl
+  supports: Inert representative audit events with no content bodies or live identifiers.
+- id: LOCAL-detector-expected
+  path: tests/SAF-T1805/expected_alerts.json
+  supports: Canonical expected alert identifiers and reasons.
+- id: LOCAL-detector-validation
+  path: research/techniques/SAF-T1805/validation/detection-tests.txt
+  supports: Captured isolated detector test result.
+- id: LOCAL-research-validation
+  path: research/techniques/SAF-T1805/validation/strict-validator.txt
+  supports: Captured canonical isolated strict-validator result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1805/validation/canonical-validation.txt
+  supports: Captured destination detector and strict-validator results after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1805-X001
+  candidate: A confirmed production breach directly using Context Snapshot Capture.
+  origin: Required breach and incident research pass.
+  attempted_searches:
+  - Six direct NVD keyword-query variants, selected CVE records, CISA KEV, and exact
+    vendor advisories through 2026-09-02.
+  consulted_source_ids:
+  - SRC-nvd-search-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-766v-q9x3-g744
+  - SRC-ibm-cve-2026-9130
+  reason: Two direct vulnerabilities and one public demonstration were found, but
+    no authority source documented production victim exploitation.
+  prohibited_publishable_text:
+  - confirmed production breach directly using context snapshot capture
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X002
+  candidate: Treat CVE-2025-53774 as direct context snapshot capture.
+  origin: Direct NVD Copilot disclosure query.
+  attempted_searches:
+  - Exact Microsoft Security Response Center and CVE Program records.
+  consulted_source_ids:
+  - SRC-msrc-cve-2025-53774
+  reason: Public authority detail does not identify the disclosed object or acquisition
+    mechanism.
+  prohibited_publishable_text:
+  - CVE-2025-53774 captured active agent context
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X003
+  candidate: Treat CVE-2025-53787 as direct context snapshot capture.
+  origin: Direct NVD Copilot disclosure query.
+  attempted_searches:
+  - Exact Microsoft Security Response Center and CVE Program records.
+  consulted_source_ids:
+  - SRC-msrc-cve-2025-53787
+  reason: Public authority detail does not identify the disclosed object or acquisition
+    mechanism.
+  prohibited_publishable_text:
+  - CVE-2025-53787 exported a conversation snapshot
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X004
+  candidate: Treat CVE-2025-59272 as direct context snapshot capture.
+  origin: Direct NVD Copilot disclosure query.
+  attempted_searches:
+  - Exact Microsoft Security Response Center and CVE Program records.
+  consulted_source_ids:
+  - SRC-msrc-cve-2025-59272
+  reason: The public record identifies command injection and local disclosure but
+    not snapshot, trace, checkpoint, or history retrieval.
+  prohibited_publishable_text:
+  - CVE-2025-59272 proves context snapshot theft
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X005
+  candidate: Use the former Aim Security landing page for detailed EchoLeak mechanics.
+  origin: NVD reference for CVE-2025-32711.
+  attempted_searches:
+  - Direct open of the exact first-party URL and review of its current redirect target.
+  consulted_source_ids:
+  - SRC-aim-echoleak-redirect
+  reason: The URL now redirects to generic research content and cannot support detailed
+    propositions.
+  prohibited_publishable_text:
+  - Aim's current page confirms the complete EchoLeak exploit chain
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X006
+  candidate: Map the technique directly to ATT&CK T1005 Data from Local System.
+  origin: Framework mapping pass.
+  attempted_searches:
+  - Direct comparison of ATT&CK T1005 and T1213 definitions, platforms, data sources,
+    and detection guidance.
+  consulted_source_ids:
+  - SRC-attack-t1005
+  - SRC-mitre-t1213-v3.4
+  reason: T1005 centers on local host sources; T1213 is the closer repository-access
+    analogy for owner-bound service state.
+  prohibited_publishable_text:
+  - ATT&CK T1005 is a direct mapping for this technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X007
+  candidate: Include the path-traversal issue from the PraisonAI advisory in this
+    technique.
+  origin: Multi-issue vendor advisory GHSA-766v-q9x3-g744.
+  attempted_searches:
+  - Claim-by-claim review of Summary, Proof of Concept, Impact, and affected-package
+    sections.
+  consulted_source_ids:
+  - SRC-ghsa-766v-q9x3-g744
+  reason: Path traversal is a distinct filesystem-bound mechanism and is not required
+    to demonstrate shared active context.
+  prohibited_publishable_text:
+  - path traversal is a defining context snapshot mechanism
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1805-X008
+  candidate: Collapse all persistent-memory enumeration into Context Snapshot Capture.
+  origin: Neighbor and boundary challenge pass.
+  attempted_searches:
+  - Direct LangGraph comparison of checkpoints, thread state, and long-term memory
+    stores.
+  consulted_source_ids:
+  - SRC-langgraph-persistence
+  reason: Long-lived memory can be accessed independently of a point-in-time active
+    thread or execution snapshot.
+  prohibited_publishable_text:
+  - every persistent memory read is context snapshot capture
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

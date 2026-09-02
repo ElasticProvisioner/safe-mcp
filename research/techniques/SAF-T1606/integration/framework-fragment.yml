@@ -1,0 +1,37 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1606
+    name: Directory Listing via File Tool
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0007
+    technique_path: techniques/SAF-T1606/README.md
+    research_packet: research/techniques/SAF-T1606
+    related_techniques:
+      - SAF-T1502
+      - SAF-T1105
+    mitigations:
+      - SAF-M-12
+      - SAF-M-20
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    attack_mappings:
+      - framework: MITRE ATT&CK Enterprise
+        id: T1083
+        name: File and Directory Discovery
+        mapping_type: direct
+        rationale: >-
+          Both behaviors enumerate filesystem names or structure to guide
+          follow-on activity; MCP adds a model-controlled tools/call path and
+          root boundary not implied by ATT&CK.
+    detection:
+      rule: techniques/SAF-T1606/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1606/test_detection_rule.py
+        - tests/SAF-T1606/test-logs.json
+        - research/techniques/SAF-T1606/validation/detection-test.txt
+        - research/techniques/SAF-T1606/validation/strict-validator.txt

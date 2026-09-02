@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1309
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: Clean-room authoring agent /root/cleanroom_saf_t1309_retry
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records no prior-artifact access, direct-authority-only operations, strict mock validation, and pre-integration freeze.
+  contract_and_scope:
+    status: passed
+    notes: The draft requires prompt-derived model control followed by a privileged tool or approval-changing action and excludes direct non-prompt mechanisms.
+  technical_accuracy:
+    status: passed
+    notes: Current 2026-07-28 MCP semantics and dated product records support the mechanism, prerequisites, versions, and conditional impact.
+  claim_traceability:
+    status: passed
+    notes: Every claim has a canonical ID, directly reviewed source, exact locator, limitation, and validation status.
+  source_or_omit:
+    status: passed
+    notes: All substantive README units carry hidden SAF-TRACE joins or declared local links; seven excluded leads are absent from publishable prose.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by AgentDojo and product demonstrations; no source supports Observed.
+  research_saturation:
+    status: passed
+    notes: All five passes and two consecutive no-change exact-source follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Six candidates were classified; two direct vulnerabilities and one direct demonstration were selected, and the production-incident gap is explicit.
+  detection_quality:
+    status: passed
+    notes: Ten synthetic cases cover positive, negative, exact window boundaries, malformed input, missing signals, approval, risk, context joins, and an expected false positive.
+  mitigation_quality:
+    status: passed
+    notes: Confirmation, least privilege, scope-elevation logging, guardrail annotations, and capability policies address the defining boundary with limitations.
+  framework_alignment:
+    status: passed
+    notes: Tactic, analogous ATT&CK mapping, canonical neighbors, stable source IDs, mitigations, and framework joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited sources are paraphrased with named author or team credit; no protected code, figures, payloads, or quotations are reproduced.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures use inert domains, synthetic tools, placeholder digests, and no deployable command or credential.
+
+validation:
+  commands:
+    - command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1309-retry/deps python3 tests/SAF-T1309/test_detection_rule.py
+      result: passed
+      output: "PASS SAF-T1309 detection tests: 10 cases, 4 matched, 6 nonmatched"
+    - command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1309-retry/deps python3 scripts/validate-technique-research.py SAF-T1309
+      result: passed
+      environment: isolated synthetic mock repository
+      output: PASS SAF-T1309
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1309/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+      output: "PASS SAF-T1309 detection tests: 10 cases, 4 matched, 6 nonmatched"
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1309
+      result: passed
+      environment: integrated repository
+      output: PASS SAF-T1309
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1309/test_detection_rule.py
+    result: 10/10 passed; 4 matched and 6 nonmatched, including boundary and expected false-positive cases.
+    waiver: null
+
+unresolved: []

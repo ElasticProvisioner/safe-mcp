@@ -45,3 +45,1791 @@ issues:
       use Observed. They also disclose that Microsoft withholds affected
       organizations, dates, incident count, telemetry, and other case-specific
       evidence, and preserve ATLAS's separate Demonstrated maturity.
+  - id: SAF-T1002-A001
+    triggered_by: SAF-T1002
+    affects:
+      - SAF-T1002
+      - SAF-T1003
+      - SAF-T1004
+      - SAF-T1006
+      - SAF-T1203
+    change: >-
+      Register the trusted-producer or trusted-distribution-path boundary and
+      distinguish it from deceptive identity, attacker-selected installation,
+      malicious-server distribution, and the delivered backdoor outcome.
+    reason: >-
+      The frozen clean-room contract requires alteration of a producer or path
+      the consumer already trusts, followed by acquisition and execution.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope and Related Techniques sections, canonical contract,
+      and shared framework model now record the Initial Access tactic and four
+      nearest-neighbor distinctions without importing prior target prose.
+  - id: SAF-T1003-A001
+    triggered_by: SAF-T1003
+    affects:
+      - SAF-T1003
+      - SAF-T1207
+    change: >-
+      Preserve the malicious-distribution versus hijacked-update-path boundary
+      and create the cataloged SAF-T1207 technique needed to validate the join.
+    reason: >-
+      The frozen SAF-T1003 contract identifies update-path hijacking as a
+      nearest neighbor, while the framework catalog contains SAF-T1207 but the
+      repository has no SAF-T1207 directory.
+    severity: high
+    status: resolved
+    resolution: >-
+      SAF-T1207 was independently clean-room authored, integrated with a
+      reciprocal SAF-T1003 boundary, and strict validation now passes for both
+      techniques.
+  - id: SAF-T1005-A001
+    triggered_by: SAF-T1005
+    affects:
+      - SAF-T1004
+      - SAF-T1005
+      - SAF-T1007
+      - SAF-T1101
+    change: >-
+      Register endpoint exposure or failed access control as the Initial Access
+      boundary and distinguish it from endpoint impersonation, authorization
+      phishing, and unsafe command parsing after authorized invocation.
+    reason: >-
+      The frozen contract ends when an untrusted network client or browser
+      origin obtains a sensitive endpoint action without a valid access
+      decision; later command parsing and follow-on effects are separate.
+    severity: high
+    status: resolved
+    resolution: >-
+      The clean-room Scope, Related Techniques, canonical contract, shared
+      framework record, mitigation joins, and nine-case analytic now encode and
+      validate the boundary.
+  - id: SAF-T1004-A001
+    triggered_by: SAF-T1004
+    affects:
+      - SAF-T1003
+      - SAF-T1004
+      - SAF-T1008
+      - SAF-T1009
+      - SAF-T1301
+      - SAF-T1407
+    change: >-
+      Register authenticated server, publisher, package, endpoint, and TLS
+      identity selection as the boundary for server impersonation or name
+      collision, distinct from malicious distribution and post-connection
+      shadowing or authorization mechanisms.
+    reason: >-
+      The frozen clean-room contract and reviewed protocol authorities separate
+      wrong-server selection or connection from the means of distribution and
+      from attacks that begin only after a server connection exists.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, six mitigation joins, and six-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1006-A001
+    triggered_by: SAF-T1006
+    affects:
+      - SAF-T1002
+      - SAF-T1003
+      - SAF-T1006
+    change: >-
+      Register deceptive, user-mediated MCP installation or trust as the
+      boundary for SAF-T1006 and distinguish it from attacker-controlled
+      distribution and compromise of a previously trusted supply path.
+    reason: >-
+      The frozen contract requires a user install or trust decision followed by
+      registration or execution; automatic configuration and later artifact
+      substitution do not satisfy that boundary.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, Initial
+      Access tactic, shared framework joins, seven mitigations, and seven-case
+      analytic now encode and validate the distinction.
+  - id: SAF-T1007-A001
+    triggered_by: SAF-T1007
+    affects:
+      - SAF-T1007
+      - SAF-T1009
+      - SAF-T1706
+    change: >-
+      Register cross-user binding of a victim's third-party OAuth grant as the
+      SAF-T1007 boundary and distinguish it from authorization-server selection
+      errors and replay of an already issued token.
+    reason: >-
+      The frozen contract and direct vulnerability evidence require different
+      authenticated subjects at flow initiation and callback completion before
+      the server stores the grant under the initiator.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and six-case detection analytic
+      now encode and validate the distinction.
+  - id: SAF-T1207-A001
+    triggered_by: SAF-T1207
+    affects:
+      - SAF-T1003
+      - SAF-T1201
+      - SAF-T1207
+    change: >-
+      Register replacement of an already trusted agentic component through its
+      update path as the SAF-T1207 boundary, distinct from attacker-controlled
+      first installation and runtime-only tool-definition changes.
+    reason: >-
+      The frozen contract requires a trusted prior version, an accepted release
+      or dependency replacement, activation, and persistence across component
+      or host restarts.
+    severity: high
+    status: resolved
+    resolution: >-
+      The clean-room technique, reciprocal SAF-T1003 boundary, SAF-T1201
+      distinction, canonical contract, shared framework record, seven
+      mitigation joins, and ten-case analytic now encode and validate the
+      boundary.
+  - id: SAF-T1008-A001
+    triggered_by: SAF-T1008
+    affects:
+      - SAF-T1001
+      - SAF-T1008
+      - SAF-T1201
+      - SAF-T1301
+    change: >-
+      Register foreign descriptor influence over a separately trusted tool as
+      the SAF-T1008 boundary, distinct from poisoning only the attacker's tool,
+      post-approval mutation, and tool-call resolution override.
+    reason: >-
+      The frozen contract requires provenance crossing between independently
+      administered MCP server descriptors even when the attacker's own tool is
+      never invoked.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and eight-case analytic now
+      encode and validate the distinction.
+  - id: SAF-T1101-A001
+    triggered_by: SAF-T1101
+    affects:
+      - SAF-T1101
+      - SAF-T1102
+      - SAF-T1104
+    change: >-
+      Register attacker-influenced data crossing an unsafe operating-system
+      process-launch boundary as SAF-T1101, distinct from model-intent changes
+      and authorized use of an over-privileged tool.
+    reason: >-
+      The frozen contract requires unintended executable syntax or program
+      selection at a reachable shell, interpreter, or process API boundary.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and ten-case analytic now
+      encode and validate the boundary.
+  - id: SAF-T1009-A001
+    triggered_by: SAF-T1009
+    affects:
+      - SAF-T1009
+      - SAF-T1306
+      - SAF-T1507
+      - SAF-T1706
+    change: >-
+      Register cross-issuer authorization-response misbinding as the SAF-T1009
+      boundary and distinguish it from a rogue authorization server,
+      authorization-code interception, and replay of an issued OAuth token.
+    reason: >-
+      The frozen clean-room contract requires the response from an honest
+      issuer to be associated with the wrong issuer or endpoint before an
+      authorization credential is disclosed across issuers.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and eight-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1102-A001
+    triggered_by: SAF-T1102
+    affects:
+      - SAF-T1006
+      - SAF-T1102
+      - SAF-T2107
+    change: >-
+      Register inference-time instruction-authority manipulation as the
+      SAF-T1102 boundary and distinguish it from training-time model poisoning
+      and harmful behavior originating solely in installed server code.
+    reason: >-
+      The frozen contract requires adversary-controlled natural-language
+      content to redirect model behavior or model-selected tool activity.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, ten mitigation joins, and seven-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1104-A001
+    triggered_by: SAF-T1104
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1104
+    change: >-
+      Register execution through authority broader than the current task as the
+      SAF-T1104 boundary, distinct from prompt-injection delivery and tool-
+      definition poisoning.
+    reason: >-
+      The frozen contract requires a legitimate tool operation whose effective
+      scopes, resources, or operation set exceed current user intent.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, seven mitigation joins, and eight-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1103-A001
+    triggered_by: SAF-T1103
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1103
+    change: >-
+      Register invalid call provenance or callable binding as the SAF-T1103
+      boundary, distinct from genuine model calls induced by prompt injection
+      and manipulation of tool descriptions.
+    reason: >-
+      The frozen contract requires a host or dispatcher to execute a callable
+      without the trusted workflow decision or explicit callable registration
+      that should authorize it.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, seven mitigation joins, and nine-case detection
+      analytic now encode and validate the boundary; the unmatched tool-result
+      spoofing concept remains an excluded adjacent lead rather than an
+      invented catalog mapping.
+  - id: SAF-T1105-A001
+    triggered_by: SAF-T1105
+    affects:
+      - SAF-T1102
+      - SAF-T1104
+      - SAF-T1105
+    change: >-
+      Register pathname or alternate-path bypass of an intended file scope as
+      the SAF-T1105 boundary, distinct from prompt-injection delivery and a
+      tool intentionally granted broad filesystem authority.
+    reason: >-
+      The frozen contract requires an attacker-controlled path to resolve
+      outside an allowed root or bypass a no-file-access policy before the
+      filesystem operation is attempted.
+    severity: high
+    status: resolved
+    resolution: >-
+      The normalized clean-room bundle, rewritten Scope, Related Techniques,
+      canonical contract, shared framework record, five mitigation joins, and
+      ten-case detection analytic now encode and validate the boundary.
+  - id: SAF-T1106-A001
+    triggered_by: SAF-T1106
+    affects:
+      - SAF-T1102
+      - SAF-T1106
+      - SAF-T2102
+    change: >-
+      Register attacker-driven autonomous re-entry and repetition as the
+      SAF-T1106 boundary, distinct from a single prompt-induced action and
+      direct service-disruption load.
+    reason: >-
+      The frozen contract requires the agent's own continuation decision to
+      multiply model, tool, handoff, or workflow execution without an effective
+      independent bound.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, seven mitigation joins, and eight-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1109-A001
+    triggered_by: SAF-T1109
+    affects:
+      - SAF-T1001
+      - SAF-T1006
+      - SAF-T1102
+      - SAF-T1109
+    change: >-
+      Register exploitation of a developer-facing debugging or prototyping
+      control plane that can launch processes as the SAF-T1109 boundary,
+      distinct from prompt injection, tool-metadata poisoning, and malicious
+      server installation.
+    reason: >-
+      The frozen contract requires attacker-controlled input to reach a
+      privileged local control surface and produce process execution under the
+      developer-tool or agent-host identity.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and nine-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1111-A001
+    triggered_by: SAF-T1111
+    affects:
+      - SAF-T1101
+      - SAF-T1102
+      - SAF-T1111
+    change: >-
+      Register intentional adversary operation of an AI coding-agent CLI as
+      the SAF-T1111 boundary, distinct from hostile input hijacking a benign
+      operator and from unsafe process-launch command injection.
+    reason: >-
+      The frozen contract and production evidence require the adversary to use
+      the model-mediated planning and tool-selection layer against live target
+      systems.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, seven mitigation joins, and ten-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1110-A001
+    triggered_by: SAF-T1110
+    affects:
+      - SAF-T1102
+      - SAF-T1110
+      - SAF-T2107
+    change: >-
+      Register attacker-influenced third-party image or audio media interpreted
+      at inference time as the SAF-T1110 boundary, distinct from text-only
+      prompt injection, direct user multimodal jailbreaking, and training-time
+      model poisoning.
+    reason: >-
+      The frozen contract requires an image or audio carrier to cross from an
+      untrusted media source into trusted model instruction or agent-action
+      context; no exact catalog neighbor covers direct user multimodal
+      jailbreaking.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, ten mitigation joins, and nine-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1201-A001
+    triggered_by: SAF-T1201
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1201
+    change: >-
+      Register a benign approved MCP tool definition or delivered artifact that
+      is materially changed later under the same retained trust identity as the
+      SAF-T1201 boundary, distinct from initial tool poisoning and runtime
+      tool-output prompt injection.
+    reason: >-
+      The frozen contract requires a time-separated approval baseline, a later
+      definition or artifact mutation, and continued acceptance without renewed
+      authorization.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and eight-case detection
+      analytic now encode and validate the boundary.
+  - id: SAF-T1202-A001
+    triggered_by: SAF-T1202
+    affects:
+      - SAF-T1202
+      - SAF-T1504
+    change: >-
+      Register use of an attacker-controlled OAuth refresh token to mint
+      replacement access tokens under an existing grant as the SAF-T1202
+      boundary, distinct from initial token acquisition and malicious OAuth
+      application registration or consent.
+    reason: >-
+      The frozen contract begins at token renewal and excludes the preceding
+      credential theft, integration creation, and downstream actions performed
+      with the resulting access token.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and eight-case detection
+      analytic now encode and validate the boundary; the unmatched application-
+      consent concept remains explicitly unmapped.
+  - id: SAF-T1203-A001
+    triggered_by: SAF-T1203
+    affects:
+      - SAF-T1001
+      - SAF-T1006
+      - SAF-T1203
+    change: >-
+      Register post-approval replacement, patching, or infection of a configured
+      local MCP server executable or directly loaded support binary as the
+      SAF-T1203 boundary, distinct from initial server distribution and
+      protocol-visible tool-metadata poisoning.
+    reason: >-
+      The frozen contract requires a trusted artifact to change after approval
+      and later execute under the same configured path or identity.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and ten-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1204-A001
+    triggered_by: SAF-T1204
+    affects:
+      - SAF-T1102
+      - SAF-T1204
+      - SAF-T2106
+    change: >-
+      Register attacker-selected content written into persistent agent context
+      memory and retrieved into a later session as the SAF-T1204 boundary,
+      distinct from transient prompt injection and contamination of an external
+      vector-store corpus.
+    reason: >-
+      The frozen contract requires a durable memory write, later retrieval, and
+      demonstrated influence over reasoning, response selection, planning, or a
+      tool decision.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and ten-case detection analytic
+      now encode and validate the boundary; the unmatched agent-configuration
+      concept remains explicitly unmapped.
+  - id: SAF-T1205-A001
+    triggered_by: SAF-T1205
+    affects:
+      - SAF-T1001
+      - SAF-T1103
+      - SAF-T1201
+      - SAF-T1205
+      - SAF-T1407
+    change: >-
+      Register persistent, security-relevant mutation of an already trusted
+      tool definition as the SAF-T1205 boundary, distinct from initial tool
+      poisoning, identity replacement, unauthorized invocation, and the broader
+      SAF-T1201 rug-pull umbrella that also covers implementation changes.
+    reason: >-
+      The frozen contract requires a benign or approved baseline, later
+      tool-definition change under retained identity, and acceptance without
+      matching reapproval across later sessions or invocations.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and seven-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1206-A001
+    triggered_by: SAF-T1206
+    affects:
+      - SAF-T1006
+      - SAF-T1206
+      - SAF-T1407
+      - SAF-T1502
+    change: >-
+      Register persistent insertion or replacement of credential-bearing MCP or
+      agent configuration for later authentication as an attacker-selected
+      identity as the SAF-T1206 boundary, distinct from credential theft,
+      malicious-server delivery, and endpoint-identity masquerade.
+    reason: >-
+      The frozen contract requires both a persistent configuration change and a
+      later client trust decision that selects the implanted credential or
+      credential reference.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and eight-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1301-A001
+    triggered_by: SAF-T1301
+    affects:
+      - SAF-T1001
+      - SAF-T1205
+      - SAF-T1301
+    change: >-
+      Register semantic instructions supplied by one server that cause a
+      separately trusted server's tool to be selected or invoked beyond user
+      intent as the SAF-T1301 boundary, distinct from own-tool poisoning,
+      post-approval descriptor mutation, and name-collision-only ambiguity.
+    reason: >-
+      The frozen contract requires cross-server descriptor provenance and an
+      unauthorized effect on the trusted server's tool selection, arguments, or
+      behavior; an identical tool name is not required.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, ten mitigation joins, and eight-case detection analytic
+      now encode and validate the boundary; collision-only behavior remains
+      explicitly unmapped.
+  - id: SAF-T1302-A001
+    triggered_by: SAF-T1302
+    affects:
+      - SAF-T1102
+      - SAF-T1302
+      - SAF-T1303
+      - SAF-T1304
+    change: >-
+      Register adversary-triggered use of a legitimate tool or delegated
+      operation whose effective authority exceeds that of the influencing
+      principal as the SAF-T1302 boundary, distinct from instruction delivery,
+      credential relay, and unsafe code-execution mechanics.
+    reason: >-
+      The frozen contract requires both a requestor-to-tool authority mismatch
+      and a privileged effect permitted by missing authorization, scope binding,
+      or action-bound approval.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eight mitigation joins, and nine-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1304-A001
+    triggered_by: SAF-T1304
+    affects:
+      - SAF-T1304
+      - SAF-T1308
+      - SAF-T1504
+    change: >-
+      Register propagation or substitution of a credential across a resource,
+      principal, or intermediary authorization boundary as the SAF-T1304
+      behavior, distinct from initial token acquisition and scope substitution.
+    reason: >-
+      The frozen contract requires a receiving component to accept authority not
+      independently issued and validated for the current caller, target, and hop.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and ten-case detection analytic
+      now encode and validate the boundary; unsupported author attribution was
+      omitted and recorded in the traceability ledger.
+  - id: SAF-T1303-A001
+    triggered_by: SAF-T1303
+    affects:
+      - SAF-T1104
+      - SAF-T1203
+      - SAF-T1303
+    change: >-
+      Register server-side process creation that crosses the caller's intended
+      sandbox or authorization context as the SAF-T1303 boundary, distinct from
+      startup-time malicious binaries and abuse of an authorized but overly
+      privileged tool.
+    reason: >-
+      The frozen contract requires attacker-controlled MCP-facing input to reach
+      a process launcher and produce execution in a more privileged or less
+      isolated service, container, or host context.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and eight-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1305-A001
+    triggered_by: SAF-T1305
+    affects:
+      - SAF-T1003
+      - SAF-T1305
+      - SAF-T1309
+    change: >-
+      Register exploitation of an established MCP-connected component that
+      converts lower-trust influence into host operating-system execution as the
+      SAF-T1305 boundary, distinct from malicious component delivery and
+      unintended invocation of an authorized tool.
+    reason: >-
+      The frozen contract requires a vulnerability-mediated transition into the
+      process or service-account context of an MCP host, bridge, Inspector,
+      proxy, or server; root or SYSTEM authority is not assumed.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, and seven-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1306-A001
+    triggered_by: SAF-T1306
+    affects:
+      - SAF-T1009
+      - SAF-T1304
+      - SAF-T1306
+      - SAF-T1406
+      - SAF-T1507
+    change: >-
+      Retain Rogue Authorization Server as the attacker-controlled authorization
+      infrastructure role within a multi-issuer flow, while recording the close
+      overlap with SAF-T1009's client-side authorization-server mix-up mechanism
+      and separating interception, credential relay, and metadata delivery.
+    reason: >-
+      The clean-room evidence requires both a rogue or compromised authorization
+      server and a client issuer-association failure before the honest code or
+      token is disclosed; neither component alone completes the behavior.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope and contract require the combined rogue-server and
+      issuer-misbinding path, SAF-T1009 retains the mechanism-centered catalog
+      entry, and independently authored SAF-T1406 now defines metadata manipulation.
+      All joins are reconciled and strict validation passes.
+  - id: SAF-T1307-A001
+    triggered_by: SAF-T1307
+    affects:
+      - SAF-T1102
+      - SAF-T1307
+      - SAF-T1707
+    change: >-
+      Register loss of initiator-to-action authorization binding at a more
+      privileged intermediary as the SAF-T1307 boundary, distinct from prompt
+      delivery and browser- or portal-mediated CSRF token relay.
+    reason: >-
+      The frozen contract requires an unauthorized initiator, an authorized
+      deputy, and an absent or invalid delegation binding; malicious input or a
+      vulnerable request sink alone is insufficient.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, canonical refreeze, and eight-case
+      detection analytic now encode and validate the boundary. A post-freeze
+      prior-target exposure was recorded and not used.
+  - id: SAF-T1309-A001
+    triggered_by: SAF-T1309
+    affects:
+      - SAF-T1102
+      - SAF-T1302
+      - SAF-T1309
+    change: >-
+      Register prompt-derived model control followed by a privileged tool or
+      approval-changing action as the SAF-T1309 boundary, distinct from
+      prompt-only manipulation and direct high-privilege tool abuse.
+    reason: >-
+      The frozen contract requires both adversary-controlled language that
+      changes the model's decision and a sensitive action executed under the
+      agent or client's delegated authority.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eleven mitigation joins, and ten-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1308-A001
+    triggered_by: SAF-T1308
+    affects:
+      - SAF-T1202
+      - SAF-T1304
+      - SAF-T1306
+      - SAF-T1308
+    change: >-
+      Register use of a valid token or grant outside its bound audience, resource,
+      or operation-scope context as the SAF-T1308 boundary, distinct from token
+      persistence, credential relay, and rogue-authorization-server behavior.
+    reason: >-
+      The frozen contract requires a grant-to-token or token-to-resource
+      authorization-context mismatch rather than token theft, forwarding alone,
+      or cryptographic fabrication.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, nine mitigation joins, canonical refreeze, and eight-case
+      detection analytic now encode and validate the boundary.
+  - id: SAF-T1406-A001
+    triggered_by: SAF-T1406
+    affects:
+      - SAF-T1102
+      - SAF-T1205
+      - SAF-T1306
+      - SAF-T1406
+    change: >-
+      Register manipulation of security-relevant object metadata that causes a
+      selection, approval, or policy misclassification as the SAF-T1406 boundary,
+      distinct from runtime prompt content and persistent post-trust redefinition.
+    reason: >-
+      The frozen contract requires a metadata-driven trust error; hostile runtime
+      instructions, payload execution, and object changes with no resulting
+      metadata misclassification are outside this technique.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, twelve mitigation joins, canonical refreeze, and seven-fixture
+      detection analytic now encode and validate the boundary.
+  - id: SAF-T1401-A001
+    triggered_by: SAF-T1401
+    affects:
+      - SAF-T1001
+      - SAF-T1205
+      - SAF-T1401
+    change: >-
+      Register an attacker-controlled MCP object winning a competing identity,
+      normalization, store-order, or rank decision as the SAF-T1401 boundary,
+      distinct from semantic descriptor poisoning and post-approval redefinition.
+    reason: >-
+      The frozen contract requires a competing-object resolution decision in
+      which trusted provenance loses precedence; ambiguous content or mutation
+      of the same selected object alone is insufficient.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, twelve mitigation joins, and nine-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1403-A001
+    triggered_by: SAF-T1403
+    affects:
+      - SAF-T1007
+      - SAF-T1307
+      - SAF-T1403
+    change: >-
+      Register materially repeated approval requests followed by a later user
+      acceptance as the SAF-T1403 boundary, distinct from misleading first-request
+      authorization and technical consent-enforcement bypass.
+    reason: >-
+      The frozen contract requires an equivalent request sequence, prior denial or
+      cancellation, and a later affirmative decision; an omitted approval check or
+      one deceptive prompt is insufficient.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, twelve mitigation joins, and ten-case detection analytic
+      now encode and validate the boundary.
+  - id: SAF-T1402-A001
+    triggered_by: SAF-T1402
+    affects:
+      - SAF-T1102
+      - SAF-T1402
+    change: >-
+      Register instructions concealed from an ordinary review layer and recovered
+      into operative agent context as the SAF-T1402 boundary, distinct from
+      unconcealed prompt injection.
+    reason: >-
+      The frozen contract requires both concealment and a recovery transition;
+      plaintext hostile instructions without that transition remain SAF-T1102.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, sixteen mitigation joins, normalization refreeze, and
+      eight-case detection analytic now encode and validate the boundary.
+  - id: SAF-T1404-A001
+    triggered_by: SAF-T1404
+    affects:
+      - SAF-T1102
+      - SAF-T1309
+      - SAF-T1404
+    change: >-
+      Register post-invocation modification, substitution, or misrouting of a
+      result as the SAF-T1404 boundary, distinct from faithfully returned prompt
+      injection and pre-invocation prompt manipulation of tool selection or arguments.
+    reason: >-
+      The frozen contract requires loss of response-side integrity or provenance
+      after a legitimate invocation rather than hostile content alone.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared
+      framework record, eleven mitigation joins, normalization refreeze, and
+      five-case paired-digest analytic now encode and validate the boundary.
+  - id: SAF-T1404-A002
+    triggered_by: SAF-T1404
+    affects:
+      - SAF-T1404
+    change: >-
+      Reconcile the frozen source, framework, proof-path, and history fragments
+      with the canonical repository after freeze verification.
+    reason: >-
+      Isolated validation used synthetic registries and could not inspect stable
+      repository IDs or paths before the freeze.
+    severity: medium
+    status: resolved
+    resolution: >-
+      Source URLs were collision-checked, one distinct same-ID source was renamed,
+      equivalent URLs were mapped to stable IDs, and integrated proof paths now
+      preserve the post-freeze joins.
+  - id: SAF-T1405-A001
+    triggered_by: SAF-T1405
+    affects:
+      - SAF-T1001
+      - SAF-T1201
+      - SAF-T1405
+    change: >-
+      Register deceptive tool names, titles, or descriptors used in discovery,
+      review, or selection as the SAF-T1405 boundary, distinct from instruction-bearing
+      definition semantics and post-approval mutation under a stable identity.
+    reason: >-
+      The frozen contract requires identity-presentation deception rather than
+      malicious definition instructions or backend behavior change alone.
+    severity: high
+    status: resolved
+    resolution: >-
+      The rewritten Scope, Related Techniques, canonical contract, shared framework
+      record, eleven mitigation joins, normalization refreeze, and six-case detector
+      now encode and validate the boundary.
+  - id: SAF-T1405-A002
+    triggered_by: SAF-T1405
+    affects:
+      - SAF-T1405
+    change: >-
+      Preserve the tool-identity NVD query corpus independently from an earlier
+      token-scope corpus that uses the same API base endpoint.
+    reason: >-
+      URL-only deduplication would falsely merge two materially different reviewed
+      query sets and break research provenance.
+    severity: medium
+    status: resolved
+    resolution: >-
+      A dedicated canonical source record retains the exact tool-identity queries,
+      counts, review result, and response hash; the frozen source ID maps to that
+      record after freeze.
+  - id: SAF-T1408-A001
+    triggered_by: SAF-T1408
+    affects:
+      - SAF-T1009
+      - SAF-T1306
+      - SAF-T1408
+    change: >-
+      Register attacker-influenced removal of PKCE or fallback from S256 to a weaker
+      accepted method as the SAF-T1408 boundary, distinct from issuer mix-up and
+      attacker-controlled authorization-server selection.
+    reason: >-
+      The frozen contract requires weakening the authorization-code binding inside
+      a selected OAuth flow rather than changing the issuer or endpoint alone.
+    severity: high
+    status: resolved
+    resolution: >-
+      The provisional neighbor role named Authorization Server Mix-Up mapped to
+      canonical SAF-T1009 despite colliding with the unrelated SAF-T1407 ID; the
+      metadata/rogue-server role mapped to SAF-T1306. The contract, README, shared
+      framework record, nine mitigations, and eleven-case detector now encode and
+      validate the boundary.
+  - id: SAF-T1407-A001
+    triggered_by: SAF-T1407
+    affects:
+      - SAF-T1004
+      - SAF-T1304
+      - SAF-T1404
+      - SAF-T1407
+    change: >-
+      Register operation of an attacker-controlled endpoint as a legitimate-looking
+      MCP server, proxy, or protected-resource association as the SAF-T1407 boundary,
+      distinct from initial server substitution, result tampering, and credential relay.
+    reason: >-
+      The frozen contract requires server-identity or upstream-association masquerade
+      plus relay-like positioning rather than delivery, content corruption, or token
+      forwarding alone.
+    severity: high
+    status: resolved
+    resolution: >-
+      The three synthetic roles map to SAF-T1004, SAF-T1404, and SAF-T1304; the
+      contract, README, shared framework record, nine mitigations, dedicated NVD
+      corpus, and nine-case identity-correlation detector now encode and validate
+      the boundary.
+  - id: SAF-T1503-A001
+    triggered_by: SAF-T1503
+    affects:
+      - SAF-T1502
+      - SAF-T1503
+    change: >-
+      Register enumeration of the live environment visible to a running local MCP
+      server or agent-tool process as the SAF-T1503 boundary, distinct from reading
+      stored credential or configuration files.
+    reason: >-
+      The frozen contract requires post-launch access to the process environment;
+      both synthetic stored-file and configuration-secret roles resolve to SAF-T1502.
+    severity: high
+    status: resolved
+    resolution: >-
+      The duplicate synthetic roles were collapsed to one canonical SAF-T1502 neighbor;
+      the contract, README, shared framework record, eight mitigations, source joins,
+      and nine-case process-lineage detector now encode and validate the boundary.
+  - id: SAF-T1501-A001
+    triggered_by: SAF-T1501
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1205
+      - SAF-T1501
+    change: >-
+      Register coordinated adversarial semantics spread across at least two model-visible
+      tool-definition paths, including a schema-resident path, as the SAF-T1501 boundary.
+    reason: >-
+      The frozen contract separates full-schema distribution from general tool-metadata
+      poisoning, post-approval persistent redefinition, and result-borne prompt injection.
+    severity: high
+    status: resolved
+    resolution: >-
+      The three synthetic roles map to SAF-T1001, SAF-T1205, and SAF-T1102; the
+      contract, README, shared framework record, two mitigations, dedicated NVD corpus,
+      and nine-case complete-definition detector now encode and validate the boundary.
+  - id: SAF-T1502-A001
+    triggered_by: SAF-T1502
+    affects:
+      - SAF-T1003
+      - SAF-T1502
+      - SAF-T1505
+      - SAF-T1911
+    change: >-
+      Register acquisition of reusable authentication material from ordinary files
+      through MCP or agent filesystem access as the SAF-T1502 boundary.
+    reason: >-
+      The frozen contract ends when file-resident credentials enter a result, model
+      context, or workflow, separating memory extraction, malicious-server delivery,
+      and onward parameter-based transfer.
+    severity: high
+    status: resolved
+    resolution: >-
+      The three synthetic roles map to SAF-T1505, SAF-T1003, and SAF-T1911; the
+      contract, README, shared framework record, seven mitigations, source joins,
+      and nine-case MCP/OS file-read correlation detector now encode the boundary.
+  - id: SAF-T1504-A001
+    triggered_by: SAF-T1504
+    affects:
+      - SAF-T1304
+      - SAF-T1307
+      - SAF-T1504
+    change: >-
+      Register disclosure of a reusable server-held or upstream token across an MCP
+      server-to-client response boundary as the SAF-T1504 boundary.
+    reason: >-
+      The frozen contract separates response disclosure from forwarding a client
+      credential downstream and from intermediary-authority acquisition paths.
+    severity: high
+    status: resolved
+    resolution: >-
+      The two synthetic roles map to SAF-T1307 and SAF-T1304; the contract, README,
+      shared framework record, six mitigations, dedicated KEV review, and ten-case
+      authorization-aware response detector now encode and validate the boundary.
+  - id: SAF-T1505-A001
+    triggered_by: SAF-T1505
+    affects:
+      - SAF-T1305
+      - SAF-T1502
+      - SAF-T1505
+      - SAF-T1911
+    change: >-
+      Register unauthorized acquisition of secrets from a live MCP or agent runtime's
+      process environment, inherited child state, or cross-session state as SAF-T1505.
+    reason: >-
+      The frozen contract separates live-state acquisition from credential-bearing
+      files, enabling code execution, and follow-on parameter-based transfer.
+    severity: high
+    status: resolved
+    resolution: >-
+      The three synthetic roles map to SAF-T1502, SAF-T1305, and SAF-T1911; the
+      contract, README, shared framework record, eight mitigations, dedicated KEV
+      review, and eight-case boundary detector now encode and validate the boundary.
+  - id: SAF-T1507-A001
+    triggered_by: SAF-T1507
+    affects:
+      - SAF-T1009
+      - SAF-T1504
+      - SAF-T1507
+    change: >-
+      Register receipt and attempted redemption of a victim-issued OAuth authorization
+      code across the MCP callback and token-exchange boundaries as SAF-T1507.
+    reason: >-
+      The frozen contract separates pre-token code interception from authorization-server
+      mix-up and from theft of a token after issuance.
+    severity: high
+    status: resolved
+    resolution: >-
+      The two synthetic roles map to SAF-T1009 and SAF-T1504; the contract, README,
+      shared framework record, eight mitigations, dedicated KEV review, and ten-case
+      redirect/PKCE detector now encode and validate the boundary.
+  - id: SAF-T1506-A001
+    triggered_by: SAF-T1506
+    affects:
+      - SAF-T1502
+      - SAF-T1506
+      - SAF-T1507
+    change: >-
+      Register acquisition or exfiltration of an infrastructure-issued workload bearer
+      credential from an MCP or agent-connected workload boundary as SAF-T1506.
+    reason: >-
+      The frozen contract separates workload tokens from generic file credentials,
+      pre-issuance authorization codes, enabling compromise, and follow-on token use.
+    severity: high
+    status: resolved
+    resolution: >-
+      The two synthetic roles map to SAF-T1502 and SAF-T1507; the contract, README,
+      shared framework record, eight mitigations, two ATT&CK analogies, dedicated
+      KEV review, and eight-case network-boundary detector now encode the boundary.
+  - id: SAF-T1601-A001
+    triggered_by: SAF-T1601
+    affects:
+      - SAF-T1601
+      - SAF-T1602
+    change: >-
+      Register enumeration of the configured or reachable MCP server set and its
+      protocol identity metadata as the SAF-T1601 boundary.
+    reason: >-
+      The frozen contract stops before enumerating tools inside one selected server
+      and treats generic network-service scanning as an external ATT&CK analogy.
+    severity: medium
+    status: resolved
+    resolution: >-
+      The capability-enumeration synthetic role maps to SAF-T1602, the generic
+      network role remains ATT&CK T1046, and the contract, README, shared framework
+      record, seven mitigations, dedicated KEV review, and ten-case fan-out detector
+      now encode and validate the boundary.
+  - id: SAF-T1602-A001
+    triggered_by: SAF-T1602
+    affects:
+      - SAF-T1601
+      - SAF-T1602
+    change: >-
+      Register tools/list and its returned authorization-filtered callable interface
+      metadata as the SAF-T1602 boundary.
+    reason: >-
+      The frozen contract separates individual tool-definition enumeration from
+      server enumeration, context-resource listing, prompt listing, and tool invocation.
+    severity: medium
+    status: resolved
+    resolution: >-
+      The server-enumeration role maps to SAF-T1601; unmatched resource and prompt
+      placeholder roles were removed, ATT&CK T1046 remains analogous, and the
+      contract, README, shared framework record, six mitigations, rights exclusion,
+      and nine-case detector now encode and validate the boundary.
+  - id: SAF-T1603-A001
+    triggered_by: SAF-T1603
+    affects:
+      - SAF-T1102
+      - SAF-T1603
+    change: >-
+      Register unauthorized recovery of hidden system, developer, or agent
+      instructions as the SAF-T1603 boundary.
+    reason: >-
+      The frozen contract distinguishes disclosure of privileged instruction content
+      from prompt injection that changes behavior without recovering that content,
+      and from authorized MCP prompt-template discovery.
+    severity: high
+    status: resolved
+    resolution: >-
+      The prompt-injection role maps to SAF-T1102; the unmatched generic
+      sensitive-information placeholder was removed, ATT&CK T1082 remains analogous,
+      ATLAS AML.T0069.002 and AML.T0056 remain direct, and the contract, README,
+      shared framework record, seven mitigations, four examples, and eight-case
+      detector now encode and validate the boundary.
+  - id: SAF-T1604-A001
+    triggered_by: SAF-T1604
+    affects:
+      - SAF-T1601
+      - SAF-T1604
+      - SAF-T1605
+    change: >-
+      Register collection of implementation or protocol-version identifiers from
+      an already reached MCP server or HTTP serving layer as SAF-T1604.
+    reason: >-
+      The frozen contract distinguishes version-bearing metadata from discovery of
+      endpoints, capability mapping, local software inventory, and follow-on exploitation.
+    severity: medium
+    status: resolved
+    resolution: >-
+      Endpoint discovery maps to SAF-T1601, capability mapping maps to SAF-T1605,
+      four canonical mitigations cover authorization and telemetry, banner
+      minimization remains an explicit mitigation gap, ATT&CK T1046 and T1518 remain
+      analogous, and seven detector cases validate the boundary.
+  - id: SAF-T1605-A001
+    triggered_by: SAF-T1605
+    affects:
+      - SAF-T1001
+      - SAF-T1104
+      - SAF-T1601
+      - SAF-T1602
+      - SAF-T1605
+    change: >-
+      Register correlation of multiple MCP discovery and listing surfaces into an
+      authorization-scoped capability map as SAF-T1605.
+    reason: >-
+      The frozen contract ends before invoking mapped operations, reading listed
+      content, manipulating metadata, bypassing authorization, or probing non-MCP services.
+    severity: medium
+    status: resolved
+    resolution: >-
+      Follow-on over-privileged use maps to SAF-T1104, metadata manipulation maps to
+      SAF-T1001, narrower server and tool discovery map to SAF-T1601 and SAF-T1602,
+      six canonical mitigations cover authorization and telemetry, ATT&CK T1518
+      remains analogous, and ten detector cases validate the boundary.
+  - id: SAF-T1606-A001
+    triggered_by: SAF-T1606
+    affects:
+      - SAF-T1105
+      - SAF-T1502
+      - SAF-T1606
+    change: >-
+      Register file-tool requests whose immediate result is names, entry metadata,
+      matching paths, or directory structure as the SAF-T1606 boundary.
+    reason: >-
+      The frozen contract stops before reading file contents and treats path-boundary
+      bypass as an enabling or co-occurring mechanism rather than the discovery objective.
+    severity: medium
+    status: resolved
+    resolution: >-
+      The content-reading role maps narrowly to SAF-T1502, the path-boundary role
+      maps to SAF-T1105, six canonical mitigations cover authorization, privilege,
+      audit, and anomaly monitoring, ATT&CK T1083 maps directly, and eleven detector
+      cases validate the boundary.
+  - id: SAF-T1701-A001
+    triggered_by: SAF-T1701
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1701
+    severity: medium
+    status: resolved
+    change: >-
+      Register a causal same-session pivot from adversary-influenced source-tool
+      output into a distinct target tool or server as the SAF-T1701 boundary.
+    reason: >-
+      The frozen contract excludes pre-invocation tool-definition poisoning and
+      prompt injection without the required cross-tool transition.
+    resolution: >-
+      Tool-definition poisoning maps to SAF-T1001, prompt-injection influence maps
+      to SAF-T1102, nine canonical mitigations cover isolation, validation,
+      authorization, audit, and monitoring, ATT&CK T1080 remains analogous, and
+      ten detector cases validate the boundary.
+  - id: SAF-T1702-A001
+    triggered_by: SAF-T1702
+    affects:
+      - SAF-T1102
+      - SAF-T1702
+      - SAF-T1705
+    severity: medium
+    status: resolved
+    change: >-
+      Register persistent memory poisoning that crosses a session, principal,
+      tenant, or agent retrieval boundary as SAF-T1702.
+    reason: >-
+      The frozen contract excludes current-context prompt injection and inter-agent
+      messages that are not stored and later retrieved as memory.
+    resolution: >-
+      Current-context injection maps to SAF-T1102, unpersisted inter-agent instruction
+      exchange maps to SAF-T1705, seven canonical mitigations cover memory isolation,
+      integrity, audit, monitoring, and action authorization, ATT&CK T1565.001 remains
+      analogous, and nine detector cases validate the boundary.
+  - id: SAF-T1703-A001
+    triggered_by: SAF-T1703
+    affects:
+      - SAF-T1102
+      - SAF-T1104
+      - SAF-T1701
+      - SAF-T1703
+    severity: high
+    status: resolved
+    change: >-
+      Register an adversarially induced transition into a distinct tool, server,
+      service, application, or security domain as SAF-T1703.
+    reason: >-
+      The frozen contract excludes injection delivery without a second boundary
+      and unauthorized action confined to one tool; SAF-T1701 is the result-borne
+      subset of the broader upstream surfaces admitted here.
+    resolution: >-
+      Injection delivery maps to SAF-T1102, single-tool misuse maps to SAF-T1104,
+      SAF-T1701 remains the result-borne subset, nine canonical mitigations cover
+      provenance, privilege, authorization, integrity, audit, and monitoring,
+      ATT&CK T1072 remains analogous, and eight detector cases validate the boundary.
+  - id: SAF-T1704-A001
+    triggered_by: SAF-T1704
+    affects:
+      - SAF-T1001
+      - SAF-T1004
+      - SAF-T1703
+      - SAF-T1704
+    severity: high
+    status: resolved
+    change: >-
+      Register host-mediated cross-trust action originating from an adversary-controlled
+      MCP server or response channel as SAF-T1704.
+    reason: >-
+      The frozen contract distinguishes the server-controlled-origin specialization
+      from metadata poisoning alone, server impersonation alone, and the broader
+      class of induced cross-tool pivots.
+    resolution: >-
+      SAF-T1001 covers tool-metadata poisoning, SAF-T1004 covers server identity or
+      channel substitution, SAF-T1703 covers the broader cross-tool transition, ten
+      canonical mitigations cover schema integrity, isolation, authorization,
+      validation, audit, and monitoring, ATT&CK T1210 remains analogous, and eight
+      detector cases validate the boundary.
+  - id: SAF-T1706-A001
+    triggered_by: SAF-T1706
+    affects:
+      - SAF-T1304
+      - SAF-T1308
+      - SAF-T1504
+      - SAF-T1506
+      - SAF-T1706
+    severity: high
+    status: resolved
+    change: >-
+      Register adversarial replay of a captured OAuth access token by a different
+      presenter at a protected resource as SAF-T1706.
+    reason: >-
+      The frozen contract excludes acquisition, ordinary passthrough, non-access-token
+      artifacts, and follow-on activity, and distinguishes replay from grant, scope,
+      or audience substitution alone.
+    resolution: >-
+      SAF-T1504 and SAF-T1506 cover acquisition paths, SAF-T1304 covers the broader
+      credential-relay boundary, SAF-T1308 covers token scope or audience substitution,
+      four canonical mitigations cover resource binding, sender constraint, usage
+      tracking, and revocation, ATT&CK T1550.001 maps directly, T1528 remains an
+      adjacent prerequisite, and eight detector cases validate the boundary.
+  - id: SAF-T1112-A001
+    triggered_by: SAF-T1112
+    affects:
+      - SAF-T1102
+      - SAF-T1104
+      - SAF-T1112
+      - SAF-T2102
+    severity: high
+    status: resolved
+    change: >-
+      Register execution of adversary-influenced server-initiated sampling/createMessage
+      through the client's LLM authority as SAF-T1112.
+    reason: >-
+      The frozen contract excludes ordinary prompt injection, host tool invocation,
+      and generic availability pressure unless the client-mediated sampling boundary
+      is crossed.
+    resolution: >-
+      SAF-T1102 covers ordinary prompt injection, SAF-T1104 covers tool-authorization
+      crossing, SAF-T2102 covers generic service disruption, four canonical mitigations
+      cover capability gating, review, content validation, and sampling budgets,
+      ATT&CK T1204 remains a conditional analogy, and thirteen detector cases validate
+      the boundary.
+  - id: SAF-T1705-A001
+    triggered_by: SAF-T1705
+    affects:
+      - SAF-T1102
+      - SAF-T1701
+      - SAF-T1702
+      - SAF-T1705
+    severity: high
+    status: resolved
+    change: >-
+      Register adversary-authored instructions crossing from one agent context into
+      a distinct receiving agent that operationalizes them under receiver authority.
+    reason: >-
+      The frozen contract excludes direct same-agent injection, tool-result consumption
+      without an agent hop, benign authenticated delegation, and downstream effects
+      considered independently.
+    resolution: >-
+      SAF-T1102 covers direct prompt injection, SAF-T1701 covers tool-result contamination,
+      SAF-T1702 covers persistent shared-memory poisoning, ten canonical mitigations
+      cover provenance, isolation, validation, authorization, audit, testing, and
+      monitoring, ATT&CK T1072 remains analogous, ATLAS remains omitted, and seven
+      detector cases validate the boundary.
+  - id: SAF-T1801-A001
+    triggered_by: SAF-T1801
+    affects:
+      - SAF-T1102
+      - SAF-T1801
+      - SAF-T1803
+      - SAF-T1804
+      - SAF-T1910
+    severity: high
+    status: resolved
+    change: >-
+      Register source-agnostic automated collection beyond the bounded user task as
+      SAF-T1801 while preserving delivery, source specialization, and downstream
+      exfiltration boundaries.
+    reason: >-
+      The frozen contract begins at systematic acquisition and ends at local
+      aggregation; it excludes prompt-injection delivery, proportionate single-object
+      retrieval, and later external transfer.
+    resolution: >-
+      SAF-T1102 covers delivery, SAF-T1803 and SAF-T1804 specialize database and API
+      collection, SAF-T1910 covers a possible downstream covert transfer, seven
+      canonical mitigations constrain access, authorization, volume, audit, and
+      anomaly detection, ATT&CK T1119 maps directly and T1213 analogously, and eight
+      detector cases validate the boundary.
+  - id: SAF-T1803-A001
+    triggered_by: SAF-T1803
+    affects:
+      - SAF-T1801
+      - SAF-T1803
+      - SAF-T1804
+    severity: high
+    status: resolved
+    change: >-
+      Register dump-equivalent database acquisition as SAF-T1803 while preserving
+      the source-agnostic and API-focused collection boundaries.
+    reason: >-
+      The frozen contract requires broad logical database export or equivalent bulk
+      reading, and excludes narrow task-scoped queries, pre-existing backup-artifact
+      theft, restore behavior, and subsequent exfiltration.
+    resolution: >-
+      SAF-T1801 is the broader source-agnostic collection behavior, SAF-T1804 is the
+      API-focused sibling, six canonical mitigations address privilege, authorization,
+      query limits, output controls, audit, and anomaly detection, ATT&CK T1213.006
+      maps directly, and ten detector cases validate the boundary.
+  - id: SAF-T1707-A001
+    triggered_by: SAF-T1707
+    affects:
+      - SAF-T1009
+      - SAF-T1507
+      - SAF-T1706
+      - SAF-T1707
+    severity: high
+    status: resolved
+    change: >-
+      Register relay of valid anti-CSRF state across user-agent sessions as SAF-T1707
+      while preserving issuer, authorization-code, and issued-token boundaries.
+    reason: >-
+      The frozen contract requires acceptance of a valid relayed value outside the
+      initiating session and excludes missing-state CSRF, code interception alone,
+      bearer-token replay, open redirects, phishing, and downstream activity.
+    resolution: >-
+      SAF-T1009 covers issuer misbinding, SAF-T1507 covers code interception,
+      SAF-T1706 covers access-token replay after issuance, four canonical mitigations
+      cover flow verification, PKCE, audit, and monitoring, ATT&CK T1204.001 remains
+      a delivery-only analogy, and seven detector cases validate the boundary.
+  - id: SAF-T1804-A001
+    triggered_by: SAF-T1804
+    affects:
+      - SAF-T1104
+      - SAF-T1504
+      - SAF-T1801
+      - SAF-T1803
+      - SAF-T1804
+    severity: high
+    status: resolved
+    change: >-
+      Register API- or repository-backed record enumeration and retrieval beyond the
+      bounded task as SAF-T1804.
+    reason: >-
+      The frozen contract excludes credential acquisition, invocation without a
+      collection outcome, local file collection, mutation, and subsequent transfer.
+    resolution: >-
+      SAF-T1504 covers token acquisition, SAF-T1104 covers invocation-authority abuse,
+      SAF-T1801 is the source-agnostic generalization, SAF-T1803 is the database-dump
+      sibling, eight canonical mitigations cover scope, privilege, approval, query
+      and output bounds, audit, and anomaly detection, ATT&CK T1213 maps directly,
+      and eight detector cases validate the boundary.
+  - id: SAF-T1910-A001
+    triggered_by: SAF-T1910
+    affects:
+      - SAF-T1102
+      - SAF-T1910
+      - SAF-T1911
+      - SAF-T1912
+    severity: high
+    status: resolved
+    change: >-
+      Register disclosure concealed in an agent-authorized carrier or downstream
+      service side effect as SAF-T1910 under canonical exfiltration tactic ATK-TA0010.
+    reason: >-
+      The frozen contract excludes instruction delivery before disclosure, collection
+      that remains inside the host, conspicuous direct export, and downstream credential
+      use or persistence.
+    resolution: >-
+      SAF-T1102 covers adversarial instruction delivery, SAF-T1911 and SAF-T1912
+      specialize parameter and response carriers, eight canonical mitigations cover
+      privilege, authorization, validation, DLP, audit, and anomaly detection,
+      ATT&CK T1048 remains analogous, and nine detector cases validate the boundary.
+  - id: SAF-T1911-A001
+    triggered_by: SAF-T1911
+    affects:
+      - SAF-T1102
+      - SAF-T1801
+      - SAF-T1911
+    severity: high
+    status: resolved
+    change: >-
+      Register unauthorized sensitive-data transmission in MCP tool-call arguments
+      as SAF-T1911 under the exfiltration tactic.
+    reason: >-
+      The frozen contract begins when sensitive content is materialized in an outbound
+      argument and excludes instruction delivery, collection without transmission,
+      and server-process exfiltration outside a host-issued tool call.
+    resolution: >-
+      SAF-T1102 covers adversarial instruction delivery, SAF-T1801 covers collection
+      before transmission, eight canonical mitigations cover server trust, privilege,
+      authorization, DLP, audit, and anomaly detection, ATT&CK T1020 remains analogous,
+      and ten detector cases validate the boundary.
+  - id: SAF-T1904-A001
+    triggered_by: SAF-T1904
+    affects:
+      - SAF-T1102
+      - SAF-T1903
+      - SAF-T1904
+      - SAF-T1911
+    severity: medium
+    status: resolved
+    change: >-
+      Register a repeatable external-chat ingress, tool action, and same-chat response
+      loop as SAF-T1904.
+    reason: >-
+      The frozen contract excludes one-shot prompt injection, one-way exfiltration,
+      authorized chat operations, and control through the MCP server trust boundary.
+    resolution: >-
+      SAF-T1102 and SAF-T1911 resolve the injection and outbound-transfer boundaries;
+      independently authored SAF-T1903 resolves the malicious-server-control boundary,
+      seven canonical mitigations cover identity, authentication, privilege, approval,
+      monitoring, and response, ATT&CK T1102.002 remains analogous, and twelve detector
+      cases validate the boundary.
+  - id: SAF-T1912-A001
+    triggered_by: SAF-T1912
+    affects:
+      - SAF-T1102
+      - SAF-T1911
+      - SAF-T1912
+    severity: high
+    status: resolved
+    change: >-
+      Register recoverable protected information hidden in an outward agent or model
+      response as SAF-T1912 under the exfiltration tactic.
+    reason: >-
+      The frozen contract excludes explicit parameter or network disclosure, injection
+      without a recoverable payload, and model-weight transfer rather than workflow context.
+    resolution: >-
+      SAF-T1911 covers explicit parameter egress, SAF-T1102 covers instruction delivery,
+      ten canonical mitigations cover access minimization, normalization, validation,
+      model integrity, media handling, DLP, and audit, ATT&CK T1027.003 maps directly,
+      T1567 remains analogous, and eight detector cases validate the bounded triage rule.
+  - id: SAF-T1915-A001
+    triggered_by: SAF-T1915
+    affects:
+      - SAF-T1915
+      - SAF-T2104
+    severity: medium
+    status: resolved
+    change: >-
+      Register agent-authorized bridge-plus-DEX layering of illicit virtual assets
+      as SAF-T1915 under the exfiltration tactic.
+    reason: >-
+      The frozen contract excludes theft that creates the proceeds, bridge exploitation,
+      mixer-only movement, legitimate rebalancing, and later off-ramping.
+    resolution: >-
+      Independently authored SAF-T2104 resolves the unauthorized-transaction boundary;
+      nine canonical mitigations cover delegated authorization, privilege, cross-chain
+      controls, audit, and anomaly detection, ATT&CK T1657 remains analogous, and
+      twelve detector cases validate the boundary; mixer laundering remains a traced
+      noncatalog out-of-scope behavior.
+  - id: SAF-T2101-A001
+    triggered_by: SAF-T2101
+    affects:
+      - SAF-T1102
+      - SAF-T2101
+      - SAF-T2102
+    severity: high
+    status: resolved
+    change: >-
+      Register adversarial deletion or irreversible corruption of stored state through
+      agent-accessible tools as SAF-T2101 under the impact tactic.
+    reason: >-
+      The frozen contract excludes service exhaustion, encryption-for-impact, disk
+      wiping, evidence cleanup, and accidental administration.
+    resolution: >-
+      SAF-T1102 covers instruction delivery, SAF-T2102 covers service exhaustion,
+      six canonical mitigations cover privilege, independent authorization, audit,
+      and anomaly detection, ATT&CK T1485 remains analogous, and six detector tests
+      validate the boundary; noncatalog distinctions remain sourced without false IDs.
+  - id: SAF-T1903-A001
+    triggered_by: SAF-T1903
+    affects:
+      - SAF-T1001
+      - SAF-T1003
+      - SAF-T1903
+      - SAF-T1904
+    severity: high
+    status: resolved
+    change: >-
+      Register a malicious server process or server-branded integration that maintains
+      a bidirectional remote operator command-and-result channel as SAF-T1903.
+    reason: >-
+      The frozen contract excludes malicious-server distribution that ends at launch,
+      server-authored model steering, one-way exfiltration, and takeover of an otherwise
+      benign server without demonstrated operator command exchange.
+    resolution: >-
+      SAF-T1003 covers malicious MCP-server distribution, SAF-T1001 covers tool
+      poisoning, SAF-T1904 covers a chat-service command loop, ten canonical mitigations
+      cover provenance, isolation, privilege, authorization, egress, audit, and response,
+      ATT&CK T1071 remains analogous, and eight detector cases validate the boundary.
+  - id: SAF-T2104-A001
+    triggered_by: SAF-T2104
+    affects:
+      - SAF-T1102
+      - SAF-T1309
+      - SAF-T1915
+      - SAF-T2104
+    severity: high
+    status: resolved
+    change: >-
+      Register an adversary-influenced value-bearing transaction accepted outside
+      the user's or organization's bound authorization as SAF-T2104.
+    reason: >-
+      The frozen contract requires adversarial influence, a value-bearing action,
+      material mismatch from current authorization, and acceptance by the transaction
+      system; influence without execution and credential theft alone are excluded.
+    resolution: >-
+      SAF-T1102 covers instruction delivery, SAF-T1309 covers privileged invocation
+      generally, SAF-T1915 covers post-acquisition virtual-asset layering, six
+      canonical mitigations cover scope, privilege, independent authorization, audit,
+      and anomaly detection, ATT&CK T1657 maps directly, and eleven detector fixtures
+      validate the boundary.
+  - id: SAF-T2102-A001
+    triggered_by: SAF-T2102
+    affects:
+      - SAF-T1106
+      - SAF-T2101
+      - SAF-T2102
+    severity: high
+    status: resolved
+    change: >-
+      Register attacker-triggered loss of MCP or agentic service availability,
+      shared capacity, or another principal's task continuity as SAF-T2102.
+    reason: >-
+      The frozen contract requires measurable availability or task-continuity loss
+      and excludes ordinary outages, network-only denial, destruction without an
+      availability outcome, and cost growth without verified degradation.
+    resolution: >-
+      SAF-T1106 covers autonomous-loop execution, SAF-T2101 covers destructive state
+      changes, seven canonical mitigations cover isolation, authorization, budgets,
+      telemetry, and anomaly detection, ATT&CK T1499 maps directly, and thirteen
+      detector cases validate the boundary.
+  - id: SAF-T2105-A001
+    triggered_by: SAF-T2105
+    affects:
+      - SAF-T1102
+      - SAF-T2105
+      - SAF-T2106
+    severity: medium
+    status: resolved
+    change: >-
+      Register adversary-induced false or materially misleading informational output
+      presented, stored, or forwarded by an AI or agentic system as SAF-T2105.
+    reason: >-
+      The frozen contract requires a deceptive output outcome and excludes accidental
+      confabulation, delivery-only prompt or context manipulation, and clearly
+      disclosed opinion, satire, or fiction.
+    resolution: >-
+      SAF-T1102 resolves the prompt-injection boundary; independently authored SAF-T2106
+      resolves the stored-context-poisoning boundary, eight canonical mitigations cover
+      ground truth, provenance, validation, integrity monitoring, and audit, ATT&CK
+      T1565 remains analogous, and six detector cases validate the boundary.
+  - id: SAF-T2103-A001
+    triggered_by: SAF-T2103
+    affects:
+      - SAF-T1102
+      - SAF-T2101
+      - SAF-T2103
+    severity: high
+    status: resolved
+    change: >-
+      Register adversary-directed, behavior-changing edits to repository source,
+      tests, build logic, or security controls through an agentic coding path as
+      SAF-T2103.
+    reason: >-
+      The frozen contract requires a repository behavior change and excludes
+      instruction manipulation alone, accidental defects, data theft without the
+      code-state outcome, and overt destruction without covert behavioral alteration.
+    resolution: >-
+      SAF-T1102 covers prompt injection, SAF-T2101 covers destructive state changes,
+      seven canonical mitigations cover sandboxing, privilege, independent approval,
+      audit, and anomaly detection, ATT&CK T1565.001 remains analogous, and ten
+      detector cases validate the boundary.
+  - id: SAF-T2106-A001
+    triggered_by: SAF-T2106
+    affects:
+      - SAF-T1102
+      - SAF-T2105
+      - SAF-T2106
+      - SAF-T2107
+    severity: medium
+    status: resolved
+    change: >-
+      Register persistent attacker-controlled vector-memory writes that are later
+      retrieved into model or agent context as SAF-T2106.
+    reason: >-
+      The frozen contract requires a persistent memory write and later retrieval;
+      current-turn prompt injection, model-weight poisoning, and destruction without
+      subsequent retrieval are excluded.
+    resolution: >-
+      SAF-T1102 resolves the current-turn boundary, independently authored SAF-T2105
+      resolves the downstream deceptive-output boundary, and independently authored
+      SAF-T2107 resolves the learned-model-poisoning boundary.
+  - id: SAF-T3001-A001
+    triggered_by: SAF-T3001
+    affects:
+      - SAF-T1102
+      - SAF-T2106
+      - SAF-T3001
+    severity: medium
+    status: resolved
+    change: >-
+      Register trigger-conditioned manipulation of RAG retrieval and generation
+      through attacker-controlled content durably admitted to the retrieval corpus.
+    reason: >-
+      The frozen contract requires durable corpus insertion, conditional retrieval,
+      and a changed generated outcome while excluding transient prompt injection,
+      model-weight poisoning, ordinary authorization leakage, and later tool action.
+    resolution: >-
+      SAF-T1102 resolves the transient instruction boundary, SAF-T2106 resolves
+      the direct assistant-memory boundary, eight canonical mitigations cover
+      corpus admission, integrity, provenance, monitoring, and output validation,
+      ATT&CK T1565.001 remains analogous, and seven detector fixtures validate
+      the boundary.
+  - id: SAF-T2107-A001
+    triggered_by: SAF-T2107
+    affects:
+      - SAF-T1002
+      - SAF-T1102
+      - SAF-T2107
+      - SAF-T3001
+    severity: high
+    status: resolved
+    change: >-
+      Register MCP-derived tool results admitted to model-training data and consumed
+      by a weight-update job as SAF-T2107, while preserving the Research-Derived label.
+    reason: >-
+      The frozen contract requires an MCP-origin record, training-corpus admission,
+      weight-update consumption, and attacker-influenced learned behavior; runtime
+      injection, retrieval-only poisoning, and direct artifact tampering are excluded.
+    resolution: >-
+      SAF-T1102 resolves the live-inference boundary, SAF-T3001 resolves the
+      retrieval-corpus boundary, SAF-T1002 resolves direct artifact or supply-chain
+      tampering, five canonical mitigations cover provenance, integrity, adversarial
+      data detection, behavior monitoring, and audit, ATT&CK T1565.001 remains
+      analogous, and six detector cases validate the boundary.
+  - id: SAF-T2107-A002
+    triggered_by: SAF-T2107
+    affects:
+      - SAF-T2107
+    severity: medium
+    status: resolved
+    change: Preserve the supplied Resource Development tactic for the training-data preparation boundary.
+    reason: Shared tactic registries were prohibited before the immutable evidence freeze.
+    resolution: Supplied tactic ATK-TA0042 was preserved and verified after freeze.
+  - id: SAF-T1901-A001
+    triggered_by: SAF-T1901
+    affects:
+      - SAF-T1309
+      - SAF-T1901
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    change: >-
+      Register repeated attacker-influenced outbound webhook communication whose
+      returned tasking or signaling serves an operator-control function.
+    reason: >-
+      The frozen contract requires repeated external webhook traffic plus response
+      consumption or operator-control behavior and excludes approved callbacks,
+      one-off data transfer, generic SSRF, and invocation-only abuse.
+    resolution: >-
+      SAF-T1309 resolves the invocation-only boundary and independently authored
+      SAF-T1913 resolves data-only HTTP POST exfiltration. Nine canonical mitigations,
+      ATT&CK T1102.002 and T1102.003 mappings, and ten detector cases are reconciled.
+  - id: SAF-T1805-A001
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1102
+      - SAF-T1204
+      - SAF-T1505
+      - SAF-T1603
+      - SAF-T1805
+    severity: medium
+    status: resolved
+    change: Register unauthorized point-in-time capture of active agent execution context across an owner or tenant boundary.
+    reason: The frozen contract distinguishes active-state capture from fixed-prompt disclosure, context mutation, long-lived-memory collection, and instruction-induced disclosure.
+    resolution: SAF-T1603, SAF-T1204, SAF-T1505, and SAF-T1102 resolve those four boundaries after the immutable evidence freeze.
+  - id: SAF-T1805-A002
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1805
+    severity: low
+    status: resolved
+    change: Record MITRE ATT&CK T1213 as analogous and do not promote T1005 to a direct mapping.
+    reason: T1213 is the closest repository-access analogy, while neither ATT&CK definition specifies owner-bound active agent snapshots.
+    resolution: T1213 is recorded as analogous in the canonical framework record.
+  - id: SAF-T1805-A003
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1805
+    severity: medium
+    status: resolved
+    change: Join only canonical mitigations that preserve owner binding, per-call authorization, consent, least privilege, retention, masking, or audit semantics.
+    reason: Shared mitigation registries were prohibited during clean-room research.
+    resolution: Eight canonical mitigations cover audit, token scope and revocation, anomaly monitoring, output isolation, privilege, approval, and capability boundaries.
+  - id: SAF-T1802-A001
+    triggered_by: SAF-T1802
+    affects:
+      - SAF-T1606
+      - SAF-T1802
+    severity: medium
+    status: resolved
+    change: Replace the synthetic file-enumeration neighbor with the canonical discovery technique.
+    reason: File name or metadata enumeration is distinct from file-content retrieval but can immediately precede it.
+    resolution: SAF-T1606 Directory Listing via File Tool resolves the enumeration-only discovery boundary.
+  - id: SAF-T1802-A002
+    triggered_by: SAF-T1802
+    affects:
+      - SAF-T1802
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    change: Replace the synthetic data-transfer neighbor with the canonical transfer or exfiltration technique.
+    reason: Obtaining file content and moving already collected content cross different immediate boundaries.
+    resolution: Independently authored SAF-T1913 resolves the follow-on HTTP POST exfiltration boundary.
+  - id: SAF-T1802-A003
+    triggered_by: SAF-T1802
+    affects:
+      - SAF-T1802
+    severity: medium
+    status: resolved
+    change: Replace synthetic mitigation IDs with canonical path-boundary and least-privilege or approval controls.
+    reason: Shared mitigation registries were prohibited before the immutable clean-room freeze.
+    resolution: Seven canonical mitigations cover audit, anomaly detection, privilege, approval, result limits, DLP, and per-invocation capability boundaries.
+  - id: SAF-T1902-A001
+    triggered_by: SAF-T1902
+    affects:
+      - SAF-T1102
+      - SAF-T1902
+    severity: medium
+    status: resolved
+    change: Replace the synthetic injection neighbor and mitigation records with canonical framework records while preserving the concealed-carrier boundary.
+    reason: Shared SAF registries and repository history were prohibited before the immutable evidence freeze.
+    resolution: SAF-T1102 resolves the instruction-redirection boundary; seven canonical mitigations cover normalization, sanitization, rendering, callback controls, output validation, privilege, and output DLP. T1132 and T1001 remain analogous ATT&CK mappings, and canonical detector and strict validation passed.
+  - id: SAF-T1913-A001
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1001
+      - SAF-T1902
+      - SAF-T1911
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    change: Replace synthetic neighbor records with canonical prerequisite, broader-channel, and alternate-carrier techniques without forcing an inaccurate SSRF join.
+    reason: Shared SAF technique registries were prohibited before the immutable evidence freeze.
+    resolution: SAF-T1001 resolves prerequisite tool poisoning, SAF-T1911 resolves the broader parameter-transfer channel, and SAF-T1902 resolves response or URI-carrier exfiltration. SSRF remains an explicit conceptual out-of-scope boundary because no exact canonical SAF technique exists.
+  - id: SAF-T1913-A002
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    change: Join destination mitigation identifiers only when their mechanisms preserve approval, destination, DLP, or MCP-aware telemetry semantics.
+    reason: Shared SAF mitigation registries were prohibited before the immutable evidence freeze.
+    resolution: Nine canonical mitigations cover audit, allowlisting, scope, callback destinations, privilege, approval, anomaly detection, output DLP, and per-invocation capability controls.
+  - id: SAF-T1913-A003
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1913
+    severity: low
+    status: resolved
+    change: Record MITRE ATT&CK T1048 as analogous rather than direct.
+    reason: T1048 covers alternate-protocol exfiltration but does not model MCP tools/call request semantics.
+    resolution: T1048 is recorded as analogous in the canonical framework record.
+  - id: SAF-T1914-A001
+    triggered_by: SAF-T1914
+    affects:
+      - SAF-T1102
+      - SAF-T1309
+      - SAF-T1914
+    severity: low
+    status: resolved
+    change: Replace both synthetic clean-room neighbor IDs with independently resolved canonical framework IDs while preserving their evidence-backed distinctions.
+    reason: Shared SAF framework and alignment registries were prohibited before the immutable evidence freeze.
+    resolution: SAF-T1102 resolves the indirect-injection prerequisite and SAF-T1309 resolves the broader prompt-manipulated privileged-invocation boundary; twelve canonical mitigations preserve result trust, authority separation, sink constraint, audit, approval, and lineage monitoring.

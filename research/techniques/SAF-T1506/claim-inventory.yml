@@ -1,0 +1,243 @@
+version: 1
+technique_id: SAF-T1506
+claims:
+  - id: SAF-T1506-C001
+    statement: Infrastructure Token Theft acquires a bearer credential from an infrastructure workload boundary, and a bearer credential can generally be used by its possessor without a separate proof key.
+    class: protocol_normative
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators: [Abstract; Section 1.2; Section 5.1]
+    limitations: [A token can still be constrained by audience, scope, lifetime, sender binding, and resource reachability.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C002
+    statement: Infrastructure workloads can expose temporary cloud credentials or service-account bearer tokens through metadata endpoints and projected Pod volumes.
+    class: implementation_fact
+    materiality: high
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-k8s-service-accounts, support: direct, exact_locators: [Service account token volume projection]}
+      - {source_id: SRC-k8s-service-account-admin, support: direct, exact_locators: [Bound service account token volume mechanism]}
+      - {source_id: SRC-aws-imds-credentials, support: direct, exact_locators: [Retrieve security credentials from instance metadata]}
+      - {source_id: SRC-gcp-metadata, support: direct, exact_locators: [Querying OAuth 2.0 access tokens]}
+      - {source_id: SRC-aws-imds, support: context, exact_locators: [IMDS endpoint and paths]}
+    limitations: [Availability and exact credential format depend on the platform and workload configuration.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C003
+    statement: MCP authorization and local execution create credential-bearing trust boundaries relevant to infrastructure-token theft.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: direct, exact_locators: [Purpose and Scope; Protocol Requirements; Access Token Usage]}
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [Local MCP Server Compromise; stdio Transport Security in Proxy Scenarios]}
+    limitations: [MCP alone does not imply that an infrastructure token is reachable.]
+    inference: {is_inference: true, rationale: The protocol facts are combined with the technique boundary to identify the relevant trust boundary.}
+    status: validated
+  - id: SAF-T1506-C004
+    statement: Malicious MCP authorization metadata or redirects can induce requests to private or link-local metadata services and exfiltrate cloud credentials.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [Server-Side Request Forgery; SSRF Against Authorization Servers; Attack Description; Mitigation]}
+    limitations: [The path requires a vulnerable client with network reachability and insufficient destination validation.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C005
+    statement: MCP STDIO implementations are expected to retrieve credentials from the environment, and local-server compromise can expose inherited credentials.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: direct, exact_locators: [Protocol Requirements]}
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [Local MCP Server Compromise; stdio Transport Security in Proxy Scenarios]}
+    limitations: [The specification does not require every credential to be stored in an environment variable.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C006
+    statement: The March 2026 malicious LiteLLM PyPI releases executed a credential stealer targeting environment secrets, cloud credentials, and Kubernetes service-account tokens.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-litellm-incident-2026, support: direct, exact_locators: [Incident Overview; What the Payload Did; Affected Versions and Distribution Channels]}
+      - {source_id: SRC-fbi-teampcp-2026, support: corroborating, exact_locators: [Pages 1-3; SANDCLOCK credential harvesting description]}
+    limitations: [The public report describes targeted credential classes but does not prove successful replay for every installation.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C007
+    statement: The 2026 TeamPCP campaign included observed extraction or targeting of cloud credentials and Kubernetes service-account tokens in infrastructure tooling, including Trivy.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-fbi-teampcp-2026, support: direct, exact_locators: [Pages 1-3; Technical Details]}
+      - {source_id: SRC-aqua-trivy-2026, support: direct, exact_locators: [Timeline; Malicious payload; What users should do]}
+    limitations: [The Trivy example is adjacent CI/CD infrastructure rather than an MCP implementation.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C008
+    statement: CVE-2025-6514 affected mcp-remote 0.0.5 through 0.1.15, enabled command execution from a malicious authorization endpoint, and was fixed in 0.1.16 without known exploitation in the CVE record.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - {source_id: SRC-cve-2025-6514, support: direct, exact_locators: [CNA affected versions; description; CISA ADP exploitation assessment]}
+      - {source_id: SRC-jfrog-cve-2025-6514, support: direct, exact_locators: [Technical analysis; Proof of concept; Remediation]}
+    limitations: [This establishes an enabling execution primitive, not a documented infrastructure-token theft incident.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C009
+    statement: CVE-2025-49596 affected MCP Inspector before 0.14.1, exposed an unauthenticated proxy leading to remote code execution, and was fixed in 0.14.1 without known exploitation in the CVE record.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - {source_id: SRC-cve-2025-49596, support: direct, exact_locators: [CNA affected versions; description; CISA ADP exploitation assessment]}
+      - {source_id: SRC-oligo-inspector-cve-2025-49596, support: direct, exact_locators: [Technical Details; Exploitation; Fix]}
+    limitations: [This establishes an enabling execution primitive, not a documented infrastructure-token theft incident.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C010
+    statement: Stolen-token impact is bounded by validity, audience, scope, sender constraints, and resource reachability.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-rfc6750, support: direct, exact_locators: [Sections 1.2 and 5]}
+      - {source_id: SRC-rfc9700, support: direct, exact_locators: [Section 2.2; sender-constrained access tokens]}
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: direct, exact_locators: [Resource Parameter Implementation; Token Handling]}
+    limitations: [Provider-specific authorization behavior requires provider audit evidence.]
+    inference: {is_inference: true, rationale: The impact statement applies normative token constraints to the technique.}
+    status: validated
+  - id: SAF-T1506-C011
+    statement: Risk is highest for broadly privileged replayable production tokens in network-enabled workloads and lower when binding, lifetime, privilege, and egress controls limit replay.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-rfc9700, support: direct, exact_locators: [Sections 2.2 and 4]}
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: direct, exact_locators: [Scope Selection Strategy; Token Handling]}
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [SSRF Mitigation; Scope Minimization]}
+    limitations: [Severity remains deployment-specific and is not a universal score.]
+    inference: {is_inference: true, rationale: Severity is synthesized from normative impact-reducing controls and workload exposure.}
+    status: validated
+  - id: SAF-T1506-C012
+    statement: MCP authorization requests to private, reserved, loopback, or link-local destinations can be detected using HTTP client method, URL, server, peer, redirect, status, and response telemetry.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [SSRF Mitigation]}
+      - {source_id: SRC-otel-http-spans-1.44.0, support: direct, exact_locators: [HTTP client span; HTTP client attributes]}
+    limitations: [The OpenTelemetry convention does not itself classify address ranges or label MCP authorization flows.]
+    inference: {is_inference: true, rationale: The detector joins normative SSRF boundaries to standardized HTTP client fields.}
+    status: validated
+  - id: SAF-T1506-C013
+    statement: Process, token-file or environment access, outbound destination, and subsequent infrastructure API activity improve confidence when correlated with the network detector.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-fbi-teampcp-2026, support: direct, exact_locators: [Technical Details; Mitigations]}
+      - {source_id: SRC-litellm-incident-2026, support: direct, exact_locators: [What the Payload Did; Recommended Actions]}
+      - {source_id: SRC-otel-http-spans-1.44.0, support: context, exact_locators: [HTTP client span]}
+    limitations: [The supplied detector tests only the network predicate and does not implement a cross-platform correlation engine.]
+    inference: {is_inference: true, rationale: Multiple evidence sources are combined into a higher-confidence investigative correlation.}
+    status: validated
+  - id: SAF-T1506-C014
+    statement: Legitimate metadata consumers, security tests, missing context, and preventive blocking create false-positive and false-negative conditions for the network analytic.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [SSRF Mitigation]}
+      - {source_id: SRC-fbi-teampcp-2026, support: context, exact_locators: [Indicator handling note]}
+    limitations: [Local allowlists and baselines are required to quantify these limitations.]
+    inference: {is_inference: true, rationale: False-positive and false-negative cases follow from the detection predicate and documented preventive controls.}
+    status: validated
+  - id: SAF-T1506-C015
+    statement: Address validation, controlled egress, least privilege, audience binding, short lifetimes, sender constraints, sandboxing, and credential isolation reduce token theft or replay risk.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-mcp-security-2026-07-28, support: direct, exact_locators: [SSRF Mitigation; Local MCP Server Compromise; Scope Minimization]}
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: direct, exact_locators: [Scope Selection Strategy; Token Handling]}
+      - {source_id: SRC-rfc9700, support: direct, exact_locators: [Section 2.2]}
+    limitations: [No single control covers every acquisition path or compensates for already disclosed credentials.]
+    inference: {is_inference: true, rationale: Mitigations are assembled from complementary protocol and security controls.}
+    status: validated
+  - id: SAF-T1506-C016
+    statement: Incident response should revoke or rotate exposed credentials, upgrade affected packages, and review infrastructure audit activity for unauthorized use.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-litellm-incident-2026, support: direct, exact_locators: [Recommended Actions; Verified Safe Versions]}
+      - {source_id: SRC-aqua-trivy-2026, support: direct, exact_locators: [What users should do]}
+      - {source_id: SRC-fbi-teampcp-2026, support: direct, exact_locators: [Mitigations]}
+    limitations: [Rotation priorities and audit sources are provider- and incident-specific.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C017
+    statement: ATT&CK T1552.005 covers cloud metadata credential retrieval and T1528 overlaps theft of application, cloud, and Kubernetes access tokens.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-mitre-t1552.005, support: direct, exact_locators: [Technique description; Detection]}
+      - {source_id: SRC-mitre-t1528, support: direct, exact_locators: [Technique description; Detection]}
+    limitations: [ATT&CK mappings overlap but do not define this SAF technique's MCP and agentic scope.]
+    inference: {is_inference: true, rationale: The mapping reconciles SAF scope with two ATT&CK credential-access techniques.}
+    status: validated
+  - id: SAF-T1506-C018
+    statement: The technique has Observed evidence status because a directly reported LiteLLM production package incident executed a credential stealer targeting infrastructure tokens.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-litellm-incident-2026, support: direct, exact_locators: [Incident Overview; What the Payload Did]}
+    limitations: [Observed acquisition tooling does not prove successful token replay in every affected environment.]
+    inference: {is_inference: false}
+    status: validated
+  - id: SAF-T1506-C019
+    statement: The technique is limited to acquisition from an infrastructure workload boundary and excludes delivery, minting, authorization-code interception, static developer-secret theft, and subsequent token use.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-rfc6750, support: context, exact_locators: [Section 1.2]}
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: context, exact_locators: [Authorization Flow Steps; Access Token Usage]}
+      - {source_id: SRC-k8s-service-accounts, support: context, exact_locators: [Service account token volume projection]}
+      - {source_id: SRC-rfc9700, support: context, exact_locators: [Access token protection]}
+    limitations: [Operational incidents often span several adjacent techniques and require analyst decomposition.]
+    inference: {is_inference: true, rationale: The boundary is an authored classification derived from token lifecycle and workload location facts.}
+    status: validated
+  - id: SAF-T1506-C020
+    statement: File-based credential acquisition and authorization-code interception are the nearest canonical SAF neighbors, while infrastructure-issued workload-token acquisition remains the defining SAF-T1506 boundary.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - {source_id: SRC-rfc6750, support: context, exact_locators: [Section 1.2]}
+      - {source_id: SRC-mcp-authorization-2026-07-28, support: context, exact_locators: [Authorization Flow Steps]}
+    limitations: [The canonical neighbors overlap only part of the environment, file, metadata, and pre-issuance boundaries covered by this classification.]
+    inference: {is_inference: true, rationale: Canonical neighbors were reconciled mechanically after the independent evidence packet was frozen.}
+    status: validated
+  - id: SAF-T1506-C021
+    statement: Incident indicators are contextual and can change, so behavior and boundary telemetry should be preferred to treating a published indicator as durable.
+    class: research_finding
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - {source_id: SRC-fbi-teampcp-2026, support: direct, exact_locators: [Indicator handling note; Mitigations]}
+      - {source_id: SRC-mcp-security-2026-07-28, support: context, exact_locators: [SSRF Mitigation]}
+    limitations: [Known-good indicators can still accelerate a time-bounded incident investigation.]
+    inference: {is_inference: true, rationale: The recommendation combines the advisory's indicator caveat with the stable network behavior boundary.}
+    status: validated

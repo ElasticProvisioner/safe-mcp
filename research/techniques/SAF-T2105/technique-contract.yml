@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T2105
+name: Disinformation Output
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Cause a generative model or agent to emit false or materially
+  misleading factual, identity, provenance, or consensus claims for a downstream human
+  or system to consume as information.
+scope:
+  security_boundary: The integrity boundary between adversary-influenced prompts,
+    retrieved context, or model-access sessions and the output a host presents, stores,
+    or forwards as an informational result.
+  in_scope:
+  - Deliberate generation of false or materially misleading informational output.
+  - Attacker-chosen false answers induced through poisoned retrieval context.
+  - Deceptive personas, fabricated provenance, and synthetic consensus represented
+    in generated output.
+  out_of_scope:
+  - Unintentional confabulation where no adversary intent or influence is established.
+  - The initial prompt-injection or context-poisoning mechanism when no misleading
+    output is produced.
+  - Unauthorized tool execution, credential disclosure, malware generation, or service
+    disruption whose immediate objective is not informational deception.
+  - Ordinary persuasion, opinion, satire, or creative fiction that does not materially
+    misrepresent itself as vetted factual information.
+  affected_components:
+  - MCP host or agent runtime
+  - Generative model
+  - MCP resources and retrieval-augmented knowledge stores
+  - Output moderation, provenance, and downstream publication pipeline
+nearest_neighbors:
+- technique_id: SAF-T2106
+  distinction: Context Memory Poisoning via Vector Store Contamination compromises
+    stored input or retrieval context; Disinformation Output requires the resulting
+    false or materially misleading output.
+- technique_id: SAF-T1102
+  distinction: Prompt Injection changes instruction following; Disinformation Output
+    is classified by a false or materially misleading informational outcome.
+required_evidence:
+- Directly reviewed production reporting that adversaries used a hosted generative
+  system to create deceptive or false content.
+- Controlled agentic or RAG demonstrations that produce attacker-chosen incorrect
+  output.
+- Current searches for production incidents, CVEs, advisories, exploitation status,
+  and materially contrary results.
+- Operational guidance for output accuracy, provenance, monitoring, and human review.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - AI output events with timestamp, actor_id, session_id, task_mode, output_id, factuality_status,
+    and ground_truth_set_id.
+  - Context provenance events with source_id, source_trust, signature_status, ingestion_actor,
+    and retrieval rank.
+  - Safety and abuse events with adversarial_context_flag, deception_intent_flag,
+    moderation_action, and publication_destination.
+safe_example_constraints:
+- Use an inert example.invalid domain and fictional product names.
+- Show only defensive event fields and a harmless false inventory fact.
+- Do not reproduce poison-generation prompts, optimization steps, or deployable payloads.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim or declared local
+  artifact.
+- All directly reviewed sources have named-author or named-team attribution and publication-rights
+  records.
+- Two final saturation passes add no controlling evidence, exception, or detection
+  constraint.
+- Positive, negative, boundary, malformed, and expected false-positive detection cases
+  pass deterministically.
+- Strict isolated validation passes with only enumerated mechanical repository joins
+  deferred.

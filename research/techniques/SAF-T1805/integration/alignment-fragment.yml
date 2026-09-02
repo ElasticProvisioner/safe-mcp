@@ -1,0 +1,32 @@
+version: 1
+issues:
+  - id: SAF-T1805-A001
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1603
+      - SAF-T1204
+      - SAF-T1505
+      - SAF-T1102
+      - SAF-T1805
+    change: Replace synthetic neighbor identifiers and names with destination-framework records, then preserve each scope distinction and relationship.
+    reason: Clean-room generation prohibited opening shared SAF technique registries before the evidence freeze.
+    severity: medium
+    status: resolved
+    resolution: SAF-T1603, SAF-T1204, SAF-T1505, and SAF-T1102 resolve fixed-prompt disclosure, context mutation, long-lived-memory collection, and prompt-induced disclosure boundaries.
+  - id: SAF-T1805-A002
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1805
+    change: Record MITRE ATT&CK T1213 as an Analogous mapping and do not promote T1005 to a Direct mapping.
+    reason: T1213 is the closest repository-access analogy, while neither ATT&CK definition specifies owner-bound active agent snapshots.
+    severity: low
+    status: resolved
+  - id: SAF-T1805-A003
+    triggered_by: SAF-T1805
+    affects:
+      - SAF-T1805
+    change: Join destination mitigation identifiers only after verifying that each control preserves owner binding, per-call authorization, consent, least privilege, retention, masking, or audit semantics.
+    reason: Shared mitigation registries were prohibited during clean-room research, so unsupported identifiers were intentionally omitted.
+    severity: medium
+    status: resolved
+    resolution: Eight canonical mitigations preserve audit, token scope and revocation, anomaly monitoring, output isolation, privilege, approval, and capability boundaries.

@@ -1,0 +1,38 @@
+version: 1
+technique_id: SAF-T1603
+freeze_required_before_integration: true
+substantive_changes_after_freeze: prohibited_without_reopening_review
+mechanical_actions_after_checksum_verification:
+  - Merge source-manifest-fragment.yml into the shared source manifest without altering source records.
+  - Merge framework-model-fragment.yml and alignment-ledger-fragment.yml into their shared registries.
+  - Reconcile the synthetic prompt-injection and generic sensitive-information roles against canonical nearest-neighbor IDs and update all packet references mechanically.
+  - Replace the synthetic nonzero repository-history SHA with the actual integration commit.
+  - Run the repository validator against the integrated tree and record a new integration-only validation result.
+synthetic_mock_disclosures:
+  - Neighbor files in the isolated mock are inert existence stubs only and are not part of this bundle.
+  - The mock uses only this bundle's registry fragments and does not inspect shared registries.
+  - The synthetic repository-history SHA is a validator fixture, not an assertion about repository history.
+unresolved: []
+post_freeze_reconciliation:
+  canonical_neighbor:
+    - SAF-T1102
+  removed_unmatched_neighbor_role:
+    - generic sensitive-information disclosure
+  canonical_mitigations:
+    - SAF-M-1
+    - SAF-M-12
+    - SAF-M-14
+    - SAF-M-16
+    - SAF-M-29
+    - SAF-M-36
+    - SAF-M-37
+  attack_mapping:
+    id: T1082
+    type: analogous
+  atlas_mappings:
+    - AML.T0069.002
+    - AML.T0056
+  validation_artifacts:
+    - research/techniques/SAF-T1603/validation/detection-test.txt
+    - research/techniques/SAF-T1603/validation/strict-validator.txt
+  result: integrated_and_validated

@@ -1,0 +1,56 @@
+version: 1
+technique_id: SAF-T1802
+bundle_role: immutable_clean_room_handoff
+generated_on: "2026-09-02"
+
+canonical_destinations:
+  technique_directory: techniques/SAF-T1802
+  research_packet: research/techniques/SAF-T1802
+  test_directory: tests/SAF-T1802
+  source_manifest_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+
+pre_integration_verification:
+  - Verify FREEZE.sha256 from the bundle root before opening any target-specific artifact or shared registry.
+  - Preserve the frozen bundle; integrate from a verified copy rather than editing this handoff.
+  - Re-run the standalone detector test and isolated strict proof if transport changes any byte.
+
+synthetic_isolation_elements:
+  - SAF-T9997 was replaced after freeze by SAF-T1606 for the file-enumeration boundary.
+  - SAF-T9998 was replaced after freeze by SAF-T1913 for the transfer or exfiltration boundary.
+  - SAF-M-9991 and SAF-M-9992 were replaced after freeze by SAF-M-29 and SAF-M-69; five additional source-supported mitigations were joined.
+  - The synthetic history sentinel was replaced by destination baseline 26c39823e0b55144bc7891f6345e6030646c16a0.
+
+required_post_freeze_integration:
+  - After the freeze verifies, inspect canonical framework, alignment, source, neighbor, mitigation, and history records.
+  - Replace every synthetic ID with the correct canonical ID, update reciprocal links only when the canonical registry requires them, and remove synthetic mock files.
+  - Replace the synthetic history sentinel with an honest repository commit SHA supporting the integrated version history.
+  - Merge sources by source ID without dropping authors, exact locators, rights records, review notes, provenance, or the official patch-metadata conflict.
+  - Preserve Demonstrated unless a separately reviewed direct production incident justifies Observed.
+  - Re-run strict repository validation and detection tests after integration; record any changes in a new post-freeze ledger rather than altering the frozen evidence history.
+
+authority_constraints:
+  web_discovery: Direct official authority URLs and official APIs only; no unrestricted search or third-party aggregator was used.
+  github_provenance: Exact GitHub advisory pages were opened only after canonical CVE records identified their exact URLs.
+  production_incident_gap: No qualifying file-specific production incident was identified in the bounded corpus.
+  contamination_status: none_detected
+
+source_corpus:
+  location: /private/tmp/saf-all-cleanroom/SAF-T1802-r2/source-corpus
+  hash_manifest: validation/source-corpus.sha256
+  note: The acquisition corpus is outside the canonical handoff and is represented inside the freeze by a sorted hash manifest.
+
+validation:
+  detector: python3 tests/SAF-T1802/test_detection_rule.py
+  strict: python3 scripts/validate-technique-research.py SAF-T1802
+  expected: both pass
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  resolved_dependency: SAF-T1913 independently authored, integrated, and strictly validated.
+  freeze_manifest_sha256: d3a07eca800ee2abc05b41e22722342eef8b47b97860c566c77f79914eb96799
+  canonical_neighbors: [SAF-T1606, SAF-T1913]
+  canonical_mitigations: [SAF-M-12, SAF-M-20, SAF-M-29, SAF-M-69, SAF-M-71, SAF-M-72, SAF-M-74]
+  attack_mapping: {id: T1005, type: direct}
+  detector: "PASS SAF-T1802 detector: 16 valid events, 1 malformed record skipped, 3 expected alerts, 0 unexpected alerts"
+  strict_validator: "PASS SAF-T1802"

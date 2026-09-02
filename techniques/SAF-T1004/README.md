@@ -1,259 +1,222 @@
 # SAF-T1004: Server Impersonation / Name-Collision
 
 ## Overview
-**Tactic**: Initial Access (ATK-TA0001)  
-**Technique ID**: SAF-T1004  
-**Severity**: High  
-**First Observed**: DNS-spoofing threat model formalized in RFC 3833 (2004, citing earlier academic analysis); widely publicized via Kaminsky DNS cache-poisoning disclosure in 2008 (CVE-2008-1447)  
-**Last Updated**: 2026-07-01
+
+- **Tactic**: Initial Access (ATK-TA0001)
+- **Technique ID**: SAF-T1004
+- **Research Packet**: [research/techniques/SAF-T1004](../../research/techniques/SAF-T1004/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1004/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Demonstrated
+- **Severity**: Medium
+- **Severity Rationale**: The demonstrated Registry integrity effect was limited, while a substituted endpoint can conditionally expose requests, credentials, or resource data; that downstream exposure was not demonstrated by the Registry proof. <!-- SAF-TRACE: claims=SAF-T1004-C009; sources=SRC-ghsa-oci-rate-limit,SRC-ms-azure-mcp-security-2026 -->
+- **First Observed**: [No qualifying production breach was established in the reviewed corpus as of 2026-09-01](../../research/techniques/SAF-T1004/source-coverage.yml)
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+The frozen [technique contract](../../research/techniques/SAF-T1004/technique-contract.yml) covers wrong-server selection caused by an ambiguous, colliding, lookalike, self-asserted, or insufficiently authenticated server identity.
+
+### In Scope
+
+- [Colliding or lookalike server titles and aliases used as selection keys](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [Self-reported server names treated as authenticated identity](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [Publisher-namespace, package-to-server, artifact, remote-endpoint, or TLS reference-identity binding failures](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [Registry or aggregator resolution that selects, installs, configures, or connects to the wrong server](../../research/techniques/SAF-T1004/technique-contract.yml).
+
+### Out of Scope
+
+- [Malicious-server delivery without identity confusion](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [Tool-name collision after a server connection is established](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [OAuth issuer or token-audience mix-up](../../research/techniques/SAF-T1004/technique-contract.yml).
+- [Proxy-mediated traffic masquerading that does not depend on wrong-server selection](../../research/techniques/SAF-T1004/technique-contract.yml).
+
+### Distinguishing Characteristics
+
+The behavior starts when a server candidate enters discovery, marketplace metadata, configuration, package association, or remote-endpoint resolution and ends at selection, installation, configuration, resolution, connection, or pre-action rejection; later tool selection and follow-on effects remain outside the [frozen boundary](../../research/techniques/SAF-T1004/technique-contract.yml).
 
 ## Description
-Server Impersonation / Name-Collision is an adversary-in-the-middle technique where attackers register or advertise a malicious server using the same name or identifier as a trusted one. By exploiting weaknesses in naming and discovery systems (for example DNS, mDNS, or local MCP server registries), clients can be redirected to attacker-controlled endpoints.
 
-This technique succeeds in MCP environments because trust decisions are often made before strong identity checks. If clients accept duplicated names, unsigned metadata, or weak certificates, an attacker can intercept authentication flows, alter tool responses, and capture sensitive data.
+Server impersonation / name-collision occurs when a client, registry, marketplace, operator, or deployment process selects or trusts one MCP server while relying on an ambiguous or insufficiently authenticated identity. A substituted server can reuse a familiar title, alias, Registry name, package association, or endpoint presentation while resolving to a different publisher namespace, package artifact, or network endpoint. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C002,SAF-T1004-C003; sources=SRC-mcp-2026-schema,SRC-mcp-registry-about,SRC-mcp-registry-auth,SRC-mcp-registry-package-types,SRC-mcp-registry-remote -->
 
-### Registry Context (ODR / Local Registry)
-In this technique, **ODR** refers to host-local discovery or registry layers used by MCP host applications to store server metadata (name, endpoint, and trust attributes). On Windows, this concept aligns with the On-Device Agent Registry tooling (`odr.exe`) for MCP server registration and discovery. Implementations vary by platform and product; if your environment does not use ODR by name, apply the same controls to its equivalent local registry/discovery mechanism.
+The runtime `serverInfo` identity is self-reported and protocol-unverified, so it is insufficient by itself for a security decision. Defensive identity binding therefore compares independently established attributes such as Registry origin, authenticated namespace, package identifier or digest, canonical endpoint URI, and expected TLS reference identity. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C003,SAF-T1004-C008; sources=SRC-mcp-2026-schema,SRC-mcp-registry-about,SRC-mcp-registry-package-types,SRC-rfc9525 -->
+
+The end-to-end status is Demonstrated because a controlled proof exercised the actual MCP Registry publish path and stored an unverified server-to-OCI association; the advisory expressly excludes a production attack. Adjacent tool collisions and historical package campaigns do not raise that status. <!-- SAF-TRACE: claims=SAF-T1004-C005,SAF-T1004-C011,SAF-T1004-C012; sources=SRC-ghsa-oci-rate-limit,SRC-ghsa-weknora,SRC-jfrog-azure-typosquat -->
 
 ## Attack Vectors
-- **Primary Vector**: Malicious server registration with a trusted server's name or identifier
-- **Secondary Vectors**:
-  - DNS cache poisoning or DNS hijacking
-  - Rogue DHCP infrastructure distributing attacker-controlled DNS settings
-  - Duplicate local registry entries for an existing trusted server
-  - TLS certificate misuse, weak validation, or certificate pinning gaps
-  - ARP spoofing on local networks
-  - Service redeployment windows where identity checks are temporarily bypassed
+
+- **Primary Vector**: A discovery, marketplace, configuration, or package-resolution path accepts a familiar label without binding the authenticated publisher, intended package or digest, and canonical endpoint. <!-- SAF-TRACE: claims=SAF-T1004-C002,SAF-T1004-C003; sources=SRC-mcp-registry-about,SRC-mcp-registry-auth,SRC-mcp-registry-package-types,SRC-mcp-registry-remote -->
+- **Secondary Vectors**: A supplied remote endpoint differs from the trusted canonical URI or expected TLS reference identity. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C008; sources=SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Affected Components**: MCP host and client selection logic, Registry or marketplace consumers, server packages and publisher namespaces, remote endpoint configuration, and TLS service identity. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-registry-about,SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Trust Boundary Crossed**: The intended-server identity is replaced by a different publisher, package, artifact, or endpoint before the discrepancy is rejected. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007; sources=SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026 -->
 
 ## Technical Details
 
 ### Prerequisites
-- Attacker network position (local segment, rogue upstream DNS, or other interception path)
-- Weak discovery protections (no DNSSEC validation, permissive local registry behavior, or missing duplicate-name checks)
-- Trust model that treats name as identity without robust certificate validation
-- Ability to register or advertise a malicious endpoint with legitimate-appearing metadata
+
+- A client or operator accepts a server candidate from discovery, a marketplace, configuration, a package registry, or a supplied endpoint. <!-- SAF-TRACE: claims=SAF-T1004-C002,SAF-T1004-C003; sources=SRC-mcp-registry-about,SRC-mcp-registry-remote -->
+- At least one security-relevant identity attribute is ambiguous, mutable, self-asserted, skipped, or not checked against an independent trust source. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C003,SAF-T1004-C004,SAF-T1004-C008; sources=SRC-mcp-2026-schema,SRC-mcp-registry-package-types,SRC-ghsa-oci-rate-limit,SRC-rfc9525 -->
+- The unintended server can receive an installation, connection, or tool request before the discrepancy is rejected. <!-- SAF-TRACE: claims=SAF-T1004-C007; sources=SRC-ms-azure-mcp-security-2026 -->
 
 ### Attack Flow
 
-```mermaid
-graph TD
-    A[Attacker deploys endpoint mimicking a trusted MCP server name] --> B{Discovery-layer hijack}
-    B -->|DNS cache poisoning / hijack| C[Trusted name resolves to attacker IP]
-    B -->|Rogue DHCP points clients at attacker DNS| C
-    B -->|ARP spoofing on local segment| C
-    B -->|Duplicate local registry / ODR entry| C
-    C --> D[Client connects to attacker endpoint]
-    D --> E[Attacker presents weak or mismatched identity material]
-    E --> F[Impersonation: intercept auth, alter tool responses]
-    F --> G[Credential and token capture / data collection]
-    F --> H[Registry-poisoning persistence, then pivot with captured credentials]
-
-    style A fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style F fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style G fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style C fill:#fee090,stroke:#000,stroke-width:2px,color:#000
-    style B fill:#fc8d59,stroke:#000,stroke-width:2px,color:#000
-```
-
-1. **Preparation**: Attacker deploys a malicious endpoint that mimics a trusted MCP server name.
-2. **Discovery Hijack**: DNS/mDNS responses or local registry entries are poisoned or duplicated.
-3. **Connection**: Client resolves the trusted name to the attacker endpoint and initiates session setup.
-4. **Impersonation**: Attacker presents weak or mismatched identity material and intercepts traffic.
-5. **Exploitation**: Credentials, tokens, and sensitive data are harvested; malicious responses may be injected.
-6. **Post-Exploitation**: Attacker persists through registry poisoning and pivots to additional systems by reusing the credentials and tokens captured in stage 5 against other services the victim can reach.
+1. The adversary supplies or advertises a server identity through a colliding display name, nearby namespace, misleading package association, or substituted endpoint. <!-- SAF-TRACE: claims=SAF-T1004-C002,SAF-T1004-C003,SAF-T1004-C007; sources=SRC-mcp-registry-auth,SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026 -->
+2. Discovery or configuration resolves the familiar label without binding every security-relevant attribute to an approved record. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C003,SAF-T1004-C008; sources=SRC-mcp-2026-schema,SRC-mcp-registry-package-types,SRC-rfc9525 -->
+3. The client installs or connects to the unintended package or endpoint. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007; sources=SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026 -->
+4. The substituted endpoint receives requests and can conditionally receive credentials or resource data exposed through the connection. <!-- SAF-TRACE: claims=SAF-T1004-C007; sources=SRC-ms-azure-mcp-security-2026 -->
 
 ### Example Scenario
-The technique turns on a **name collision**: the local ODR / MCP registry ends up
-holding two entries for the same `service_name`. The legitimate record was registered
-first; the attacker adds a duplicate pointing at their own endpoint.
 
-```json
-{
-  "registry": "local ODR / MCP registry (odr mcp list)",
-  "entries": [
-    {
-      "service_name": "analytics-hub.local",
-      "endpoint": "10.0.0.10:8443",
-      "certificate_fingerprint": "sha256:9c1f... (issued by trusted CA)",
-      "source": "odr:mcp",
-      "note": "legitimate, pre-existing entry"
-    },
-    {
-      "service_name": "analytics-hub.local",
-      "endpoint": "192.168.1.50",
-      "certificate_fingerprint": "untrusted-self-signed",
-      "source": "local-registry",
-      "note": "attacker-added duplicate (name collision)"
-    }
-  ]
-}
-```
+An inert example is a client that intends to approve `com.example/finance` but resolves a familiar display label to a different authenticated namespace, package digest, or `https://mcp.invalid` endpoint; the analytic compares the complete approved tuple before connection and alerts on any failed binding or mismatch. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
 
-**Mapping to the Attack Flow and detection:**
-- **Stage 2 (Discovery Hijack)**: the attacker writes the second entry, so two records now share `service_name` `analytics-hub.local`. This is what `selection_odr` catches (`duplicate service registration` / `name collision`).
-- **Stage 3 (Connection)**: lacking a duplicate-name or identity check, the client resolves the name and binds to the attacker's `192.168.1.50` endpoint instead of `10.0.0.10:8443`.
-- **Stage 4 (Impersonation)**: the attacker serves the `untrusted-self-signed` certificate; a client that does not pin or validate accepts it. This is what `selection_tls_untrusted_ca` catches (`self-signed certificate` / `untrusted certificate authority`).
+## Evidence and Current State
 
-### Advanced Attack Techniques (Research Published)
-According to public reporting and ATT&CK campaign tracking, attackers use multiple identity-hijack layers:
+### Evidence Summary
 
-1. **DNS Cache Poisoning**: False DNS responses direct clients to malicious infrastructure.
-2. **Registrar Hijacking**: Domain and DNS control are taken over to reroute traffic at scale (for example [Sea Turtle / G1041](https://attack.mitre.org/groups/G1041/)).
-3. **Hybrid Discovery Poisoning**: DNS hijack combined with local network attacks (ARP/DHCP) to increase reliability and evade single-layer controls.
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1004-C001 | Runtime serverInfo identity is self-reported and protocol-unverified. | Research-Derived | SRC-mcp-2026-schema: [MCP schema](https://modelcontextprotocol.io/specification/2026-07-28/schema) | Does not establish each client's behavior or package and endpoint identity. |
+| SAF-T1004-C002 | The official Registry binds reverse-DNS-style server namespaces to authenticated GitHub accounts or domains. | Research-Derived | SRC-mcp-registry-about and SRC-mcp-registry-auth: [Registry authentication](https://modelcontextprotocol.io/registry/authentication) | Does not guarantee each package or endpoint association. |
+| SAF-T1004-C003 | Security decisions need a multi-field publisher, package, artifact, and endpoint binding rather than a display label alone. | Research-Derived | SRC-mcp-registry-about, SRC-mcp-registry-package-types, SRC-mcp-registry-remote, and SRC-mcp-authorization-2026-07-28 | Defensive synthesis; no universal tuple is prescribed. |
+| SAF-T1004-C004 | CVE-2026-45781 skipped OCI package-to-server-name validation on HTTP 429 before Registry 1.7.9. | Demonstrated | SRC-ghsa-oci-rate-limit and SRC-nvd-cve-2026-45781: [maintainer advisory](https://github.com/modelcontextprotocol/registry/security/advisories/GHSA-2v5f-5r6w-p67r) | Authenticated attacker namespace only; image bytes unchanged; CVSS 3.5. |
+| SAF-T1004-C005 | The advisory proof stored an unverified association through the real publish path and excluded a production attack. | Demonstrated | SRC-ghsa-oci-rate-limit: [GHSA-2v5f-5r6w-p67r](https://github.com/modelcontextprotocol/registry/security/advisories/GHSA-2v5f-5r6w-p67r) | No live namespace; user interaction required. |
+| SAF-T1004-C006 | Registry listing is not a complete safety guarantee because moderation is minimal and deeper scanning is delegated. | Research-Derived | SRC-mcp-registry-about, SRC-mcp-registry-moderation, and SRC-mcp-registry-tos | Policies can change and do not assess a specific server. |
+| SAF-T1004-C007 | A substituted endpoint can receive requests and expose credentials or resource data; trusted configuration and TLS checks reduce risk. | Research-Derived | SRC-ms-azure-mcp-security-2026: [Azure MCP security guidance](https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security) | Guidance, not incident or exploit evidence; accuracy unquantified. |
+| SAF-T1004-C008 | TLS clients independently construct and verify reference identifiers and terminate automated connections on mismatch. | Research-Derived | SRC-rfc9525: [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525.html) | A correctly authenticated endpoint can still be malicious. |
+| SAF-T1004-C009 | Demonstrated status and Medium severity combine a limited direct proof with a conditional, undemonstrated downstream exposure. | Demonstrated | SRC-ghsa-oci-rate-limit, SRC-nvd-cve-2026-45781, and SRC-ms-azure-mcp-security-2026 | Medium is an SAF synthesis, not the advisory rating. |
+| SAF-T1004-C010 | Unicode confusable matching is inclusive, version-sensitive, and font-dependent, so it is not a sole blocking signal. | Research-Derived | SRC-uts39: [Unicode Technical Standard 39](https://unicode.org/reports/tr39/) | Does not evaluate this detector or an MCP implementation. |
+| SAF-T1004-C011 | CVE-2026-30856 is adjacent tool-resolution collision evidence, not direct server-identity evidence. | Research-Derived | SRC-ghsa-weknora, SRC-nvd-cve-2026-30856, and SRC-mcp-tools-2026-07-28 | Occurs after server configuration and does not substitute publisher, package, or endpoint identity. |
+| SAF-T1004-C012 | The 2022 Azure-themed npm campaign is historical package-name analogy, not MCP incident evidence. | Research-Derived | SRC-jfrog-azure-typosquat: [JFrog research](https://jfrog.com/blog/large-scale-npm-attack-targets-azure-developers-with-malicious-packages/) | Predates MCP; dependency-confusion involvement was not established. |
+| SAF-T1004-C013 | ATT&CK T1036.005 is analogous rather than direct. | Research-Derived | SRC-attck-t1036: [ATT&CK T1036.005](https://attack.mitre.org/techniques/T1036/005/) | ATT&CK does not define MCP Registry, package-binding, or endpoint-resolution semantics. |
+| SAF-T1004-C014 | No qualifying production breach was established in the corpus as of 2026-09-01. | Research-Derived | SRC-ghsa-oci-rate-limit and SRC-nvd-cve-2026-45781; [search ledger](../../research/techniques/SAF-T1004/source-coverage.yml) | Bounded search result; cannot prove universal absence. |
+
+### Current State
+
+- **Affected Environments**: MCP clients, hosts, registries, marketplaces, and deployment workflows that accept an identity label without independently binding publisher, package, artifact, endpoint, and TLS identity. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C003; sources=SRC-mcp-2026-schema,SRC-mcp-registry-package-types,SRC-mcp-registry-remote -->
+- **Known Exploitation**: The selected direct source documents a controlled proof, not a production attack; the bounded corpus found no qualifying production breach. <!-- SAF-TRACE: claims=SAF-T1004-C005,SAF-T1004-C014; sources=SRC-ghsa-oci-rate-limit,SRC-nvd-cve-2026-45781 -->
+- **Available Protections**: Authenticated namespaces, fail-closed package binding, trusted endpoint configuration, TLS service-identity validation, approved-server inventory, and multi-field change monitoring. <!-- SAF-TRACE: claims=SAF-T1004-C002,SAF-T1004-C003,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-registry-auth,SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Residual Risk**: Registry listing, a familiar title, or a valid certificate does not alone establish that the selected server is intended, and products may not emit the normalized identity telemetry required by the analytic. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C006,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-2026-schema,SRC-mcp-registry-moderation,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+
+### Known Breaches and Vulnerabilities
+
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| GHSA-2v5f-5r6w-p67r / CVE-2026-45781 | 2026; MCP Registry before 1.7.9 | Stored an unverified server-to-OCI association; fixed in 1.7.9 | Direct vulnerability and controlled demonstration; Ryan Vonbrubeck (`@dodge1218`) reported it and `rdimitrov` published the advisory and developed the remediation. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C005,SAF-T1004-C009; sources=SRC-ghsa-oci-rate-limit,SRC-nvd-cve-2026-45781 --> | No production attack, live namespace, or image-byte takeover; downstream exposure undemonstrated. |
+| GHSA-67q9-58vj-32qx / CVE-2026-30856 | 2026; WeKnora through 0.2.14 | Internal tool identifier overwrite; fixed in 0.3.0 | Adjacent tool-resolution collision; the advisory is by `lyingbug` and credits `aleister1102` as reporter. <!-- SAF-TRACE: claims=SAF-T1004-C011; sources=SRC-ghsa-weknora,SRC-nvd-cve-2026-30856 --> | Does not substitute an MCP server publisher, package, or endpoint identity. |
+| Azure-themed npm package campaign | 2022; npm ecosystem | More than 200 lookalike packages collected host or user data; malicious packages should be removed and dependencies rebound to approved identities. | Historical non-MCP analogy documented by Andrey Polkovnychenko and Shachar Menashe of JFrog Security Research. <!-- SAF-TRACE: claims=SAF-T1004-C012; sources=SRC-jfrog-azure-typosquat --> | Predates MCP; known downloads were limited and dependency-confusion involvement was not established. |
+
+No qualifying production breach was established in the directly reviewed corpus; the [search record](../../research/techniques/SAF-T1004/source-coverage.yml) preserves the bounded scope and all rejected leads.
 
 ## Impact Assessment
-- **Confidentiality**: High - credentials and sensitive data can be intercepted.
-- **Integrity**: High - malicious responses can alter workflow outputs and decisions.
-- **Availability**: Medium - service resolution failures and trust breaks can interrupt operations.
-- **Scope**: Network-wide - affects any client relying on poisoned discovery/identity signals.
 
-### Current Status (2026)
-Organizations are increasingly prioritizing stronger discovery and identity controls, but coverage remains uneven:
-- DNSSEC adoption continues to expand, but not all enterprise resolvers and zones validate consistently.
-- The MCP roadmap's "Server Cards" initiative is developing a `.well-known` URL standard for publishing structured server metadata so browsers, crawlers, and registries can discover a server's advertised capabilities without first connecting to it. (Advertised, not verified: Server Cards describe capabilities; they do not replace server-identity authentication.)
-- Teams with mixed legacy protocols and inconsistent registry governance remain exposed to name-collision attacks.
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High, conditional | A substituted endpoint can receive requests, credentials, or resource data if the client exposes them through the connection. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C009; sources=SRC-ms-azure-mcp-security-2026,SRC-ghsa-oci-rate-limit --> |
+| Integrity | Medium | The direct proof altered Registry association integrity but did not alter the referenced image bytes. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C005,SAF-T1004-C009; sources=SRC-ghsa-oci-rate-limit,SRC-nvd-cve-2026-45781 --> |
+| Availability | Not established | The reviewed direct demonstration does not establish an availability consequence. <!-- SAF-TRACE: claims=SAF-T1004-C005,SAF-T1004-C009; sources=SRC-ghsa-oci-rate-limit --> |
+| Scope | Adjacent or multi-system, conditional | Scope depends on whether the wrong binding propagates from a Registry, marketplace, or configuration source to clients. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C009; sources=SRC-mcp-registry-about,SRC-mcp-registry-package-types,SRC-ghsa-oci-rate-limit --> |
+
+### Severity Conditions
+
+- **Severity increases when**: A wrong binding reaches clients that automatically connect or expose credentials, tool requests, or sensitive resource data. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C009; sources=SRC-ms-azure-mcp-security-2026,SRC-ghsa-oci-rate-limit -->
+- **Severity decreases when**: Authenticated publisher, package, digest, endpoint, and TLS identity checks fail closed before installation or connection. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C004,SAF-T1004-C008; sources=SRC-mcp-registry-package-types,SRC-ghsa-oci-rate-limit,SRC-rfc9525 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP host or client audit log | Discovery, install, configuration, resolution, connection, and decision | Timestamp, actor, action, alias, Registry origin, namespace, server name, package and digest, endpoint, TLS identity, decision | Retain before-and-after identity values and the approved baseline. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-registry-about,SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 --> |
+| Registry, package verifier, and TLS verifier | Namespace validation, package binding, artifact verification, and service-identity match | Verification status, error, immutable digest, expected reference identity, presented identity | Preserve skipped and unknown outcomes rather than converting them to success. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C008; sources=SRC-ghsa-oci-rate-limit,SRC-rfc9525 --> |
+
 ### Indicators of Compromise (IoCs)
-- Sudden DNS resolution drift for trusted MCP server names
-- Duplicate or conflicting server entries in local MCP registries
-- ARP anomalies and MAC/IP mismatch events around MCP traffic
-- TLS certificate mismatch or unexpected self-signed certificate acceptance
-- Authentication failures and suspicious reconnect loops after resolution changes
 
-### Detection Rules
-**Important**: The following Sigma-style rule is an example. Organizations should tailor fields and event IDs to their telemetry pipeline and operating system logging configuration.
-
-```yaml
-title: Detection of Server Impersonation / Name-Collision (SAF-T1004)
-id: 9f3c2a8e-7d4b-4c2f-9a1e-8e2b7f9c1d23
-status: experimental
-description: Detects indicators of server impersonation or name-collision attacks across DNS, ARP, TLS, and local registry events. Message-text selections are illustrative; operators should tailor them to their own telemetry pipeline. Elevate from medium to high only when correlated with expected MCP server identity, registry changes, or DHCP/ARP anomalies.
-author: Ryan Jennings
-date: 2025-11-22
-modified: 2026-07-01
-references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1004
-  - https://attack.mitre.org/techniques/T1557/
-  - https://attack.mitre.org/techniques/T1557/002/
-  - https://attack.mitre.org/techniques/T1557/003/
-logsource:
-  product: windows
-  service: system
-detection:
-  selection_dns:
-    EventID: 1014
-    Provider_Name: "Microsoft-Windows-DNS-Client"
-    Message|contains:
-      - "timed out after none of the configured DNS servers responded"
-      - "DNSSEC validation failed"
-  selection_odr:
-    Provider_Name: "ODR"
-    Message|contains:
-      - "duplicate service registration"
-      - "name collision"
-  selection_arp:
-    Provider_Name: "Microsoft-Windows-TCPIP"
-    Message|contains:
-      - "duplicate ARP entry"
-      - "MAC address mismatch"
-  selection_tls_untrusted_ca:
-    EventID: 36882
-    Provider_Name: "Schannel"
-    Message|contains:
-      - "issued by an untrusted"
-      - "untrusted certificate authority"
-      - "self-signed certificate"
-  selection_tls_hostname_mismatch:
-    EventID: 36884
-    Provider_Name: "Schannel"
-    Message|contains:
-      - "host name"
-      - "hostname"
-      - "name mismatch"
-  condition: selection_dns or selection_odr or selection_arp or selection_tls_untrusted_ca or selection_tls_hostname_mismatch
-falsepositives:
-  - Legitimate service redeployments that temporarily create duplicate registry entries
-  - Controlled test environments using self-signed certificates
-  - Planned DNS cutovers during maintenance windows
-  - Routine DNS-client timeouts (1014) unrelated to name collision
-  - Schannel events (36882/36884) from upstream misconfigurations rather than spoofing
-level: medium
-tags:
-  - attack.credential_access
-  - attack.collection
-  - attack.t1557
-  - attack.t1557.002
-  - attack.t1557.003
-  - safe.t1004
-```
+- No reliable durable IoC is established; the frozen evidence supports identity-binding discrepancies and event sequences rather than a universal malicious artifact. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007; sources=SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026 -->
 
 ### Behavioral Indicators
-- New duplicate service names for trusted MCP endpoints
-- Increased DNS cache refreshes and resolver warning events for previously stable names
-- Clients connecting to unexpected IP ranges for known servers
-- TLS handshake failures or fallback behavior after certificate mismatches
-- Correlated ARP anomalies near authentication or token exchange failures
+
+- An approved alias resolves to a different publisher, package, digest, Registry, endpoint, or expected TLS identity. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C008; sources=SRC-mcp-registry-package-types,SRC-mcp-registry-remote,SRC-rfc9525 -->
+- A security-relevant install, configuration, resolution, or connection proceeds after namespace or package binding is failed, skipped, or unknown. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C007; sources=SRC-ghsa-oci-rate-limit,SRC-ms-azure-mcp-security-2026 -->
+- Unicode confusable similarity is a secondary review signal only and cannot by itself establish substitution. <!-- SAF-TRACE: claims=SAF-T1004-C010; sources=SRC-uts39 -->
+
+### Detection Analytic
+
+The complete experimental analytic is maintained in [detection-rule.yml](detection-rule.yml), with its source-or-omit component mapping embedded in the rule.
+
+- **Analytic Goal**: Identify a security-relevant wrong-server decision with an unverified binding, approved-tuple mismatch, or TLS identity mismatch. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C004,SAF-T1004-C007,SAF-T1004-C008; sources=SRC-mcp-registry-package-types,SRC-ghsa-oci-rate-limit,SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Rule Status**: Experimental; it consumes normalized synthetic telemetry and does not validate live package, Registry, or certificate state. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C008; sources=SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Correlation Window**: Evaluate the approved tuple at the install, configuration, resolution, or connection decision; no time aggregation is required by the synthetic rule. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C007; sources=SRC-mcp-registry-package-types,SRC-ms-azure-mcp-security-2026 -->
+- **Known False Positives**: Legitimate migration, duplicate human-readable titles, fail-closed verifier outages, and multilingual-name similarity. <!-- SAF-TRACE: claims=SAF-T1004-C006,SAF-T1004-C007,SAF-T1004-C010; sources=SRC-mcp-registry-moderation,SRC-ms-azure-mcp-security-2026,SRC-uts39 -->
+- **Known Limitations**: The analytic cannot prove intent, validate a live certificate chain, or detect a malicious server retaining every approved identity attribute. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C008; sources=SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+- **Tuning Guidance**: Baseline authenticated publisher, package, digest, endpoint, and TLS identities; review migrations without allowlisting failed verification. <!-- SAF-TRACE: claims=SAF-T1004-C003,SAF-T1004-C004,SAF-T1004-C008; sources=SRC-mcp-registry-package-types,SRC-ghsa-oci-rate-limit,SRC-rfc9525 -->
+
+### Validation
+
+- **Test Data**: [fixtures/detection-events.json](fixtures/detection-events.json)
+- **Validation Script**: [test_detection_rule.py](test_detection_rule.py)
+- **Expected Result**: [Six of six synthetic cases pass, including positive, negative, boundary, and expected-false-positive coverage](test-results.json)
+- **Last Validated**: [2026-09-01](test-log.jsonl)
+- **Feasibility Waiver**: None; the validation is synthetic and its limitations remain explicit in the [quality review](../../research/techniques/SAF-T1004/quality-review.yml).
 
 ## Mitigation Strategies
 
 ### Preventive Controls
-1. **[SAF-M-14: Server Allowlisting](../../mitigations/SAF-M-14/README.md)**: Restrict MCP connections to explicit trusted domains/endpoints.
-2. **[SAF-M-2: Cryptographic Integrity for Tool Descriptions](../../mitigations/SAF-M-2/README.md)**: Sign and verify tool metadata to reduce tampering and spoofing risk.
-3. **[SAF-M-6: Tool Registry Verification](../../mitigations/SAF-M-6/README.md)**: Enforce trusted registry source controls and signature validation.
-4. **[SAF-M-45: Tool Manifest Signing & Server Attestation](../../mitigations/SAF-M-45/README.md)**: Validate server identity and manifest integrity before accepting tools.
-5. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Limit blast radius if a spoofed endpoint is accepted.
+
+1. Build allowlists from authenticated publisher namespaces plus package digests or canonical endpoints; never key trust solely on runtime `serverInfo.name`, a title, or a marketplace label. <!-- SAF-TRACE: claims=SAF-T1004-C001,SAF-T1004-C002,SAF-T1004-C003; sources=SRC-mcp-2026-schema,SRC-mcp-registry-auth,SRC-mcp-registry-package-types -->
+2. Fail closed when namespace, package-to-server binding, artifact hash, or endpoint identity cannot be verified; the direct Registry weakness shows why an upstream validation error cannot become success. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C008; sources=SRC-ghsa-oci-rate-limit,SRC-rfc9525 -->
+3. Construct expected TLS reference identifiers from trusted configuration, terminate automated connections on mismatch, and do not disable certificate verification. <!-- SAF-TRACE: claims=SAF-T1004-C007,SAF-T1004-C008; sources=SRC-ms-azure-mcp-security-2026,SRC-rfc9525 -->
+4. Pin package versions and immutable hashes where supported while retaining separate publisher, package, and endpoint checks; a hash proves bytes, not that the chosen artifact is intended. <!-- SAF-TRACE: claims=SAF-T1004-C003; sources=SRC-mcp-registry-package-types -->
 
 ### Detective Controls
-1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Log registry changes, server identity decisions, and endpoint shifts.
-2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20/README.md)**: Detect unexpected discovery/connection behavior and resolution drift.
-3. **[SAF-M-11: Behavioral Monitoring](../../mitigations/SAF-M-11/README.md)**: Correlate unusual tool behavior with identity and routing anomalies.
 
-### Response Procedures
-1. **Immediate Actions**:
-   - Block malicious or untrusted endpoint IPs/domains.
-   - Remove rogue local registry entries and disable affected server registrations.
-   - Flush poisoned DNS and ARP caches on impacted hosts.
-2. **Investigation Steps**:
-   - Reconstruct timeline of DNS/registry/certificate changes.
-   - Identify initial poisoning vector (DNS, ARP, DHCP, registry tampering).
-   - Scope impacted clients and exposed credentials/tokens.
-3. **Remediation**:
-   - Rotate exposed credentials, tokens, and certificates.
-   - Re-establish trusted server identity material and pinning policy.
-   - Add preventive and detective controls for duplicate-name and identity drift.
+1. Maintain an approved-server inventory and review new, unregistered, or changed identity tuples before exposing credentials or sensitive data. <!-- SAF-TRACE: claims=SAF-T1004-C007; sources=SRC-ms-azure-mcp-security-2026 -->
+2. Alert on failed or skipped binding, approved-tuple mismatch, and TLS identity mismatch; use Unicode confusable similarity only to prioritize review. <!-- SAF-TRACE: claims=SAF-T1004-C004,SAF-T1004-C008,SAF-T1004-C010; sources=SRC-ghsa-oci-rate-limit,SRC-rfc9525,SRC-uts39 -->
+
+Registry presence is not a complete safety guarantee because moderation is minimal, some scanning is delegated, and removed metadata can remain available. <!-- SAF-TRACE: claims=SAF-T1004-C006; sources=SRC-mcp-registry-about,SRC-mcp-registry-moderation,SRC-mcp-registry-tos -->
 
 ## Related Techniques
-- [SAF-T1301](../SAF-T1301/README.md): Cross-Server Tool Shadowing - exploits tool-name collisions in multi-server environments.
-- [SAF-T1407](../SAF-T1407/README.md): Server Proxy Masquerade - uses intermediary infrastructure to impersonate trusted paths.
-- [SAF-T1005](../SAF-T1005/README.md): Exposed Endpoint Exploit - broad endpoint exposure can enable impersonation opportunities.
-- [SAF-T1704](../SAF-T1704/README.md): Compromised-Server Pivot - impersonation can provide a foothold for lateral movement.
 
-## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [Model Context Protocol Roadmap: Server Cards initiative](https://modelcontextprotocol.io/development/roadmap)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [Sea Turtle - ATT&CK Group G1041](https://attack.mitre.org/groups/G1041/)
-- [Windows ODR Tool (odr.exe) - Microsoft Learn](https://learn.microsoft.com/en-us/windows/ai/mcp/odr-tool)
-- [RFC 3833 - Threat Analysis of the Domain Name System (DNS)](https://www.rfc-editor.org/rfc/rfc3833.html)
-- [CVE-2008-1447 - DNS Cache Poisoning (Kaminsky)](https://nvd.nist.gov/vuln/detail/CVE-2008-1447)
-- [Internet Society - DNSSEC Deployment Maps (historical snapshot, 2021-06-14)](https://www.internetsociety.org/deploy360/dnssec/maps/)
-- [APNIC DNSSEC Validation World Map](https://stats.labs.apnic.net/dnssec)
-- [JRC - Internet Standards: DNSSEC standards, an analysis of uptake in the EU (JRC143100, 2025)](https://publications.jrc.ec.europa.eu/repository/handle/JRC143100)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| SAF-T1003: Malicious MCP-Server Distribution | Alternative or prerequisite | Delivery need not involve identity confusion; SAF-T1004 requires wrong-server selection through identity resolution or binding. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
+| SAF-T1008: Tool Shadowing Attack | Adjacent | Misleading tool identity occurs after server selection; SAF-T1004 concerns the server identity. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
+| SAF-T1009: Authorization Server Mix-up | Adjacent | Issuer and token-audience binding are different from MCP server publisher, package, and endpoint selection. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
+| SAF-T1301: Cross-Server Tool Shadowing | Adjacent | Colliding tool names assume connected servers; SAF-T1004 stops at wrong-server selection, installation, or connection. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
+| SAF-T1407: Server Proxy Masquerade | Overlapping but distinct | Proxy masquerade requires mediated traffic behavior; SAF-T1004 does not require a proxy. [Contract](../../research/techniques/SAF-T1004/technique-contract.yml) |
 
 ## MITRE ATT&CK Mapping
-- [T1557 - Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557/)
-- [T1557.002 - Adversary-in-the-Middle: ARP Cache Poisoning](https://attack.mitre.org/techniques/T1557/002/)
-- [T1557.003 - Adversary-in-the-Middle: DHCP Spoofing](https://attack.mitre.org/techniques/T1557/003/)
 
-> **SAF tactic vs. ATT&CK tactic**: In ATT&CK, T1557 (Adversary-in-the-Middle) is tagged under **Credential Access (TA0006)** and **Collection (TA0009)**, which is why the detection rule carries those tactic tags. Within the SAF-MCP framework, however, this technique is filed under **Initial Access (ATK-TA0001)** - name-collision / discovery hijack is how the attacker first interposes on an MCP client - which is the tactic named in the Overview and in the framework's technique index. The Credential Access / Collection framing above describes the ATT&CK behaviors the AiTM position enables.
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1036.005](https://attack.mitre.org/techniques/T1036/005/) | Match Legitimate Resource Name or Location | Analogous | It covers making an object appear legitimate by matching a trusted name or location, but it does not define MCP Registry, package-binding, or endpoint-resolution semantics. <!-- SAF-TRACE: claims=SAF-T1004-C013; sources=SRC-attck-t1036 --> |
+
+Repository-owned tactic, neighboring-technique, and mitigation joins are recorded in the [framework model](../../research/framework-model.yml).
+
+## References
+
+1. **SRC-mcp-2026-schema**: [MCP Specification 2026-07-28 — Schema Reference](https://modelcontextprotocol.io/specification/2026-07-28/schema) — MCP Specification contributors.
+2. **SRC-mcp-tools-2026-07-28**: [MCP Specification 2026-07-28 — Server Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) — MCP Specification contributors.
+3. **SRC-mcp-authorization-2026-07-28**: [MCP Specification 2026-07-28 — Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — MCP Specification contributors.
+4. **SRC-mcp-registry-about**: [The MCP Registry](https://modelcontextprotocol.io/registry/about) — MCP Registry maintainers.
+5. **SRC-mcp-registry-auth**: [How to Authenticate When Publishing to the Official MCP Registry](https://modelcontextprotocol.io/registry/authentication) — MCP Registry maintainers.
+6. **SRC-mcp-registry-package-types**: [MCP Registry Supported Package Types](https://modelcontextprotocol.io/registry/package-types) — MCP Registry maintainers.
+7. **SRC-mcp-registry-moderation**: [MCP Registry Moderation Policy](https://modelcontextprotocol.io/registry/moderation-policy) — MCP Registry maintainers.
+8. **SRC-mcp-registry-tos**: [Official MCP Registry Terms of Service](https://modelcontextprotocol.io/registry/terms-of-service) — MCP Registry maintainers.
+9. **SRC-mcp-registry-remote**: [Publishing Remote Servers](https://modelcontextprotocol.io/registry/remote-servers) — MCP Registry maintainers.
+10. **SRC-ghsa-oci-rate-limit**: [GHSA-2v5f-5r6w-p67r](https://github.com/modelcontextprotocol/registry/security/advisories/GHSA-2v5f-5r6w-p67r) — reported by Ryan Vonbrubeck (`@dodge1218`); advisory and remediation by `rdimitrov`.
+11. **SRC-nvd-cve-2026-45781**: [NVD — CVE-2026-45781](https://nvd.nist.gov/vuln/detail/CVE-2026-45781) — NVD, GitHub Inc., and CISA-ADP.
+12. **SRC-ms-azure-mcp-security-2026**: [Secure your Azure MCP Server deployment](https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security) — Microsoft Azure MCP Server documentation team.
+13. **SRC-rfc9525**: [RFC 9525: Service Identity in TLS](https://www.rfc-editor.org/rfc/rfc9525.html) — Peter Saint-Andre and Rich Salz.
+14. **SRC-uts39**: [Unicode Security Mechanisms](https://unicode.org/reports/tr39/) — Unicode Technical Committee.
+15. **SRC-ghsa-weknora**: [GHSA-67q9-58vj-32qx](https://github.com/Tencent/WeKnora/security/advisories/GHSA-67q9-58vj-32qx) — advisory by `lyingbug`; `aleister1102` credited as reporter.
+16. **SRC-nvd-cve-2026-30856**: [NVD — CVE-2026-30856](https://nvd.nist.gov/vuln/detail/CVE-2026-30856) — NVD and GitHub Inc.
+17. **SRC-jfrog-azure-typosquat**: [Large-scale npm attack targets Azure developers with malicious packages](https://jfrog.com/blog/large-scale-npm-attack-targets-azure-developers-with-malicious-packages/) — Andrey Polkovnychenko and Shachar Menashe, JFrog Security Research.
+18. **SRC-attck-t1036**: [ATT&CK T1036.005: Match Legitimate Resource Name or Location](https://attack.mitre.org/techniques/T1036/005/) — MITRE ATT&CK team.
 
 ## Version History
+
 | Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-11-22 | Initial documentation with ODR explanation | Ryan Jennings |
-| 1.1 | 2026-02-24 | Replaced placeholder mitigations, corrected related-technique mapping, updated detection rule example, and added clearer ODR scope language | Bishnu Bista |
-| 1.2 | 2026-02-24 | Corrected ATT&CK reference for Sea Turtle, aligned DNS EventID 1014 example wording, reduced over-specific ARP event assumptions, and added ODR/APNIC references for source clarity | Bishnu Bista |
-| 1.3 | 2026-04-23 | Overview tactic line corrected to Credential Access + Collection (ATT&CK-faithful to T1557/T1557.002/T1557.003; prior "Initial Access" claim was unsupported); MITRE mapping: replaced T1565.002 (Transmitted Data Manipulation, not DNS-specific) and T1071.004 (DNS-as-C2, not DNS-is-attacked) with T1557.003 (DHCP Spoofing) to match the rogue-DHCP attack vector; Sigma rule split Schannel EventID 36882 (untrusted CA) vs 36884 (hostname mismatch) with Microsoft-faithful Message|contains text, lowered level from high to medium, tactic tags reconciled to attack.credential_access + attack.collection; synced embedded Sigma block in README to canonical detection-rule.yml; added 36882/36884 test-log coverage (12/12 pass); named "MCP Server Cards" roadmap initiative explicitly with accurate "discover advertised capabilities" wording; First Observed anchored to RFC 3833 (2004) + Kaminsky 2008 (CVE-2008-1447); used verbatim JRC report title; annotated Internet Society DNSSEC maps as a 2021 historical snapshot | Bishnu Bista |
-| 1.4 | 2026-07-01 | Reconciled the Overview SAF tactic back to Initial Access (ATK-TA0001) to match the framework technique index, and moved the Credential Access / Collection framing into the MITRE ATT&CK Mapping section where T1557's tactics belong; expanded the Example Scenario to show the actual name collision (legitimate vs. attacker registry record) with mapping to Attack-Flow stages 2-4 and to the detection selections; added a discovery-hijack flow diagram; gave stage 6 a stated pivot mechanism; verified the odr.exe Microsoft Learn reference; fixed the non-resolving detection-rule references URL (SAF-MCP -> secure-agentic-framework); softened "dangerous"; normalized author-name casing | Frederick Kautz |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Independent clean-room draft frozen before repository integration | `/root/cleanroom_saf_t1004` |
+| 0.2 | 2026-09-01 | Schema-only normalization to the current canonical packet, readable trace, detection rule, and strict isolated validation gate | `/root/normalize_saf_t1004` |

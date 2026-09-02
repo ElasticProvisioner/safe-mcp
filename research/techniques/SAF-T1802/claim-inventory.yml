@@ -1,0 +1,498 @@
+version: 1
+technique_id: SAF-T1802
+claims:
+  - id: SAF-T1802-C001
+    statement: >-
+      File Collection is the use or abuse of MCP resource or tool operations to
+      obtain file content for collection, including retrieval that crosses an
+      intended authorization, approval, or path boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Resources: User Interaction Model; Listing Resources; Reading Resources; File Resources"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools: User Interaction Model; Calling Tools; Resource Links; Embedded Resources"]
+      - source_id: SRC-attack-t1005
+        support: corroborating
+        exact_locators: ["Data from Local System: Description"]
+    corroboration: MCP operation semantics and ATT&CK's local-system collection definition independently support the component behaviors.
+    limitations:
+      - The SAF boundary and combination of components are an explicit framework inference, not protocol terminology.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources define operations and collection behavior separately; the SAF claim joins them around the MCP authorization boundary.
+    status: validated
+
+  - id: SAF-T1802-C002
+    statement: >-
+      MCP resource servers can expose an enumerable resource set, accept
+      resources/read requests containing a URI, return one or more content items,
+      and represent files with file URIs.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Listing Resources request and response examples", "Reading Resources request and response examples", "Common URI Schemes: file://"]
+    corroboration: The current official specification is controlling for protocol semantics.
+    limitations:
+      - The specification does not require a deployment to expose file resources.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C003
+    statement: >-
+      MCP tools are model-controlled operations invoked through tools/call; the
+      available set can vary by authorization, and successful results can contain
+      resource links or embedded resources.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools: User Interaction Model", "Listing Tools", "Calling Tools", "Resource Links", "Embedded Resources"]
+    corroboration: The current official specification is controlling for protocol semantics.
+    limitations:
+      - The specification does not prescribe a particular file-reading tool or authorization model.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C004
+    statement: >-
+      MCP roots are informational coordination hints, are deprecated in the
+      current specification, and are not protocol-enforced access controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-2026-roots
+        support: direct
+        exact_locators: ["Roots: Overview and Important note", "Security Considerations"]
+    corroboration: The same page directs implementations to validate root URIs and enforce boundaries independently.
+    limitations:
+      - Individual implementations can apply controls associated with roots outside the protocol guarantee.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C005
+    statement: >-
+      Path traversal and incomplete canonicalization can cause software to read a
+      file outside an intended restricted directory.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Description", "Common Consequences", "Potential Mitigations: Input Validation; Environment Hardening"]
+    corroboration: Multiple selected MCP advisories instantiate this general weakness in file-capable servers.
+    limitations:
+      - CWE-22 is a weakness classification, not evidence that every MCP file operation is vulnerable.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C006
+    statement: >-
+      Following symbolic links without enforcing the intended target boundary can
+      expose files that a path policy appears to exclude.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-59
+        support: direct
+        exact_locators: ["Description", "Common Consequences", "Potential Mitigations"]
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: corroborating
+        exact_locators: ["Summary", "Impact", "Patched Versions"]
+    corroboration: The MCP Filesystem advisory specifically documents an allowed-directory symlink bypass.
+    limitations:
+      - Symlink behavior varies by platform and implementation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C007
+    statement: >-
+      MCP Atlassian before 0.22.0 passed a caller-supplied attachment path directly
+      to file opening, enabling an authenticated MCP client to read any
+      process-readable file and upload it to Confluence; the advisory documents a
+      direct API proof of concept, end-to-end MCP-client confirmation, and a
+      controlled prompt-injection confirmation.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-g5r6-gv6m-f5jv
+        support: direct
+        exact_locators: ["Summary", "Root Cause", "Proof of Concept", "MCP Client Confirmation", "AI Agent Prompt Injection", "Patched Versions"]
+      - source_id: SRC-cve-2026-73498
+        support: corroborating
+        exact_locators: ["CNA description", "Affected versions", "References"]
+    corroboration: The CVE record independently reproduces the affected operation, boundary failure, consequence, and fixed version.
+    limitations:
+      - The public evidence is a demonstration and disclosure, not a documented production intrusion.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C008
+    statement: >-
+      WhatsApp MCP before 0.2.1 exposed an unauthenticated loopback bridge without
+      Host validation and accepted an unconstrained absolute media path, allowing
+      a qualifying local caller or DNS-rebinding attacker to read process-readable
+      files and send them as WhatsApp attachments.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-7jj9-4qqq-4xc4
+        support: direct
+        exact_locators: ["Summary", "Impact", "MCP Environment", "Patched Versions"]
+      - source_id: SRC-cve-2026-46555
+        support: corroborating
+        exact_locators: ["CNA description", "Affected versions", "Remediation"]
+    corroboration: The CVE record confirms the same combined bridge, Host, and media-path weaknesses and the fixed version.
+    limitations:
+      - The sources report no known in-the-wild exploitation and require the bridge to be reachable under the stated conditions.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C009
+    statement: >-
+      excel-mcp-server through 0.1.7 exposed network-accessible file operations
+      whose absolute-path and traversal handling allowed an unauthenticated caller
+      to read or modify files outside EXCEL_FILES_PATH; the advisory reports
+      proof-of-concept validation across multiple primitives and a fix in 0.1.8.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-j98m-w3xp-9f56
+        support: direct
+        exact_locators: ["Summary", "Technical Details", "Proof of Concept", "Impact", "Patched Versions"]
+      - source_id: SRC-cve-2026-40576
+        support: corroborating
+        exact_locators: ["CNA description", "Affected versions", "CVSS metrics"]
+    corroboration: The CVE record confirms unauthenticated remote exposure, the two path-validation flaws, and the fixed release.
+    limitations:
+      - The demonstrated weakness includes write impact, but this technique uses only its file-read and collection aspect.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C010
+    statement: >-
+      MCP Filesystem reference-server releases before 0.6.4 or 2025.7.01 could
+      expose unintended files through allowed-directory symlinks or colliding path
+      prefixes; advisory metadata contains a patch-version discrepancy, so the
+      conservative remediation floor is 0.6.4 or 2025.7.01.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-53109
+        support: direct
+        exact_locators: ["CNA description", "Affected versions"]
+      - source_id: SRC-cve-2025-53110
+        support: direct
+        exact_locators: ["CNA description", "Affected versions"]
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: corroborating
+        exact_locators: ["Affected packages", "Patched versions", "Summary"]
+      - source_id: SRC-ghsa-cve-2025-53110
+        support: corroborating
+        exact_locators: ["Affected packages", "Patched versions", "Summary"]
+    corroboration: Paired CVE and project advisory records independently establish both boundary-bypass variants.
+    limitations:
+      - The advisory headings and narrative do not agree on the npm patch floor; the higher published floor is used.
+    conflicts:
+      - Project advisory metadata lists 0.6.3 in places while CVE prose and advisory recommendations list 0.6.4.
+    inference:
+      is_inference: true
+      rationale: Choosing the higher version is a conservative resolution of conflicting official metadata.
+    status: validated
+
+  - id: SAF-T1802-C011
+    statement: >-
+      FlowGuard's controlled evaluation included 250 file-system access cases and
+      reported 178 true positives, 50 true negatives, no false positives, and 22
+      false negatives for that category; its MarkItDown case study independently
+      confirmed local file disclosure through a caller-controlled file URI.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-flowguard-2607.14754v1
+        support: direct
+        exact_locators: ["Table I benchmark composition", "Table III end-to-end effectiveness", "Appendix D real-world case study"]
+    corroboration: The benchmark aggregate and separate manually verified case study support both detection feasibility and an end-to-end demonstration.
+    limitations:
+      - The paper is a preprint; the benchmark does not establish production exploitation and reports incomplete recall.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C012
+    statement: >-
+      No file-specific production incident qualifying as this technique was found
+      in the bounded direct-authority review; the Anthropic campaign report
+      documents agentic collection from databases and systems but does not
+      establish collection of files, and none of the selected CVEs appeared in the
+      reviewed CISA Known Exploited Vulnerabilities snapshot.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: context
+        exact_locators: ["Executive Summary", "Campaign Lifecycle: Data Collection", "Limitations"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: ["Catalog version 2026.09.01; CVE identifier inventory"]
+      - source_id: SRC-nvd-saturation-file-access
+        support: context
+        exact_locators: ["NVD CVE API keyword results for Model Context Protocol file access"]
+      - source_id: SRC-nvd-saturation-arbitrary-read
+        support: context
+        exact_locators: ["NVD CVE API keyword results for Model Context Protocol arbitrary file read"]
+    corroboration: Independent incident and government vulnerability catalogs were checked alongside the advisory corpus.
+    limitations:
+      - Absence from a bounded public corpus is not evidence that exploitation has never occurred or was never privately observed.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a bounded negative research result based on the named catalogs and date, not a universal claim.
+    status: validated
+
+  - id: SAF-T1802-C013
+    statement: >-
+      MITRE ATT&CK T1005 Data from Local System is a direct behavioral mapping for
+      obtaining file content from a local system, while MCP changes the access and
+      authorization path rather than the collection objective.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1005
+        support: direct
+        exact_locators: ["Data from Local System: Description", "Procedure Examples"]
+      - source_id: SRC-mcp-resources-2026
+        support: context
+        exact_locators: ["Reading Resources", "File Resources"]
+    corroboration: Protocol semantics supply the MCP-specific access path and ATT&CK supplies the collection objective.
+    limitations:
+      - ATT&CK T1005 is not MCP-specific and does not model approval or resource semantics.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping equivalence is a framework judgment derived from the two definitions.
+    status: validated
+
+  - id: SAF-T1802-C014
+    statement: >-
+      File and Directory Discovery is distinct when activity only enumerates names,
+      paths, or metadata; File Collection requires retrieval of content, although
+      discovery can immediately precede collection.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1083
+        support: direct
+        exact_locators: ["File and Directory Discovery: Description", "Detection Strategy"]
+      - source_id: SRC-attack-t1005
+        support: corroborating
+        exact_locators: ["Data from Local System: Description", "Detection Strategy"]
+    corroboration: The two ATT&CK definitions distinguish enumeration from obtaining data.
+    limitations:
+      - One MCP session may exhibit both behaviors and require event-level classification.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The SAF boundary is derived from the difference between the two ATT&CK behaviors.
+    status: validated
+
+  - id: SAF-T1802-C015
+    statement: >-
+      Detection needs MCP operation, argument, result, actor, session, server,
+      approval, requested-path, resolved-path, approved-root, and byte-count fields
+      so analysts can distinguish successful content retrieval from listing and
+      compare access with the intended boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Listing Resources", "Reading Resources", "Security Considerations"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Calling Tools", "Security Considerations: log tool usage"]
+      - source_id: SRC-flowguard-2607.14754v1
+        support: corroborating
+        exact_locators: ["Evidence Adjudication", "Evaluation Metrics", "Discussion and Limitations"]
+    corroboration: Protocol fields identify operations while empirical research shows why runtime result evidence and attribution matter.
+    limitations:
+      - Several fields are implementation-specific and may require host or endpoint enrichment.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The normalized field set is an analytic design derived from protocol and empirical observability requirements.
+    status: validated
+
+  - id: SAF-T1802-C016
+    statement: >-
+      A defensible behavioral analytic can alert on successful file retrieval that
+      resolves outside approved roots, sensitive-file retrieval without approval,
+      or a short burst of successful distinct-file reads, while using explicit
+      approvals and known workloads to suppress legitimate collection.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1005
+        support: direct
+        exact_locators: ["Detection Strategy DET0126: recursive listings, targeted file reads, temporary staging"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Human in the Loop", "Security Considerations"]
+      - source_id: SRC-flowguard-2607.14754v1
+        support: corroborating
+        exact_locators: ["Evidence Adjudication", "Table III", "Limitations"]
+    corroboration: ATT&CK supplies sequence concepts, MCP supplies approval context, and FlowGuard supplies evidence-quality constraints.
+    limitations:
+      - Thresholds are illustrative, and low-and-slow access or missing result telemetry can evade the analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: No authority standardizes this combined threshold; it is a transparent detection design tested by local fixtures.
+    status: validated
+
+  - id: SAF-T1802-C017
+    statement: >-
+      File-capable tools and conversions have legitimate uses, tool names alone can
+      hide file access, and credible findings require backend-originated runtime
+      evidence that violates the declared behavior rather than reflected probe text.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-flowguard-2607.14754v1
+        support: direct
+        exact_locators: ["Evidence Adjudication", "False Positive Analysis", "Appendix D", "Limitations"]
+    corroboration: The paper reports zero false positives in the controlled file-system subset but 22 false negatives, illustrating both value and blind spots.
+    limitations:
+      - Reported performance may not generalize to other server populations or telemetry schemas.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C018
+    statement: >-
+      Preventive controls include validating and canonicalizing URIs and paths,
+      enforcing authorization at each read or call, rejecting escapes after link
+      resolution, minimizing privileges and scopes, sandboxing local servers, and
+      requiring confirmation for sensitive tool operations.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Security Considerations"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations"]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["Local MCP server compromise", "Scope minimization"]
+      - source_id: SRC-cwe-22
+        support: corroborating
+        exact_locators: ["Potential Mitigations: Input Validation; Environment Hardening"]
+      - source_id: SRC-cwe-59
+        support: corroborating
+        exact_locators: ["Potential Mitigations"]
+    corroboration: Protocol guidance, deployment guidance, and weakness-specific guidance converge on boundary enforcement and least privilege.
+    limitations:
+      - Controls must be implemented by hosts and servers; protocol roots alone do not enforce them.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1802-C019
+    statement: >-
+      The primary impact is confidentiality loss of files readable by the server
+      process; severity grows with remote or low-friction reachability, service
+      privileges, sensitive file availability, automated calls, and attached
+      exfiltration, but file collection alone does not establish integrity or
+      availability impact.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-73498
+        support: direct
+        exact_locators: ["CNA description", "CVSS metrics"]
+      - source_id: SRC-cve-2026-46555
+        support: direct
+        exact_locators: ["CNA description", "CVSS metrics"]
+      - source_id: SRC-cve-2026-40576
+        support: direct
+        exact_locators: ["CNA description", "CVSS metrics"]
+      - source_id: SRC-cwe-22
+        support: corroborating
+        exact_locators: ["Common Consequences: Confidentiality"]
+    corroboration: Three selected advisories describe process-readable file exposure under different reachability and authorization conditions.
+    limitations:
+      - Actual harm depends on accessible content and follow-on use; write effects belong outside this technique's defining behavior.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The severity synthesis generalizes bounded impact conditions across selected disclosures.
+    status: validated
+
+  - id: SAF-T1802-C020
+    statement: >-
+      Fixed releases are MCP Atlassian 0.22.0, WhatsApp MCP 0.2.1,
+      excel-mcp-server 0.1.8, and MCP Filesystem 0.6.4 or 2025.7.01;
+      remediation should also rotate any credential whose file content was exposed.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-g5r6-gv6m-f5jv
+        support: direct
+        exact_locators: ["Patched Versions", "Remediation"]
+      - source_id: SRC-ghsa-7jj9-4qqq-4xc4
+        support: direct
+        exact_locators: ["Patched Versions", "Remediation"]
+      - source_id: SRC-ghsa-j98m-w3xp-9f56
+        support: direct
+        exact_locators: ["Patched Versions", "Remediation"]
+      - source_id: SRC-cve-2025-53109
+        support: direct
+        exact_locators: ["CNA description"]
+      - source_id: SRC-cve-2025-53110
+        support: direct
+        exact_locators: ["CNA description"]
+    corroboration: CVE and project advisory records agree on the patched release lines except for the documented npm metadata discrepancy.
+    limitations:
+      - Credential rotation is conditional on evidence that a credential-bearing file was actually returned or staged.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Patch versions are direct; credential rotation is a conditional response inference from exposure.
+    status: validated

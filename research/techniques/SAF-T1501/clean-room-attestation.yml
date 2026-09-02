@@ -1,0 +1,108 @@
+version: 1
+technique_id: SAF-T1501
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1501
+target:
+  id: SAF-T1501
+  neutral_name: Full-Schema Poisoning (FSP)
+allowed_inputs:
+- Neutral technique ID, neutral name, and assigned tactic supplied by the requesting
+  orchestrator.
+- Generic SAF authoring skill, generic research protocol, generic technique template,
+  blank packet templates, and current validator behavior.
+- Directly opened public authority, standards, government catalog, first-party artifact,
+  and original research sources collected for this run.
+- An isolated synthetic repository assembled only after the independent draft and
+  packet existed.
+prohibited_inputs:
+- Existing techniques/SAF-T1501/README.md or any prior target README content.
+- Existing research/techniques/SAF-T1501/ packet or any prior target research content.
+- Existing techniques/SAF-T1501/detection-rule.yml or target-specific tests.
+- Git history, diffs, blame, logs, branches, or commits for the target.
+- Any pull request, review thread, issue, catalog description, shared registry entry,
+  or SAF site containing prior target content.
+- Any previous conversation or inherited conclusion about the target technique.
+independent_research:
+  searches:
+  - MCP official documentation index for current Tools, Client Best Practices, and
+    Security Best Practices
+  - NVD CVE API 2.0 keywordSearch=Model Context Protocol
+  - NVD CVE API 2.0 keywordSearch=tool poisoning
+  - CISA KEV complete catalog term review
+  - arXiv API all:"Model Context Protocol" AND all:"tool poisoning"
+  - arXiv API all:"Model Context Protocol" AND all:"production incident"
+  - arXiv API all:"Model Context Protocol" AND all:"schema poisoning"
+  - arXiv API all:"Model Context Protocol" AND all:"metadata injection"
+  - arXiv API all:"Model Context Protocol" AND all:"tool poisoning detection"
+  - arXiv API all:"Model Context Protocol" AND all:"false positive" AND all:poisoning
+  - arXiv API all:"Full Schema Poisoning" OR all:"full-schema poisoning"
+  - arXiv API all:"Model Context Protocol" AND all:"parameter specifications" AND
+    all:poisoning
+  opened_source_ids:
+  - SRC-adversa-mcp-top25
+  - SRC-cascade-2604.17125
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-cyberark-fsp-2025-05-30
+  - SRC-huang-fsp-threat-model
+  - SRC-invariant-direct-poisoning-code
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-client-practices-2026-07-28
+  - SRC-mcp-itp-2026-01
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcptox-2508.14925
+  - SRC-mindguard-2508.20412
+  - SRC-mitre-t1195-002
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-rfc8785
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrators must not replace independently authored prose with prior target prose.
+- Synthetic neighbor and mitigation IDs must be reconciled mechanically against the
+  live registries without exposing prior target content to this generator.
+- The synthetic repository-history join must be replaced with the actual integration
+  commit by an integrator after the frozen bundle is accepted.
+- Source, framework, and alignment fragments must be merged by key; no shared registry
+  was inspected during generation.
+attestation: I attest that this fresh-agent run used only the allowed generic materials
+  and independently reviewed direct sources, did not access any prohibited target
+  artifact or history, froze the draft before integration, and validated it only in
+  an isolated synthetic repository.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-practices-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-rfc8785: SRC-rfc8785
+    SRC-invariant-tool-poisoning: SRC-invariant-tpa-2025-04-01
+    SRC-mcptox: SRC-mcptox-2508.14925
+    SRC-mcp-itp: SRC-mcp-itp-2026-01
+    SRC-mindguard: SRC-mindguard-2508.20412
+    SRC-cascade: SRC-cascade-2604.17125
+    SRC-nvd-catalog-queries: SRC-nvd-fsp-catalog-queries-2026-09-01
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-fsp-2026-09-01
+    SRC-mitre-t1195-002: SRC-mitre-t1195-002
+    SRC-cyberark-fsp-redirect: SRC-cyberark-fsp-2025-05-30
+    SRC-mcp-tools-2025-06-18: SRC-mcp-tools-2025-06-18
+  new_shared_source_records:
+  - SRC-mcp-client-practices-2026-07-28
+  - SRC-invariant-direct-poisoning-code
+  - SRC-huang-fsp-threat-model
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-adversa-mcp-top25
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-15
+  - SAF-M-2
+  status: integrated_and_validated

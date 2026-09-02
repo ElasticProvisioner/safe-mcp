@@ -1,0 +1,211 @@
+version: 1
+technique_id: SAF-T1406
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Directly opened the current MCP specification index and its official Tools, Schema, Discovery, and changelog pages.
+        - Directly opened MITRE ATT&CK T1036 and the TA0005 identifier page.
+      material_changes:
+        - Fixed the core boundary around metadata consumed for selection, approval, inventory, or policy decisions.
+        - Recorded the normative warning that tool annotations are untrusted hints.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Retrieved CVE-2025-54136, CVE-2025-54135, CVE-2025-6514, and CVE-2025-49596 from the official CVE API.
+        - Filtered the CISA KEV JSON feed for all four exact CVE identifiers.
+        - Followed only CVE-supplied exact GitHub advisory URLs and first-party JFrog references.
+      material_changes:
+        - Selected CVE-2025-54136 as a direct vulnerability.
+        - Excluded three vulnerabilities whose immediate mechanism is prompt injection, command injection, or missing authentication.
+        - Bounded the incident statement to no qualifying production incident established in the reviewed corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed the Invariant Labs tool-poisoning and WhatsApp sleeper-server demonstrations from their first-party pages.
+        - Queried the official arXiv API for exact MCP and tool-poisoning concepts and reviewed three selected papers.
+      material_changes:
+        - Classified the end-to-end technique as Demonstrated.
+        - Selected the WhatsApp rug-pull demonstration, malicious-metadata study, and MCPTox benchmark as the highest-impact controlled examples.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed official MCP change signaling and logging guidance.
+        - Reviewed first-party descriptor hashing and controlled layered-defense results.
+      material_changes:
+        - Defined a canonical metadata-hash comparison analytic with reapproval context.
+        - Added approved-baseline, canonicalization, identity, and telemetry limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Challenged selected examples for production status, directness, independent corroboration, version conflicts, and payload dependence.
+        - Checked whether T1036 is identical or only analogous to the frozen SAF boundary.
+      material_changes:
+        - Preserved controlled-study limitations and the CVE affected-range conflict.
+        - Marked T1036 as analogous and retained synthetic nearest neighbors for later registry reconciliation.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Rechecked every publishable proposition against exact locators and the exclusion ledger.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Rechecked directness, source classes, candidate ranking, rights, and detection test coverage after the draft contract was frozen.
+      material_changes: []
+  rationale: >-
+    Current protocol pages establish the object and trust boundary; an official
+    advisory establishes a direct approval-bypass vulnerability; two independent
+    research groups and a first-party lab establish controlled descriptor attacks;
+    implementation and defense research support a bounded analytic. Official CVE
+    and KEV review found no qualifying production incident. Two challenge passes
+    changed no claim, example, classification, or control.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-cve-2025-54136
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-arxiv-2508.02110v2
+    - SRC-mcptox-2508.14925
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-cve-2025-54136
+      identifier: CVE-2025-54136 / GHSA-24mc-g4xr-4395
+      relationship: direct_vulnerability
+      exploitation_status: Disclosed vulnerability; no production exploitation established by the reviewed record.
+      impact: Replacement of a previously trusted MCP server command could bypass reapproval and permit arbitrary code execution under advisory prerequisites.
+      remediation: Upgrade to Cursor 1.3 or later and re-review changed MCP definitions.
+      selected: true
+      rationale: Highest-impact direct approval-bypass vulnerability matching post-approval metadata or definition change.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: Invariant Labs WhatsApp MCP sleeper-server experiment
+      relationship: direct_demonstration
+      exploitation_status: Controlled researcher demonstration; not a production breach.
+      impact: A post-approval tool-description change led the tested agent to disclose local data through the connected messaging workflow.
+      remediation: Surface descriptors, detect changes, require reapproval, and isolate trust boundaries.
+      selected: true
+      rationale: Direct controlled rug-pull behavior closely matches the frozen contract.
+    - source_id: SRC-arxiv-2508.02110v2
+      identifier: Attacking Model Context Protocol via Malicious Tool Metadata
+      relationship: direct_demonstration
+      exploitation_status: Controlled synthetic evaluation; not production exploitation.
+      impact: Malicious names, descriptions, and parameter metadata altered tool-use behavior across evaluated agent settings.
+      remediation: Combine metadata review with integrity, least privilege, and runtime controls; do not rely on a content-only auditor.
+      selected: true
+      rationale: Direct peer-reviewed study of the defining mechanism with explicit limitations and MCP-specific results.
+    - source_id: SRC-mcptox-2508.14925
+      identifier: MCPTox benchmark
+      relationship: direct_demonstration
+      exploitation_status: Constructed attacks against authentic tool metadata; not attacks observed on live servers.
+      impact: Tool-poisoning cases produced unsafe selections or actions in a substantial subset of evaluated settings.
+      remediation: Treat benchmark findings as evidence for descriptor vetting, privilege restriction, and change monitoring.
+      selected: true
+      rationale: Broadest reviewed benchmark grounded in authentic tool definitions while retaining controlled-study status.
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; CVE ADP reports no exploitation status in the reviewed record.
+      impact: Crafted OAuth authorization metadata could reach an OS command sink and cause code execution.
+      remediation: Upgrade mcp-remote to 0.1.16 or later.
+      selected: false
+      rationale: Metadata transports attacker input, but command injection—not trust or policy misclassification—is the immediate mechanism.
+    - source_id: SRC-cve-2025-54135
+      identifier: CVE-2025-54135 / GHSA-4cxx-hrm3-49rm
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; no production exploitation established by the reviewed record.
+      impact: Indirect prompt injection could create a missing MCP configuration without approval and lead to code execution.
+      remediation: Upgrade to Cursor 1.3.9 or later and review repository-driven configuration creation.
+      selected: false
+      rationale: The defining mechanism is prompt-injection-driven configuration creation rather than metadata-based misclassification or post-approval drift.
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: rejected
+      exploitation_status: Disclosed vulnerability; no production exploitation established by the reviewed record.
+      impact: Missing proxy authentication in MCP Inspector could permit remote command execution.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later and bind services safely.
+      selected: false
+      rationale: Missing authentication does not require metadata manipulation and falls outside the frozen contract.
+
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-mcp-scan-2025
+  - SRC-cve-2025-54136
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-cve-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-2508.02110v2
+  - SRC-mcptox-2508.14925
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-mitre-attack-t1036
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-mcp-scan-2025
+  - SRC-cve-2025-54136
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-2508.02110v2
+  - SRC-mcptox-2508.14925
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-mitre-attack-t1036
+sources_rejected:
+  - source_id: SRC-mcp-discovery-2026-07-28
+    reason: Consulted for server identity context but did not materially support a retained claim beyond the Tools and Schema pages.
+  - source_id: SRC-cve-2025-6514
+    reason: Immediate mechanism is OS command injection from OAuth endpoint data, not metadata-driven trust classification.
+  - source_id: SRC-jfrog-cve-2025-6514
+    reason: First-party analysis confirms the adjacent command-injection mechanism and therefore remains uncited.
+  - source_id: SRC-cve-2025-54135
+    reason: Immediate mechanism is indirect prompt injection creating a missing configuration, not an unreviewed metadata change.
+  - source_id: SRC-ghsa-cursor-4cxx-2025
+    reason: Maintainer advisory confirms the adjacent prompt-injection mechanism and therefore remains uncited.
+  - source_id: SRC-cve-2025-49596
+    reason: Missing proxy authentication is outside the frozen metadata-classification boundary.
+  - source_id: SRC-ghsa-inspector-7f8r
+    reason: Maintainer advisory confirms the out-of-scope authentication failure and therefore remains uncited.
+sources_blocked: []
+
+conflicts:
+  - issue: CVE-2025-54136 affected-range text differs from the linked maintainer advisory.
+    resolution: Publish only the unconflicted patched version 1.3 and preserve the range disagreement in the claim inventory.
+  - issue: Current MITRE ATT&CK labels the TA0005 page Stealth while the supplied SAF tactic label is Defense Evasion.
+    resolution: Preserve the coordinator-supplied SAF tactic ID and label; cite only T1036 as an analogous external mapping.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1406-C002
+    - SAF-T1406-C005
+    - SAF-T1406-C007
+  rationale: >-
+    An end-to-end post-approval descriptor change is directly demonstrated in a
+    controlled MCP experiment, and an official advisory establishes a matching
+    approval-bypass vulnerability. No qualifying production incident was found,
+    so Observed would overstate the evidence. Demonstrated describes the complete
+    metadata-to-misclassification chain without implying in-the-wild exploitation.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

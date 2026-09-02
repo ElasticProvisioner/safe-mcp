@@ -1,0 +1,28 @@
+version: 1
+technique_id: SAF-T2105
+frozen_before_integration: true
+mechanical_joins:
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml, preserving canonical IDs and complete records.
+  - Merge framework-fragment.yml into research/framework-model.yml after replacing SAF-T9997 and SAF-T9998 with canonical nearest-neighbor IDs.
+  - Merge alignment-fragment.yml into research/alignment-ledger.yml and resolve any identifier changes consistently.
+  - Replace the synthetic repository-history SHA in traceability-ledger.yml with the honest integration commit.
+  - Re-run the canonical strict validator and detection test after joins without changing frozen research conclusions.
+content_changes_permitted: false
+unresolved_research: []
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-google-gtig-2025: SRC-google-ai-misuse
+    SRC-mcp-resources-2025-06-18: SRC-mcp-resources-2025-06-18
+    SRC-nist-ai-600-1: SRC-nist-ai-600-1
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T2106, SAF-T1102]
+  canonical_mitigations: [SAF-M-3, SAF-M-11, SAF-M-12, SAF-M-22, SAF-M-30, SAF-M-32, SAF-M-36, SAF-M-51]
+  attack_mapping: {id: T1565, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T2105/validation/detection-test.txt
+    - research/techniques/SAF-T2105/validation/strict-validator.txt
+    - research/techniques/SAF-T2105/validation/canonical-validation.txt
+  dependency_resolution: SAF-T2106 was independently clean-room authored and integrated; destination strict validation now passes.
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve reviewed-source metadata and frozen evidence references.

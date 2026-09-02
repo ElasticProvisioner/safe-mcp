@@ -1,0 +1,473 @@
+version: 1
+archive_policy: &archive_policy
+  status: remote_reviewed_not_archived
+  reason: Complete lawful review snapshots are retained and hash-indexed in the isolated clean-room source-acquisition area, but are intentionally excluded from the publication bundle.
+  review_evidence:
+    access_method: Direct official URL fetch with local plain-text extraction where applicable.
+    notes: Source-specific locators and review notes record the material reviewed; the external acquisition corpus is covered by SOURCES.sha256.
+sources:
+  - id: SRC-mcp-authorization-2026
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official HTML review with plain-text extraction and later semantic re-fetch comparison.
+    locators: [Introduction, Roles, Authorization Response Validation, Access Token Usage]
+    review_notes: Verified MCP client/resource-server roles and per-request association of issuer with PKCE verifier and state when used.
+    archive: *archive_policy
+  - id: SRC-mcp-authorization-security-2026
+    title: Model Context Protocol Authorization Security Considerations
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official HTML review with plain-text extraction.
+    locators: [Authorization Code Protection, Mix-Up Attacks, CSRF requirements]
+    review_notes: Verified that MCP implementers must apply OAuth transaction and response protections; no direct incident is asserted.
+    archive: *archive_policy
+  - id: SRC-mcp-security-2026
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official HTML review with complete plain-text extraction.
+    locators: [OAuth State Parameter Validation, Mix-Up Attacks, State Handle Hijacking]
+    review_notes: Verified per-request randomness, callback-session equality, rejection, single use, short expiry, and distinction from MCP state-handle hijacking.
+    archive: *archive_policy
+  - id: SRC-mcp-index
+    title: Model Context Protocol official documentation index
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "accessed 2026-09-02"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/llms.txt
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official text-index review.
+    locators: [Specification 2026-07-28 entries, Authorization entries, Security entries]
+    review_notes: Established the current MCP versioned authority pages without using general search.
+    archive: *archive_policy
+  - id: SRC-mcp-authorization-2025
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-11-25 superseded"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official HTML review with plain-text extraction.
+    locators: [Authorization flow, Security Considerations]
+    review_notes: Consulted only as a superseded-version challenge; it does not control current claims.
+    archive: *archive_policy
+  - id: SRC-mcp-security-2025
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-11-25 superseded"
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official HTML review with plain-text extraction.
+    locators: [OAuth State Parameter Validation, Session Hijacking]
+    review_notes: Consulted only as a superseded-version challenge and rejected from controlling evidence.
+    archive: *archive_policy
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    publisher: RFC Editor and IETF
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: "RFC 9700, January 2025"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.txt
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct complete RFC text review.
+    locators: [Section 2.1, Section 2.1.1, Section 4.2, Section 4.7.1]
+    review_notes: Verified user-agent binding, state leakage, replay of learned state, and PKCE distinctions.
+    archive: *archive_policy
+  - id: SRC-rfc9700-errata
+    title: RFC 9700 errata search result
+    publisher: RFC Editor
+    authors: [RFC Editor]
+    version_or_date: "accessed 2026-09-02"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/errata/rfc9700
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official errata-page review.
+    locators: [No matching errata found]
+    review_notes: Final authority-only pass found no published RFC 9700 erratum affecting the claims.
+    archive: *archive_policy
+  - id: SRC-rfc6749
+    title: The OAuth 2.0 Authorization Framework
+    publisher: RFC Editor and IETF
+    authors: [Dick Hardt]
+    version_or_date: "RFC 6749, October 2012"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc6749.txt
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct complete RFC text review.
+    locators: [Section 4.1.1, Section 10.12]
+    review_notes: Verified original state and user-agent authenticated-state binding requirements.
+    archive: *archive_policy
+  - id: SRC-rfc7636
+    title: Proof Key for Code Exchange by OAuth Public Clients
+    publisher: RFC Editor and IETF
+    authors: [Nat Sakimura, John Bradley, Naveen Agarwal]
+    version_or_date: "RFC 7636, September 2015"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc7636.txt
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct complete RFC text review.
+    locators: [Section 1.1, Section 4.1 through 4.6]
+    review_notes: Verified per-request verifier and S256-based authorization-code binding, while preserving state-relay scope distinction.
+    archive: *archive_policy
+  - id: SRC-oauth21-draft13
+    title: The OAuth 2.1 Authorization Framework
+    publisher: IETF OAuth Working Group
+    authors: [Aaron Parecki, Torsten Lodderstedt]
+    version_or_date: "draft-ietf-oauth-v2-1-13, May 2024"
+    source_class: protocol_or_standard
+    official_url: https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-13.txt
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct complete IETF draft text review.
+    locators: [Section 2.3.3, Section 7.9]
+    review_notes: Verified one-time CSRF state and browser-session binding requirements at the draft version cited by MCP.
+    archive: *archive_policy
+  - id: SRC-fett-oauth-analysis
+    title: A Comprehensive Formal Security Analysis of OAuth 2.0
+    publisher: arXiv; abridged version at ACM CCS 2016
+    authors: [Daniel Fett, Ralf Küsters, Guido Schmitz]
+    version_or_date: "arXiv:1601.01229v4, 2016-08-08"
+    source_class: research
+    official_url: https://arxiv.org/pdf/1601.01229
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct PDF review with pdftotext extraction.
+    locators: [Section 3.3 State Leak Attack pages 14-15, Section 5]
+    review_notes: Verified the formal state-leak attack, session-integrity outcome, and fixed-model assumptions; no MCP claim is attributed to the paper.
+    archive: *archive_policy
+  - id: SRC-fett-oauth-abstract
+    title: A Comprehensive Formal Security Analysis of OAuth 2.0 abstract record
+    publisher: arXiv
+    authors: [Daniel Fett, Ralf Küsters, Guido Schmitz]
+    version_or_date: "arXiv:1601.01229v4, 2016-08-08"
+    source_class: research
+    official_url: https://arxiv.org/abs/1601.01229
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct abstract-page review.
+    locators: [Title, Authors, Submission history]
+    review_notes: Verified author names, date, title, and publication metadata for attribution.
+    archive: *archive_policy
+  - id: SRC-fastapi-advisory
+    title: FastAPI Users OAuth state is not bound to the initiating browser
+    publisher: GitHub Security Advisory; FastAPI Users
+    authors: [David Bors as reporter, FastAPI Users maintainers]
+    version_or_date: "GHSA-5j53-63w8-8625, published 2025-12-19"
+    source_class: official_advisory
+    official_url: https://github.com/fastapi-users/fastapi-users/security/advisories/GHSA-5j53-63w8-8625
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Exact GitHub URL opened only after NVD supplied it; full advisory page converted to text.
+    locators: [Description, Impact, Affected versions, Patched versions, Credits]
+    review_notes: Verified signed but uncorrelated state, cross-browser callback completion, conditional account impact, fix, and reporter credit.
+    archive: *archive_policy
+  - id: SRC-nvd-2025-68481
+    title: CVE-2025-68481 detail
+    publisher: National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-68481
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD API record review.
+    locators: [Description, References, Configurations]
+    review_notes: Corroborated FastAPI Users mechanism and fix; supplied the exact GitHub advisory provenance URL.
+    archive: *archive_policy
+  - id: SRC-authlib-advisory
+    title: Authlib OAuth state is not bound to the initiating browser
+    publisher: GitHub Security Advisory; Authlib
+    authors: [David Bors and Snyk Security Labs as reporters, Authlib maintainers]
+    version_or_date: "GHSA-fg6f-75jq-6523, published 2025-12-18"
+    source_class: official_advisory
+    official_url: https://github.com/authlib/authlib/security/advisories/GHSA-fg6f-75jq-6523
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Exact GitHub URL opened only after NVD supplied it; full advisory page converted to text.
+    locators: [Description, Impact, Affected versions, Patched versions, Credits]
+    review_notes: Verified cache-backed but browser-uncorrelated state and recorded the upstream affected/patched display conflict.
+    archive: *archive_policy
+  - id: SRC-nvd-2025-68158
+    title: CVE-2025-68158 detail
+    publisher: National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-68158
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD API record review.
+    locators: [Description, References, Configurations]
+    review_notes: Corroborated Authlib behavior, normalized fixed version 1.6.6, and supplied the exact GitHub advisory URL.
+    archive: *archive_policy
+  - id: SRC-fastify-advisory
+    title: "@fastify/oauth2 state and PKCE cookies can be planted by a related host"
+    publisher: GitHub Security Advisory; Fastify
+    authors: [kleju13 as reporter, Matteo Collina as remediation developer, Ulises Gascon as reviewer, Fastify maintainers]
+    version_or_date: "GHSA-p8h8-rj28-m8q9, published 2026-08-15"
+    source_class: official_advisory
+    official_url: https://github.com/fastify/fastify-oauth2/security/advisories/GHSA-p8h8-rj28-m8q9
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Exact GitHub URL opened only after NVD supplied it; full advisory page converted to text.
+    locators: [Description, Impact, Affected versions, Remediation, Credits]
+    review_notes: Verified related-host cookie planting, cross-session login, bounded non-exposure impact, opt-in control, and named credits.
+    archive: *archive_policy
+  - id: SRC-nvd-2026-18165
+    title: CVE-2026-18165 detail
+    publisher: National Vulnerability Database
+    authors: [NIST NVD, OpenJS CNA]
+    version_or_date: "last modified 2026-08-28"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-18165
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD API record review.
+    locators: [Description, References, Configurations]
+    review_notes: Corroborated the Fastify mechanism, affected range, remediation condition, and exact GitHub advisory URL.
+    archive: *archive_policy
+  - id: SRC-openclaw-advisory
+    title: OpenClaw manual Chutes OAuth callback validation weakness
+    publisher: GitHub Security Advisory; OpenClaw
+    authors: [aether-ai-agent as reporter, OpenClaw maintainers]
+    version_or_date: "GHSA-7rcp-mxpq-72pj, published 2026"
+    source_class: official_advisory
+    official_url: https://github.com/openclaw/openclaw/security/advisories/GHSA-7rcp-mxpq-72pj
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Exact GitHub URL opened only after NVD supplied it; full advisory page converted to text.
+    locators: [Description, Affected surface, Patched versions, Credits]
+    review_notes: Verified code-only manual callback substitution and classified it as adjacent rather than valid-state relay.
+    archive: *archive_policy
+  - id: SRC-nvd-2026-28477
+    title: CVE-2026-28477 detail
+    publisher: National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "2026"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-28477
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD API record review.
+    locators: [Description, References]
+    review_notes: Corroborated the OpenClaw manual callback scope and supplied its exact GitHub advisory URL.
+    archive: *archive_policy
+  - id: SRC-nvd-state-query
+    title: NVD OAuth state CSRF keyword result set
+    publisher: National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "queried 2026-09-02"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20state%20CSRF
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official NVD API result-set review.
+    locators: [totalResults, CVE identifiers, descriptions, references]
+    review_notes: Screened 19 candidates for valid-state relay, directness, impact, remediation, and incident evidence.
+    archive: *archive_policy
+  - id: SRC-nvd-oauth-query
+    title: NVD OAuth CSRF keyword result set
+    publisher: National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "queried 2026-09-02"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20CSRF
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official NVD API result-set review.
+    locators: [totalResults, CVE identifiers, descriptions, references]
+    review_notes: Screened 41 candidates; missing-state, predictable-state, and other-mechanism cases were excluded or classified as adjacent.
+    archive: *archive_policy
+  - id: SRC-nvd-saturation-1
+    title: NVD OAuth state browser session CSRF saturation result set
+    publisher: National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "queried 2026-09-02"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20state%20browser%20session%20CSRF
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official NVD API result-set review.
+    locators: [Five returned CVE identifiers and descriptions]
+    review_notes: Final pass re-found one selected case and four rejected or enabling cases; no material claim, selection, or status change.
+    archive: *archive_policy
+  - id: SRC-nvd-saturation-2
+    title: NVD login CSRF OAuth state session saturation result set
+    publisher: National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "queried 2026-09-02"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=login%20CSRF%20OAuth%20state%20session
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official NVD API result-set review.
+    locators: [Six returned CVE identifiers and descriptions]
+    review_notes: Final pass produced no new direct MCP evidence and no material contract, example, detector, or status change.
+    archive: *archive_policy
+  - id: SRC-cisa-kev
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "catalog snapshot accessed 2026-09-02"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official JSON catalog identifier comparison.
+    locators: [Catalog version and selected CVE identifier set]
+    review_notes: None of the selected vulnerability CVEs appeared in the snapshot; no inference of non-exploitation is made.
+    archive: *archive_policy
+  - id: SRC-cisa-search-state
+    title: CISA site search for OAuth state CSRF
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "searched 2026-09-02"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/search?search_api_fulltext=OAuth%20state%20CSRF
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official site-search endpoint review.
+    locators: [Search results page]
+    review_notes: Returned no substantive qualifying incident result in the retrieved page.
+    archive: *archive_policy
+  - id: SRC-cisa-search-incident
+    title: CISA site search for OAuth state incident
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "searched 2026-09-02"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/search?search_api_fulltext=OAuth%20state%20incident
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official site-search endpoint review.
+    locators: [Search results page]
+    review_notes: Returned no substantive qualifying incident result in the retrieved page.
+    archive: *archive_policy
+  - id: SRC-cisa-search-saturation
+    title: CISA site search for OAuth login CSRF state session
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "searched 2026-09-02"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/search?search_api_fulltext=OAuth%20login%20CSRF%20state%20session
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official site-search endpoint review.
+    locators: [Search results page]
+    review_notes: Second final pass returned no substantive qualifying incident result.
+    archive: *archive_policy
+  - id: SRC-owasp-logging
+    title: Logging Cheat Sheet
+    publisher: OWASP Cheat Sheet Series
+    authors: [OWASP Cheat Sheet Series Team]
+    version_or_date: "accessed 2026-09-02"
+    source_class: credible_practice
+    official_url: https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official page review with plain-text extraction.
+    locators: [Which events to log, Event attributes, Data to exclude, Verification]
+    review_notes: Verified interaction correlation, outcome and identity fields, privacy exclusions, and verification guidance used to derive the analytic.
+    archive: *archive_policy
+  - id: SRC-mitre-t1204-001
+    title: User Execution Malicious Link
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK Team]
+    version_or_date: "T1204.001 version 1.2, modified 2026-05-12"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1204/001/
+    access_status: public
+    accessed_on: "2026-09-02"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-02"
+    review_method: Direct official technique-page review with plain-text extraction.
+    locators: [Description, Version, Procedure examples]
+    review_notes: Supports only a delivery analogy when a malicious link carries the relayed callback, not a direct mechanism mapping.
+    archive: *archive_policy

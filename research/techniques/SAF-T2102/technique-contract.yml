@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T2102
+name: Service Disruption
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Make an MCP or agentic service, shared capacity, or another principal's
+  in-flight work unavailable or materially degraded.
+scope:
+  security_boundary: The boundary between an authorized or connected requestor, untrusted
+    model-visible input, or MCP tool server and the availability or task ownership
+    of a shared MCP server, agent runtime, scheduler, or tool service.
+  in_scope:
+  - Attacker-triggered MCP or agent requests that terminate or materially degrade
+    a service.
+  - Task operations that stop work owned by another principal.
+  - Tool-mediated resource amplification that measurably reduces shared throughput
+    or availability.
+  out_of_scope:
+  - Volumetric network denial that does not depend on an MCP or agentic execution
+    boundary.
+  - Accidental or upstream outages without adversarial causation.
+  - Destructive downstream actions without an availability or task-continuity outcome.
+  - Resource cost increases without verified degradation of service or shared capacity.
+  affected_components:
+  - MCP server and transport request handler
+  - MCP Tasks implementation and task store
+  - Agent runtime, model gateway, and tool orchestrator
+  - External tool service and shared compute infrastructure
+nearest_neighbors:
+- technique_id: SAF-T1106
+  distinction: Autonomous Loop Exploit requires induced recursive or repeated agent
+    execution; Service Disruption covers measurable availability loss across crash,
+    cross-owner cancellation, and resource-pressure mechanisms.
+- technique_id: SAF-T2101
+  distinction: Data Destruction requires deletion or irreversible corruption of stored
+    state; Service Disruption covers unavailable or degraded service without requiring
+    destruction of stored data.
+required_evidence:
+- Establish the MCP or agentic execution boundary and attacker-controlled trigger.
+- Establish measurable unavailability, degradation, or task termination beyond the
+  attacker's own work.
+- Separate demonstrated mechanisms from adversarial production observation.
+- Search production incidents, advisories, exploitation status, and controlled demonstrations
+  and select only direct, material examples.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP method or tool name, actor identity and role, task owner, outcome, timestamp,
+    and request status.
+  - Server error class, process restart or health state, latency, and service availability
+    state.
+  - Per-actor request count, concurrent-task utilization, policy-enforcement, and
+    rate-limit events.
+safe_example_constraints:
+- Use only synthetic JSON events and inert identifiers.
+- Do not include exploit payloads, high-volume traffic generation, or deployable crash
+  sequences.
+- Exercise the detector locally without network access or external service calls.
+completion_evidence:
+- Every substantive README statement has hidden claim-and-source trace linkage.
+- Every consulted source and exclusion is ledgered with exact locators and limitations.
+- The final two saturation passes record no material changes.
+- Deterministic positive, negative, boundary, malformed, false-positive, and normalization
+  tests pass.
+- Rights, clean-room, framework, and strict isolated validation reviews pass.

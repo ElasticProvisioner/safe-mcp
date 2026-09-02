@@ -1,0 +1,57 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1004
+    name: Server Impersonation / Name-Collision
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0001
+    technique_path: techniques/SAF-T1004/README.md
+    research_packet: research/techniques/SAF-T1004
+    related_techniques:
+      - SAF-T1003
+      - SAF-T1008
+      - SAF-T1009
+      - SAF-T1301
+      - SAF-T1407
+    mitigations: []
+    detection:
+      rule: techniques/SAF-T1004/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1004/test_detection_rule.py
+        - techniques/SAF-T1004/fixtures/detection-events.json
+        - techniques/SAF-T1004/test-results.json
+        - techniques/SAF-T1004/test-log.jsonl
+    isolated_join:
+      tactic_id_status: synthetic_for_validator_only
+      proposed_tactic_label: Initial Access
+      real_framework_join_status: pending_integration
+    proposed_mitigations:
+      - control: Authenticated server identity allowlist
+        canonical_saf_mitigation_id: pending_integration
+        source_ids: [SRC-mcp-2026-schema, SRC-mcp-registry-auth, SRC-mcp-registry-package-types]
+      - control: Fail-closed package and publisher binding
+        canonical_saf_mitigation_id: pending_integration
+        source_ids: [SRC-ghsa-oci-rate-limit, SRC-mcp-registry-package-types]
+      - control: Trusted endpoint configuration and TLS service-identity validation
+        canonical_saf_mitigation_id: pending_integration
+        source_ids: [SRC-ms-azure-mcp-security-2026, SRC-rfc9525]
+      - control: Approved-server inventory and change monitoring
+        canonical_saf_mitigation_id: pending_integration
+        source_ids: [SRC-ms-azure-mcp-security-2026]
+    external_mappings:
+      - framework: MITRE ATT&CK
+        external_id: T1036.005
+        title: Match Legitimate Resource Name or Location
+        relationship: analogous
+        confidence: medium
+        source_ids: [SRC-attck-t1036]
+        limitation: ATT&CK does not specify MCP registry names, package bindings, or server endpoint resolution.
+      - framework: CWE
+        external_id: CWE-706
+        title: Use of Incorrectly-Resolved Name or Reference
+        relationship: analogous
+        confidence: low
+        source_ids: [SRC-cwe-706]
+        limitation: CWE-706 is a weakness abstraction, not an attack-technique mapping.

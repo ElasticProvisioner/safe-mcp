@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T1914
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The attestation records neutral inputs, direct-authority research, prohibited target sources, no prior access, freeze-before-integration, and no contamination.
+  contract_and_scope:
+    status: passed
+    notes: The publication requires a sensitive source result, a distinct sink, and unauthorized disclosure, while excluding injection-only, invocation-only, direct-server, router, and single-tool behavior.
+  technical_accuracy:
+    status: passed
+    notes: Protocol roles, tool/result mechanics, example prerequisites, version claims, exploitation status, and implementation variability map to directly reviewed sources.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims carry exact locators, limitations, corroboration, and inference labels; every README proposition has a hidden trace or declared local link.
+  source_or_omit:
+    status: passed
+    notes: All cited sources support inventoried claims, all consulted sources are recorded, and unsupported propositions are omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Multiple controlled end-to-end demonstrations support Demonstrated; no production evidence supports Observed.
+  research_saturation:
+    status: passed
+    notes: Five required passes and two consecutive targeted NVD no-change passes are complete.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nineteen candidates are ranked and classified; four high-impact direct examples are selected with remediation and exploitation limitations.
+  detection_quality:
+    status: passed
+    notes: The analytic defines normalized fields, ordering, lineage, authorization, destination, false positives, limitations, tuning, and passing inert fixtures.
+  mitigation_quality:
+    status: passed
+    notes: Preventive, detective, and response controls address description/result trust, authority separation, sink constraint, lineage, containment, and recovery.
+  framework_alignment:
+    status: passed
+    notes: Tactic and ATT&CK analogy are sourced; two clean-room neighbor joins and the synthetic history SHA are explicitly deferred for post-freeze reconciliation.
+  publication_rights:
+    status: passed
+    notes: All cited sources have reference-only paraphrase records; no quotation, copied code, diagram, table, or dataset is included, and marks are nominative.
+  safe_publication:
+    status: passed
+    notes: Examples use synthetic references and reserved invalid domains, with no live secrets, working attacker endpoint, or operational injection payload.
+
+validation:
+  commands:
+    - command: python3 -m unittest discover -s tests/SAF-T1914 -p 'test_*.py' -v
+      result: passed
+    - command: env UV_CACHE_DIR=/private/tmp/saf-all-cleanroom/SAF-T1914/uv-cache uv run --with PyYAML python scripts/validate-technique-research.py SAF-T1914
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 -m unittest discover -s tests/SAF-T1914 -p 'test_*.py' -v
+    result: Two test methods passed across nine fixture classes and a tunable-window assertion on 2026-09-02.
+    waiver: null
+
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "2 test methods passed across 9 fixture classes plus window tuning"
+  validator: "PASS SAF-T1914"
+  proof: research/techniques/SAF-T1914/validation/canonical-validation.txt
+  notes: Source IDs, two canonical neighbors, twelve mitigations, history, framework, alignment, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

@@ -1,0 +1,282 @@
+version: 1
+technique_id: SAF-T1203
+claims:
+  - id: SAF-T1203-C001
+    statement: Current MCP TypeScript SDK v2 documentation shows a local stdio client spawning a configured server command as a child process and exchanging JSON-RPC on stdin and stdout.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-ts-stdio-v2
+        support: direct
+        exact_locators: ["Connect to local servers; StdioClientTransport example and explanatory paragraph"]
+    corroboration: The versioned MCP transport specification independently describes the same client-launch behavior, but was not needed as a cited source.
+    limitations: [Does not establish artifact tampering or persistence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C002
+    statement: SEP-1024 requires explicit consent and command transparency when a local server is installed, but does not specify continuous verification after installation.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: ["Security Requirements; Installation and Consent requirements, lines 80-107 in reviewed rendering"]
+    corroboration: The current SDK launch model shows why an approved command can be reused later.
+    limitations: [The absence of a continuous-integrity requirement is a bounded reading of this SEP, not a claim about every client implementation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The limitation is inferred from the document's stated installation scope.}
+    status: validated
+  - id: SAF-T1203-C003
+    statement: ATT&CK T1554 defines modifying, replacing, or infecting routinely executed host software as a persistence mechanism.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mitre-t1554
+        support: direct
+        exact_locators: ["Technique overview; version 2.2; procedure examples"]
+    corroboration: UNC3886 provides a concrete production daemon-replacement example.
+    limitations: [ATT&CK T1554 is platform-general and does not mention MCP.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C004
+    statement: Replacing an already configured local MCP server executable can make later host launches a persistence trigger.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-ts-stdio-v2
+        support: context
+        exact_locators: ["Connect to local servers; StdioClientTransport child-process behavior"]
+      - source_id: SRC-mitre-t1554
+        support: context
+        exact_locators: ["Technique overview; modify, replace, or infect host software binaries"]
+    corroboration: UNC3886 confirms the analogous daemon-replacement mechanism in production.
+    limitations: [No direct MCP production incident or end-to-end binary-replacement demonstration was identified.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Combines documented MCP launch semantics with documented host-binary persistence behavior.}
+    status: validated
+  - id: SAF-T1203-C005
+    statement: Controlled Unit 42 MCP demonstrations show that a malicious connected server can retain legitimate functionality while performing covert actions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-unit42-mcp-sampling-2025
+        support: direct
+        exact_locators: ["Threat model, lines 273-278; three PoCs, lines 61-65; persistent prompt injection demonstration, lines 334-367"]
+    corroboration: The demonstrations include multiple covert behaviors in a coding-copilot test setting.
+    limitations: [Threat model begins with a malicious connected server and excludes installation; no binary replacement occurs.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C006
+    statement: Mandiant observed UNC3886 replace the legitimate /usr/bin/tac_plus daemon with a malicious credential-logging binary.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mandiant-unc3886-2024
+        support: direct
+        exact_locators: ["Malicious TACACS+ binary discussion, lines 305-314 in reviewed rendering"]
+    corroboration: ATT&CK T1554 independently classifies host-software replacement as persistence.
+    limitations: [The incident affected a network device administration daemon, not MCP.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C007
+    statement: The SUNBURST campaign delivered a digitally signed trojanized Orion DLL through updates and enabled backdoor command execution in victim environments.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mandiant-solarwinds
+        support: direct
+        exact_locators: ["Campaign overview, lines 75-81; signed DLL and execution behavior, lines 83-92"]
+    corroboration: ATT&CK T1195 defines pre-consumer manipulation as supply-chain compromise.
+    limitations: [Supply-chain delivery precedes consumer installation and is outside SAF-T1203's post-deployment boundary.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C008
+    statement: CVE-2024-3094 involved malicious code in xz 5.6.0 and 5.6.1 upstream tarballs affecting liblzma and capable of interfering with the OpenSSH daemon; the reviewed NVD record reported exploitation none.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-redhat-cve-2024-3094
+        support: direct
+        exact_locators: ["Description and Statement, lines 151-177 in reviewed rendering"]
+      - source_id: SRC-nvd-cve-2024-3094
+        support: direct
+        exact_locators: ["CVE API record: configurations, lastModified 2026-06-17, CISA SSVC exploitation=none"]
+    corroboration: Vendor and national vulnerability records agree on affected versions and malicious-code character.
+    limitations: [Not MCP; not post-deployment replacement; exploitation status can change after review.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C009
+    statement: CVE-2026-44192 is an MCP-related path-traversal flaw that can write arbitrary user-writable files, including programs or libraries, but the advisory does not document server-binary persistence.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-redhat-cve-2026-44192
+        support: direct
+        exact_locators: ["Description and Statement, lines 151-161; Technical Impact, lines 202-223"]
+    corroboration: Red Hat's weakness analysis explicitly discusses overwriting programs and libraries.
+    limitations: [Enabling file-write evidence only; no reported replacement or subsequent launch of an MCP server binary.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C010
+    statement: No direct production MCP binary-replacement incident was identified in the authoritative corpus reviewed through 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-unit42-mcp-sampling-2025
+        support: context
+        exact_locators: ["Threat model and PoC scope"]
+      - source_id: SRC-redhat-cve-2026-44192
+        support: context
+        exact_locators: ["Description, Statement, and Technical Impact"]
+      - source_id: SRC-mcp-ts-stdio-v2
+        support: context
+        exact_locators: ["Current local-server connection documentation"]
+      - source_id: SRC-mandiant-unc3886-2024
+        support: context
+        exact_locators: ["Historical non-MCP daemon-replacement incident"]
+    corroboration: Two dedicated no-change saturation passes found only the already reviewed enabling vulnerability and generic integrity guidance.
+    limitations: [This is a bounded search result, not proof that no private or later incident exists.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Narrow absence claim based on the documented search corpus and cutoff date.}
+    status: validated
+  - id: SAF-T1203-C011
+    statement: ATT&CK DET0336 recommends correlating unexpected binary modifications and hash deviations with subsequent execution or restart events.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0336-v1
+        support: direct
+        exact_locators: ["AN0949 unexpected binary changes and process execution; AN0950 file-integrity events, baseline hashes, execution or restart"]
+    corroboration: NIST SI-7 independently requires integrity monitoring and defined responses to unauthorized changes.
+    limitations: [Requires complete inventory, trustworthy baselines, and appropriate event collection.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The local analytic specializes the general ATT&CK strategy to MCP server-start events.}
+    status: validated
+  - id: SAF-T1203-C012
+    statement: NIST SI-7 requires tools and techniques to detect unauthorized software, firmware, and information changes and supports integrity verification before execution.
+    class: protocol_normative
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-nist-sp800-53r5.1
+        support: direct
+        exact_locators: ["SI-7, PDF page 354; SI-7(12) Integrity Verification, reviewed rendering around lines 14691-14807"]
+    corroboration: ATT&CK DET0336 operationalizes binary hash baselines and modification-to-execution correlation.
+    limitations: [A control catalog does not prescribe one MCP-specific implementation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C013
+    statement: Code signing can verify publisher identity and detect tampering, but compromised signing keys or infrastructure can allow malicious code to be signed.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-nist-code-signing-2018
+        support: direct
+        exact_locators: ["Code-signing purpose, PDF lines 227-234; signing compromise limitations, lines 248-253"]
+    corroboration: The SUNBURST incident involved a digitally signed trojanized DLL.
+    limitations: [Does not quantify the likelihood of signing compromise for a particular deployment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1203-C014
+    statement: Separately controlled digest baselines, restrictive artifact permissions, change approval, and pre-execution verification directly reduce the post-deployment replacement opportunity.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-53r5.1
+        support: context
+        exact_locators: ["SI-7 and SI-7(12) Integrity Verification"]
+      - source_id: SRC-mitre-det0336-v1
+        support: context
+        exact_locators: ["AN0949 and AN0950 baseline-hash and change-correlation guidance"]
+    corroboration: Both authorities address unauthorized change or artifact identity at complementary preventive and detective layers.
+    limitations: [Controls can fail if the baseline authority or collection plane is compromised.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Control synthesis specialized to the scoped MCP artifact boundary.}
+    status: validated
+  - id: SAF-T1203-C015
+    statement: The deterministic analytic alerts on registered MCP server starts with valid unequal observed and approved SHA-256 values when change approval is false, while treating missing or malformed values and approved upgrades as non-alerts.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mitre-det0336-v1
+        support: context
+        exact_locators: ["AN0949 and AN0950"]
+    corroboration: Repository-local test-logs.json and test_detection_rule.py exercise ten deterministic cases.
+    limitations: [Does not detect memory-only changes, malicious baselines, or un-inventoried dependencies.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Analytic design is a tested repository implementation of authoritative detection guidance.}
+    status: validated
+  - id: SAF-T1203-C016
+    statement: Safe response should prevent further launches, preserve changed artifacts and relevant integrity records, restore from trusted media, and validate a new baseline before reconnection.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-53r5.1
+        support: context
+        exact_locators: ["SI-7 unauthorized-change detection and organization-defined response actions"]
+      - source_id: SRC-mitre-det0336-v1
+        support: context
+        exact_locators: ["Binary change, process creation, and restart correlation guidance"]
+    corroboration: The response sequence follows directly from preserving the telemetry required to establish artifact identity and execution scope.
+    limitations: [Credential rotation depends on investigation showing that credentials were reachable or exposed.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Conservative response synthesis from integrity-control and detection sources.}
+    status: validated
+  - id: SAF-T1203-C017
+    statement: Pre-consumer product manipulation is supply-chain compromise, while separately installed server components use an extensibility boundary; neither is post-deployment replacement of the configured server artifact.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195
+        support: direct
+        exact_locators: ["Technique overview: manipulation of products or delivery mechanisms before final consumer receipt"]
+      - source_id: SRC-mitre-t1505-v1.5
+        support: direct
+        exact_locators: ["Technique overview: abuse of legitimate server extensibility features or malicious components"]
+    corroboration: SEP-1024 separately frames the initial local-server installation consent boundary.
+    limitations: [The synthetic SAF neighbor identifiers require integration-time reconciliation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Framework definitions are applied as mechanism-based scope boundaries.}
+    status: validated
+  - id: SAF-T1203-C018
+    statement: Impact from a replaced server is conditional on the privileges, credentials, data, network access, and tools reachable from the launched server process.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-ts-stdio-v2
+        support: context
+        exact_locators: ["Local child-process execution model"]
+      - source_id: SRC-unit42-mcp-sampling-2025
+        support: context
+        exact_locators: ["Controlled coding-copilot threat model and PoCs"]
+    corroboration: Both sources bound behavior to the server process and its available MCP interactions.
+    limitations: [Does not establish any universal blast radius; deployment permissions differ.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Conditional impact follows from process authority and connected capabilities rather than binary replacement alone.}
+    status: validated

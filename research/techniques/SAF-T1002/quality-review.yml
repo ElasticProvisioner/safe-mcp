@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1002
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent run, inherited_context false, prohibited access false, and pre-integration freeze is required and attested.
+  contract_and_scope:
+    status: passed
+    notes: Trusted-path alteration plus execution is required; masquerading, configuration, tool poisoning, ordinary vulnerabilities, and downstream behavior are separated.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, registry, incident, vulnerability, and control statements are limited to directly reviewed sources and exact locators.
+  claim_traceability:
+    status: passed
+    notes: Twenty-one validated claims resolve to reviewed fragment sources; hidden HTML traces resolve to cited source IDs.
+  source_or_omit:
+    status: passed
+    notes: Unsupported universal negatives, overbroad incident claims, and adjacent vulnerabilities are omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Observed status rests on two production incidents in agentic development contexts; MCP-specific production-registry evidence remains an explicit gap.
+  research_saturation:
+    status: passed
+    notes: Fifty-three restricted queries across five passes plus two terminal no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Ten candidates record relationship, exploitation status, impact, remediation, ranking, and selection decisions.
+  detection_quality:
+    status: passed
+    notes: Conservative acquisition-to-execution correlation has deterministic positive, negative, inclusive/exclusive boundary, and approved-exception false-positive cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address publisher/build integrity, consumer verification, CI trust, update staging, isolation, and response.
+  framework_alignment:
+    status: passed
+    notes: External mapping and catalog-name neighbor distinctions passed in the isolated mock; tactic, neighbor, mitigation, and detection joins were then registered and validated against the shared framework model after freeze.
+  publication_rights:
+    status: passed
+    notes: Paraphrase-only use, named credits, no quotations, and no third-party artifacts.
+  safe_publication:
+    status: passed
+    notes: Test data is inert and incident prose omits live exploit payloads, credentials, and destructive detail.
+
+validation:
+  commands:
+    - command: python3 techniques/SAF-T1002/tests/test_detection_rule.py
+      result: passed_6_of_6
+    - command: python3 validation/validate_isolated.py
+      result: passed
+    - command: PYTHONPYCACHEPREFIX=/private/tmp/saf-t1002-pycache python3 -m py_compile techniques/SAF-T1002/tests/test_detection_rule.py validation/validate_isolated.py
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1002
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1002/tests/test_detection_rule.py
+    result: 6_of_6_passed
+    waiver: null
+
+unresolved: []

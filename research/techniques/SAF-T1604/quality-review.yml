@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1604
+review_status: passed
+reviewed_on: 2026-09-02
+reviewer: /root/cleanroom_saf_t1604
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records no inherited prior technique context, no prohibited access, direct-authority research, and isolated strict validation before freeze.
+  contract_and_scope:
+    status: passed
+    notes: The immediate objective is version-bearing metadata collection; endpoint discovery, capability enumeration, exploitation, and local software inventory remain out of scope.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP 2026-07-28 fields, HTTP semantics, authorization preconditions, version self-report limits, and attack-flow conditions were checked against direct authorities.
+  claim_traceability:
+    status: passed
+    notes: Nineteen validated claims have exact locators, credited authors or teams, limitations, evidence labels, and source joins.
+  source_or_omit:
+    status: passed
+    notes: Strict validator resolved every substantive README unit; five excluded leads and the rights-restricted acquisition corpus remain omitted under source_or_omit.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is supported by an explicit core inference; adjacent observed activity and historical vulnerabilities do not raise the end-to-end label.
+  research_saturation:
+    status: passed
+    notes: All five passes completed and the final two authority-only follow-ups recorded no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Separate incident, advisory, exploitation-status, and demonstration checks selected three high-impact contextual examples and preserved the direct-case gap.
+  detection_quality:
+    status: passed
+    notes: Seven deterministic cases cover positive, negative, threshold, window, expected false-positive, missing-field, and normalization behavior; production efficacy remains an explicit limitation.
+  mitigation_quality:
+    status: passed
+    notes: Authorization, minimal banner detail, verification, logging, and patching address the bounded mechanism without claiming obscurity prevents exploitation.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0007 is preserved; T1046 and T1518 are analogous; T1592.004 is rejected; post-freeze neighbor and mitigation roles are reconciled, with banner minimization retained as an explicit no-match.
+  publication_rights:
+    status: passed
+    notes: Fifteen cited sources are paraphrased with attribution; no quotation, code, image, dataset, protected source structure, or temporary acquisition copy is republished.
+  safe_publication:
+    status: passed
+    notes: The scenario and tests use inert identities and version strings and contain no credentials, live targets, payloads, or destructive instructions.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1604
+      result: passed
+    - command: python3 techniques/SAF-T1604/test_detection_rule.py
+      result: passed
+    - command: shasum -a 256 -c FREEZE.sha256
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1604
+      result: passed
+      environment: Canonical repository after checksum-verified post-freeze reconciliation.
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1604/test_detection_rule.py
+    result: "passed: 7 of 7 representative cases in both isolated and canonical repository runs"
+    waiver: null
+
+unresolved: []

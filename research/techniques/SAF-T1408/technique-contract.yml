@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T1408
+name: OAuth Protocol Downgrade
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an MCP OAuth authorization flow to use a weaker PKCE binding
+  than the client and protocol intended so that an authorization code can be injected,
+  intercepted, or redeemed outside the initiating flow.
+scope:
+  security_boundary: The OAuth authorization boundary among an MCP client, its user
+    agent, and the authorization server protecting an HTTP-based MCP server.
+  in_scope:
+  - Attacker-influenced removal of PKCE or fallback from S256 to plain during an MCP
+    authorization flow.
+  - Authorization-server behavior that accepts the weakened request or token exchange
+    and thereby defeats the intended authorization-code binding.
+  out_of_scope:
+  - Authorization-server substitution or mix-up without a weaker PKCE mode.
+  - OAuth metadata SSRF, unsafe authorization URL handling, and open redirects.
+  - Theft, replay, or passthrough of a token obtained without a protocol downgrade.
+  - Generic weak cryptography that does not change the negotiated OAuth flow.
+  affected_components:
+  - MCP client
+  - User agent or redirect handler
+  - OAuth authorization server
+  - HTTP-based MCP server authorization integration
+nearest_neighbors:
+- technique_id: SAF-T1009
+  distinction: Authorization Server Mix-Up changes which issuer or endpoint receives
+    credentials; SAF-T1408 keeps the intended flow but weakens PKCE binding.
+- technique_id: SAF-T1306
+  distinction: Rogue Authorization Server uses an attacker-controlled authorization
+    server or redirect path; SAF-T1408 changes the accepted protection method.
+required_evidence:
+- Establish current MCP PKCE and capability-verification requirements.
+- Establish PKCE downgrade prerequisites, flow, and consequences from OAuth authorities.
+- Search separately for production incidents, vulnerabilities, advisories, demonstrations,
+  and exploitation status.
+- Establish whether an MCP-specific implementation has exposed the weaker behavior.
+- Establish an operational analytic from authorization-request and token-exchange
+  telemetry.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Correlated MCP OAuth authorization-request and token-exchange records with timestamp,
+    client identifier, transaction or session identifier, code_challenge presence,
+    code_challenge_method, code_verifier presence, outcome, and approved legacy-policy
+    state.
+safe_example_constraints:
+- Use only inert client, resource, and transaction identifiers.
+- Do not publish redeemable codes, tokens, secrets, or deployable interception instructions.
+- Describe the minimum protocol-state transition needed for detection testing.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and reviewed sources.
+- Unverified candidates are excluded and ledgered.
+- All five research passes and two consecutive no-change passes are recorded.
+- Positive, negative, boundary, malformed, normalization, and expected false-positive
+  detector cases pass.
+- Publication-rights, framework-alignment, safe-publication, and clean-room gates
+  pass.

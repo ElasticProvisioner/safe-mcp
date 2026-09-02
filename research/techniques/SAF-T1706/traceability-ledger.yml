@@ -1,0 +1,242 @@
+version: 1
+technique_id: SAF-T1706
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1706/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1706/technique-contract.yml
+  supports: Neutral name, assigned tactic, scope, boundaries, and completion requirements.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1706/quality-review.yml
+  supports: Gate decisions, validation commands, detector result, and review status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1706/detection-rule.yml
+  supports: Normalized behavioral detection design and traceability components.
+- id: LOCAL-detection-script
+  path: tests/SAF-T1706/test_detection_rule.py
+  supports: Executable deterministic detection evaluation.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1706/test-cases.json
+  supports: Positive, negative, boundary, malformed, and legitimate-lookalike fixtures.
+- id: LOCAL-detection-log
+  path: tests/SAF-T1706/test-logs.json
+  supports: Recorded eight-of-eight passing detector result.
+- id: LOCAL-detector-validation
+  path: research/techniques/SAF-T1706/validation/detection-tests.txt
+  supports: Isolated and canonical detector commands and passing results.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1706/validation/strict-validator.txt
+  supports: Isolated and canonical strict-validator commands and passing results.
+- id: LOCAL-source-archive-check
+  path: research/techniques/SAF-T1706/validation/source-archive-check.txt
+  supports: Frozen source-corpus hash, byte, rights, and canonical archive-disposition review.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1706/integration/integration-notes.yml
+  supports: Deferred clean-room joins and completed post-freeze canonical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1706-X001
+  candidate: Treat token acquisition as part of the technique.
+  origin: Adjacent ATT&CK and NVD acquisition records.
+  attempted_searches:
+  - MITRE ATT&CK T1528 exact authority page; NVD authority-only OAuth and MCP query
+    corpus
+  consulted_source_ids:
+  - SRC-mitre-t1528
+  - SRC-nvd-search-corpus
+  reason: Acquisition ends before protected-resource replay begins and has a distinct
+    objective and telemetry boundary.
+  prohibited_publishable_text:
+  - The theft itself completes OAuth Token Pivot Replay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X002
+  candidate: Treat MCP token passthrough as adversary replay.
+  origin: MCP security guidance.
+  attempted_searches:
+  - MCP Security Best Practices exact Token Passthrough section
+  consulted_source_ids:
+  - SRC-mcp-security-2025-11-25
+  reason: Passthrough is intermediary forwarding behavior and does not require replay
+    by an adversary-controlled presenter.
+  prohibited_publishable_text:
+  - Every passthrough event is adversary replay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X003
+  candidate: Elevate the technique to Demonstrated from the Kubernetes proof of concept.
+  origin: GHSA-6mx4-4h42-r8vh and CVE-2026-47250.
+  attempted_searches:
+  - GHSA exact advisory; NVD CVE-2026-47250; first-party release v3.7.0
+  consulted_source_ids:
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-nvd-cve-2026-47250
+  - SRC-release-mcp-k8s-3.7.0
+  reason: The demonstrated bearer credential was not established as an OAuth access
+    token.
+  prohibited_publishable_text:
+  - OAuth replay was publicly demonstrated in the Kubernetes case
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X004
+  candidate: Describe the Salesloft Drift incident as an MCP compromise.
+  origin: Google GTIG and Salesloft incident reports.
+  attempted_searches:
+  - Google GTIG exact incident report; Salesloft trust-center exact incident update
+  consulted_source_ids:
+  - SRC-google-gtig-drift
+  - SRC-salesloft-drift-update
+  reason: The sources establish connected SaaS OAuth token use, not an MCP authorization
+    flow; they also did not implicate Salesloft AI Agents.
+  prohibited_publishable_text:
+  - The Drift attack was an MCP incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X005
+  candidate: Describe the 2022 GitHub incident as agentic-system evidence.
+  origin: GitHub first-party incident report.
+  attempted_searches:
+  - GitHub exact incident report supplied by RFC 9449
+  consulted_source_ids:
+  - SRC-github-oauth-incident-2022
+  - SRC-rfc9449
+  reason: The incident predates MCP and is retained only as a historical OAuth analogy.
+  prohibited_publishable_text:
+  - GitHub observed the agentic technique in 2022
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X006
+  candidate: Claim that selected vulnerabilities are actively exploited because they
+    are absent from KEV.
+  origin: NVD and CISA exploitation-status review.
+  attempted_searches:
+  - CISA KEV version 2026.09.01 exact CVE checks; NVD SSVC records
+  consulted_source_ids:
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-cve-2026-14541
+  - SRC-nvd-cve-2026-47250
+  reason: KEV absence is not evidence of no exploitation or of active exploitation;
+    NVD distinguishes none from proof of concept in the reviewed records.
+  prohibited_publishable_text:
+  - KEV proves both CVEs are exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X007
+  candidate: Use rejected CVE-2025-68129 as support.
+  origin: NVD exact CVE record.
+  attempted_searches:
+  - NVD CVE-2025-68129 exact record and rejection status
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-68129
+  reason: The record is rejected and concerns token-type confusion rather than protected-resource
+    replay.
+  prohibited_publishable_text:
+  - CVE-2025-68129 validates OAuth token pivot replay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X008
+  candidate: Use OIDC callback token substitution as a direct example.
+  origin: NVD CVE-2026-82462.
+  attempted_searches:
+  - NVD CVE-2026-82462 exact record
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-82462
+  reason: Callback identity substitution crosses a different boundary outside MCP
+    protected-resource replay.
+  prohibited_publishable_text:
+  - Callback substitution is direct MCP replay evidence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X009
+  candidate: Use client-assertion capture and replay as a direct example.
+  origin: NVD CVE-2026-53431.
+  attempted_searches:
+  - NVD CVE-2026-53431 exact record
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-53431
+  reason: The replayed object is a client assertion at a token endpoint, not an access
+    token at a protected resource.
+  prohibited_publishable_text:
+  - Client assertions are OAuth bearer access tokens
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X010
+  candidate: Publish advisory exploit flags, commands, or payloads.
+  origin: Public GHSA controlled demonstration.
+  attempted_searches:
+  - GHSA proof-of-concept and impact sections; first-party patched release
+  consulted_source_ids:
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-release-mcp-k8s-3.7.0
+  reason: Exploit syntax is unnecessary for evidence classification or defensive validation
+    and increases misuse and rights risk.
+  prohibited_publishable_text:
+  - Run the vulnerable flag sequence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X011
+  candidate: Store raw bearer tokens for detection correlation.
+  origin: Detection design challenge.
+  attempted_searches:
+  - RFC 7662 token fields; MITRE T1550.001 detection strategy
+  consulted_source_ids:
+  - SRC-rfc7662
+  - SRC-mitre-t1550-001
+  reason: A non-reversible, consistently derived token fingerprint supports correlation
+    without collecting replayable secrets.
+  prohibited_publishable_text:
+  - Log the complete bearer token
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X012
+  candidate: Claim DPoP prevents every replay.
+  origin: RFC 9449 security review.
+  attempted_searches:
+  - RFC 9449 Sections 2
+  - 4
+  - and 11; RFC 9700 sender-constraint guidance
+  consulted_source_ids:
+  - SRC-rfc9449
+  - SRC-rfc9700
+  reason: DPoP does not prevent use when the attacker also obtains the proof key or
+    executes in the legitimate client context.
+  prohibited_publishable_text:
+  - DPoP makes token replay impossible
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X013
+  candidate: Assert a universal critical severity.
+  origin: Impact classification challenge.
+  attempted_searches:
+  - RFC bearer constraints; selected incident impact; selected advisory impact
+  consulted_source_ids:
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-google-gtig-drift
+  - SRC-ghsa-6mx4-4h42-r8vh
+  reason: Consequence depends on token audience, scope, subject, validity, sender
+    constraint, and resource sensitivity.
+  prohibited_publishable_text:
+  - All token replay is universally critical
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1706-X014
+  candidate: Claim the authoritative search proves no direct incident has ever occurred.
+  origin: Negative research result.
+  attempted_searches:
+  - All five research passes and both final no-material-change NVD passes
+  consulted_source_ids:
+  - SRC-nvd-search-corpus
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  reason: Search absence is bounded to the reviewed corpus and date, not universal
+    nonoccurrence.
+  prohibited_publishable_text:
+  - No such incident has ever happened
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

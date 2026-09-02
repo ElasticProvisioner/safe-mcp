@@ -46,6 +46,18 @@ Treat these repository files as canonical:
   framework reconciliation; and
 - `scripts/validate-technique-research.py` for deterministic completion gates.
 
+Before freezing a clean-room bundle, validate it in an isolated mock repository
+against the current `scripts/validate-technique-research.py`. The mock repository
+must contain only generic templates, validators, the independently generated
+bundle, and minimal synthetic registry records needed to exercise joins. The
+bundle must use the validator's exact README headings, full claim and source ID
+syntax, packet fields, detection-rule schema, hidden trace format, and completion
+statuses. Only real shared-registry collision resolution, local framework joins,
+and an honest repository-history SHA may remain for post-freeze integration.
+The frozen handoff must also follow the exact canonical layout and
+`FREEZE.sha256` format in `references/clean-room-generation.md`; otherwise use
+a separate no-research normalization agent and re-freeze before integration.
+
 If the skill and repository disagree, preserve the stricter evidence,
 traceability, safety, and publication-rights requirement and reconcile the
 repository documentation as part of the same authorized technique change.

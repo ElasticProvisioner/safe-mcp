@@ -1,0 +1,202 @@
+version: 1
+technique_id: SAF-T1504
+research_status: saturated
+search_operation_count: 13
+search_operation_definition: Bounded keyword or catalog-filter discovery operations; exact source acquisition and locator review are counted separately as reviewed sources.
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - direct-open https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+        - direct-open https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+        - direct-open https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+        - direct-open https://www.rfc-editor.org/rfc/rfc6750.html
+      material_changes:
+        - Bounded the response channel to MCP result content and error delivery, separate from authorization and downstream passthrough.
+        - Established bearer-token possession semantics, output-sanitization duties, and the limits of token-format assumptions.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=Model Context Protocol token
+        - NVD API keywordSearch=Model Context Protocol credential
+        - NVD API keywordSearch=AI agent token disclosure
+        - NVD API keywordSearch=API response access token disclosure
+        - CISA KEV full-catalog exact-ID and MCP/token filter
+        - CISA site search=MCP token response
+        - CISA site search=AI agent token theft
+      material_changes:
+        - Identified five candidate records, selected two direct high-impact MCP examples, and classified three boundary failures for exclusion or analogy.
+        - Found no directly documented production incident in the reviewed authoritative corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - exact advisory GHSA-9gw6-46qc-99vr obtained from SRC-cve-2026-48039
+        - exact advisory GHSA-4ggg-h7ph-26qr obtained from SRC-cve-2026-39974
+        - exact advisory GHSA-7r34-79r5-rcc9 obtained from SRC-cve-2026-27826
+        - exact advisory GHSA-vf6j-c56p-cq58 obtained from SRC-cve-2026-25650
+      material_changes:
+        - The Meta Ads advisory's inert proof established the complete API-response token disclosure and set the technique evidence status to Demonstrated.
+        - The n8n-MCP advisory established response reflection and deployment boundaries but not production theft of a live token.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - direct-open Elastic ESA-2026-24 from the CVE-2026-33461 first-party reference
+        - direct-open MITRE ATT&CK T1528
+      material_changes:
+        - Defined an authorization-aware response-secret analytic without logging raw token material.
+        - Added output redaction, authentication enforcement, upgrade, egress restriction, least privilege, rotation, and token-use investigation guidance.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - exact CVE records CVE-2026-48039, CVE-2026-39974, CVE-2026-27826, CVE-2026-33461, and CVE-2026-25650
+        - compare affected and fixed versions, exploitation wording, response-channel proof, and unaffected configurations
+      material_changes:
+        - Rejected the claim that the Atlassian advisory demonstrates a token-bearing response.
+        - Kept Kibana as non-agentic analogy only and MCP-Salesforce out of direct evidence because its disclosure channel is unspecified.
+        - Recorded opaque-token classifier blind spots and the Meta Ads affected-range wording conflict.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=MCP JSON-RPC response token disclosure
+        - NVD API keywordSearch=MCP tool result credential leak
+        - NVD API keywordSearch=MCP error response access token
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=agent API response token leak fixed version
+        - NVD API keywordSearch=MCP incident breach token
+        - NVD API keywordSearch=AI agent breach API response token
+      material_changes: []
+  rationale: >-
+    Current MCP protocol pages and the governing bearer-token RFC cover the
+    defining response and credential semantics. Bounded NVD, CVE, CISA,
+    first-party advisory, and exact derived GHSA review produced two direct
+    qualifying examples and three documented boundary exclusions. The final
+    six narrower NVD queries across two consecutive passes returned no new
+    candidate, requirement, conflict, remediation change, production incident,
+    or detection constraint. Client-rendered CISA site-search pages supplied no
+    evidence and were not used for saturation; the complete KEV catalog and
+    exact CVE/advisory records supplied the authoritative exploitation check.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-ghsa-meta-ads
+    - SRC-ghsa-n8n-mcp
+  no_qualifying_examples_rationale: >-
+    Two vulnerability examples qualify, but no direct production breach was
+    identified. The selected records are a controlled end-to-end demonstration
+    and a disclosed response-reflection vulnerability; neither record states
+    production exploitation, and neither selected CVE was present in the
+    reviewed CISA KEV catalog.
+  candidates:
+    - source_id: SRC-ghsa-meta-ads
+      identifier: CVE-2026-48039 / GHSA-9gw6-46qc-99vr
+      relationship: direct_demonstration
+      exploitation_status: Controlled inert proof of concept; production exploitation not reported in the reviewed sources.
+      impact: An unauthenticated network caller could receive the operator Meta access token and potentially reuse its privileges outside MCP.
+      remediation: Fixed in Meta Ads MCP 1.0.109; reject unauthenticated requests and prevent token-bearing URLs from entering errors.
+      selected: true
+      rationale: Highest-impact and most direct example because the reviewed advisory reproduces the complete response-body disclosure with a fake token.
+    - source_id: SRC-ghsa-n8n-mcp
+      identifier: CVE-2026-39974 / GHSA-4ggg-h7ph-26qr
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory; production exploitation and live-token theft not reported in the reviewed sources.
+      impact: An authenticated less-trusted tenant could receive reflected content from internal services or cloud metadata endpoints through JSON-RPC.
+      remediation: Fixed in n8n-MCP 2.47.4; interim measures include egress filtering, disabling unneeded multi-tenant headers, and restricting AUTH_TOKEN distribution.
+      selected: true
+      rationale: Direct MCP response-reflection vulnerability with high confidentiality impact and explicit affected and unaffected deployment boundaries.
+    - source_id: SRC-ghsa-mcp-atlassian-7r34
+      identifier: CVE-2026-27826 / GHSA-7r34-79r5-rcc9
+      relationship: enabling_vulnerability
+      exploitation_status: Controlled SSRF proof; production exploitation not reported.
+      impact: Potential cloud IAM credential access and attacker-controlled content in MCP tool results.
+      remediation: Fixed in mcp-atlassian 0.17.0.
+      selected: false
+      rationale: The proof establishes SSRF to an attacker listener and tool-result injection, not a token-bearing response delivered to an unauthorized client.
+    - source_id: SRC-elastic-esa-2026-24
+      identifier: CVE-2026-33461 / ESA-2026-24
+      relationship: historical_analogy
+      exploitation_status: Unknown; the advisory supplies an audit-log indicator but makes no exploitation claim.
+      impact: A low-privilege Kibana user could receive configuration objects containing private keys and authentication tokens.
+      remediation: Fixed in Kibana 8.19.14, 9.2.8, and 9.3.3; Elastic advises role review and rotation of possibly exposed proxy credentials.
+      selected: false
+      rationale: Mechanistically useful response-authorization analogy, but Kibana is not MCP or agentic and cannot establish the technique status.
+    - source_id: SRC-ghsa-mcp-salesforce
+      identifier: CVE-2026-25650 / GHSA-vf6j-c56p-cq58
+      relationship: rejected
+      exploitation_status: Unknown; no production exploitation is stated.
+      impact: The advisory reports disclosure of Salesforce OAuth bearer tokens used by the MCP server.
+      remediation: Fixed in MCP-Salesforce 0.1.10; rotate affected Salesforce tokens.
+      selected: false
+      rationale: The advisory does not identify whether an API response, log, exception, attribute renderer, or another channel disclosed the token.
+
+sources_consulted:
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-token-response-2026-09-01
+  - SRC-cve-2026-25650
+  - SRC-cve-2026-27826
+  - SRC-cve-2026-33461
+  - SRC-cve-2026-39974
+  - SRC-cve-2026-48039
+  - SRC-elastic-esa-2026-24
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-mcp-salesforce
+  - SRC-ghsa-meta-ads
+  - SRC-ghsa-n8n-mcp
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc6750
+sources_cited:
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-token-response-2026-09-01
+  - SRC-cve-2026-25650
+  - SRC-cve-2026-27826
+  - SRC-cve-2026-33461
+  - SRC-cve-2026-39974
+  - SRC-cve-2026-48039
+  - SRC-elastic-esa-2026-24
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-mcp-salesforce
+  - SRC-ghsa-meta-ads
+  - SRC-ghsa-n8n-mcp
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc6750
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: The Meta Ads advisory narrative contains an older affected-range note while its package metadata and current CVE record identify versions before 1.0.109 as affected.
+    resolution: Use the current CVE and advisory package metadata for the published range, disclose the wording conflict in the claim limitation, and avoid version-by-version assertions beyond the supported boundary.
+  - issue: Multiple SSRF advisories describe potential access to cloud metadata without showing a token in a client response.
+    resolution: Select only n8n-MCP where the response-body reflection is explicit; classify the Atlassian record as enabling and omit any claim that its proof returned a token.
+  - issue: Secret classifiers can recognize only known or inferable token forms.
+    resolution: Make the analytic dependent on an upstream classifier, state the opaque-token blind spot, and test authorization and redaction decisions rather than claiming exhaustive token recognition.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1504-C004
+    - SAF-T1504-C006
+  rationale: >-
+    GHSA-9gw6-46qc-99vr publicly reproduces the complete behavior with a fake
+    operator token returned to an unauthenticated caller in an MCP JSON-RPC
+    response. That supports Demonstrated, not Observed: no reviewed authority
+    documents the defining behavior in a production incident.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

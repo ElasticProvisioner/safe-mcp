@@ -1,0 +1,138 @@
+version: 1
+technique_id: SAF-T1904
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1904 (OpenAI Codex fresh-agent author)
+target:
+  id: SAF-T1904
+  neutral_name: Chat-Based Backchannel
+allowed_inputs:
+- The neutral tuple SAF-T1904, Chat-Based Backchannel, and ATK-TA0011.
+- The generic author-saf-technique skill and its generic methodology, clean-room,
+  trace-format, and breach-research references.
+- Generic technique and research-packet templates, generic schemas encoded by the
+  validator, and the generic validator implementation.
+prohibited_inputs:
+- Existing techniques/SAF-T1904/README.md content.
+- Existing research/techniques/SAF-T1904/ packet content.
+- Existing techniques/SAF-T1904/detection-rule.yml content and target tests.
+- Git history, diff, log, or blame for the target.
+- Pull request, issue, review, or repository discussion about the target.
+- Previous conversation or target-specific context containing proposed claims, sources,
+  examples, mappings, or prose.
+- Shared source, framework, alignment, or catalog descriptions beyond the supplied
+  neutral tuple.
+- SAF websites, other agents' target work, and methodology impact-classification examples.
+independent_research:
+  searches:
+  - Direct exact MCP authority URLs for the versioned architecture, base protocol,
+    tools, and security pages.
+  - Direct exact Slack authority URLs for Events API, message event, chat.postMessage,
+    and Audit Logs API.
+  - Direct exact Telegram Bot API URL.
+  - Direct exact MITRE ATT&CK technique URLs for T1102, T1102.002, T1102.003, and
+    T1071.001.
+  - Exact NVD CVE API keywordSearch=OpenClaw plus targeted chat/channel authorization
+    queries.
+  - Exact CISA KEV JSON and CISA/NCSC authority-site incident queries.
+  - Exact GitHub advisory URLs only after NVD supplied each URL; provenance retained
+    in source review notes.
+  opened_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-39mp-545q-w789
+  - SRC-ghsa-782p-5fr5-7fj8
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-c29c-2q9c-pc86
+  - SRC-ghsa-fhvm-j76f-qmjv
+  - SRC-ghsa-hw9r-h9mr-4jff
+  - SRC-ghsa-v773-r54f-q32w
+  - SRC-ghsa-vqvg-86cc-cg83
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-base-20250618
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1071-001-v1-5
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-mitre-t1102-v1-3
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-slack-audit-logs-20260902
+  - SRC-slack-chat-postmessage
+  - SRC-slack-events-api-20260902
+  - SRC-slack-message-event-20260902
+  - SRC-telegram-bot-api-10-3
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not compare this bundle with target SAF-T1904 artifacts before the bundle's immutable
+  freeze is verified.
+- Validate only in the isolated synthetic repository described in integration-notes.yml.
+- Reconcile source identifiers and framework relationships only after freeze, without
+  silently importing prior target prose or claims.
+- Replace the synthetic history SHA and synthetic neighbor identifiers during destination
+  integration.
+attestation: I received only the neutral target tuple and generic authoring machinery,
+  independently opened the listed direct authorities, did not access prohibited target
+  material, and authored this packet without reusing prior target prose, claims, examples,
+  tests, or mappings.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-architecture-20250618: SRC-mcp-architecture-2025-06-18
+    SRC-mcp-tools-20250618: SRC-mcp-tools-2025-06-18
+    SRC-mcp-security-20251125: SRC-mcp-security-spec-2025-11-25
+    SRC-slack-chat-postmessage-20260902: SRC-slack-chat-postmessage
+    SRC-cisa-kev-20260901: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-mcp-base-20250618
+  - SRC-slack-events-api-20260902
+  - SRC-slack-message-event-20260902
+  - SRC-slack-audit-logs-20260902
+  - SRC-telegram-bot-api-10-3
+  - SRC-mitre-t1102-v1-3
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-mitre-t1071-001-v1-5
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-fhvm-j76f-qmjv
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  - SRC-ghsa-v773-r54f-q32w
+  - SRC-ghsa-c29c-2q9c-pc86
+  - SRC-ghsa-782p-5fr5-7fj8
+  - SRC-ghsa-39mp-545q-w789
+  - SRC-ghsa-vqvg-86cc-cg83
+  - SRC-ghsa-hw9r-h9mr-4jff
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0011
+  canonical_mitigations:
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1911
+  - SAF-T1903
+  attack_mapping:
+    id: T1102.002
+    type: analogous
+  validation_proof:
+  - research/techniques/SAF-T1904/validation/detection-tests.txt
+  - research/techniques/SAF-T1904/validation/strict-validator.txt
+  - research/techniques/SAF-T1904/validation/canonical-validation.txt
+  dependency_resolution: SAF-T1903 was independently clean-room authored and integrated before destination strict validation was rerun.
+  status: integrated_and_validated

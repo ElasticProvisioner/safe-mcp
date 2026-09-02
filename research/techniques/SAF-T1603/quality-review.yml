@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1603
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records only neutral inputs, generic methodology and templates, validator review, and independent direct authorities; prohibited repository material was not accessed.
+  contract_and_scope:
+    status: passed
+    notes: Immediate objective, privileged-instruction boundary, MCP prompt exception, and nearest-neighbor distinctions are explicit.
+  technical_accuracy:
+    status: passed
+    notes: Protocol boundaries, prerequisites, model-output and interface paths, affected versions, patches, and limitations match reviewed locators.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims join cited sources through exact locators and same-line hidden trace markers.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit is traced; unsupported, adjacent, and overbroad candidates are excluded in the ledger.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated status rests on a public exercise, controlled evaluations, and direct proof-of-concept vulnerabilities; no production-breach claim is made.
+  research_saturation:
+    status: passed
+    notes: All five passes completed and two consecutive direct-authority follow-ups produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Four highest-impact distinct examples were selected; exploitation and remediation status are bounded; the production-breach gap is explicit.
+  detection_quality:
+    status: passed
+    notes: Eight inert synthetic cases exercise positive, negative, boundary, authorized, missing-field, wrong-event, and encoding-blind-spot behavior.
+  mitigation_quality:
+    status: passed
+    notes: Controls address secret placement, authorization, prompt-store access, MCP trust, patching, output monitoring, and residual risk.
+  framework_alignment:
+    status: passed
+    notes: Direct ATLAS mappings and analogous ATT&CK mapping are preserved; post-freeze reconciliation maps prompt injection to SAF-T1102 and removes the unmatched generic sensitive-information placeholder.
+  publication_rights:
+    status: passed
+    notes: Source uses are paraphrase-only with attribution; no quotations, code, images, datasets, live tokens, or protected expression were copied.
+  safe_publication:
+    status: passed
+    notes: The scenario and tests are synthetic; operational extraction prompts, credentials, and destructive follow-on details are omitted.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1603
+      result: passed
+      environment: Isolated synthetic framework mock built only from this bundle and generic validator.
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1603
+      result: passed
+      environment: Canonical repository after checksum-verified post-freeze reconciliation.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1603/test_detection_rule.py
+    result: "PASS: 8 synthetic cases; 2 alerts; 6 negative/boundary cases in both isolated and canonical repository runs"
+    waiver: null
+
+unresolved: []

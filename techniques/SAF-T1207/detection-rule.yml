@@ -1,0 +1,55 @@
+title: Unapproved Agentic Component Update Activation
+id: 7d63f6d8-a59b-4ba0-9fc8-02a6df985d52
+status: experimental
+description: Detects activation of an MCP or agentic component update that fails an approved-release invariant.
+references:
+  - https://theupdateframework.io/docs/metadata/
+  - https://cloud.google.com/blog/topics/threat-intelligence/ai-assisted-vulnerability-management/
+author: OpenAI Codex clean-room generator
+date: 2026-09-01
+logsource:
+  category: application
+  product: component_manager
+detection:
+  selection_activation:
+    event.action: component_update_activated
+  filter_approved_release:
+    update.approval_state: approved
+    artifact.digest_matches_approved: true
+    update.source_matches_approved: true
+    signature.verification: valid
+    signer.matches_approved: true
+  condition: selection_activation and not filter_approved_release
+fields:
+  - timestamp
+  - component.id
+  - component.previous_version
+  - component.version
+  - update.source
+  - artifact.digest
+  - signature.signer
+  - update.approval_state
+  - update.correlation_id
+falsepositives:
+  - Formally authorized emergency or break-glass deployment before inventory synchronization.
+  - Approval inventory replication delay during a controlled staged rollout.
+level: high
+tags:
+  - saf.t1207
+  - attack.persistence
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1207-C017]
+  telemetry_claim_ids: [SAF-T1207-C005, SAF-T1207-C007, SAF-T1207-C017]
+  limitation_claim_ids: [SAF-T1207-C018]
+  components:
+    selection_activation: {claim_ids: [SAF-T1207-C005, SAF-T1207-C017], rationale: Restricts the rule to completed activation rather than download or staging.}
+    filter_approved_release: {claim_ids: [SAF-T1207-C007, SAF-T1207-C017], rationale: Requires every independent release invariant to match.}
+    condition: {claim_ids: [SAF-T1207-C017], rationale: Alerts when activation occurs without a complete approved-release match.}
+    logsource: {claim_ids: [SAF-T1207-C005, SAF-T1207-C017], rationale: Component-manager lifecycle logs own the activation decision.}
+    fields: {claim_ids: [SAF-T1207-C007, SAF-T1207-C017, SAF-T1207-C018], rationale: Supports release verification and incident reconstruction.}
+    falsepositives: {claim_ids: [SAF-T1207-C017], rationale: Emergency changes and replication lag may precede inventory state.}
+  validation_artifacts:
+    - tests/fixtures/SAF-T1207/update-events.json
+    - tests/test_saf_t1207_detection.py
+    - tests/results/SAF-T1207-detection-results.json

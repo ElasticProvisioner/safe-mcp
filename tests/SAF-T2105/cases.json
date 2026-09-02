@@ -1,0 +1,32 @@
+[
+  {
+    "name": "positive_context_anomaly",
+    "event": {"event_type": "ai_output", "task_mode": "factual", "factuality_status": "contradicted", "context_integrity_status": "anomalous", "deception_intent_flag": false},
+    "expected": true
+  },
+  {
+    "name": "positive_intent_signal",
+    "event": {"event_type": "ai_output", "task_mode": "factual", "factuality_status": "contradicted", "context_integrity_status": "normal", "deception_intent_flag": true},
+    "expected": true
+  },
+  {
+    "name": "negative_accurate_output",
+    "event": {"event_type": "ai_output", "task_mode": "factual", "factuality_status": "verified", "context_integrity_status": "anomalous", "deception_intent_flag": true},
+    "expected": false
+  },
+  {
+    "name": "negative_no_integrity_or_intent",
+    "event": {"event_type": "ai_output", "task_mode": "factual", "factuality_status": "contradicted", "context_integrity_status": "normal", "deception_intent_flag": false},
+    "expected": false
+  },
+  {
+    "name": "boundary_authorized_creative_task",
+    "event": {"event_type": "ai_output", "task_mode": "creative", "factuality_status": "contradicted", "context_integrity_status": "anomalous", "deception_intent_flag": true},
+    "expected": false
+  },
+  {
+    "name": "malformed_missing_fields",
+    "event": {"event_type": "ai_output"},
+    "expected": false
+  }
+]

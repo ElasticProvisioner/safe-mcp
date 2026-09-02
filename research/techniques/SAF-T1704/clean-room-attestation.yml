@@ -1,0 +1,127 @@
+version: 1
+technique_id: SAF-T1704
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1704
+  inherited_context: false
+target:
+  id: SAF-T1704
+  neutral_name: Compromised-Server Pivot
+allowed_inputs:
+- Neutral identifier SAF-T1704, name Compromised-Server Pivot, and tactic ATK-TA0008
+  supplied by the requesting user.
+- Generic SAF authoring skill, generic templates, research packet schema, and strict
+  validator.
+- Independently opened direct protocol, vendor, vulnerability, research, and framework
+  authorities.
+prohibited_inputs:
+- Existing techniques/SAF-T1704/README.md.
+- Existing techniques/SAF-T1704/detection-rule.yml.
+- Existing research/techniques/SAF-T1704/ content.
+- Target git history, diff, or blame.
+- Target pull request, issue, or review discussion.
+- README or catalog descriptions beyond the supplied neutral identifier, name, and
+  tactic.
+- Shared source, framework, or alignment registries.
+- SAF websites or any prior target context.
+- Any previous conversation about SAF-T1704.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io specification 2026 architecture tools authorization
+    security
+  - site:invariantlabs.ai MCP tool poisoning cross-server trusted email server
+  - site:trailofbits.com MCP server tool description before use line jumping
+  - site:nvd.nist.gov CVE MCP remote malicious authorization endpoint client
+  - site:jfrog.com MCP remote RCE CVE-2025-6514 prompt hijacking CVE-2025-6515
+  - site:arxiv.org MCP tool poisoning cross-tool benchmark MCPTox
+  - site:learn.microsoft.com MCP server security cross-server monitoring tool invocations
+  - site:attack.mitre.org T1210 Exploitation of Remote Services lateral movement
+  - site:cisa.gov MCP server breach lateral movement compromised server
+  opened_source_ids:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-trailofbits-line-jumping-2025
+  - SRC-nvd-cve-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-nvd-cve-6515
+  - SRC-jfrog-cve-6515-2025
+  - SRC-mcptox-2025
+  - SRC-huang-tool-poisoning-2026
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-microsoft-m365-mcp-monitoring-2026
+  - SRC-jfrog-agent-supply-chain-2026
+  - SRC-mitre-t1210
+  - SRC-nvd-cve-2026-14541
+  - SRC-nvd-cve-58062
+  - SRC-ms-rug-pull-catalog-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Validate only in the isolated synthetic mock repository before freezing.
+- Do not read or reconcile existing SAF-T1704 artifacts before the bundle freeze.
+- Treat SAF-T1001 and SAF-T1004 as synthetic joins requiring maintainer reconciliation
+  after freeze.
+- Preserve this attestation and the immutable freeze manifest during any later integration.
+attestation: This packet was independently generated from the user-supplied neutral
+  target, generic authoring machinery, and direct authorities without accessing prohibited
+  target artifacts, shared registries, repository history, or prior target context.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-architecture-2026: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-tools-2026: SRC-mcp-tools-2026-07-28
+    SRC-mcp-authorization-2026: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-auth-security-2026: SRC-mcp-auth-security-2026-07-28
+    SRC-mcp-release-2026: SRC-mcp-release-2026-07-28
+    SRC-mcp-annotations-2026: SRC-mcp-annotations-2026-03-16
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-jfrog-cve-6514-2025: SRC-jfrog-cve-2025-6514
+    SRC-jfrog-jfsa-6514: SRC-jfsa-2025-6514
+    SRC-microsoft-azure-mcp-security-2026: SRC-ms-azure-mcp-security-2026
+    SRC-mitre-t1210: SRC-mitre-t1210
+    SRC-nvd-cve-14541: SRC-nvd-cve-2026-14541
+    SRC-microsoft-rug-pull-2026: SRC-ms-rug-pull-catalog-2026
+  new_shared_source_records:
+  - SRC-trailofbits-line-jumping-2025
+  - SRC-nvd-cve-6514
+  - SRC-nvd-cve-6515
+  - SRC-jfrog-cve-6515-2025
+  - SRC-mcptox-2025
+  - SRC-huang-tool-poisoning-2026
+  - SRC-microsoft-m365-mcp-monitoring-2026
+  - SRC-jfrog-agent-supply-chain-2026
+  - SRC-nvd-cve-58062
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0008
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+    SAF-T9991: SAF-T1001
+    SAF-T9992: SAF-T1004
+  additional_overlap_review:
+  - SAF-T1703
+  canonical_validation_proof:
+  - research/techniques/SAF-T1704/validation/detection-test.txt
+  - research/techniques/SAF-T1704/validation/strict-validator.txt
+  status: integrated_and_validated

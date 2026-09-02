@@ -1,0 +1,51 @@
+version: 1
+technique_id: SAF-T1702
+freeze_required_before_integration: true
+canonical_bundle: /private/tmp/saf-all-cleanroom/SAF-T1702/bundle
+synthetic_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1702/mock-repo
+  base_commit: 1556ab7c8dd9323aedde087e65e2fb0fc60f2ad6
+  neighbors:
+    - SAF-T9001
+    - SAF-T9002
+  mitigations:
+    - SAF-M-9001
+    - SAF-M-9002
+integration_requirements:
+  - Verify FREEZE.sha256 before reading destination target artifacts or registries.
+  - Preserve the frozen source packet and source-or-omit exclusions.
+  - Reconcile synthetic neighbor and mitigation IDs with destination canonical IDs without weakening the contract boundary.
+  - Merge the source-manifest fragment by source ID and reject conflicting metadata for manual review.
+  - Merge the framework and alignment fragments only after destination referential checks pass.
+  - Replace the synthetic repository-history record with the actual integration commit while retaining the synthetic validation proof.
+  - Re-run strict technique validation and detector tests in the destination repository.
+prohibited_pre_freeze_actions:
+  - Inspecting any existing SAF-T1702 technique, research packet, detector, tests, history, diff, issue, pull request, registry, or catalog description.
+  - Modifying the destination repository.
+unresolved_evidence_gaps:
+  - No qualifying direct production breach was found.
+  - No mechanism-specific NVD CVE or CISA KEV entry was found.
+  - Cisco's reported Claude Code 2.1.50 remediation was not independently confirmed in a directly reviewed Anthropic advisory.
+  - No reviewed source establishes production precision or recall for the exact joined behavioral analytic.
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: SAF-T1705
+  canonical_mitigation_roles:
+    SAF-M-9001: SAF-M-29
+    SAF-M-9002: SAF-M-69
+  additional_canonical_mitigations:
+    - SAF-M-12
+    - SAF-M-21
+    - SAF-M-30
+    - SAF-M-32
+    - SAF-M-74
+  source_id_mapping:
+    SRC-owasp-agentic-top10-2026: SRC-owasp-agentic-top10-2026
+    SRC-memory-defense-challenge-2026: SRC-arxiv-memory-defense-2026
+    SRC-mitre-ta0008: SRC-mitre-ta0008-2025
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_validation:
+    detection: research/techniques/SAF-T1702/validation/detection-test.txt
+    strict: research/techniques/SAF-T1702/validation/strict-validator.txt
+  status: integrated_and_validated

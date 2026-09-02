@@ -1,0 +1,163 @@
+version: 1
+technique_id: SAF-T1307
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1307
+  inherited_context: false
+  context_statement: The agent received only the target identifier, neutral name,
+    tactic, clean-room constraints, and deliverable instructions. No prior technique-specific
+    prose, source list, conclusions, or artifact content was inherited.
+target:
+  id: SAF-T1307
+  neutral_name: Confused Deputy Attack
+allowed_inputs:
+- The author-saf-technique skill and routed references, excluding impact-classification
+  examples before freeze.
+- Repository-wide generic techniques/TEMPLATE.md, research/README.md, blank technique
+  schemas, and the current validator.
+- User-supplied target ID, neutral name, and tactic only.
+- Directly opened standards-body, government, first-party vendor, maintainer, and
+  researcher sources independently discovered for this run.
+- Synthetic framework, neighbor, mitigation, source, alignment, and history records
+  used only in the isolated mock repository.
+prohibited_inputs:
+- techniques/SAF-T1307/README.md and every current or historical copy.
+- techniques/SAF-T1307/detection-rule.yml and every current or historical copy.
+- research/techniques/SAF-T1307/ and every current or historical target-specific research
+  artifact.
+- Catalog descriptions, shared source or framework registries, SAF pages, and previous
+  target artifacts.
+- Git history, diff, blame, commits, branches, stashes, pull request content, issues,
+  and review comments exposing the target.
+- Previous conversation, summaries, caches, or agent context containing target technique
+  content.
+- General or unrestricted web search, GitHub repository search, and GitHub-scoped
+  discovery.
+- impact-classification-examples.md before freeze.
+independent_research:
+  searches:
+  - DIRECT GET modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+  - DIRECT GET modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+  - DIRECT GET rfc-editor.org/rfc/rfc8707.txt
+  - DIRECT GET rfc-editor.org/rfc/rfc9700.txt
+  - DIRECT GET cwe.mitre.org/data/definitions/441.html
+  - EXACT CVE API GET CVE-2025-6514
+  - EXACT CVE API GET CVE-2025-49596
+  - EXACT CVE API GET CVE-2025-32711
+  - EXACT CVE API GET CVE-2025-53109
+  - 'EXACT CISA KEV cveID filter: CVE-2025-6514 OR CVE-2025-49596 OR CVE-2025-32711
+    OR CVE-2025-53109'
+  - DIRECT GET research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    from CVE CNA reference
+  - DIRECT GET jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/ from
+    CVE CNA reference
+  - EXACT GitHub advisory GET GHSA-7f8r-222p-6f5g only after CVE-2025-49596 CNA supplied
+    the canonical URL
+  - DIRECT GET attack.mitre.org/techniques/T1068/
+  - DIRECT GET aim.security/lp/aim-labs-echoleak-m365 from CVE-2025-32711 reference;
+    redirected and not used for substantive claims
+  opened_source_ids:
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-cwe-441-v4.20
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cve-2025-32711
+  - SRC-cve-2025-53109
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-attack-t1068
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1307-normalized/mock-repository
+  validator_source: scripts/validate-technique-research.py from the permitted generic
+    repository input
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1307-normalized/python-deps
+    /Users/fkautz/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3
+    scripts/validate-technique-research.py SAF-T1307
+  result: passed
+  proof: validation/strict-validator.txt
+  synthetic_records:
+  - SAF-T1102 and SAF-T1707 neighbor README stubs
+  - Nonzero mock repository-history SHA 1111111111111111111111111111111111111111
+  - Shared source, framework, and alignment files generated only from bundle fragments
+  - Temporary tests/SAF-T1307/detection-rule.yml symlink to the canonical technique
+    rule, used only by the isolated mock so the relocated test runner remained byte-preserved
+  deferred_real_repository_joins:
+  - Reconcile independently assigned source IDs with the real shared source manifest.
+  - Replace synthetic neighbor and mitigation identifiers with real catalog joins.
+  - Replace the synthetic history SHA with an honest integration commit SHA.
+  - Re-run strict repository validation after mechanical integration.
+integration_constraints:
+- Integration may begin only from the verified frozen bundle and may not inspect the
+  old target README or research packet.
+- Source-ID reconciliation may reuse stable IDs but may not introduce research leads
+  or alter frozen claims.
+- Catalog neighbor, mitigation, and framework joins are mechanical and must not use
+  old target prose.
+- The real repository-history SHA must be recorded only after an integration commit
+  exists.
+- No commit, push, branch publication, or pull request is authorized by this run.
+attestation: I attest that this SAF-T1307 draft and evidence packet were independently
+  derived from the allowed generic inputs and directly reviewed external authorities;
+  no prohibited target artifact was accessed; the bundle passed isolated strict validation
+  before its sorted freeze manifest was calculated; and no real-repository integration
+  occurred.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-mcp-auth-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-rfc8707: SRC-rfc8707
+    SRC-rfc9700: SRC-rfc9700
+    SRC-jfsa-2025-001290844: SRC-jfsa-2025-6514
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-attack-t1068-v1.6: SRC-mitre-attack-t1068
+  new_shared_source_records:
+  - SRC-cwe-441-v4.20
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-53109
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-31
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T1998: SAF-T1102
+    SAF-T1999: SAF-T1707
+  synthetic_mitigation_mapping:
+    SAF-M-1998: SAF-M-74
+    SAF-M-1999: SAF-M-16
+  normalization_refreeze:
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1307-normalized/bundle
+    freeze_manifest_sha256: c869cf69e74a09360ccfd7408d5c0fa99532bdc94d52c2c4bf4e683760ca353a
+    scope: Mechanical relocation of test artifacts to canonical tests/SAF-T1307 paths; no research or substantive change.
+  accidental_post_freeze_target_exposure:
+    occurred: true
+    stage: integration_reconciliation
+    effect_on_generation: none; the clean-room bundle was already frozen and remained the sole replacement input
+    disposition: prior target text was not used for claims, sources, mappings, or edits
+  status: integrated_and_repository_validated

@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1707
+name: CSRF Token Relay
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Complete or misbind an attacker-originated OAuth authorization
+  result in a victim context by relaying a valid anti-CSRF value across session boundaries.
+scope:
+  security_boundary: Continuity between the browser or user-agent session that starts
+    an OAuth authorization request and the session that presents its callback.
+  in_scope:
+  - Relay of a valid state or equivalent anti-CSRF value into a different callback
+    session.
+  - Acceptance based on signature, expiry, global cache presence, or attacker-plantable
+    cookies without protected initiating-session continuity.
+  - Immediate session swapping, authorization completion, or account misbinding.
+  out_of_scope:
+  - Missing or unchecked state without relay of a valid anti-CSRF token.
+  - Authorization-code interception or injection where PKCE or issuer binding is the
+    defining failed boundary.
+  - Bearer-token theft or replay, token passthrough, open redirect, phishing, and
+    downstream post-authentication action.
+  affected_components:
+  - MCP host or OAuth client authorization-request state store.
+  - Browser or external user agent.
+  - Authorization server and callback endpoint.
+  - Account-linking or token-exchange completion path.
+nearest_neighbors:
+- technique_id: SAF-T1009
+  distinction: Authorization Server Mix-up misbinds the issuer; SAF-T1707 accepts
+    a valid anti-CSRF value outside the user-agent session that created it.
+- technique_id: SAF-T1507
+  distinction: Authorization Code Interception steals or injects a code; SAF-T1707
+    crosses the user-agent session-binding boundary by relaying valid state.
+- technique_id: SAF-T1706
+  distinction: OAuth Token Pivot Replay presents an issued access token at a protected
+    resource; SAF-T1707 occurs before token issuance or account binding completes.
+required_evidence:
+- Establish that OAuth and current MCP guidance require per-request user-agent session
+  binding.
+- Establish that a valid state can be replayed outside the initiating browser when
+  binding is absent or attacker-writable.
+- Establish prerequisites, immediate outcome, limitations, and end-to-end evidence
+  status.
+- Search current breach and vulnerability authorities, classify directness, select
+  highest-impact relevant examples, and record the MCP incident gap.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Authorization request creation with timestamp, state digest, client, redirect,
+    and privacy-preserving initiating-session binding.
+  - Callback acceptance with timestamp, state digest, client, redirect, outcome, and
+    privacy-preserving callback-session binding.
+  - Token exchange or account-link completion correlated to the authorization transaction.
+safe_example_constraints:
+- Use inert domains and synthetic hashed identifiers only.
+- Do not publish working payloads, live callbacks, credentials, raw state values,
+  tokens, or destructive actions.
+completion_evidence:
+- Every substantive README unit is linked to validated claim IDs or declared local
+  artifacts.
+- Rejected and adjacent candidates are omitted from the technique mechanism and ledgered.
+- Two final authority-only passes record no material change.
+- Detection tests and isolated strict validation pass.
+- Rights, attribution, safe-publication, and freeze verification pass.

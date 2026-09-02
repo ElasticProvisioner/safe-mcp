@@ -1,0 +1,153 @@
+version: 1
+technique_id: SAF-T1801
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1801
+  inherited_context: false
+target:
+  id: SAF-T1801
+  neutral_name: Automated Data Harvesting
+allowed_inputs:
+- Neutral tuple SAF-T1801, Automated Data Harvesting, tactic ATK-TA0009.
+- Generic author-saf-technique skill and its routed methodology, clean-room, trace,
+  and breach/vulnerability references.
+- Generic technique, detection, research-packet, source, framework, and alignment
+  templates.
+- Generic research README and canonical validate-technique-research.py.
+- Independently opened standards-body, government, first-party vendor, and original-researcher
+  authorities.
+prohibited_inputs:
+- techniques/SAF-T1801/README.md in the destination repository.
+- research/techniques/SAF-T1801/ and any target-specific research packet in the destination
+  repository.
+- techniques/SAF-T1801/detection-rule.yml, target tests, or target validation logs
+  in the destination repository.
+- Git history, diffs, blame, commits, branches, and stashes exposing prior target
+  artifacts.
+- Any pull request, issue, review, or SAF website containing prior target content.
+- Any previous conversation, summary, or inherited agent context containing prior
+  technique content.
+- Shared source, framework, alignment, mitigation, or catalog registries before freeze.
+- GitHub discovery, unrestricted search, target identifier search, and methodology
+  impact-classification examples before freeze.
+independent_research:
+  searches:
+  - DIRECT MCP Resources 2025-06-18
+  - DIRECT MCP Tools 2025-06-18
+  - DIRECT MCP Roots 2025-06-18
+  - DIRECT MCP Security Best Practices 2025-11-25
+  - NVD API keywordSearch=model context protocol
+  - NVD API keywordSearch=MCP data exfiltration
+  - CISA KEV catalog exact candidate-ID membership
+  - CVE API exact records for 2025-34072, 2025-49596, 2025-53109, 2025-53110, 2025-6514,
+    2026-25536, 2026-33946, and 2026-15643
+  - DIRECT MITRE ATT&CK T1119, T1213, DET0413, and TA0009
+  - Exact Anthropic GTG-1002 report URL supplied by MITRE ATT&CK T1119
+  - DIRECT Invariant WhatsApp MCP, GitHub MCP, and tool-poisoning original research
+  - DIRECT Embrace The Red Slack MCP disclosure
+  - DIRECT AWS Security Bulletin 2026-054-AWS
+  - DIRECT OWASP LLM01:2025
+  - 'Saturation 1 NVD API: model context protocol automated collection; model context
+    protocol mass data access'
+  - 'Saturation 2 NVD API: MCP bulk data; model context protocol data leak'
+  opened_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-cve-2026-15643
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-34072
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-cve-2025-6514
+  - SRC-cve-2026-25536
+  - SRC-cve-2026-33946
+  - SRC-cve-34072
+  - SRC-ghsa-inspector-7f8r
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-roots-20250618
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1119-v1.4
+  - SRC-mitre-t1213-v3.4
+  - SRC-nvd-mcp-query-20260902
+  - SRC-owasp-llm01-2025
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- No destination repository integration occurred during this run.
+- Post-freeze integration is limited to source-ID collision resolution, synthetic
+  neighbor and mitigation joins, an honest repository-history SHA, path placement,
+  and validation.
+- Existing target prose, research, tests, history, reviews, registries, SAF sites,
+  and impact examples must not be used to revise frozen substantive content.
+attestation: I attest that this fresh agent received only the neutral target tuple
+  and generic authorized inputs; performed independent authority-only research; detected
+  no prohibited prior-artifact access; and fixed the independent draft and evidence
+  set before any destination integration.
+mock_validation:
+  command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1801/validator-deps python3
+    scripts/validate-technique-research.py SAF-T1801
+  result: passed
+  deferred_real_repository_joins:
+  - Source-ID collision resolution
+  - Synthetic tactic, neighbor, and mitigation registration or replacement
+  - Honest destination repository-history SHA
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-resources-20250618: SRC-mcp-resources-2025-06-18
+    SRC-mcp-tools-20250618: SRC-mcp-tools-2025-06-18
+    SRC-mcp-security-20251125: SRC-mcp-security-2025-11-25
+    SRC-anthropic-gtg1002-202511: SRC-anthropic-espionage-2025-11
+    SRC-invariant-whatsapp-20250407: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-github-20250526: SRC-invariant-github-mcp-2025
+    SRC-invariant-tool-poisoning-20250401: SRC-invariant-tpa-2025-04-01
+    SRC-embrace-red-slack-20250624: SRC-cve-34072
+    SRC-ghsa-q66q-fx2p-7w4m: SRC-ghsa-cve-2025-53109
+    SRC-cve-2025-53109: SRC-cve-2025-53109
+    SRC-ghsa-hc55-p739-j48w: SRC-ghsa-cve-2025-53110
+    SRC-cve-2025-53110: SRC-cve-2025-53110
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-cisa-kev-20260901: SRC-cisa-kev-2026-09-01
+    SRC-owasp-llm01-2025: SRC-owasp-llm01-2025
+  new_shared_source_records:
+  - SRC-mcp-roots-20250618
+  - SRC-mitre-t1119-v1.4
+  - SRC-mitre-t1213-v3.4
+  - SRC-cve-2025-34072
+  - SRC-aws-cve-2026-15643
+  - SRC-cve-2026-25536
+  - SRC-cve-2026-33946
+  - SRC-nvd-mcp-query-20260902
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0009
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-71
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1803
+  - SAF-T1804
+  - SAF-T1910
+  canonical_validation_proof:
+  - research/techniques/SAF-T1801/validation/detector-tests.txt
+  - research/techniques/SAF-T1801/validation/research-validator.txt
+  source_corpus_hash: 810c44e54328e2bd4487405009cc0a4668403d5834438aa3b22fcf72039124bc
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records and the frozen source-corpus hash preserve the reviewed evidence disposition.
+  status: integrated_and_validated

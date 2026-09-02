@@ -1,0 +1,38 @@
+version: 1
+technique_id: SAF-T1704
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records allowed inputs, prohibited inputs, searches, and no prior artifact access.}
+  contract_and_scope: {status: passed, notes: Scope requires host-mediated cross-trust action and excludes initial compromise, credential-only, same-server, and downstream behaviors.}
+  technical_accuracy: {status: passed, notes: Current protocol, demonstrations, vulnerability bounds, and legacy-session limitation reconciled.}
+  claim_traceability: {status: passed, notes: Sixteen validated claims have direct sources, exact locators, limitations, and readable hidden SAF-TRACE links.}
+  source_or_omit: {status: passed, notes: Every substantive README line is traced or links a declared local artifact; eight omitted candidates are ledgered.}
+  evidence_classification: {status: passed, notes: Demonstrated is justified by a complete controlled two-server chain; no production incident supports Observed.}
+  research_saturation: {status: passed, notes: Five required passes and five follow-ups end with two consecutive no-change searches.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Seven candidates were classified; three highest-impact qualifying examples were selected and the production gap is explicit.}
+  detection_quality: {status: passed, notes: Behavioral detector passed eight inert positive, negative, boundary, approval, trust, timing, and malformed-input cases.}
+  mitigation_quality: {status: passed, notes: Controls address metadata change, policy, credentials, approval, validation, patching, and audit stages.}
+  framework_alignment: {status: passed, notes: Post-freeze reconciliation maps the synthetic neighbors to SAF-T1001 and SAF-T1004, adds broader overlap SAF-T1703, joins ten mitigations and analogous ATT&CK T1210, and preserves canonical paths.}
+  publication_rights: {status: passed, notes: All cited sources are paraphrased with author/team credit; no quotations, code, images, or datasets reproduced.}
+  safe_publication: {status: passed, notes: Technique and fixtures contain no credentials, operational exploit payloads, or destructive commands.}
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1704
+      result: passed
+      environment: Isolated synthetic mock repository with only this bundle, generic validator, and two neighbor stubs.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1704/test_detection_rule.py
+    result: 8 of 8 synthetic cases passed
+    waiver: null
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1704/validation/detection-test.txt
+  strict_validator_transcript: research/techniques/SAF-T1704/validation/strict-validator.txt
+  status: passed
+
+unresolved: []

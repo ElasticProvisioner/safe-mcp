@@ -1,0 +1,327 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2026-07-28
+    title: Model Context Protocol - Tools
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the versioned specification.
+    review_status: opened_reviewed
+    locators: [User Interaction Model, Capabilities, Calling Tools, Security Considerations]
+    review_notes: Verified model-controlled invocation, scope-sensitive tool listing, access-control, confirmation, input-display, and logging requirements.
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Public authoritative page was reviewed directly; the handoff intentionally excludes source-acquisition copies.
+      review_evidence: {method: direct_open, reviewed_on: "2026-09-01"}
+  - id: SRC-mcp-auth-2026-07-28
+    title: Model Context Protocol - Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the versioned specification.
+    review_status: opened_reviewed
+    locators: [Scope Selection Strategy, Token Handling, Runtime Insufficient Scope Errors, Step-Up Authorization Flow]
+    review_notes: Verified least-privilege initial scope selection, per-operation scope challenges, token audience validation, and step-up behavior.
+    archive: *remote_archive
+  - id: SRC-mcp-security-best-practices-2025-11-25
+    title: Model Context Protocol - Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the versioned guidance.
+    review_status: opened_reviewed
+    locators: [Token Passthrough, Local MCP Server Compromise, stdio Transport Security in Proxy Scenarios, Scope Minimization]
+    review_notes: Verified risks of broad scopes and local process privileges, progressive scope guidance, elevation logging, sandboxing, and additional authorization.
+    archive: *remote_archive
+  - id: SRC-rfc8707
+    title: "RFC 8707: Resource Indicators for OAuth 2.0"
+    publisher: RFC Editor / IETF
+    authors: [Brian Campbell, John Bradley, Hannes Tschofenig]
+    version_or_date: "2020-02"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc8707.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the RFC HTML publication.
+    review_status: opened_reviewed
+    locators: [Section 1 Introduction, Section 2 Resource Parameter, Section 3 Security Considerations, Authors' Addresses]
+    review_notes: Verified the security rationale for resource-bound access tokens and specific access scope.
+    archive: *remote_archive
+  - id: SRC-invariant-whatsapp-mcp-2025
+    title: "WhatsApp MCP Exploited: Exfiltrating your message history via MCP"
+    publisher: Invariant Labs AG
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-07; updated 2025-04-09"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the original research disclosure.
+    review_status: opened_reviewed
+    locators: [Experiment 1 Malicious MCP server takeover, Attack Visibility, Experiment 2 Attacking via an Injected Message, Conclusion, Authors]
+    review_notes: Verified controlled end-to-end tests in which adversarial MCP context or a message caused trusted WhatsApp tools to disclose or send data beyond user intent; no production exploitation was claimed.
+    archive: *remote_archive
+  - id: SRC-invariant-tool-poisoning-2025
+    title: "MCP Security Notification: Tool Poisoning Attacks"
+    publisher: Invariant Labs AG
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-01; updated 2025-04-07 and 2025-04-11"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the original research disclosure.
+    review_status: opened_reviewed
+    locators: [What is a Tool Poisoning Attack, Experiment 1, Shadowing Tool Descriptions with Multiple Servers, Mitigation Strategies, Authors]
+    review_notes: Verified controlled demonstrations and cross-server data-flow findings; treated tool poisoning as delivery adjacent to this technique.
+    archive: *remote_archive
+  - id: SRC-agentdojo-2024
+    title: "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents"
+    publisher: arXiv / ETH Zurich and Invariant Labs
+    authors: [Edoardo Debenedetti, Jie Zhang, Mislav Balunovic, Luca Beurer-Kellner, Marc Fischer, Florian Tramèr]
+    version_or_date: "arXiv:2406.13352v3, 2024-11-24"
+    source_class: research
+    official_url: https://arxiv.org/html/2406.13352
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the complete HTML paper, methods, evaluation, limitations, and authorship.
+    review_status: opened_reviewed
+    locators: [Abstract, Sections 1 and 3, Section 4 Evaluation, Section 5 Conclusion, Appendix E]
+    review_notes: Verified the stateful multi-tool benchmark, formal attacker goals, measured prompt-injection success, and limitations of detector-based defenses.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2026-27966
+    title: NVD record for CVE-2026-27966
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, GitHub CNA]
+    version_or_date: "published 2026-02-26; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-27966
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official NVD 2.0 JSON record and NVD detail endpoint.
+    review_status: opened_reviewed
+    locators: [CVE description, references, published and lastModified fields]
+    review_notes: Verified Langflow affected behavior, CVE identifier, fixed version 1.8.0, and the exact vendor-advisory URL used for subsequent direct review.
+    archive: *remote_archive
+  - id: SRC-ghsa-3645-fxcv-hqr4
+    title: Remote Code Execution in CSV Agent
+    publisher: Langflow project / GitHub Security Advisories
+    authors: [Empreiteiro, weblover12, andifilhohub, Adam-Aghili]
+    version_or_date: "published 2026-02-25"
+    source_class: official_advisory
+    official_url: https://github.com/langflow-ai/langflow/security/advisories/GHSA-3645-fxcv-hqr4
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after discovery in the reviewed NVD record for CVE-2026-27966.
+    review_status: opened_reviewed
+    locators: [Summary, Intended Functionality, Root Cause, Proof of Concept, Impact, Patch Recommendation, Credits]
+    review_notes: Verified the hardcoded dangerous-code setting, automatic Python REPL exposure, inert proof, RCE result, patch, and named credits. The advisory's displayed affected range and patched version are internally awkward; NVD supplies the published affected statement.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2026-29783
+    title: NVD record for CVE-2026-29783
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, GitHub CNA]
+    version_or_date: "published 2026-03-06; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-29783
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official NVD 2.0 JSON record and NVD detail endpoint.
+    review_status: opened_reviewed
+    locators: [CVE description, references, published and lastModified fields]
+    review_notes: Verified GitHub Copilot CLI affected and fixed versions, approval-bypass mechanism, bounded impacts, and exact advisory URL provenance.
+    archive: *remote_archive
+  - id: SRC-ghsa-g8r9-g2v8-jv6f
+    title: Dangerous Shell Expansion Patterns Enable Arbitrary Code Execution
+    publisher: GitHub Copilot CLI / GitHub Security Advisories
+    authors: [andyfeller, GitHub Copilot CLI security team]
+    version_or_date: "published 2026-03-06"
+    source_class: official_advisory
+    official_url: https://github.com/github/copilot-cli/security/advisories/GHSA-g8r9-g2v8-jv6f
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after discovery in the reviewed NVD record for CVE-2026-29783.
+    review_status: opened_reviewed
+    locators: [Summary, Details, Proof of Concept, Impact, Affected Versions, Remediation and Mitigation]
+    review_notes: Verified that crafted command text could be misclassified as read-only, avoid approval, and execute; verified patch 0.0.423 and layered remediation. Exploit strings are not reproduced in the technique.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2025-67510
+    title: NVD record for CVE-2025-67510
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, GitHub CNA]
+    version_or_date: "published 2025-12-10; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-67510
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official NVD 2.0 JSON record and NVD detail endpoint.
+    review_status: opened_reviewed
+    locators: [CVE description, references, published and lastModified fields]
+    review_notes: Verified Neuron MySQLWriteTool behavior, broad-privilege condition, affected/fixed versions, and exact vendor-advisory URL provenance.
+    archive: *remote_archive
+  - id: SRC-ghsa-898v-775g-777c
+    title: MySQLWriteTool allows arbitrary or destructive SQL when exposed to untrusted prompts
+    publisher: Neuron AI project / GitHub Security Advisories
+    authors: [ilvalerione, siewer]
+    version_or_date: "published 2025-12-09"
+    source_class: official_advisory
+    official_url: https://github.com/neuron-core/neuron-ai/security/advisories/GHSA-898v-775g-777c
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after discovery in the reviewed NVD record for CVE-2025-67510.
+    review_status: opened_reviewed
+    locators: [Impact, Patches, Workarounds, Severity, Weaknesses, Credits]
+    review_notes: Verified unconstrained SQL execution, dependence on database permissions, fixed version 2.8.12, least-privilege workarounds, and finder credit.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2025-53097
+    title: NVD record for CVE-2025-53097
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, GitHub CNA]
+    version_or_date: "published 2025-06-27; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-53097
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the NVD detail page and official NVD 2.0 JSON record.
+    review_status: opened_reviewed
+    locators: [Description, References, Change History, Quick Info]
+    review_notes: Verified Roo Code search scope failure, exfiltration preconditions, fixed version 3.20.3, CISA-ADP exploitation-none assessment, and exact advisory URL provenance.
+    archive: *remote_archive
+  - id: SRC-ghsa-wr2q-46pg-f228
+    title: Potential Information Leakage via JSON Schema in the Roo Code extension
+    publisher: Roo Code project / GitHub Security Advisories
+    authors: [mrubens, MaccariTA]
+    version_or_date: "published 2025-06-27"
+    source_class: official_advisory
+    official_url: https://github.com/RooCodeInc/Roo-Code/security/advisories/GHSA-wr2q-46pg-f228
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after discovery in the reviewed NVD record for CVE-2025-53097.
+    review_status: opened_reviewed
+    locators: [Summary, Impact, Remediation, Affected versions, Patched versions, Credits]
+    review_notes: Verified the out-of-workspace read, no-denial network request condition, patch, and named reporter.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2026-76072
+    title: NVD record for CVE-2026-76072
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, VulnCheck CNA]
+    version_or_date: "published 2026-08-24"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-76072
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official NVD 2.0 JSON record and NVD detail endpoint.
+    review_status: opened_reviewed
+    locators: [CVE description, references, published and lastModified fields]
+    review_notes: Verified the Continue CLI unattended Bash permission and incomplete destructive-command denylist; no fixed version was established in the reviewed record.
+    archive: *remote_archive
+  - id: SRC-vulncheck-cve-2026-76072
+    title: Continue CLI through 1.5.47 Incomplete Destructive Command Denylist in Headless and Auto Mode
+    publisher: VulnCheck
+    authors: [George Chen]
+    version_or_date: "2026-08-24"
+    source_class: research
+    official_url: https://www.vulncheck.com/advisories/continue-cli-through-incomplete-destructive-command-denylist-in-headless-and-auto-mode
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the originating CNA advisory.
+    review_status: opened_reviewed
+    locators: [Affected versions, CVE, Credit, Description]
+    review_notes: Verified affected versions and destructive-operation path; excluded from selected examples because the reviewed sources did not establish remediation or production exploitation.
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2025-32711
+    title: NVD record for CVE-2025-32711
+    publisher: National Vulnerability Database
+    authors: [National Institute of Standards and Technology, Microsoft CNA]
+    version_or_date: "published 2025-06-11; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-32711
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official NVD 2.0 JSON record.
+    review_status: opened_reviewed
+    locators: [CVE description, references, published and lastModified fields]
+    review_notes: Verified only the bounded M365 Copilot information-disclosure description; excluded as non-MCP adjacent evidence because the original disclosure had moved and the reviewed record did not establish this technique's exact authority boundary.
+    archive: *remote_archive
+  - id: SRC-cisa-kev-2026-09-01
+    title: CISA Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Cybersecurity Division]
+    version_or_date: "catalog version 2026.09.01, released 2026-09-01"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct download and identifier comparison against catalog version 2026.09.01.
+    review_status: opened_reviewed
+    locators: [catalogVersion, dateReleased, vulnerabilities entries for selected CVE identifiers]
+    review_notes: The selected CVE identifiers were absent from this catalog; absence is not treated as proof that exploitation has never occurred.
+    archive: *remote_archive
+  - id: SRC-owasp-mcp-security
+    title: MCP Security Cheat Sheet
+    publisher: OWASP Cheat Sheet Series
+    authors: [OWASP Cheat Sheet Series contributors]
+    version_or_date: "reviewed 2026-09-01"
+    source_class: credible_practice
+    official_url: https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the OWASP guidance.
+    review_status: opened_reviewed
+    locators: [Key Risks, Principle of Least Privilege, Human-in-the-Loop, Monitoring Logging and Auditing, Do's and Don'ts]
+    review_notes: Verified practitioner guidance for per-tool least privilege, full-parameter approvals, and tool-call monitoring; normative claims rely on MCP specifications instead.
+    archive: *remote_archive
+  - id: SRC-anthropic-claude-code-security
+    title: Claude Code Security
+    publisher: Anthropic
+    authors: [Anthropic Claude Code team]
+    version_or_date: "reviewed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://code.claude.com/docs/en/security
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of first-party product documentation.
+    review_status: opened_reviewed
+    locators: [Permission-based architecture, Built-in protections, Protect against prompt injection, Additional safeguards]
+    review_notes: Verified a current implementation pattern using read-only defaults, per-action approval, scoped paths, sandboxing, and fail-closed permission matching.
+    archive: *remote_archive
+  - id: SRC-nist-sp800-207
+    title: NIST SP 800-207 Zero Trust Architecture
+    publisher: National Institute of Standards and Technology
+    authors: [Scott Rose, Oliver Borchert, Stu Mitchell, Sean Connelly]
+    version_or_date: "2020-08"
+    source_class: protocol_or_standard
+    official_url: https://csrc.nist.gov/pubs/sp/800/207/final
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the official publication record and abstract.
+    review_status: opened_reviewed
+    locators: [Abstract, Author list, Publication record]
+    review_notes: Verified that zero trust grants no implicit trust based solely on location or ownership and treats authentication and authorization as discrete functions.
+    archive: *remote_archive
+  - id: SRC-mitre-attack-t1106
+    title: MITRE ATT&CK T1106 Native API
+    publisher: MITRE ATT&CK
+    authors: [Gordon Long, LegioX/Zoom, asaurusrex, Stefan Kanthak, Tristan Madani]
+    version_or_date: "version 2.3, modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1106/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page review of the live ATT&CK technique.
+    review_status: opened_reviewed
+    locators: [Definition, ID, Tactic, Platforms, Contributors, Version]
+    review_notes: Verified that T1106 covers adversary interaction with native OS APIs to execute behavior; SAF-T1104 is only analogous because MCP tools are application-level interfaces.
+    archive: *remote_archive

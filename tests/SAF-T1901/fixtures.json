@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "description": "Synthetic, inert MCP-correlated outbound HTTP events for SAF-T1901.",
+  "cases": [
+    {
+      "name": "positive_repeated_unapproved_webhook_with_consumed_responses",
+      "classification": "true_positive",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T10:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-a",
+          "mcp.tool.name": "notify_status",
+          "mcp.invocation.id": "invoke-a1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "hooks.example.invalid",
+          "server.port": 443,
+          "url.full": "https://hooks.example.invalid/agent/status?token=REDACTED",
+          "http.request.body.size": 144,
+          "http.response.status_code": 200,
+          "http.response.body.size": 36,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T10:02:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-a",
+          "mcp.tool.name": "notify_status",
+          "mcp.invocation.id": "invoke-a2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "hooks.example.invalid",
+          "server.port": 443,
+          "url.full": "https://hooks.example.invalid/agent/status?token=REDACTED-2",
+          "http.request.body.size": 151,
+          "http.response.status_code": 200,
+          "http.response.body.size": 48,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T10:04:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-a",
+          "mcp.tool.name": "notify_status",
+          "mcp.invocation.id": "invoke-a3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "hooks.example.invalid",
+          "server.port": 443,
+          "url.full": "https://hooks.example.invalid/agent/status?token=REDACTED-3",
+          "http.request.body.size": 163,
+          "http.response.status_code": 200,
+          "http.response.body.size": 42,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "positive_exact_ten_minute_window_with_consumed_responses",
+      "classification": "boundary_positive",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T11:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-b",
+          "mcp.tool.name": "workflow_callback",
+          "mcp.invocation.id": "invoke-b1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "receiver.example.invalid",
+          "url.full": "https://receiver.example.invalid/callback",
+          "http.request.body.size": 80,
+          "http.response.body.size": 12,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T11:04:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-b",
+          "mcp.tool.name": "workflow_callback",
+          "mcp.invocation.id": "invoke-b2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "receiver.example.invalid",
+          "url.full": "https://receiver.example.invalid/callback",
+          "http.request.body.size": 84,
+          "http.response.body.size": 15,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T11:10:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-b",
+          "mcp.tool.name": "workflow_callback",
+          "mcp.invocation.id": "invoke-b3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "receiver.example.invalid",
+          "url.full": "https://receiver.example.invalid/callback",
+          "http.request.body.size": 88,
+          "http.response.body.size": 18,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_repeated_approved_destination",
+      "classification": "true_negative",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T12:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-c",
+          "mcp.tool.name": "approved_notifier",
+          "mcp.invocation.id": "invoke-c1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "approved.example.invalid",
+          "url.full": "https://approved.example.invalid/hooks/status",
+          "http.request.body.size": 90,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": true,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T12:02:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-c",
+          "mcp.tool.name": "approved_notifier",
+          "mcp.invocation.id": "invoke-c2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "approved.example.invalid",
+          "url.full": "https://approved.example.invalid/hooks/status",
+          "http.request.body.size": 94,
+          "http.response.body.size": 11,
+          "saf.webhook.destination_approved": true,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T12:04:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-c",
+          "mcp.tool.name": "approved_notifier",
+          "mcp.invocation.id": "invoke-c3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "approved.example.invalid",
+          "url.full": "https://approved.example.invalid/hooks/status",
+          "http.request.body.size": 92,
+          "http.response.body.size": 9,
+          "saf.webhook.destination_approved": true,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_one_off_unapproved_callback",
+      "classification": "true_negative",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T13:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-d",
+          "mcp.tool.name": "single_callback",
+          "mcp.invocation.id": "invoke-d1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "oneoff.example.invalid",
+          "url.full": "https://oneoff.example.invalid/complete",
+          "http.request.body.size": 70,
+          "http.response.body.size": 14,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_two_events_below_threshold",
+      "classification": "boundary_negative",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T14:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-e",
+          "mcp.tool.name": "threshold_test",
+          "mcp.invocation.id": "invoke-e1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "threshold.example.invalid",
+          "url.full": "https://threshold.example.invalid/callback",
+          "http.request.body.size": 50,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T14:05:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-e",
+          "mcp.tool.name": "threshold_test",
+          "mcp.invocation.id": "invoke-e2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "threshold.example.invalid",
+          "url.full": "https://threshold.example.invalid/callback",
+          "http.request.body.size": 52,
+          "http.response.body.size": 11,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_three_events_outside_window",
+      "classification": "boundary_negative",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T15:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-f",
+          "mcp.tool.name": "slow_callback",
+          "mcp.invocation.id": "invoke-f1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "slow.example.invalid",
+          "url.full": "https://slow.example.invalid/callback",
+          "http.request.body.size": 60,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T15:11:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-f",
+          "mcp.tool.name": "slow_callback",
+          "mcp.invocation.id": "invoke-f2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "slow.example.invalid",
+          "url.full": "https://slow.example.invalid/callback",
+          "http.request.body.size": 60,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T15:22:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-f",
+          "mcp.tool.name": "slow_callback",
+          "mcp.invocation.id": "invoke-f3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "slow.example.invalid",
+          "url.full": "https://slow.example.invalid/callback",
+          "http.request.body.size": 60,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_manual_administrator_callbacks",
+      "classification": "true_negative",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T16:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-g",
+          "mcp.tool.name": "admin_test",
+          "mcp.invocation.id": "invoke-g1",
+          "mcp.invocation.mode": "human",
+          "http.request.method": "POST",
+          "server.address": "admin.example.invalid",
+          "url.full": "https://admin.example.invalid/test",
+          "http.request.body.size": 40,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T16:01:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-g",
+          "mcp.tool.name": "admin_test",
+          "mcp.invocation.id": "invoke-g2",
+          "mcp.invocation.mode": "human",
+          "http.request.method": "POST",
+          "server.address": "admin.example.invalid",
+          "url.full": "https://admin.example.invalid/test",
+          "http.request.body.size": 40,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T16:02:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-g",
+          "mcp.tool.name": "admin_test",
+          "mcp.invocation.id": "invoke-g3",
+          "mcp.invocation.mode": "human",
+          "http.request.method": "POST",
+          "server.address": "admin.example.invalid",
+          "url.full": "https://admin.example.invalid/test",
+          "http.request.body.size": 40,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_malformed_and_missing_fields",
+      "classification": "malformed_negative",
+      "expected_alerts": 0,
+      "events": [
+        {},
+        {
+          "timestamp": "not-a-time",
+          "event.kind": "http.client",
+          "http.request.method": "POST",
+          "saf.webhook.destination_approved": false
+        },
+        {
+          "timestamp": "2026-09-02T17:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-h",
+          "mcp.tool.name": "bad_url",
+          "mcp.invocation.id": "invoke-h1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "broken.example.invalid",
+          "url.full": "not-a-url",
+          "http.request.body.size": 10,
+          "http.response.body.size": 10,
+          "saf.webhook.destination_approved": false
+        }
+      ]
+    },
+    {
+      "name": "expected_false_positive_new_unapproved_business_integration",
+      "classification": "expected_false_positive",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T18:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-i",
+          "mcp.tool.name": "new_business_hook",
+          "mcp.invocation.id": "invoke-i1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "partner.example.invalid",
+          "url.full": "https://partner.example.invalid/events",
+          "http.request.body.size": 110,
+          "http.response.body.size": 8,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T18:03:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-i",
+          "mcp.tool.name": "new_business_hook",
+          "mcp.invocation.id": "invoke-i2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "partner.example.invalid",
+          "url.full": "https://partner.example.invalid/events",
+          "http.request.body.size": 112,
+          "http.response.body.size": 8,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T18:06:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-i",
+          "mcp.tool.name": "new_business_hook",
+          "mcp.invocation.id": "invoke-i3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "POST",
+          "server.address": "partner.example.invalid",
+          "url.full": "https://partner.example.invalid/events",
+          "http.request.body.size": 114,
+          "http.response.body.size": 8,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_get_polling_outside_webhook_scope",
+      "classification": "known_blind_spot",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T19:00:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-j",
+          "mcp.tool.name": "poll_commands",
+          "mcp.invocation.id": "invoke-j1",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "GET",
+          "server.address": "poll.example.invalid",
+          "url.full": "https://poll.example.invalid/instructions",
+          "http.request.body.size": 1,
+          "http.response.body.size": 64,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T19:01:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-j",
+          "mcp.tool.name": "poll_commands",
+          "mcp.invocation.id": "invoke-j2",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "GET",
+          "server.address": "poll.example.invalid",
+          "url.full": "https://poll.example.invalid/instructions",
+          "http.request.body.size": 1,
+          "http.response.body.size": 64,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        },
+        {
+          "timestamp": "2026-09-02T19:02:00Z",
+          "event.kind": "http.client",
+          "mcp.session.id": "session-j",
+          "mcp.tool.name": "poll_commands",
+          "mcp.invocation.id": "invoke-j3",
+          "mcp.invocation.mode": "model",
+          "http.request.method": "GET",
+          "server.address": "poll.example.invalid",
+          "url.full": "https://poll.example.invalid/instructions",
+          "http.request.body.size": 1,
+          "http.response.body.size": 64,
+          "saf.webhook.destination_approved": false,
+          "saf.webhook.response_consumed": true
+        }
+      ]
+    }
+  ]
+}

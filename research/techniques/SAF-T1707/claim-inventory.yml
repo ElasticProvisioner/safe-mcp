@@ -1,0 +1,323 @@
+version: 1
+technique_id: SAF-T1707
+claims:
+  - id: SAF-T1707-C001
+    statement: Current MCP HTTP authorization assigns the OAuth-client role to the MCP client and the resource-server role to the MCP server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Introduction; Roles; Access Token Usage]
+    corroboration: The MCP authorization security page requires OAuth 2.1 protections for that boundary.
+    limitations: [Does not describe CSRF Token Relay itself.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C002
+    statement: Current MCP authorization requires the authorization-server issuer to be stored with the same per-request record used for PKCE and state when state is used.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Authorization Response Validation]
+    corroboration: OAuth 2.1 draft 13 independently specifies transaction binding and CSRF protections.
+    limitations: [State is conditional in this response-validation clause.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C003
+    statement: MCP security guidance requires random per-request state, protected storage, exact callback-session matching, rejection of mismatch, single use, and short expiry.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-spec-2026-07-28
+        support: direct
+        exact_locators: [OAuth State Parameter Validation]
+    corroboration: RFC 9700 requires a one-time CSRF token securely bound to the user agent when PKCE or OIDC nonce is not used for CSRF protection.
+    limitations: [The MCP page gives an illustrative ten-minute expiry rather than a universal fixed value.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C004
+    statement: OAuth security guidance requires a one-time CSRF token in state to be securely bound to the user agent when state is the chosen protection.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700-state-relay
+        support: direct
+        exact_locators: [Section 2.1; Section 4.7.1]
+      - source_id: SRC-oauth21-draft13
+        support: direct
+        exact_locators: [Section 2.3.3; Section 7.9]
+    corroboration: RFC 6749 Section 10.12 requires binding the authorization request to the user-agent authenticated state.
+    limitations: [Other transaction-specific values such as PKCE or OIDC nonce can provide CSRF protection under their specified conditions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C005
+    statement: RFC 9700 describes replay of a learned state value with a forged authorization response and distinguishes PKCE as robust against that attacker model.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700-state-relay
+        support: direct
+        exact_locators: [Section 4.7.1]
+      - source_id: SRC-rfc7636-state-relay
+        support: direct
+        exact_locators: [Section 1.1; Section 4.1 through 4.6]
+    corroboration: The formal OAuth analysis independently models a leaked-state replay attack.
+    limitations: [PKCE does not replace issuer validation and has other attacker-model limits described by RFC 9700.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C006
+    statement: Formal OAuth analysis demonstrates that leaked state and an authorization result can be replayed through a victim browser and violate login-session integrity.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-fett-oauth-state-leak
+        support: direct
+        exact_locators: [Section 3.3 State Leak Attack, pages 14-15; Section 5]
+    corroboration: RFC 9700 Section 4.7.1 incorporates the same class of state replay into current security guidance.
+    limitations: [Formal web-model demonstration, not an MCP deployment or production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C007
+    statement: An MCP OAuth client that accepts a valid attacker-originated state outside the initiating user-agent session can complete or misbind the attacker-originated callback in a victim context.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: context
+        exact_locators: [Roles; Authorization Response Validation]
+      - source_id: SRC-rfc9700-state-relay
+        support: direct
+        exact_locators: [Section 2.1; Section 4.7.1]
+      - source_id: SRC-fastapi-advisory
+        support: direct
+        exact_locators: [Impact; Description]
+      - source_id: SRC-authlib-advisory
+        support: direct
+        exact_locators: [Impact; Description]
+    corroboration: Multiple independent implementations and the formal model exhibit the same session-binding failure.
+    limitations: [No reviewed authority documented an end-to-end MCP exploitation case.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact OAuth primitive is applied to the current MCP client role; this is not claimed as an observed MCP incident.
+    status: validated
+  - id: SAF-T1707-C008
+    statement: FastAPI Users before 15.0.2 used valid signed state JWTs without per-request browser correlation, enabling login CSRF and potentially account linking or takeover depending on application logic.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fastapi-advisory
+        support: direct
+        exact_locators: [GHSA-5j53-63w8-8625 Description; Impact; Patched versions]
+      - source_id: SRC-nvd-2025-68481
+        support: direct
+        exact_locators: [CVE-2025-68481 description and references]
+    corroboration: NVD reproduces the affected behavior and fixed version from the upstream advisory.
+    limitations: [Library disclosure, not evidence of exploitation in production or MCP use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C009
+    statement: Authlib cache-backed OAuth state was not tied to the initiating browser, allowing an attacker-owned code and valid state to complete in a victim browser.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-authlib-advisory
+        support: direct
+        exact_locators: [GHSA-fg6f-75jq-6523 Description; Impact]
+      - source_id: SRC-nvd-2025-68158
+        support: direct
+        exact_locators: [CVE-2025-68158 description; configurations]
+    corroboration: NVD independently normalizes the affected range and fixed version as 1.6.6.
+    limitations: [The upstream affected/patched fields conflict around 1.6.5; the README omits that ambiguous boundary.]
+    conflicts:
+      - Upstream display marked 1.6.5 both affected and patched; NVD records 1.6.6 as the fix.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C010
+    statement: In @fastify/oauth2 7.2.0 through versions before 8.3.0, an attacker controlling a related host could plant state and verifier cookies, causing a victim browser to complete attacker-owned login without exposing victim credentials or tokens.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-fastify-advisory
+        support: direct
+        exact_locators: [GHSA-p8h8-rj28-m8q9 Description; Impact; Remediation]
+      - source_id: SRC-nvd-2026-18165
+        support: direct
+        exact_locators: [CVE-2026-18165 description and references]
+    corroboration: NVD and the OpenJS-linked upstream advisory agree on the mechanism and opt-in 8.3.0 control.
+    limitations: [Requires an attacker-writable related-host cookie boundary; host-prefixed cookies must be enabled after upgrade.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C011
+    statement: The reviewed authority corpus did not identify a production MCP or agentic incident using a relayed valid CSRF token, and the selected CVEs were absent from CISA KEV on 2026-09-02.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators: [Catalog snapshot; queried CVE identifiers]
+      - source_id: SRC-nvd-state-query
+        support: context
+        exact_locators: [NVD keyword result set]
+      - source_id: SRC-mcp-doc-index-2026
+        support: context
+        exact_locators: [Official documentation index]
+    corroboration: Two additional final NVD/CISA authority-only passes produced no qualifying MCP incident.
+    limitations: [An absence claim is bounded to sources and date; KEV absence does not prove no exploitation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: A bounded negative conclusion is inferred from the reviewed authority corpus.}
+    status: validated
+  - id: SAF-T1707-C012
+    statement: OpenClaw GHSA-7rcp-mxpq-72pj is adjacent because its manual callback path accepted attacker-controlled code without state, rather than relaying a valid state token.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-openclaw-advisory
+        support: direct
+        exact_locators: [GHSA-7rcp-mxpq-72pj Description; Affected surface]
+      - source_id: SRC-nvd-2026-28477
+        support: direct
+        exact_locators: [CVE-2026-28477 description and references]
+      - source_id: SRC-nvd-saturation-1
+        support: context
+        exact_locators: [CVE-2025-43856 and CVE-2026-34460 descriptions]
+    corroboration: NVD maps the same manual Chutes OAuth callback defect.
+    limitations: [Agentic relevance does not make the mechanism a direct example of SAF-T1707.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Contract-boundary classification is an authorial inference from the disclosed behavior.}
+    status: validated
+  - id: SAF-T1707-C013
+    statement: Detection needs correlated request, callback, outcome, identity, and interaction fields while raw tokens and session identifiers should not be logged.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: direct
+        exact_locators: [Event attributes; Data to exclude; Verification]
+    corroboration: MCP security guidance requires the underlying request/session/state records that provide these fields.
+    limitations: [OWASP does not prescribe this technique-specific analytic.]
+    conflicts: []
+    inference: {is_inference: true, rationale: General logging requirements are specialized to the OAuth transaction boundary.}
+    status: validated
+  - id: SAF-T1707-C014
+    statement: Correlating successful callbacks to request-start events by state digest and alerting on session-binding mismatch or duplicate acceptance detects the technique in instrumented clients.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: context
+        exact_locators: [Event attributes; Interaction identifier; Verification]
+    corroboration: The local deterministic test suite exercises seven positive, negative, boundary, and malformed cases.
+    limitations: [Requires complete, normalized, privacy-preserving transaction telemetry.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The correlation logic is derived from the technique boundary and logging guidance.}
+    status: validated
+  - id: SAF-T1707-C015
+    statement: Fresh random state bound to the initiating session, exact match, short expiry, one-time consumption, PKCE, and issuer validation mitigate the relay boundary.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-spec-2026-07-28
+        support: direct
+        exact_locators: [OAuth State Parameter Validation; Mix-Up Attacks]
+      - source_id: SRC-rfc9700-state-relay
+        support: direct
+        exact_locators: [Section 2.1; Section 4.7.1]
+      - source_id: SRC-rfc7636-state-relay
+        support: direct
+        exact_locators: [Section 4]
+    corroboration: Current MCP authorization response validation binds issuer, PKCE verifier, and state in a per-request record.
+    limitations: [Controls must be implemented at every callback and account-linking path.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1707-C016
+    statement: Callback brokers, retry paths, missing start logs, and identifier or clock drift can affect cross-session detection accuracy.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: context
+        exact_locators: [Event collection; Verification; Network architectures]
+    corroboration: Negative and time-window tests bound the local analytic.
+    limitations: [Deployment-specific false-positive rates require local baselining.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Limitations follow from the correlation design and distributed logging constraints.}
+    status: validated
+  - id: SAF-T1707-C017
+    statement: Immediate impact is session swapping or misbinding; account takeover is conditional on account-link or equivalent application behavior, and victim secrets need not be exposed.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fastapi-advisory
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-authlib-advisory
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-fastify-advisory
+        support: direct
+        exact_locators: [Impact]
+    corroboration: Three independent disclosures bound different application consequences of the same primitive.
+    limitations: [No universal severity or post-authentication outcome is asserted.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The general impact boundary is synthesized from the three implementations.}
+    status: validated
+  - id: SAF-T1707-C018
+    statement: ATT&CK T1204.001 is at most an analogous malicious-link delivery mechanism and does not describe the OAuth session-binding failure.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1204-001
+        support: direct
+        exact_locators: [Description; Version 1.2; Procedure examples]
+    corroboration: None needed for an explicitly limited framework comparison.
+    limitations: [Not a direct ATT&CK mapping.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Mapping strength is reconciled against the technique contract.}
+    status: validated
+  - id: SAF-T1707-C019
+    statement: The complete technique is research-derived rather than observed or demonstrated in MCP because its MCP-specific end-to-end application is inferred from direct OAuth evidence.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-doc-index-2026
+        support: context
+        exact_locators: [Authorization and Security document entries]
+      - source_id: SRC-rfc9700-state-relay
+        support: direct
+        exact_locators: [Section 4.7.1]
+    corroboration: The coverage assessment and explicit incident gap independently enforce this classification.
+    limitations: [Classification must be upgraded only if qualifying MCP evidence is later found.]
+    conflicts: []
+    inference: {is_inference: true, rationale: End-to-end evidence status is a synthesis across protocol, research, and vulnerability classes.}
+    status: validated

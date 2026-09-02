@@ -1,0 +1,105 @@
+version: 1
+technique_id: SAF-T2105
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2105/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2105/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2105/quality-review.yml
+  supports: Validation commands, results, review date, and detection-test status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2105/detection-rule.yml
+  supports: The explicitly labeled experimental analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T2105/test_detection_rule.py
+  supports: Deterministic test harness for the analytic logic.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T2105/cases.json
+  supports: Positive, negative, boundary, and malformed-event detection cases.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T2105/validation/detection-test.txt
+  supports: Captured execution result for the detection test.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T2105/validation/strict-validator.txt
+  supports: Captured isolated strict-validator result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2105/validation/canonical-validation.txt
+  supports: Destination detector result and the pending canonical-neighbor join.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2105-X001
+  candidate: A production service was compromised through RAG poisoning and emitted
+    attacker-selected false answers.
+  origin: Breach-focused research pass.
+  attempted_searches:
+  - site:openai.com RAG poisoning production incident
+  - site:cloud.google.com threat intelligence RAG poisoning incident
+  - site:cisa.gov retrieval augmented generation poisoning
+  consulted_source_ids:
+  - SRC-google-ai-misuse
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  reason: Reviewed production reports describe operator use of models, not a verified
+    production RAG compromise.
+  prohibited_publishable_text:
+  - Production RAG systems were compromised to force attacker-selected false answers.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2105-X002
+  candidate: A direct CVE or actively exploited vulnerability defines Disinformation
+    Output.
+  origin: Vulnerability-catalog research pass.
+  attempted_searches:
+  - site:nvd.nist.gov RAG poisoning CVE
+  - site:cve.org generative AI disinformation vulnerability
+  - site:cisa.gov generative AI disinformation vulnerability
+  consulted_source_ids: []
+  reason: Restricted catalog and advisory searches produced no directly qualifying
+    record.
+  prohibited_publishable_text:
+  - A disclosed CVE directly implements Disinformation Output.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2105-X003
+  candidate: Generated influence content reliably achieves high reach or changes audience
+    beliefs.
+  origin: Production incident impact review.
+  attempted_searches:
+  - site:openai.com influence operations meaningful breakout engagement
+  - site:cloud.google.com generative AI influence operations engagement
+  consulted_source_ids:
+  - SRC-google-ai-misuse
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  - SRC-openai-storm-2035-2025
+  reason: First-party reports found limited reach, limited engagement, or no meaningful
+    breakout.
+  prohibited_publishable_text:
+  - Disinformation Output reliably changes audience beliefs at scale.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2105-X004
+  candidate: Perplexity filtering alone reliably distinguishes poisoned from clean
+    retrieval content.
+  origin: Detection and defense research pass.
+  attempted_searches:
+  - site:usenix.org PoisonedRAG perplexity defense false positive
+  - site:usenix.org Confundo defense evaluation perplexity
+  consulted_source_ids:
+  - SRC-usenix-confundo-2026
+  - SRC-usenix-poisonedrag-2025
+  reason: Evaluations reported substantial false-positive tradeoffs and no comprehensive
+    single defense.
+  prohibited_publishable_text:
+  - Perplexity reliably detects poisoned retrieval content without material false
+    positives.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

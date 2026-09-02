@@ -1,0 +1,26 @@
+version: 1
+issues:
+  - id: SAF-T1802-A001
+    triggered_by: SAF-T1802
+    affects: [SAF-T1606, SAF-T1802]
+    change: Replace the synthetic File Enumeration neighbor with the canonical SAF discovery technique and add a reciprocal relationship if one exists.
+    reason: File name or metadata enumeration is distinct from file-content retrieval but can immediately precede it.
+    severity: medium
+    status: resolved
+    resolution: SAF-T1606 Directory Listing via File Tool resolves the enumeration-only discovery boundary.
+  - id: SAF-T1802-A002
+    triggered_by: SAF-T1802
+    affects: [SAF-T1802, SAF-T1913]
+    change: Replace the synthetic Data Transfer neighbor with the canonical transfer or exfiltration technique and add a reciprocal follow-on relationship if one exists.
+    reason: Obtaining file content and moving already collected content cross different immediate boundaries.
+    severity: medium
+    status: resolved
+    resolution: Independently authored SAF-T1913 resolves the follow-on HTTP POST exfiltration boundary.
+  - id: SAF-T1802-A003
+    triggered_by: SAF-T1802
+    affects: [SAF-T1802]
+    change: Replace synthetic mitigation IDs with canonical path-boundary and least-privilege or approval controls during integration.
+    reason: Clean-room constraints prohibited reading shared mitigation registries before the immutable draft freeze.
+    severity: medium
+    status: resolved
+    resolution: Seven canonical mitigations cover audit, anomaly detection, privilege, approval, result limits, DLP, and per-invocation capability boundaries.

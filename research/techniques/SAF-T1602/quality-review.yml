@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1602
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records only neutral inputs, generic methodology, direct authorities, and no target or prior-attempt access.
+  contract_and_scope:
+    status: passed
+    notes: The contract is limited to tools/list metadata and explicitly excludes capability, resource, prompt, invocation, manipulation, and exploitation behavior.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP 2026-07-28 requirements, JSON-RPC semantics, optional authorization, and evidence limitations are preserved.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims include exact authority locators, corroboration, limitations, conflicts, and explicit inference labels.
+  source_or_omit:
+    status: passed
+    notes: Substantive README lines use hidden SAF-TRACE markers or declared local links; five unsupported propositions and the rights-restricted external source archive are ledgered and omitted.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by an end-to-end first-party Inspector listing workflow and does not imply malicious use.
+  research_saturation:
+    status: passed
+    notes: Two consecutive re-fetch passes produced identical hashes for five defining authorities and no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Three high-impact MCP vulnerability families were reviewed, impact-ranked, remediation-checked, and rejected as adjacent; the absence of qualifying direct examples is explicit.
+  detection_quality:
+    status: passed
+    notes: Nine deterministic cases cover authorization, burst, boundaries, missing fields, normal use, and an expected false-positive lookalike.
+  mitigation_quality:
+    status: passed
+    notes: Per-request authorization, catalog filtering, scope minimization, audit, baseline, and response actions address the defining catalog boundary.
+  framework_alignment:
+    status: passed
+    notes: Post-freeze reconciliation maps the server-enumeration boundary to SAF-T1601, removes the unmatched resource and prompt placeholder joins, and preserves the analogous ATT&CK mapping.
+  publication_rights:
+    status: passed
+    notes: All ten cited sources have rights records; content is paraphrased, no protected expression or third-party artifact is reproduced, MITRE ATT&CK is nominatively attributed, and external acquisition copies remain outside the repository.
+  safe_publication:
+    status: passed
+    notes: The demonstration is inert and descriptive, with no credentials, payloads, exploit procedure, destructive call, or live target.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1602
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1602/test_detection_rule.py
+    result: 9 of 9 cases passed; integrated output is recorded at research/techniques/SAF-T1602/validation/detection-test.txt
+    waiver: null
+
+unresolved: []

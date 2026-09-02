@@ -1,0 +1,85 @@
+version: 1
+technique_id: SAF-T1112
+name: Sampling Request Abuse
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause an MCP client or host to execute attacker-influenced LLM
+  generations through server-initiated sampling requests outside the user's intended
+  authorization, context, or resource budget.
+scope:
+  security_boundary: The client-side boundary that mediates an MCP server's request
+    to use the host's LLM access, prompt context, approval decision, and generation
+    budget.
+  in_scope:
+  - A malicious or compromised MCP server returns a sampling/createMessage input request
+    that a supporting client executes without meaningful request-specific approval
+    or policy enforcement.
+  - Repetition, high requested token budgets, deprecated context inclusion, or tool-enabled
+    sampling that amplifies the unintended generation.
+  - 'The immediate outcome: one or more attacker-influenced model generations are
+    performed through the client''s provider access and a result may be returned to
+    the requesting server.'
+  out_of_scope:
+  - Tool-description, tool-response, resource, or prompt injection that influences
+    the host model without using sampling/createMessage.
+  - Unauthorized tools/call execution, vulnerable server-side tool implementations,
+    and server-side execution of sampling tool loops.
+  - Direct abuse of an LLM provider API that does not cross the MCP sampling boundary.
+  - Legitimate, explicitly approved sampling within an enforced budget.
+  affected_components:
+  - MCP host
+  - MCP client
+  - MCP server
+  - LLM provider connection
+  - User approval interface
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection changes model instructions or content through ordinary
+    MCP inputs; Sampling
+    Request Abuse specifically invokes the deprecated server-initiated sampling mechanism
+    and the client's LLM authority.
+- technique_id: SAF-T1104
+  distinction: Over-Privileged Tool Abuse crosses the tool-execution authorization
+    boundary; Sampling Request Abuse crosses
+    the client-mediated model-generation boundary even when no host tool is invoked.
+- technique_id: SAF-T2102
+  distinction: Service Disruption covers generic request-driven availability pressure;
+    this technique requires sampling/createMessage
+    and can succeed with one unauthorized generation, while repetition is only an
+    amplifier.
+required_evidence:
+- Current MCP authority establishing sampling/createMessage, client control, request
+  fields, security controls, and deprecation state.
+- Independent searches for production incidents, disclosed vulnerabilities, public
+  advisories, exploitation status, and controlled demonstrations.
+- Evidence sufficient to distinguish direct sampling abuse from malicious tool-description
+  and tool-response behavior.
+- Operational telemetry for request method, server and session identity, requested
+  token budget, approval state, and event time.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized MCP client audit events with timestamp, server_id, session_id, direction,
+    method, requested_max_tokens, approval_state, include_context, tool_choice_mode,
+    and result_state.
+safe_example_constraints:
+- Use inert server and session identifiers and benign prompt summaries.
+- Do not include payloads, secrets, real prompts, or destructive tool calls.
+- Demonstrate only event correlation and policy-state evaluation.
+completion_evidence:
+- Every substantive publishable unit is joined to validated claims and directly reviewed
+  sources through hidden_html_v1 traces.
+- All unsupported, blocked, conflicting, rights-restricted, adjacent, and out-of-scope
+  leads are omitted and recorded in traceability-ledger.yml.
+- All five research passes and two consecutive no-material-change authority follow-ups
+  are recorded.
+- Detection tests cover positive, negative, boundary, malformed, and legitimate-lookalike
+  cases and pass deterministically.
+- Publication rights, framework fragments, synthetic joins, isolated strict validation,
+  and clean-room attestation are complete.

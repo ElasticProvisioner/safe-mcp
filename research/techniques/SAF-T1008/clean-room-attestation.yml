@@ -1,0 +1,123 @@
+version: 1
+technique_id: SAF-T1008
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1008
+  neutral_name: Tool Shadowing Attack
+allowed_inputs:
+- Seed metadata supplied by the coordinator: SAF-T1008, neutral title Tool Shadowing
+    Attack, and tactic ATK-TA0001 Initial Access.
+- Generic author-saf-technique skill instructions, clean-room methodology references,
+  generic technique template, generic research packet templates, and generic validator.
+- Independently discovered direct authoritative non-GitHub sources and local test
+  artifacts generated in this run.
+prohibited_inputs:
+- Existing techniques/SAF-T1008/README.md.
+- Existing techniques/SAF-T1008/detection-rule.yml.
+- Existing research/techniques/SAF-T1008/ and any prior target evidence packet.
+- Technique catalog descriptions, SAF or SAFE pages, prior agent artifacts, and shared
+  source or framework registries before freeze.
+- Git history, blame, log, diff, or commits for the target.
+- Pull request content, review content, issues, or archived implementation discussions
+  about the target.
+- Previous conversation content or inherited prose about the target beyond the allowed
+  seed metadata.
+independent_research:
+  searches:
+  - 'Direct MCP Tools specification review: tools/list, tools/call, tool definition,
+    annotations, client safety'
+  - 'Direct MCP Security Best Practices review: sandboxing, approval, and logging
+    guidance'
+  - 'Invariant Labs site review: MCP tool poisoning, rug pull, and cross-server shadowing
+    demonstration'
+  - 'arXiv direct-authority query: MCP shadowing'
+  - 'arXiv direct-authority query: tool description MCP security'
+  - 'arXiv direct-authority query: tool shadowing'
+  - 'arXiv direct-authority query: cross-server MCP'
+  - 'arXiv direct-authority query: cross-server tool poisoning'
+  - 'arXiv direct-authority query: context-level interference MCP'
+  - 'arXiv direct-authority query: descriptor interference MCP'
+  - 'NVD API direct-authority query: Model Context Protocol'
+  - 'NVD API direct-authority query: tool shadowing'
+  - 'NVD API direct-authority query: shadowing MCP'
+  - 'NVD API direct-authority query: tool descriptor MCP'
+  - CISA KEV full-catalog review for MCP and CVE-2026-25905
+  - CVE Program direct record review for CVE-2026-25905
+  - 'MITRE ATT&CK direct review: TA0001 and T1195'
+  - 'Saturation pass 1: arXiv foreign tool description MCP; NVD cross-server MCP'
+  - 'Saturation pass 2: arXiv malicious tool description trusted tool; NVD foreign
+    tool description MCP'
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-cve-cve-2026-25905
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-ta0001
+  - SRC-mitre-attack-t1195
+  - SRC-embrace-red-2025-05-02
+  - SRC-croce-south-2025-arxiv-2507-19880
+  - SRC-csa-shadowing-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- No repository integration, target comparison, shared-registry reconciliation, commit,
+  or push is part of this run.
+- Placeholder neighbor and mitigation IDs are confined to the isolated mock and require
+  mechanical reconciliation during any later authorized integration.
+- The isolated framework and source fragments were authored independently and must
+  be collision-checked against shared registries only after this frozen bundle is
+  accepted.
+attestation: The draft and evidence packet were generated from the allowed seed and
+  independently reviewed sources. No prohibited prior target material was accessed,
+  and the isolated bundle was frozen before any shared-registry integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-spec-2025-11-25
+    SRC-invariant-2025-04-01: SRC-invariant-tpa-2025-04-01
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-t1195: SRC-mitre-attack-t1195
+  new_shared_source_records:
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-cve-cve-2026-25905
+  - SRC-mitre-ta0001
+  - SRC-embrace-red-2025-05-02
+  - SRC-croce-south-2025-arxiv-2507-19880
+  - SRC-csa-shadowing-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-2
+  - SAF-M-6
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-21
+  - SAF-M-29
+  - SAF-M-45
+  synthetic_neighbor_mapping:
+    SAF-T1997: SAF-T1001
+    SAF-T1998: SAF-T1201
+    SAF-T1999: SAF-T1301
+  synthetic_mitigation_mapping:
+    SAF-M-90: SAF-M-2
+    SAF-M-91: SAF-M-1
+    SAF-M-92: SAF-M-12
+  status: integrated_and_repository_validated

@@ -1,0 +1,151 @@
+version: 1
+technique_id: SAF-T1903
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1903/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1903/technique-contract.yml
+  supports: Internal scope, boundary, neighbor, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1903/quality-review.yml
+  supports: Review gates, validator command, and detection-test status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1903/source-coverage.yml
+  supports: Research passes, candidates, conflicts, saturation, and evidence assessment.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1903/detection-rule.yml
+  supports: The explicitly labeled example detection analytic.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1903/cases.json
+  supports: Inert positive, negative, boundary, malformed, false-positive, and normalization
+    test cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1903/test_detection_rule.py
+  supports: Deterministic analytic implementation and assertions.
+- id: LOCAL-detection-results
+  path: tests/SAF-T1903/test-results.json
+  supports: Machine-readable detection-test result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1903/validation/canonical-validation.txt
+  supports: Destination detector and strict-validator results after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1903-X001
+  candidate: Treat a published MCP C2 thought experiment as an observed incident.
+  origin: Unit 42 AI software security risk article.
+  attempted_searches:
+  - site:unit42.paloaltonetworks.com MCP C2 thought experiment observed incident
+  consulted_source_ids:
+  - SRC-unit42-thought-experiment
+  reason: The publisher explicitly frames the sequence as a thought experiment, so
+    it cannot support observed or demonstrated status.
+  prohibited_publishable_text:
+  - confirmed campaign derived from the Unit 42 thought experiment
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X002
+  candidate: Treat an MCP server takeover and tool-shadowing vulnerability as a remote
+    operator channel.
+  origin: JFSA-2026-001653030 / CVE-2026-25905.
+  attempted_searches:
+  - site:research.jfrog.com CVE-2026-25905 MCP takeover command control channel
+  consulted_source_ids:
+  - SRC-jfrog-jfsa-2026-001653030
+  reason: The advisory demonstrates in-process takeover and tool shadowing but not
+    a bidirectional remote operator command loop.
+  prohibited_publishable_text:
+  - CVE-2026-25905 proves remote operator C2
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X003
+  candidate: Classify unauthenticated exposure of benign remote MCP servers as malicious
+    server control channels.
+  origin: Microsoft Defender Security Research exposure assessment.
+  attempted_searches:
+  - site:microsoft.com remote MCP servers unauthenticated malicious server C2
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  reason: The mechanism is inbound access to a benign exposed server and crosses a
+    different authorization boundary.
+  prohibited_publishable_text:
+  - all exposed remote MCP servers are malicious C2
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X004
+  candidate: Classify DNS rebinding against a localhost MCP server as malicious server-originated
+    C2.
+  origin: CVE-2026-34742.
+  attempted_searches:
+  - site:cve.org CVE-2026-34742 MCP C2 malicious server
+  consulted_source_ids:
+  - SRC-cve-2026-34742
+  reason: The vulnerability enables a malicious website to invoke a benign local server;
+    it does not make the server the malicious outbound channel.
+  prohibited_publishable_text:
+  - CVE-2026-34742 is a malicious server control channel
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X005
+  candidate: Add the Cursor MCPoison controlled demonstration as a fifth selected
+    example.
+  origin: Check Point Research Cursor MCPoison report.
+  attempted_searches:
+  - site:research.checkpoint.com Cursor MCPPoison reverse shell vulnerability
+  consulted_source_ids:
+  - SRC-checkpoint-mcpoison-2025-54136
+  reason: It is materially relevant but redundant with the two selected configuration-launch
+    vulnerabilities and would exceed the preferred two-to-four example set.
+  prohibited_publishable_text:
+  - Cursor MCPoison is selected as a fifth example
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X006
+  candidate: Use a reported email-BCC backdoor as evidence of a bidirectional operator
+    channel.
+  origin: Direct source lead for a Postmark MCP package report that redirected during
+    review.
+  attempted_searches:
+  - site:koi.ai Postmark MCP npm malicious backdoor email theft
+  - Direct open of the reported Koi article URL
+  consulted_source_ids: []
+  reason: The direct article was not reliably reviewable at freeze and the described
+    one-way exfiltration would not satisfy the command-loop contract.
+  prohibited_publishable_text:
+  - Postmark BCC behavior proves bidirectional MCP C2
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X007
+  candidate: Claim that no relevant vulnerability appears in the CISA Known Exploited
+    Vulnerabilities catalog.
+  origin: Government exploitation-status pass.
+  attempted_searches:
+  - site:cisa.gov known exploited vulnerabilities CVE-2025-61260
+  - site:cisa.gov known exploited vulnerabilities CVE-2025-59536
+  - Direct fetch of the CISA KEV JSON feed
+  consulted_source_ids: []
+  reason: The direct feed fetch returned HTTP 403, so a global absence claim could
+    not be validated from the authoritative catalog.
+  prohibited_publishable_text:
+  - none of these vulnerabilities is in CISA KEV
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1903-X008
+  candidate: Convert download counts or store availability into confirmed victim counts.
+  origin: Production-incident impact ranking.
+  attempted_searches:
+  - Review victim and impact statements in the JFrog and Unit 42 production reports
+  consulted_source_ids:
+  - SRC-jfrog-malicious-mcp
+  - SRC-unit42-browser-c2
+  reason: Package downloads and store listing establish exposure, not execution or
+    compromise.
+  prohibited_publishable_text:
+  - 1,600 confirmed compromised victims
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

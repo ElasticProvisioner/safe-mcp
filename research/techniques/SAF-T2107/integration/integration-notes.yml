@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T2107
+bundle_type: canonical_clean_room_handoff
+generated_on: "2026-09-02"
+freeze_boundary:
+  prior_target_access: false
+  prior_shared_registry_access: false
+  source_corpus_in_bundle: false
+  destination_repository_modified: false
+synthetic_join_mapping:
+  related_techniques:
+    - synthetic_id: SAF-T9997
+      canonical_id: SAF-T1102
+      role: Runtime MCP Tool-Output Prompt Injection placeholder
+    - synthetic_id: SAF-T9998
+      canonical_id: SAF-T3001
+      role: Retrieval Corpus Poisoning placeholder
+    - synthetic_id: SAF-T9999
+      canonical_id: SAF-T1002
+      role: Direct Model Artifact Tampering placeholder
+  mitigations:
+    - synthetic_id: SAF-M-9001
+      canonical_id: SAF-M-33
+      role: Training Data Provenance and Admission Control placeholder
+    - synthetic_id: SAF-M-9002
+      canonical_id: SAF-M-34
+      role: Dataset Versioning and Integrity Verification placeholder
+    - synthetic_id: SAF-M-9003
+      canonical_id: SAF-M-36
+      role: Adversarial Model Evaluation and Rollback placeholder
+post_freeze_steps:
+  - Verify FREEZE.sha256 before opening any destination target or registry material.
+  - Resolve synthetic technique and mitigation IDs to canonical destination IDs without changing the substantive contract.
+  - Merge source-manifest-fragment.yml, framework-fragment.yml, and alignment-fragment.yml into canonical registries.
+  - Replace the temporary isolated-provenance history record with an honest destination commit only after integration.
+  - Re-run detection tests and strict validation in the destination repository.
+freeze_sensitive_fields:
+  - evidence status Research-Derived
+  - supplied tactic ATK-TA0042
+  - weight-update training-consumption boundary
+  - no qualifying direct incident, vulnerability, or end-to-end demonstration
+  - semantic-poison blind spot of the provenance-admission analytic
+gaps:
+  - No direct end-to-end MCP tool-result training-poisoning demonstration was found.
+  - No qualifying production incident or direct vulnerability was found.
+  - Effective poison dose and transfer to complex harmful behaviors remain environment-dependent.
+  - Synthetic joins required mechanical post-freeze reconciliation and are resolved above.
+contamination:
+  status: clean
+  notes: No prohibited target artifact, shared registry, destination history, PR, issue, SAF site, or prior technique content was accessed before freeze.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  freeze_manifest_sha256: 7571f5a9d1413f35642fd76693aba007cd403bf070f66252653a40b40ab9bda9
+  canonical_tactics: [ATK-TA0042]
+  canonical_mitigations: [SAF-M-12, SAF-M-33, SAF-M-34, SAF-M-35, SAF-M-36]
+  attack_mappings:
+    - {id: T1565.001, type: analogous}
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  detector: "PASS: 2 positive and 4 negative/boundary cases behaved as expected"
+  strict_validator: "PASS SAF-T2107"

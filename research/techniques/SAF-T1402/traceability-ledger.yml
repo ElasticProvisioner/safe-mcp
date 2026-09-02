@@ -1,0 +1,135 @@
+version: 1
+technique_id: SAF-T1402
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1402/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1402/clean-room-attestation.yml
+  supports: Clean-room mode, permitted seed, prohibited inputs, research record, and
+    freeze constraint.
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1402/technique-contract.yml
+  supports: Technique name, tactic, scope, canonical neighbor join, and completion
+    contract.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1402/quality-review.yml
+  supports: Validation commands, detector result, strict-validator result, date, and
+    review status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1402/detection-rule.yml
+  supports: Experimental analytic logic, window, fields, false positives, and traceability
+    components.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1402/cases.json
+  supports: Deterministic positive, negative, boundary, approval, allowlist, and malformed-input
+    test contract.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1402/test_detection_rule.py
+  supports: Executable detection analytic and pass/fail evaluation.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1402/validation/detector-test.txt
+  supports: Isolated and integrated deterministic detector results.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1402/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1402-X001
+  candidate: Verified production exploitation or breach attributable to instruction
+    steganography.
+  origin: Production-breach research pass.
+  attempted_searches:
+  - Complete NVD prompt-injection corpus
+  - NVD hidden-prompt and unicode-prompt queries
+  - CISA KEV catalog
+  - selected vendor advisories.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-6945
+  - SRC-nvd-cve-2026-27001
+  - SRC-cisa-kev-2026-09-01
+  reason: Reviewed authorities establish vulnerabilities and controlled demonstrations
+    but no verified production victim or exploitation event.
+  prohibited_publishable_text:
+  - The technique has been exploited in production.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1402-X002
+  candidate: Treat ArtPrompt as a direct agent-boundary example.
+  origin: Controlled-demonstration research pass.
+  attempted_searches:
+  - Full ArtPrompt mechanism
+  - evaluation
+  - limitations
+  - and ethics review; comparison to the frozen scope contract.
+  consulted_source_ids:
+  - SRC-artprompt-2024
+  reason: ArtPrompt is a direct-user jailbreak; the contract requires a concealed
+    instruction carried across an untrusted agent-content boundary.
+  prohibited_publishable_text:
+  - ArtPrompt is a direct agent-boundary example.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1402-X003
+  candidate: Treat CVE-2026-29783 shell expansion as a direct example.
+  origin: NVD vulnerability pass.
+  attempted_searches:
+  - Complete NVD record and mechanism review; comparison of model-facing instruction
+    and shell-parser boundaries.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-29783
+  reason: It hides execution semantics from a shell safety parser after a command
+    is selected; concealment from the model-facing instruction boundary is not established.
+  prohibited_publishable_text:
+  - GitHub Copilot CLI is a direct example of Instruction Steganography.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1402-X004
+  candidate: Treat CVE-2024-48142 as a hidden-instruction vulnerability.
+  origin: NVD vulnerability pass.
+  attempted_searches:
+  - Complete NVD record and references-field review; comparison to concealment-and-recovery
+    requirement.
+  consulted_source_ids:
+  - SRC-nvd-cve-2024-48142
+  reason: The record establishes prompt injection and exfiltration but does not establish
+    a concealed representation.
+  prohibited_publishable_text:
+  - CVE-2024-48142 used a hidden instruction carrier.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1402-X005
+  candidate: Generalize Bad Characters results to agent instruction following.
+  origin: Contrary-evidence pass.
+  attempted_searches:
+  - Full experiment and defense review; task-by-task negative-result review.
+  consulted_source_ids:
+  - SRC-bad-characters-2021
+  reason: The study evaluates NLP transformations and classifiers, not whether agents
+    recover and follow concealed instructions.
+  prohibited_publishable_text:
+  - Bad Characters proves that all agents follow invisible instructions.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1402-X006
+  candidate: Interpret SkillCamo scanner ASR as downstream agent compromise rate.
+  origin: Controlled-demonstration and detection passes.
+  attempted_searches:
+  - Full metric-definition
+  - evaluation
+  - ablation
+  - limitation
+  - and responsible-release review.
+  consulted_source_ids:
+  - SRC-skillcamo-2026
+  reason: The headline ASR is scanner non-detection, not a measured rate of harmful
+    action execution by deployed agents.
+  prohibited_publishable_text:
+  - SkillCamo compromised deployed agents at a 100 percent rate.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

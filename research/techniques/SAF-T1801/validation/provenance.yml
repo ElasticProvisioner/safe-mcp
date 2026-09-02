@@ -1,0 +1,28 @@
+version: 1
+technique_id: SAF-T1801
+validated_on: "2026-09-02"
+validator:
+  source: Generic destination-repository validator copied into the isolated synthetic repository before validation.
+  sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  result: passed
+isolation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1801/mock-repo
+  contents: Independently authored target artifacts, generic validator, and minimal synthetic neighbor and mitigation stubs only.
+  prior_target_artifacts_present: false
+source_corpus:
+  repository_redistribution: false
+  temporary_file_count: 38
+  relative_path_and_file_hash_list_sha256: 810c44e54328e2bd4487405009cc0a4668403d5834438aa3b22fcf72039124bc
+  disposition: Retained outside the canonical bundle for this clean-room run; source records point to public authorities and no third-party snapshot is proposed for repository publication.
+dependencies:
+  - name: PyYAML
+    version: 6.0.2
+    location: /private/tmp/saf-all-cleanroom/SAF-T1801/validator-deps
+    included_in_bundle: false
+canonical_repository:
+  path: /Users/fkautz/Documents/ChatGPT/SAF-MCP
+  history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  detector_transcript: research/techniques/SAF-T1801/validation/detector-tests.txt
+  strict_validator_transcript: research/techniques/SAF-T1801/validation/research-validator.txt
+  source_archive_disposition: Source bodies remain outside the repository; public canonical source records and the frozen corpus hash are retained.
+  result: passed

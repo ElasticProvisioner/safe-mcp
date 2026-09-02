@@ -1,0 +1,77 @@
+version: 1
+technique_id: SAF-T1306
+name: Rogue Authorization Server
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Obtain an authorization code or token issued for the victim by
+  causing an MCP client to deliver it to an attacker-controlled authorization server.
+scope:
+  security_boundary: The association between MCP protected-resource discovery, the
+    expected OAuth issuer, the authorization response, and the token endpoint selected
+    by the client.
+  in_scope:
+  - Multi-authorization-server MCP flows in which a rogue or compromised authorization
+    server participates.
+  - Failure to bind an honest authorization response to its validated issuer before
+    code redemption.
+  - Immediate theft of an authorization code or access token carrying delegated victim
+    privileges.
+  out_of_scope:
+  - Passive authorization-code interception without authorization-server confusion.
+  - Acceptance of a token by the wrong resource server because audience validation
+    failed.
+  - Command injection, open redirect, metadata manipulation, or local authentication-process
+    modification when issuer confusion does not occur.
+  affected_components:
+  - MCP client
+  - MCP server
+  - authorization server
+  - protected-resource metadata
+  - OAuth authorization response
+  - token endpoint
+nearest_neighbors:
+- technique_id: SAF-T1507
+  distinction: Authorization Code Interception captures a code in transit; SAF-T1306
+    makes the client send the honest code to a rogue authorization server because
+    issuer association fails.
+- technique_id: SAF-T1304
+  distinction: Credential Relay Chain accepts delegated authority across an unintended
+    hop or resource; SAF-T1306 is disclosure during client authorization-server
+    selection and redemption.
+- technique_id: SAF-T1406
+  distinction: Metadata Manipulation describes delivery or poisoning of discovery
+    state; SAF-T1306 begins when that state drives an issuer-association failure and
+    credential disclosure.
+required_evidence:
+- Establish the MCP multi-authorization-server trust boundary and issuer-validation
+  requirement.
+- Establish the generic OAuth mix-up prerequisites, mechanism, and credential-theft
+  outcome.
+- Distinguish MCP applicability as inference from generic demonstrations and protocol
+  remediation.
+- Search current production incidents, advisories, vulnerabilities, demonstrations,
+  fixes, and government exploitation catalogs.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP client authorization-validation events with session, resource, expected issuer,
+    received issuer, issuer-support advertisement, outcome, error kind, and token
+    endpoint.
+safe_example_constraints:
+- Use only example.invalid and non-resolving placeholder issuer URLs.
+- Include no live credential, client secret, exploit code, or destructive action.
+- Show the trust decision and safe rejection, not operational abuse after credential
+  theft.
+completion_evidence:
+- Every substantive README unit has hidden claim and source traceability or a declared
+  local-artifact link.
+- Unverified leads are omitted and recorded in the exclusion ledger.
+- Two consecutive follow-up passes produce no material change.
+- The detection script covers positive, negative, boundary, and false-positive cases.
+- Publication-rights and strict quality review pass without unresolved items.

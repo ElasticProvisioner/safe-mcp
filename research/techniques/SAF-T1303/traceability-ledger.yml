@@ -1,0 +1,162 @@
+version: 1
+technique_id: SAF-T1303
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1303/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1303/technique-contract.yml
+  supports: Internal scope, tactic, canonical neighbors, and completion criteria.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1303/quality-review.yml
+  supports: Quality-gate status and recorded validator and detection results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1303/detection-rule.yml
+  supports: Standalone detection analytic and its claim joins.
+- id: LOCAL-test-data
+  path: tests/SAF-T1303/test-logs.json
+  supports: Synthetic positive, negative, boundary, malformed, and expected-false-positive
+    events.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1303/test_detection_rule.py
+  supports: Deterministic detection test implementation.
+- id: LOCAL-validation-proof
+  path: research/techniques/SAF-T1303/validation/strict-validator.txt
+  supports: Compact isolated strict-validator result.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1303/validation/detection-tests.txt
+  supports: Captured passing output for the deterministic detection fixtures.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1303-X001
+  candidate: A confirmed production intrusion used the defining request-to-server-exec
+    boundary.
+  origin: Separate production-incident and breach searches.
+  attempted_searches:
+  - site:jfrog.com MCP server breach reverse shell production incident
+  - site:cisa.gov MCP server incident command execution
+  - site:zerodayinitiative.com MCP server exploitation incident
+  consulted_source_ids:
+  - SRC-jfrog-malicious-mcp
+  - SRC-zdi-docker-26-363
+  - SRC-nvd-librechat-22252
+  reason: Reviewed authorities documented vulnerabilities, proof of concept, downloads,
+    or malicious package code, but not a qualifying victim production intrusion.
+  prohibited_publishable_text:
+  - Attackers have exploited SAF-T1303 in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X002
+  candidate: Every selected vulnerability is actively exploited.
+  origin: Candidate severity and zero-day labels.
+  attempted_searches:
+  - site:nvd.nist.gov selected CVE exploitation withdrawn disputed
+  - site:cisa.gov known exploited vulnerabilities selected MCP CVE
+  consulted_source_ids:
+  - SRC-nvd-librechat-22252
+  - SRC-zdi-docker-26-363
+  - SRC-cve-litellm-42271
+  - SRC-cve-langchain-30617
+  reason: Only LibreChat had proof-of-concept status; no reviewed source established
+    active production exploitation for all examples.
+  prohibited_publishable_text:
+  - All four vulnerabilities are actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X003
+  candidate: Exact affected and fixed Docker MCP Plugin version numbers.
+  origin: ZDI advisory's link to a vendor GitHub advisory.
+  attempted_searches:
+  - site:zerodayinitiative.com/advisories/ZDI-26-363 affected fixed version
+  - site:cve.org CVE-2026-55887 Docker MCP Plugin versions
+  consulted_source_ids:
+  - SRC-zdi-docker-26-363
+  reason: The directly reviewed non-GitHub authority states only that Docker issued
+    an update; the exact GitHub advisory was not needed or opened.
+  prohibited_publishable_text:
+  - Docker MCP Plugin versions before 0.0.0
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X004
+  candidate: LangChain-ChatChat has a published fixed version for CVE-2026-30617.
+  origin: Remediation-status follow-up.
+  attempted_searches:
+  - site:cve.org/CVERecord?id=CVE-2026-30617 fixed version
+  - site:nvd.nist.gov/vuln/detail CVE-2026-30617 remediation
+  consulted_source_ids:
+  - SRC-cve-langchain-30617
+  reason: The reviewed CVE record identifies version 0.3.1 but does not state a fixed
+    release.
+  prohibited_publishable_text:
+  - LangChain-ChatChat fixed CVE-2026-30617 in version
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X005
+  candidate: The JFrog malicious-PyPI MCP campaign is a direct instance of request-triggered
+    server exec escape.
+  origin: Production-incident search lead.
+  attempted_searches:
+  - site:research.jfrog.com MCP reverse shell server command execution
+  - Direct review of the package startup path described by JFrog.
+  consulted_source_ids:
+  - SRC-jfrog-malicious-mcp
+  reason: The disclosed reverse shell ran before MCP server startup, so it is adjacent
+    installation or supply-chain behavior under the contract.
+  prohibited_publishable_text:
+  - The PyPI campaign directly exploited the server-exec sandbox boundary
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X006
+  candidate: MCP Manager for Claude Desktop affected-version and fixed-version range.
+  origin: ZDI-26-023 candidate review.
+  attempted_searches:
+  - site:zerodayinitiative.com/advisories/ZDI-26-023 affected version patch
+  - site:nvd.nist.gov/vuln/detail CVE-2026-0757 affected
+  consulted_source_ids:
+  - SRC-zdi-mcp-manager-26-023
+  reason: The reviewed advisory provides neither a version range nor a patch; only
+    restriction of interaction is stated.
+  prohibited_publishable_text:
+  - MCP Manager versions before 1.0 are affected
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X007
+  candidate: Details contained only in exact GitHub advisories and commits linked
+    by non-GitHub authorities.
+  origin: ZDI and CVE reference lists.
+  attempted_searches:
+  - Direct review of non-GitHub ZDI, CVE, NVD, and vendor documentation sufficient
+    for publishable claims.
+  consulted_source_ids:
+  - SRC-zdi-docker-26-363
+  - SRC-cve-litellm-42271
+  - SRC-nvd-librechat-22252
+  reason: Exact GitHub URLs were recorded from non-GitHub authorities but not opened;
+    no claim depends on their contents.
+  prohibited_publishable_text:
+  - The linked GitHub patches prove complete remediation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1303-X008
+  candidate: Every MCP server capable of starting a process is vulnerable or constitutes
+    privilege escalation.
+  origin: Broad technique-name hypothesis.
+  attempted_searches:
+  - Direct review of MCP tools specification and multiple vulnerable and fixed product
+    records.
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-cve-litellm-42271
+  - SRC-nvd-librechat-22252
+  - SRC-owasp-command-injection
+  reason: Legitimate structured, authorized, and correctly sandboxed process execution
+    is outside the technique contract.
+  prohibited_publishable_text:
+  - All process-capable MCP servers are vulnerable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

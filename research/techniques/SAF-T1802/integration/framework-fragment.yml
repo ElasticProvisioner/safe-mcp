@@ -1,0 +1,35 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1802
+    name: File Collection
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0009
+    technique_path: techniques/SAF-T1802/README.md
+    research_packet: research/techniques/SAF-T1802
+    related_techniques:
+      - SAF-T1606
+      - SAF-T1913
+    mitigations:
+      - SAF-M-12
+      - SAF-M-20
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-71
+      - SAF-M-72
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1802/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1802/detect_file_collection.py
+        - tests/SAF-T1802/test_detection_rule.py
+        - tests/SAF-T1802/fixtures.jsonl
+        - research/techniques/SAF-T1802/validation/detection-test.txt
+        - research/techniques/SAF-T1802/validation/isolated-strict-validation.txt
+        - research/techniques/SAF-T1802/validation/source-corpus.sha256
+        - research/techniques/SAF-T1802/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1005
+        type: direct

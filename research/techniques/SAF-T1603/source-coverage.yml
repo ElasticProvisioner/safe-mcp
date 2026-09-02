@@ -1,0 +1,197 @@
+version: 1
+technique_id: SAF-T1603
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of MCP Architecture 2025-11-25 and MCP Prompts 2025-11-25.
+        - Direct review of OWASP LLM07:2025, OpenAI Model Spec 2025-12-18, MITRE ATLAS 2026.08, and ATT&CK T1082.
+      material_changes:
+        - Defined the privileged-instruction boundary and excluded authorized MCP prompt discovery.
+        - Added direct ATLAS mappings and an analogous ATT&CK mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API exact keyword: system prompt leakage"
+        - "NVD API exact keyword: exfiltrate system prompts"
+        - "NVD API exact keyword: system prompt"
+        - Direct CISA KEV catalog 2026.09.01 check for system-prompt matches.
+      material_changes:
+        - Selected three direct patched vulnerabilities and one direct public exercise.
+        - Recorded the absence of a qualifying malicious production-breach source.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "arXiv API exact query: all:\"system prompt extraction\""
+        - Direct full-text review of JustAsk, LeakAgent, and SPE-LLM.
+      material_changes:
+        - Confirmed Demonstrated evidence status with bounded black-box limitations.
+        - Added empirical support and limitations for protected-prompt output matching.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of OWASP prevention guidance and ATLAS system-prompt mitigations.
+        - Direct OpenTelemetry GenAI event review through its first-party repository pointer.
+      material_changes:
+        - Added tested overlap-or-canary analytic and sensitive-telemetry constraints.
+        - Added externalized authorization, access-control, patch, and monitoring guidance.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API exact keywords: system prompt breach; system prompt incident; agent instructions disclosure; hidden instructions disclosure"
+        - "arXiv API exact query: all:\"system prompt\" AND all:\"prompt leakage\""
+        - Challenge review of 12 arXiv results and CISA KEV 2026.09.01.
+      material_changes:
+        - Preserved the production-breach gap after the direct-authority challenge.
+        - Rejected redundant, adjacent, unverifiable-ground-truth, and different-boundary candidates.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API exact keyword: prompt exfiltration"
+        - "arXiv API exact query: all:\"system prompt disclosure\""
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API exact keyword: system instructions exposure"
+        - "arXiv API exact query: all:\"hidden system instructions\""
+      material_changes: []
+  rationale: >-
+    Direct protocol, framework, advisory, vulnerability, empirical research,
+    telemetry, and control authorities cover every publishable proposition. The
+    final NVD and arXiv passes returned only different-boundary prompt/data
+    exfiltration, an unrelated database exposure, and an instruction-backdoor
+    defense; neither pass changed scope, evidence, examples, detection, or
+    mitigation. Further direct-authority searching is unlikely to change the
+    frozen technique as of the review date.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 5
+  selected_examples:
+    - SRC-atlas-2026-08
+    - SRC-ghsa-praisonai
+    - SRC-ghsa-weknora
+    - SRC-ghsa-open-webui
+  no_qualifying_examples_rationale: >-
+    Not applicable: four direct, material demonstration or vulnerability
+    examples qualified. No reviewed authority established a malicious production
+    breach, and the publishable technique states that gap explicitly.
+  candidates:
+    - source_id: SRC-atlas-2026-08
+      identifier: ClawdBot-control-interface-exercise
+      relationship: direct_demonstration
+      exploitation_status: demonstrated
+      impact: An exposed control interface returned the SOUL.md system prompt.
+      remediation: Restrict and authenticate the agent control interface; keep privileged prompt content behind the host boundary.
+      selected: true
+      rationale: Highest-value direct public exercise and earliest qualifying dated demonstration in the reviewed authorities.
+    - source_id: SRC-ghsa-praisonai
+      identifier: CVE-2026-61426
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept
+      impact: Unauthenticated network peers could read agent instructions and system prompts under insecure defaults.
+      remediation: Upgrade to PraisonAI 1.7.3 or later and restrict network access.
+      selected: true
+      rationale: Direct runtime-confirmed high-impact unauthorized interface exposure.
+    - source_id: SRC-ghsa-weknora
+      identifier: CVE-2026-30856
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept
+      impact: A malicious remote MCP server could exfiltrate system prompt and context through tool collision and indirect injection.
+      remediation: Upgrade to WeKnora 0.3.0 or later and constrain remote MCP server trust.
+      selected: true
+      rationale: Direct MCP-connected path with a distinct cross-server boundary.
+    - source_id: SRC-ghsa-open-webui
+      identifier: CVE-2026-45351
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept
+      impact: Regular authenticated users could retrieve administrator-configured system prompts.
+      remediation: Upgrade to Open WebUI 0.8.9 or later and enforce prompt-access authorization.
+      selected: true
+      rationale: Direct application authorization failure with a clear affected and patched range.
+    - source_id: SRC-nvd-cve-2026-7482
+      identifier: CVE-2026-7482
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation
+      impact: A model-file parser memory read might expose process memory that can include prompts.
+      remediation: Upgrade the affected Ollama deployment to the fixed release identified by its advisory.
+      selected: false
+      rationale: The defining mechanism is memory corruption and arbitrary process-memory disclosure, not unauthorized prompt recovery through an agent or instruction interface.
+
+sources_consulted:
+  - SRC-mcp-architecture
+  - SRC-mcp-prompts
+  - SRC-owasp-llm07
+  - SRC-openai-model-spec
+  - SRC-atlas-2026-08
+  - SRC-mitre-attack-t1082-current
+  - SRC-nvd-audit
+  - SRC-ghsa-weknora
+  - SRC-ghsa-open-webui
+  - SRC-ghsa-praisonai
+  - SRC-arxiv-justask
+  - SRC-arxiv-spe-llm
+  - SRC-otel-genai-events
+  - SRC-arxiv-leakagent
+  - SRC-anthropic-system-prompts
+  - SRC-nvd-cve-2026-7482
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-query-audit
+sources_cited:
+  - SRC-mcp-architecture
+  - SRC-mcp-prompts
+  - SRC-owasp-llm07
+  - SRC-openai-model-spec
+  - SRC-atlas-2026-08
+  - SRC-mitre-attack-t1082-current
+  - SRC-nvd-audit
+  - SRC-ghsa-weknora
+  - SRC-ghsa-open-webui
+  - SRC-ghsa-praisonai
+  - SRC-arxiv-justask
+  - SRC-arxiv-spe-llm
+  - SRC-otel-genai-events
+sources_rejected:
+  - source_id: SRC-arxiv-leakagent
+    reason: GPT Store evaluation explicitly lacked ground-truth system prompts, so it could not strengthen the selected direct examples.
+  - source_id: SRC-anthropic-system-prompts
+    reason: Deliberate publication of selected web and mobile system prompts is authorized disclosure, not this technique.
+  - source_id: SRC-nvd-cve-2026-7482
+    reason: Memory-corruption disclosure uses a different boundary and may expose prompts only incidentally.
+  - source_id: SRC-arxiv-query-audit
+    reason: The returned papers supplied research context or different-boundary findings but no higher-impact direct breach example for the selected set.
+sources_blocked: []
+
+conflicts:
+  - issue: System prompts may be confidential application logic, while OWASP cautions that a prompt should not be treated as a secret or security control.
+    resolution: The technique preserves confidentiality as the immediate impact but makes severity conditional and requires externalized secrets and authorization.
+  - issue: Public black-box studies report high extraction rates, but exact prompt ground truth is not always independently observable.
+    resolution: Evidence status relies on controlled demonstrations and direct vulnerabilities; black-box percentages are not used as incident counts.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1603-C006
+    - SAF-T1603-C007
+    - SAF-T1603-C008
+    - SAF-T1603-C009
+    - SAF-T1603-C010
+  rationale: >-
+    A public ATLAS exercise and controlled empirical research demonstrate the
+    end-to-end behavior, while three direct advisories establish distinct
+    application and MCP-connected prompt-disclosure paths. No production-breach
+    claim is made.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

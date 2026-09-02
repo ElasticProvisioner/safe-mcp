@@ -1,0 +1,111 @@
+version: 1
+technique_id: SAF-T1503
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1503/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1503/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, generation mode, and completion
+    contract.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1503/source-coverage.yml
+  supports: Search coverage, absence assessment, candidate selection, conflicts, and
+    saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1503/quality-review.yml
+  supports: Validation commands, results, gate status, and review date.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1503/detection-rule.yml
+  supports: The repository's explicitly labeled experimental detection analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1503/test_detection.py
+  supports: Deterministic detector evaluation implementation.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1503/test-cases.json
+  supports: Synthetic positive, negative, boundary, malformed, normalization, and
+    expected false-positive inputs.
+- id: LOCAL-detection-results
+  path: tests/SAF-T1503/test-result.txt
+  supports: Recorded detector case results.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1503/integration/integration-notes.yml
+  supports: Frozen synthetic joins and their mechanical post-freeze canonical resolution.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1503/validation/detection-test-result.txt
+  supports: Isolated and integrated deterministic detector results.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1503/validation/strict-validator-result.txt
+  supports: Isolated and integrated strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1503-X001
+  candidate: A direct MCP or agentic-system production breach used environment-variable
+    scraping.
+  origin: Required production-incident search.
+  attempted_searches:
+  - Current MCP security guidance and versioned transport specification.
+  - Original JFrog and Oligo MCP vulnerability disclosures plus the provenance-authorized
+    Inspector advisory.
+  - First-party Codecov and CircleCI incident reports and the Aikido Shai-Hulud researcher
+    report.
+  consulted_source_ids:
+  - SRC-aikido-shai-hulud-2025
+  - SRC-circleci-incident-2023
+  - SRC-codecov-bash-uploader-2021
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-security-2025-11-25
+  - SRC-oligo-inspector-cve-2025-49596
+  reason: The environment-scraping incidents were outside MCP, while the MCP records
+    demonstrated code execution without environment enumeration.
+  prohibited_publishable_text:
+  - Env-Var Scraping has been observed in an MCP production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1503-X002
+  candidate: CVE-2025-6514 or CVE-2025-49596 is known to be actively exploited in
+    production.
+  origin: Required exploitation-status search.
+  attempted_searches:
+  - Exact NVD and CVE records were opened but did not yield reviewable content through
+    the available renderer.
+  - The official CISA KEV feed returned HTTP 403.
+  - Original researcher disclosures and the Inspector maintainer advisory were reviewed
+    for exploitation language.
+  consulted_source_ids:
+  - SRC-ghsa-inspector-7f8r
+  - SRC-jfrog-cve-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  reason: Reviewed sources establish controlled exploitation only and do not establish
+    observed production exploitation; blocked catalogs were not used as evidence.
+  prohibited_publishable_text:
+  - Both MCP CVEs are actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1503-X003
+  candidate: Process-creation telemetry reliably detects all environment-variable
+    scraping.
+  origin: Detection-design hypothesis.
+  attempted_searches:
+  - Node process.env and Python os.environ runtime documentation.
+  - Sysmon Event IDs 1 and 3, Windows Event 4688, and RHEL Audit EXECVE and PROCTITLE
+    documentation.
+  - MCP protocol logging specification.
+  consulted_source_ids:
+  - SRC-mcp-logging-2025-11-25
+  - SRC-node-process-26.8.1
+  - SRC-python-os-3.14.7
+  - SRC-rhel9-audit
+  - SRC-sysmon-15-21
+  - SRC-windows-command-line-audit
+  reason: Direct language-runtime reads do not require a child process, and no reviewed
+    source established complete detector coverage.
+  prohibited_publishable_text:
+  - The detection rule identifies every form of environment-variable scraping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

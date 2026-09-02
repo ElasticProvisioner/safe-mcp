@@ -1,28 +1,97 @@
-title: MCP Chat-Based Backchannel Indicators
-id: 44FF8789-7457-4690-BEF9-BFF6DB734750
+title: Unauthorized Chat-to-Tool-to-Reply Correlation
+id: 7c06492c-bdaf-4cc9-a7ad-e2a02405a988
 status: experimental
-description: Detects potential chat-based backchannel patterns in MCP-related LLM responses
-author: SAF-MCP Authors
-date: 2025-11-29
+description: >-
+  Detects an inbound external-chat event whose stable sender or conversation
+  authorization is false or whose identity binding is mutable, followed by an
+  agent tool invocation in the same session and an outbound reply to the same
+  conversation and originating message within five minutes.
+author: OpenAI Codex fresh-agent clean-room author
+date: "2026-09-02"
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1904
+  - https://docs.slack.dev/apis/events-api/
+  - https://core.telegram.org/bots/api
+  - https://attack.mitre.org/techniques/T1102/002/
 logsource:
-  product: mcp
-  service: llm_response
+  category: application
+  product: agent_chat_gateway
+  definition: Normalized chat connector and agent tool telemetry joined by tenant, application, conversation, session, and message identifiers.
 detection:
-  selection:
-    response_text|contains:
-      - '```backchannel'
-      - 'BACKCHANNEL:'
-      - 'X-CTRL:'
-      - '== backchannel =='
-      - 'YmFzaCAtYyAnY3VybCAtcyBodHRw'  # Example base64 prefix for curl-based commands (Source: synthetic example)
-  condition: selection
+  inbound_unapproved:
+    event_type: chat.message.received
+    authorization_any:
+      sender_authorized: false
+      conversation_authorized: false
+      identity_binding: mutable
+  agent_tool:
+    event_type: agent.tool.invoked
+  outbound_reply:
+    event_type: chat.message.sent
+    reply_to_originating_message: true
+  condition: inbound_unapproved followed_by agent_tool followed_by outbound_reply in the same tenant_id, app_id, conversation_id, and session_id within 5m
+correlation:
+  timespan_seconds: 300
+  ordered: true
+  group_by: [tenant_id, app_id, conversation_id, session_id]
+  reply_join: outbound_reply.reply_to equals inbound_unapproved.message_id
+fields:
+  - timestamp
+  - event_type
+  - service
+  - tenant_id
+  - app_id
+  - conversation_id
+  - message_id
+  - reply_to
+  - sender_id
+  - sender_authorized
+  - conversation_authorized
+  - identity_binding
+  - session_id
+  - tool_name
+  - result
+  - approval_state
 falsepositives:
-  - Legitimate debugging or diagnostic output that includes base64 blobs or control markers
-  - Security testing or red-teaming exercises that simulate covert channels
+  - Authorized break-glass chat operations whose authorization decision is not propagated into normalized telemetry.
+  - Connector migrations that temporarily label stable identifiers as mutable or unknown.
+  - Test or replay traffic in non-production tenants.
 level: high
 tags:
-  - attack.command_and_control
-  - attack.t1102
-  - safe.t1904
+  - saf.t1904
+  - attack.command-and-control
+  - attack.t1102.002
+tuning:
+  - Suppress only when immutable sender ID, conversation ID, application ID, and approval policy are explicitly approved.
+  - Tune the five-minute window to observed tool latency without removing the reply-to-message join.
+  - Require connector event logs because administrative audit logs may omit message content and reply correlation.
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1904-C007, SAF-T1904-C014]
+  telemetry_claim_ids: [SAF-T1904-C004, SAF-T1904-C005, SAF-T1904-C006]
+  limitation_claim_ids: [SAF-T1904-C012, SAF-T1904-C015]
+  validation_artifacts:
+    - tests/SAF-T1904/test_detection_rule.py
+    - tests/SAF-T1904/test-cases.json
+    - research/techniques/SAF-T1904/validation/detection-tests.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1904-C004, SAF-T1904-C005, SAF-T1904-C006]
+      rationale: Provider events and agent telemetry supply the normalized correlation fields; audit-only sources may be insufficient.
+    inbound_unapproved:
+      claim_ids: [SAF-T1904-C007, SAF-T1904-C009, SAF-T1904-C015]
+      rationale: The technique begins when external chat input crosses stable sender or conversation authorization, including mutable-identity ambiguity.
+    agent_tool:
+      claim_ids: [SAF-T1904-C002, SAF-T1904-C007]
+      rationale: Consequential control requires a tool or privileged command action, not message receipt alone.
+    outbound_reply:
+      claim_ids: [SAF-T1904-C003, SAF-T1904-C006, SAF-T1904-C007]
+      rationale: A same-conversation response distinguishes the repeatable bidirectional backchannel from one-way input.
+    condition:
+      claim_ids: [SAF-T1904-C014, SAF-T1904-C015]
+      rationale: Ordered same-session and same-conversation correlation within a tunable window reduces unrelated-event matches.
+    fields:
+      claim_ids: [SAF-T1904-C004, SAF-T1904-C005, SAF-T1904-C006, SAF-T1904-C014]
+      rationale: The listed identifiers and decisions are needed to join the three stages and distinguish stable authorization from display-name or context ambiguity.
+    falsepositives:
+      claim_ids: [SAF-T1904-C015]
+      rationale: Legitimate approved chat operations can produce the same event sequence and must be suppressed only with stable authorization evidence.

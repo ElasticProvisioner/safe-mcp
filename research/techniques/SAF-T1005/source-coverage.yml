@@ -1,0 +1,275 @@
+version: 1
+technique_id: SAF-T1005
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'Streamable HTTP transport security Origin validation localhost authentication MCP -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'MCP authorization specification protected resource metadata OAuth security requirements -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'Model Context Protocol security best practices confused deputy token passthrough local server -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - '2025-11-25 transports Streamable HTTP Security Warning Origin localhost authentication -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - '2025-11-25 MCP lifecycle initialize tools list tools call request schema -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'site:modelcontextprotocol.io/specification/2026-07-28 basic transports security Origin authentication -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"'
+        - 'site:modelcontextprotocol.io/specification/2026-07-28 authorization protected resource bearer token -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"'
+        - 'site:modelcontextprotocol.io/specification/2026-07-28 server tools call resources read security -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes:
+        - Replaced the earlier protocol baseline with the 2026-07-28 Streamable HTTP and authorization requirements.
+        - Added current method/name header observables and backward-compatibility limitations.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'Model Context Protocol exposed endpoint unauthenticated vulnerability remote code execution -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+        - '"MCP Inspector" vulnerability CVE remote code execution DNS rebinding -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+        - '"Model Context Protocol" "DNS rebinding" CVE -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+        - '"Model Context Protocol" unauthenticated server CVE endpoint -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org]'
+        - '"MCP" SDK "DNS rebinding protection" CVE 2025 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org]'
+        - '"Model Context Protocol" "missing authentication" endpoint CVE -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org]'
+        - 'CVE-2026-42271 LiteLLM MCP endpoint -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - 'CVE-2026-48710 LiteLLM authentication bypass Starlette Host header -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - '"CVE-2026-42271" LiteLLM security advisory -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [docs.litellm.ai]'
+        - '"MCP endpoint" "missing authentication" CVE August 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '"MCP endpoint" authentication bypass security bulletin August 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [ibm.com,cisa.gov]'
+      material_changes:
+        - Selected the direct MCP-Pinot, Inspector, Go SDK, and LiteLLM/Starlette examples after impact and boundary classification.
+        - Recorded lower-impact, adjacent, duplicate, and search-only candidates in the exclusion ledger.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - '"MCP Inspector" security advisory DNS rebinding -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'CVE-2025-49596 exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - 'CVE-2026-34742 exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - 'MCP exposed endpoint production incident breach unauthorized tool invocation -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [oligo.security]'
+        - 'CVE-2026-42271 CVE-2026-48710 LiteLLM MCP RCE -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [horizon3.ai]'
+        - '"CVE-2026-42271" exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov,nvd.nist.gov]'
+        - '"mcp-pinot" exploitation observed incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cisa.gov]'
+      material_changes:
+        - Classified Oligo and Horizon3.ai as controlled demonstrations rather than production incidents.
+        - Set overall evidence status to demonstrated based on end-to-end public controlled validation.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP logging audit OpenTelemetry request tool call telemetry fields -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'MCP server security deployment authentication network exposure guidance -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'MCP OpenTelemetry semantic conventions spans tool call server address rpc method -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [opentelemetry.io]'
+        - 'HTTP server logging client address request method response status authorization outcome security monitoring -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [owasp.org]'
+        - 'T1190 Exploit Public-Facing Application definition software weakness internet-facing computer -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [attack.mitre.org]'
+        - 'OWASP API security unauthorized endpoint access authentication authorization logging -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [owasp.org]'
+      material_changes:
+        - Defined a two-stage 120-second correlation across accepted untrusted access and sensitive server actions.
+        - Added deterministic positive, negative, boundary, malformed, and expected false-positive coverage.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP server exposed endpoint production breach incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [unit42.paloaltonetworks.com]'
+        - 'Model Context Protocol server incident exposed authentication exploit -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [security.microsoft.com]'
+        - 'Model Context Protocol endpoint breach incident unauthorized access -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - 'Known Exploited Vulnerabilities catalog CSV download -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"CVE-2025-49596" Known Exploited Vulnerabilities -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"CVE-2026-34742" Known Exploited Vulnerabilities -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"MCP Inspector" incident exploitation in the wild -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cisa.gov]'
+      material_changes:
+        - Bounded the no-production-incident statement to the reviewed corpus.
+        - Recorded CISA KEV feed access failure as a research limitation rather than inferring catalog status.
+    - pass: saturation_candidate_update_1
+      completed_on: "2026-09-01"
+      queries:
+        - '"unauthenticated MCP endpoint" advisory fixed version 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org]'
+        - '"Model Context Protocol" production breach exposed endpoint -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"MCP Inspector" exploitation production incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+        - '"CVE-2025-49596" "CVE-2026-34742" "CVE-2026-42271" exploitation remediation -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '2025-11-25 Streamable HTTP Origin authentication security warning -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - 'API endpoint authentication authorization false positive public read only monitoring -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [owasp.org]'
+      material_changes:
+        - Surfaced the final 2026-07-28 protocol revision and triggered a current-baseline replacement.
+    - pass: saturation_candidate_update_2
+      completed_on: "2026-09-01"
+      queries:
+        - '"Model Context Protocol" endpoint unauthenticated advisory 2026 remote code execution -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cve.org,nvd.nist.gov]'
+        - '"MCP" exposed endpoint production compromise incident 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"CVE-2026-34742" "CVE-2026-42271" exploitation status -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov]'
+      material_changes:
+        - Added MCP-Pinot as the strongest direct missing-authentication example and reviewed IBM Langflow as a lower-impact duplicate pattern.
+    - pass: saturation_candidate_update_3
+      completed_on: "2026-09-01"
+      queries:
+        - '"MCP endpoint" "missing authentication" CVE August 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '"MCP endpoint" authentication bypass security bulletin August 2026 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [ibm.com,cisa.gov]'
+        - '"mcp-pinot" exploitation observed incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cisa.gov]'
+      material_changes:
+        - Logged AgenticMail and Line Desktop search-only candidates as lower-impact duplicate patterns without using snippets as evidence.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - '"CVE-2026-49257" "CVE-2026-42271" "CVE-2025-49596" "CVE-2026-34742" -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cve.org]'
+        - '"CVE-2026-49257" "CVE-2026-42271" known exploited -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+        - '"CVE-2025-49596" "CVE-2026-34742" known exploited -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov]'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - '"2026-07-28" "Security & Endpoint" "Origin" "authentication" -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [modelcontextprotocol.io]'
+        - '"MCP-Pinot" "MCP Inspector" production incident compromise -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [cisa.gov,nvd.nist.gov]'
+        - '"LiteLLM" "MCP" unauthenticated RCE production exploitation -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [nvd.nist.gov,cisa.gov]'
+      material_changes: []
+  rationale: >-
+    The corpus covers current protocol authority, direct missing-authentication
+    and access-bypass advisories, two public controlled demonstrations,
+    exploitation-status and production-incident searches, detection telemetry,
+    mitigations, neighbor boundaries, and contrary evidence. Newly discovered
+    material sources were incorporated and the counter was reset; the final two
+    independent, domain-filtered passes produced no material change.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 8
+  selected_examples:
+    - SRC-ghsa-mcp-pinot-73cv
+    - SRC-oligo-inspector-cve-2025-49596
+    - SRC-ghsa-go-sdk-xw59
+    - SRC-horizon3-litellm-chain
+  no_qualifying_examples_rationale: Not applicable; four highest-impact direct or enabling examples were selected.
+  candidates:
+    - source_id: SRC-ghsa-mcp-pinot-73cv
+      identifier: CVE-2026-49257 / GHSA-73cv-556c-w3g6
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept; no production exploitation documented by the reviewed advisory.
+      impact: Unauthenticated use of all exposed tools with server-side Pinot credentials, including data reads and configuration changes.
+      remediation: Upgrade to 3.1.0 or later; bind locally by default and refuse unauthenticated non-loopback exposure.
+      selected: true
+      rationale: Most direct and highest-impact default-exposure realization of the contract.
+    - source_id: SRC-oligo-inspector-cve-2025-49596
+      identifier: CVE-2025-49596 controlled demonstration
+      relationship: direct_demonstration
+      exploitation_status: Controlled public demonstration; production exploitation not established.
+      impact: Browser-to-local proxy access leading to command execution in the Inspector's environment.
+      remediation: Upgrade Inspector to 0.14.1 or later and retain session-token and Origin protections.
+      selected: true
+      rationale: Directly demonstrates the local-listener/browser-origin variant.
+    - source_id: SRC-ghsa-go-sdk-xw59
+      identifier: CVE-2026-34742 / GHSA-xw59-hvm2-8pj6
+      relationship: enabling_vulnerability
+      exploitation_status: Publicly disclosed vulnerability; no production exploitation documented by the reviewed advisory.
+      impact: A malicious website can access tools and resources on an unauthenticated localhost HTTP handler.
+      remediation: Upgrade MCP Go SDK to 1.4.0 or later, where protection is enabled by default.
+      selected: true
+      rationale: High-impact SDK-wide realization of the DNS-rebinding prerequisite.
+    - source_id: SRC-horizon3-litellm-chain
+      identifier: CVE-2026-42271 chained with CVE-2026-48710
+      relationship: direct_demonstration
+      exploitation_status: Controlled public validation; no production exploitation established by the reviewed report.
+      impact: Unauthenticated remote code execution through a path-authorization bypass and exposed MCP test endpoint.
+      remediation: Upgrade LiteLLM to 1.83.7+ and Starlette to 1.0.1+.
+      selected: true
+      rationale: Demonstrates a companion-route authorization bypass reaching privileged endpoint behavior.
+    - source_id: SRC-ghsa-inspector-7f8r
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: direct_vulnerability
+      exploitation_status: Publicly disclosed; no production exploitation documented by the reviewed advisory.
+      impact: Unauthenticated requests could launch MCP commands over stdio.
+      remediation: Upgrade to Inspector 0.14.1 or later.
+      selected: false
+      rationale: Underlying advisory duplicates the selected Oligo demonstration for the same vulnerability.
+    - source_id: SRC-ghsa-litellm-v4p8
+      identifier: CVE-2026-42271 / GHSA-v4p8-mg3p-g94g
+      relationship: direct_vulnerability
+      exploitation_status: Publicly disclosed; direct issue requires a low-privilege API key.
+      impact: MCP test endpoints could start a supplied local process.
+      remediation: Upgrade to LiteLLM 1.83.7+ or block the test endpoints.
+      selected: false
+      rationale: Component vulnerability is represented by the higher-impact selected unauthenticated chain.
+    - source_id: SRC-ghsa-inspector-g9hg
+      identifier: CVE-2025-58444 / GHSA-g9hg-qhmf-q45m
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Publicly disclosed; no production exploitation documented by the reviewed advisory.
+      impact: A malicious remote server redirect URI could execute script and interact with the Inspector proxy.
+      remediation: Upgrade Inspector to 0.16.6 or later.
+      selected: false
+      rationale: The defining entry is malicious redirect handling and XSS, not endpoint exposure.
+    - source_id: SRC-ibm-langflow-7282147
+      identifier: CVE-2026-8446
+      relationship: direct_vulnerability
+      exploitation_status: Publicly disclosed; no production exploitation stated by IBM.
+      impact: Authentication bypass on the MCP composer endpoint can disclose project or file data.
+      remediation: Upgrade Langflow OSS to 1.11.0 or later.
+      selected: false
+      rationale: Direct but lower-impact duplicate pattern than the four selected examples.
+
+sources_consulted:
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-lifecycle-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-go-sdk-xw59
+  - SRC-ghsa-litellm-v4p8
+  - SRC-horizon3-litellm-chain
+  - SRC-ostif-badhost-starlette
+  - SRC-ghsa-inspector-g9hg
+  - SRC-ibm-langflow-7282147
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-owasp-logging-cheat-sheet
+sources_cited:
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-go-sdk-xw59
+  - SRC-ghsa-litellm-v4p8
+  - SRC-horizon3-litellm-chain
+  - SRC-ostif-badhost-starlette
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-owasp-logging-cheat-sheet
+sources_rejected:
+  - source_id: SRC-ghsa-inspector-g9hg
+    reason: Adjacent redirect-URI and XSS entry mechanism; retained as a classified lead but not used in publishable technique claims.
+  - source_id: SRC-ibm-langflow-7282147
+    reason: Direct but lower-impact duplicate missing-authentication pattern; not selected among the four highest-impact examples.
+sources_blocked: []
+
+external_access_constraints:
+  - source: CISA Known Exploited Vulnerabilities catalog and JSON/CSV feeds
+    attempted_urls:
+      - https://www.cisa.gov/known-exploited-vulnerabilities-catalog
+      - https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+      - https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv
+    result: HTTP 403 during controlled retrieval; exact-identifier domain-filtered searches returned no catalog result.
+    treatment: No KEV membership or non-membership claim was published.
+
+conflicts:
+  - issue: MCP authorization is optional overall, while Streamable HTTP recommends authentication for all connections.
+    resolution: The technique does not treat every unauthenticated endpoint as vulnerable; materiality requires unintended exposure of a sensitive operation.
+  - issue: Vulnerable internet-facing instances were identified, but reviewed reports did not document a production compromise.
+    resolution: Evidence status is Demonstrated, and the absence statement is explicitly bounded to the reviewed corpus.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1005-C004
+    - SAF-T1005-C009
+  rationale: >-
+    Two independent public controlled evaluations reproduce the complete path
+    from untrusted endpoint reach through a failed access boundary to command or
+    process execution. Direct vulnerabilities corroborate other deployment
+    variants, but no qualifying production compromise was identified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1309
+bundle_mode: clean_room_frozen_handoff
+generated_on: "2026-09-01"
+
+prohibited_integration_inputs:
+  - Do not inspect the old SAF-T1309 README, research packet, detection rule, tests, diff, blame, history, PR, issue, or discarded run.
+  - Do not use catalog prose or shared source registries to introduce a new research lead or revise the evidence set.
+
+synthetic_tactics: []
+supplied_tactics:
+  - id: ATK-TA0004
+    name: Privilege Escalation
+    action: Preserve the user-supplied join and verify only identifier availability.
+
+synthetic_neighbors:
+  - id: SAF-T9997
+    label: Synthetic Prompt-Only Neighbor
+    boundary: Prompt manipulation without a privileged tool action.
+    action: Replace with the closest real SAF identifier after non-prose catalog reconciliation; do not change the boundary text.
+  - id: SAF-T9998
+    label: Synthetic Direct-Invocation Neighbor
+    boundary: Unauthorized tool invocation from stolen authority, transport abuse, or direct configuration substitution without model-directed prompt manipulation.
+    action: Replace with the closest real SAF identifier after non-prose catalog reconciliation; do not change the boundary text.
+
+synthetic_mitigations: []
+mitigation_joins:
+  - action: No SAF mitigation ID was asserted before freeze; retain protocol and platform controls unless a mechanical exact-control join is available.
+
+source_id_joins:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-camel-2503.18813v2
+  - SRC-cursor-ghsa-4cxx-hrm3-49rm
+  - SRC-cve-2025-54135
+  - SRC-cve-2025-53773
+  - SRC-embrace-red-cve-2025-53773
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-attack-t1548-v2
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-54136
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-32711
+source_id_action: Reuse an ID only when canonical URL and reviewed record are identical; otherwise allocate a stable non-colliding ID and update every join mechanically.
+
+history_sha_join:
+  synthetic_mock_sha: cf5e1dabdbc0d366deead1cc366a550552f6e11a
+  action: Replace with an honest real-repository SHA that supports integration provenance; do not claim inherited target history.
+
+path_joins:
+  - bundle_path: techniques/SAF-T1309/README.md
+    repository_path: techniques/SAF-T1309/README.md
+    action: Atomic whole-file replacement without opening the old file or a revealing diff.
+  - bundle_path: techniques/SAF-T1309/detection-rule.yml
+    repository_path: techniques/SAF-T1309/detection-rule.yml
+    action: Atomic whole-file replacement.
+  - bundle_path: research/techniques/SAF-T1309/
+    repository_path: research/techniques/SAF-T1309/
+    action: Atomic packet replacement.
+  - bundle_path: tests/SAF-T1309/
+    repository_path: tests/SAF-T1309/
+    action: Preserve canonical root-level test location.
+  - bundle_path: source-manifest-fragment.yml
+    repository_path: research/source-manifest.yml
+    action: Mechanically merge reviewed records after stable-ID reconciliation.
+  - bundle_path: framework-fragment.yml
+    repository_path: research/framework-model.yml
+    action: Mechanically merge the technique record after replacing synthetic neighbor IDs.
+  - bundle_path: alignment-fragment.yml
+    repository_path: research/alignment-ledger.yml
+    action: Mechanically merge integration issues and resolve them before final completion.
+
+post_freeze_validation:
+  - Verify FREEZE.sha256 before any integration operation.
+  - Run python3 tests/SAF-T1309/test_detection_rule.py.
+  - Run python3 scripts/validate-technique-research.py SAF-T1309.
+  - Confirm shared-registry collisions, real neighbor joins, and real history SHA are the only substantive integration changes.
+unresolved_research: []

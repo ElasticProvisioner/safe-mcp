@@ -1,0 +1,369 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools
+    title: Model Context Protocol 2026-07-28 Tools
+    publisher: Model Context Protocol
+    authors: [MCP specification maintainers and contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of the rendered normative specification.
+    locators: ["Overview", "Calling tools", "ToolAnnotations", "Security considerations"]
+    review_notes: Reviewed model control, tools/call, annotation trust, confirmations, logging, timeouts, and access controls.
+    review_status: opened_reviewed
+    archive: &remote_review
+      status: remote_reviewed_not_archived
+      reason: Public authoritative source was reviewed directly; the clean-room merge bundle retains metadata and exact locators rather than third-party content.
+      review_evidence: {method: Direct URL and rendered full-text review, reviewed_on: "2026-09-02"}
+  - id: SRC-mcp-elicitation
+    title: Model Context Protocol 2026-07-28 Elicitation
+    publisher: Model Context Protocol
+    authors: [MCP specification maintainers and contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of the rendered normative specification.
+    locators: ["Overview", "Elicitation mechanisms", "Security and user approval"]
+    review_notes: Reviewed user-input requests, review and decline behavior, and approval safety guidance.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-annotations-blog
+    title: "Tool Annotations: Making MCP Tools Safer and Smarter"
+    publisher: Model Context Protocol Blog
+    authors: [Ola Hungerford, Sam Morrow, Luca Chang]
+    version_or_date: "2026-03-16"
+    source_class: credible_practice
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of the maintainer-authored article.
+    locators: ["Core Annotations", "Clients MUST Treat Annotations as Untrusted", "What Annotations Don't Do"]
+    review_notes: Reviewed destructiveHint semantics, defaults, trust warnings, and the explicit non-enforcement limitation.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-2026-release
+    title: The 2026-07-28 Specification
+    publisher: Model Context Protocol Blog
+    authors: [MCP specification maintainers and ecosystem contributors]
+    version_or_date: "2026-07-28"
+    source_class: credible_practice
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-07-28/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of the specification release explanation.
+    locators: ["Multi Round-Trip Requests (MRTR)", "final specification release metadata"]
+    review_notes: Reviewed input_required confirmation flow and current-version context.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-aws-agent-access
+    title: Secure AI agent access patterns to AWS resources using Model Context Protocol
+    publisher: AWS Security Blog
+    authors: [Riggs Goodman III]
+    version_or_date: "2026-04-14"
+    source_class: credible_practice
+    official_url: https://aws.amazon.com/blogs/security/secure-ai-agent-access-patterns-to-aws-resources-using-model-context-protocol/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL full-article review.
+    locators: ["Three security principles for agent access", "Security principle 1", "Security principle 3", "CloudTrail logging examples"]
+    review_notes: Reviewed granted-entitlement risk, S3 deletion, prompt injection, direct-path scope, least privilege, differentiation, and audit fields.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-aws-agentic-lens
+    title: Secure agent tool usage - Agentic AI Lens
+    publisher: Amazon Web Services
+    authors: [AWS Well-Architected Agentic AI Lens team]
+    version_or_date: "reviewed 2026-09-02"
+    source_class: credible_practice
+    official_url: https://docs.aws.amazon.com/wellarchitected/latest/agentic-ai-lens/agentsec02.html
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of official AWS documentation.
+    locators: ["Capability intent", "Maturity levels", "Common issues to watch for"]
+    review_notes: Reviewed external authorization, human checkpoints, rate limits, registry governance, observability, and runaway-loop guidance.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-ms-sql-mcp
+    title: Data manipulation language tools in SQL MCP Server
+    publisher: Microsoft Learn
+    authors: [Microsoft Data API builder documentation team]
+    version_or_date: "updated 2026-06-19"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/azure/data-api-builder/mcp/data-manipulation-language-tools
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of official product documentation.
+    locators: ["The tools", "Tool availability by version", "Runtime configuration", "Disabling tools", "RBAC integration"]
+    review_notes: Reviewed delete_record behavior, default availability, disable controls, and RBAC enforcement.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-ms-documentdb-mcp
+    title: Azure DocumentDB MCP Toolkit
+    publisher: Microsoft Learn
+    authors: [Microsoft Azure DocumentDB documentation team]
+    version_or_date: "reviewed 2026-09-02; public preview"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/azure/documentdb/mcp-toolkit
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of official product documentation.
+    locators: ["Tool catalog", "Safety guardrails", "Deleting databases, collections, or indexes", "Audit log", "Limitations"]
+    review_notes: Reviewed delete and drop capabilities, four guard layers, target retyping, and structured audit fields.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-nvd-cve-53098
+    title: CVE-2025-53098 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, GitHub CNA, CISA Coordinator]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-53098
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD URL and NVD API JSON review.
+    locators: ["Description", "affected versions before 3.20.3", "CISA SSVC", "Change History"]
+    review_notes: Reviewed prerequisites, bounded command-execution consequence, fix, and exploitation status; did not follow GitHub links.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-nvd-cve-64443
+    title: CVE-2025-64443 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, GitHub CNA, CISA Coordinator]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-64443
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD URL and NVD API JSON review.
+    locators: ["Description", "affected versions through 0.27.0", "default stdio exclusion", "CISA SSVC", "Change History"]
+    review_notes: Reviewed DNS-rebinding preconditions, tool-manipulation scope, fix, and exploitation status; did not follow GitHub links.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-nvd-cve-54377
+    title: CVE-2025-54377 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, GitHub CNA, CISA Coordinator]
+    version_or_date: "last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-54377
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD URL review.
+    locators: ["Description", "affected versions before 3.23.19", "CISA SSVC proof-of-concept", "Change History"]
+    review_notes: Reviewed multiline allow-list bypass, fix, impact metadata, and proof-of-concept status; did not follow GitHub links.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-tool-poisoning
+    title: Model Context Protocol Threat Modeling and Analyzing Vulnerabilities to Prompt Injection with Tool Poisoning
+    publisher: arXiv
+    authors: [Charoes Huang, Xin Huang, Ngoc Phu Tran, Amin Milani Fard]
+    version_or_date: "arXiv:2603.22489, 2026-03-23"
+    source_class: research
+    official_url: https://arxiv.org/abs/2603.22489
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv abstract and PDF full-text review.
+    locators: ["Section 4.3 Experiment Setup", "Section 5.2", "Tables 5 and 6", "PDF pages 23-28"]
+    review_notes: Reviewed remote-script test procedure, seven-client outcomes, blocking counterexamples, and stated limitations.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-agenttrust-v1
+    title: AgentTrust - Runtime Safety Evaluation and Interception for AI Agent Tool Use
+    publisher: arXiv
+    authors: [Chenglin Yang]
+    version_or_date: "arXiv:2605.04785, 2026-05-06"
+    source_class: research
+    official_url: https://arxiv.org/abs/2605.04785
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv HTML full-text and abstract review.
+    locators: ["Abstract", "Threat model", "300-scenario and 630-scenario benchmarks", "Limitations and future work"]
+    review_notes: Reviewed pre-execution interception, normalization, reported evaluations, and non-production limitations.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-agenttrust-v2
+    title: AgentTrust - A Self-Improving Trust Layer for AI-Agent Actions
+    publisher: arXiv
+    authors: [Chenglin Yang]
+    version_or_date: "arXiv:2606.08539, 2026-06-07"
+    source_class: research
+    official_url: https://arxiv.org/abs/2606.08539
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv HTML full-text and abstract review.
+    locators: ["Abstract", "Section 1", "Section 5.3", "Table 3", "production-transfer and replay limitations"]
+    review_notes: Reviewed lexical-versus-semantic decomposition, negative deterministic-rule result, and replay caveats.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-trustshift
+    title: TrustShiftProbe - Characterizing, Benchmarking, and Defending Staged Trust Attacks on MCP Servers
+    publisher: arXiv
+    authors: [Mehrdad Rostamzadeh, Sidhant Narula, Mohammad Ghasemigol, Daniel Takabi]
+    version_or_date: "arXiv:2608.23763v1, 2026-08-24"
+    source_class: research
+    official_url: https://arxiv.org/abs/2608.23763
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv abstract and HTML full-text review.
+    locators: ["Abstract", "Contributions C1-C4", "attack and SHIELD aggregate results", "submission and license metadata"]
+    review_notes: Reviewed temporal server-defection model, four-domain controlled evaluation, defense outcome, and objective scope.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mitre-t1485
+    title: "MITRE ATT&CK T1485: Data Destruction"
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team, Brent Murphy, David French, Joey Lei, Prasad Somasamudram, Sekhar Sarukkai, Syed Ummar Farooqh, Varonis Threat Labs]
+    version_or_date: "version 1.4; last modified 2026-05-12"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1485/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL full-page review.
+    locators: ["Technique description", "cloud environments paragraph", "Impact Type", "Detection Strategy DET0146", "Version metadata"]
+    review_notes: Reviewed scope boundaries, cloud resource deletion, availability impact, mitigation, analytics, and named contributor credits.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cisa-kev
+    title: Known Exploited Vulnerabilities Catalog CSV
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Known Exploited Vulnerabilities Catalog team]
+    version_or_date: "snapshot acquired 2026-09-02"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct government CSV acquisition and exact cveID search.
+    locators: ["Full CSV; no rows for CVE-2025-53098, CVE-2025-64443, or CVE-2025-54377 as of acquisition date"]
+    review_notes: Used only as a bounded cross-check of catalog presence; absence is not proof of no exploitation.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-tools-2025
+    title: Model Context Protocol 2025-06-18 Tools
+    publisher: Model Context Protocol
+    authors: [MCP specification maintainers and contributors]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review.
+    locators: ["Overview", "Security considerations"]
+    review_notes: Consulted for historical comparison and rejected in favor of the current specification.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-auth-2025
+    title: Model Context Protocol 2025-06-18 Authorization
+    publisher: Model Context Protocol
+    authors: [MCP specification maintainers and contributors]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review.
+    locators: ["Overview", "Authorization requirements"]
+    review_notes: Consulted for authorization context and rejected as superseded and non-specific.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-security-2025
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [MCP specification maintainers and contributors]
+    version_or_date: "2025-11-25 rendered guidance"
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/security_best_practices
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review after official redirect.
+    locators: ["Threats and mitigations", "access controls and least privilege"]
+    review_notes: Consulted for general security context and rejected as redundant with more direct current sources.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-owasp-llm-top10-v1
+    title: OWASP Top 10 for Large Language Model Applications historical project page
+    publisher: OWASP Foundation
+    authors: [OWASP GenAI Security Project contributors]
+    version_or_date: "version 1.1 historical material; reviewed 2026-09-02"
+    source_class: credible_practice
+    official_url: https://owasp.org/www-project-top-10-for-large-language-model-applications/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review.
+    locators: ["Project overview", "historical v1.1 materials"]
+    review_notes: Consulted as taxonomy context and rejected because it lacks direct scoped evidence.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-azure-mcp-tools
+    title: Azure MCP Server tools
+    publisher: Microsoft Learn
+    authors: [Microsoft Azure MCP Server documentation team]
+    version_or_date: "reviewed 2026-09-02"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/tools/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review of official product documentation.
+    locators: ["Available tools", "tool categories"]
+    review_notes: Consulted as a product inventory and rejected as redundant with more exact deletion-capability sources.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-ms-security-acting
+    title: "Securing AI agents: When AI tools move from reading to acting"
+    publisher: Microsoft Security Blog
+    authors: [Microsoft Defender Experts Cybersecurity Incident Response]
+    version_or_date: "2026-06-30"
+    source_class: credible_practice
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/30/securing-ai-agents-ai-tools-move-from-reading-acting/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct whitelist URL review.
+    locators: ["Attack pattern", "Mitigation and protection guidance", "Detection and response"]
+    review_notes: Consulted as a hypothetical tool-poisoning pattern and rejected as non-incident and non-destruction evidence.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-mcpsec
+    title: Breaking the Protocol - Security Analysis of MCP and Prompt Injection Vulnerabilities in Tool-Integrated LLM Agents
+    publisher: arXiv
+    authors: [Narek Maloyan, Dmitry Namiot]
+    version_or_date: "arXiv:2601.17549, 2026-01"
+    source_class: research
+    official_url: https://arxiv.org/abs/2601.17549
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv abstract and full-text review.
+    locators: ["Abstract", "protocol experiments", "MCPSec evaluation"]
+    review_notes: Consulted for empirical MCP security evidence and rejected because it adds no scoped destruction outcome.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-arxiv-mcpbench
+    title: MCP Security Bench - Benchmarking Attacks Against Model Context Protocol in LLM Agents
+    publisher: arXiv
+    authors: [Dongsen Zhang, Zekun Li, Xu Luo, Xuannan Liu, Peipei Li, Wenjun Xu]
+    version_or_date: "arXiv:2510.15994v2, revised 2026-03-24; accepted by ICLR 2026"
+    source_class: research
+    official_url: https://arxiv.org/abs/2510.15994
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct arXiv abstract and full-text review.
+    locators: ["Abstract", "benchmark threat categories", "evaluation results"]
+    review_notes: Consulted for empirical attack coverage and rejected because it adds no scoped destruction outcome.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-nvd-cve-49596
+    title: CVE-2025-49596 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database, GitHub CNA, CISA Coordinator]
+    version_or_date: "reviewed 2026-09-02"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-49596
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD URL and NVD API JSON review.
+    locators: ["Description", "affected versions before 0.14.1", "Change History"]
+    review_notes: Consulted as an MCP command-execution candidate and rejected because it documents no destruction objective.
+    review_status: opened_reviewed
+    archive: *remote_review

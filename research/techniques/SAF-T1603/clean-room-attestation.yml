@@ -1,0 +1,108 @@
+version: 1
+technique_id: SAF-T1603
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1603
+  neutral_name: System Prompt Disclosure
+allowed_inputs:
+- Neutral identifier, name, and tactic supplied by the parent task.
+- Generic SAF technique and research templates.
+- Generic validator and clean-room methodology instructions.
+- Direct external authorities opened independently during this run.
+prohibited_inputs:
+- Existing techniques/SAF-T1603/README.md.
+- Existing research/techniques/SAF-T1603/ packet or tests.
+- Existing techniques/SAF-T1603/detection-rule.yml.
+- Git history, diff, blame, or pull request for the target.
+- Shared source, framework, and alignment registries.
+- SAF websites, previous conversation content, and methodology impact examples.
+- Unrestricted web search results or unprovenanced repository artifacts.
+independent_research:
+  searches:
+  - 'Official NVD API exact keyword: system prompt leakage'
+  - 'Official NVD API exact keyword: exfiltrate system prompts'
+  - 'Official NVD API exact keywords: system prompt breach; system prompt incident'
+  - 'Official arXiv API exact query: all:"system prompt extraction"'
+  - 'Official arXiv API exact query: all:"system prompt" AND all:"prompt leakage"'
+  - Official MITRE ATLAS 2026.08 data release review
+  - Official CISA KEV 2026.09.01 feed review
+  opened_source_ids:
+  - SRC-mcp-architecture
+  - SRC-mcp-prompts
+  - SRC-owasp-llm07
+  - SRC-openai-model-spec
+  - SRC-atlas-2026-08
+  - SRC-mitre-attack-t1082-current
+  - SRC-nvd-audit
+  - SRC-ghsa-weknora
+  - SRC-ghsa-open-webui
+  - SRC-ghsa-praisonai
+  - SRC-arxiv-justask
+  - SRC-arxiv-spe-llm
+  - SRC-otel-genai-events
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-query-audit
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- The frozen bundle must be integrated only after checksum verification.
+- Shared registries and placeholder neighbor identifiers may be reconciled mechanically
+  after freeze.
+- Integration must not rewrite substantive prose or evidence classification without
+  reopening review.
+attestation: The authoring agent used only the allowed neutral inputs, generic methodology,
+  generic templates and validator, and independently opened direct authorities. No
+  prohibited target-specific or shared repository material was inspected.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-architecture: SRC-mcp-architecture
+    SRC-attack-t1082: SRC-mitre-attack-t1082-current
+    SRC-ghsa-weknora: SRC-ghsa-weknora
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-mcp-prompts
+  - SRC-owasp-llm07
+  - SRC-openai-model-spec
+  - SRC-atlas-2026-08
+  - SRC-nvd-audit
+  - SRC-ghsa-open-webui
+  - SRC-ghsa-praisonai
+  - SRC-arxiv-justask
+  - SRC-arxiv-spe-llm
+  - SRC-otel-genai-events
+  - SRC-arxiv-leakagent
+  - SRC-anthropic-system-prompts
+  - SRC-nvd-cve-2026-7482
+  - SRC-arxiv-query-audit
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-36
+  - SAF-M-37
+  canonical_neighbors:
+  - SAF-T1102
+  removed_provisional_neighbor_roles:
+  - generic sensitive-information disclosure; no exact catalog technique matched this frozen role
+  attack_mapping:
+    T1082: analogous
+  atlas_mappings:
+  - AML.T0069.002
+  - AML.T0056
+  validation_artifacts:
+  - research/techniques/SAF-T1603/validation/detection-test.txt
+  - research/techniques/SAF-T1603/validation/strict-validator.txt
+  status: integrated_and_validated

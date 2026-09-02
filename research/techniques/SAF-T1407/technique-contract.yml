@@ -1,0 +1,87 @@
+version: 1
+technique_id: SAF-T1407
+name: Server Proxy Masquerade
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an MCP client or host to treat an attacker-controlled endpoint
+  as the intended trusted server or protected resource so the endpoint can relay,
+  observe, or alter protocol exchanges while presenting a legitimate-looking server
+  or authorization relationship.
+scope:
+  security_boundary: The configured and approved MCP server identity boundary between
+    the host or client and the remote server endpoint, including the bound OAuth protected-resource
+    identity.
+  in_scope:
+  - An attacker-controlled MCP endpoint claims or derives the identity or authorization
+    relationship of an approved server.
+  - The endpoint relays or is positioned to relay MCP or OAuth exchanges to a legitimate
+    upstream while observing, changing, or reusing client data.
+  - URL-authority or protected-resource metadata confusion redirects an MCP client
+    to an attacker endpoint that still appears associated with a trusted service.
+  out_of_scope:
+  - Initial endpoint discovery, registry substitution, DNS compromise, and configuration
+    tampering before the client trusts the endpoint.
+  - A legitimate or compromised server that corrupts its own tool content without
+    impersonating or proxying another server identity.
+  - Token passthrough by an otherwise accurately identified proxy when no server masquerade
+    or endpoint confusion occurs.
+  - Downstream credential use, data exfiltration, or impact after the masquerading
+    endpoint obtains access.
+  affected_components:
+  - MCP host and client configuration
+  - Streamable HTTP transport and TLS peer identity
+  - OAuth protected-resource metadata and authorization-server association
+  - MCP server initialization, tool discovery, tool invocation, and returned results
+nearest_neighbors:
+- technique_id: SAF-T1004
+  distinction: SAF-T1004 covers how a hostile endpoint enters configuration; SAF-T1407
+    begins when that endpoint operates as a legitimate-looking proxy or protected
+    resource.
+- technique_id: SAF-T1404
+  distinction: SAF-T1404 covers result-side corruption without requiring another server's
+    identity; SAF-T1407 requires identity or upstream-association masquerade.
+- technique_id: SAF-T1304
+  distinction: SAF-T1304 covers audience-unsafe credential forwarding by an identified
+    intermediary; SAF-T1407 requires a deceptive server identity, authority, or protected-resource
+    association.
+required_evidence:
+- Establish current MCP client-host-server, transport, tool, and authorization behavior.
+- Establish the protected-resource impersonation and adversary-in-the-middle proxy
+  condition in controlling OAuth standards.
+- Establish at least one end-to-end MCP demonstration or retain an explicit evidence
+  gap.
+- Search separately for production breaches, disclosed vulnerabilities, advisories,
+  exploitation status, and controlled demonstrations.
+- Search for contrary evidence and distinguish a malicious trusted endpoint from transport
+  interception and server-content corruption.
+- Establish operational identity telemetry and test an analytic with positive, negative,
+  boundary, malformed, and expected false-positive cases.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Approved MCP endpoint inventory, configured server URI, resolved connection URI,
+    TLS peer identity, and approval or change record.
+  - OAuth protected-resource metadata resource value and authorization-server set.
+  - MCP initialization serverInfo and a normalized tool-catalog fingerprint from tools/list.
+safe_example_constraints:
+- Use reserved example domains, placeholder fingerprints, and synthetic tokens only.
+- Do not reproduce exploit payloads, live bearer tokens, destructive commands, or
+  operational capture instructions.
+- Describe the relay and identity mismatch without providing deployable proxy code.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and directly reviewed
+  sources with exact locators.
+- All candidates are relationship-classified; the highest-impact qualifying examples
+  are selected and production-incident gaps are explicit.
+- Two consecutive post-update saturation passes add no controlling evidence, example,
+  constraint, or distinction.
+- Detection cases cover positive, negative, boundary, malformed, and expected false-positive
+  behavior and all pass.
+- Rights, clean-room integrity, alignment, and source-or-omit reviews pass in a strict
+  isolated synthetic repository.

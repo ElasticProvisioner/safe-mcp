@@ -1,0 +1,612 @@
+version: 1
+technique_id: SAF-T1009
+claims:
+  - id: SAF-T1009-C001
+    statement: >-
+      In HTTP authorization deployments, an MCP server is an OAuth resource
+      server, an MCP client is an OAuth client, and the authorization server may
+      be separate from the MCP server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Roles
+          - Introduction / Purpose and Scope
+    corroboration: RFC 9728 defines protected-resource metadata that locates authorization servers independently of the resource.
+    limitations:
+      - The source defines roles and does not establish exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C002
+    statement: >-
+      MCP protected-resource metadata can identify multiple independent
+      authorization servers, and clients must keep registration state and
+      credentials separate for each issuer.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Server Location
+      - source_id: SRC-rfc9728
+        support: corroborating
+        exact_locators:
+          - Section 2, authorization_servers
+          - Section 7.6, Authorization Servers
+    corroboration: Both the MCP profile and its controlling OAuth metadata RFC describe plural authorization servers.
+    limitations:
+      - Multiple advertised servers are a prerequisite, not evidence of an attack.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C003
+    statement: >-
+      OAuth mix-up is possible when a client interacts with at least two
+      authorization servers and at least one is attacker-controlled or
+      compromised; its goal is to make the client send an honest issuer's code
+      or token to the attacker-controlled server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.4, Mix-Up Attacks
+          - Section 4.4.1, Attack Description
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Section 1, Introduction
+    corroboration: RFC 9207 independently describes the same attacker position, credential target, and multi-server boundary.
+    limitations:
+      - The RFCs describe OAuth generally and do not report an MCP production incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C004
+    statement: >-
+      Because current MCP explicitly supports multiple authorization servers,
+      the OAuth mix-up mechanism applies to an MCP client that fails to bind a
+      validated expected issuer to the callback before choosing a token
+      endpoint.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Server Location
+          - Authorization Server Metadata Discovery
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Mix-Up Attacks
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.4.1, Preconditions and attack steps 1-6
+      - source_id: SRC-fett-oauth-analysis
+        support: corroborating
+        exact_locators:
+          - Section 3.2, IdP Mix-Up Attack
+          - Section 3.6, Verification and Disclosure
+    corroboration: The formal analysis reproduced the same cross-issuer misbinding in concrete OAuth and OpenID Connect clients.
+    limitations:
+      - No directly reviewed source reproduced the complete attack in an MCP client.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The conclusion combines the MCP multi-issuer authorization profile with
+        a standards-defined and experimentally verified OAuth client attack.
+    status: validated
+
+  - id: SAF-T1009-C005
+    statement: >-
+      A successful mix-up can expose an authorization code or access token and
+      thereby threaten the confidentiality and integrity of resources governed
+      by the honest authorization server.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9207
+        support: direct
+        exact_locators:
+          - Section 1, paragraphs 3-7
+      - source_id: SRC-fett-oauth-analysis
+        support: corroborating
+        exact_locators:
+          - Section 3.2, Attack on Authorization Code Mode
+          - Section 5.2, security properties
+    corroboration: The paper demonstrates code disclosure and explains authorization and authentication consequences.
+    limitations:
+      - Actual scope is limited by the stolen credential, client type, issuer policy, audience restrictions, and downstream controls.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C006
+    statement: >-
+      Before redirecting the user agent, an MCP client must record the issuer
+      from validated authorization-server metadata in the same per-request
+      record as PKCE and state, then validate a returned iss before sending a
+      code to any token endpoint.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Flow Steps / Authorization Response Validation
+    corroboration: RFC 9207 Section 2.4 and RFC 9700 Section 4.4.2.1 define the underlying issuer comparison.
+    limitations:
+      - Correct response validation depends on the expected issuer having been obtained from validated metadata.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C007
+    statement: >-
+      Authorization-server metadata is invalid unless its issuer value exactly
+      matches the issuer identifier used to construct the well-known URL.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Server Metadata Discovery, final paragraph
+      - source_id: SRC-rfc8414
+        support: corroborating
+        exact_locators:
+          - Section 3.3, Authorization Server Metadata Validation
+          - Section 6.2, Impersonation Attacks
+    corroboration: The MCP profile repeats the RFC 8414 identity check and rejection rule.
+    limitations:
+      - Exact-match validation does not determine whether the protected resource selected an appropriate authorization server in the first place.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C008
+    statement: >-
+      A client must reject a present response issuer that does not exactly match
+      the recorded issuer, and must reject an absent issuer when the server
+      advertised support for the response iss parameter.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation decision table
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Section 2.4, Validating the Issuer Identifier
+    corroboration: RFC 9207 defines exact comparison and rejection; MCP specifies behavior for all advertised/present combinations.
+    limitations:
+      - Current MCP permits a response with no iss when support is false or absent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C009
+    statement: >-
+      Current MCP allows a response without iss to proceed when the server did
+      not advertise response-issuer support, and says a future revision is
+      expected to strengthen inclusion from SHOULD to MUST.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation decision table
+          - Authorization Response Validation, future revision paragraph
+    corroboration: RFC 9207 Section 2.4 leaves acceptance of responses without iss to local policy.
+    limitations:
+      - This is a compatibility condition, not proof that an issuer-less flow is exploitable in every deployment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C010
+    statement: >-
+      In multi-server clients, RFC 9700 requires a mix-up defense and recommends
+      issuer identification; distinct per-issuer redirect URIs are an
+      alternative with deployment and bypass limitations.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 2.1, paragraphs on mix-up defense
+          - Sections 4.4.2.1 and 4.4.2.2
+    corroboration: RFC 9207 standardizes the preferred issuer-identification mechanism.
+    limitations:
+      - Distinct redirect URIs are not the current MCP profile's primary specified response-validation path.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C011
+    statement: >-
+      MCP requires the resource parameter in authorization and token requests
+      and requires resource servers to accept only tokens intended for them,
+      limiting cross-resource reuse of a stolen token.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Resource Parameter Implementation
+          - Access Token Usage / Token Handling
+      - source_id: SRC-rfc8707
+        support: corroborating
+        exact_locators:
+          - Section 2, Resource Parameter
+          - Section 3, Security Considerations
+    corroboration: RFC 8707 explains how audience restriction prevents a token presented to one resource from being used elsewhere.
+    limitations:
+      - Audience restriction does not stop disclosure of a code or token intended for the target MCP resource.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C012
+    statement: >-
+      Fett, Küsters, and Schmitz verified the IdP mix-up attack on
+      mod_auth_openidc and pyoidc and reported the results to the OAuth and
+      OpenID Connect working groups.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-fett-oauth-analysis
+        support: direct
+        exact_locators:
+          - Section 3.6, Verification and Disclosure
+          - Section 3.2, IdP Mix-Up Attack
+    corroboration: RFC 9700 Section 4.4 adopts the paper's attack description and RFC 9207 cites the formal result.
+    limitations:
+      - The tests were OAuth/OpenID Connect demonstrations, not MCP production incidents.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C013
+    statement: >-
+      Mainka, Mladenov, and Schwenk demonstrated malicious OpenID Connect
+      discovery endpoints that could direct codes or tokens to attacker-chosen
+      endpoints; this is adjacent endpoint substitution, not by itself the
+      defining callback-issuer mix-up.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mainka-oidc-endpoints
+        support: direct
+        exact_locators:
+          - Section 6.1, Broken End-User Authentication
+          - Section 7, Implementation
+          - Section 8, Countermeasures and Figure 11
+    corroboration: RFC 9700 Section 4.4.1 distinguishes Malicious Endpoints Attack as similar in outcome.
+    limitations:
+      - The mechanism relies on OpenID discovery endpoint manipulation and is classified as adjacent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C014
+    statement: >-
+      CVE-2026-73419 affected multi-provider Auth.js deployments because state,
+      nonce, and PKCE cookies were not bound to the provider that created them,
+      enabling cross-provider account-link confusion under stated conditions;
+      fixed releases bind checks to the provider flow.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-authjs-provider-binding
+        support: direct
+        exact_locators:
+          - Summary
+          - Am I affected?
+          - Impact
+          - Patched version
+          - Credit
+      - source_id: SRC-nvd-cve-2026-73419
+        support: corroborating
+        exact_locators:
+          - CVE-2026-73419 English description
+          - CVSS and CISA SSVC fields
+    corroboration: NVD repeats the affected and fixed versions and records CISA's exploitation assessment as none.
+    limitations:
+      - The flaw confuses provider-bound callback checks but does not document sending an honest issuer's code to an attacker authorization server; it is adjacent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C015
+    statement: >-
+      CVE-2026-11718 affected the MCP Toolbox opaque-token validation path by
+      skipping configured issuer checking when introspection omitted iss; the
+      June 4, 2026 fix was released in 1.4.0 and added missing-issuer tests.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-11718
+        support: direct
+        exact_locators:
+          - CVE-2026-11718 English description
+          - CVSS and CISA SSVC fields
+      - source_id: SRC-mcp-toolbox-pr3360
+        support: direct
+        exact_locators:
+          - Pull request summary and merge record
+          - Reported by credit
+          - Release 1.4.0 bug-fix notes
+    corroboration: The patch record documents issuer-presence enforcement and tests; NVD documents unauthorized-issuer token acceptance.
+    limitations:
+      - This is token-introspection issuer validation at an MCP resource, not authorization-response mix-up at an MCP client; it is adjacent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C016
+    statement: >-
+      CVE-2025-27370 describes a malicious authorization server using
+      attacker-controlled audience values in private_key_jwt to obtain client
+      assertions usable at another authorization server; OpenID Foundation
+      reported no known compromises and prescribed issuer-identifier audience
+      binding.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oidf-private-key-jwt-notice
+        support: direct
+        exact_locators:
+          - Notice of a Security Vulnerability, paragraphs 1-4
+          - CVE number list
+          - Researcher credit
+      - source_id: SRC-oidf-private-key-jwt-disclosure
+        support: direct
+        exact_locators:
+          - Brief Description of the Security Vulnerability Issue
+          - Remediation Recommendations for FAPI Implementers
+          - Exhibit B, Preconditions and Attacker Obtaining Private Key JWTs
+      - source_id: SRC-nvd-cve-2025-27370
+        support: corroborating
+        exact_locators:
+          - CVE-2025-27370 English description
+          - CISA SSVC exploitation field
+    corroboration: The detailed Foundation notice and NVD describe the same multi-AS malicious metadata condition.
+    limitations:
+      - The stolen object is a client-authentication assertion, not a browser-delivered authorization code or token; it is adjacent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C017
+    statement: >-
+      No qualifying MCP production mix-up incident was identified in the
+      reviewed authoritative corpus as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-oauth-mixup-query
+        support: direct
+        exact_locators:
+          - NVD API totalResults 0 for keywordSearch OAuth mix-up
+      - source_id: SRC-nvd-authserver-mixup-query
+        support: direct
+        exact_locators:
+          - NVD API totalResults 0 for keywordSearch authorization server mix-up
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - Catalog version 2026.09.01; local exact-ID and keyword review
+      - source_id: SRC-arxiv-mcp-mixup-query
+        support: corroborating
+        exact_locators:
+          - Search result text: no results for Model Context Protocol mix-up
+      - source_id: SRC-arxiv-mcp-oauth-issuer-query
+        support: corroborating
+        exact_locators:
+          - Search result text: no results for Model Context Protocol OAuth issuer
+    corroboration: Separate government vulnerability/exploitation catalogs and academic searches produced no direct MCP end-to-end incident or demonstration.
+    limitations:
+      - This is a bounded absence statement about the reviewed corpus, not a claim that no incident has ever occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The statement summarizes recorded negative searches across specified authoritative sources.
+    status: validated
+
+  - id: SAF-T1009-C018
+    statement: >-
+      The most direct preventive controls are validated authorization-server
+      metadata, unique per-server issuer values, per-request expected-issuer
+      binding, exact response-issuer comparison, and abort-before-token-request
+      on mismatch.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation
+      - source_id: SRC-mcp-auth-discovery-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Server Metadata Discovery
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Sections 2.3, 2.4, and 4
+    corroboration: MCP makes the RFC controls normative for its authorization profile.
+    limitations:
+      - A forged or unvalidated expected issuer defeats later comparison, and legacy issuer absence can remain permissible.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The claim consolidates several normative checks into one control sequence.
+    status: validated
+
+  - id: SAF-T1009-C019
+    statement: >-
+      The specified comparison is a simple exact string comparison after form
+      decoding; clients must not case-fold, remove default ports or trailing
+      slashes, or normalize percent encoding before comparing issuer values.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation, comparison and normalization paragraphs
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Section 2.4, Validating the Issuer Identifier
+    corroboration: Both sources require the RFC 3986 simple-string rule.
+    limitations:
+      - Operational logs must preserve the compared values faithfully to reproduce the decision.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1009-C020
+    statement: >-
+      A high-confidence analytic can alert on a present exact issuer mismatch,
+      an advertised-but-missing issuer, unvalidated expected metadata, or a
+      token request emitted after failed or absent issuer validation for the
+      same flow.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Section 2.4, rejection requirements
+    corroboration: Each selection corresponds to a normative reject condition or the documented dependency on authentic expected metadata.
+    limitations:
+      - The analytic requires client-side flow correlation and cannot detect a client that neither logs nor performs these checks.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rule translates normative validation state into observable audit conditions.
+    status: validated
+
+  - id: SAF-T1009-C021
+    statement: >-
+      Missing iss is an expected legitimate condition when support is false or
+      absent under the current MCP profile, so detection must distinguish that
+      case from advertised-but-missing iss and separately expose it as residual
+      compatibility risk.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - Authorization Response Validation decision table
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators:
+          - Section 2.4, local-policy paragraphs
+    corroboration: Both documents permit policy-dependent acceptance when iss is absent from a non-supporting server.
+    limitations:
+      - A locally stricter policy may reject this case and should tune the analytic accordingly.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The false-positive classification derives from the current normative decision table.
+    status: validated
+
+  - id: SAF-T1009-C022
+    statement: >-
+      MITRE ATT&CK T1528 is an analogous mapping because it covers theft of
+      application access tokens used to access remote systems, while it does
+      not define the authorization-server issuer-misbinding mechanism.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators:
+          - Steal Application Access Token description
+          - ID, tactic, version, and last-modified fields
+    corroboration: RFC 9207 identifies code or token theft as the mix-up objective.
+    limitations:
+      - The mapping is analogous, not direct, and ATT&CK places T1528 under Credential Access rather than Initial Access.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares immediate credential theft while preserving the mechanism and tactic differences.
+    status: validated

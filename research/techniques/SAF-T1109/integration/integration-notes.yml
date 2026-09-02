@@ -1,0 +1,38 @@
+version: 1
+technique_id: SAF-T1109
+synthetic_tactics: []
+synthetic_neighbors:
+  - id: SAF-T9001
+    purpose: Isolated validation placeholder for prompt or tool-metadata manipulation.
+  - id: SAF-T9002
+    purpose: Isolated validation placeholder for local-server installation.
+synthetic_mitigations: []
+source_ids:
+  - SRC-mcp-tools-2026
+  - SRC-mcp-http-2026
+  - SRC-ghsa-inspector-49596
+  - SRC-oligo-inspector-49596
+  - SRC-inspector-fix-0141
+  - SRC-ghsa-inspector-58444
+  - SRC-inspector-fix-0166
+  - SRC-microsoft-autojack-2026
+  - SRC-mcp-sep-1024
+  - SRC-microsoft-control-plane-2026
+  - SRC-mitre-t1203
+  - SRC-mitre-t1190
+  - SRC-oligo-zero-day-2024
+  - SRC-oligo-litellm-2026
+synthetic_history_shas:
+  - sha: "1111111111111111111111111111111111111111"
+    action: Replace with real integration provenance without changing substantive content.
+path_joins:
+  - {fragment: source-manifest-fragment.yml, target: research/source-manifest.yml, action: Merge source records by stable ID after independent freeze.}
+  - {fragment: framework-fragment.yml, target: research/framework-model.yml, action: Merge the technique record and reconcile placeholder neighbors.}
+  - {fragment: alignment-fragment.yml, target: research/alignment-ledger.yml, action: Merge any alignment issues introduced by integration.}
+  - {fragment: techniques/SAF-T1109, target: techniques/SAF-T1109, action: Atomically replace target directory without consulting old prose.}
+  - {fragment: research/techniques/SAF-T1109, target: research/techniques/SAF-T1109, action: Atomically replace target packet.}
+  - {fragment: tests/SAF-T1109, target: tests/SAF-T1109, action: Atomically replace target tests.}
+deferred_checks:
+  - Reconcile source-ID collisions only after freeze without adopting new leads.
+  - Replace synthetic neighbor IDs with canonical IDs or retain explicit integration issues.
+  - Run repository-wide validators after mechanical integration.

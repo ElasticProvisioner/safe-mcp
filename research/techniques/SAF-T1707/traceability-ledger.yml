@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T1707
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1707/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1707/technique-contract.yml
+  supports: Clean-room scope contract and completion metadata.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1707/claim-inventory.yml
+  supports: Validated claim statements and source locators.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1707/source-coverage.yml
+  supports: Five research passes, candidate comparison, saturation, and evidence status.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1707/publication-rights.yml
+  supports: Publication-rights and attribution review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1707/quality-review.yml
+  supports: Gate and validation outcomes.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1707/detection-rule.yml
+  supports: Technique-specific detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1707/test_detection.py
+  supports: Executable deterministic detection tests.
+- id: LOCAL-detection-events
+  path: tests/SAF-T1707/events.json
+  supports: Positive negative boundary and malformed test fixtures.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1707/validation/detection-test.txt
+  supports: Captured isolated and canonical passing detector output.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1707/validation/strict-validator.txt
+  supports: Captured isolated and canonical strict-validator output.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1707/integration/integration-notes.yml
+  supports: Mechanical post-freeze source, history, path, framework, neighbor, mitigation, and validation joins.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1707-X001
+  candidate: OpenClaw manual callback substitution as a direct CSRF Token Relay example.
+  origin: NVD CVE-2026-28477 exact advisory reference.
+  attempted_searches:
+  - Reviewed the complete advisory behavior and NVD record against the valid-state
+    contract boundary.
+  consulted_source_ids:
+  - SRC-openclaw-advisory
+  - SRC-nvd-2026-28477
+  reason: The affected manual path accepted code without requiring and relaying a
+    valid state value.
+  prohibited_publishable_text:
+  - OpenClaw is a direct CSRF Token Relay incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1707-X002
+  candidate: Missing-state OAuth CSRF advisories as direct relay examples.
+  origin: NVD saturation result set, including Immich and NamelessMC.
+  attempted_searches:
+  - Compared each NVD description to the requirement for a valid anti-CSRF token accepted
+    outside its initiating session.
+  consulted_source_ids:
+  - SRC-nvd-saturation-1
+  - SRC-nvd-saturation-2
+  reason: Failure to validate state is a neighboring OAuth CSRF mechanism and does
+    not show relay of a valid state token.
+  prohibited_publishable_text:
+  - Every missing state check is CSRF Token Relay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1707-X003
+  candidate: Claim that CSRF Token Relay has been exploited in a production MCP deployment.
+  origin: Requested breach and vulnerability research.
+  attempted_searches:
+  - Reviewed current MCP authority pages
+  - NVD keyword result sets
+  - CISA KEV
+  - and direct CISA site searches.
+  consulted_source_ids:
+  - SRC-mcp-doc-index-2026
+  - SRC-nvd-state-query
+  - SRC-nvd-oauth-query
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisa-search-state
+  - SRC-cisa-search-incident
+  reason: No qualifying direct production report was identified; absence remains bounded
+    to the corpus and date.
+  prohibited_publishable_text:
+  - production MCP exploitation has been confirmed
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1707-X004
+  candidate: Claim that PKCE universally eliminates CSRF Token Relay.
+  origin: Protocol-defense challenge pass.
+  attempted_searches:
+  - Reviewed RFC 9700 attacker models
+  - OAuth 2.1 draft 13
+  - RFC 7636
+  - and current MCP response validation.
+  consulted_source_ids:
+  - SRC-rfc9700-state-relay
+  - SRC-oauth21-draft13
+  - SRC-rfc7636-state-relay
+  - SRC-mcp-authorization-2026-07-28
+  reason: PKCE is a strong transaction binding but does not replace every issuer,
+    session, callback, or application account-link check.
+  prohibited_publishable_text:
+  - PKCE completely prevents every relay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1707-X005
+  candidate: Universal critical-severity or victim-token-theft impact.
+  origin: Vulnerability impact comparison.
+  attempted_searches:
+  - Compared the impact statements of the three selected advisories.
+  consulted_source_ids:
+  - SRC-fastapi-advisory
+  - SRC-authlib-advisory
+  - SRC-fastify-advisory
+  reason: Consequences depend on account-linking logic, and Fastify expressly states
+    victim credentials and tokens are not exposed.
+  prohibited_publishable_text:
+  - always steals the victim's access token
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

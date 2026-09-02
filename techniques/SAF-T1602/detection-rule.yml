@@ -1,49 +1,81 @@
-title: MCP Tool Enumeration Detection
-id: 7b3e4a9c-2d18-4f62-9a71-e83d5c6b2f40
+title: MCP Tool Enumeration by Unapproved Principal or Pagination Burst
+id: c69839f5-3c55-4e2c-a997-4b1d2a8c467a
 status: experimental
-description: Detects potential MCP tool enumeration through anomalous tools/list volume, cross-server enumeration by a single credential, and fingerprinting patterns against unknown-tool error responses
-author: SAF-MCP Team
-date: 2026-04-24
-references:
-  - https://github.com/SAF-MCP/saf-mcp/tree/main/techniques/SAF-T1602
-  - https://modelcontextprotocol.io/specification/2025-06-18/server/tools
-  - https://attack.mitre.org/techniques/T1526/
-  - https://attack.mitre.org/techniques/T1518/
+description: >-
+  Detects tools/list activity when local authorization context marks the
+  principal denied or unapproved, or when the same actor and server generate
+  at least three cursor-bearing list pages within sixty seconds.
+author: OpenAI Codex clean-room research agent
+date: 2026-09-02
 logsource:
+  category: application
   product: mcp
-  service: jsonrpc_requests
+  service: jsonrpc_audit
 detection:
-  # Correlation selectors — require Sigma v2 correlation rules or equivalent
-  # stateful SIEM logic keyed on credential/session/source IP. Tool enumeration
-  # is an inherently legitimate behavior; detection relies on rate, breadth,
-  # and correlation rather than any single invocation.
-  selection_high_volume_list:
-    method: 'tools/list'
-    count_per_credential|gt: 50
-    timeframe: 5m
-  selection_cross_server_sweep:
-    method: 'tools/list'
-    distinct_server_ids_per_credential|gt: 5
-    timeframe: 10m
-  # Fingerprinting via invalid tools/call + -32602 error responses.
-  selection_unknown_tool_fingerprint:
-    method: 'tools/call'
-    error_code: -32602
-    count_distinct_tool_names_per_session|gt: 10
-    timeframe: 5m
-  # Sessions that list but never call — enumeration-only pattern.
-  selection_list_without_followup_call:
-    method: 'tools/list'
-    session_tools_call_count: 0
-    session_duration|gt: 60
-  condition: selection_high_volume_list or selection_cross_server_sweep or selection_unknown_tool_fingerprint or selection_list_without_followup_call
+  selection_tools_list:
+    rpc.method: tools/list
+  selection_denied:
+    authorization.decision:
+      - denied
+      - unapproved
+  correlation_burst:
+    group_by:
+      - actor.id
+      - server.address
+    require_cursor: true
+    count_gte: 3
+    within_seconds: 60
+  condition: selection_tools_list and (selection_denied or correlation_burst)
+fields:
+  - timestamp
+  - rpc.method
+  - jsonrpc.request.id
+  - actor.id
+  - server.address
+  - authorization.decision
+  - mcp.cursor
+  - mcp.result.tool_count
 falsepositives:
-  - Legitimate developer tools that periodically refresh tool manifests (MCP client SDKs on startup, IDE integrations)
-  - Automated monitoring of tool availability (SRE health checks, gateway deployment probes)
-  - Client implementations that preload the full manifest into an offline cache before first interactive call
+  - Approved inventory jobs, interactive Inspector use, client cache refreshes, and administration can paginate rapidly.
 level: medium
 tags:
+  - saf.t1602
   - attack.discovery
-  - attack.t1526
-  - attack.t1518
-  - safe.t1602
+  - attack.t1046
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1602-C011
+    - SAF-T1602-C012
+  telemetry_claim_ids:
+    - SAF-T1602-C010
+  limitation_claim_ids:
+    - SAF-T1602-C011
+    - SAF-T1602-C012
+  validation_artifacts:
+    - techniques/SAF-T1602/test-logs.json
+    - techniques/SAF-T1602/test_detection_rule.py
+    - research/techniques/SAF-T1602/validation/detection-test.txt
+    - research/techniques/SAF-T1602/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1602-C010]
+      rationale: JSON-RPC client and server spans can retain method, request ID, and target attributes.
+    selection_tools_list:
+      claim_ids: [SAF-T1602-C002, SAF-T1602-C010]
+      rationale: tools/list is the normative method and rpc.method is its observable field.
+    selection_denied:
+      claim_ids: [SAF-T1602-C008, SAF-T1602-C012]
+      rationale: Authorization is evaluated per HTTP request; denied or unapproved activity is locally actionable.
+    correlation_burst:
+      claim_ids: [SAF-T1602-C002, SAF-T1602-C012]
+      rationale: Pagination is normative, while the count and window are explicit experimental tuning choices.
+    condition:
+      claim_ids: [SAF-T1602-C011, SAF-T1602-C012]
+      rationale: The condition requires policy or burst context because routine tools/list use is legitimate.
+    fields:
+      claim_ids: [SAF-T1602-C010, SAF-T1602-C012]
+      rationale: These fields support request correlation, actor/server grouping, authorization context, and pagination.
+    falsepositives:
+      claim_ids: [SAF-T1602-C004, SAF-T1602-C011, SAF-T1602-C012]
+      rationale: The first-party Inspector and normal cache or inventory workflows are legitimate lookalikes.

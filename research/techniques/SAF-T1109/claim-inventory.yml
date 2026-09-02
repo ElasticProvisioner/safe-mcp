@@ -1,0 +1,223 @@
+version: 1
+technique_id: SAF-T1109
+claims:
+  - id: SAF-T1109-C001
+    statement: MCP tools are model-controlled, while the specification recommends human confirmation and visibility for sensitive operations.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["User Interaction Model"]
+    corroboration: The same specification's security considerations recommend confirmation, input visibility, result validation, timeouts, and usage logging.
+    limitations: [This does not itself establish a vulnerability.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C002
+    statement: MCP tool servers must validate inputs, enforce access controls, rate-limit invocations, and sanitize outputs; clients should add confirmation, validation, timeout, and audit controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations"]
+    corroboration: Streamable HTTP separately requires Origin validation and recommends local binding and authentication.
+    limitations: [These are preventive requirements and recommendations, not proof that every implementation follows them.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C003
+    statement: Streamable HTTP servers must validate Origin and should bind locally and authenticate connections to reduce DNS-rebinding and unauthorized-access risk.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators: ["Security & Endpoint"]
+    corroboration: MCP Inspector 0.14.1 implemented session authentication, local binding, and Origin checks.
+    limitations: [The transport recommendations do not cover every non-HTTP local control channel.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C004
+    statement: Attacker-controlled web or remote-server input has been demonstrated reaching developer debugging or prototyping control surfaces and causing attacker-selected local process execution.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: ["Attack Flow", "How the Attack Works"]
+      - source_id: SRC-microsoft-autojack-2026
+        support: direct
+        exact_locators: ["The AutoJack attack chain", "Three design flaws"]
+    corroboration: Two independent research teams demonstrated materially similar browser-to-local-control-plane execution chains in different development tools.
+    limitations: [The reviewed demonstrations do not establish production compromise or a common implementation root cause.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C005
+    statement: CVE-2025-49596 affected MCP Inspector before 0.14.1 and allowed unauthenticated requests to its proxy to launch local MCP commands over stdio.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: direct
+        exact_locators: ["Affected versions", "Patched versions", "Impact", "CVE ID"]
+      - source_id: SRC-inspector-fix-0141
+        support: direct
+        exact_locators: ["README.md diff", "server/src/index.ts diff"]
+    corroboration: Oligo independently documents and demonstrates the chain.
+    limitations: [The advisory establishes potential RCE, not production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C006
+    statement: Oligo demonstrated a malicious web page reaching an exposed MCP Inspector proxy and causing arbitrary local command execution.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: ["Attack Flow", "How the Attack Works"]
+    corroboration: The official advisory confirms the unauthenticated stdio command-launch impact.
+    limitations: [Controlled research demonstration; no reviewed production incident report.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C007
+    statement: CVE-2025-58444 affected MCP Inspector before 0.16.6; an untrusted MCP server could supply a malicious redirect URI that enabled direct proxy interaction and local command execution.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-inspector-g9hg
+        support: direct
+        exact_locators: ["Affected versions", "Patched versions", "Impact", "CVE ID"]
+      - source_id: SRC-inspector-fix-0166
+        support: direct
+        exact_locators: ["Redirect validation diff", "Validation tests"]
+    corroboration: The patch rejects unsafe redirect schemes and includes regression cases.
+    limitations: [The reviewed sources do not report production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C008
+    statement: Microsoft demonstrated AutoJack against an AutoGen Studio development branch by chaining untrusted rendered web content, a local MCP WebSocket, and caller-controlled server parameters into local process execution.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-microsoft-autojack-2026
+        support: direct
+        exact_locators: ["The AutoJack attack chain", "Three design flaws", "Disclosure and remediation"]
+    corroboration: The MCP Inspector demonstration independently establishes the broader local-control-plane execution pattern.
+    limitations: [Microsoft states the affected branch was fixed before PyPI release and current packaged builds were not affected.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C009
+    statement: Detection can correlate an unauthenticated or bypassed local control request with an unexpected child process from the debugging or prototyping parent in the same session and a short time window.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-autojack-2026
+        support: direct
+        exact_locators: ["Hunting and detection"]
+      - source_id: SRC-mitre-t1203
+        support: corroborating
+        exact_locators: ["Detection"]
+    corroboration: Microsoft recommends hunting unexpected AutoGen Studio child processes and local WebSocket server-parameter activity; ATT&CK recommends correlating vulnerable-application execution with child-process and network effects.
+    limitations: [Requires control-plane and endpoint telemetry joined by device and session; encrypted or missing events reduce coverage.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The deterministic sequence and five-minute window are a bounded analytic derived from the documented observables.}
+    status: validated
+  - id: SAF-T1109-C010
+    statement: Authentication, Origin validation, loopback binding, executable allowlists, isolation, and least privilege constrain the defining control-plane-to-process-launch mechanism.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators: ["Security & Endpoint"]
+      - source_id: SRC-inspector-fix-0141
+        support: direct
+        exact_locators: ["README.md diff", "server/src/index.ts diff"]
+      - source_id: SRC-microsoft-autojack-2026
+        support: direct
+        exact_locators: ["Mitigation and hardening"]
+    corroboration: The Inspector patch and Microsoft guidance independently apply these controls to demonstrated chains.
+    limitations: [Controls must be implemented consistently across every reachable local control surface.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1109-C011
+    statement: Prompt injection or tool-description poisoning is a neighboring behavior when it changes model choice without exploiting a developer debugging control surface.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-agt
+        support: direct
+        exact_locators: ["Threat model", "Why a control plane"]
+    corroboration: MCP tool annotations are explicitly untrusted absent a trusted server, but that trust issue is distinct from control-surface implementation flaws.
+    limitations: [A single campaign may combine both behaviors and require multiple classifications.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a scope boundary derived from distinct documented mechanisms.}
+    status: validated
+  - id: SAF-T1109-C012
+    statement: One-click local MCP server installation is a neighboring behavior because execution occurs at an installation and consent boundary rather than by exploiting an already-running debugging surface.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: ["Abstract", "Specification", "Security implications"]
+    corroboration: SEP-1024 separately specifies consent and transparency for local-server installation.
+    limitations: [Post-install exploitation of a debugging surface can still fall within this technique.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The distinction follows the security boundary at which execution is authorized or triggered.}
+    status: validated
+  - id: SAF-T1109-C013
+    statement: ATT&CK T1203 is a direct behavioral mapping when exploitation of the developer client or control surface produces local execution; T1190 is only analogous when the same mechanism targets an internet-facing service.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1203
+        support: direct
+        exact_locators: ["Description"]
+      - source_id: SRC-mitre-attack-t1190-v2.8
+        support: corroborating
+        exact_locators: ["Description"]
+    corroboration: The reviewed examples execute through local developer clients, while T1190 defines a public-facing application boundary.
+    limitations: [ATT&CK mappings describe analogous enterprise behaviors and do not define this SAF technique.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Framework reconciliation maps the bounded mechanism to the closest ATT&CK behavior.}
+    status: validated
+  - id: SAF-T1109-C014
+    statement: The immediate impact is local process execution under the permissions and isolation of the vulnerable debugging or agent host.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: direct
+        exact_locators: ["Impact"]
+      - source_id: SRC-microsoft-autojack-2026
+        support: direct
+        exact_locators: ["The AutoJack attack chain"]
+    corroboration: Both sources describe process execution on the developer host.
+    limitations: [Consequences beyond that host identity depend on privileges, sandboxing, credentials, and follow-on actions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

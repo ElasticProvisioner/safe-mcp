@@ -1,0 +1,91 @@
+version: 1
+technique_id: SAF-T1111
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1111/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1111/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1111/quality-review.yml
+  supports: Validation commands, results, review date, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1111/detection-rule.yml
+  supports: The repository detection analytic.
+- id: LOCAL-test-data
+  path: techniques/SAF-T1111/test-logs.json
+  supports: Deterministic synthetic test cases and expected outcomes.
+- id: LOCAL-test-script
+  path: techniques/SAF-T1111/test_detection_rule.py
+  supports: Deterministic detection implementation and test harness.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1111/validation/detection.txt
+  supports: Frozen detection test output.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1111/validation/strict-validator.txt
+  supports: Frozen isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1111-X001
+  candidate: Treat CVE-2025-54795 as a direct instance of intentional AI agent CLI
+    weaponization.
+  origin: Current NVD and maintainer advisory sweep.
+  attempted_searches:
+  - Exact CVE and GHSA review
+  - affected and fixed version check
+  - CISA exploitation-field and KEV check
+  - contract-boundary comparison.
+  consulted_source_ids:
+  - SRC-ghsa-claude-command-bypass
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  reason: The flaw enables hostile content to bypass a legitimate user's confirmation
+    prompt; it does not require an adversary intentionally operating the CLI as the
+    attack platform.
+  prohibited_publishable_text:
+  - CVE-2025-54795 is direct proof of intentional CLI weaponization
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1111-X002
+  candidate: Add CVE-2025-55284 to the selected publishable example table.
+  origin: Current NVD and maintainer advisory sweep.
+  attempted_searches:
+  - Exact CVE and GHSA review
+  - affected and fixed version check
+  - exploitation-state check
+  - impact ranking against selected examples.
+  consulted_source_ids:
+  - SRC-ghsa-claude-exfil
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  reason: The advisory is valid but duplicates the hostile-input approval-bypass boundary
+    and is lower-impact than the two selected adjacent vulnerabilities.
+  prohibited_publishable_text:
+  - CVE-2025-55284 proves production AI-agent weaponization
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1111-X003
+  candidate: Generalize Anthropic's two campaign findings to every frontier agent
+    CLI.
+  origin: Anthropic report implication language.
+  attempted_searches:
+  - Direct vendor documentation review across Claude Code
+  - Codex CLI
+  - and Gemini CLI; search for additional directly observed provider incidents.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-anthropic-tir-2025-08
+  - SRC-openai-codex-cli
+  - SRC-google-gemini-sandbox
+  reason: Comparable product capabilities do not establish comparable observed misuse,
+    and Anthropic explicitly limits its visibility.
+  prohibited_publishable_text:
+  - all frontier agent CLIs are already weaponized in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1605
+    name: Capability Mapping
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics: [ATK-TA0007]
+    technique_path: techniques/SAF-T1605/README.md
+    research_packet: research/techniques/SAF-T1605
+    related_techniques: [SAF-T1104, SAF-T1001, SAF-T1601, SAF-T1602]
+    mitigations: [SAF-M-12, SAF-M-13, SAF-M-16, SAF-M-20, SAF-M-29, SAF-M-37]
+    detection:
+      rule: techniques/SAF-T1605/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1605/test_detection_rule.py
+        - techniques/SAF-T1605/test-logs.json
+        - research/techniques/SAF-T1605/validation/detection-tests.txt
+        - research/techniques/SAF-T1605/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1518
+        type: analogous

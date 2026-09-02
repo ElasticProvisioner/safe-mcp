@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1204
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room author (/root/cleanroom_saf_t1204)
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh agent inherited only the neutral seed; no prohibited target, shared registry, history, SAF site, catalog, prior bundle, or prior conversation content was accessed.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires a durable memory write, later retrieval, and influence, and separates transient injection, RAG corpus poisoning, configuration modification, and follow-on impact.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, implementation, controlled-study, first-party reporting, assumptions, and limits were directly reviewed and kept distinct.
+  claim_traceability:
+    status: passed
+    notes: Twenty validated claims have exact locators, limitations, readable hidden trace joins, and visible Evidence Summary entries.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit is traced or linked to a declared local artifact; five unverified leads are excluded and prohibited text is absent.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by direct controlled end-to-end evidence; Observed was not used because public production reporting does not conclusively establish successful persistence.
+  research_saturation:
+    status: passed
+    notes: Five passes and two consecutive whitelist-only no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Seven candidates were classified; four high-impact examples selected; no qualifying direct production breach or product vulnerability was found; remediation and conflict status were rechecked on 2026-09-01.
+  detection_quality:
+    status: passed
+    notes: The lifecycle analytic names telemetry, fields, correlation, false positives, limits, tuning, and passes ten representative cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address write governance, isolation, persistence and retrieval validation, logging, rollback, and response; canonical mitigation joins are reconciled.
+  framework_alignment:
+    status: passed
+    notes: Persistence tactic retained, ATLAS direct and ATT&CK analogous mappings distinguished, SAF-T1102 and SAF-T2106 neighbors reconciled, and the unmatched configuration boundary omitted from catalog joins.
+  publication_rights:
+    status: passed
+    notes: All source use is original paraphrase and factual citation; no quotations, source code, figures, tables, datasets, or protected expression are reproduced.
+  safe_publication:
+    status: passed
+    notes: The scenario and telemetry are inert; no research triggers, bypass strings, credentials, destructive commands, or operational payloads are included.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1204
+      result: environment_error
+      details: System Python lacked PyYAML; no validation finding was produced.
+    - command: python3 techniques/SAF-T1204/test_detection_rule.py
+      result: passed
+      details: PASS 10 cases (4 positive, 6 negative)
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1204
+      result: passed
+      details: Strict isolated mock-repository validation; proof in validation/strict-validator.txt.
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1204/test_detection_rule.py
+    result: PASS 10 cases (4 positive, 6 negative)
+    waiver: null
+
+unresolved: []

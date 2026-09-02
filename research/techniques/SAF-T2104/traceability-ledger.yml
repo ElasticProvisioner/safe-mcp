@@ -1,0 +1,154 @@
+version: 1
+technique_id: SAF-T2104
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2104/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2104/technique-contract.yml
+  supports: Internal scope, name, tactic, evidence requirements, and completion metadata.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T2104/source-coverage.yml
+  supports: Research passes, candidate classifications, saturation, evidence assessment,
+    and explicit gaps.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2104/quality-review.yml
+  supports: Quality gates, commands, test result, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2104/detection-rule.yml
+  supports: The explicitly labeled transaction-binding analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T2104/test_detection_rule.py
+  supports: Deterministic detector implementation used only for inert fixtures.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T2104/fixtures.json
+  supports: Positive, negative, boundary, malformed, expected-false-positive, and
+    normalization cases.
+- id: LOCAL-detection-log
+  path: research/techniques/SAF-T2104/validation/detection-test.txt
+  supports: Captured successful detector test output.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T2104/integration/integration-notes.yml
+  supports: Synthetic joins and mechanical integration constraints.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2104/validation/canonical-validation.txt
+  supports: Destination detector and strict-validator results after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2104-X001
+  candidate: A production agent completed a fraudulent payment or transfer.
+  origin: Production breach and incident research pass.
+  attempted_searches:
+  - Authority-restricted searches across AISI, NCSC, CISA, Microsoft Security, FBI/IC3,
+    and academic sources for agent-mediated fraudulent transactions.
+  consulted_source_ids:
+  - SRC-aisi-incident-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-t1206-ms-config-risk
+  reason: Reviewed sources showed controlled behavior, influence attempts, or exposed
+    capabilities, but no qualifying production transaction.
+  prohibited_publishable_text:
+  - confirmed production agent bank theft
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X002
+  candidate: The NCSC bank-assistant scenario was a real incident.
+  origin: NCSC authority pass.
+  attempted_searches:
+  - Reviewed the full NCSC article and its surrounding wording.
+  consulted_source_ids:
+  - SRC-ncsc-llm-caution-2023
+  reason: The author explicitly presented the transfer as a hypothetical scenario.
+  prohibited_publishable_text:
+  - NCSC observed an attacker drain a bank account
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X003
+  candidate: AISI's unsanctioned-agent incident demonstrated a fraudulent transaction.
+  origin: Government incident research pass.
+  attempted_searches:
+  - Reviewed the complete AISI incident report, effects, and stated harm.
+  consulted_source_ids:
+  - SRC-aisi-incident-2026
+  reason: The actions occurred in controlled cyber testing, caused no real-world harm,
+    and were not financial transactions.
+  prohibited_publishable_text:
+  - AISI documented an agent stealing funds
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X004
+  candidate: CVE-2026-25592 or CVE-2026-26030 was exploited to commit a fraudulent
+    transaction in the wild.
+  origin: Vendor advisory and exploitation-status pass.
+  attempted_searches:
+  - Reviewed the Microsoft disclosure, fixed-version statements, and authority-restricted
+    exploitation-status queries.
+  consulted_source_ids:
+  - SRC-microsoft-semantic-kernel-cves-2026
+  reason: The vendor demonstrated enabling execution paths but did not report a transaction
+    or in-the-wild exploitation.
+  prohibited_publishable_text:
+  - Semantic Kernel CVEs caused real-world payment fraud
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X005
+  candidate: Observed recommendation poisoning completed an unauthorized commercial
+    transaction.
+  origin: Production and contrary-evidence saturation pass.
+  attempted_searches:
+  - Reviewed Microsoft's study methods, observed attempts, examples, and limitations.
+  consulted_source_ids:
+  - SRC-ms-recommendation-poisoning-2026
+  reason: The source reported attempts to influence recommendations, not accepted
+    purchases, contracts, or payments.
+  prohibited_publishable_text:
+  - recommendation poisoning executed a fraudulent contract
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X006
+  candidate: Exposed unauthenticated MCP servers were used for fraudulent transactions.
+  origin: Vulnerability and saturation research passes.
+  attempted_searches:
+  - Reviewed Microsoft's observed MCP exposure findings and affected capability descriptions.
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  reason: The source established sensitive operational access but did not identify
+    financial tools or transaction abuse.
+  prohibited_publishable_text:
+  - exposed MCP servers processed fraudulent payments
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X007
+  candidate: Agent Security Bench was a strongest representative transaction example.
+  origin: Academic demonstration pass.
+  attempted_searches:
+  - Reviewed the benchmark scope, finance-agent scenario, attack tools, and stock-manipulation
+    task.
+  consulted_source_ids:
+  - SRC-asb-2410.02644
+  reason: Its specialized synthetic stock-manipulation tool is less representative
+    of an ordinary transaction API than the selected AgentDojo and ART demonstrations.
+  prohibited_publishable_text:
+  - Agent Security Bench proves production stock fraud
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2104-X008
+  candidate: CISA KEV independently confirmed exploitation status for the reviewed
+    2026 agent-framework CVEs.
+  origin: Exploitation-status research pass.
+  attempted_searches:
+  - Direct CISA KEV JSON retrieval and exact site-restricted CVE queries; direct feed
+    access returned an HTTP denial and exact catalog queries produced no reviewed
+    record.
+  consulted_source_ids: []
+  reason: The authoritative feed could not be directly reviewed in this environment,
+    so no KEV conclusion is publishable.
+  prohibited_publishable_text:
+  - CISA KEV lists the Semantic Kernel flaws
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

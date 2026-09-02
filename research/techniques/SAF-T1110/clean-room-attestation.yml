@@ -1,0 +1,124 @@
+version: 1
+technique_id: SAF-T1110
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1110
+  neutral_name: Multimodal Prompt Injection via Images/Audio
+allowed_inputs:
+- Seed ID, neutral name, and ATK-TA0002 Execution tactic.
+- Generic skill and methodology instructions, including clean-room and trace formats.
+- techniques/TEMPLATE.md, blank research schemas, generic research README, and current
+  validator.
+- Independently reviewed direct external authorities found through domain-restricted
+  discovery.
+prohibited_inputs:
+- techniques/SAF-T1110/README.md
+- research/techniques/SAF-T1110/
+- techniques/SAF-T1110/detection-rule.yml and existing target tests.
+- Technique catalog descriptions and shared source, framework, or alignment registries
+  before freeze.
+- SAF or SAFE sites, repositories, and prior bundles.
+- Git history, diffs, blame, pull request records, or other technique prose.
+- Methodology examples naming targets or any previous conversation content.
+independent_research:
+  searches:
+  - Protocol and authority pass using exact primary URLs.
+  - Current production-breach and vulnerability pass using NVD and CISA domain restrictions.
+  - Separate demonstration, detection/defense, challenge, and neighbor-boundary passes.
+  - Two final no-change saturation passes using exact titles and authoritative domains.
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-owasp-llm01-2025
+  - SRC-nist-ai-100-2e2025
+  - SRC-openai-gpt4v-system-card
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-attack-t1204-003
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-bailey-image-hijacks-2024
+  - SRC-figstep-2025
+  - SRC-liu-piggybacking-2026
+  - SRC-chen-audiohijack-2026
+  - SRC-promptshield-home-2026
+  - SRC-nagaraja-image-pi-2026
+  - SRC-cao-vpi-bench-2025
+  - SRC-chameleon-2025
+  - SRC-yeo-multimodal-pi-2025
+  - SRC-webagentguard-2026
+  - SRC-nvd-cve-2024-45989
+  - SRC-nvd-cve-2025-58357
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_mock_validation:
+  mock_path: /private/tmp/saf-all-cleanroom/SAF-T1110/mock
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1110
+  result: PASS SAF-T1110
+  detection_command: python3 research/techniques/SAF-T1110/test_detection_rule.py
+  detection_result: SUMMARY passed=9 failed=0 total=9
+integration_constraints:
+- Freeze only the canonical bundle under /private/tmp/saf-all-cleanroom/SAF-T1110/bundle.
+- Keep source caches and the synthetic validation mock outside the bundle.
+- Do not compare against or merge with shared registries until a later authorized
+  integration phase.
+- Replace synthetic neighbor, mitigation, and repository-history joins only during
+  mechanical integration review.
+attestation: The technique was independently researched and authored from the allowed
+  seed, generic instructions, blank scaffolds, current validator, and direct external
+  authorities. No prohibited artifact access or inherited context was detected.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-owasp-llm01-2025: SRC-owasp-llm01-2025
+    SRC-nist-ai-100-2e2025: SRC-nist-ai-100-2e2025
+  new_shared_source_records:
+  - SRC-openai-gpt4v-system-card
+  - SRC-microsoft-prompt-shields
+  - SRC-openai-prompt-injections-2025
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-attack-t1204-003
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-bailey-image-hijacks-2024
+  - SRC-figstep-2025
+  - SRC-liu-piggybacking-2026
+  - SRC-chen-audiohijack-2026
+  - SRC-promptshield-home-2026
+  - SRC-nagaraja-image-pi-2026
+  - SRC-cao-vpi-bench-2025
+  - SRC-chameleon-2025
+  - SRC-yeo-multimodal-pi-2025
+  - SRC-webagentguard-2026
+  - SRC-nvd-cve-2024-45989
+  - SRC-nvd-cve-2025-58357
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-36
+  - SAF-M-49
+  - SAF-M-53
+  - SAF-M-54
+  - SAF-M-69
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: omitted_no_exact_catalog_neighbor
+    SAF-T9003: SAF-T2107
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-21
+    SAF-M-9002: SAF-M-74
+    SAF-M-9003: SAF-M-36
+  status: integrated_and_repository_validated

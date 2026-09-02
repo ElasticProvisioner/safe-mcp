@@ -1,0 +1,51 @@
+version: 1
+technique_id: SAF-T2102
+bundle_kind: clean_room_canonical_handoff
+frozen_on: "2026-09-02"
+destination_writes_performed: false
+pre_freeze_prohibited_artifact_access: false
+required_integration_sequence:
+  - Verify FREEZE.sha256 and its reported digest before inspecting target or shared registry content.
+  - Copy technique, packet, tests, and validation artifacts without changing frozen content.
+  - Merge source-manifest-fragment.yml, framework-fragment.yml, and alignment-fragment.yml into canonical shared registries.
+  - Replace the synthetic repository-history marker with the actual integration commit and record that mechanical change.
+  - Reconcile placeholder neighbors SAF-T2998 and SAF-T2999 against the real framework; record every mapping decision.
+  - Run the canonical strict validator and detector in the destination repository.
+synthetic_isolated_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T2102/mockrepo
+  neighbor_scaffolds:
+    - techniques/SAF-T2998/README.md
+    - techniques/SAF-T2999/README.md
+  shared_registry_inputs:
+    - source-manifest-fragment.yml
+    - framework-fragment.yml
+    - alignment-fragment.yml
+  result: passed
+known_gaps:
+  - No qualifying adversarial production Service Disruption incident was validated.
+  - Exploitation status for CVE-2025-53365 was not affirmatively reported by the reviewed authorities.
+  - Thresholds are synthetic defaults and require deployment-specific tuning.
+  - Distributed low-rate actors and missing task-owner or health telemetry can evade the detector.
+  - Placeholder neighbor IDs require post-freeze registry reconciliation.
+attestation_status: passed
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-spec-2026: SRC-mcp-overview-2026
+    SRC-mcp-tools-2026: SRC-mcp-tools-2026-07-28
+    SRC-mcp-release-2026-07: SRC-mcp-release-2026-07-28
+    SRC-mcp-tasks-2025: SRC-mcp-tasks-2025-11
+    SRC-nist-sp800-228-upd1: SRC-nist-sp800-228-upd1
+    SRC-nist-sp800-53r5-1: SRC-nist-sp800-53r5.1
+    SRC-ghsa-hvrp-rf83-w775: SRC-ghsa-python-hvrp
+    SRC-nvd-cve-2026-52870: SRC-nvd-cve-2026-52870
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T1106, SAF-T2101]
+  canonical_mitigations: [SAF-M-9, SAF-M-11, SAF-M-12, SAF-M-29, SAF-M-70, SAF-M-73, SAF-M-74]
+  attack_mapping: {id: T1499, type: direct}
+  validation_proof:
+    - research/techniques/SAF-T2102/validation/detection-tests.txt
+    - research/techniques/SAF-T2102/validation/strict-validator.txt
+    - research/techniques/SAF-T2102/validation/canonical-validation.txt
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve reviewed-source metadata and frozen evidence references.

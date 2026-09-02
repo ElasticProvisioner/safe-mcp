@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T1009
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1009/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1009/technique-contract.yml
+  supports: Internal scope, seed name, tactic, completion criteria, and reconciled
+    repository framework joins.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1009/claim-inventory.yml
+  supports: Validated claim inventory, evidence classifications, source relationships,
+    exact locators, and limitations.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1009/source-coverage.yml
+  supports: Five research passes, two no-change saturation passes, candidate classifications,
+    and source counts.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1009/quality-review.yml
+  supports: Validation commands, gate results, review date, and detection-test result.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1009/clean-room-attestation.yml
+  supports: Clean-room input boundary, searches, opened sources, validation proof,
+    and freeze order.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1009/detection-rule.yml
+  supports: The experimental issuer-binding detection analytic.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1009/test-logs.json
+  supports: Positive, negative, boundary, malformed, and expected-legitimate detection
+    fixtures.
+- id: LOCAL-test-script
+  path: techniques/SAF-T1009/test_detection_rule.py
+  supports: Deterministic executable test harness for the detection analytic.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1009-X001
+  candidate: A qualifying MCP production authorization-server mix-up incident exists.
+  origin: Required production-incident pass.
+  attempted_searches:
+  - NVD keyword searches for OAuth mix-up, authorization server mix-up, issuer validation,
+    and MCP issuer.
+  - CISA KEV 2026.09.01 exact-ID and keyword review.
+  - CISA, Google Security Blog, OpenID Foundation, and arXiv first-party searches.
+  consulted_source_ids:
+  - SRC-nvd-oauth-mixup-query
+  - SRC-nvd-authserver-mixup-query
+  - SRC-cisa-kev-2026-09-01
+  - SRC-arxiv-mcp-mixup-query
+  - SRC-arxiv-mcp-oauth-issuer-query
+  reason: No directly reviewed source documented the defining behavior in an MCP production
+    environment.
+  prohibited_publishable_text:
+  - SAF-T1009 has been observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1009-X002
+  candidate: A published CVE directly documents authorization-response issuer mix-up
+    in an MCP client.
+  origin: NVD issuer and multi-provider query results.
+  attempted_searches:
+  - NVD exact and synonymous keyword searches plus focused review of CVE-2026-11718,
+    CVE-2026-73419, and CVE-2025-27370.
+  - Exact originating advisory and patch review after non-GitHub discovery.
+  consulted_source_ids:
+  - SRC-nvd-issuer-validation-query
+  - SRC-nvd-cve-2026-11718
+  - SRC-nvd-cve-2026-73419
+  - SRC-nvd-cve-2025-27370
+  reason: Each discovered CVE crosses a different boundary—token validation, provider-bound
+    callback state, or client-assertion audience.
+  prohibited_publishable_text:
+  - CVE-2026-11718 is a direct authorization server mix-up
+  - CVE-2026-73419 proves MCP mix-up exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1009-X003
+  candidate: PKCE by itself prevents authorization-server mix-up.
+  origin: Common control conflation challenged during defense research.
+  attempted_searches:
+  - RFC 9700 mix-up prerequisites and countermeasures.
+  - MCP Authorization Code Protection and Authorization Response Validation.
+  consulted_source_ids:
+  - SRC-rfc9700
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  reason: The controlling sources require a separate issuer-binding defense for multi-AS
+    clients and do not establish PKCE alone as sufficient.
+  prohibited_publishable_text:
+  - PKCE alone prevents mix-up
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1009-X004
+  candidate: Any authorization response missing iss is necessarily malicious.
+  origin: Detection-design challenge.
+  attempted_searches:
+  - MCP 2026-07-28 authorization-response decision table.
+  - RFC 9207 local-policy behavior for absent iss.
+  consulted_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc9207
+  reason: Current MCP permits proceeding when support is false or absent and the response
+    omits iss.
+  prohibited_publishable_text:
+  - every missing iss is malicious
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1009-X005
+  candidate: Current MCP clients are vulnerable by default.
+  origin: Possible overstatement from the generic OAuth attack.
+  attempted_searches:
+  - Current MCP Authorization, Discovery, and Security Considerations pages.
+  - Direct MCP-specific academic and NVD searches.
+  consulted_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-discovery-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-arxiv-mcp-mixup-query
+  - SRC-nvd-oauth-mixup-query
+  reason: Current MCP specifies issuer-binding defenses, and no direct prevalence
+    study was found.
+  prohibited_publishable_text:
+  - MCP clients are vulnerable by default
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

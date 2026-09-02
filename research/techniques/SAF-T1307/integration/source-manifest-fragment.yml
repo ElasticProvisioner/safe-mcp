@@ -1,0 +1,460 @@
+version: 1
+sources:
+  - id: SRC-mcp-security-2026-07-28
+    title: Security Best Practices
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers (no individual byline shown)
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct HTTPS retrieval as complete Markdown and full local review
+    locators:
+      - Confused Deputy Problem
+      - Vulnerable Conditions
+      - Attack Description
+      - Required Protections
+      - Token Passthrough
+      - OAuth Authorization URL Validation
+      - stdio Transport Security in Proxy Scenarios
+    review_notes: >-
+      Verified the complete MCP confused-deputy threat model, required
+      conditions, attack steps, per-client consent and redirect controls, token
+      anti-pattern, URL handling, process-spawn escalation, logging, and
+      limitations. No individual author byline is present.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: >-
+        A transient complete copy and hash were retained outside the canonical
+        bundle; project redistribution was not required for factual paraphrase.
+      review_evidence:
+        access_method: Direct official Markdown response
+        notes: Complete 987-line Markdown source reviewed; hash is recorded in validation/source-corpus.sha256.
+
+  - id: SRC-mcp-auth-2026-07-28
+    title: Authorization
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers (no individual byline shown)
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct HTTPS retrieval as complete Markdown and full local review
+    locators:
+      - Roles
+      - Authorization Flow Steps
+      - Resource Parameter Implementation
+      - Access Token Usage - Token Handling
+      - Security Considerations
+    review_notes: >-
+      Verified MCP OAuth roles, authorization flow, mandatory resource
+      parameter behavior, intended-audience validation, prohibition on accepting
+      or transiting other tokens, and security requirements.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Transient complete copy retained outside the canonical handoff only.
+      review_evidence:
+        access_method: Direct official Markdown response
+        notes: Complete 426-line Markdown source reviewed; hash recorded separately.
+
+  - id: SRC-rfc8707
+    title: "RFC 8707: Resource Indicators for OAuth 2.0"
+    publisher: RFC Editor / Internet Engineering Task Force
+    authors:
+      - Brian Campbell
+      - John Bradley
+      - Hannes Tschofenig
+    version_or_date: "February 2020"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc8707.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct RFC Editor text retrieval and complete full-text review
+    locators:
+      - Section 2 - Resource Parameter
+      - Section 2.1 - Authorization Request
+      - Section 2.2 - Access Token Request
+      - Section 3 - Security Considerations
+      - Authors' Addresses
+    review_notes: >-
+      Verified resource identification, specific resource URIs, authorization
+      server audience restriction, tenant-specific resource guidance, risks of
+      multiple audiences, and author credits.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official complete text reviewed from RFC Editor; no copy is needed in the handoff bundle.
+      review_evidence:
+        access_method: Direct official RFC text
+        notes: Complete 547-line RFC reviewed; hash recorded separately.
+
+  - id: SRC-rfc9700
+    title: "RFC 9700: Best Current Practice for OAuth 2.0 Security"
+    publisher: RFC Editor / Internet Engineering Task Force
+    authors:
+      - Torsten Lodderstedt
+      - John Bradley
+      - Andrey Labunets
+      - Daniel Fett
+    version_or_date: "January 2025"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct RFC Editor text retrieval and complete full-text review
+    locators:
+      - Section 2.1 - Protecting Redirect-Based Flows
+      - Section 2.3 - Access Token Privilege Restriction
+      - Section 4.1 - Insufficient Redirection URI Validation
+      - Section 4.4 - Mix-Up Attacks
+      - Section 4.10 - Misuse of Stolen Access Tokens
+      - Section 4.14 - Refresh Token Protection
+      - Authors' Addresses
+    review_notes: >-
+      Verified exact redirect matching, dynamic multi-party attacker model,
+      least-privilege and audience restriction, replay controls, token
+      revocation guidance, limitations, and author credits.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official complete text reviewed from RFC Editor; no copy is needed in the handoff bundle.
+      review_evidence:
+        access_method: Direct official RFC text
+        notes: Complete 2569-line RFC reviewed; hash recorded separately.
+
+  - id: SRC-cwe-441-v4.20
+    title: "CWE-441: Unintended Proxy or Intermediary ('Confused Deputy')"
+    publisher: The MITRE Corporation / CWE Program
+    authors:
+      - CWE Content Team
+      - Arun Kanuparthi (demonstrative-example contributor)
+      - Hareesh Khattri (demonstrative-example contributor)
+      - Parbati K. Manna (demonstrative-example contributor)
+      - Intel Corporation (contributor organization)
+    version_or_date: "CWE 4.20; page updated 2026-04-30"
+    source_class: protocol_or_standard
+    official_url: https://cwe.mitre.org/data/definitions/441.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official HTML retrieval and complete logical-page review
+    locators:
+      - Description
+      - Extended Description
+      - Alternate Terms
+      - Common Consequences
+      - Potential Mitigations
+      - Detection Methods
+      - Vulnerability Mapping Notes
+      - Contributions and Content History
+    review_notes: >-
+      Verified definition, vulnerability prerequisites, consequences,
+      initiator-identity preservation control, data-flow detection, class-level
+      mapping caution, and named contribution credits.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public official page directly reviewed; bundle retains factual paraphrase only.
+      review_evidence:
+        access_method: Direct official CWE page and complete HTML snapshot
+        notes: Complete page reviewed; hash recorded separately.
+
+  - id: SRC-cve-2025-6514
+    title: "CVE-2025-6514: OS command injection in mcp-remote"
+    publisher: CVE Program; JFrog CNA; CISA ADP
+    authors:
+      - JFrog CNA
+      - CISA Vulnerability Enrichment Team
+    version_or_date: "Published 2025-07-09; reviewed record updated 2025-07-09"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-6514
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official CVE API record retrieval and complete JSON review
+    locators:
+      - /containers/cna/affected
+      - /containers/cna/descriptions
+      - /containers/cna/metrics
+      - /containers/cna/references
+      - /containers/adp/0/metrics/0/other/content/options
+    review_notes: >-
+      Verified affected versions 0.0.5 through 0.1.15, command-injection
+      description, CVSS 9.6, first-party JFrog references, and CISA exploitation
+      status none.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Complete official JSON retained only in the transient isolated corpus.
+      review_evidence:
+        access_method: Direct CVE API
+        notes: Entire JSON record reviewed; hash recorded separately.
+
+  - id: SRC-jfsa-2025-001290844
+    title: "JFSA-2025-001290844: OS command injection in mcp-remote when connecting to untrusted MCP servers"
+    publisher: JFrog Security Research
+    authors:
+      - Or Peles
+      - JFrog Security Research Team
+    version_or_date: "Published and updated 2025-07-09"
+    source_class: official_advisory
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct first-party researcher advisory review
+    locators:
+      - Discovered By
+      - Summary
+      - Affected versions
+      - Description
+      - Vulnerability Mitigations
+    review_notes: >-
+      Verified discoverer credit, affected range, authorization-endpoint command
+      injection description, and advisory limitations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party page reviewed and paraphrased; full HTML excluded from bundle.
+      review_evidence:
+        access_method: Direct JFrog Security Research page
+        notes: Complete advisory page reviewed; hash recorded separately.
+
+  - id: SRC-jfrog-cve-2025-6514
+    title: "Critical RCE Vulnerability in mcp-remote: CVE-2025-6514 Threatens LLM Clients"
+    publisher: JFrog
+    authors:
+      - Or Peles
+      - JFrog Security Research Team
+    version_or_date: "2025-07-09"
+    source_class: research
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct first-party researcher full-page review
+    locators:
+      - Byline
+      - Who is affected by CVE-2025-6514?
+      - How can CVE-2025-6514 be mitigated?
+      - CVE-2025-6514 Summary
+      - CVE-2025-6514 Technical Details
+      - Summary
+    review_notes: >-
+      Verified named researcher, controlled Windows reproduction, narrower
+      macOS/Linux result, attacker-controlled authorization metadata flow,
+      affected versions, and fix in 0.1.16. Harmful payload details were not
+      reproduced.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public research page reviewed; protected code and images were not copied into the bundle.
+      review_evidence:
+        access_method: Direct JFrog research article
+        notes: Complete article page reviewed; hash recorded separately.
+
+  - id: SRC-cve-2025-49596
+    title: "CVE-2025-49596: MCP Inspector proxy server lacks authentication"
+    publisher: CVE Program; GitHub CNA; CISA ADP
+    authors:
+      - GitHub CNA
+      - CISA Vulnerability Enrichment Team
+    version_or_date: "Published 2025-06-13; reviewed record updated 2025-07-09"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-49596
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official CVE API record retrieval and complete JSON review
+    locators:
+      - /containers/cna/title
+      - /containers/cna/descriptions
+      - /containers/cna/affected
+      - /containers/cna/references
+      - /containers/adp/0/metrics/0/other/content/options
+    review_notes: >-
+      Verified missing proxy authentication, unauthenticated stdio command
+      launch, affected versions below 0.14.1, exact maintainer advisory URL,
+      critical score, and CISA exploitation status none. This non-GitHub record
+      supplied the exact GitHub advisory URL opened later.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Complete official JSON retained only in the transient isolated corpus.
+      review_evidence:
+        access_method: Direct CVE API
+        notes: Entire JSON record reviewed; hash recorded separately.
+
+  - id: SRC-ghsa-7f8r-222p-6f5g
+    title: Inspector proxy server vulnerabilities
+    publisher: Model Context Protocol Inspector maintainers / GitHub Security Advisories
+    authors:
+      - petery-ant (publisher handle)
+      - Model Context Protocol Inspector maintainers
+      - Rémy Marot of Tenable (credited discoverer)
+    version_or_date: "2025-06-13"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after the non-GitHub CVE Program record
+      supplied the identifier and canonical URL; no GitHub discovery search used
+    locators:
+      - Published-by line
+      - Affected versions
+      - Patched versions
+      - Description
+      - Credit
+      - Severity
+    review_notes: >-
+      Verified affected versions below 0.14.1, patched version 0.14.1,
+      unauthenticated proxy-to-stdio launch, critical score 9.4, publisher
+      handle, and Rémy Marot credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public exact advisory directly reviewed; no repository search or code acquisition occurred.
+      review_evidence:
+        access_method: Exact GitHub Security Advisory URL from CVE record
+        notes: Complete rendered advisory reviewed after provenance check.
+
+  - id: SRC-cve-2025-32711
+    title: "CVE-2025-32711: M365 Copilot Information Disclosure Vulnerability"
+    publisher: CVE Program; Microsoft CNA; CISA ADP
+    authors:
+      - Microsoft Security Response Center
+      - CVE Program
+      - CISA Vulnerability Enrichment Team
+    version_or_date: "Published 2025-06-11; reviewed record updated 2026-02-26"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-32711
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official CVE API record retrieval and complete JSON review
+    locators:
+      - /containers/cna/title
+      - /containers/cna/descriptions
+      - /containers/cna/problemTypes
+      - /containers/cna/metrics
+      - /containers/cna/references
+      - /containers/adp/0/metrics/0/other/content/options
+    review_notes: >-
+      Verified M365 Copilot AI command injection, network information disclosure,
+      CWE-74 mapping, critical score 9.3, vendor-patch reference, hosted-service
+      status, and CISA exploitation status none. The referenced AIM page
+      redirected and was not used for technical or author claims.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Complete official JSON retained only in the transient isolated corpus.
+      review_evidence:
+        access_method: Direct CVE API
+        notes: Entire JSON record reviewed; hash recorded separately.
+
+  - id: SRC-cve-2025-53109
+    title: "CVE-2025-53109: MCP Servers path validation bypass"
+    publisher: CVE Program; GitHub CNA; CISA ADP
+    authors:
+      - GitHub CNA
+      - CISA Vulnerability Enrichment Team
+    version_or_date: "Published and updated 2025-07-02"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-53109
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official CVE API record retrieval and complete JSON review
+    locators:
+      - /containers/cna/title
+      - /containers/cna/problemTypes
+      - /containers/cna/descriptions
+      - /containers/cna/affected
+      - /containers/adp/0/metrics/0/other/content/options
+    review_notes: >-
+      Verified CWE-59 link-following mechanism, affected MCP filesystem
+      versions, fix ranges, and CISA exploitation status none; rejected as a
+      direct confused-deputy example after contract comparison.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Complete official JSON retained only in the transient isolated corpus.
+      review_evidence:
+        access_method: Direct CVE API
+        notes: Entire JSON record reviewed; hash recorded separately.
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: CISA Catalog of Known Exploited Vulnerabilities
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Known Exploited Vulnerabilities Catalog Team
+    version_or_date: "Catalog version 2026.09.01; released 2026-09-01T19:22:46.2162Z"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Direct full JSON feed acquisition followed by deterministic exact cveID
+      filtering over all 1687 records
+    locators:
+      - catalogVersion 2026.09.01
+      - dateReleased 2026-09-01T19:22:46.2162Z
+      - Exact cveID filter for CVE-2025-6514, CVE-2025-49596, CVE-2025-32711, and CVE-2025-53109 returned zero records
+    review_notes: >-
+      Verified that none of the four reviewed candidates appeared in the
+      complete current feed. Absence is treated only as a dated catalog result,
+      not proof of non-exploitation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Current machine-readable government feed was reviewed programmatically; full corpus excluded from bundle.
+      review_evidence:
+        access_method: Direct official CISA JSON feed and jq exact-ID filter
+        notes: Complete 1687-record snapshot acquired; hash recorded separately.
+
+  - id: SRC-attack-t1068-v1.6
+    title: "Exploitation for Privilege Escalation, Technique T1068"
+    publisher: The MITRE Corporation / MITRE ATT&CK
+    authors:
+      - MITRE ATT&CK Team
+      - David Tayouri
+      - Idan Revivo and Team Nautilus Aqua Security
+      - Joas Antonio dos Santos
+      - Yaniv Agman and Team Nautilus Aqua Security
+    version_or_date: "Version 1.6; last modified 2025-10-24"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1068/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: Direct official ATT&CK page review
+    locators:
+      - Technique title and description
+      - ID and Tactic metadata
+      - Contributors
+      - Version and Last Modified metadata
+    review_notes: >-
+      Verified that T1068 covers exploiting software vulnerabilities to elevate
+      privileges, its Privilege Escalation tactic, version metadata, and named
+      contributors. Mapped as analogous because the page does not model deputy
+      delegation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public official page directly reviewed; nominative factual citation only.
+      review_evidence:
+        access_method: Direct MITRE ATT&CK page
+        notes: Complete logical page reviewed; hash recorded separately.

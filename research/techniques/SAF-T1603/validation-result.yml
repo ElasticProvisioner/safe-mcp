@@ -1,0 +1,22 @@
+version: 1
+technique_id: SAF-T1603
+validated_on: "2026-09-02"
+environment: isolated_synthetic_framework_mock
+strict_validator:
+  command: uv run --with pyyaml python scripts/validate-technique-research.py SAF-T1603
+  result: passed
+  output: PASS SAF-T1603
+detection_test:
+  command: python3 tests/SAF-T1603/test_detection_rule.py
+  result: passed
+  output: "PASS: 8 synthetic cases; 2 alerts; 6 negative/boundary cases"
+mock_inputs:
+  - This bundle's files.
+  - The generic repository validator copied without modification.
+  - This bundle's source, framework, and alignment fragments promoted to synthetic shared-registry paths.
+  - Two inert related-technique existence stubs.
+excluded_inputs:
+  - Existing target technique or packet content.
+  - Existing shared source, framework, or alignment registries.
+  - Existing related-technique content.
+unresolved: []

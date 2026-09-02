@@ -1,0 +1,160 @@
+version: 1
+technique_id: SAF-T1104
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1104
+  inherited_context: false
+target:
+  id: SAF-T1104
+  neutral_name: Over-Privileged Tool Abuse
+allowed_inputs:
+- The supplied target ID, neutral name, and ATK-TA0002 / Execution tactic.
+- The author-saf-technique skill and its routed methodology, breach-and-vulnerability,
+  clean-room, and readable-trace references.
+- Generic techniques/TEMPLATE.md, research/README.md, blank research packet schemas,
+  and the canonical validator.
+- Directly opened standards-body, government, academic, first-party vendor, and original-researcher
+  sources independently discovered during this run.
+- Minimal synthetic neighbor and registry records created solely for isolated validator
+  joins.
+prohibited_inputs:
+- techniques/SAF-T1104/README.md, including current and historical copies.
+- techniques/SAF-T1104/detection-rule.yml, tests, and test logs from any prior run.
+- research/techniques/SAF-T1104/ and every prior technique-specific research artifact.
+- Git history, diffs, blame, stashes, commits, and branches that expose the target.
+- Any pull request, issue, review comment, or old PR content that exposes prior target
+  content.
+- Any previous conversation, summary, cached agent artifact, or handoff containing
+  prior target content.
+- Technique catalog prose, SAF or SAFE sites, shared source/framework registries before
+  freeze, and impact-classification examples.
+- General web search, search_query, GitHub search, GitHub-scoped discovery, and SAF-MCP
+  repositories or forks.
+independent_research:
+  searches:
+  - GET https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - GET https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+  - GET https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+  - GET https://www.rfc-editor.org/rfc/rfc8707.html
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=model%20context%20protocol&resultsPerPage=200
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=AI%20agent%20prompt%20injection&resultsPerPage=200
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=LLM%20tool&resultsPerPage=200
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-27966
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-29783
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-67510
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-53097
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-76072
+  - GET https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-32711
+  - GET https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+  - GET https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+  - GET https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - GET https://arxiv.org/html/2406.13352
+  - GET https://cheatsheetseries.owasp.org/cheatsheets/MCP_Security_Cheat_Sheet.html
+  - GET https://code.claude.com/docs/en/security
+  - GET https://csrc.nist.gov/pubs/sp/800/207/final
+  - GET https://attack.mitre.org/techniques/T1106/
+  - 'GET NVD saturation follow-up 1: overprivileged tool; excessive permissions AI
+    agent'
+  - 'GET NVD saturation follow-up 2: dangerous tool prompt injection; confused deputy
+    AI agent'
+  - 'GET NVD saturation follow-up 3: model context protocol broad scope; agent excessive
+    privilege tool'
+  - 'GET NVD saturation follow-up 4: AI agent least privilege prompt injection; MCP
+    dangerous tool privilege'
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc8707
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-agentdojo-2024
+  - SRC-nvd-cve-2026-27966
+  - SRC-ghsa-3645-fxcv-hqr4
+  - SRC-nvd-cve-2026-29783
+  - SRC-ghsa-g8r9-g2v8-jv6f
+  - SRC-nvd-cve-2025-67510
+  - SRC-ghsa-898v-775g-777c
+  - SRC-nvd-cve-2025-53097
+  - SRC-ghsa-wr2q-46pg-f228
+  - SRC-nvd-cve-2026-76072
+  - SRC-vulncheck-cve-2026-76072
+  - SRC-nvd-cve-2025-32711
+  - SRC-cisa-kev-2026-09-01
+  - SRC-owasp-mcp-security
+  - SRC-anthropic-claude-code-security
+  - SRC-nist-sp800-207
+  - SRC-mitre-attack-t1106
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1104
+  result: passed
+  deferred_real_repository_joins:
+  - Replace synthetic SAF-T1102 and SAF-T1001 neighbor identifiers with independently
+    resolved real catalog neighbors after freeze.
+  - Reconcile source IDs against the shared source manifest without introducing new
+    research leads.
+  - Replace the synthetic nonzero repository-history SHA with an honest integration
+    commit SHA.
+  - Merge the framework and alignment fragments, then rerun strict repository validation.
+integration_constraints:
+- Integration must mechanically replace target files; prior prose must not be used
+  to revise this bundle.
+- Shared registries may be opened only after this freeze and solely for identifier
+  collision and join reconciliation.
+- Review the new files and validator output directly; do not inspect a diff that exposes
+  old target content.
+- Resolve synthetic joins without changing claims, examples, prose, classifications,
+  or source selection.
+attestation: I attest that this bundle was independently derived from the allowed
+  seed, generic methodology/templates, and directly reviewed external authorities;
+  no prohibited prior target artifact was accessed before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: SAF-T1001
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-auth-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-security-best-practices-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-rfc8707: SRC-rfc8707
+    SRC-invariant-whatsapp-mcp-2025: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-agentdojo-2024: SRC-agentdojo-2024
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-nvd-cve-2026-27966
+  - SRC-ghsa-3645-fxcv-hqr4
+  - SRC-nvd-cve-2026-29783
+  - SRC-ghsa-g8r9-g2v8-jv6f
+  - SRC-nvd-cve-2025-67510
+  - SRC-ghsa-898v-775g-777c
+  - SRC-nvd-cve-2025-53097
+  - SRC-ghsa-wr2q-46pg-f228
+  - SRC-nvd-cve-2026-76072
+  - SRC-vulncheck-cve-2026-76072
+  - SRC-nvd-cve-2025-32711
+  - SRC-owasp-mcp-security
+  - SRC-anthropic-claude-code-security
+  - SRC-nist-sp800-207
+  - SRC-mitre-attack-t1106
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  status: integrated_and_repository_validated

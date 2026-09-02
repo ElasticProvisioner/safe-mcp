@@ -1,0 +1,179 @@
+version: 1
+technique_id: SAF-T2105
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - site:nist.gov generative AI information integrity disinformation provenance monitoring
+        - site:modelcontextprotocol.io specification resources context security
+        - site:attack.mitre.org T1565 Data Manipulation Impact
+      material_changes:
+        - Established the deliberate-deception boundary, protocol context path, risk controls, and analogous ATT&CK mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - site:openai.com covert influence operations AI generated comments false claims
+        - site:cloud.google.com threat intelligence generative AI information operations personas
+        - site:nvd.nist.gov retrieval augmented generation poisoning CVE
+        - site:cisa.gov generative AI disinformation vulnerability
+        - site:cve.org RAG poisoning generative AI
+      material_changes:
+        - Added first-party production incidents and recorded the absence of a qualifying direct CVE or advisory.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - site:usenix.org PoisonedRAG agent attacker chosen answers
+        - site:usenix.org Confundo practical RAG factual manipulation
+      material_changes:
+        - Added controlled agent and practical-RAG demonstrations with bounded outcomes.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - site:nist.gov AI 600-1 ground truth provenance fact checking monitor output
+        - site:usenix.org PoisonedRAG perplexity defense false positive
+        - site:usenix.org Confundo defense evaluation
+      material_changes:
+        - Defined a layered experimental analytic and documented telemetry and false-positive limits.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - site:cloud.google.com adversarial misuse generative AI failed jailbreak no novel capabilities
+        - site:openai.com influence operations no meaningful breakout
+        - site:usenix.org realistic RAG pipeline prior attack limitations
+      material_changes:
+        - Bounded impact, incorporated contrary evidence, and rejected universal effectiveness claims.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - site:openai.com PRC linked influence operations AI debates entirely false
+        - site:cloud.google.com Gemini information operations personas content manipulation
+        - site:usenix.org Confundo factual correctness opinion hallucination
+        - site:nist.gov NIST AI 600-1 information integrity
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov RAG poisoning CVE
+        - site:cisa.gov generative AI disinformation vulnerability
+        - site:attack.mitre.org techniques T1565
+        - site:modelcontextprotocol.io specification resources security
+      material_changes: []
+  rationale: >-
+    Direct normative, protocol, production, empirical, defensive, contrary, and analogous-framework source classes cover every retained claim; two final restricted passes found no new material proposition or better authority.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 6
+  selected_examples:
+    - SRC-openai-prc-io-2026
+    - SRC-google-ai-misuse
+    - SRC-usenix-poisonedrag-2025
+    - SRC-usenix-confundo-2026
+  no_qualifying_examples_rationale: >-
+    Four directly relevant high-value production or demonstration examples qualified; restricted NVD, CISA, and CVE searches found no direct disclosed software vulnerability defining the output behavior.
+  candidates:
+    - source_id: SRC-openai-prc-io-2026
+      identifier: PRC-linked influence operations targeting AI debates
+      relationship: direct_production_incident
+      exploitation_status: observed
+      impact: Generated comments and images supported false compromise allegations, but the operation did not meaningfully break out.
+      remediation: Accounts were detected and disrupted; durable prevention remains unresolved.
+      selected: true
+      rationale: Recent first-party production evidence with an explicitly false claim and bounded impact.
+    - source_id: SRC-google-ai-misuse
+      identifier: Adversarial misuse of generative AI
+      relationship: direct_production_incident
+      exploitation_status: observed
+      impact: Government-linked operators used production AI for personas, messaging, localization, and content manipulation.
+      remediation: Safety systems blocked some requests and Google used technical signals for disruption.
+      selected: true
+      rationale: Independent first-party production corroboration with useful defensive and contrary evidence.
+    - source_id: SRC-usenix-poisonedrag-2025
+      identifier: PoisonedRAG
+      relationship: direct_demonstration
+      exploitation_status: demonstrated
+      impact: A controlled ReAct agent returned attacker-chosen answers at measured non-universal success rates.
+      remediation: Tested filters had material false-positive tradeoffs; layered defenses remain necessary.
+      selected: true
+      rationale: Direct agent-focused end-to-end demonstration.
+    - source_id: SRC-usenix-confundo-2026
+      identifier: Confundo
+      relationship: direct_demonstration
+      exploitation_status: demonstrated
+      impact: Practical RAG pipelines produced attacker-directed factual, opinion, and hallucination outputs.
+      remediation: Six representative defenses were evaluated; no comprehensive defense was established.
+      selected: true
+      rationale: Current practical-pipeline evidence and explicit correction of earlier evaluation assumptions.
+    - source_id: SRC-openai-io-2024
+      identifier: Disrupting deceptive uses of AI by covert influence operations
+      relationship: direct_production_incident
+      exploitation_status: observed
+      impact: Five operations generated content and artificial engagement without meaningful authentic reach.
+      remediation: OpenAI disrupted the operations and described model and behavioral defenses.
+      selected: false
+      rationale: Cited as broad corroboration but not selected because the 2026 OpenAI case is more specific and current.
+    - source_id: SRC-openai-storm-2035-2025
+      identifier: Disrupting malicious uses of AI by STORM-2035
+      relationship: direct_production_incident
+      exploitation_status: observed
+      impact: Generated comments supported a covert operation with low observed reach.
+      remediation: OpenAI disrupted associated accounts.
+      selected: false
+      rationale: Rejected from publishable claims as redundant lower-impact evidence.
+
+sources_consulted:
+  - SRC-google-ai-misuse
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mitre-attack-t1565
+  - SRC-nist-ai-600-1
+  - SRC-openai-forecast-2023
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  - SRC-openai-storm-2035-2025
+  - SRC-usenix-confundo-2026
+  - SRC-usenix-poisonedrag-2025
+sources_cited:
+  - SRC-google-ai-misuse
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mitre-attack-t1565
+  - SRC-nist-ai-600-1
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  - SRC-usenix-confundo-2026
+  - SRC-usenix-poisonedrag-2025
+sources_rejected:
+  - source_id: SRC-openai-forecast-2023
+    reason: Forecasting and policy analysis predates the directly observed first-party cases and is unnecessary for retained claims.
+  - source_id: SRC-openai-storm-2035-2025
+    reason: Direct but redundant production evidence with lower specificity and impact than the selected 2026 case.
+sources_blocked: []
+
+conflicts:
+  - issue: Simplified retrieval-poisoning evaluations may overstate success in practical RAG pipelines.
+    resolution: Retain only bounded study-specific results and include Confundo's practical-pipeline correction.
+  - issue: Production operators used models, but reports found failed jailbreaks, safety refusals, and little authentic-audience reach.
+    resolution: Classify the technique as observed while explicitly limiting claims about novelty, reliability, and impact.
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T2105-C001
+    - SAF-T2105-C003
+    - SAF-T2105-C004
+    - SAF-T2105-C005
+    - SAF-T2105-C010
+  rationale: >-
+    First-party production reports establish deliberate deceptive output use, and independent controlled studies establish the retrieval-to-attacker-directed-output mechanism; limitations prevent any claim of universal success or high reach.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,551 @@
+version: 1
+technique_id: SAF-T1504
+claims:
+  - id: SAF-T1504-C001
+    statement: MCP tool results can return server-produced unstructured content, structuredContent, resource links, and embedded resources, and clients can pass tool execution errors to language models.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Tool Result
+          - Structured Content
+          - Error Handling
+    corroboration: The Meta Ads and n8n-MCP advisories show JSON-RPC response bodies as practical disclosure channels.
+    limitations:
+      - The specification defines transportable result forms; it does not state that compliant servers return tokens.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C002
+    statement: MCP tool servers must sanitize tool outputs; clients should validate tool results before passing them to an LLM and log tool usage for audit.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations
+    corroboration: The reviewed advisories show why output and error sanitization are security controls rather than formatting concerns.
+    limitations:
+      - The specification does not prescribe a universal secret-classifier schema or detection threshold.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C003
+    statement: A bearer token can be used by any party possessing it without demonstrating possession of separate cryptographic key material, so it must be protected from disclosure in storage and transport.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators:
+          - Section 1.2, Terminology
+          - Section 5, Security Considerations
+    corroboration: The Meta Ads advisory states that the disclosed token could be used directly outside the MCP interface.
+    limitations:
+      - Sender-constrained tokens or expired and revoked tokens may not be reusable by a recipient.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C004
+    statement: When an MCP or agentic response gives an unauthorized recipient a reusable bearer token contained in server-produced result data, the response has crossed the credential-confidentiality boundary defined by this technique.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Tool Result
+          - Structured Content
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators:
+          - Section 1.2, Terminology
+          - Section 5.3, Summary of Recommendations
+      - source_id: SRC-ghsa-meta-ads
+        support: corroborating
+        exact_locators:
+          - Summary
+          - Proof of Concept
+    corroboration: GHSA-9gw6-46qc-99vr demonstrates the complete boundary crossing with a placeholder token.
+    limitations:
+      - This is the SAF synthesis that defines the bounded behavior; the component sources do not define SAF-T1504.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion joins the MCP response model, bearer-token semantics, and an end-to-end MCP advisory.
+    status: validated
+
+  - id: SAF-T1504-C005
+    statement: CVE-2026-48039 affects Meta Ads MCP versions before 1.0.109 and is fixed in 1.0.109; unauthenticated HTTP requests could reach tool handlers that used the operator META_ACCESS_TOKEN and serialized a request URL containing the token into the JSON-RPC response.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-48039
+        support: direct
+        exact_locators:
+          - CNA description
+          - affected.versions
+          - CVSS v3.1 metrics
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Summary
+          - Affected Code
+          - Remediation
+    corroboration: The CVE record and repository advisory independently expose the same affected boundary and fixed version.
+    limitations:
+      - The advisory package range and an older range retained in its narrative are inconsistent; the current CVE record and package metadata support versions before 1.0.109.
+    conflicts:
+      - The advisory narrative mentions an older affected range while its package metadata and CVE record identify all versions before 1.0.109.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C006
+    statement: The CVE-2026-48039 advisory publicly reproduced an unauthenticated MCP tool call returning an inert placeholder access token in a successful JSON-RPC response body.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Proof of Concept, Step 1
+    corroboration: The CVE record describes the same response-body disclosure path but does not reproduce the full sample response.
+    limitations:
+      - The proof used a fake token in a controlled setup and is not evidence of production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C007
+    statement: The Meta Ads advisory rates the issue critical and states that a disclosed long-lived operator token could be used directly against the Meta Graph API outside the MCP interface.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Impact
+          - Severity
+    corroboration: The CVE record assigns CVSS 3.1 score 9.1 with high confidentiality and integrity impact.
+    limitations:
+      - Actual token scope, lifetime, account privileges, and revocation state determine realized impact.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C008
+    statement: CVE-2026-39974 affects n8n-MCP through 2.47.3 and is fixed in 2.47.4; an authenticated multi-tenant caller could select an arbitrary reachable URL and receive its response body reflected through JSON-RPC, including a cloud metadata response that may contain credentials.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-39974
+        support: direct
+        exact_locators:
+          - CNA description
+          - affected.versions
+      - source_id: SRC-ghsa-n8n-mcp
+        support: direct
+        exact_locators:
+          - Impact
+          - Affected versions
+          - Patched versions
+    corroboration: The CVE record and repository advisory agree on the reflected JSON-RPC channel and fixed version.
+    limitations:
+      - The reviewed text describes reachability of credential-bearing metadata but does not document production exploitation or show a stolen live token.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C009
+    statement: CVE-2026-39974 primarily affects multi-tenant HTTP deployments in which callers hold a valid AUTH_TOKEN; single-tenant stdio deployments and HTTP deployments without multi-tenant headers are not affected according to the advisory.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-n8n-mcp
+        support: direct
+        exact_locators:
+          - Impact
+          - Workarounds
+    corroboration: The CVE record repeats the same affected and unaffected deployment conditions.
+    limitations:
+      - Other deployment controls may further reduce reachability; the advisory does not evaluate every reverse-proxy topology.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C010
+    statement: As of 2026-09-01, the reviewed CVE and advisory records for the two selected examples do not state production exploitation, and neither CVE appears in the reviewed CISA Known Exploited Vulnerabilities catalog.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-48039
+        support: direct
+        exact_locators:
+          - CNA description and metrics reviewed 2026-09-01
+      - source_id: SRC-cve-2026-39974
+        support: direct
+        exact_locators:
+          - CNA description and metrics reviewed 2026-09-01
+      - source_id: SRC-cisa-kev-token-response-2026-09-01
+        support: corroborating
+        exact_locators:
+          - Full CSV catalog searched for CVE-2026-48039 and CVE-2026-39974 on 2026-09-01
+    corroboration: The corresponding GitHub advisories describe vulnerability impact and controlled reproduction rather than incident response.
+    limitations:
+      - Absence from the reviewed records does not prove that exploitation has never occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a bounded absence conclusion over the identified authoritative corpus and review date.
+    status: validated
+
+  - id: SAF-T1504-C011
+    statement: The MCP authorization specification requires protected MCP servers to validate that access tokens are intended for them, forbids accepting tokens for other audiences, and identifies token theft as a security consideration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Access Token Usage, Token Handling
+          - Security Considerations, Token Audience Binding and Validation
+          - Security Considerations, Token Theft
+    corroboration: RFC 6750 independently requires protection of bearer tokens in transport and storage.
+    limitations:
+      - Audience validation does not remove a token already embedded in an application-generated response.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C012
+    statement: MCP security guidance states that passing client tokens through to downstream APIs is an anti-pattern and recommends separate downstream authorization and narrowly scoped access tokens.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Token Passthrough
+          - Scope Minimization
+    corroboration: The MCP authorization specification separately mandates audience validation.
+    limitations:
+      - Token passthrough is a neighboring behavior and does not by itself establish response-based disclosure.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C013
+    statement: MCP security guidance for SSRF recommends validating complete URLs, blocking private and link-local destinations, revalidating redirects, and constraining egress; these controls can prevent response-reflection paths that first fetch credential-bearing internal endpoints.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Server-Side Request Forgery, Attack Description
+          - Server-Side Request Forgery, Mitigation
+    corroboration: The n8n-MCP advisory recommends egress filtering and disabling multi-tenant headers until upgrade.
+    limitations:
+      - SSRF controls do not catch tokens introduced by ordinary application error serialization or unrelated response-generation paths.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control-to-technique connection applies when SSRF is the upstream acquisition mechanism for the returned token.
+    status: validated
+
+  - id: SAF-T1504-C014
+    statement: A response detector can flag a result when a response secret classifier reports at least one access, bearer, refresh, or session-token finding, the content was not redacted, and the recipient authorization decision is false.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators:
+          - Section 5, Security Considerations
+      - source_id: SRC-elastic-esa-2026-24
+        support: context
+        exact_locators:
+          - Indicators of Compromise
+    corroboration: The bundled deterministic tests exercise the stated selection, redaction filter, boundary, and expected legitimate lookalikes.
+    limitations:
+      - The analytic depends on an upstream classifier and authorization decision; opaque or novel token formats and missing telemetry can evade it.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: No reviewed authority prescribes this exact event schema; it is a conservative analytic derived from output-sanitization and audit requirements.
+    status: validated
+
+  - id: SAF-T1504-C015
+    statement: Token classifiers must not assume a universal token size or syntax, because RFC 6750 requires clients to handle token values whose size is unspecified and treats the token value as opaque to the client.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators:
+          - Section 2.1, Authorization Request Header Field
+    corroboration: The selected advisories involve different token and credential representations.
+    limitations:
+      - Format-aware detectors can still identify many issuer-specific token types accurately.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C016
+    statement: After a suspected response disclosure, responders should contain the response path, revoke or rotate the exposed credential, and investigate access to the vulnerable endpoint and subsequent token use.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Remediation
+      - source_id: SRC-ghsa-n8n-mcp
+        support: direct
+        exact_locators:
+          - Workarounds
+          - Remediation
+      - source_id: SRC-elastic-esa-2026-24
+        support: corroborating
+        exact_locators:
+          - Solutions and Mitigations
+          - Indicators of Compromise
+    corroboration: The sources consistently require upgrade or path restriction and credential rotation or access review.
+    limitations:
+      - Exact revocation, rotation, and forensic procedures depend on the token issuer and logging retained by the deployment.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence combines the cited product-specific actions into SAF-neutral incident handling.
+    status: validated
+
+  - id: SAF-T1504-C017
+    statement: MITRE ATT&CK T1528 covers adversaries stealing application access tokens and using them to access remote systems and information; SAF-T1504 is a response-channel specialization of that behavior.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators:
+          - Steal Application Access Token, Technique T1528
+          - Detection Strategy DET0515
+    corroboration: RFC 6750 defines why possession of a bearer token is security-relevant.
+    limitations:
+      - ATT&CK T1528 is not specific to MCP, JSON-RPC, API errors, or response bodies.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is behavioral; the SAF response channel is narrower than the ATT&CK technique.
+    status: validated
+
+  - id: SAF-T1504-C018
+    statement: Elastic ESA-2026-24 is a non-agentic historical analogy in which an internal Kibana API returned full configuration objects containing private keys and authentication tokens to users lacking the higher Fleet Settings privilege; fixed releases are 8.19.14, 9.2.8, and 9.3.3.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-elastic-esa-2026-24
+        support: direct
+        exact_locators:
+          - Incorrect Authorization in Kibana Fleet Leading to Information Disclosure
+          - Affected Versions
+          - Solutions and Mitigations
+    corroboration: The CVE-2026-33461 CNA record provides the same configuration-response mechanism and version families.
+    limitations:
+      - Kibana is not an MCP or agentic system, so this example cannot set the technique evidence status.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C019
+    statement: CVE-2026-27826 is adjacent rather than direct because its reviewed demonstration establishes unauthenticated SSRF and attacker-controlled data entering MCP tool results, while token theft from metadata is described only as potential impact and the response path delivering a token is not demonstrated.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-27826
+        support: direct
+        exact_locators:
+          - CNA description
+      - source_id: SRC-ghsa-mcp-atlassian-7r34
+        support: direct
+        exact_locators:
+          - Proof of Concept
+          - Impact
+    corroboration: Both sources separate demonstrated outbound SSRF from potential cloud credential theft.
+    limitations:
+      - A different complete reproduction might establish an in-scope response disclosure, but none was present in the reviewed record.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The relationship classification applies the clean-room technique contract to the advisory evidence.
+    status: validated
+
+  - id: SAF-T1504-C020
+    statement: CVE-2026-25650 establishes Salesforce OAuth bearer-token disclosure in MCP-Salesforce before 0.1.10, but the reviewed advisory does not identify the transport or response channel, so it cannot establish SAF-T1504's defining boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-25650
+        support: direct
+        exact_locators:
+          - CNA description
+          - affected.versions
+      - source_id: SRC-ghsa-mcp-salesforce
+        support: direct
+        exact_locators:
+          - Impact
+          - Patches
+    corroboration: Both records state disclosure and the fixed version but omit the delivery path.
+    limitations:
+      - The example may be direct if a response path is later established by directly reviewed authoritative evidence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exclusion is based on missing proof of the response boundary, not lack of token impact.
+    status: validated
+
+  - id: SAF-T1504-C021
+    statement: CVE-2026-33461 is excluded from direct evidence because its API-response token disclosure occurs in Kibana rather than an MCP or agentic system.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-33461
+        support: direct
+        exact_locators:
+          - CNA description
+          - affected.versions
+      - source_id: SRC-elastic-esa-2026-24
+        support: direct
+        exact_locators:
+          - Incorrect Authorization in Kibana Fleet Leading to Information Disclosure
+    corroboration: The first-party advisory and CNA record agree on the mechanism and environment.
+    limitations:
+      - The example remains useful as a historical analogy for authorization-aware response monitoring.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The relationship classification applies the contract's MCP or agentic boundary requirement.
+    status: validated
+
+  - id: SAF-T1504-C022
+    statement: Severity is highest when an unauthenticated or low-privilege remote caller receives a long-lived, broadly scoped token and can replay it outside the MCP service; redaction, recipient authorization, short lifetime, narrow scope, sender constraint, and rapid revocation reduce impact.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Impact
+          - Severity
+      - source_id: SRC-ghsa-n8n-mcp
+        support: corroborating
+        exact_locators:
+          - Impact
+          - Severity
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators:
+          - Section 5.2, Threat Mitigation
+          - Section 5.3, Summary of Recommendations
+    corroboration: The two selected advisories rate the respective issues critical and high under their stated prerequisites.
+    limitations:
+      - A single severity score cannot represent every token scope, lifetime, deployment boundary, and downstream control.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating conditions synthesize the selected cases and bearer-token mitigations without assigning a universal CVSS score.
+    status: validated
+
+  - id: SAF-T1504-C023
+    statement: For CVE-2026-48039, rejecting unauthenticated requests and removing tokens from serialized request URLs or transmitting them in an authorization header prevents the demonstrated response leak path.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-meta-ads
+        support: direct
+        exact_locators:
+          - Remediation
+    corroboration: Version 1.0.109 is identified as the patched release in both advisory metadata and the CVE record.
+    limitations:
+      - These changes address the disclosed path, not every possible response secret exposure.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1504-C024
+    statement: For CVE-2026-39974, upgrading to 2.47.4 fixes the disclosed path; until upgrade, the advisory recommends outbound network restrictions, disabling multi-tenant URL headers when unnecessary, and restricting AUTH_TOKEN distribution.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-n8n-mcp
+        support: direct
+        exact_locators:
+          - Workarounds
+          - Remediation
+    corroboration: The CVE record identifies 2.47.4 as fixed.
+    limitations:
+      - The workarounds reduce the disclosed path but do not establish that every other SSRF or response leak is blocked.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

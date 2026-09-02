@@ -1,0 +1,30 @@
+version: 1
+technique_id: SAF-T1006
+neutral_name: User-Social-Engineering Install
+frozen_on: "2026-09-01"
+status: frozen
+generation_mode: clean_room
+evidence_status: demonstrated
+severity: high
+selected_direct_examples:
+  - CVE-2025-64106 / GHSA-4575-fh42-7848
+  - CVE-2025-61929 / GHSA-hh6w-rmjc-26f6
+  - CVE-2026-23523 / GHSA-pjj5-f3wm-f9m8
+qualifying_production_mcp_breach_found: false
+canonical_validation:
+  strict_result: passed
+  unchanged_passes: 2
+  synthetic_join_digest: ebea73bff7a5e18a638a69ac3b274cb761f72af4e25c64b94d6f9bb1c191fa25
+detection_tests:
+  result: passed
+  cases: 7/7
+clean_room_boundary:
+  prior_target_artifact_access: false
+  general_search_used: false
+  github_discovery_used: false
+  saf_or_safe_page_access: false
+  shared_registry_access_before_freeze: false
+  impact_examples_access_before_freeze: false
+files_hashed: 17
+hash_manifest: integrity/SHA256SUMS
+source_acquisition_hash_manifest: integrity/source-acquisition-hashes.txt

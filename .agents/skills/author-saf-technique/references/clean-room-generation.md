@@ -48,6 +48,16 @@ unrestricted web query in clean-room mode. Reject
 and any result whose URL, title, or snippet contains the target SAF identifier
 before inspecting its substantive content.
 
+Do not use GitHub search or GitHub-scoped discovery in clean-room mode: domain
+filters and negative terms can still return the prohibited SAF repository and
+expose prior target prose in a result snippet. Open an exact GitHub advisory,
+release, or code URL only after its identifier and canonical URL were obtained
+from a directly reviewed, non-GitHub authoritative source such as NVD, CVE,
+CISA, a vendor bulletin, or a paper. Record that provenance in the source
+manifest. When a target is especially prone to search-result collisions,
+prefer direct authoritative URLs and first-party catalog endpoints over a
+general search operation.
+
 ## Fresh-agent procedure
 
 When the user requests a new agent, start an agent with no inherited
@@ -94,6 +104,52 @@ Create `research/techniques/SAF-TXXXX/clean-room-attestation.yml`. Record:
 The attestation may pass only when prior-artifact access is `false`, its details
 are empty, the independent searches and reviewed source set are nonempty, the
 draft was frozen before integration, and there are no unresolved concerns.
+
+Before calculating freeze hashes, copy the independently generated bundle into
+an isolated mock repository and run the canonical research validator there. The
+mock may use newly created minimal framework, source-manifest, and repository-
+history records solely to exercise validation; it must not copy or open the real
+target or shared registries. A clean-room bundle is not freeze-ready if it uses
+short claim IDs, noncanonical source records, alternate packet field names,
+missing required README headings, JSON-style trace comments, a noncanonical
+detection rule, or deferred quality-gate names. Record the mock validation
+command, result, and any deliberately deferred real-repository joins in the
+attestation. A draft-mode-only pass is insufficient when failures concern
+bundle-owned fields or files.
+
+### Canonical clean-room handoff layout
+
+Every fresh-agent run must freeze the same merge-ready layout at
+`/private/tmp/saf-all-cleanroom/SAF-TXXXX/bundle/`:
+
+```text
+bundle/
+  techniques/SAF-TXXXX/
+  research/techniques/SAF-TXXXX/
+  tests/SAF-TXXXX/                 # when tests are not technique-local
+  validation/                      # compact test and strict-validator proofs only
+  source-manifest-fragment.yml
+  framework-fragment.yml
+  alignment-fragment.yml
+  integration-notes.yml
+  FREEZE.sha256
+```
+
+`source-manifest-fragment.yml` must use the canonical shared-manifest schema;
+`framework-fragment.yml` must use the canonical framework-model schema; and
+`alignment-fragment.yml` must use the canonical alignment-ledger schema.
+`integration-notes.yml` must enumerate every synthetic tactic, neighbor,
+mitigation, source-ID, history-SHA, and path join that remains mechanical after
+freeze. Do not put a copied mock repository, source-acquisition corpus, cache,
+or validator dependency tree inside `bundle/`; retain those outside the bundle
+and record their hashes separately when needed.
+
+`FREEZE.sha256` must contain one sorted `sha256  relative/path` line for every
+bundle-owned file except `FREEZE.sha256` itself. Verify it from the bundle root
+before handoff. Report the SHA-256 of `FREEZE.sha256`, the number of listed
+files, the detection result, and the strict isolated-validator result. A
+different handoff layout is not canonical and must be normalized and re-frozen
+by a separate no-research agent before repository integration.
 
 After the freeze, integration may mechanically replace target files, reconcile
 stable source IDs, register framework joins, and run validators. Review the new

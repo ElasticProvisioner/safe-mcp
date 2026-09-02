@@ -1,0 +1,535 @@
+version: 1
+technique_id: SAF-T1901
+claims:
+  - id: SAF-T1901-C001
+    statement: >-
+      MCP tools may be invoked by language models and enable interaction with
+      external systems such as APIs; the current Tools specification describes
+      them as model-controlled.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tools, introductory paragraphs
+          - Tools, User Interaction Model
+          - Tools, Calling Tools
+    corroboration: The architecture specification separately describes tools as functions for an AI model to execute.
+    limitations:
+      - The specification does not state that a tool sends webhooks or is malicious.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C002
+    statement: >-
+      MCP security guidance calls for explicit user control, consent, and the
+      ability to deny tool operations, while stating that MCP cannot enforce
+      those principles at the protocol level.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety, Key Principles
+          - Security and Trust & Safety, Implementation Guidelines
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Tools, User Interaction Model warning
+    corroboration: The Tools-specific warning independently recommends a human able to deny tool invocations.
+    limitations:
+      - The guidance does not specify a webhook-specific approval interface.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C003
+    statement: >-
+      MITRE ATT&CK defines bidirectional web-service C2 as using an external web
+      service to deliver commands and return output over that service channel.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition, command delivery and returned output over a web-service channel
+    corroboration: ATT&CK T1102 identifies external web services as a general C2 relay category.
+    limitations:
+      - ATT&CK does not describe MCP or agent webhook behavior in this definition.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C004
+    statement: >-
+      It is a research-derived inference that an adversary who can make an
+      MCP-enabled or agentic tool repeatedly post to an attacker-controlled
+      webhook and consume response tasking can establish a web-service C2
+      channel across the tool runtime's outbound network boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tools, introductory paragraphs
+          - Tools, User Interaction Model
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition, command delivery and returned output over a web-service channel
+      - source_id: SRC-ghsa-cmrh-wvq6-wm9r
+        support: corroborating
+        exact_locators:
+          - Summary
+          - Impact
+      - source_id: SRC-ghsa-xqq2-4j46-vwp7
+        support: corroborating
+        exact_locators:
+          - Summary
+          - Webhook dispatch details
+    corroboration: Two agentic/MCP advisories independently establish attacker-influenced outbound webhook or HTTP behavior, but neither establishes C2.
+    limitations:
+      - No reviewed source documents the complete behavior in production or an end-to-end public demonstration.
+      - A single outbound callback or exfiltration-only post is insufficient to establish this claim.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The complete technique is synthesized from MCP tool authority, web-service C2 behavior, and disclosed outbound-request primitives.
+    status: validated
+
+  - id: SAF-T1901-C005
+    statement: >-
+      CVE-2026-44694 affected n8n-mcp versions from 2.18.7 before 2.50.2 and
+      allowed authenticated or prompt-influenced tool activity to drive HTTP
+      requests through webhook and API-client paths; version 2.50.2 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cmrh-wvq6-wm9r
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Summary
+          - Impact
+          - Workarounds
+      - source_id: SRC-nvd-token-scope-corpus
+        support: corroborating
+        exact_locators:
+          - CVE-2026-44694
+    corroboration: NVD independently records the CVE, affected product, advisory reference, and CISA SSVC exploitation value of none.
+    limitations:
+      - The advisory describes SSRF and credential exposure, not C2 or a production incident.
+      - The paths and prerequisites differ by deployment mode.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C006
+    statement: >-
+      CVE-2026-15643 affected AWS HealthLake MCP Server versions before 0.0.14
+      and could redirect pagination requests to an attacker-controlled endpoint,
+      with bounded potential exposure of temporary AWS credentials; 0.0.14
+      addressed the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-cve-2026-15643
+        support: direct
+        exact_locators:
+          - Description
+          - Resolution
+          - Workarounds
+          - Acknowledgement
+      - source_id: SRC-nvd-token-scope-corpus
+        support: corroborating
+        exact_locators:
+          - CVE-2026-15643
+    corroboration: NVD records the CVE and the CISA SSVC exploitation value of none, while AWS supplies the controlling affected and fixed versions.
+    limitations:
+      - The bulletin says credentials might be exposed; it does not document observed exploitation, webhook use, or C2.
+      - NVD marked the record Awaiting Analysis when reviewed.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C007
+    statement: >-
+      CVE-2026-27826 affected mcp-atlassian versions before 0.17.0 and allowed
+      an unauthenticated network-reachable caller in specified HTTP transport
+      conditions to force an outbound request to an attacker-controlled URL;
+      0.17.0 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-atlassian-7r34
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Summary
+          - Trigger conditions
+          - Impact
+          - Credits
+      - source_id: SRC-nvd-token-scope-corpus
+        support: corroborating
+        exact_locators:
+          - CVE-2026-27826
+    corroboration: NVD records a CISA SSVC exploitation value of poc and the same affected/fixed relationship.
+    limitations:
+      - The advisory demonstrates SSRF, not webhook C2 or production exploitation.
+      - All documented trigger conditions must hold.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C008
+    statement: >-
+      CVE-2026-33619 affected PinchTab 0.8.3's optional scheduler webhook path,
+      which could POST to an attacker-chosen callback URL; version 0.8.4 added
+      destination validation, IP pinning, and redirect controls.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-xqq2-4j46-vwp7
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Summary
+          - Webhook dispatch details
+          - Suggested Remediation
+          - Credits
+      - source_id: SRC-nvd-token-scope-corpus
+        support: corroborating
+        exact_locators:
+          - CVE-2026-33619
+    corroboration: NVD records the CVE and a CISA SSVC exploitation value of poc.
+    limitations:
+      - The scheduler was optional and off by default; protected deployments required a master token representing administrative control.
+      - The advisory demonstrates a blind outbound request, not returned tasking, C2, or production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C009
+    statement: >-
+      No qualifying direct production incident or public end-to-end MCP/agent
+      webhook-C2 demonstration was identified in the direct-authority corpus
+      reviewed on 2026-09-02; the four selected examples are enabling
+      vulnerabilities rather than C2 observations.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-token-scope-corpus
+        support: direct
+        exact_locators:
+          - Direct keyword queries recorded in the review notes and source-coverage audit
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators:
+          - Exact-match check for the four selected CVEs
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: context
+        exact_locators:
+          - Procedure Examples
+    corroboration: The reviewed vendor advisories each describe a vulnerability or bounded demonstration and do not claim production C2.
+    limitations:
+      - This is a bounded reviewed-corpus statement, not a claim that the behavior has never occurred.
+      - Absence from CISA KEV does not establish absence of exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C010
+    statement: >-
+      OpenTelemetry's HTTP client conventions represent outbound requests and
+      define method, server address, port, absolute URL, status, peer, retry,
+      and optional request/response size fields while requiring sensitive URL
+      data to be scrubbed where identifiable.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span
+          - HTTP client span attribute table
+          - url.full footnote
+          - Header capture notes
+    corroboration: The selected advisories describe outbound HTTP requests whose destinations and methods align with these fields.
+    limitations:
+      - MCP session, tool, approval, and response-consumption fields require application-specific instrumentation.
+      - Body-size fields are opt-in and do not reveal semantics.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C011
+    statement: >-
+      Correlating repeated model-driven POSTs to the same unapproved webhook
+      endpoint with consumed response data is a defensible suspicious-behavior
+      heuristic, but an alert does not prove C2.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Detection Strategy DET0035 and analytics AN0100-AN0102
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span attribute table
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tools, User Interaction Model
+    corroboration: ATT&CK recommends process/network correlation and automated response handling as bidirectional C2 indicators.
+    limitations:
+      - Thresholds are locally selected and require environmental tuning.
+      - Legitimate recurring webhook integrations can match.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic adapts ATT&CK's generic web-service C2 guidance to MCP tool and HTTP telemetry.
+    status: validated
+
+  - id: SAF-T1901-C012
+    statement: >-
+      Destination allowlists, public-address and redirect validation, controlled
+      egress, explicit approval for new destinations, least privilege, and
+      prompt patching constrain the outbound webhook primitive.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Validate Redirect Targets
+          - Use Egress Proxies
+          - DNS Resolution Considerations
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety, Key Principles
+      - source_id: SRC-ghsa-cmrh-wvq6-wm9r
+        support: corroborating
+        exact_locators:
+          - Workarounds
+          - Patched Versions
+      - source_id: SRC-ghsa-xqq2-4j46-vwp7
+        support: corroborating
+        exact_locators:
+          - Suggested Remediation
+    corroboration: The two webhook-related advisories recommend overlapping destination, redirect, egress, or patch controls.
+    limitations:
+      - The MCP best-practices URL controls are written for OAuth URL fetching and are generalized here to webhook delivery.
+      - Allowing a public service can still permit misuse of an approved endpoint or account.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Multiple source-specific controls are combined for the broader outbound webhook boundary.
+    status: validated
+
+  - id: SAF-T1901-C013
+    statement: >-
+      Legitimate automated callbacks, missing MCP-to-HTTP correlation, encrypted
+      payloads, slow or one-off signaling, approved-service abuse, and absent
+      response telemetry limit detection fidelity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition, expected service noise and TLS observations
+          - Detection Strategy DET0035
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span attribute table
+          - Header capture notes
+          - HTTP client span duration
+    corroboration: ATT&CK notes expected web-service traffic and TLS cover; OpenTelemetry marks several useful fields as optional and warns against broad header capture.
+    limitations:
+      - Source guidance does not quantify false-positive or false-negative rates for this specific analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The listed blind spots follow from the evidence fields and the chosen correlation conditions.
+    status: validated
+
+  - id: SAF-T1901-C014
+    statement: >-
+      Potential confidentiality and integrity impact depends on the data and
+      authority available to the tool runtime; availability impact is secondary
+      unless returned tasking drives disruptive actions.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-cmrh-wvq6-wm9r
+        support: direct
+        exact_locators:
+          - Impact
+      - source_id: SRC-aws-cve-2026-15643
+        support: corroborating
+        exact_locators:
+          - Description
+          - Workarounds
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: context
+        exact_locators:
+          - Definition
+    corroboration: Selected vulnerabilities bound credential/data impact, while ATT&CK bounds C2 as command and output relay.
+    limitations:
+      - The technique has no direct impact measurement in a production MCP incident.
+      - Ratings are conditional rather than empirical frequency estimates.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Impact ratings synthesize the authority boundary and consequences documented by enabling advisories.
+    status: validated
+
+  - id: SAF-T1901-C015
+    statement: >-
+      Investigation should correlate MCP session, tool, invocation, approval,
+      destination, HTTP method/status/size, and response-consumption records,
+      while redacting secrets from URLs and headers.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span attribute table
+          - url.full footnote
+          - Header capture notes
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tools, Calling Tools
+    corroboration: The detector fixtures exercise this exact correlation field set without storing payload contents.
+    limitations:
+      - MCP-specific fields are proposed application fields, not current OpenTelemetry HTTP requirements.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The investigation join combines standardized HTTP attributes with MCP invocation context required by the technique.
+    status: validated
+
+  - id: SAF-T1901-C016
+    statement: >-
+      A one-off outbound callback or exfiltration-only post is not this
+      technique's complete bidirectional behavior; one-way web-service tasking
+      or a separate return channel falls under ATT&CK T1102.003 rather than the
+      core T1102.002 mapping.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition
+      - source_id: SRC-mitre-t1102-003-v1-1
+        support: direct
+        exact_locators:
+          - Definition
+    corroboration: The two ATT&CK definitions explicitly distinguish returned output on the same channel from one-way instructions or a separate return channel.
+    limitations:
+      - A real campaign can combine both patterns over time.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1901-C017
+    statement: >-
+      The technique is distinct from data-only outbound transfer and from
+      unauthorized tool invocation because it requires repeated external
+      webhook communication that serves an operator-control function.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tools, User Interaction Model
+    corroboration: The contract preserves these mechanism and objective boundaries as synthetic neighbor proposals pending integration.
+    limitations:
+      - Canonical SAF neighbor IDs were intentionally unavailable before the clean-room freeze.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The neighbor boundary is derived from the C2 objective and MCP tool-invocation mechanism.
+    status: validated
+
+  - id: SAF-T1901-C018
+    statement: >-
+      MITRE ATT&CK T1102.002 is a direct behavioral mapping for the complete
+      technique because both require command delivery and returned output over
+      an external web-service channel, while SAF-T1901 adds the MCP/agent tool
+      and egress-boundary context.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators:
+          - Definition
+          - Tactic and identifier
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tools, introductory paragraphs
+    corroboration: The MCP Tools specification supplies the additional agentic component absent from ATT&CK.
+    limitations:
+      - The mapping describes behavioral correspondence; it does not raise the SAF evidence status.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Framework mapping requires comparing the two scoped definitions.
+    status: validated

@@ -1,0 +1,82 @@
+version: 1
+technique_id: SAF-T1910
+name: Covert Channel Exfiltration
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0010
+adversary_objective: Disclose data available to an MCP-enabled or agentic host by
+  embedding it in an apparently legitimate tool argument, application message, URL,
+  or downstream service side effect that reaches an unintended external party.
+scope:
+  security_boundary: The boundary between data available inside the agent host's authorized
+    context and an external principal not authorized to receive that data.
+  in_scope:
+  - Encoding or placing sensitive context in an otherwise permitted MCP tool call
+    or agent action whose apparent purpose conceals the disclosure.
+  - Exfiltration completed by a downstream service side effect, such as an automatic
+    link fetch, after an agent creates permitted content.
+  - Cross-server flows in which one MCP data source supplies sensitive context and
+    another server or external service carries it out.
+  out_of_scope:
+  - Prompt injection or tool-description poisoning considered only as the delivery
+    or influence mechanism, before any data crosses the confidentiality boundary.
+  - Collection that leaves data inside the authorized host context.
+  - Direct, conspicuous export to an explicitly attacker-controlled destination without
+    concealment in a cover operation or secondary side effect.
+  - Credential use, persistence, or other activity after the data has been disclosed.
+  affected_components:
+  - MCP host and model context
+  - MCP client and server connection
+  - Tools and their arguments or results
+  - Downstream messaging, rendering, and network services
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection covers adversarial instruction delivery or model control;
+    SAF-T1910 begins when selected data crosses to an unintended recipient through a covert carrier.
+- technique_id: SAF-T1911
+  distinction: Parameter Exfiltration specializes the carrier to a tool or protocol parameter;
+    SAF-T1910 also includes application messages, URLs, and secondary service actions.
+- technique_id: SAF-T1912
+  distinction: Stego Response Exfil specializes the carrier to a response; SAF-T1910
+    covers covert carriers on tool-input and downstream-output paths.
+required_evidence:
+- Establish MCP trust boundaries and the protocol fields that can carry tool inputs
+  and results.
+- Establish at least one end-to-end MCP or agentic demonstration in which data crosses
+  to an unintended recipient through a concealed carrier.
+- Search independently for production incidents, disclosed vulnerabilities, advisories,
+  exploitation status, and fixed or unaffected conditions.
+- Establish telemetry sufficient to correlate sensitive access with a later unapproved
+  data-bearing egress event.
+- Distinguish delivery, collection, direct transfer, and downstream credential abuse
+  from the defining covert transfer.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Timestamped MCP tool-call records with session, server, tool name, complete arguments,
+    approval outcome, and result status.
+  - Timestamped sensitive-data access or provenance records with session and a privacy-preserving
+    fingerprint or classification.
+  - Network or downstream application events with destination, request metadata, normalized
+    payload representation, and initiating session or process.
+safe_example_constraints:
+- Use reserved .invalid domains and synthetic values only.
+- Do not reproduce private keys, credentials, operational payloads, or live collection
+  endpoints.
+- Demonstrate only the observable event relationship needed to test detection.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE comments or
+  a declared local artifact.
+- All five research passes, a contrary-result challenge, and two final authority-only
+  no-change passes are recorded.
+- Two to four high-impact nonredundant examples are classified, or an explicit evidence
+  gap is stated.
+- Positive, negative, boundary, malformed, normalization, and expected false-positive
+  detection cases pass deterministically.
+- Publication-rights, framework, source-or-omit, clean-room-integrity, and safe-publication
+  gates pass.

@@ -1,0 +1,497 @@
+version: 1
+technique_id: SAF-T1002
+claims:
+  - id: SAF-T1002-C001
+    statement: >-
+      Supply-chain compromise manipulates a trusted dependency, development
+      tool, source, build process, distribution mechanism, or update path so
+      altered software reaches and executes at a consumer.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195
+        support: direct
+        exact_locators:
+          - "Technique overview, definition paragraphs and examples, lines 16-37"
+    corroboration: MCP registry and package documentation identify the corresponding agentic distribution paths.
+    limitations:
+      - ATT&CK is enterprise-wide and does not by itself establish an MCP incident.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The definition is narrowed to MCP and agentic components by the clean-room contract.
+    status: validated
+
+  - id: SAF-T1002-C002
+    statement: >-
+      In March 2025, malicious tj-actions/changed-files code executed in a
+      Coinbase AgentKit workflow and obtained a write-capable token, but
+      Coinbase reported no package publication or known damage.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-unit42-tj-actions-agentkit
+        support: direct
+        exact_locators:
+          - "Executive Summary, lines 65-80"
+          - "Connection to AgentKit, lines 195-258"
+          - "Limitations and open questions, lines 275-286"
+    corroboration: Wiz independently documented the compromised action and affected versions.
+    limitations:
+      - The attempt was interrupted before a downstream package was published.
+      - Unit 42 could not prove every step of the credential-compromise chain.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C003
+    statement: >-
+      Malicious Nx package versions executed during installation, searched for
+      credentials, attempted to use locally available AI command-line tools,
+      and uploaded collected results before takedown.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-nx-s1ngularity-postmortem
+        support: direct
+        exact_locators:
+          - "Incident Summary and What Happened, lines 48-87"
+          - "Affected versions and response, lines 88-121"
+    corroboration: The postmortem records npm response and provenance gaps; no equally authoritative independent source was needed for the bounded first-party facts.
+    limitations:
+      - The packages were general developer tooling rather than official MCP Registry artifacts.
+      - The source does not quantify all downstream victims.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C004
+    statement: >-
+      The reviewed Nx incident involved broad developer dependencies and did not
+      establish compromise of an official MCP Registry artifact.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nx-s1ngularity-postmortem
+        support: direct
+        exact_locators:
+          - "Incident Summary and affected npm packages, lines 48-67 and 88-106"
+    corroboration: MCP Registry documentation separately describes its own metadata-to-package relationship.
+    limitations:
+      - Absence in this source is not evidence that an MCP Registry compromise has never occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Classification compares the incident subject to the official registry boundary.
+    status: validated
+
+  - id: SAF-T1002-C005
+    statement: The direct enterprise-framework mapping is MITRE ATT&CK T1195 under Initial Access.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195
+        support: direct
+        exact_locators:
+          - "Technique metadata and tactic, lines 40-57"
+    corroboration: The ATT&CK page provides both the stable identifier and tactic.
+    limitations:
+      - The repository's local tactic identifier must be reconciled after freeze.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C006
+    statement: >-
+      In March 2026, malicious Axios releases added a post-install dependency,
+      automatically fetched a second-stage payload, and differed from the
+      project's normal trusted-publisher and repository trail.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-axios-2026
+        support: direct
+        exact_locators:
+          - "Opening incident summary, lines 56-60"
+          - "Silent install-time execution, lines 62-73"
+          - "Mitigation and response, lines 165-181"
+    corroboration: Microsoft Defender telemetry and response instructions are reported in the same primary investigation.
+    limitations:
+      - The source does not identify an MCP or agent host among affected consumers.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C007
+    statement: >-
+      The official MCP Registry authenticates publisher namespaces and hosts
+      metadata, while delegating scanning of actual server code to underlying
+      registries or downstream aggregators.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators:
+          - "Registry metadata and ecosystem relationships, lines 55-105"
+          - "Trust and Security, lines 116-128"
+    corroboration: The moderation policy independently describes reliance on upstream and downstream registries.
+    limitations:
+      - Documentation describes intended behavior and may change while the registry is in preview.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C008
+    statement: >-
+      The official MCP Registry tells consumers to assume minimal-to-no
+      moderation, removes malware when identified, and generally retains
+      servers with security vulnerabilities.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-moderation
+        support: direct
+        exact_locators:
+          - "Disclaimer, lines 69-71"
+          - "What We Remove and What We Don't Remove, lines 76-97"
+    corroboration: Registry architecture documentation describes delegated scanning.
+    limitations:
+      - The policy is explicitly subject to change during preview.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C009
+    statement: >-
+      MCP Registry records can reference npm, PyPI, Cargo, OCI, and MCPB
+      artifacts; MCPB SHA-256 values are validated by clients, not the registry.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-package-types
+        support: direct
+        exact_locators:
+          - "Package types and ownership verification, lines 61-292"
+          - "MCPB verification, lines 302-335"
+    corroboration: Registry about documentation confirms metadata points to underlying package registries.
+    limitations:
+      - Supported package types and validation responsibilities can change.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C010
+    statement: >-
+      A newly created typosquat that imitates a trusted ecosystem but does not
+      compromise an existing producer or channel is adjacent masquerading, not
+      the defining behavior of this technique.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-typosquat-2026
+        support: direct
+        exact_locators:
+          - "Attack chain overview and lure, lines 55-78"
+    corroboration: ATT&CK T1195 describes compromise of dependencies and distribution paths rather than mere name imitation.
+    limitations:
+      - Stolen publish tokens from a typosquat can enable a later in-scope compromise.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The distinction applies the technique contract to an observed adjacent campaign.
+    status: validated
+
+  - id: SAF-T1002-C011
+    statement: >-
+      MCP client requirements for one-click local server installation require
+      disclosure of the exact command and arguments, danger warning, explicit
+      approval, cancellation, and no installation absent consent.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators:
+          - "Specification, lines 124-146"
+          - "Residual risks and alternatives, lines 194-223"
+    corroboration: The SEP distinguishes client installation behavior from the wire protocol.
+    limitations:
+      - Consent and command disclosure do not prove artifact integrity.
+      - Users can still approve obfuscated or dangerous commands.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C012
+    statement: >-
+      In July 2026, a compromised AsyncAPI workflow used legitimate OIDC
+      publishing to produce provenance-valid packages from unauthorized source,
+      and malicious code executed at import time rather than through install hooks.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-asyncapi-2026
+        support: direct
+        exact_locators:
+          - "Opening incident summary, lines 48-53"
+          - "Attack chain overview, lines 54-82"
+          - "Mitigation guidance, lines 138-144"
+    corroboration: The source records package versions, publisher identity, hashes, and downstream fetch timing.
+    limitations:
+      - Credential-theft mechanism was not conclusively established.
+      - Several second-stage capabilities were present but disabled.
+      - No MCP deployment was identified among consumers.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C013
+    statement: >-
+      A DSN 2026 study analyzed 67,057 MCP servers across six registries,
+      implemented MCPInspect, and demonstrated registry-entry hijack
+      preconditions locally without attacking public registries or users.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-ecosystem-dsn-2026
+        support: direct
+        exact_locators:
+          - "Abstract and results, lines 54-80"
+          - "Threat model, lines 159-167"
+          - "Evaluation and precision, lines 336-367"
+          - "Ethics and local-PoC limitation, around line 193"
+    corroboration: MCP Registry policy independently confirms limited moderation and reliance on upstream/downstream scanning.
+    limitations:
+      - The study did not establish a production compromise or attack external users.
+      - MCPInspect precision was measured on a limited manually reviewed sample.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C014
+    statement: >-
+      Detection should join package or update tampering evidence to install and
+      first-run behavior and validate signature, subject digest, predicate type,
+      builder identity, and consumer policy expectations.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1195
+        support: direct
+        exact_locators:
+          - "Detection strategy DET0537 and analytics, lines 79-84"
+      - source_id: SRC-slsa-v1.2-verification
+        support: direct
+        exact_locators:
+          - "Artifact verification, lines 103-133"
+          - "Consumer and monitor verification, lines 143-161"
+    corroboration: Both framework and specification independently require acquisition-integrity evidence plus execution context.
+    limitations:
+      - No single event source supplies the full join.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The included analytic operationalizes the sources for MCP and agentic telemetry.
+    status: validated
+
+  - id: SAF-T1002-C015
+    statement: >-
+      npm provenance exposes source, build environment, workflow and commit
+      information, while npm signature auditing reports missing or invalid
+      signatures as errors.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-npm-provenance
+        support: direct
+        exact_locators:
+          - "Provenance details, lines 236-258"
+          - "Audit signatures, lines 260-270"
+    corroboration: SLSA separately defines consumer verification of provenance subject and builder.
+    limitations:
+      - Availability depends on publisher and npm client capabilities.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C016
+    statement: >-
+      Static package features plus runtime API-call sequences improve malicious
+      npm detection, but incomplete execution paths and legitimate install-time
+      tools cause false negatives and false positives.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-donapi-usenix-2024
+        support: direct
+        exact_locators:
+          - "Pages 1-2, corpus, attack model, and results"
+          - "Pages 6-7, dynamic runtime API-call sequences"
+          - "Pages 9-10, false-negative and false-positive analysis"
+    corroboration: Microsoft incident reports independently identify process and egress behaviors following package execution.
+    limitations:
+      - The study predates MCP and evaluates npm packages generally.
+      - The authors did not release the malicious corpus or system code.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C017
+    statement: >-
+      Provenance is decision evidence rather than a guarantee: verification can
+      cover registry or transit compromise, but not typosquatting, and valid
+      provenance can be produced by an abused trusted build path.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slsa-v1.2-verification
+        support: direct
+        exact_locators:
+          - "Verification scope and limitations, lines 103-133"
+      - source_id: SRC-microsoft-asyncapi-2026
+        support: direct
+        exact_locators:
+          - "OIDC publishing of unauthorized source, lines 57-65"
+    corroboration: The specification limitation and production incident independently establish both boundaries.
+    limitations:
+      - Stronger source-review and builder-isolation controls can reduce but not eliminate the risk.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The claim combines normative scope with an observed counterexample.
+    status: validated
+
+  - id: SAF-T1002-C018
+    statement: >-
+      Third-party GitHub Actions should be pinned to full commit SHAs, workflow
+      tokens minimized, untrusted workflow triggers isolated, and workflow
+      changes protected by review.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-github-actions-secure-use
+        support: direct
+        exact_locators:
+          - "Token and trigger hardening, lines 89-103"
+          - "Third-party actions and full-SHA pinning, lines 106-124"
+          - "Review and analysis controls, lines 131-154"
+    corroboration: Unit 42 and AsyncAPI incident evidence demonstrates the consequences of compromised or unsafe workflows.
+    limitations:
+      - Full-SHA pinning does not protect against compromise before the pinned revision is selected.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1002-C019
+    statement: >-
+      Staging and exact-version controls must test import-time behavior as well
+      as installation hooks because the AsyncAPI payload executed on import and
+      was not stopped by disabling install scripts.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-asyncapi-2026
+        support: direct
+        exact_locators:
+          - "Import-time execution and ignore-scripts limitation, lines 48-53 and 63-66"
+          - "Mitigation guidance, lines 138-144"
+    corroboration: Axios provides an independent contrasting install-time case.
+    limitations:
+      - Import behavior varies by language and packaging system.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control recommendation is generalized from the observed trigger difference.
+    status: validated
+
+  - id: SAF-T1002-C020
+    statement: >-
+      MCP server installation should disclose exact commands and require
+      approval, while runtime isolation, signatures, and sandboxing remain
+      necessary because user consent can be overridden or misled.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators:
+          - "Client behavior requirements, lines 124-175"
+          - "Residual risks and defenses, lines 194-223"
+    corroboration: MCP registry package documentation identifies the executable artifacts to which these controls apply.
+    limitations:
+      - SEP-1024 governs client behavior and is not a wire-protocol guarantee.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Least privilege and isolation are applied to the disclosed local execution boundary.
+    status: validated
+
+  - id: SAF-T1002-C021
+    statement: >-
+      Incident response should block affected versions, preserve evidence,
+      purge caches, rebuild outputs from known-good inputs, and rotate all
+      credentials reachable from the affected execution context.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-axios-2026
+        support: direct
+        exact_locators:
+          - "Affected-user response, lines 168-181"
+          - "Detection and hunting, lines 211-250 and 288-297"
+    corroboration: Nx and AsyncAPI incident sources independently recommend version removal, cache review, and credential rotation.
+    limitations:
+      - Exact containment steps depend on artifact format, host role, and retained telemetry.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The steps are generalized from first-party incident response guidance.
+    status: validated

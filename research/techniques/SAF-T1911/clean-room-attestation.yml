@@ -1,0 +1,120 @@
+version: 1
+technique_id: SAF-T1911
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1911
+  inherited_context: false
+target:
+  id: SAF-T1911
+  neutral_name: Parameter Exfiltration
+allowed_inputs:
+- The user-supplied neutral tuple SAF-T1911, Parameter Exfiltration, and tactic ATK-TA0010.
+- The complete generic author-saf-technique skill and routed methodology, breach-vulnerability,
+  clean-room, and readable-trace references.
+- Canonical generic technique template, blank research schemas, research protocol,
+  and validator.
+- Independently opened direct standards-body, nonprofit authority, and first-party
+  researcher sources recorded in the source fragment.
+prohibited_inputs:
+- Existing or historical techniques/SAF-T1911/README.md.
+- Existing research/techniques/SAF-T1911/ artifacts, research leads, tests, and logs.
+- Existing or historical techniques/SAF-T1911/detection-rule.yml.
+- Git history, diffs, blame, stashes, branches, or commits exposing the target.
+- Pull request, issue, review comment, or cached SAF page exposing prior target content.
+- Previous conversation, summary, or other agent work containing prior technique content.
+- Shared registries, catalog descriptions, SAF sites, repositories, forks, target-ID
+  searches, general web search, and GitHub discovery before freeze.
+- impact-classification-examples.md before freeze.
+independent_research:
+  searches:
+  - DIRECT-OPEN https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - DIRECT-OPEN https://modelcontextprotocol.io/specification/2025-11-25/architecture/index
+  - DIRECT-OPEN https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+  - DIRECT-OPEN https://modelcontextprotocol.io/specification/2025-11-25/changelog
+  - DIRECT-OPEN https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - DIRECT-OPEN https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+  - DIRECT-OPEN https://invariantlabs.ai/blog/introducing-mcp-scan
+  - DIRECT-OPEN https://owasp.org/www-project-mcp-top-10/
+  - DIRECT-OPEN https://attack.mitre.org/techniques/T1020/
+  - AUTHORITY-CATALOG-FILTER NVD Model Context Protocol data exfiltration (blocked
+    before content review)
+  - AUTHORITY-CATALOG-FILTER CISA KEV Model Context Protocol data exfiltration (HTTP
+    403 before content review)
+  opened_source_ids:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-attack-t1020-v1.3
+  - SRC-owasp-mcp-top10-v0.1
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace synthetic neighbor IDs SAF-T9001 and SAF-T9002 only after freeze using real
+  catalog identifiers; do not import prior target prose or research leads.
+- Replace the synthetic history SHA with an honest repository-history SHA without
+  changing independently derived claims.
+- Reconcile source IDs only for stable duplicate avoidance after freeze; the shared
+  manifest is not evidence and must introduce no new research lead.
+- Recheck blocked NVD and CISA authority catalog endpoints during integration and
+  reopen research only through a new clean-room run if material evidence appears.
+- Run repository validators after mechanical joins without inspecting a diff that
+  exposes prior target content.
+- No commit, push, pull request, or destination-repository write is authorized by
+  this handoff.
+mock_validation:
+  command: uv run --with pyyaml python scripts/validate-technique-research.py SAF-T1911
+  result: passed
+  isolated_repository: /private/tmp/saf-all-cleanroom/SAF-T1911/mock-repository
+  deferred_real_repository_joins:
+  - Real SAF neighbor identifiers
+  - Stable shared source IDs
+  - Honest repository history SHA
+attestation: This fresh agent received only the neutral tuple and clean-room rules,
+  did not access any prohibited prior target artifact, independently reviewed the
+  recorded authorities, completed the research and tests outside the destination repository,
+  and froze the draft before any integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-best-practices-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-invariant-whatsapp-mcp-2025: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-mcp-scan-2025: SRC-invariant-mcp-scan-2025
+  new_shared_source_records:
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-owasp-mcp-top10-v0.1
+  - SRC-mitre-attack-t1020-v1.3
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0010
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-72
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1801
+  attack_mapping:
+    id: T1020
+    type: analogous
+  canonical_validation_proof:
+  - research/techniques/SAF-T1911/validation/canonical-validation.txt
+  authority_recheck:
+    nvd: Filtered API URL remained unavailable to the retrieval layer; no content was reviewed.
+    cisa_kev: Feed remained HTTP 403; no content was reviewed.
+    disposition: Preserve the bounded accessible-corpus gap; no new material evidence was introduced during integration.
+  status: integrated_and_validated

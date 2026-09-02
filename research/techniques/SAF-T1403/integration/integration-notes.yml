@@ -1,0 +1,82 @@
+version: 1
+technique_id: SAF-T1403
+freeze_mode: clean_room
+integration_policy: mechanical_only_after_freeze
+
+synthetic_tactics: []
+supplied_tactic_joins:
+  - id: ATK-TA0005
+    action: Confirm the existing repository tactic record and add the technique membership mechanically; do not use tactic prose as a research lead.
+
+synthetic_neighbors:
+  - id: SAF-T9001
+    label: Synthetic Approval Context Deception
+    action: Replace in contract, README, framework fragment, and mock-only path stubs with the real first-prompt deception neighbor.
+  - id: SAF-T9002
+    label: Synthetic Consent Enforcement Bypass
+    action: Replace in contract, README, framework fragment, and mock-only path stubs with the real technical consent-bypass neighbor.
+
+synthetic_mitigations:
+  - id: SAF-M-9001
+    label: Synthetic Approval Retry Control
+    action: Replace with the real repository mitigation covering rate limits, denial caching, or bounded retries.
+  - id: SAF-M-9002
+    label: Synthetic Transaction-Bound Approval
+    action: Replace with the real repository mitigation covering clear request context and transaction-bound confirmation.
+
+provisional_source_ids:
+  - SRC-anthropic-permissions-2026
+  - SRC-arxiv-1510.07728
+  - SRC-ghsa-pf93-j98v-25pv
+  - SRC-ghsa-rww4-4w9c-7733
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-dev0537-2022
+  - SRC-microsoft-number-match-2025
+  - SRC-mitre-det0160-v1.0
+  - SRC-mitre-t1621-v1.2
+  - SRC-nist-sp800-63b-4
+  - SRC-nvd-cve-2026-27124
+  - SRC-nvd-cve-2026-32112
+  - SRC-nvd-cve-2026-67333
+  - SRC-nvd-cve-2026-79786
+  - SRC-openai-mcp-approvals-2026
+  - SRC-rfc9700
+  - SRC-uber-security-update-2022
+source_join_action: >-
+  After freeze, compare canonical URLs against the shared source manifest only
+  to reuse stable IDs and prevent duplicates. If an ID changes, update the
+  fragment, claim inventory, README traces and References, source coverage,
+  rights review, and exclusions mechanically; do not add a source or claim.
+
+synthetic_history_sha:
+  value: "1111111111111111111111111111111111111111"
+  action: Replace in traceability-ledger.yml with an honest repository-history SHA after atomic integration, then rerun all validation.
+
+path_joins:
+  - path: techniques/SAF-T1403/README.md
+    action: Atomic replacement from the frozen bundle without opening the old file or a revealing diff.
+  - path: techniques/SAF-T1403/detection-rule.yml
+    action: Atomic replacement from the frozen bundle without opening the old file.
+  - path: research/techniques/SAF-T1403/
+    action: Atomic directory replacement from the frozen bundle without opening prior packet content.
+  - path: tests/SAF-T1403/
+    action: Install as the canonical external test location or mechanically relocate only if repository policy requires it.
+  - path: research/source-manifest.yml
+    action: Merge source-manifest-fragment.yml by stable source ID after canonical-URL collision checks.
+  - path: research/framework-model.yml
+    action: Merge framework-fragment.yml after replacing synthetic neighbors and mitigations.
+  - path: research/alignment-ledger.yml
+    action: Merge alignment-fragment.yml and resolve the two mechanical join records.
+
+post_join_validation:
+  - Run the detector test from the real repository root.
+  - Run the canonical strict technique validator for SAF-T1403.
+  - Re-run repository workflow regression tests required by local policy.
+  - Review only the new files and validator output; do not inspect a diff that reveals replaced prior content.
+
+non_mechanical_changes_prohibited:
+  - New facts, examples, citations, classifications, wording, or omissions derived from the old target or shared registries.
+  - Changes to evidence status based on adjacent CVEs or historical analogies.
+  - Substantive edits without a new clean-room research and freeze cycle.

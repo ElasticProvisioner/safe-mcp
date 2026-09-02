@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1902
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room generator
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Neutral target inputs, generic authoring materials, and independently opened direct authority URLs were the only inputs; contamination status is false.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires a concealed response carrier plus a receiver path and excludes adjacent injection, metadata, explicit tool export, transport tunneling, and follow-on execution.
+  technical_accuracy:
+    status: passed
+    notes: MCP result forms, renderer behavior, Unicode tags, encoding, prerequisites, and bounded outcomes map to reviewed exact locators.
+  claim_traceability:
+    status: passed
+    notes: Twenty-two validated claims include exact locators, support type, corroboration, limitations, conflicts, and inference status.
+  source_or_omit:
+    status: passed
+    notes: All substantive README units carry same-line hidden traces or declared local links; unverified leads are omitted and excluded.
+  evidence_classification:
+    status: passed
+    notes: Multiple end-to-end public demonstrations justify Demonstrated; no production incident supports Observed.
+  research_saturation:
+    status: passed
+    notes: Five required passes and two final direct-authority no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nine candidates were classified and ranked; four selected examples include impact, exploitation limits, remediation, and evidence limitations.
+  detection_quality:
+    status: passed
+    notes: Executable standard-library detector passes four tests covering three alerting, five non-alerting, malformed-input, carrier, and correlation-boundary cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address response validation, Unicode and URL normalization, rendering, destinations, egress, privilege, telemetry, and response procedures.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0011 and analogous T1132/T1001 mappings are evidence-backed; synthetic joins are explicitly deferred to post-freeze mechanical reconciliation.
+  publication_rights:
+    status: passed
+    notes: All cited sources have rights records; only paraphrase and factual reference are used, with named authors or responsible teams credited.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures use reserved invalid domains, synthetic values, and no credentials, live endpoints, destructive commands, or reusable exploit payloads.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1902
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1902/test_detection.py
+    result: 4 tests passed; 3 alerting and 5 non-alerting fixture cases matched expectations; malformed events did not alert.
+    waiver: null
+
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "4 tests passed; 3 alerting and 5 non-alerting fixture cases matched expectations"
+  validator: "PASS SAF-T1902"
+  proof: research/techniques/SAF-T1902/validation/canonical-validation.txt
+  notes: Source IDs, the prompt-injection neighbor, seven mitigations, ATT&CK mappings, history, framework, alignment, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

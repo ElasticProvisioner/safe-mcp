@@ -1,0 +1,85 @@
+version: 1
+technique_id: SAF-T1913
+name: HTTP POST Exfil
+status: complete
+created_on: "2026-09-02"
+updated_on: "2026-09-02"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0010
+
+adversary_objective: >-
+  Transfer sensitive data from an MCP host's trust domain to an adversary-controlled
+  remote MCP server by placing the data in a tools/call message carried in an HTTP
+  POST request.
+
+scope:
+  security_boundary: >-
+    The outbound data boundary between an MCP host or client and a remote MCP server
+    reached through the Streamable HTTP transport.
+  in_scope:
+    - Sensitive values are placed in tools/call parameters or arguments.
+    - The MCP client transmits that JSON-RPC message in the body of a Streamable HTTP POST.
+    - The immediate outcome is receipt of those values by an untrusted or adversary-controlled MCP server.
+  out_of_scope:
+    - Prompt injection, tool poisoning, or other delivery behavior that causes the call; those are prerequisites or co-occurring behaviors.
+    - Collection of the sensitive values before the outbound request.
+    - Sensitive values encoded in a URL, link preview, GET request, custom transport, email, attachment, or cloud-service upload.
+    - Server-side request forgery in which a component is induced to fetch an unintended destination.
+    - Command execution, credential use, persistence, or other follow-on activity after receipt.
+  affected_components:
+    - MCP host
+    - MCP client
+    - remote MCP server
+    - Streamable HTTP transport
+    - tool invocation and approval layer
+    - egress gateway or HTTP telemetry pipeline
+
+nearest_neighbors:
+  - technique_id: SAF-T1001
+    distinction: >-
+      Adversarial instruction or tool-poisoning delivery changes agent intent;
+      SAF-T1913 begins when sensitive
+      content is placed in a tools/call request and crosses the remote-server boundary.
+  - technique_id: SAF-T1911
+    distinction: >-
+      Parameter Exfiltration covers sensitive data placed in outbound tool arguments;
+      SAF-T1913 narrows that behavior to Streamable HTTP POST delivery to a remote MCP server.
+  - technique_id: SAF-T1902
+    distinction: >-
+      URI or link-unfurl exfiltration uses a response or URI carrier. That channel
+      embeds data in a URI and depends on a fetcher; SAF-T1913 places data in the POST body.
+
+required_evidence:
+  - Establish the current Streamable HTTP POST requirements and tools/call argument shape.
+  - Establish that an MCP agent can be induced to transmit sensitive data in a tool parameter.
+  - Establish the exact trust boundary, prerequisites, and immediate confidentiality outcome.
+  - Search separately for production incidents, direct vulnerabilities, demonstrations, advisories, and exploitation status.
+  - Classify adjacent SSRF, link-unfurl, and command-execution records without allowing them to raise the technique evidence status.
+  - Support detection fields, expected lookalikes, blind spots, and tuning with current authoritative telemetry guidance.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Outbound HTTP method, server address, URL, response status, and request-body size when available.
+    - MCP Mcp-Method and Mcp-Name request headers or equivalent normalized fields.
+    - Destination trust classification, approval state, and privacy-preserving DLP classification metadata.
+    - Timestamp, host or client identity, actor, request identifier, and tool name for correlation.
+
+safe_example_constraints:
+  - Use only example.invalid and placeholder sensitivity labels.
+  - Do not include a real secret, credential pattern, operational payload, or live receiver.
+  - Show the minimum inert JSON needed to explain the boundary.
+  - Detection fixtures contain classifications and hashes, never raw sensitive content.
+
+completion_evidence:
+  - Every substantive publishable unit resolves through a same-line SAF-TRACE comment or a declared local artifact.
+  - All claims are source-or-omit validated with exact locators and explicit limitations.
+  - Unverified production, transport, and exploitation assertions are omitted and recorded in the exclusion ledger.
+  - Five research passes and two consecutive no-change saturation passes are documented.
+  - Positive, negative, boundary, malformed, normalization, and expected false-positive detector fixtures pass.
+  - Publication rights, safe-publication, alignment, and clean-room integrity reviews pass.
+  - The canonical validator passes strictly in an isolated synthetic repository before freeze.

@@ -1,0 +1,32 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1911
+    name: Parameter Exfiltration
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0010
+    technique_path: techniques/SAF-T1911/README.md
+    research_packet: research/techniques/SAF-T1911
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1801
+    mitigations:
+      - SAF-M-12
+      - SAF-M-14
+      - SAF-M-16
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-72
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1911/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1911/events.json
+        - tests/SAF-T1911/test_detection_rule.py
+        - tests/SAF-T1911/test-logs.json
+    attack_mappings:
+      - id: T1020
+        type: analogous

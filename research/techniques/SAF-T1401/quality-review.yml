@@ -1,0 +1,37 @@
+version: 1
+technique_id: SAF-T1401
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/cleanroom_saf_t1401
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records no prohibited access.}
+  contract_and_scope: {status: passed, notes: Defining precedence boundary and exclusions match the frozen contract.}
+  technical_accuracy: {status: passed, notes: Protocol and vulnerability details use direct current authorities.}
+  claim_traceability: {status: passed, notes: Every external claim maps to reviewed evidence with locators.}
+  source_or_omit: {status: passed, notes: Every substantive unit is traced or tied to a declared local artifact.}
+  evidence_classification: {status: passed, notes: Demonstrated reflects two controlled direct vulnerabilities and no production incident.}
+  research_saturation: {status: passed, notes: Two focused final passes produced no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Four candidates were classified and the two strongest direct examples selected.}
+  detection_quality: {status: passed, notes: Source-aware analytic covers three branches with nine deterministic cases.}
+  mitigation_quality: {status: passed, notes: Controls address provenance, disambiguation, authorization, approval, and integrity.}
+  framework_alignment: {status: passed, notes: Tactic, analogous ATT&CK mapping, canonical neighbors, stable source IDs, mitigations, and framework joins are reconciled.}
+  publication_rights: {status: passed, notes: Reference-only paraphrase with credits; no protected material copied.}
+  safe_publication: {status: passed, notes: Scenario and fixtures are inert and contain no exploit payload or credential.}
+validation:
+  commands:
+    - command: python3 tests/SAF-T1401/test_detection_rule.py
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1401
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1401/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1401
+      result: passed
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1401/test_detection_rule.py
+    result: "PASS 9 cases: 3 positive, 4 negative/boundary, 1 malformed, 1 expected-false-positive"
+    waiver: null
+unresolved: []

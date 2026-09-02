@@ -1,0 +1,43 @@
+version: 1
+technique_id: SAF-T1101
+frozen_on: "2026-09-01"
+canonical_bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1101/bundle
+research_content_changes_after_freeze: prohibited
+mechanical_joins:
+  tactics:
+    synthetic: []
+    retained_seed_values: [ATK-TA0002]
+    action: Preserve the user-supplied tactic identifier unless the repository validator rejects the join.
+  neighbors:
+    synthetic:
+      - id: SAF-T9001
+        role: Prompt-mediated instruction-manipulation neighbor used only by the isolated validator.
+      - id: SAF-T9002
+        role: Authorized command-execution neighbor used only by the isolated validator.
+    action: Replace with exact existing repository neighbor IDs, if present, using identifier and relationship fields only; do not import old prose.
+  mitigations:
+    synthetic: []
+    action: Reconcile mitigation IDs mechanically after freeze; the bundle currently makes no local mitigation join.
+  source_ids:
+    synthetic_scope: All 33 SRC-* identifiers were coined within this clean-room run.
+    action: Check only for shared-manifest ID collisions, then preserve or mechanically rename IDs and all references without altering claims or prose.
+  history_sha:
+    value: 3a3e097601a159222913ef44dd2389797aed078c
+    synthetic: true
+    role: Fresh isolated-validator scaffold commit; contains no inherited SAF project history.
+    action: Replace only if repository policy requires a new integration commit lineage record.
+  paths:
+    - bundle/source-manifest-fragment.yml -> research/source-manifest.yml sources append
+    - bundle/framework-fragment.yml -> research/framework-model.yml techniques append
+    - bundle/alignment-fragment.yml -> research/alignment-ledger.yml issues append
+    - bundle/techniques/SAF-T1101/ -> techniques/SAF-T1101/
+    - bundle/research/techniques/SAF-T1101/ -> research/techniques/SAF-T1101/
+validation_dependencies:
+  isolated_mock_root: /private/tmp/saf-all-cleanroom/SAF-T1101-isolated-validator
+  generic_validator_source: scripts/validate-technique-research.py from the repository's generic tooling
+  source_acquisition_cache: /private/tmp/saf-all-cleanroom/SAF-T1101-research-cache
+  included_in_bundle: false
+integration_safety:
+  - Review only the new files and validation output; do not diff against or open prior target content.
+  - Permit only path, identifier, manifest-join, and validator-driven mechanical corrections after freeze.
+  - If any correction would alter a substantive claim, example, scope, or prose, reject integration and start a new independent research run.

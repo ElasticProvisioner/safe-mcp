@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1110
+name: Multimodal Prompt Injection via Images/Audio
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause a multimodal agent to interpret attacker-influenced image
+  or audio data as instructions and change its response or execute an unauthorized
+  action.
+scope:
+  security_boundary: Untrusted third-party media crosses into trusted model instruction
+    or agent action context.
+  in_scope:
+  - Image, screenshot, rendered-interface, recording, or ambient-audio instruction
+    carriers.
+  - Model behavior changes and downstream tool actions causally influenced by the
+    carrier.
+  - MCP hosts that place image or audio tool/resource content into model context.
+  out_of_scope:
+  - Text-only indirect prompt injection.
+  - Direct multimodal jailbreaking by the authorized user.
+  - Training-data poisoning or persistent model backdoors.
+  - Generic malicious tool output without an image or audio carrier.
+  affected_components:
+  - MCP host and client
+  - Multimodal model and media-ingestion pipeline
+  - Tool-result handler, approval service, and connected tools
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Text-only indirect injection lacks the required image/audio carrier.
+- technique_id: SAF-T2107
+  distinction: Training-time poisoning modifies learned state rather than using an
+    inference-time media instruction.
+required_evidence:
+- Direct evidence that image and audio carriers can steer multimodal model behavior.
+- Evidence connecting a carrier to agent action or sensitive output in a controlled
+  evaluation.
+- Current production-incident, advisory, vulnerability, and exploitation-status searches.
+- Evidence-supported controls, detection limits, and neighboring-behavior boundaries.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Media-ingestion events with timestamp, session, modality, provenance, and instruction-risk
+    signal.
+  - Agent or MCP tool events with timestamp, session, action type, action source,
+    and approval state.
+safe_example_constraints:
+- Use only example.invalid destinations and placeholder state.
+- Do not include perturbation-generation instructions, credentials, destructive actions,
+  or operational secrets.
+completion_evidence:
+- Every substantive README unit maps to validated external claims or declared local
+  artifacts.
+- Four highest-impact qualifying direct demonstrations are selected and limitations
+  are explicit.
+- Nonqualifying CVEs and demonstrations are exclusion-ledgered.
+- Two consecutive no-change saturation passes are recorded.
+- The deterministic detection test and strict isolated validator pass.
+- Rights and quality reviews pass with no unresolved issues.

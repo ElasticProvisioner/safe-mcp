@@ -1,0 +1,90 @@
+version: 1
+technique_id: SAF-T1902
+bundle_kind: clean_room_evidence_bundle
+generated_on: "2026-09-02"
+
+pre_freeze_isolation:
+  status: passed
+  contamination_detected: false
+  prohibited_material_opened: false
+  notes: >-
+    The generator did not inspect, stat, count, hash, search, or open existing
+    target artifacts, target-specific history or review records, shared SAF
+    registries, SAF websites, prior runs, or methodology impact examples.
+
+bundle_contents:
+  technique: techniques/SAF-T1902/README.md
+  detection_rule: techniques/SAF-T1902/detection-rule.yml
+  research_packet: research/techniques/SAF-T1902
+  tests: tests/SAF-T1902
+  source_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+  validation: validation
+  integrity_manifest: FREEZE.sha256
+
+synthetic_isolated_validation_records:
+  - record: SAF-T9999
+    kind: nearest_neighbor
+    meaning: Response Injection placeholder used only to satisfy the strict isolated framework join.
+    required_action: Reconcile mechanically to the canonical nearest response-injection technique without changing the frozen behavioral boundary.
+  - record: SAF-M-999
+    kind: mitigation
+    meaning: Response Content Validation and Egress Control placeholder used only to satisfy the strict isolated framework join.
+    required_action: Map to one or more canonical mitigations that cover result validation, renderer policy, egress control, and least privilege.
+  - record: ffffffffffffffffffffffffffffffffffffffff
+    kind: repository_history
+    meaning: Explicit synthetic isolated-validation SHA; it does not claim to identify a real commit.
+    required_action: Replace with an honest repository history SHA after transfer and before canonical publication.
+
+source_integration:
+  merge_key: official_url
+  rules:
+    - Preserve source IDs when no canonical URL match exists.
+    - When a canonical source has the same official URL, mechanically remap claim and trace references to the canonical ID.
+    - Preserve original author or responsible-team credits, exact locators, review dates, rejection reasons, access failures, and GitHub discovery provenance.
+    - Do not convert consulted-only or blocked sources into cited support.
+
+framework_integration:
+  proposed_tactic: ATK-TA0011
+  evidence_status: demonstrated
+  documentation_status: draft
+  attack_mappings:
+    - {id: T1132, type: analogous}
+    - {id: T1001, type: analogous}
+  invariants:
+    - The defining boundary remains concealed information in response semantics plus a receiver path.
+    - Demonstrated must not be raised to Observed without a direct production-incident source and a new evidence review.
+    - Adjacent explicit tool export, metadata poisoning, and generic agent C2 remain out of scope.
+
+mechanical_merge_order:
+  - Verify every entry in FREEZE.sha256 before copying.
+  - Copy technique, packet, detector, fixtures, and recorded validation artifacts without substantive edits.
+  - Deduplicate and merge source-manifest-fragment.yml by official_url.
+  - Reconcile synthetic neighbor, mitigation, and repository-history records.
+  - Merge framework-fragment.yml and alignment-fragment.yml using canonical IDs.
+  - Run the detector tests and strict validator in the destination repository.
+  - If a canonical join changes meaning, stop integration and open a new research revision rather than editing the frozen evidence in place.
+
+isolated_validation:
+  detector_command: python3 tests/SAF-T1902/test_detection.py
+  detector_result: passed
+  strict_command: python3 scripts/validate-technique-research.py SAF-T1902
+  strict_result: passed_in_synthetic_isolated_root
+
+unresolved_evidence_gaps:
+  - No qualifying direct production breach was identified; all selected examples are controlled demonstrations or a disclosed vulnerability with public proof of concept.
+  - Direct CISA KEV access failed and the NVD page was non-substantive in the available reader; no exploitation-status inference was made from those endpoints.
+  - No authority source establishes universal detector thresholds; the tested 120-second window and entropy threshold require local tuning.
+
+unresolved: []
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  freeze_manifest_sha256: efa3681b96fdb9f13bc26b0ec6dddd14a31b3117cb6576cbd9b7d76520ca99ae
+  canonical_neighbor: SAF-T1102
+  canonical_mitigations: [SAF-M-4, SAF-M-5, SAF-M-7, SAF-M-17, SAF-M-22, SAF-M-29, SAF-M-72]
+  attack_mappings:
+    - {id: T1132, type: analogous}
+    - {id: T1001, type: analogous}
+  detector: "4 tests passed; 3 alerting and 5 non-alerting fixture cases matched expectations"
+  strict_validator: "PASS SAF-T1902"

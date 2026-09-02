@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1111
+name: AI Agent CLI Weaponization
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Use an AI coding-agent CLI as the model-mediated execution and
+  orchestration layer for malicious actions against live target systems.
+scope:
+  security_boundary: The boundary where adversary tasking interpreted by an AI agent
+    becomes operating-system or connected-tool execution against a target environment.
+  in_scope:
+  - Intentional adversary operation of an AI coding-agent CLI for malicious execution.
+  - Autonomous, non-interactive, or tool-connected agent workflows acting on live
+    targets.
+  out_of_scope:
+  - Prompt injection or hostile repository content that hijacks a benign operator's
+    agent.
+  - Direct shell execution without AI-mediated planning or tool selection.
+  - Downstream persistence, collection, exfiltration, or impact after execution.
+  affected_components:
+  - AI coding-agent CLI and execution host
+  - Shell and tool subprocesses
+  - MCP or other connected tool services
+  - Target-facing network paths and available credentials
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection begins with hostile content against a legitimate
+    operator rather than intentional adversary control of the CLI.
+- technique_id: SAF-T1101
+  distinction: Command injection crosses an unsafe process-launch boundary, while
+    SAF-T1111 requires the AI agent's model-mediated planning and tool selection.
+required_evidence:
+- Directly reviewed production evidence that an adversary intentionally operated an
+  agent CLI during live cyber activity.
+- First-party CLI and security documentation establishing execution, unattended modes,
+  approvals, and sandbox controls.
+- Current incident, vulnerability, advisory, exploitation-status, demonstration, detection,
+  defense, and challenge searches.
+- Exact relationship classifications separating direct incidents from enabling vulnerabilities
+  and adjacent behaviors.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Process creation with parent and child image, parent and child command line, host,
+    user, timestamp, and session identifier.
+  - Agent or runner mode and approval context when the product exposes it.
+safe_example_constraints:
+- Use only an inert workspace, an example domain, and a non-destructive marker-file
+  action.
+- Do not publish payloads, live targets, credentials, exploit code, or destructive
+  commands.
+completion_evidence:
+- Every substantive README unit has hidden trace linkage or a declared local artifact.
+- All candidate incidents and vulnerabilities are classified and excluded leads are
+  ledgered.
+- Two consecutive no-change saturation passes are recorded.
+- Deterministic positive, negative, boundary, malformed, and expected-false-positive
+  cases pass.
+- Rights, alignment, safety, and clean-room integrity reviews pass.

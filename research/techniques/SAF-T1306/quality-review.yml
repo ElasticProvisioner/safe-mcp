@@ -1,0 +1,55 @@
+version: 1
+technique_id: SAF-T1306
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: Clean-room SAF authoring agent
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation confirms prohibited target artifacts, shared registries, repository history, pull requests, SAF and SAFE sites, and prior bundles were not accessed.
+  contract_and_scope:
+    status: passed
+    notes: The contract isolates issuer-association failure and credential disclosure from interception, audience confusion, metadata delivery, redirect validation, command injection, and authentication-process modification.
+  technical_accuracy:
+    status: passed
+    notes: MCP and IETF normative behavior is separated from explicit MCP inference and historical examples.
+  claim_traceability:
+    status: passed
+    notes: Twenty-four validated claims carry exact locators, limitations, corroboration, and inference records.
+  source_or_omit:
+    status: passed
+    notes: All substantive README units are traced, and nine unverified or out-of-contract leads are excluded.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived reflects direct protocol evidence and generic demonstrations without a direct MCP production event.
+  research_saturation:
+    status: passed
+    notes: Five required passes and two consecutive no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Six candidates were classified; four highest-impact qualifying direct, historical, or adjacent examples were selected with limitations.
+  detection_quality:
+    status: passed
+    notes: Nine inert cases cover exact mismatch, metadata mismatch, missing required issuer, exact match, legacy compatibility, unrelated error, missing baseline, and an approved-migration false positive.
+  mitigation_quality:
+    status: passed
+    notes: Preventive controls address trusted discovery, authentic baselines, exact issuer binding, pre-redemption rejection, and bounded token impact.
+  framework_alignment:
+    status: passed
+    notes: Tactic, two ATT&CK mappings, canonical neighbors, mitigations, and join artifacts are internally consistent after post-freeze reconciliation.
+  publication_rights:
+    status: passed
+    notes: Source use is paraphrase or factual summary with attribution; no quotations, code, figures, datasets, or protected expression are republished.
+  safe_publication:
+    status: passed
+    notes: The scenario uses example.invalid, no live credentials, no exploit code, and no destructive action.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1306
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1306/test_detection_rule.py
+    result: "PASS: 9 cases; 5 alerts; 4 negatives; 1 documented maintenance false positive"
+    waiver: null
+unresolved: []

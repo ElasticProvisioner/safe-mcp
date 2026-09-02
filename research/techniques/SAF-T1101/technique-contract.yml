@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1101
+name: Command Injection
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics: [ATK-TA0002]
+adversary_objective: >-
+  Cause an MCP or agentic component to launch an attacker-influenced operating-system command or executable by crossing its command-generation or process-launch boundary.
+scope:
+  security_boundary: >-
+    The boundary between untrusted MCP-derived data or configuration and the operating-system command interpreter or process-launch API used by a host, client, server, proxy, or tool.
+  in_scope:
+    - Untrusted data changes executable syntax within an intended command.
+    - Untrusted data selects an unintended command or program at an MCP-related launch point.
+    - The immediate outcome is command or process execution with the affected component's privileges.
+  out_of_scope:
+    - Prompt injection or tool selection that never reaches a process-launch boundary.
+    - Authorized command execution that preserves an approved executable and arguments.
+    - Malicious configuration persistence considered independently of the later launch.
+    - Downstream privilege escalation, collection, exfiltration, or impact after execution.
+  affected_components:
+    - MCP hosts and clients that launch browsers, shells, local servers, or tools
+    - MCP servers, gateways, and local proxies that spawn subprocesses
+    - Agent tools that construct or accept command, argument, or environment data
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: >-
+      Prompt injection changes model or tool intent, while SAF-T1101 requires an
+      attacker-influenced operating-system process-launch boundary.
+  - technique_id: SAF-T1104
+    distinction: >-
+      Over-privileged tool abuse uses an authorized tool or command path beyond
+      its intended privilege boundary, while SAF-T1101 depends on unintended
+      syntax or executable selection.
+required_evidence:
+  - Establish the command-generation or process-launch boundary and attacker influence over command-bearing data.
+  - Establish the immediate command or executable outcome and affected privileges.
+  - Establish whether the complete boundary crossing is observed, demonstrated, research-derived, or hypothesized.
+  - Search current authoritative incident and vulnerability catalogs and classify direct, enabling, adjacent, and rejected candidates.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - MCP tool, configuration, authorization, or proxy event with input-trust, approval, policy, component, and correlation identifiers
+    - Process-start event with timestamp, entity identifier, parent entity identifier, executable, arguments, and command line
+safe_example_constraints:
+  - Use synthetic event records and inert placeholder values only.
+  - Do not reproduce exploit payloads, credential material, destructive commands, or bypass recipes.
+  - Represent metacharacter cases with non-operational fixture tokens.
+completion_evidence:
+  - Every substantive README unit is linked to a validated claim or declared local artifact.
+  - Excluded candidates and unsupported propositions are ledgered and omitted.
+  - All five research passes and two consecutive no-change saturation passes are recorded.
+  - Detection fixtures pass the standalone test harness.
+  - Rights, clean-room, traceability, framework-fragment, and safety reviews pass in the isolated mock repository.

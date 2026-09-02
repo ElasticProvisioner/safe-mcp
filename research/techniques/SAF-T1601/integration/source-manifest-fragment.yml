@@ -1,0 +1,449 @@
+version: 1
+sources:
+  - id: SRC-mcp-architecture-20260728
+    title: Architecture
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/architecture
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete versioned specification page.
+    locators:
+      - Core Components, Host, lines 68-83
+      - Core Components, Clients, lines 86-97
+      - Capability Negotiation, lines 142-155
+    review_notes: >-
+      Verified the host's multiple-client role, each client's one-to-one server
+      relationship, cross-server isolation, and server capability declaration.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public versioned specification was reviewed remotely; no third-party snapshot is redistributed.
+      review_evidence:
+        method: Complete rendered-page review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-mcp-discovery-20260728
+    title: Discovery
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete versioned specification page.
+    locators:
+      - Opening definition, lines 63-67
+      - Request, lines 70-90
+      - Response, lines 94-120
+      - When to Call, lines 123-130
+      - DiscoverResult, lines 138-148
+    review_notes: >-
+      Verified server/discover request and response fields, mandatory server
+      support, identity/capability/version disclosure, and the warning that
+      serverInfo is self-reported and unsuitable for security decisions.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public versioned specification was reviewed remotely; no third-party snapshot is redistributed.
+      review_evidence:
+        method: Complete rendered-page review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-mcp-inspector-cli-20260728
+    title: MCP Inspector CLI client
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers
+    version_or_date: "2026-07-28"
+    source_class: implementation_artifact
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete official documentation page.
+    locators:
+      - Choosing a server, lines 88-106
+      - Methods table, lines 109-124
+      - Inspect a catalog without connecting, lines 252-259
+    review_notes: >-
+      Verified that the official CLI can select configured servers, issue
+      initialization and list methods, and enumerate or show catalog entries
+      without connecting to a server.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party documentation was reviewed remotely.
+      review_evidence:
+        method: Complete rendered-page review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-mcp-inspector-config-20260728
+    title: MCP Inspector Configuration and flags
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers
+    version_or_date: "2026-07-28"
+    source_class: implementation_artifact
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete official documentation page.
+    locators:
+      - Choosing servers and catalog/config behavior, lines 95-132
+      - Shared server-selection flags, lines 146-161
+      - Catalog file format, lines 258-281
+    review_notes: >-
+      Verified the mcpServers catalog/config shape, per-server names and
+      transports, read-only configuration inspection, and the separation
+      between catalog enumeration and a live connection.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party documentation was reviewed remotely.
+      review_evidence:
+        method: Complete rendered-page review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-mcp-security-20260728
+    title: Security Best Practices
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol maintainers
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct section-by-section review of the complete official page.
+    locators:
+      - Local MCP Server Compromise, lines 359-409
+      - Client-side logging and least privilege guidance, lines 512-524
+      - Scope Minimization, lines 586-646
+    review_notes: >-
+      Verified local-server access risks, consent and sandboxing guidance,
+      logging recommendations, least-privilege scope guidance, and audit
+      clarity constraints.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party security guidance was reviewed remotely.
+      review_evidence:
+        method: Complete rendered-page review with locator checks
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nvd-mcp-corpus-20260901
+    title: NVD CVE API keyword corpus for Model Context Protocol
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database team
+    version_or_date: "API timestamp 2026-09-02T06:51:42Z"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Model%20Context%20Protocol&resultsPerPage=200
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: >-
+      Direct API retrieval; all 77 English descriptions and reference sets were
+      screened, then relevant records were opened individually.
+    locators:
+      - totalResults=77
+      - vulnerabilities[].cve.id, descriptions, affected, metrics, and references
+    review_notes: >-
+      Used only to establish search coverage, locate primary advisories, and
+      bound the absence statement; catalog metadata was not treated as proof of
+      a production incident.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog was queried directly; the changing bulk result is not redistributed.
+      review_evidence:
+        method: Direct API corpus screen plus individual record review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nvd-cve-2025-66416
+    title: CVE-2025-66416 record
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database team
+      - CISA SSVC coordination team
+    version_or_date: "Last modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-66416
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete individual NVD API record.
+    locators:
+      - cve.id, published, lastModified, vulnStatus
+      - English description and affected version range
+      - cvssMetricV40 and ssvcV203
+      - references
+    review_notes: >-
+      Verified affected versions below 1.23.0, the conditional DNS-rebinding
+      path to local unauthenticated HTTP MCP servers, the fix, stdio exclusion,
+      and CISA's exploitation=none SSVC assessment.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog record was reviewed directly.
+      review_evidence:
+        method: Complete individual API-record review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-ghsa-9h52-p55h-vw2f
+    title: DNS Rebinding Protection Disabled by Default in Model Context Protocol Python SDK for Servers Running on Localhost
+    publisher: Model Context Protocol Python SDK maintainers
+    authors:
+      - pcarleton
+      - JLLeitschuh
+    version_or_date: "2025-12-02"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/python-sdk/security/advisories/GHSA-9h52-p55h-vw2f
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete maintainer advisory after NVD supplied the exact URL.
+    discovery_provenance:
+      supplied_by: SRC-nvd-cve-2025-66416
+      supplied_locator: references tagged Vendor Advisory
+    locators:
+      - Advisory header and credits, lines 133-149 and 234-236
+      - Description and remediation, lines 151-156
+      - CVSS metrics, lines 157-221
+    review_notes: >-
+      Verified the conditional attack path, affected and fixed versions,
+      transport limitation, secure default added in 1.23.0, and analyst credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public maintainer advisory was reviewed by exact NVD-supplied URL; no copy is redistributed.
+      review_evidence:
+        method: Complete advisory review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nvd-cve-2026-49257
+    title: CVE-2026-49257 record
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database team
+      - CISA SSVC coordination team
+    version_or_date: "Last modified 2026-06-23"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-49257
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete individual NVD API record.
+    locators:
+      - English description and affected version range
+      - cvssMetricV31 and ssvcV203
+      - references
+    review_notes: >-
+      Verified the network-reachable unauthenticated default through 3.0.1,
+      server-side Pinot credential use, fixed version 3.1.0, and CISA's
+      exploitation=poc SSVC assessment.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog record was reviewed directly.
+      review_evidence:
+        method: Complete individual API-record review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-ghsa-73cv-556c-w3g6
+    title: Unauthenticated tool invocation via default oauth_enabled=False and host 0.0.0.0 bind
+    publisher: StarTree mcp-pinot maintainers
+    authors:
+      - xiangfu0
+      - Independent security researcher (unnamed in advisory)
+    version_or_date: "2026-05-25"
+    source_class: official_advisory
+    official_url: https://github.com/startreedata/mcp-pinot/security/advisories/GHSA-73cv-556c-w3g6
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete maintainer advisory after NVD supplied the exact URL.
+    discovery_provenance:
+      supplied_by: SRC-nvd-cve-2026-49257
+      supplied_locator: references
+    locators:
+      - Advisory header, affected and patched versions, lines 133-154
+      - Resolution and CVSS rationale, lines 154-171
+      - Summary and root cause, lines 172-217
+      - Exposed tools, lines 218-229
+      - Reporter credit, lines 320-322
+    review_notes: >-
+      Verified insecure defaults, unauthenticated tool exposure, server-side
+      credential boundary, bounded impacts, fix contents, release date, and
+      reporter attribution. Unsafe reproduction details were not reused.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public maintainer advisory was reviewed by exact NVD-supplied URL; exploit content is not redistributed.
+      review_evidence:
+        method: Complete advisory review excluding operational reuse
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-cisa-kev-20260901
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Cybersecurity Division
+    version_or_date: "Catalog version 2026.09.01"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct JSON catalog retrieval and exact-CVE membership check.
+    locators:
+      - catalogVersion=2026.09.01
+      - count=1687
+      - zero matches for CVE-2025-66416, CVE-2026-49257, and CVE-2026-48039
+    review_notes: >-
+      Verified that the shortlisted enabling vulnerabilities were not present in
+      the KEV catalog at review time. Absence from KEV is not proof of no exploitation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog was reviewed remotely and is expected to change.
+      review_evidence:
+        method: Direct full-catalog membership test
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-anthropic-gtg1002-202511
+    title: Disrupting the first reported AI-orchestrated cyber espionage campaign
+    publisher: Anthropic
+    authors:
+      - Anthropic Threat Intelligence team
+      - Anthropic Safeguards organization
+    version_or_date: "November 2025; updated 2025-11-17"
+    source_class: incident_report
+    official_url: https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-document review of the 14-page first-party PDF.
+    locators:
+      - Executive Summary, pages 2-3
+      - Operational infrastructure, pages 5-6
+      - Phase 2 Reconnaissance and attack surface mapping, page 8
+      - Technical sophistication, pages 11-12
+    review_notes: >-
+      Verified a real campaign using MCP-connected tools for network and service
+      discovery, the affected campaign scope, Anthropic's response, and the
+      report's hallucination/visibility limitations. The report does not say
+      that MCP servers themselves were enumerated.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party PDF was reviewed in full; no copyrighted copy is redistributed.
+      review_evidence:
+        method: Full PDF text review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-mitre-attack-t1046-v3.2
+    title: Network Service Discovery (T1046)
+    publisher: MITRE ATT&CK
+    authors:
+      - Aaron Sullivan (ZerkerEOD)
+      - Praetorian
+      - MITRE ATT&CK team
+    version_or_date: "Version 3.2; modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1046/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete ATT&CK technique page.
+    locators:
+      - Definition, lines 15-18
+      - Metadata and contributors, lines 21-38
+      - Anthropic campaign procedure example, line 48
+      - Mitigations, lines 119-124
+      - Detection strategy, lines 125-131
+    review_notes: >-
+      Verified the network-service-discovery definition, Discovery tactic,
+      contributor credit, analogous detection strategy, and the adjacent
+      Anthropic campaign mapping.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public live framework page was reviewed remotely.
+      review_evidence:
+        method: Complete rendered-page review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nist-sp80092
+    title: Guide to Computer Security Log Management
+    publisher: National Institute of Standards and Technology
+    authors:
+      - Karen Kent
+      - Murugiah Souppaya
+    version_or_date: "September 2006"
+    source_class: protocol_or_standard
+    official_url: https://csrc.nist.gov/pubs/sp/800/92/final
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the official CSRC publication record and abstract.
+    locators:
+      - Publication title, date, and authors, lines 64-72
+      - Abstract, lines 73-78
+      - Control families and DOI, lines 80-92
+    review_notes: >-
+      Verified general enterprise log-management guidance and its relevance to
+      audit, incident response, and system integrity; it does not define MCP fields.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official publication record was reviewed remotely; no copy is redistributed.
+      review_evidence:
+        method: Official record review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nvd-cve-2025-66454
+    title: CVE-2025-66454 record
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database team
+    version_or_date: "Reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-66454
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete individual NVD API record.
+    locators:
+      - English description, affected versions, and references
+    review_notes: >-
+      Verified that the weakness permits unauthorized tool enumeration inside
+      one Arcade MCP server; it does not enumerate MCP servers and was rejected
+      as a target-technique example.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog record was reviewed directly.
+      review_evidence:
+        method: Complete individual API-record review
+        reviewed_on: "2026-09-01"
+
+  - id: SRC-nvd-cve-2026-46519
+    title: CVE-2026-46519 record
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database team
+    version_or_date: "Reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-46519
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete individual NVD API record.
+    locators:
+      - English description, affected versions, and references
+    review_notes: >-
+      Verified that tool-discovery filtering did not enforce tool-call access in
+      the affected product. This narrows any inference from advertised
+      capability lists but is not MCP server enumeration.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Live government catalog record was reviewed directly.
+      review_evidence:
+        method: Complete individual API-record review
+        reviewed_on: "2026-09-01"

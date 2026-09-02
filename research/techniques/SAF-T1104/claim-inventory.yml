@@ -1,0 +1,362 @@
+version: 1
+technique_id: SAF-T1104
+claims:
+  - id: SAF-T1104-C001
+    statement: MCP tools are model-controlled interfaces that can interact with external systems, and the protocol recommends that users be able to deny invocations.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Introduction lines 86-87; User Interaction Model lines 92-99]
+    corroboration: Current versioned MCP specification is the controlling authority.
+    limitations: [The protocol does not mandate a specific user-interface pattern.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C002
+    statement: MCP servers may vary the visible tool set by the authorization presented and must implement access controls; clients should log tool usage.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Capabilities lines 104-117; Security Considerations lines 723-737]
+    corroboration: OWASP guidance independently recommends per-tool privilege and invocation logging.
+    limitations: [MCP does not standardize an audit event schema for these records.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C003
+    statement: Current MCP authorization guidance calls for initial least-privilege scopes and per-operation step-up scope challenges.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Scope Selection Strategy lines 164-178; Runtime Insufficient Scope Errors lines 297-321; Step-Up Authorization Flow lines 327-334]
+      - source_id: SRC-rfc8707
+        support: corroborating
+        exact_locators: [Section 1 paragraphs 1-4; Section 2]
+    corroboration: RFC 8707 explains why a token should be valid only for a specific resource and scope.
+    limitations: [Authorization remains optional for MCP implementations; stdio credentials follow a different model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C004
+    statement: Broad upfront MCP scopes expand compromise blast radius, enable immediate high-risk tool invocation, and obscure per-operation intent.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: [Scope Minimization lines 535-585]
+    corroboration: The current MCP authorization scope-selection strategy independently directs clients toward least privilege.
+    limitations: [This guidance describes risk conditions, not a measured production incident rate.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C005
+    statement: Invariant Labs demonstrated that adversarial MCP context or a crafted WhatsApp message could cause a trusted WhatsApp tool to disclose contacts or send chat data beyond the user's intended operation.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: [Experiment 1 lines 28-45; Attack Visibility lines 46-59; Experiment 2 lines 105-144; Conclusion lines 145-150]
+    corroboration: AgentDojo independently demonstrates attacker-goal execution through stateful tool calls over untrusted data.
+    limitations: [Controlled research demonstration; it does not document malicious exploitation in a production deployment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C006
+    statement: Tool poisoning and cross-server shadowing are delivery mechanisms that can redirect a trusted tool, while the privileged execution is a separable downstream behavior.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [What is a Tool Poisoning Attack lines 28-36; Shadowing Tool Descriptions lines 81-116]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators: [Experiment 1 lines 28-45]
+    corroboration: Two original Invariant reports separately document delivery and the resulting trusted-tool action.
+    limitations: [The boundary is an SAF analytic distinction, not terminology used by the source authors.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources demonstrate the sequence; SAF separates its delivery and execution stages for classification.
+    status: validated
+  - id: SAF-T1104-C007
+    statement: AgentDojo reproduced attacker-directed tool actions across stateful agent environments and found that evaluated detector-based defenses reduced but did not eliminate attack success.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-agentdojo-2024
+        support: direct
+        exact_locators: [Abstract lines 95-98; Introduction lines 103-114; Section 3 lines 132-143; Section 4; Section 5]
+    corroboration: Invariant's MCP experiments provide a protocol-specific controlled example.
+    limitations: [Benchmark environments use synthetic data and do not measure production prevalence; evaluated models and defenses age over time.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C008
+    statement: CVE-2026-27966 exposed a Python REPL tool through Langflow's CSV Agent, enabling prompt-driven server command execution; NVD records version 1.8.0 as the fix.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-27966
+        support: direct
+        exact_locators: [CVE description; published and lastModified fields]
+      - source_id: SRC-ghsa-3645-fxcv-hqr4
+        support: direct
+        exact_locators: [Summary lines 152-157; Root Cause lines 165-182; Proof of Concept lines 183-197; Impact lines 198-204; Credits lines 288-292]
+    corroboration: NVD and the first-party advisory agree on mechanism, impact, identifier, and fixed version.
+    limitations: [The advisory's displayed affected range is inconsistent with its patched-version field; no production exploitation was established.]
+    conflicts: [GHSA displays affected versions <1.6.9 while listing 1.8.0 as patched; publishable text relies on NVD's prior-to-1.8.0 statement and states only the fix.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C009
+    statement: CVE-2026-29783 allowed crafted command text to bypass GitHub Copilot CLI's read-only safety classification and execute without the expected write approval; version 0.0.423 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-29783
+        support: direct
+        exact_locators: [CVE description; references; published and lastModified fields]
+      - source_id: SRC-ghsa-g8r9-g2v8-jv6f
+        support: direct
+        exact_locators: [Summary lines 152-155; Details lines 156-165; Proof of Concept lines 166-177; Impact lines 178-187; Fix lines 192-204]
+    corroboration: NVD and the product advisory agree on affected versions, mechanism, impact, and remediation.
+    limitations: [The advisory describes a proof of concept and potential consequences, not a production intrusion.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C010
+    statement: CVE-2025-67510 documented that Neuron's MySQLWriteTool accepted unrestricted SQL, so untrusted prompts combined with a broadly privileged database account could cause destructive or privilege-related operations; version 2.8.12 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-67510
+        support: direct
+        exact_locators: [CVE description; references; published and lastModified fields]
+      - source_id: SRC-ghsa-898v-775g-777c
+        support: direct
+        exact_locators: [Impact lines 157-163; Patches and Workarounds lines 164-185; Credits lines 278-280]
+    corroboration: NVD and the vendor advisory agree on affected conditions, fixed version, and bounded impact.
+    limitations: [No production exploitation or independently reproduced end-to-end attack was established.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C011
+    statement: CVE-2025-53097 allowed Roo Code's search_files tool to read beyond the configured workspace and, with schema fetching enabled, potentially transmit sensitive content without a denial opportunity; version 3.20.3 fixed the scope failure.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-53097
+        support: direct
+        exact_locators: [Description lines 76-79; References lines 86-92; Change History lines 107-167]
+      - source_id: SRC-ghsa-wr2q-46pg-f228
+        support: direct
+        exact_locators: [Summary lines 153-157; Impact lines 158-160; Remediation lines 162-164; Credits lines 238-240]
+    corroboration: NVD and the vendor advisory agree on mechanism, preconditions, and fixed version.
+    limitations: [Potential attack path only; CISA-ADP recorded exploitation as none, not proof that exploitation is impossible.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C012
+    statement: CVE-2026-76072 described an unattended Continue CLI mode in which an incomplete denylist could allow destructive Bash actions triggered through indirect prompt injection.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-76072
+        support: direct
+        exact_locators: [CVE description; references; published field]
+      - source_id: SRC-vulncheck-cve-2026-76072
+        support: direct
+        exact_locators: [Affected versions lines 17-23; Credit lines 42-43; Description lines 44-47]
+    corroboration: NVD republishes the originating CNA description and references.
+    limitations: [The reviewed sources did not establish a fixed version or production exploitation, so this candidate was not selected for the publishable table.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C013
+    statement: No qualifying direct production incident was identified in the reviewed authoritative corpus as of 2026-09-01.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: [catalogVersion 2026.09.01; identifier comparison for selected CVEs]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: context
+        exact_locators: [Experiment 1; Experiment 2; Conclusion]
+      - source_id: SRC-nvd-cve-2025-32711
+        support: context
+        exact_locators: [CVE description; references]
+    corroboration: Direct incident, vendor advisory, NVD, CISA KEV, and controlled-demonstration passes were searched separately.
+    limitations: [Narrow absence claim for the reviewed corpus and date; it does not assert that exploitation has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a documented search conclusion rather than a proposition any one external source can prove.
+    status: validated
+  - id: SAF-T1104-C014
+    statement: Useful detection requires complete tool-invocation telemetry with parameters, user context, timestamps, authorization context, and approval state.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Security Considerations lines 725-737]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: [Scope Minimization lines 560-573]
+      - source_id: SRC-owasp-mcp-security
+        support: corroborating
+        exact_locators: [Monitoring Logging and Auditing lines 279-285]
+    corroboration: Protocol and practice guidance converge on tool-use and elevation logging.
+    limitations: [Approval state and effective-versus-required scope fields are proposed normalization fields, not a standardized MCP log schema.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The recommended normalized field set combines multiple authoritative telemetry requirements for this analytic.
+    status: validated
+  - id: SAF-T1104-C015
+    statement: A high-confidence analytic can correlate an executed high-risk tool call with excess effective scopes and either an intent mismatch or absent, denied, or stale approval.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Scope Selection Strategy lines 164-178; Runtime Insufficient Scope Errors lines 297-321]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [User Interaction Model lines 92-99; Security Considerations lines 725-737]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: context
+        exact_locators: [Attack Visibility lines 46-59]
+    corroboration: The sources establish scope minimization, approval visibility, and a demonstrated mismatch between displayed approval and actual data flow.
+    limitations: [Intent matching is a local policy decision and can be wrong; absence of these fields creates a blind spot.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact correlation rule is an SAF detection design synthesized from the observed sequence and normative controls.
+    status: validated
+  - id: SAF-T1104-C016
+    statement: Legitimate emergency or administrative work can resemble this behavior, while prompt-injection detectors alone cannot guarantee that malicious tool calls are eliminated.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agentdojo-2024
+        support: direct
+        exact_locators: [Introduction lines 111-114; Section 4.3; Section 5]
+      - source_id: SRC-anthropic-claude-code-security
+        support: context
+        exact_locators: [Permission-based architecture lines 111-114; User responsibility lines 131-133]
+    corroboration: Product documentation treats user approval and configured permissions as required context, rather than relying only on model detection.
+    limitations: [The false-positive category is operational reasoning; its frequency must be measured locally.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Legitimate-lookalike classification depends on local approval and task records.
+    status: validated
+  - id: SAF-T1104-C017
+    statement: Preventive controls include per-tool least privilege, operation-specific step-up authorization, restricted process and network boundaries, and explicit approval for sensitive actions.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Scope Selection Strategy; Runtime Insufficient Scope Errors; Step-Up Authorization Flow]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: [Local MCP Server Compromise lines 390-424; stdio Transport Security lines 515-530; Scope Minimization lines 560-585]
+      - source_id: SRC-anthropic-claude-code-security
+        support: corroborating
+        exact_locators: [Permission-based architecture lines 111-126; Core protections lines 139-150; Additional safeguards lines 166-182]
+    corroboration: A current product implementation applies read-only defaults, sandboxing, scoped paths, and fail-closed permission matching.
+    limitations: [Controls reduce reachable authority but do not prove model intent or eliminate every tool-specific flaw.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1104-C018
+    statement: Response should contain the active tool path, revoke or down-scope implicated credentials, preserve correlated tool and authorization records, and verify downstream state before restoring access.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: [Token Passthrough risks lines 213-232; stdio Transport restrictions lines 515-530; Scope Minimization lines 560-585]
+      - source_id: SRC-nist-sp800-207
+        support: context
+        exact_locators: [Abstract lines 79-88]
+    corroboration: Both sources treat authorization and resource access as explicit boundaries to constrain and reevaluate.
+    limitations: [Exact recovery steps depend on the downstream system and are not standardized by MCP.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response procedure is an SAF synthesis of the documented authorization and containment boundaries.
+    status: validated
+  - id: SAF-T1104-C019
+    statement: When a tool reaches broad host, database, messaging, or workspace authority, successful abuse can affect confidentiality, integrity, and availability across multiple connected systems.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-3645-fxcv-hqr4
+        support: direct
+        exact_locators: [Impact lines 198-204; CVSS impact lines 246-276]
+      - source_id: SRC-ghsa-g8r9-g2v8-jv6f
+        support: direct
+        exact_locators: [Impact lines 178-187]
+      - source_id: SRC-ghsa-898v-775g-777c
+        support: direct
+        exact_locators: [Impact lines 157-163; CVSS impact lines 225-255]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: [Experiment 1 lines 39-45; Experiment 2 lines 115-144]
+    corroboration: Four independent product or research examples cover host execution, database modification, and messaging-data disclosure.
+    limitations: [Actual impact is bounded by the tool's effective identity, reachable systems, and environmental controls.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The cross-environment severity statement synthesizes bounded impacts from multiple examples.
+    status: validated
+  - id: SAF-T1104-C020
+    statement: MITRE ATT&CK T1106 is only an analogous mapping because it covers adversary use of native operating-system APIs, while SAF-T1104 covers application-level MCP or agent tools.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1106
+        support: direct
+        exact_locators: [Definition lines 15-20; ID and tactic lines 24-34; version lines 35-41]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators: [Introduction lines 86-87]
+    corroboration: The two controlling definitions establish the similarity and the interface-level difference.
+    limitations: [T1106 does not cover most MCP tools directly; the mapping must not imply native-API use.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping type and boundary are SAF framework judgments from the two definitions.
+    status: validated

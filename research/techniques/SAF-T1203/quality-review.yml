@@ -1,0 +1,29 @@
+version: 1
+technique_id: SAF-T1203
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records allowed inputs, prohibited inputs, independent searches, no prior artifact access, and freeze-before-integration constraints.}
+  contract_and_scope: {status: passed, notes: Scope is limited to post-deployment artifact change and excludes initial installation, content poisoning, supply chain, and extensions.}
+  technical_accuracy: {status: passed, notes: MCP launch behavior, prerequisites, conditional impact, and inference limits are explicit.}
+  claim_traceability: {status: passed, notes: Eighteen validated claims have reviewed sources and exact locators.}
+  source_or_omit: {status: passed, notes: Publishable prose uses hidden SAF-TRACE links; unsupported candidates are omitted and ledgered.}
+  evidence_classification: {status: passed, notes: Research-Derived reflects component synthesis and absence of a direct MCP replacement case.}
+  research_saturation: {status: passed, notes: Five principal passes and two consecutive no-change passes completed on 2026-09-01.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Six candidates classified; four high-impact examples selected with relationship and exploitation limitations.}
+  detection_quality: {status: passed, notes: Deterministic rule has ten inert fixtures covering positive, negative, malformed, approved-change, and normalization cases.}
+  mitigation_quality: {status: passed, notes: Controls address pre-execution integrity, write restriction, independently managed digests, and signing limitations.}
+  framework_alignment: {status: passed, notes: ATK-TA0003, direct T1554 mapping, canonical SAF-T1006 and SAF-T1001 neighbors, and eight mitigation joins are reconciled.}
+  publication_rights: {status: passed, notes: All source use is paraphrase or factual summary with attribution; no protected artifacts or quotations are reproduced.}
+  safe_publication: {status: passed, notes: Example uses inert paths, identifiers, and fixed placeholder digests with no payload or destructive command.}
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1203
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1203/test_detection_rule.py
+    result: PASS - 10 fixtures (3 alerts, 7 non-alerts)
+    waiver: null
+unresolved: []

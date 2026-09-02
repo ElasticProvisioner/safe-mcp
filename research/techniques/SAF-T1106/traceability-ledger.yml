@@ -1,0 +1,118 @@
+version: 1
+technique_id: SAF-T1106
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1106/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1106/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1106/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1106/detection-rule.yml
+  supports: Detection logic, fields, false positives, and claim mapping.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1106/tests/test_detection_rule.py
+  supports: Executable deterministic detection validation.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1106/tests/test-logs.json
+  supports: Eight inert positive, negative, and boundary cases.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1106/validation/detection-test.txt
+  supports: Recorded detection command and passing result.
+- id: LOCAL-strict-result
+  path: research/techniques/SAF-T1106/validation/strict-validator.txt
+  supports: Recorded current-validator strict-mode command and passing result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1106-X001
+  candidate: CVE-2025-32437 as a direct autonomous-loop exploit.
+  origin: Current NVD vulnerability search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail AutoGPT denial of service loop
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-32437
+  reason: The defect concerns user-composed deterministic workflow blocks and disk
+    limits, not attacker influence over an autonomous continuation decision.
+  prohibited_publishable_text:
+  - CVE-2025-32437 is a confirmed Autonomous Loop Exploit
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1106-X002
+  candidate: CVE-2024-12704 as a direct agentic-loop exploit.
+  origin: Current NVD vulnerability search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail "agent" "infinite loop" LLM
+  consulted_source_ids:
+  - SRC-nvd-cve-2024-12704
+  reason: The infinite loop occurs in a streaming callback on an incorrect type, not
+    through model-controlled re-entry.
+  prohibited_publishable_text:
+  - CVE-2024-12704 demonstrates attacker-controlled agent continuation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1106-X003
+  candidate: CVE-2024-58340 ReDoS as an autonomous-loop example.
+  origin: Current NVD LangChain search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail LangChain agent denial of service loop
+  consulted_source_ids:
+  - SRC-nvd-cve-2024-58340
+  reason: The resource use is a single parser regular-expression behavior with no
+    autonomous feedback path.
+  prohibited_publishable_text:
+  - CVE-2024-58340 is an autonomous feedback-loop exploit
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1106-X004
+  candidate: CVE-2024-2965 recursive SitemapLoader as a direct example.
+  origin: Current NVD LangChain search.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail LangChain agent denial of service loop
+  consulted_source_ids:
+  - SRC-nvd-cve-2024-2965
+  reason: Self-referential URL parsing causes deterministic recursion; an agent does
+    not decide to continue.
+  prohibited_publishable_text:
+  - CVE-2024-2965 confirms malicious agent tool-call looping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1106-X005
+  candidate: Claim that a public production breach has been confirmed.
+  origin: Production-incident research pass.
+  attempted_searches:
+  - site:status.openai.com AI agent infinite loop repeated tool calls incident resource
+    exhaustion
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog AI agent denial service
+    infinite loop
+  - site:aws.amazon.com/security/security-bulletins agent loop denial of service AI
+  - site:cloud.google.com/support/bulletins agent loop denial of service AI
+  consulted_source_ids:
+  - SRC-ms-unbounded-dos
+  reason: No reviewed authority established a qualifying public production incident;
+    absence is stated narrowly.
+  prohibited_publishable_text:
+  - Autonomous Loop Exploit has caused a confirmed public production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1106-X006
+  candidate: LoopHarness outer-state safety fragmentation as a selected resource-amplification
+    example.
+  origin: Saturation follow-up research.
+  attempted_searches:
+  - site:arxiv.org "autonomous loops" progress verification stagnation
+  consulted_source_ids:
+  - SRC-wu-loopharness-2026
+  reason: The central objective is unauthorized irreversible action across iterations,
+    not resource consumption through repeated execution.
+  prohibited_publishable_text:
+  - LoopHarness directly demonstrates resource-amplification exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

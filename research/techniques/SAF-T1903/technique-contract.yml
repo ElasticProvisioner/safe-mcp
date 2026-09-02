@@ -1,0 +1,72 @@
+version: 1
+technique_id: SAF-T1903
+name: Malicious Server Control Channel
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0011
+adversary_objective: Establish or service a bidirectional operator-controlled command-and-result
+  channel from a malicious MCP server process or server-branded integration.
+scope:
+  security_boundary: The MCP host's trust in a configured server executable and the
+    executable's resulting endpoint identity, permissions, and outbound connectivity.
+  in_scope:
+  - A malicious or trojanized server process opens an unapproved external connection
+    and accepts remote commands.
+  - A server-branded integration persistently services an operator channel and returns
+    command results.
+  - A custom MCP-compatible transport is in scope only when it carries an operator
+    command loop.
+  out_of_scope:
+  - Delivery or configuration substitution that ends at server execution.
+  - Server-originated model steering or tool-description poisoning without a remote
+    operator loop.
+  - One-way exfiltration, unauthenticated exposure of a benign server, or takeover
+    of a benign server without demonstrated operator command exchange.
+  affected_components:
+  - MCP host and server process
+  - Server configuration and package distribution path
+  - Endpoint process tree and network transport
+nearest_neighbors:
+- technique_id: SAF-T1003
+  distinction: Malicious MCP-Server Distribution ends when attacker-controlled server
+    code starts; SAF-T1903 requires an ongoing bidirectional operator channel.
+- technique_id: SAF-T1001
+  distinction: Tool Poisoning Attack manipulates model decisions through server-authored
+    metadata or content; SAF-T1903 exchanges commands and results with a remote operator.
+required_evidence:
+- Establish that a malicious server or server-branded integration can create or service
+  a bidirectional command channel.
+- Establish the host-to-server execution trust boundary, process privileges, and network
+  prerequisite.
+- Separate observed production findings from controlled demonstrations and bounded
+  inference.
+- Search incidents, advisories, exploitation catalogs, vulnerability disclosures,
+  demonstrations, detection research, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP host or process-inventory server start records with timestamp, host_id, process_id,
+    server_id, role, and approved_destinations.
+  - Endpoint network records with timestamp, process identity, direction, and destination.
+  - Endpoint child-process records with ancestry, interactive state, and child category.
+  - Channel audit records with direction, semantic label, and channel identity where
+    available.
+safe_example_constraints:
+- Use only example.invalid destinations, synthetic identities, and non-executable
+  event records.
+- Do not reproduce reverse-shell payloads, credentials, exploit code, or live malicious
+  infrastructure.
+completion_evidence:
+- Every substantive README unit carries hidden claim/source trace linkage or a declared
+  local-artifact link.
+- Every claim has reviewed sources, exact locators, limitations, and a validation
+  status.
+- All rejected, redundant, blocked, and adjacent candidates are ledgered and omitted.
+- Five research passes and two consecutive no-material-change passes are recorded.
+- Deterministic detection tests and isolated strict validation pass.
+- Publication-rights and clean-room reviews pass before freeze.

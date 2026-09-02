@@ -1,0 +1,56 @@
+version: 1
+technique_id: SAF-T1101
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: Clean-room author with isolated automated validation
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Only seed metadata, generic authoring machinery, and independent authoritative sources were used; prohibited access is attested false.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires attacker influence plus an unsafe process-launch boundary and excludes prompt-only, authorized, persistence-only, and downstream behaviors.
+  technical_accuracy:
+    status: passed
+    notes: Current protocol, weakness, implementation, advisory, and telemetry facts have exact locators and explicit limitations.
+  claim_traceability:
+    status: passed
+    notes: All 18 claims are validated, source-linked, locator-bound, and exposed in the Evidence Summary.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a hidden trace or declared local artifact; five unsupported candidate classes are resolved by omission.
+  evidence_classification:
+    status: passed
+    notes: Observed is supported only by CISA KEV inclusion for a direct MCP process-launch vulnerability; no named breach is inferred.
+  research_saturation:
+    status: passed
+    notes: All five methodology passes completed and the final two authoritative NVD passes produced no material changes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Four examples were selected from fourteen classified candidates based on exploitation evidence, authority, impact, mechanism diversity, and remediation clarity.
+  detection_quality:
+    status: passed
+    notes: The correlation rule has complete component traceability and passed ten synthetic positive, negative, boundary, and ambiguity cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address command construction, executable selection, privilege, proxy access, confirmation, and monitoring.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0002 and analogous ATT&CK T1059 are bounded; canonical SAF-T1102 and SAF-T1104 neighbors plus eight mitigation joins were reconciled after freeze and passed strict validation.
+  publication_rights:
+    status: passed
+    notes: All source use is factual paraphrase with attribution; no quotations, copied payloads, code, images, or third-party artifacts are included.
+  safe_publication:
+    status: passed
+    notes: Fixtures are inert strings evaluated as data; the bundle contains no credentials, operational payloads, or destructive commands.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1101
+      result: passed
+      environment: Fresh isolated mock repository with synthetic framework joins and generic validator only.
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1101/test_detection_rule.py
+    result: 10 of 10 synthetic cases passed; 0 failed.
+    waiver: null
+unresolved: []

@@ -1,0 +1,119 @@
+version: 1
+technique_id: SAF-T1104
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1104/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1104/technique-contract.yml
+  supports: Internal scope, name, tactic, generation mode, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1104/quality-review.yml
+  supports: Validation commands, results, review date, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1104/detection-rule.yml
+  supports: The standalone experimental detection analytic.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1104/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, and legitimate-lookalike
+    test logic.
+- id: LOCAL-detection-test-data
+  path: techniques/SAF-T1104/test-logs.json
+  supports: Representative detection inputs and expected outcomes.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1104-X001
+  candidate: A malicious actor has exploited Over-Privileged Tool Abuse in a production
+    MCP deployment.
+  origin: Required production-incident research pass.
+  attempted_searches:
+  - Direct NVD keyword and exact-record review for MCP, AI-agent, prompt-injection,
+    and tool vulnerabilities.
+  - Direct CISA KEV 2026.09.01 identifier comparison.
+  - Direct review of original Invariant experiments and selected vendor advisories.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-nvd-cve-2026-27966
+  - SRC-nvd-cve-2026-29783
+  - SRC-nvd-cve-2025-67510
+  reason: Reviewed sources establish controlled demonstrations and vulnerabilities,
+    not malicious production use.
+  prohibited_publishable_text:
+  - attackers have exploited this technique in production
+  - observed production breach of Over-Privileged Tool Abuse
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1104-X002
+  candidate: EchoLeak CVE-2025-32711 is a direct MCP Over-Privileged Tool Abuse incident.
+  origin: NVD vulnerability and incident-discovery pass.
+  attempted_searches:
+  - Direct review of the NVD CVE-2025-32711 record.
+  - Attempted direct MSRC and originating-research URLs; the former required JavaScript
+    and the latter had moved.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-32711
+  reason: The reviewed record is non-MCP and does not establish the contract's exact
+    authority boundary; it is retained only as an adjacent rejected lead.
+  prohibited_publishable_text:
+  - EchoLeak directly proves SAF-T1104
+  - CVE-2025-32711 is a production MCP incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1104-X003
+  candidate: Public proof-of-concept or CVE publication establishes active exploitation
+    of the selected vulnerabilities.
+  origin: Vulnerability-classification challenge pass.
+  attempted_searches:
+  - Direct CISA KEV 2026.09.01 comparison.
+  - NVD and originating advisory review for exploitation wording.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-3645-fxcv-hqr4
+  - SRC-ghsa-g8r9-g2v8-jv6f
+  - SRC-ghsa-898v-775g-777c
+  reason: A proof of concept, severity score, or CVE record is not evidence of malicious
+    exploitation.
+  prohibited_publishable_text:
+  - all selected CVEs are actively exploited
+  - public exploit proves a real-world breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1104-X004
+  candidate: CVE-2025-59417 Lobe Chat XSS is an instance of over-privileged tool execution.
+  origin: Narrow NVD saturation query result.
+  attempted_searches:
+  - NVD keyword API query for dangerous tool prompt injection.
+  - Scope comparison against the task-intent versus effective-authority contract.
+  consulted_source_ids: []
+  reason: The discovery record described unsafe rendering and XSS, not execution through
+    excess delegated tool authority; it was not promoted from discovery lead to evidence.
+  prohibited_publishable_text:
+  - CVE-2025-59417 is Over-Privileged Tool Abuse
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1104-X005
+  candidate: CVE-2026-76072 should displace a selected example despite missing remediation
+    evidence.
+  origin: Saturation follow-up after NVD discovery.
+  attempted_searches:
+  - Direct NVD CVE-2026-76072 record review.
+  - Direct originating VulnCheck CNA advisory review.
+  - CISA KEV 2026.09.01 identifier comparison.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-76072
+  - SRC-vulncheck-cve-2026-76072
+  - SRC-cisa-kev-2026-09-01
+  reason: The candidate is direct and remains in the evidence inventory, but the reviewed
+    sources did not establish a fixed version or production exploitation; higher-confidence
+    remediated examples were selected.
+  prohibited_publishable_text:
+  - Continue CLI is a selected example
+  - CVE-2026-76072 has a confirmed fix
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

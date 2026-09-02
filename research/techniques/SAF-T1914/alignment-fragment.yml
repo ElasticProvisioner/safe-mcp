@@ -1,0 +1,19 @@
+version: 1
+issues:
+  - id: SAF-T1914-A001
+    triggered_by: SAF-T1914
+    affects:
+      - SAF-T1102
+      - SAF-T1309
+      - SAF-T1914
+    change: >-
+      Replace both synthetic clean-room neighbor IDs with independently resolved
+      destination framework IDs, then add reciprocal distinctions if those
+      destination techniques exist.
+    reason: >-
+      Clean-room restrictions barred reading the shared framework and alignment
+      registries before freeze; the distinction text is evidence-backed, but the
+      actual destination identifiers require post-freeze mechanical reconciliation.
+    severity: low
+    status: resolved
+    resolution: SAF-T1102 resolves the indirect-injection prerequisite and SAF-T1309 resolves the broader prompt-manipulated privileged-invocation boundary; twelve canonical mitigations preserve result trust, authority separation, sink constraint, audit, approval, and lineage monitoring.

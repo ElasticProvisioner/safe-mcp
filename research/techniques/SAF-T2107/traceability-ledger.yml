@@ -1,0 +1,120 @@
+version: 1
+technique_id: SAF-T2107
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2107/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2107/technique-contract.yml
+  supports: Internal scope, name, tactic, neighbor contract, and completion metadata.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T2107/source-coverage.yml
+  supports: Independent search passes, direct-evidence gap, candidate assessment,
+    and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2107/quality-review.yml
+  supports: Validation commands, results, review date, and detection-test status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2107/detection-rule.yml
+  supports: The explicitly labeled provenance-admission detection analytic.
+- id: LOCAL-test-logs
+  path: tests/SAF-T2107/test-logs.json
+  supports: Representative positive, negative, and boundary detection events.
+- id: LOCAL-expected-results
+  path: tests/SAF-T2107/expected-results.json
+  supports: Expected outcomes for every detection test case.
+- id: LOCAL-test-script
+  path: tests/SAF-T2107/test_detection_rule.py
+  supports: Executable validation of the analytic's defined selections and filter.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T2107/validation/detection-test.txt
+  supports: Captured deterministic detection-test result from the frozen bundle.
+- id: LOCAL-isolated-validation
+  path: research/techniques/SAF-T2107/validation/strict-validator.txt
+  supports: Captured isolated strict-validator result from the frozen bundle.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2107/validation/canonical-validation.txt
+  supports: Captured destination detector and strict-validator result after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2107-X001
+  candidate: A confirmed production breach caused by MCP tool results poisoning model
+    training.
+  origin: Breach and vulnerability research pass.
+  attempted_searches:
+  - site:cisa.gov "Model Context Protocol" training poisoning incident
+  - site:microsoft.com/security/blog MCP training data poisoning incident
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  reason: The reviewed candidates were runtime behaviors and did not establish the
+    training boundary.
+  prohibited_publishable_text:
+  - confirmed MCP-training production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2107-X002
+  candidate: A disclosed CVE directly caused model-weight poisoning through MCP training
+    data.
+  origin: NVD and CVE catalog pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail "Model Context Protocol" poisoning training
+  - site:cve.org "Model Context Protocol" poisoning
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-61591
+  - SRC-nvd-cve-2025-52573
+  reason: Both relevant CVEs describe runtime command injection and no model-training
+    path.
+  prohibited_publishable_text:
+  - direct MCP model-poisoning CVE
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2107-X003
+  candidate: Runtime MCP tool poisoning proves the model-training technique end to
+    end.
+  origin: First-party vendor incident pass.
+  attempted_searches:
+  - site:microsoft.com/en-us/security/blog MCP tool poisoning training model
+  - site:openai.com function calling untrusted tool output training data
+  consulted_source_ids:
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-openai-function-calling
+  reason: The sources describe live inference behavior and no weight update.
+  prohibited_publishable_text:
+  - runtime tool poisoning proves weight contamination
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2107-X004
+  candidate: Schema validation of MCP structured output detects semantic poison.
+  origin: Protocol and detection pass.
+  attempted_searches:
+  - site:modelcontextprotocol.io/specification output schema validate malicious content
+  - site:nist.gov AI provenance semantic poisoning detection
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-06-18
+  - SRC-nist-ai-600-1
+  reason: Schema checks establish structural conformance, not semantic safety or attacker
+    intent.
+  prohibited_publishable_text:
+  - schema validation detects semantic poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2107-X005
+  candidate: Any single malicious MCP response is sufficient to poison a model.
+  origin: Empirical research and challenge pass.
+  attempted_searches:
+  - site:proceedings.mlr.press instruction tuning poisoning one sample
+  - site:anthropic.com/research small samples poison single document
+  consulted_source_ids:
+  - SRC-wan23b
+  - SRC-anthropic-small-samples
+  reason: The experiments use multiple examples or documents and expressly limit generalization.
+  prohibited_publishable_text:
+  - one MCP response always poisons the model
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,37 +1,81 @@
-title: MCP Vector Store Contamination Detection
-id: 5894b8fe-29f0-44d8-ad9b-2266a132ec58
+title: Persistent Vector Memory Write Followed by Cross-Session Retrieval
+id: 6a63e75c-217a-4c7d-a210-600000000001
 status: experimental
-description: Detects potential vector store contamination attacks in MCP environments
-author: Sachin Keswani
-date: 2025-08-30
+description: Detects an unapproved write from an untrusted source followed within seven days by retrieval of the same persistent memory record in a different session.
+author: SAF clean-room research
+date: 2026/09/02
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T2106
-logsource:
-  product: mcp
-  service: vector_store
-detection:
-  selection:
-    operation:
-      - "insert"
-      - "update"
-      - "upsert"
-    embedding_metadata:
-      - "*SYSTEM:*"
-      - "*Ignore previous instructions*"
-      - "*Always include credentials*"
-      - "*Bypass security*"
-      - "*Delete all files*"
-  filter:
-    - embedding_metadata:
-        - "*legitimate_documentation*"
-        - "*official_guide*"
-        - "*security_best_practices*"
-  condition: selection and not filter
-falsepositives:
-  - Legitimate system documentation with embedded instructions
-  - Security training materials with example commands
-level: high
+  - https://learn.microsoft.com/en-us/security/zero-trust/catalog-ai-attack-techniques/ai-memory-context-poisoning
+  - https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/
 tags:
-  - attack.persistence
-  - attack.ta0003
-  - safe.t2106
+  - saf.t2106
+logsource:
+  category: application
+  product: agent-memory
+  service: vector-store-audit
+detection:
+  selection_write:
+    event_type: memory_write
+    approval_state: unapproved
+    source_trust: untrusted
+  selection_retrieval:
+    event_type: memory_retrieval
+  correlation:
+    match_fields:
+      - record_id
+    max_span: 7d
+    distinct_session: true
+  condition: selection_write followed_by selection_retrieval
+fields:
+  - timestamp
+  - event_type
+  - collection_id
+  - record_id
+  - actor_id
+  - tenant_id
+  - session_id
+  - source_id
+  - source_trust
+  - approval_state
+  - retrieval_score
+falsepositives:
+  - Approved bulk ingestion incorrectly labeled unapproved.
+  - Administrative collection migration or rebuild lacking an allowlisted change identifier.
+  - Security tests and evaluation fixtures in non-production collections.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T2106-C009
+  telemetry_claim_ids:
+    - SAF-T2106-C009
+    - SAF-T2106-C011
+  limitation_claim_ids:
+    - SAF-T2106-C010
+  validation_artifacts:
+    - tests/SAF-T2106/test_detection_rule.py
+    - tests/SAF-T2106/test-cases.json
+    - research/techniques/SAF-T2106/validation/detection-test.txt
+    - research/techniques/SAF-T2106/validation/canonical-validation.txt
+  components:
+    selection_write:
+      claim_ids: [SAF-T2106-C009, SAF-T2106-C011]
+      rationale: Unauthorized and untrusted persistent writes are the defining precursor event.
+    selection_retrieval:
+      claim_ids: [SAF-T2106-C009]
+      rationale: Retrieval of the same record establishes exposure to later model context.
+    correlation:
+      claim_ids: [SAF-T2106-C009, SAF-T2106-C010]
+      rationale: Stable record identifiers and a bounded time window join the two event classes.
+    condition:
+      claim_ids: [SAF-T2106-C009]
+      rationale: Ordering the write before retrieval reflects the demonstrated mechanism.
+    logsource:
+      claim_ids: [SAF-T2106-C009, SAF-T2106-C010]
+      rationale: Vector-store audit and agent-memory events are required for correlation.
+    fields:
+      claim_ids: [SAF-T2106-C009, SAF-T2106-C010]
+      rationale: Fields support attribution, tenancy, trust, temporal ordering, and retrieval matching.
+    falsepositives:
+      claim_ids: [SAF-T2106-C010]
+      rationale: Approved ingestion and administrative workflows can resemble the analytic without authorization context.

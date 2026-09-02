@@ -1,0 +1,315 @@
+version: 1
+technique_id: SAF-T1904
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct MCP 2025-06-18 architecture, base protocol, and tools pages
+        - Direct Slack Events API, message event, chat.postMessage, and Audit Logs pages
+        - Direct Telegram Bot API 10.3 page
+      material_changes:
+        - Established directly documented inbound chat, outbound reply, model-controlled tool, and telemetry components.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - NVD CVE API keywordSearch=OpenClaw and targeted Slack, Telegram, Discord, chat-command, and agent-dispatch queries
+        - CISA KEV catalogVersion 2026.09.01 exact selected-CVE check
+        - CISA advisory-site queries for OpenClaw, Slack AI agent, and Telegram bot agent
+        - UK NCSC authority-site query for AI agent chat
+      material_changes:
+        - Ranked a complete 592-record NVD OpenClaw corpus and selected four direct, highest-consequence external-chat vulnerabilities.
+        - Recorded that no qualifying production incident was found in the reviewed direct-authority corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Slack first-party Events API LLM-response sample
+        - MCP tool invocation primitives
+        - Selected and comparator vendor advisories
+      material_changes:
+        - Confirmed component feasibility but preserved the absence of a complete adversarial chat-to-tool-to-chat demonstration.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Slack event and audit telemetry fields
+        - Telegram webhook and update fields
+        - MCP tool security controls
+        - MITRE ATT&CK T1102.002 detection and bidirectional behavior
+      material_changes:
+        - Defined an unauthorized-inbound, same-session tool, same-conversation reply correlation with a tunable five-minute window.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Authorized-chatops false-positive challenge
+        - One-way versus bidirectional scope challenge
+        - Audit-log-only telemetry challenge
+        - Complete-loop evidence-classification challenge
+      material_changes:
+        - Retained Research-Derived status and required stable identity authorization plus connector event telemetry.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - NVD keywordSearch=OpenClaw unauthenticated command dispatch chat
+        - NVD keywordSearch=OpenClaw downstream tool execution webhook
+        - NVD keywordSearch=OpenClaw privileged commands external route
+        - NVD keywordSearch=OpenClaw persistent operator node credentials chat
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - NVD keywordSearch=OpenClaw host execution Discord
+        - NVD keywordSearch=OpenClaw spoof sender allowlist webhook
+        - NVD keywordSearch=OpenClaw arbitrary commands Feishu webhook
+        - NVD keywordSearch=OpenClaw unauthorized agent dispatch
+      material_changes: []
+  rationale: >-
+    Direct protocol and provider authorities cover the defining components;
+    NVD's complete 592-record OpenClaw result was exhaustively filtered into
+    175 channel-related records and ranked; vendor advisories support selected
+    consequences and fixes; CISA and NCSC authority searches cover the
+    production-incident gap. Earlier follow-ups that added or displaced
+    candidates were not counted. The last two distinct authority-only query
+    sets returned only already ranked selected or comparator records and did
+    not change scope, examples, detection, mitigation, or evidence status.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 18
+  selected_examples:
+    - SRC-ghsa-xh72-v6v9-mwhc
+    - SRC-ghsa-fhvm-j76f-qmjv
+    - SRC-ghsa-98hh-7ghg-x6rq
+    - SRC-ghsa-xr4f-mjxj-w6w5
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-xh72-v6v9-mwhc
+      identifier: CVE-2026-44109 / GHSA-xh72-v6v9-mwhc
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none; no reviewed production incident.
+      impact: Unauthenticated Feishu webhook or card-action traffic could reach command dispatch without expected signature or replay protection.
+      remediation: Upgrade to OpenClaw 2026.4.15 or later and configure/enforce webhook and callback authentication.
+      selected: true
+      rationale: Highest-directness external unauthenticated path with critical command-dispatch consequence.
+    - source_id: SRC-ghsa-fhvm-j76f-qmjv
+      identifier: CVE-2026-28454 / GHSA-fhvm-j76f-qmjv
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none; no reviewed production incident.
+      impact: A reachable Telegram webhook could accept forged updates, spoof sender/chat identifiers, bypass allowlists, and reach privileged commands.
+      remediation: Upgrade conservatively to OpenClaw 2026.2.2 or later and require the Telegram webhook secret token; the advisory body/header disagree on 2026.2.1 versus 2026.2.2.
+      selected: true
+      rationale: Direct unauthenticated external-chat identity forgery with privileged-command consequence.
+    - source_id: SRC-ghsa-98hh-7ghg-x6rq
+      identifier: CVE-2026-41303 / GHSA-98hh-7ghg-x6rq
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none; no reviewed production incident.
+      impact: A Discord command sender outside the approver list could approve pending host execution.
+      remediation: Upgrade to OpenClaw 2026.3.28 or later and verify immutable approver identity enforcement.
+      selected: true
+      rationale: Direct chat command crosses a high-consequence host-execution approval boundary.
+    - source_id: SRC-ghsa-xr4f-mjxj-w6w5
+      identifier: CVE-2026-32905 / GHSA-xr4f-mjxj-w6w5
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none; no reviewed production incident.
+      impact: An authorized non-owner chat sender could issue bootstrap codes and enroll persistent operator or node credentials until removed.
+      remediation: Upgrade to OpenClaw 2026.5.4 or later, audit device enrollment, remove unknown devices, and rotate exposed credentials.
+      selected: true
+      rationale: Direct chat path with durable operator-control consequence complements command and approval examples.
+    - source_id: SRC-ghsa-hw9r-h9mr-4jff
+      identifier: CVE-2026-35674 / GHSA-hw9r-h9mr-4jff
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: A scoped Gateway caller could route chat.send into an inherited external route and bypass admin or approval scopes for privileged mutations.
+      remediation: Upgrade to OpenClaw 2026.5.18 or later and withhold operator.write from clients that can target inherited external routes.
+      selected: false
+      rationale: Severe comparator, but the starting actor is an authenticated Gateway client rather than an external chat-service sender.
+    - source_id: SRC-ghsa-v773-r54f-q32w
+      identifier: CVE-2026-28392 / GHSA-v773-r54f-q32w
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: Under Slack dmPolicy=open, any workspace user able to DM the bot could invoke privileged slash commands.
+      remediation: Upgrade to OpenClaw 2026.2.14 or later and avoid open DM policy for privileged bots.
+      selected: false
+      rationale: Direct and relevant, but displaced by unauthenticated command dispatch and more durable or host-level consequences.
+    - source_id: SRC-ghsa-c29c-2q9c-pc86
+      identifier: CVE-2026-53823 / GHSA-c29c-2q9c-pc86
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: Mutable Slack display names could satisfy allowFrom entries and confer another identity's agent access.
+      remediation: Upgrade to OpenClaw 2026.5.3 or later and bind policy to immutable Slack user IDs.
+      selected: false
+      rationale: Direct identity-boundary weakness with less specifically documented privileged consequence.
+    - source_id: SRC-ghsa-782p-5fr5-7fj8
+      identifier: CVE-2026-24764 / GHSA-782p-5fr5-7fj8
+      relationship: enabling_vulnerability
+      exploitation_status: Vendor advisory states no known exploitation.
+      impact: Untrusted Slack channel metadata entered a higher-trust prompt location, increasing prompt-injection exposure.
+      remediation: Upgrade to OpenClaw 2026.2.3 or later.
+      selected: false
+      rationale: Prompt-injection hardening does not establish a repeatable bidirectional control path.
+    - source_id: SRC-ghsa-39mp-545q-w789
+      identifier: CVE-2026-35620 / GHSA-39mp-545q-w789
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: A command-authorized non-owner could persistently change the current session delivery policy.
+      remediation: Upgrade to OpenClaw 2026.3.24 or later and require owner status for delivery-policy mutation.
+      selected: false
+      rationale: Direct chat authorization flaw with a bounded session-state consequence.
+    - source_id: SRC-ghsa-vqvg-86cc-cg83
+      identifier: CVE-2026-35620 / GHSA-vqvg-86cc-cg83
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: An authenticated internal Gateway caller with operator.write could mutate config-backed or pairing-store allowlists without operator.admin.
+      remediation: Upgrade to OpenClaw 2026.3.24 or later and enforce operator.admin for mutating allowlist commands.
+      selected: false
+      rationale: Internal control-plane scope flaw rather than an external chat-service ingress example.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-32974
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: A forged Feishu webhook event could reach downstream tool execution in a narrower verificationToken-without-encryptKey configuration.
+      remediation: Upgrade beyond the affected pre-2026.3.12 release and enforce encrypted webhook validation.
+      selected: false
+      rationale: Direct, but substantially overlaps the later and broader selected Feishu command-dispatch advisory.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-31998
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: An empty Synology Chat allowlist could fail open, allowing unauthorized agent dispatch and downstream tool actions.
+      remediation: Upgrade beyond OpenClaw 2026.2.23 and require fail-closed allowlist validation.
+      selected: false
+      rationale: Direct but configuration-specific and lower consequence than selected command, approval, and persistent-credential paths.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-32924
+      relationship: enabling_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: Feishu reaction-event misclassification could bypass group allowlists and mention requirements.
+      remediation: Upgrade to OpenClaw 2026.3.12 or later and authorize all event subtypes consistently.
+      selected: false
+      rationale: Bypasses ingress gates but does not document the privileged consequence of selected examples.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-32975
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: A duplicate mutable Zalo group name could route messages from an unintended group to the agent.
+      remediation: Upgrade to OpenClaw 2026.3.12 or later and bind group policy to stable identifiers.
+      selected: false
+      rationale: Direct unauthorized routing but no comparably documented privileged or durable consequence.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-28448
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: An unauthorized Twitch user could mention the bot and reach agent dispatch when allowedRoles was empty.
+      remediation: Upgrade to OpenClaw 2026.2.1 or later and fail closed on empty role or sender policy.
+      selected: false
+      rationale: Direct agent dispatch but no specifically documented privileged command, host execution, or persistent credential consequence.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-44110
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: A DM-paired Matrix identity could run room control commands without membership in configured room allowlists.
+      remediation: Upgrade to OpenClaw 2026.4.15 or later and separate DM pairing from room-command authorization.
+      selected: false
+      rationale: Direct, but the prerequisite and consequence are less severe and specific than the selected four.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-53807
+      relationship: direct_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: An authenticated Telegram user could trigger interactive callback commands before allowFrom validation.
+      remediation: Upgrade to OpenClaw 2026.5.6 or later and apply allowFrom before callback authorization.
+      selected: false
+      rationale: Strong direct comparator but still requires an authenticated user and has a less specific documented consequence.
+    - source_id: SRC-nvd-openclaw-corpus-20260902
+      identifier: CVE-2026-26316
+      relationship: enabling_vulnerability
+      exploitation_status: NVD CISA SSVC records exploitation none.
+      impact: An optional BlueBubbles webhook could trust loopback peer address even with a missing or wrong secret under certain proxy deployments.
+      remediation: Upgrade to OpenClaw 2026.2.13 or later, require a password, and authenticate any public reverse proxy.
+      selected: false
+      rationale: Enabling authentication flaw whose agent-command and bidirectional consequences are not directly documented.
+
+sources_consulted:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-39mp-545q-w789
+  - SRC-ghsa-782p-5fr5-7fj8
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-c29c-2q9c-pc86
+  - SRC-ghsa-fhvm-j76f-qmjv
+  - SRC-ghsa-hw9r-h9mr-4jff
+  - SRC-ghsa-v773-r54f-q32w
+  - SRC-ghsa-vqvg-86cc-cg83
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-base-20250618
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1071-001-v1-5
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-mitre-t1102-v1-3
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-slack-audit-logs-20260902
+  - SRC-slack-chat-postmessage
+  - SRC-slack-events-api-20260902
+  - SRC-slack-message-event-20260902
+  - SRC-telegram-bot-api-10-3
+sources_cited:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-fhvm-j76f-qmjv
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-slack-audit-logs-20260902
+  - SRC-slack-chat-postmessage
+  - SRC-slack-events-api-20260902
+  - SRC-slack-message-event-20260902
+  - SRC-telegram-bot-api-10-3
+sources_rejected:
+  - {source_id: SRC-mcp-base-20250618, reason: Useful transport detail but redundant with the architecture and provider evidence used in publishable claims.}
+  - {source_id: SRC-mitre-t1102-v1-3, reason: Parent taxonomy is less specific than the bidirectional sub-technique cited.}
+  - {source_id: SRC-mitre-t1102-003-v1-1, reason: One-way communication is a scope boundary, not evidence for the required bidirectional loop.}
+  - {source_id: SRC-mitre-t1071-001-v1-5, reason: Web-protocol transport is too broad and does not establish a chat identity or response path.}
+  - {source_id: SRC-ghsa-v773-r54f-q32w, reason: Direct Slack vulnerability displaced by higher-consequence selected examples.}
+  - {source_id: SRC-ghsa-c29c-2q9c-pc86, reason: Direct mutable-identity weakness but lower documented consequence.}
+  - {source_id: SRC-ghsa-782p-5fr5-7fj8, reason: Enabling prompt-injection hardening without a complete backchannel.}
+  - {source_id: SRC-ghsa-39mp-545q-w789, reason: Direct but bounded session-state consequence.}
+  - {source_id: SRC-ghsa-vqvg-86cc-cg83, reason: Internal Gateway scope boundary rather than external chat-service ingress.}
+  - {source_id: SRC-ghsa-hw9r-h9mr-4jff, reason: Severe comparator but requires an authenticated Gateway client before the inherited external route.}
+sources_blocked: []
+
+conflicts:
+  - issue: The Telegram advisory header and body disagree on whether the first patched version is 2026.2.2 or 2026.2.1.
+    resolution: Preserve the conflict and use 2026.2.2 or later as the conservative remediation threshold.
+  - issue: Several NVD records contain different score submissions for the same CVE.
+    resolution: Rank primarily by documented consequence and prerequisites; avoid presenting a single unattributed CVSS value in the technique.
+  - issue: Vulnerability disclosures demonstrate ingress or privilege boundary failures but not the complete adversarial reply loop.
+    resolution: Keep the end-to-end technique Research-Derived and explicitly disclose the missing incident and demonstration evidence.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1904-C007
+  rationale: >-
+    Direct authorities independently establish external chat message/reply
+    primitives, model-controlled tools, and multiple authorization failures
+    reaching commands, host approval, or persistent credentials. The complete
+    adversarial inbound-message to consequential-tool-call to attacker-observed
+    reply loop remains an explicit framework inference; no qualifying production
+    incident or single end-to-end demonstration was found.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

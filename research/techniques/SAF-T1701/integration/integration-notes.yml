@@ -1,0 +1,63 @@
+version: 1
+technique_id: SAF-T1701
+bundle_role: immutable_clean_room_candidate
+authorship:
+  technique_author: Frank Kautz
+  role: SAF Technique Author
+  research_and_drafting: OpenAI Codex
+  detection_engineering: OpenAI Codex
+synthetic_joins:
+  related_techniques:
+    - id: SAF-T1998
+      label: Tool Metadata Poisoning
+      action: Reconcile to an existing canonical neighbor after freeze; preserve the mechanism distinction.
+    - id: SAF-T1999
+      label: Direct Prompt Injection
+      action: Reconcile to an existing canonical neighbor after freeze; preserve the indirect-result distinction.
+  mitigations:
+    - id: SAF-M-1701-01
+      label: Tool Trust Segmentation
+      action: Map to a canonical mitigation after freeze or create through normal repository governance.
+    - id: SAF-M-1701-02
+      label: Explicit High-Impact Tool Approval
+      action: Map to a canonical mitigation after freeze or create through normal repository governance.
+    - id: SAF-M-1701-03
+      label: Agent Flow Monitoring
+      action: Map to a canonical mitigation after freeze or create through normal repository governance.
+registry_fragments:
+  source_manifest: source-manifest-fragment.yml
+  framework_model: framework-fragment.yml
+  alignment_ledger: alignment-fragment.yml
+integration_constraints:
+  - Do not edit or replace the frozen bundle.
+  - Perform registry joins from fragments after preserving FREEZE.sha256.
+  - Record any ID reconciliation as a post-freeze mechanical change.
+  - Re-run strict validation and detector tests in the actual repository after integration.
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T1998: SAF-T1001
+    SAF-T1999: SAF-T1102
+  canonical_mitigation_roles:
+    SAF-M-1701-01: SAF-M-21
+    SAF-M-1701-02: SAF-M-69
+    SAF-M-1701-03: SAF-M-70
+  additional_canonical_mitigations:
+    - SAF-M-1
+    - SAF-M-5
+    - SAF-M-12
+    - SAF-M-22
+    - SAF-M-29
+    - SAF-M-74
+  source_id_mapping:
+    SRC-mcp-core-2025: SRC-mcp-spec-2025-11-25
+    SRC-mcp-tools-2025: SRC-mcp-tools-2025-11-25
+    SRC-mcp-auth-2025: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-risk-vocabulary-2026: SRC-mcp-annotations-2026-03-16
+    SRC-invariant-github-2025: SRC-invariant-github-mcp-2025
+    SRC-invariant-whatsapp-2025: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-poisoning-2025: SRC-invariant-tpa-2025-04-01
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_validation:
+    detection: research/techniques/SAF-T1701/validation/detector-test.txt
+    strict: research/techniques/SAF-T1701/validation/strict-validator.txt
+  status: integrated_and_validated

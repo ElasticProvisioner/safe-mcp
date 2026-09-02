@@ -1,303 +1,246 @@
 # SAF-T1507: Authorization Code Interception
 
 ## Overview
-**Tactic**: Credential Access (ATK-TA0006)  
-**Technique ID**: SAF-T1507  
-**Severity**: High  
-**First Observed**: Threat documented 2013-01 (RFC 6819 §4.4.1.1); PKCE mitigation standardized 2015-09 (RFC 7636). No MCP-specific incident was identified during this review.  
-**Last Updated**: 2026-04-23  
-**Author**: bishnu bista
 
-> **Note**: Authorization-code interception is a long-standing, well-catalogued OAuth 2.0 threat. The MCP-specific exposure arises in two layers: (a) MCP servers act as OAuth clients to upstream providers (Google, Slack, GitHub, Notion, etc.), inheriting whatever flow hardening the upstream authorization server enforces; and (b) MCP clients authorize against MCP servers under the 2025-06-18 MCP authorization spec, which mandates PKCE and explicitly cites code-interception prevention as its purpose. This review did not identify a publicly disclosed incident where an MCP deployment was breached specifically via authorization-code interception; the underlying OAuth attack primitives are nevertheless well-documented outside MCP and the MCP threat surface inherits them.
+- **Tactic**: Credential Access (ATK-TA0006)
+- **Technique ID**: SAF-T1507
+- **Research Packet**: [research/techniques/SAF-T1507](../../research/techniques/SAF-T1507/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1507/traceability-ledger.yml)
+- **Documentation Status**: Stable
+- **Evidence Status**: Research-Derived
+- **Severity**: High
+- **Severity Rationale**: Successful code redemption can expose data and permit actions within the resulting token's MCP scopes; scope, audience, lifetime, and server capabilities bound the outcome. <!-- SAF-TRACE: claims=SAF-T1507-C016,SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 -->
+- **First Observed**: No qualifying production MCP incident was identified in the reviewed corpus through 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1507-C011; sources=SRC-nvd-cleanroom-queries,SRC-cisa-kev-authorization-code-2026-09-01,SRC-cve-2025-4143,SRC-cve-2025-4144,SRC-cve-2026-67336 -->
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+Authorization Code Interception covers an adversary obtaining an OAuth authorization code from the redirect-to-client path used by an HTTP MCP authorization flow, then redeeming or attempting to redeem it when transaction binding or validation is absent or defeated. The crossed boundary spans the authorization server, user agent or local URI dispatcher, MCP client callback, and token endpoint. [MCP authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization) [RFC 7636](https://www.rfc-editor.org/rfc/rfc7636.html) <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C002; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749 -->
+
+### In Scope
+
+- Interception, misdirection, or attacker receipt of a code issued for a legitimate MCP authorization transaction. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
+- Redemption or attempted redemption when S256 PKCE, exact redirect matching, state correlation, or single-use enforcement is missing, downgraded, bypassed, or jointly compromised. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C003,SAF-T1507-C004,SAF-T1507-C006; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700 -->
+- Browser, private-use scheme, claimed HTTPS, and loopback callback paths used by an MCP client. <!-- SAF-TRACE: claims=SAF-T1507-C007; sources=SRC-rfc8252,SRC-rfc7636 -->
+
+### Out of Scope
+
+- Authorization-code injection substitutes an attacker-controlled code into another client session; it is a separate neighbor unless the adversary first intercepted a victim-issued code. <!-- SAF-TRACE: claims=SAF-T1507-C018; sources=SRC-rfc9700,SRC-rfc7636 -->
+- Theft of an access or refresh token after issuance, token audience confusion, and downstream token misuse occur after the authorization-code boundary. <!-- SAF-TRACE: claims=SAF-T1507-C018,SAF-T1507-C019; sources=SRC-rfc9700,SRC-rfc7636,SRC-mcp-authorization-2025-11-25 -->
+- Malicious-client registration, deceptive consent, authorization-server mix-up, phishing without code receipt, and generic open redirection are excluded unless they produce the defining intercepted-code sequence. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C018; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700 -->
+
+### Distinguishing Characteristics
+
+The decisive observable is a code issued for a legitimate authorization transaction reaching or being redeemed by an unintended party before token issuance. Code injection instead changes which code a client processes, while access-token theft begins after the token exists. [OAuth Security BCP](https://www.rfc-editor.org/rfc/rfc9700.html) <!-- SAF-TRACE: claims=SAF-T1507-C018; sources=SRC-rfc9700,SRC-rfc7636 -->
 
 ## Description
 
-Authorization Code Interception is a credential-access technique in which an adversary captures a short-lived OAuth 2.0 authorization code during the redirect that follows user consent, then exchanges that code at the token endpoint to obtain access (and often refresh) tokens. The code is a one-time credential with a recommended lifetime of at most 10 minutes ([RFC 6749 §4.1.2](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2)), so the attacker must either race the legitimate client to the token endpoint or prevent the legitimate client from redeeming the code at all.
+The OAuth authorization-code grant sends a short-lived code through a user agent to the client's redirect endpoint; the client then presents that code to the token endpoint. MCP's HTTP authorization specification adopts this role structure for clients accessing protected MCP servers. [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749.html) [MCP authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization) <!-- SAF-TRACE: claims=SAF-T1507-C002,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc8252 -->
 
-In MCP deployments, two distinct OAuth relationships are exposed to this class of attack. First, MCP servers routinely act as OAuth clients to upstream services to fetch user data on behalf of the LLM; the authorization-code flow executed by the MCP server is functionally identical to any other OAuth client flow and subject to the same interception vectors. Second, the [MCP 2025-06-18 Authorization specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) defines how MCP clients authorize against MCP servers (which act as OAuth 2.1 resource servers) and explicitly addresses this threat: *"MCP clients MUST implement PKCE according to OAuth 2.1 Section 7.5.2. PKCE helps prevent authorization code interception and injection attacks by requiring clients to create a secret verifier-challenge pair, ensuring that only the original requestor can exchange an authorization code for tokens."* Because code exchange and `code_verifier` verification occur at the authorization server (not at the MCP resource server), an authorization server that accepts token requests without enforcing `code_verifier` validation remains exploitable even when the MCP client correctly generates a verifier.
+An adversary can target the callback path by claiming a colliding private-use scheme, racing a loopback listener, causing an authorization server to accept an attacker-controlled redirect, or otherwise obtaining the response. If the adversary can redeem the code without the legitimate transaction's verifier, the token endpoint may issue a token to the unintended party. [RFC 8252 native-app guidance](https://www.rfc-editor.org/rfc/rfc8252.html) <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc8252 -->
 
-Once the attacker exchanges a stolen code, the resulting tokens are indistinguishable from legitimate ones for the scopes granted. Because the token exchange itself succeeds, no downstream API sees a failure; detection relies on observing the symptom at the *code* stage (duplicate redemption, timing anomaly, or codes visible in unexpected locations) rather than at the token-use stage.
+PKCE normally prevents that redemption: the client commits to a challenge in the authorization request and later proves possession of the transaction-specific verifier. The current MCP specification requires clients to implement PKCE, verify server support, and use S256 when technically capable; exact redirect validation and state checking provide separate protections. [RFC 7636 PKCE](https://www.rfc-editor.org/rfc/rfc7636.html) <!-- SAF-TRACE: claims=SAF-T1507-C003,SAF-T1507-C004,SAF-T1507-C006; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc7636 -->
+
+The complete MCP technique is Research-Derived. Three directly relevant MCP-related vulnerabilities establish real control failures, but the reviewed authorities do not establish a production MCP interception incident or a public end-to-end MCP demonstration. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C008,SAF-T1507-C009,SAF-T1507-C010,SAF-T1507-C011; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-cve-2025-4143,SRC-cloudflare-pr26,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-nvd-cleanroom-queries,SRC-cisa-kev-authorization-code-2026-09-01 -->
 
 ## Attack Vectors
 
-### Primary Vector: Man-in-the-Browser Code Interception
-- **Method**: A malicious browser extension, a compromised JavaScript dependency loaded on the redirect-target page, or in-browser malware reads the authorization code from the URL of the redirect back to the client's `redirect_uri`. The attacker then races the legitimate client to the token endpoint.
-- **Prerequisites**: Attacker controls code running in the victim's browser context for the duration of the OAuth flow. A compliant authorization server does not enforce PKCE for the target client, or the attacker has also captured the `code_verifier` (e.g., via the same extension).
-- **Detection difficulty**: Medium — duplicate-exchange attempts and sub-second race conditions are observable at the authorization server; after-the-fact evidence may be limited.
-
-### Secondary Vectors
-
-[RFC 6819 §4.4.1.1](https://datatracker.ietf.org/doc/html/rfc6819#section-4.4.1.1) ("Threat: Eavesdropping or Leaking Authorization 'codes'") enumerates the following leakage paths. Each remains applicable to MCP-server OAuth flows.
-
-#### 1. Referrer-Header Leakage
-- **Target**: Authorization codes included as query parameters in the redirect URL.
-- **Method**: If the page at `redirect_uri` issues outbound requests (analytics, images, third-party scripts) before the server-side code exchange completes, the authorization code may appear in the `Referer` header sent to every third-party origin the page contacts.
-- **Mitigation anchor**: `Referrer-Policy: no-referrer` (or `strict-origin`) on the redirect-target page; complete the code exchange server-side before rendering any page that issues outbound requests.
-
-#### 2. Open-Redirect or Non-Exact `redirect_uri`
-- **Target**: Authorization servers that accept non-exact `redirect_uri` matching (wildcards, subdomain matches, trailing-path flexibility) or clients that host open redirects on their registered `redirect_uri` domain.
-- **Method**: Attacker registers a malicious `redirect_uri` within the accepted pattern, or chains through an open redirect on the legitimate client's domain to forward the code to an attacker endpoint.
-- **Mitigation anchor**: [RFC 9700 §2.1](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1) — *"authorization servers MUST utilize exact string matching except for port numbers in `localhost` redirection URIs of native apps."* The MCP 2025-06-18 authorization spec restates this requirement: *"Authorization servers MUST validate exact redirect URIs against pre-registered values to prevent redirection attacks."*
-
-#### 3. Codes in Browser History, Server Logs, or Analytics Pipelines
-- **Target**: Any component that records full URLs — browser history syncing across devices, web-server access logs, CDN logs, SIEM ingestion, client-side analytics instrumentation.
-- **Method**: An attacker with log, history, or analytics access reads codes after the redirect. Even short-lived codes are usable if the logs are read and the code redeemed before the legitimate client completes the exchange or before expiry.
-- **Mitigation anchor**: Server-side consumption of the code before the URL is logged; redaction of `code` and `state` parameters in log pipelines; `Referrer-Policy` (as above) to limit analytics exposure.
-
-#### 4. TLS Interception with a Trusted Root
-- **Target**: Corporate MITM proxies or devices with attacker-installed root certificates.
-- **Method**: Full visibility of the OAuth redirect traffic through a break-and-inspect gateway.
-- **Scope**: Limited to environments where the attacker has already achieved trust-anchor compromise; primarily an insider or advanced-persistent-threat scenario. RFC 6819 §4.4.1.1 does not enumerate this specific variant — it lists referrer headers, server request logs, open redirectors, and browser history — but the general eavesdropping threat the section catalogues applies when TLS integrity is broken upstream of the client.
-
-### MCP-Specific Amplification
-
-- **Multi-provider exposure**: An MCP server frequently holds tokens for multiple upstream providers (e.g., Gmail + Drive + Slack). A single intercepted code grants scope-bounded access to one provider, but correlated interception across a user's MCP onboarding session can yield a wide credential bundle.
-- **PKCE obligation under the MCP spec**: MCP clients MUST implement PKCE per the [MCP 2025-06-18 Authorization specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization), regardless of whether the underlying authorization server classifies them as public or confidential clients. The spec notes that authorization servers used by MCP deployments must implement OAuth 2.1 "with appropriate security measures for both confidential and public clients" — in either case, the authorization server must enforce `code_verifier` validation at token exchange, since that is the step that binds the code to the originating client's memory.
-- **Confused-deputy adjacency**: The [MCP Security Best Practices](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices) document describes a related attack in which an MCP proxy server using a static client ID with a third-party authorization server can be tricked into redirecting an authorization code to an attacker-controlled `redirect_uri` registered via dynamic client registration. That attack is catalogued as a distinct confused-deputy pattern but shares the same end state — attacker possession of a redeemable authorization code — and is defended by the same per-client consent, exact `redirect_uri` validation, and `state` parameter controls.
+- **Primary Vector**: Obtain the authorization response through a misdirected redirect URI, colliding local callback handler, or exposed callback path, then race or replace the client's token exchange. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc8252 -->
+- **Secondary Vectors**: Defeat PKCE by forcing a no-challenge downgrade, accepting `plain`, or bypassing verifier enforcement. <!-- SAF-TRACE: claims=SAF-T1507-C006,SAF-T1507-C009,SAF-T1507-C010; sources=SRC-rfc7636,SRC-rfc9700,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4 -->
+- **Affected Components**: MCP client, authorization server, browser or operating-system dispatcher, loopback listener, token endpoint, and intended MCP protected resource. <!-- SAF-TRACE: claims=SAF-T1507-C002,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc8252,SRC-rfc7636 -->
+- **Trust Boundary Crossed**: Authorization-server response to MCP-client callback, followed by authorization-code proof at the token endpoint. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
 
 ## Technical Details
 
 ### Prerequisites
-- The victim initiates an OAuth 2.0 authorization-code flow with a provider the MCP server (or the MCP client, under the MCP spec) integrates.
-- At least one of the following holds:
-  - Attacker code runs in the victim's browser during the redirect (extension, injected script, compromised dependency loaded on the redirect-target page).
-  - The `redirect_uri` or the page it resolves to leaks the code via `Referer`, logs, analytics, or synced browser history.
-  - The authorization server does not enforce exact `redirect_uri` matching, or the client hosts an open redirect on a registered host.
-  - PKCE is not enforced at the authorization server for the target client, OR PKCE is enforced only client-side without server-side `code_verifier` validation.
+
+- The deployment uses an HTTP MCP OAuth authorization-code flow. <!-- SAF-TRACE: claims=SAF-T1507-C002,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc8252 -->
+- The adversary can influence or observe the redirect path, register or race a local handler, exploit weak redirect validation, or otherwise receive the code. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C007,SAF-T1507-C008; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc8252,SRC-cve-2025-4143,SRC-cloudflare-pr26 -->
+- PKCE, redirect binding, state checking, or single-use enforcement is absent, weak, downgraded, bypassed, or compromised together with the verifier. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C003,SAF-T1507-C004,SAF-T1507-C006; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700 -->
+- The code remains valid and the attacker can reach the token endpoint before or instead of the intended redemption. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
 
 ### Attack Flow
 
-```mermaid
-sequenceDiagram
-    participant V as Victim Browser
-    participant X as Attacker (in browser)
-    participant AS as Authorization Server
-    participant M as MCP Server (OAuth client)
-    participant U as Upstream API
-
-    V->>AS: 1. /authorize (client_id, redirect_uri, scope, state, [code_challenge])
-    AS->>V: 2. Consent screen
-    V->>AS: 3. User approves
-    AS->>V: 4. 302 Redirect: redirect_uri?code=...&state=...
-    V->>X: 5. Redirect observed by in-browser attacker
-    X->>AS: 6. (Race) POST /token with code
-    V->>M: 7. Redirect delivered to MCP server
-    M->>AS: 8. POST /token with code (+ code_verifier if PKCE)
-    alt Attacker possesses every credential the AS requires (code, plus code_verifier if PKCE is enforced, plus client authentication if the client is confidential)
-        AS-->>X: 9a. access_token + refresh_token (attacker wins race)
-        AS-->>M: 9b. invalid_grant (code already redeemed)
-        X->>U: 10. Use stolen token against upstream API
-    else Attacker is missing one or more required credentials (no code_verifier under PKCE, or missing client_secret / private_key_jwt / mTLS cert for a confidential client)
-        AS-->>X: 9c. invalid_grant or invalid_client (exchange rejected)
-        AS-->>M: 9d. access_token + refresh_token
-    end
-```
-
-1. **User initiates OAuth**: The MCP client or MCP server redirects the user's browser to the authorization server with a standard authorization request.
-2. **User consents**: The authorization server issues a short-lived authorization code and redirects to `redirect_uri`.
-3. **Code exposed**: The code is briefly visible in the browser URL or in a redirect chain.
-4. **Attacker captures**: A malicious extension, injected script, referrer leak, or log read exposes the code to the attacker.
-5. **Race to token endpoint**: The attacker POSTs to `/token` using the stolen code. The token endpoint enforces two independent defense layers, and the attacker must satisfy whichever of them the authorization server requires: (a) **client authentication** — for confidential clients, the AS authenticates the client at the token endpoint using `client_secret`, `private_key_jwt`, or mTLS; an attacker without the legitimate client's credentials is rejected with `invalid_client` regardless of PKCE state, and public clients skip this check since `client_id` is a non-secret identifier; (b) **PKCE proof of possession** — if PKCE is enforced, the attacker must also supply `code_verifier` matching the stored `code_challenge`; the verifier normally lives only in the legitimate client's memory, so the attacker fails unless they captured the verifier through the same vector that captured the code (for example the same malicious browser extension). The attack succeeds only when the attacker can satisfy every layer the AS enforces for the target client type.
-6. **Token exchange**: Whoever reaches the token endpoint first and presents all required credentials (client authentication if applicable, and `code_verifier` when PKCE is enforced) receives the tokens. The loser sees `invalid_grant` — the RFC 6749 error returned for any invalid, expired, or already-redeemed code. Some providers surface a more descriptive `error_description` such as `code_already_used`, but the standards-defined error code is `invalid_grant`.
-7. **Post-exploitation**: The attacker's tokens are indistinguishable from legitimate tokens and grant the scopes the user approved. Refresh tokens, if issued, extend access beyond the original session until the user explicitly revokes the authorization at the provider.
+1. **Setup**: The adversary identifies a callback path it can receive, redirect, observe, or race. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc8252 -->
+2. **Authorization**: A legitimate MCP client initiates an authorization request for an MCP protected resource. <!-- SAF-TRACE: claims=SAF-T1507-C002,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc8252 -->
+3. **Interception**: The authorization response carrying the code reaches the unintended handler or attacker-controlled redirect. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc8252 -->
+4. **Control Failure**: The authorization server accepted an invalid redirect, or the token endpoint accepts a missing, weak, downgraded, or mismatched PKCE relationship. <!-- SAF-TRACE: claims=SAF-T1507-C008,SAF-T1507-C009,SAF-T1507-C010; sources=SRC-cve-2025-4143,SRC-cloudflare-pr26,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc9700,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-rfc7636 -->
+5. **Redemption**: The adversary or attacker-influenced flow presents the code to the token endpoint before it expires or is consumed. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C005; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
+6. **Objective**: A resulting token can authorize requests to the intended MCP server within its audience, scopes, and lifetime; further token use is follow-on activity. <!-- SAF-TRACE: claims=SAF-T1507-C016,SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 -->
 
 ### Example Scenario
 
-**Scenario: Browser extension intercepts Google OAuth code for an MCP server**
+A desktop MCP client opens a browser authorization flow and listens on a local callback. A second local process receives the response first, but the authorization server rejects redemption because the opaque code is bound to the legitimate client's S256 verifier. This inert example shows both the interception point and the expected control outcome. <!-- SAF-TRACE: claims=SAF-T1507-C006,SAF-T1507-C007,SAF-T1507-C014; sources=SRC-rfc7636,SRC-rfc9700,SRC-rfc8252,SRC-mcp-authorization-2025-11-25,SRC-rfc6749 -->
 
-```text
-1. User installs MCP server "gmail-helper" which integrates Gmail via Google OAuth.
-2. User visits gmail-helper.example.com, clicks "Connect Gmail".
-3. Browser redirects to https://accounts.google.com/o/oauth2/v2/auth?
-        client_id=12345.apps.googleusercontent.com&
-        redirect_uri=https://gmail-helper.example.com/oauth/callback&
-        response_type=code&
-        scope=https://www.googleapis.com/auth/gmail.readonly&
-        state=a1b2c3
-   (No PKCE — gmail-helper is a confidential client relying on client_secret only.)
-4. User consents. Google redirects to:
-   https://gmail-helper.example.com/oauth/callback?code=4/0AY0e-g7...&state=a1b2c3
-5. A malicious extension with content-script access to gmail-helper.example.com
-   reads the callback URL.
-6. The extension's background service worker POSTs the code to the attacker's
-   infrastructure.
-7. The attacker has gmail-helper's client_id + client_secret (leaked in a prior
-   breach) and POSTs:
-       POST https://oauth2.googleapis.com/token
-       Body: code=4/0AY0e-g7...
-             client_id=12345.apps.googleusercontent.com
-             client_secret=<leaked>
-             redirect_uri=https://gmail-helper.example.com/oauth/callback
-             grant_type=authorization_code
-8. If the attacker reaches Google's /token endpoint before gmail-helper does,
-   the attacker receives an access_token + refresh_token with gmail.readonly.
-9. gmail-helper's subsequent exchange fails with invalid_grant.
+```json
+{
+  "redirect_uri": "http://127.0.0.1:51004/callback",
+  "authorization_code": "opaque-redacted",
+  "code_challenge_method": "S256",
+  "attacker_has_verifier": false,
+  "token_exchange_outcome": "invalid_grant"
+}
 ```
 
-**What changes when PKCE (RFC 7636) is enforced**: In step 3 the client generates a random `code_verifier` and sends `code_challenge` to the authorization server. Under `code_challenge_method=S256` (RFC 7636 §4.2), `code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))`; under the legacy `plain` method, `code_challenge = code_verifier`. In step 7 the attacker's token request must supply the original `code_verifier`; the verifier normally stays in the legitimate client's process, so the attacker cannot produce it and the exchange fails. PKCE is bypassed only if the attacker captures the `code_verifier` through the same vector that captured the code (e.g., a malicious extension with access to the client's JavaScript state), which is why PKCE is a necessary but not sufficient defense against a full man-in-the-browser compromise — and why confidential-client authentication (when applicable) remains an independent, complementary defense layer even when PKCE is enabled.
+## Evidence and Current State
+
+### Evidence Summary
+
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1507-C001 | The MCP end-to-end technique follows when an intercepted code is redeemable because binding controls fail. | Research-Derived | SRC-mcp-authorization-2025-11-25: [MCP authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization); SRC-rfc7636: [RFC 7636](https://www.rfc-editor.org/rfc/rfc7636.html); SRC-rfc9700: [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) | Explicit SAF synthesis; no production MCP incident. |
+| SAF-T1507-C002 | MCP HTTP authorization assigns OAuth roles and obtains access tokens for a protected MCP server. | Research-Derived | SRC-mcp-authorization-2025-11-25; SRC-rfc6749 | Applies only to deployments using MCP HTTP authorization. |
+| SAF-T1507-C003 | MCP clients must implement PKCE, verify support, and use S256 when technically capable. | Research-Derived | SRC-mcp-authorization-2025-11-25; SRC-rfc9700 | Weak compatibility behavior can remain in nonconforming implementations. |
+| SAF-T1507-C004 | Exact redirect validation and state checking are required or recommended MCP protections. | Research-Derived | SRC-mcp-authorization-2025-11-25; SRC-rfc9700 | State does not replace PKCE for stolen public-client codes. |
+| SAF-T1507-C005 | The authorization-code flow sends a code through the user agent and exchanges it at the token endpoint. | Research-Derived | SRC-rfc6749; SRC-rfc8252 | Flow mechanics do not establish exploitation. |
+| SAF-T1507-C006 | PKCE binds the code to a transaction-specific verifier and derived challenge. | Research-Derived | SRC-rfc7636; SRC-rfc9700 | Fails if the verifier is disclosed, weak, or not enforced. |
+| SAF-T1507-C007 | Private-use and loopback callbacks can permit local interception; claimed HTTPS reduces risk. | Research-Derived | SRC-rfc8252; SRC-rfc7636 | Platform and redirect-mechanism dependent. |
+| SAF-T1507-C008 | CVE-2025-4143 was an MCP OAuth redirect-validation failure fixed by Cloudflare. | Research-Derived | SRC-cve-2025-4143; SRC-cloudflare-pr26 | Vulnerability, not production breach. |
+| SAF-T1507-C009 | CVE-2025-4144 bypassed PKCE through downgrade and was fixed by Cloudflare. | Research-Derived | SRC-cve-2025-4144; SRC-cloudflare-pr27; SRC-rfc9700 | Vulnerability, not observed exploitation. |
+| SAF-T1507-C010 | CVE-2026-67336 accepted plain PKCE in Better Auth's legacy MCP plugin before 1.6.11. | Research-Derived | SRC-cve-2026-67336; SRC-ghsa-9h47-pqcx-hjr4; SRC-rfc7636 | Advisory also covers a separate unsigned-token defect. |
+| SAF-T1507-C011 | No production MCP incident was found in the named official corpus through 2026-09-01. | Research-Derived | SRC-nvd-cleanroom-queries; SRC-cisa-kev-authorization-code-2026-09-01; three selected CVE records | Bounded absence finding, not proof of never occurring. |
+| SAF-T1507-C012 | Endpoint invariant failures and code reuse support an experimental correlation analytic. | Research-Derived | SRC-rfc6749; SRC-rfc7636; SRC-rfc9700 | Normalized fields are not a standard log schema. |
+| SAF-T1507-C013 | Retries, join errors, missing events, and attacker-first redemption create false positives or blind spots. | Research-Derived | SRC-rfc6749; SRC-rfc9700 | No detector accuracy study was found. |
+| SAF-T1507-C014 | Exact redirects, S256 PKCE, state, single-use codes, and protected callbacks are complementary controls. | Research-Derived | SRC-mcp-authorization-2025-11-25; SRC-rfc6749; SRC-rfc9700; SRC-rfc8252 | Joint code-and-verifier compromise remains possible. |
+| SAF-T1507-C015 | Response should contain the transaction, revoke related tokens, preserve evidence, fix configuration, and patch. | Research-Derived | SRC-rfc6749; SRC-cloudflare-pr26; SRC-cloudflare-pr27; SRC-ghsa-9h47-pqcx-hjr4 | Platform-specific revocation and logging vary. |
+| SAF-T1507-C016 | Redeemed tokens can affect confidentiality and integrity within their authorization bounds. | Research-Derived | SRC-mcp-authorization-2025-11-25; SRC-cve-2025-4143; SRC-cve-2026-67336 | Impact depends on audience, scopes, lifetime, and server functions. |
+| SAF-T1507-C017 | ATT&CK T1528 is analogous because the code is a precursor to obtaining an application access token. | Research-Derived | SRC-mitre-t1528; SRC-rfc7636 | T1528 does not specifically describe redirect interception. |
+| SAF-T1507-C018 | Code injection and post-issuance token theft are distinct neighbors. | Research-Derived | SRC-rfc9700; SRC-rfc7636 | Canonical SAF neighbors are reconciled by boundary rather than treated as exact protocol labels. |
+| SAF-T1507-C019 | MCP resource indicators and audience validation constrain a token to its intended resource. | Research-Derived | SRC-mcp-authorization-2025-11-25 | Does not prevent use against the intended MCP server. |
+
+### Current State
+
+- **Affected Environments**: HTTP MCP deployments using authorization-code redirects where a callback can be observed, raced, or misdirected and one or more binding controls fail. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C002,SAF-T1507-C007; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc7636,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
+- **Known Exploitation**: No qualifying production MCP incident was identified; three direct vulnerabilities and first-party fixes qualify as implementation evidence. <!-- SAF-TRACE: claims=SAF-T1507-C008,SAF-T1507-C009,SAF-T1507-C010,SAF-T1507-C011; sources=SRC-cve-2025-4143,SRC-cloudflare-pr26,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc9700,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-rfc7636,SRC-nvd-cleanroom-queries,SRC-cisa-kev-authorization-code-2026-09-01 -->
+- **Available Protections**: Current MCP guidance requires PKCE-support verification, S256 when technically capable, exact registered redirects, and token audience validation; current OAuth guidance adds downgrade rejection and single-use handling. <!-- SAF-TRACE: claims=SAF-T1507-C003,SAF-T1507-C004,SAF-T1507-C014,SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
+- **Residual Risk**: Local callback races, disclosed verifiers, nonconforming servers, legacy plain-PKCE compatibility, incomplete logging, and attacker-first redemption can leave exposure or visibility gaps. <!-- SAF-TRACE: claims=SAF-T1507-C006,SAF-T1507-C007,SAF-T1507-C013; sources=SRC-rfc7636,SRC-rfc9700,SRC-rfc8252,SRC-rfc6749 -->
+
+### Known Breaches and Vulnerabilities
+
+No qualifying production MCP breach was identified in the reviewed official corpus. The selected examples are direct vulnerabilities, ordered by recency and MCP-specific relevance; none is presented as observed exploitation. <!-- SAF-TRACE: claims=SAF-T1507-C011; sources=SRC-nvd-cleanroom-queries,SRC-cisa-kev-authorization-code-2026-09-01,SRC-cve-2025-4143,SRC-cve-2025-4144,SRC-cve-2026-67336 -->
+
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| [CVE-2026-67336](https://nvd.nist.gov/vuln/detail/CVE-2026-67336) / [GHSA-9h47-pqcx-hjr4](https://github.com/better-auth/better-auth/security/advisories/GHSA-9h47-pqcx-hjr4) | Published 2026-08-01; Better Auth before 1.6.11 using legacy `oidcProvider` or `mcp` plugins | Plain PKCE could allow interception when the authorization URL leaked; upgrade to 1.6.11, disable plain PKCE, and migrate from the deprecated plugin. Reporter: Subhan Umer; advisory publisher: Gustavo Valverde and Better Auth Security. | Direct vulnerability | The advisory also covers a separate unsigned-token defect; CISA ADP recorded exploitation as none, and no breach is established. <!-- SAF-TRACE: claims=SAF-T1507-C010; sources=SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-rfc7636 --> |
+| [CVE-2025-4143](https://nvd.nist.gov/vuln/detail/CVE-2025-4143) | Published 2025-05-01; Cloudflare workers-oauth-provider before 0.0.5 | Authorization-time redirect allowlist failure could expose a code under the CNA's prior-authorization, automatic-reauthorization, and user-navigation conditions; pull request 26 added validation and a regression test. Patch author: Glen Maddern; reviewer: Kenton Varda. | Direct vulnerability | The CNA describes bounded potential impact, not a production incident; CISA ADP recorded exploitation as none. <!-- SAF-TRACE: claims=SAF-T1507-C008; sources=SRC-cve-2025-4143,SRC-cloudflare-pr26 --> |
+| [CVE-2025-4144](https://nvd.nist.gov/vuln/detail/CVE-2025-4144) | Published 2025-05-01; Cloudflare workers-oauth-provider before 0.0.5 | A verifier could be accepted for a flow without a challenge, bypassing PKCE through downgrade; pull request 27 added the RFC 9700 rejection and a regression test. Patch author: Glen Maddern; reviewer: Kenton Varda. | Direct vulnerability | No end-to-end exploitation is documented; CISA ADP recorded exploitation as none. <!-- SAF-TRACE: claims=SAF-T1507-C009; sources=SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc9700 --> |
 
 ## Impact Assessment
 
-- **Confidentiality**: High — Stolen tokens grant whatever scopes the user consented to. OAuth consent screens frequently request broader scopes than the immediate action requires.
-- **Integrity**: High — Most OAuth scopes for productivity providers (Gmail, Drive, Slack, GitHub, Notion) include write permissions, enabling data modification, email sending, or resource deletion.
-- **Availability**: Low–Medium — Indirect; stolen tokens could be used for rate-limit consumption or resource deletion depending on scope.
-- **Scope**: Bounded by the stolen token's scope. For MCP servers that integrate multiple providers, correlated interception across the onboarding flow can broaden scope substantially.
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | A redeemed token can expose MCP-accessible data within its audience, scopes, lifetime, and server authorization. <!-- SAF-TRACE: claims=SAF-T1507-C016,SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 --> |
+| Integrity | High | The token can permit actions the MCP server authorizes for its scopes; exact consequences depend on available tools and downstream controls. <!-- SAF-TRACE: claims=SAF-T1507-C016; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 --> |
+| Availability | Low | Interception does not inherently disrupt service, although authorized operations reached with the token may have separate availability effects. <!-- SAF-TRACE: claims=SAF-T1507-C016; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 --> |
+| Scope | Adjacent | Correct resource indicators and audience validation constrain cross-resource replay, but the intended MCP server remains exposed to the token's permissions. <!-- SAF-TRACE: claims=SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25 --> |
 
-### Additional Impacts
-- **MFA bypass**: Post-consent tokens do not require re-authentication; MFA at the upstream provider does not protect subsequent token use.
-- **Persistent access via refresh tokens**: If the stolen code yields a refresh token, the attacker retains access until the user explicitly revokes the authorization in the provider's dashboard.
-- **Silent from the provider's perspective**: The attacker's API calls are indistinguishable from legitimate MCP-server traffic unless the provider correlates tokens to unexpected client IPs, ASNs, or user agents.
+### Severity Conditions
+
+- **Severity increases when**: Tokens carry broad scopes, long lifetimes, sensitive-data access, write-capable tools, or downstream authority, and when authorization is silently reused. <!-- SAF-TRACE: claims=SAF-T1507-C016; sources=SRC-mcp-authorization-2025-11-25,SRC-cve-2025-4143,SRC-cve-2026-67336 -->
+- **Severity decreases when**: S256 PKCE is transaction-specific and enforced, redirects match exactly, codes are short-lived and single-use, tokens are audience-restricted and narrow, and user approval is required. <!-- SAF-TRACE: claims=SAF-T1507-C014,SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc9700,SRC-rfc8252 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| Authorization endpoint | Authorization request validation and response issuance | Timestamp, transaction ID, privacy-preserving code fingerprint, `client_id`, redirect URI, redirect-match result, PKCE-required state, challenge method, outcome, and error | Retain enough state to join authorization and token decisions without logging raw codes or verifiers. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 --> |
+| Token endpoint | Code exchange, verifier validation, reuse rejection, and token issuance | Timestamp, code fingerprint, client ID, verifier-valid result, exchange count, source context, outcome, error, and known-retry classification | Correlate within the code lifetime and normalize client retries; protect logs as sensitive security telemetry. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 --> |
+
 ### Indicators of Compromise (IoCs)
-- Multiple `POST /token` requests with the **same** authorization code from different source IPs or different TLS fingerprints within a few seconds.
-- Token-exchange attempts that fail with `invalid_grant` (the RFC 6749 error code; some providers additionally surface an `error_description` such as `code_already_used` or `redemption_limit`) at the legitimate MCP server's OAuth client shortly after a successful authorization response — an asymmetric signal that something else redeemed the code first.
-- Authorization codes observed in `Referer` headers, in the `url` field of analytics payloads, in web-server access logs, or in synced browser history.
-- `redirect_uri` parameters that differ from registered exact matches on authorization servers that previously allowed wildcards and are tightening policy.
-- Post-exchange API calls from tokens issued to MCP infrastructure appearing from client IPs or autonomous-system numbers unrelated to the MCP server's known deployment.
 
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. The duplicate-code and race-condition selectors express correlation/windowing semantics that require Sigma v2 correlation rules or equivalent stateful SIEM logic keyed on `authorization_code`; they are documented inline for clarity but are not runnable as a single stateless Sigma rule. Authorization-code-interception vectors evolve as PKCE enforcement spreads; attackers shift toward client-secret exfiltration or authorization-server impersonation (see [SAF-T1009](../SAF-T1009/README.md)) once `code_verifier` enforcement is universal. Organizations should:
-- Correlate authorization-server logs with client-side token-exchange logs to detect duplicate redemption.
-- Monitor for tokens used from client IPs or ASNs not associated with the registered MCP deployment.
-- Review `Referrer-Policy` and client-side analytics pipelines on every `redirect_uri` page; the `selection_code_in_referrer` branch below relies on web/proxy/analytics logs, not on the token-exchange logsource the other selectors use.
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: MCP OAuth Authorization Code Interception Detection
-id: 2aa0f9c2-f9b0-4b20-96e8-e2325f215491
-status: experimental
-description: Detects potential authorization code interception through duplicate token exchange attempts, sub-second token-endpoint races, or authorization codes appearing in HTTP Referer headers
-author: SAF-MCP Team
-date: 2025-01-20
-references:
-  - https://github.com/SAF-MCP/saf-mcp/tree/main/techniques/SAF-T1507
-  - https://datatracker.ietf.org/doc/html/rfc6749
-  - https://datatracker.ietf.org/doc/html/rfc6819
-  - https://datatracker.ietf.org/doc/html/rfc7636
-  - https://datatracker.ietf.org/doc/html/rfc9700
-logsource:
-  product: mcp
-  service: oauth_token_exchange
-detection:
-  # Correlation selectors — require Sigma v2 correlation rules or equivalent
-  # stateful SIEM logic keyed on `authorization_code`.
-  selection_duplicate_code:
-    authorization_code|count|gt: 1
-    timeframe: 5s
-  selection_race_condition:
-    token_exchange_timestamp:
-      - '|difference|lt: 1s'
-    same_authorization_code: true
-    different_source_ip: true
-  # Web/proxy/analytics logsource selector — callback page logs, not token-exchange logs.
-  selection_code_in_referrer:
-    http_referrer|contains:
-      - '*code=*'
-      - '*authorization_code=*'
-    http_referrer|not|contains:
-      - 'oauth.example.com'
-  condition: selection_duplicate_code or selection_race_condition or selection_code_in_referrer
-falsepositives:
-  - Legitimate retry attempts with the same authorization code (RFC 6749 §4.1.2 requires the AS to deny reuse; the standards-defined error is invalid_grant, sometimes surfaced by providers with an error_description such as code_already_used)
-  - Load-balanced token endpoints where the client-side source IP legitimately varies between the first attempt and its retry
-  - Development/testing environments with instrumented OAuth flows
-level: high
-tags:
-  - attack.credential_access
-  - attack.t1557
-  - safe.t1507
-```
-
-> The original `detection-rule.yml` for this technique used `attack.t1550` alone. This revision refines the rule tagging to `attack.t1557` (Adversary-in-the-Middle — the interception step), since this analytic observes authorization-code and token-exchange telemetry rather than application access token use. The broader replay mapping to `attack.t1550.001` (Use Alternate Authentication Material: Application Access Token) is retained at the narrative level — see the MITRE mapping section — but is not claimed by this specific rule's tags.
+- No incident-specific durable IoC is supported by the reviewed corpus; use endpoint behavior and transaction correlation instead. <!-- SAF-TRACE: claims=SAF-T1507-C011,SAF-T1507-C013; sources=SRC-nvd-cleanroom-queries,SRC-cisa-kev-authorization-code-2026-09-01,SRC-cve-2025-4143,SRC-cve-2025-4144,SRC-cve-2026-67336,SRC-rfc6749,SRC-rfc9700 -->
 
 ### Behavioral Indicators
-- Authorization flows that generate a code but never result in a successful token exchange from the registered client.
-- Bursts of `invalid_grant` errors at the MCP server's token-exchange handler with no preceding authorization failure.
-- First-time redirect through a recently installed browser extension for an OAuth flow the user has previously completed without extension involvement.
-- Authorization completions followed by API calls to the upstream provider from client IPs that have never previously hosted the MCP deployment.
+
+- An authorization request fails exact redirect validation or uses a missing or non-S256 challenge method where PKCE is required. <!-- SAF-TRACE: claims=SAF-T1507-C003,SAF-T1507-C004,SAF-T1507-C012; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc6749,SRC-rfc7636 -->
+- A token request fails verifier validation, presents a verifier for a code created without a challenge, or reuses a code fingerprint. <!-- SAF-TRACE: claims=SAF-T1507-C006,SAF-T1507-C009,SAF-T1507-C012; sources=SRC-rfc7636,SRC-rfc9700,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc6749 -->
+- Source, client, redirect, or user-agent context changes between authorization and token exchange for the same transaction. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+
+### Detection Analytic
+
+The standalone experimental analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Surface redirect, PKCE, verifier, or code-reuse conditions consistent with attempted interception or a protective-control failure. <!-- SAF-TRACE: claims=SAF-T1507-C012; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+- **Rule Status**: Experimental; validated against synthetic representative cases, not production accuracy data. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+- **Detection Logic**: Alert on redirect mismatch, required PKCE that is missing or not S256, failed verifier validation, or a second exchange of the same code fingerprint; suppress explicitly classified known retries. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+- **Correlation Window**: The authorization code's configured lifetime, keyed by a privacy-preserving stable fingerprint and transaction context. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+- **Known False Positives**: A client retry after losing a token response and an incorrect join caused by truncated or unstable fingerprints. <!-- SAF-TRACE: claims=SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc9700 -->
+- **Known Limitations**: Successful attacker-first redemption may look normal when no later legitimate exchange occurs; missing authorization logs, verifier disclosure, and unlogged local callback races reduce visibility. <!-- SAF-TRACE: claims=SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc9700 -->
+- **Tuning Guidance**: Baseline retry behavior per client, mark verified retries, retain full-entropy keyed fingerprints, and require complete endpoint joins before escalating a code-reuse alert. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+
+### Validation
+
+- **Test Data**: [test-cases.json](../../tests/SAF-T1507/test-cases.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1507/test_detection_rule.py)
+- **Expected Result**: [Ten cases pass across positive, negative, boundary, malformed, and expected-false-positive categories](../../research/techniques/SAF-T1507/validation/detection-test-results.txt)
+- **Last Validated**: [2026-09-01](../../research/techniques/SAF-T1507/validation/detection-test-results.txt)
+- **Feasibility Waiver**: None; synthetic deterministic validation passed, while production accuracy remains unmeasured. <!-- SAF-TRACE: claims=SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc9700 -->
 
 ## Mitigation Strategies
 
 ### Preventive Controls
 
-1. **Enforce PKCE (RFC 7636) server-side, not just client-side.** The `code_verifier` binds token exchange to the originating client's process. The authorization server MUST reject any token exchange that lacks a `code_verifier` or whose `code_verifier` does not match the stored `code_challenge` under the `code_challenge_method` the client declared (`S256`, which RFC 7636 §4.2 requires for clients technically capable of it and which [RFC 9700 §2.1.1](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1.1) recommends; or the legacy `plain` method where explicitly supported). RFC 7636 scopes PKCE to public clients; RFC 9700 §2.1.1 requires PKCE (MUST) for all public clients and recommends it (RECOMMENDED) for confidential clients. The MCP 2025-06-18 Authorization specification is stricter: MCP clients MUST implement PKCE regardless of client type.  
-   See also [SAF-M-38: PKCE Enforcement](../../mitigations/SAF-M-38/README.md) for the cross-technique PKCE mitigation entry.
-
-2. **Exact-match `redirect_uri`.** Per [RFC 9700 §2.1](https://datatracker.ietf.org/doc/html/rfc9700#section-2.1) — *"authorization servers MUST utilize exact string matching except for port numbers in `localhost` redirection URIs of native apps"* — reject any authorization request whose `redirect_uri` does not exactly match a pre-registered value. Disallow wildcards, subdomain patterns, and trailing-path flexibility. The MCP 2025-06-18 authorization spec restates this: *"Authorization servers MUST validate exact redirect URIs against pre-registered values to prevent redirection attacks."*  
-   <!-- TODO: No current SAF-M covers authorization-server exact `redirect_uri` string matching against pre-registered values. Domain-level callback restrictions (such as SAF-M-17, which only enforces domain-level callback URL matching) are materially weaker and are NOT sufficient for this control. Assign a dedicated SAF-M-NN once the mitigations catalog covers AS-side exact `redirect_uri` matching. -->
-
-3. **Single-use authorization codes with short TTL.** Per [RFC 6749 §4.1.2](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2): *"A maximum authorization code lifetime of 10 minutes is RECOMMENDED"* and *"The client MUST NOT use the authorization code more than once. If an authorization code is used more than once, the authorization server MUST deny the request and SHOULD revoke (when possible) all tokens previously issued based on that authorization code."* Enforce both properties strictly at the authorization server; short TTLs shrink the race window and single-use enforcement turns a successful race into a detectable `invalid_grant` error (or a provider-specific variant such as `code_already_used`) at the legitimate client.
-
-4. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md)**. Validate the `iss` parameter ([RFC 9207](https://datatracker.ietf.org/doc/html/rfc9207)) in authorization responses before redeeming the code. This addresses the related mix-up-attack class ([SAF-T1009](../SAF-T1009/README.md)) and hardens the OAuth flow against category-adjacent interception patterns.
-
-5. **`Referrer-Policy` on redirect-target pages.** The page that receives the `code` query parameter must set `Referrer-Policy: no-referrer` (or `strict-origin`) so the code does not leak in outbound `Referer` headers. Complete the code exchange server-side before rendering any page that issues outbound requests. RFC 6819 §4.4.1.1 enumerates referrer leakage as a primary interception path.
-
-6. **Minimize front-channel code exposure.** Server-side redirect handlers should consume and invalidate the code before returning any HTML. Avoid SPA patterns that parse the code from the URL in client-side JavaScript, since JavaScript execution is the same threat surface that hosts the man-in-the-browser attacker.
-
-7. **Protect client credentials as an independent defense layer.** For confidential clients, token-endpoint client authentication (`client_secret`, `private_key_jwt`, or mTLS) is an independent defense that stops the attacker even if PKCE is bypassed by a same-context `code_verifier` theft — and it is the primary defense when PKCE is not enforced. Rotate credentials on suspected exposure; prefer asymmetric schemes (`private_key_jwt`, mTLS) over shared-secret schemes where the authorization server supports them.
-
-8. **`state` parameter validation.** Generate a cryptographically random `state` per authorization request, bind it server-side to the user's session or consent decision, and validate exact equality at the callback. The MCP 2025-06-18 Security Best Practices document (*"OAuth State Parameter Validation"*) ties this control to authorization-code interception prevention and specifies that the `state`-tracking cookie MUST NOT be set until after the user has approved the consent screen.
+1. **[SAF-M-17: Callback URL Restrictions](../../mitigations/SAF-M-17/README.md)** and **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md)**: Register complete redirect URIs, compare them exactly except for the documented native loopback-port case, and never redirect an invalid authorization request to the supplied URI. <!-- SAF-TRACE: claims=SAF-T1507-C004,SAF-T1507-C014; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc6749,SRC-rfc8252 -->
+2. **[SAF-M-38: PKCE Enforcement](../../mitigations/SAF-M-38/README.md)**: Refuse authorization when support is absent, reject `plain` for MCP flows, bind each challenge to its code, validate the verifier, and reject verifier-without-challenge downgrade patterns. <!-- SAF-TRACE: claims=SAF-T1507-C003,SAF-T1507-C006,SAF-T1507-C014; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc7636,SRC-rfc6749,SRC-rfc8252 -->
+3. **Harden callback handling** with [SAF-M-13](../../mitigations/SAF-M-13/README.md) and [SAF-M-17](../../mitigations/SAF-M-17/README.md): Prefer claimed HTTPS callbacks where available, bind loopback listeners only while needed, avoid reusable local sockets, and verify state against the initiating transaction. <!-- SAF-TRACE: claims=SAF-T1507-C004,SAF-T1507-C007,SAF-T1507-C014; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc8252,SRC-rfc7636,SRC-rfc6749 -->
+4. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Include the MCP resource indicator and validate token audience so a redeemed token is not accepted by an unintended service. <!-- SAF-TRACE: claims=SAF-T1507-C019; sources=SRC-mcp-authorization-2025-11-25 -->
 
 ### Detective Controls
 
-1. **Duplicate-code detection at the authorization server.** Alert on any `POST /token` whose authorization code has already been redeemed — even when the second attempt fails — because this is the signal that a race occurred.
-
-2. **Cross-correlate AS and client logs.** For every authorization code issued, verify the registered client subsequently redeemed it. Codes that are never redeemed by the intended client, or that the intended client saw fail with `invalid_grant` (or a provider-specific variant such as `code_already_used`), warrant investigation.
-
-3. **Monitor referrer, log, and analytics pipelines for OAuth-parameter leakage.** Scan web-server access logs, analytics payloads, and SIEM ingestion for `code=`, `authorization_code=`, and `state=` parameters appearing in URLs outside the expected redirect path.
-
-4. **Token-usage fingerprinting.** Baseline the client IPs, ASNs, and user agents from which tokens issued to each MCP server are used, and alert on deviation. Tokens stolen via code interception are typically used from the attacker's infrastructure, not the MCP server's.
+1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Log privacy-preserving authorization and token-endpoint decisions with stable transaction and code joins. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
+2. **[SAF-M-18: OAuth Flow Monitoring](../../mitigations/SAF-M-18/README.md)** and **[SAF-M-19: Token Usage Tracking](../../mitigations/SAF-M-19/README.md)**: Alert on redirect mismatch, weak PKCE, verifier failure, and repeated exchange, then investigate expected retry behavior before declaring compromise. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C013; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700 -->
 
 ### Response Procedures
 
-1. **Immediate actions**:
-   - Revoke the authorization at the upstream provider (delete the user's grant) — this invalidates both access and refresh tokens.
-   - Re-issue a fresh authorization flow only after confirming the endpoint device is clean.
-   - If `client_secret` is suspected of exposure, rotate it and redeploy the MCP server before re-authorization.
+#### Immediate Actions
 
-2. **Investigation steps**:
-   - Correlate authorization-server logs, MCP-server token-exchange logs, and upstream API access logs for the affected user within the last token lifetime.
-   - Identify the interception vector: duplicate redemption (MITB race), referrer leakage (downstream page analytics), or misconfigured `redirect_uri` matching.
-   - For MITB suspicion: enumerate browser extensions installed on the victim's browser and correlate installation timestamps with the first suspicious OAuth flow.
+- Stop or invalidate the affected authorization transaction and contain the implicated client registration or callback while preserving relevant logs. <!-- SAF-TRACE: claims=SAF-T1507-C015; sources=SRC-rfc6749,SRC-cloudflare-pr26,SRC-cloudflare-pr27,SRC-ghsa-9h47-pqcx-hjr4 -->
+- Use **[SAF-M-37: Token Rotation and Invalidation](../../mitigations/SAF-M-37/README.md)** to revoke tokens derived from a repeatedly exchanged or suspected-compromised code where the authorization server supports that action. <!-- SAF-TRACE: claims=SAF-T1507-C015; sources=SRC-rfc6749,SRC-cloudflare-pr26,SRC-cloudflare-pr27,SRC-ghsa-9h47-pqcx-hjr4 -->
 
-3. **Remediation**:
-   - Enforce PKCE at the authorization server for all future flows involving the affected client.
-   - Tighten `redirect_uri` policy to exact match.
-   - Deploy `Referrer-Policy: no-referrer` on all OAuth callback pages.
-   - User guidance: recommend a clean browser profile (or disabled extensions) for high-scope OAuth flows, and periodic audit of active OAuth grants in provider dashboards.
+#### Investigation Steps
+
+- Join authorization and token events by transaction and code fingerprint; compare client, redirect, PKCE method, verifier result, source context, outcome, and sequence. <!-- SAF-TRACE: claims=SAF-T1507-C012,SAF-T1507-C015; sources=SRC-rfc6749,SRC-rfc7636,SRC-rfc9700,SRC-cloudflare-pr26,SRC-cloudflare-pr27,SRC-ghsa-9h47-pqcx-hjr4 -->
+- Determine whether a local callback race, malicious redirect, leaked URL, weak verifier, PKCE downgrade, implementation bypass, or legitimate retry best explains the event. <!-- SAF-TRACE: claims=SAF-T1507-C007,SAF-T1507-C008,SAF-T1507-C009,SAF-T1507-C010,SAF-T1507-C013; sources=SRC-rfc8252,SRC-rfc7636,SRC-cve-2025-4143,SRC-cloudflare-pr26,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc9700,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-rfc6749 -->
+
+#### Remediation
+
+- Correct redirect registration and comparison, require S256 PKCE, reject downgrade conditions, and add regression tests for the failed invariant. <!-- SAF-TRACE: claims=SAF-T1507-C014,SAF-T1507-C015; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc6749,SRC-rfc9700,SRC-rfc8252,SRC-cloudflare-pr26,SRC-cloudflare-pr27,SRC-ghsa-9h47-pqcx-hjr4 -->
+- Apply the affected product's fixed release and verify authorization metadata and runtime enforcement agree before restoring service. <!-- SAF-TRACE: claims=SAF-T1507-C008,SAF-T1507-C009,SAF-T1507-C010,SAF-T1507-C015; sources=SRC-cve-2025-4143,SRC-cloudflare-pr26,SRC-cve-2025-4144,SRC-cloudflare-pr27,SRC-rfc9700,SRC-cve-2026-67336,SRC-ghsa-9h47-pqcx-hjr4,SRC-rfc7636,SRC-rfc6749 -->
 
 ## Related Techniques
-- [SAF-T1009](../SAF-T1009/README.md): OAuth Authorization Server Mix-Up — Attacker confuses the client about which AS issued the code; often combined with or adjacent to code interception.
-- [SAF-T1408](../SAF-T1408/README.md): OAuth Protocol Downgrade — Forces the flow to a less-protected grant (e.g., implicit) that exposes tokens without the PKCE/code-exchange step; an upstream enabler when PKCE is the primary defense.
-- [SAF-T1506](../SAF-T1506/README.md): Infrastructure Token Theft — Post-exchange theft from logs, TLS termination proxies, or infrastructure; the step after a successful (legitimate) code exchange, not an alternative to it.
-- [SAF-T1504](../SAF-T1504/README.md): Token Theft via API Response — Post-exchange theft by inducing an MCP tool to return tokens; same end state (attacker-held token), different vector (LLM-mediated vs. redirect interception).
 
-## References
-
-### Standards and specifications
-- [RFC 6749 — The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749) (October 2012) — authorization-code grant definition (§4.1); code single-use and TTL (§4.1.2)
-- [RFC 6819 — OAuth 2.0 Threat Model and Security Considerations](https://datatracker.ietf.org/doc/html/rfc6819) (January 2013) — §4.4.1.1 "Threat: Eavesdropping or Leaking Authorization 'codes'" catalogues the interception vectors used in this technique
-- [RFC 7636 — Proof Key for Code Exchange by OAuth Public Clients (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636) (September 2015) — primary mitigation; scoped to public clients
-- [RFC 9207 — OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/html/rfc9207) (March 2022) — `iss` parameter; defense against the adjacent mix-up-attack class
-- [RFC 9700 — Best Current Practice for OAuth 2.0 Security](https://datatracker.ietf.org/doc/html/rfc9700) (January 2025) — §2.1 exact `redirect_uri` matching; §2.1.1 PKCE for public clients (MUST) and confidential clients (RECOMMENDED); §4.5 authorization-code injection attack and PKCE countermeasure
-- [Model Context Protocol Specification — Authorization (2025-06-18)](https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization) — MCP's Authorization Code Protection section mandates PKCE for all MCP clients
-- [Model Context Protocol Specification — Security Best Practices (2025-06-18)](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices) — Confused Deputy Problem and OAuth State Parameter Validation sections
-
-### Research
-- [Fett, Küsters, Schmitz — A Comprehensive Formal Security Analysis of OAuth 2.0 (arXiv:1601.01229)](https://arxiv.org/abs/1601.01229) — formal analysis of OAuth 2.0 across all four grant types; identifies several previously unknown attacks breaking OAuth's intended security properties
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1009: Authorization Server Mix-up](../SAF-T1009/README.md) | Nearest authorization-flow neighbor | Authorization-server mix-up is excluded unless it produces the defining intercepted-code sequence; SAF-T1507 begins when a victim-issued code reaches an unintended party. <!-- SAF-TRACE: claims=SAF-T1507-C001,SAF-T1507-C018; sources=SRC-mcp-authorization-2025-11-25,SRC-rfc9700,SRC-rfc7636 --> |
+| [SAF-T1504: Token Theft via API Response](../SAF-T1504/README.md) | Follow-on credential-access neighbor | Response-channel token theft targets an already issued token; this technique targets the authorization code before token issuance. <!-- SAF-TRACE: claims=SAF-T1507-C018; sources=SRC-rfc9700,SRC-rfc7636 --> |
 
 ## MITRE ATT&CK Mapping
 
-**Note**: MITRE ATT&CK does not include OAuth-specific techniques or enumerate man-in-the-browser as a named realization. The mappings below are the closest tactic-level analogues, split between the *interception* step and the *replay* step.
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1528](https://attack.mitre.org/techniques/T1528/) | Steal Application Access Token | Analogous | The intended outcome is an application access token under Credential Access, but SAF-T1507 acts on the authorization-code precursor and redirect/PKCE boundary rather than stealing an already issued token. <!-- SAF-TRACE: claims=SAF-T1507-C017; sources=SRC-mitre-t1528,SRC-rfc7636 --> |
 
-- [T1557 — Adversary-in-the-Middle](https://attack.mitre.org/techniques/T1557/) — *Closest match for the interception step*. The MITRE page enumerates network-level realizations (DNS manipulation, ARP poisoning, DHCP spoofing, SSL/TLS downgrade) rather than in-browser realizations; the shared element is the adversary positioning themselves within the communication path between the browser and the legitimate OAuth client. Man-in-the-browser fits this positioning model even though MITRE does not list it as an enumerated example.
-- [T1550.001 — Use Alternate Authentication Material: Application Access Token](https://attack.mitre.org/techniques/T1550/001/) — *Match for the replay step*. Once the attacker has exchanged the intercepted code for an access token, MITRE's description applies directly: *"Adversaries may use stolen application access tokens to bypass the typical authentication process and access restricted accounts, information, or services on remote systems."* The original `detection-rule.yml` used the bare `T1550` parent technique; `T1550.001` is the specific sub-technique for OAuth-style access tokens.
+## References
+
+1. **SRC-mcp-authorization-2025-11-25**: [Model Context Protocol Authorization, 2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization) — Model Context Protocol contributors; OAuth roles, PKCE, redirects, state, resource, and audience requirements.
+2. **SRC-rfc6749**: [RFC 6749: The OAuth 2.0 Authorization Framework](https://www.rfc-editor.org/rfc/rfc6749.html) — Dick Hardt and the OAuth Working Group; authorization-code flow, redirects, single use, and response guidance.
+3. **SRC-rfc7636**: [RFC 7636: Proof Key for Code Exchange by OAuth Public Clients](https://www.rfc-editor.org/rfc/rfc7636.html) — Nat Sakimura, John Bradley, Naveen Agarwal, and the OAuth Working Group; interception attack and PKCE.
+4. **SRC-rfc8252**: [RFC 8252: OAuth 2.0 for Native Apps](https://www.rfc-editor.org/rfc/rfc8252.html) — William Denniss and John Bradley; native, claimed-HTTPS, and loopback callback risks.
+5. **SRC-rfc9700**: [RFC 9700: Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/rfc/rfc9700.html) — Torsten Lodderstedt, John Bradley, Andrey Labunets, and Daniel Fett; exact redirects, code injection, PKCE downgrade, and limitations.
+6. **SRC-cve-2026-67336**: [CVE-2026-67336 official record](https://cveawg.mitre.org/api/cve/CVE-2026-67336) — CVE Program and VulnCheck CNA; Better Auth affected and fixed versions and PKCE defect.
+7. **SRC-ghsa-9h47-pqcx-hjr4**: [Better Auth GHSA-9h47-pqcx-hjr4](https://github.com/better-auth/better-auth/security/advisories/GHSA-9h47-pqcx-hjr4) — published by Gustavo Valverde and Better Auth Security; reported by Subhan Umer; conditions, impact, fixes, and credit.
+8. **SRC-cve-2025-4143**: [CVE-2025-4143 official record](https://cveawg.mitre.org/api/cve/CVE-2025-4143) — Cloudflare Product Security and the CVE Program; redirect-validation vulnerability.
+9. **SRC-cloudflare-pr26**: [Cloudflare pull request 26](https://github.com/cloudflare/workers-oauth-provider/pull/26) — Glen Maddern, reviewed by Kenton Varda; redirect validation fix and regression test. Exact URL provenance: SRC-cve-2025-4143;
+10. **SRC-cve-2025-4144**: [CVE-2025-4144 official record](https://cveawg.mitre.org/api/cve/CVE-2025-4144) — Cloudflare Product Security and the CVE Program; PKCE downgrade bypass.
+11. **SRC-cloudflare-pr27**: [Cloudflare pull request 27](https://github.com/cloudflare/workers-oauth-provider/pull/27) — Glen Maddern, reviewed by Kenton Varda; downgrade rejection and regression test. Exact URL provenance: SRC-cve-2025-4144;
+12. **SRC-nvd-cleanroom-queries**: [NVD CVE API](https://services.nvd.nist.gov/developers/vulnerabilities) — NIST NVD Team; official-catalog discovery, exclusion, and bounded saturation evidence only.
+13. **SRC-cisa-kev-authorization-code-2026-09-01**: [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — CISA KEV Team; catalog version 2026.09.01 exact-ID review only.
+14. **SRC-mitre-t1528**: [MITRE ATT&CK T1528: Steal Application Access Token](https://attack.mitre.org/techniques/T1528/) — MITRE ATT&CK Team and named version 1.5 contributors; analogous mapping.
 
 ## Version History
 
 | Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2026-04-23 | Initial documentation of Authorization Code Interception — L3 reconstruction authored from the detection rule, root corpus README slot, and verified primary sources (RFCs 6749, 6819, 7636, 9207, 9700; MCP 2025-06-18 authorization and security-best-practices specifications; MITRE T1557, T1550.001; Fett et al. arXiv:1601.01229). | bishnu bista |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Initial independent clean-room draft with evidence packet and tested detection | OpenAI Codex clean-room research agent (`/root/cleanroom_saf_t1507`) |

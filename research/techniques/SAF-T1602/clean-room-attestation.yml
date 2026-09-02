@@ -1,0 +1,124 @@
+version: 1
+technique_id: SAF-T1602
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1602
+  neutral_name: Tool Enumeration
+allowed_inputs:
+- User-supplied neutral identifier SAF-T1602, name Tool Enumeration, and tactic ATK-TA0007
+  Discovery.
+- Generic technique template, blank research packet templates, validator, and technique-authoring
+  methodology.
+- Direct external authorities independently opened during this task.
+prohibited_inputs:
+- Existing techniques/SAF-T1602/README.md content or metadata.
+- Existing research/techniques/SAF-T1602/ packet content.
+- Existing techniques/SAF-T1602/detection-rule.yml or tests.
+- Target technique git history, diff, blame, or commit metadata.
+- Target pull request, review, issue, catalog description, or shared registry context.
+- Target content from any previous conversation, prior attempt, cache, website, example,
+  or summary.
+independent_research:
+  searches:
+  - Direct open of current MCP Tools, Authorization, Security Best Practices, Inspector,
+    Server Discovery, Resources, and Prompts authorities.
+  - Direct open of the JSON-RPC 2.0 specification and OpenTelemetry JSON-RPC semantic
+    conventions.
+  - Direct open of MITRE ATT&CK T1046 for analogous framework reconciliation.
+  - Direct CVE record retrieval for CVE-2025-49596, CVE-2025-6514, and CVE-2025-53109.
+  - Exact GitHub maintainer advisory URLs opened only after a direct CVE authority
+    supplied those URLs.
+  - Exact JFrog advisory and technical-description URLs opened only after the direct
+    CVE authority supplied those URLs.
+  - Two independent re-fetch and hash-comparison passes over five defining authorities.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-jsonrpc-2.0
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53109
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-lifecycle-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile independently minted source IDs with the real shared source manifest only
+  after the bundle freeze; preserve locators and archive hashes.
+- Reconcile the provisional server-, resource-, and prompt-enumeration roles against
+  the real framework model without reading those artifacts before freeze.
+- Replace the isolated synthetic history SHA with the honest integration commit only
+  after freeze.
+- Perform only mechanical shared-registry joins after freeze; any material content
+  change requires a new clean-room cycle and new freeze.
+attestation: This technique and packet were authored by a fresh agent from only the
+  neutral assignment, generic methodology and templates, and independently opened
+  direct authorities. No existing target technique, target packet, target test, target
+  history, catalog description, shared registry, SAF site, prior attempt, or inherited
+  target context was accessed. Exact GitHub artifacts were opened only when a direct
+  CVE authority supplied their URLs.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-inspector-2026-07-28: SRC-mcp-inspector-2026
+    SRC-mcp-authorization-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-mcp-server-discover-2026-07-28: SRC-mcp-discovery-2026-07-28
+    SRC-mcp-resources-2026-07-28: SRC-mcp-resources-2026
+    SRC-mcp-prompts-2026-07-28: SRC-mcp-prompts-2026
+    SRC-mitre-attck-t1046-v3.2: SRC-mitre-attack-t1046-v3.2
+    SRC-cve-2025-49596: SRC-cve-2025-49596
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+    SRC-jfrog-cve-2025-6514: SRC-jfsa-2025-6514
+    SRC-jfrog-blog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-cve-2025-53109: SRC-cve-2025-53109
+    SRC-ghsa-q66q-fx2p-7w4m: SRC-ghsa-cve-2025-53109
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-lifecycle-2025-11-25: SRC-mcp-lifecycle-2025-11-25
+    SRC-mcp-authorization-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+  new_shared_source_records:
+  - SRC-jsonrpc-2.0
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  canonical_neighbors:
+  - SAF-T1601
+  removed_provisional_neighbor_roles:
+  - resource enumeration; no exact catalog technique matched this frozen role
+  - prompt enumeration; no exact catalog technique matched this frozen role
+  external_source_archives: omitted_from_repository_under_reference_only_rights
+  validation_artifacts:
+  - research/techniques/SAF-T1602/validation/detection-test.txt
+  - research/techniques/SAF-T1602/validation/strict-validator.txt
+  status: integrated_and_validated

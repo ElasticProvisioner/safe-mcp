@@ -1,0 +1,78 @@
+version: 1
+technique_id: SAF-T1501
+name: Full-Schema Poisoning (FSP)
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Cause an MCP host or model to make a tool-selection, argument-construction,
+  or result-handling decision from coordinated attacker instructions spread across
+  the complete discovered tool definition.
+scope:
+  security_boundary: The boundary where an MCP host or client converts an untrusted
+    server's discovered tool definition into model-visible planning context.
+  in_scope:
+  - A structurally valid tool definition whose coordinated adversarial semantics span
+    two or more schema paths, rather than only the top-level description.
+  - Poisoning in input-schema or output-schema strings, defaults, enums, titles, annotations,
+    or other model-visible definition fields that changes planning or arguments.
+  - Initial registration or discovery of the poisoned complete definition.
+  out_of_scope:
+  - Instructions confined to a tool's top-level description.
+  - Post-approval mutation of a previously reviewed definition, which is a lifecycle-change
+    technique even when the replacement is poisoned.
+  - Instructions delivered in tool results, MCP resources, prompts, or ordinary user
+    content.
+  - Implementation flaws such as command injection, path traversal, or unsafe tool
+    execution that do not poison the model-facing definition.
+  affected_components:
+  - MCP server tool-definition publisher
+  - MCP client discovery and cache
+  - MCP host model-context builder
+  - Tool-planning model
+nearest_neighbors:
+- technique_id: SAF-T1001
+  distinction: Tool Poisoning Attack covers poisoned tool metadata generally; FSP
+    requires coordinated semantics across at least two definition paths, including
+    a schema-resident path.
+- technique_id: SAF-T1205
+  distinction: Persistent Tool Redefinition is distinguished by a security-relevant
+    definition change retained after review; FSP is distinguished by schema-wide
+    semantic distribution and can be present on first discovery.
+- technique_id: SAF-T1102
+  distinction: Prompt Injection (Multiple Vectors) includes instructions delivered
+    through tool results after execution; FSP acts before tool execution through
+    discovery metadata.
+required_evidence:
+- Establish the protocol fields that form a complete MCP tool definition and how clients
+  expose definitions to models.
+- Establish that tool metadata can influence selection or argument decisions, while
+  separating description-only demonstrations from FSP.
+- Establish whether a coordinated multi-path full-schema example has been observed
+  or demonstrated.
+- Search production breaches, official advisories, CVEs, government exploited-vulnerability
+  catalogs, demonstrations, detection studies, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Tool-definition observation events with server_id, tool_name, complete parsed
+    definition, definition hash, prior approved hash, source trust, and explicit reapproval
+    state.
+safe_example_constraints:
+- Use an inert example.invalid destination and harmless review-record actions.
+- Do not include credentials, destructive commands, bypass instructions, or operational
+  exfiltration payloads.
+completion_evidence:
+- Every substantive README unit has a validated claim trace or declared local-artifact
+  link.
+- Direct FSP evidence gaps remain explicit and adjacent evidence cannot raise the
+  end-to-end evidence status.
+- Two consecutive no-change saturation passes are recorded.
+- Representative positive, negative, boundary, malformed, normalization, and false-positive
+  cases pass.
+- Rights, framework, clean-room, safety, and strict validation gates pass in an isolated
+  synthetic repository.

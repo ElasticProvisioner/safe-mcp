@@ -1,0 +1,204 @@
+version: 1
+technique_id: SAF-T1914
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1914/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1914/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, boundary, and completion criteria.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1914/claim-inventory.yml
+  supports: Validated propositions, exact locators, inference labels, conflicts, and
+    limitations.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1914/source-coverage.yml
+  supports: Five research passes, saturation, candidate ranking, exclusions, and evidence
+    classification.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1914/publication-rights.yml
+  supports: Publication-rights, attribution, quotation, artifact, and trademark review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1914/quality-review.yml
+  supports: Quality gates, validation commands, test results, and review date.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1914/clean-room-attestation.yml
+  supports: Allowed inputs, prohibited inputs, independent research, freeze, and contamination
+    status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1914/detection-rule.yml
+  supports: Normalized host source-to-sink correlation analytic and its trace components.
+- id: LOCAL-detector
+  path: techniques/SAF-T1914/detect_tool_to_tool_exfil.py
+  supports: Executable reference implementation for the detection analytic.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1914/fixtures.json
+  supports: Inert positive, negative, boundary, malformed, and legitimate-workflow
+    fixtures.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1914/test_detection_rule.py
+  supports: Executable assertions for detector behavior and alert fields.
+- id: LOCAL-detector-results
+  path: research/techniques/SAF-T1914/validation/detection-test-results.txt
+  supports: Frozen detector test command and passing result.
+- id: LOCAL-validator-results
+  path: research/techniques/SAF-T1914/validation/strict-validator-results.txt
+  supports: Frozen isolated strict-validator command and passing result.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1914/integration-notes.yml
+  supports: Synthetic joins, target paths, and required post-freeze reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1914-X001
+  candidate: A verified production breach using the complete technique.
+  origin: Direct NVD, CISA KEV, first-party research, advisory, and academic review.
+  attempted_searches:
+  - NVD keywordSearch=Model Context Protocol and two targeted follow-up queries.
+  - CISA KEV exact-ID checks and production-status review of every selected publication.
+  consulted_source_ids:
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-token-scope-corpus
+  - SRC-cisa-kev-fsp-2026-09-01
+  reason: No direct authority in the bounded corpus established in-production exploitation
+    of the complete source-to-distinct-sink chain.
+  prohibited_publishable_text:
+  - confirmed in-the-wild Tool-to-Tool Exfil campaign
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X002
+  candidate: Treat CVE-2026-73498 as direct tool-to-tool evidence.
+  origin: NVD MCP result-set review.
+  attempted_searches:
+  - Review the exact NVD description, affected versions, metrics, and references.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-73498
+  reason: One vulnerable attachment tool both reads and uploads a path; the contract
+    requires distinct source and sink tools.
+  prohibited_publishable_text:
+  - CVE-2026-73498 proves a cross-tool chain
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X003
+  candidate: Treat CVE-2026-13341 as a completed disclosure.
+  origin: NVD MCP result-set review.
+  attempted_searches:
+  - Review the exact NVD description, affected range, and exploitation status.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-13341
+  reason: The record establishes unintended API requests but identifies no sensitive
+    source result or distinct disclosure sink.
+  prohibited_publishable_text:
+  - CVE-2026-13341 documents completed data theft
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X004
+  candidate: Treat CVE-2026-25536 as adversary-orchestrated cross-tool flow.
+  origin: NVD MCP result-set review.
+  attempted_searches:
+  - Review the exact NVD description, fixed version, and exploitation status.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-25536
+  reason: Disclosure comes from response misrouting between clients, not from a model
+    carrying source data into a sink call.
+  prohibited_publishable_text:
+  - CVE-2026-25536 is a tool-to-tool prompt-injection exploit
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X005
+  candidate: Promote CVE-2026-46555 to a selected end-to-end example.
+  origin: NVD record and exact vendor advisory identified by NVD.
+  attempted_searches:
+  - Compare the NVD description and GHSA impact statement against the technique contract.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-46555
+  - SRC-ghsa-7jj9-4qqq-4xc4
+  reason: The bridge flaw enables sibling callers but does not itself establish the
+    complete model-host source-tool-to-sink-tool sequence.
+  prohibited_publishable_text:
+  - CVE-2026-46555 proves autonomous cross-server exfiltration
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X006
+  candidate: Treat command, query, argument, sandbox, path, or eval injection as the
+    target merely because exfiltration is possible afterward.
+  origin: Targeted NVD saturation queries.
+  attempted_searches:
+  - Classify CVE-2026-29783, CVE-2025-52573, CVE-2026-33980, CVE-2026-39884, CVE-2026-44192,
+    CVE-2026-67531, and CVE-2026-75062 against the source/sink boundary.
+  consulted_source_ids:
+  - SRC-nvd-token-scope-corpus
+  reason: These records establish other primitives or impacts without the required
+    data-bearing transition into a distinct sink tool.
+  prohibited_publishable_text:
+  - every MCP command injection is Tool-to-Tool Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X007
+  candidate: Treat a sensitive read primitive as completed exfiltration.
+  origin: CVE-2026-65056 in the second saturation pass.
+  attempted_searches:
+  - Review whether the SSRF result was subsequently sent through a separate outbound
+    tool.
+  consulted_source_ids:
+  - SRC-nvd-token-scope-corpus
+  reason: The public description ends with sensitive internal content entering model
+    context and identifies no subsequent sink call.
+  prohibited_publishable_text:
+  - reading cloud metadata alone completes Tool-to-Tool Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X008
+  candidate: Claim standardized OpenTelemetry MCP fields support the proposed normalized
+    event schema.
+  origin: Detection and telemetry research pass.
+  attempted_searches:
+  - Review the official relocated MCP semantic-conventions page.
+  - Open the exact repository identified by that official page and review its root
+    documentation.
+  consulted_source_ids:
+  - SRC-opentelemetry-moved-2026
+  - SRC-opentelemetry-genai-repo-2026
+  reason: The reviewed material did not expose stable field-level definitions; the
+    bundle labels its schema as a SAF analytic proposal.
+  prohibited_publishable_text:
+  - OpenTelemetry standardizes every detector field used here
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X009
+  candidate: Treat direct server-process egress or inherited secrets as a tool-to-tool
+    chain.
+  origin: CVE-2026-40159 in the first saturation pass.
+  attempted_searches:
+  - Compare inherited environment exposure and possible package egress against host-mediated
+    tool orchestration.
+  consulted_source_ids:
+  - SRC-nvd-token-scope-corpus
+  reason: A subprocess receives ambient secrets directly; no separate source tool
+    result is carried into a sink call by the host.
+  prohibited_publishable_text:
+  - inherited environment variables constitute a two-tool transfer
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1914-X010
+  candidate: Generalize all prompt injection or unauthorized tool use as Tool-to-Tool
+    Exfil.
+  origin: Scope challenge across protocol, research, and candidate CVEs.
+  attempted_searches:
+  - Compare demonstrated attack stages with the clean-room contract's required disclosure
+    outcome.
+  consulted_source_ids:
+  - SRC-greshake-ipi-2023
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-nvd-cve-2026-13341
+  reason: Injection is a delivery/control mechanism and unauthorized invocation is
+    a broader primitive; the target requires sensitive data crossing into a distinct
+    sink.
+  prohibited_publishable_text:
+  - any prompt injection is automatically Tool-to-Tool Exfil
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,24 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1601
+    name: MCP Server Enumeration
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0007
+    technique_path: techniques/SAF-T1601/README.md
+    research_packet: research/techniques/SAF-T1601
+    related_techniques:
+      - SAF-T1602
+    mitigations: [SAF-M-9, SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-20, SAF-M-29, SAF-M-45]
+    attack_mappings:
+      - id: T1046
+        type: analogous
+    detection:
+      rule: techniques/SAF-T1601/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1601/test_detection_rule.py
+        - tests/SAF-T1601/test-logs.json
+        - research/techniques/SAF-T1601/validation/detection-test.txt
+        - research/techniques/SAF-T1601/validation/strict-validator.txt

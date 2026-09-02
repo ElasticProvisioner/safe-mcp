@@ -1,0 +1,555 @@
+version: 1
+technique_id: SAF-T1112
+claims:
+  - id: SAF-T1112-C001
+    statement: >-
+      MCP sampling allows a server to request LLM generation through a client,
+      while the client retains control over model access, model selection, and
+      permissions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Overview, lines 88-89"
+          - "User Interaction Model, lines 94-101"
+    corroboration: >-
+      The current schema independently defines CreateMessageRequest as a server
+      request to sample an LLM through the client.
+    limitations:
+      - Establishes intended protocol behavior, not adversarial exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C002
+    statement: >-
+      The 2026-07-28 protocol carries sampling/createMessage inside an
+      InputRequiredResult; the request exposes messages, model preferences,
+      systemPrompt, includeContext, maxTokens, tools, and toolChoice fields.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-2026-schema
+        support: direct
+        exact_locators:
+          - "InputRequiredResult, lines 2938-2951 and 2971-2987"
+          - "CreateMessageRequest and CreateMessageRequestParams, lines 4339-4404"
+      - source_id: SRC-mcp-sampling-2026
+        support: corroborating
+        exact_locators:
+          - "Creating Messages, lines 155-203"
+    corroboration: >-
+      The narrative sampling specification and generated schema expose the same
+      method and parameter family.
+    limitations:
+      - Implementations can normalize these fields differently in telemetry.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C003
+    statement: >-
+      MCP recommends a human able to deny sampling requests, request and
+      response review interfaces, content validation, client-side rate limits,
+      and iteration limits for sampling tool loops.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "User Interaction Model, lines 94-101"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageRequest, lines 4344-4351"
+          - "CreateMessageResult description, line 4586"
+    corroboration: >-
+      Both the narrative specification and schema descriptions place approval
+      decisions at the client boundary.
+    limitations:
+      - Most controls use SHOULD language and are not enforced by the protocol.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C004
+    statement: >-
+      Tool-enabled sampling can carry request-scoped tool definitions that need
+      not match registered MCP tools, and the client must declare sampling.tools
+      support before receiving such a request.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Tools in Sampling, lines 104-108"
+          - "Capabilities, lines 113-150"
+    corroboration: >-
+      CreateMessageRequestParams in the schema includes tools and toolChoice.
+    limitations:
+      - The server, not necessarily the client host, executes requested sampling tools.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C005
+    statement: >-
+      includeContext defaults to none; thisServer and allServers are deprecated,
+      and a client may constrain or ignore context inclusion when it would share
+      sensitive information.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Capabilities, lines 138-150"
+          - "Context Inclusion, lines 588-596"
+      - source_id: SRC-mcp-deprecated-2026
+        support: corroborating
+        exact_locators:
+          - "Deprecated registry table, lines 60-69"
+    corroboration: >-
+      The deprecated-feature registry identifies the same values and migration
+      path.
+    limitations:
+      - The specification does not require a uniform client-side data classifier.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C006
+    statement: >-
+      maxTokens is required and must be respected by the client, but the current
+      MCP specification supplies no universal per-server request-rate or
+      cumulative-token threshold.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Sampling Parameters, lines 599-608"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageRequestParams, lines 4390-4403"
+    corroboration: >-
+      The schema makes maxTokens required while the narrative specification
+      separately recommends rate and iteration limits without fixed values.
+    limitations:
+      - Absence of a fixed threshold does not imply that implementations lack one.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C007
+    statement: >-
+      Sampling was deprecated in MCP version 2026-07-28; it remains specified
+      until at least its earliest removal date, new implementations should not
+      adopt it, and existing implementations should migrate to direct provider
+      API integration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Deprecation notice, lines 84-89"
+      - source_id: SRC-mcp-deprecated-2026
+        support: corroborating
+        exact_locators:
+          - "Registry policy, lines 51-55"
+          - "Sampling row, lines 60-65"
+    corroboration: >-
+      Both the feature page and central deprecated-feature registry state the
+      deprecation and migration path.
+    limitations:
+      - Deprecation does not establish whether a particular client still supports sampling.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C008
+    statement: >-
+      A malicious or compromised server can abuse the specified sampling
+      boundary when a supporting client performs a server-influenced generation
+      without meaningful request-specific approval or policy enforcement.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Overview and User Interaction Model, lines 88-101"
+          - "Creating Messages, lines 155-203"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageRequest, lines 4339-4351"
+    corroboration: >-
+      The protocol establishes the server-controlled request, client-side model
+      authority, and approval/rate-limit controls; the adversarial use is the
+      explicit SAF inference.
+    limitations:
+      - No directly reviewed production incident or end-to-end public abuse demonstration was found.
+    conflicts:
+      - Sampling is deprecated, narrowing future exposure while leaving existing implementations relevant.
+    inference:
+      is_inference: true
+      rationale: >-
+        The protocol components and missing-enforcement condition are directly
+        supported, but attacker use of the complete flow is not directly observed.
+    status: validated
+
+  - id: SAF-T1112-C009
+    statement: >-
+      The immediate outcome of the inferred technique is an attacker-influenced
+      generation performed through the client's model access, with a sampled
+      result eligible to be returned to the requesting server.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Overview, lines 88-89"
+          - "Creating Messages, lines 155-203"
+          - "Result Fields, lines 611-626"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageResult description, line 4586"
+    corroboration: >-
+      The narrative flow and schema both describe returning the client-produced
+      result to the server after review.
+    limitations:
+      - The result's content and downstream effect depend on model and client controls.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The result flow is normative; attacker influence and lack of authorization
+        are conditions introduced by the technique contract.
+    status: validated
+
+  - id: SAF-T1112-C010
+    statement: >-
+      Necessary preconditions are client sampling support, an active server
+      interaction capable of returning input_required, acceptance of the
+      sampling request, and insufficient approval, context, or budget controls.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Capabilities, lines 113-150"
+          - "Creating Messages, lines 155-203"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "InputRequiredResult, lines 2938-2951"
+    corroboration: >-
+      Each precondition is a necessary protocol or control state; their combined
+      adversarial use is an inference.
+    limitations:
+      - Client-specific capability and approval behavior must be verified locally.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        No source enumerates the complete adversarial precondition set as one attack.
+    status: validated
+
+  - id: SAF-T1112-C011
+    statement: >-
+      No qualifying direct production incident, direct disclosed vulnerability,
+      or independently reviewable end-to-end abuse demonstration was identified
+      in the authority corpus reviewed on 2026-09-02.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+        support: direct
+        exact_locators:
+          - "NVD API keywordSearch=Model Context Protocol; 77 returned records reviewed; zero descriptions mention sampling"
+      - source_id: SRC-nvd-sampling-query-2026
+        support: direct
+        exact_locators:
+          - "NVD API keywordSearch=Model Context Protocol sampling; totalResults=0"
+          - "NVD API keywordSearch=sampling/createMessage; totalResults=0"
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - "Catalog version 2026.09.01; 1,687 entries filtered for Model Context Protocol, sampling, and createMessage; zero relevant entries"
+      - source_id: SRC-crossref-sampling-query-2026
+        support: corroborating
+        exact_locators:
+          - "Crossref title and bibliographic queries for MCP sampling abuse, reviewed 2026-09-02"
+      - source_id: SRC-arxiv-sampling-query-2026
+        support: corroborating
+        exact_locators:
+          - "arXiv API exact-phrase and mechanism queries, reviewed 2026-09-02"
+    corroboration: >-
+      Independent government vulnerability/exploitation catalogs and scholarly
+      authority catalogs converged on the same evidence gap.
+    limitations:
+      - This is a bounded corpus-and-date statement, not a claim that no incident has ever occurred.
+      - One directly relevant Apress chapter was gated and could not support substantive claims.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C012
+    statement: >-
+      Park, Kim, Lee, and Park demonstrated five attacks by malicious remote MCP
+      servers across ChatGPT, Claude Desktop, and Gemini CLI, but their tested
+      delivery channels were tool descriptions and tool responses rather than
+      sampling/createMessage.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mdpi-remote-mcp-2026
+        support: direct
+        exact_locators:
+          - "Abstract, page 1"
+          - "Introduction and contributions, pages 2-3"
+          - "Sections 3-4, pages 7-17"
+    corroboration: >-
+      The methods, scenarios, platform matrix, and results are reported in the
+      open-access paper and were reviewed in full.
+    limitations:
+      - Adjacent malicious-server evidence only; it does not establish Sampling Request Abuse.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C013
+    statement: >-
+      MCP Inspector's web client exposes a protocol transcript that groups
+      multi-round-trip conversations and masks secrets, making protocol-level
+      sampling events inspectable when equivalent telemetry is retained.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-inspector-web-2026
+        support: direct
+        exact_locators:
+          - "The tab bar, lines 113-126"
+          - "Protocol, Network, and Console, lines 218-229"
+    corroboration: >-
+      The official project documentation describes the monitoring surface and
+      transcript behavior.
+    limitations:
+      - Inspector is a debugging implementation, not a universal production audit schema.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1112-C014
+    statement: >-
+      A practical detector can correlate server identity, session, request time,
+      method, requested token budget, and approval state to identify missing
+      approval or a burst of at least five sampling requests totaling at least
+      16,384 requested tokens within five minutes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Creating Messages, lines 155-203"
+          - "Sampling Parameters, lines 599-608"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageRequestParams, lines 4390-4403"
+      - source_id: SRC-mcp-inspector-web-2026
+        support: context
+        exact_locators:
+          - "Protocol, Network, and Console, lines 218-229"
+    corroboration: >-
+      Protocol fields and control objectives support the analytic shape; the
+      numerical threshold is an explicitly experimental SAF design choice.
+    limitations:
+      - The five-request and 16,384-token thresholds have no published accuracy evaluation.
+      - Approval state and stable server identity are implementation telemetry, not standard MCP fields.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The detector operationalizes normative approval and rate-limiting goals
+        with testable but environment-specific thresholds.
+    status: validated
+
+  - id: SAF-T1112-C015
+    statement: >-
+      The analytic cannot establish malicious intent and can miss low-rate abuse,
+      unlogged approval failures, unstable server identities, or activity in
+      clients that do not retain normalized sampling telemetry.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "User Interaction Model, lines 94-101"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-inspector-web-2026
+        support: context
+        exact_locators:
+          - "Protocol, Network, and Console, lines 218-229"
+    corroboration: >-
+      The specification leaves interaction patterns to implementations and the
+      Inspector documentation establishes only one inspectable surface.
+    limitations:
+      - No detector-accuracy study was found for this analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        These blind spots follow from required fields and threshold logic rather
+        than a published performance evaluation.
+    status: validated
+
+  - id: SAF-T1112-C016
+    statement: >-
+      Effective prevention centers on disabling unsupported sampling, enforcing
+      request-specific review, validating content and context, applying per-server
+      token and iteration budgets, and migrating existing implementations away
+      from the deprecated feature.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Deprecation notice, lines 84-89"
+          - "User Interaction Model, lines 94-101"
+          - "Capabilities, lines 113-150"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-deprecated-2026
+        support: corroborating
+        exact_locators:
+          - "Sampling row, lines 60-65"
+    corroboration: >-
+      The feature page and deprecation registry identify the controlling
+      approval, rate, iteration, capability, and migration measures.
+    limitations:
+      - Implementations must define budgets and review UX for their own risk context.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The listed controls are normative recommendations; their combined
+        application to this technique is the SAF synthesis.
+    status: validated
+
+  - id: SAF-T1112-C017
+    statement: >-
+      Conditional impact includes disclosure when sensitive context or sampled
+      output is released to the server, integrity effects in attacker-influenced
+      model output, and availability or quota pressure from repeated generations.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - "Overview, lines 88-89"
+          - "Context Inclusion, lines 588-596"
+          - "Sampling Parameters, lines 599-608"
+          - "Security Considerations, lines 638-647"
+      - source_id: SRC-mcp-2026-schema
+        support: corroborating
+        exact_locators:
+          - "CreateMessageResult description, line 4586"
+    corroboration: >-
+      The protocol exposes context, sampled results, token budgets, and loop
+      controls; realized harm remains conditional.
+    limitations:
+      - No reviewed source quantified actual losses from Sampling Request Abuse.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The protocol capabilities establish possible effects, not realized adversarial impact.
+    status: validated
+
+  - id: SAF-T1112-C018
+    statement: >-
+      MITRE ATT&CK T1204 User Execution is only an analogous mapping when an
+      adversary deceives a user into approving the sampling request; it does not
+      cover automatically approved requests or the MCP-specific generation boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1204
+        support: direct
+        exact_locators:
+          - "User Execution description, lines 16-34"
+          - "ID, tactic, contributors, and version, lines 36-55"
+      - source_id: SRC-mcp-sampling-2026
+        support: corroborating
+        exact_locators:
+          - "User Interaction Model, lines 94-101"
+    corroboration: >-
+      ATT&CK defines execution dependent on user action, while MCP places a user
+      approval decision at the sampling boundary.
+    limitations:
+      - This is an analogous, conditional mapping rather than a direct equivalence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Neither framework directly maps the other; the overlap exists only for
+        deceptive approval.
+    status: validated

@@ -1,0 +1,364 @@
+version: 1
+technique_id: SAF-T1502
+claims:
+  - id: SAF-T1502-C001
+    statement: MCP tools can be discovered and invoked by a language model, while the specification recommends human denial capability, confirmation for operations, and tool-use logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 78-90
+          - Security Considerations, lines 544-557
+    corroboration: The MCP security guidance independently recommends consent and monitoring for local server and proxy activity.
+    limitations:
+      - The human-in-the-loop and logging provisions are SHOULD-level guidance and do not prove any implementation records complete events.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C002
+    statement: MCP resources can represent files, may be selected automatically by an application, and can return text or binary contents through resources/read.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2025-11-25
+        support: direct
+        exact_locators:
+          - Overview and User Interaction Model, lines 72-87
+          - Reading Resources, lines 185-215
+          - Common URI Schemes and Security Considerations, lines 386-453
+    corroboration: The tools specification separately permits embedded resources and resource links in tool results.
+    limitations:
+      - A file URI need not map to a physical filesystem, and the protocol does not mandate automatic inclusion.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C003
+    statement: An MCP or agent workflow with readable filesystem reach can cross a credential boundary when it locates a credential-bearing file and returns its contents to the model or adversary-directed workflow.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-resources-2025-11-25
+        support: direct
+        exact_locators:
+          - Reading Resources, lines 185-215
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Phase 4 Credential harvesting and lateral movement, pages 9-10, lines 196-209
+      - source_id: SRC-aws-shared-credential-files
+        support: corroborating
+        exact_locators:
+          - Default locations, lines 5-15
+      - source_id: SRC-google-adc-files
+        support: corroborating
+        exact_locators:
+          - Local ADC file, lines 87-108
+    corroboration: The AWS and Google Cloud documentation independently establishes ordinary local credential files; the Anthropic incident establishes agentic extraction from configurations.
+    limitations:
+      - The inference applies only where the agent process can read the target file and the result reaches an adversary-directed context.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The contract combines protocol content delivery, documented file-resident credentials, and observed agentic configuration extraction into one bounded behavior.
+    status: validated
+  - id: SAF-T1502-C004
+    statement: Anthropic documented a September 2025 campaign using Claude Code and MCP tools in which the agent extracted authentication certificates from configurations, tested harvested credentials, and operated in a handful of successful intrusions.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive summary, pages 2-3, lines 12-59
+          - Operational infrastructure, pages 5-6, lines 84-102
+          - Phase 4 Credential harvesting and lateral movement, pages 9-10, lines 196-209
+    corroboration: MITRE ATT&CK maps the campaign to Credentials in Files and Data from Local System while citing the Anthropic report.
+    limitations:
+      - Anthropic anonymized affected entities and did not publish file names, credential values, or a per-intrusion event log.
+    conflicts:
+      - The report states that some model-claimed credentials were invalid or public information, so model assertions alone are not proof of successful acquisition.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C005
+    statement: CVE-2025-53109 and GHSA-q66q-fx2p-7w4m describe a symlink-handling flaw in the MCP Filesystem server that allowed access to unintended files; the authoritative records advise upgrading to 0.6.4 or 2025.7.01.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-53109
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, references, and CISA ADP SSVC exploitation field
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: direct
+        exact_locators:
+          - Advisory title, package, affected and patched versions, description, credit, lines 133-154
+    corroboration: The CVE record and maintainer advisory independently expose the same advisory identifier and unintended-file-access mechanism.
+    limitations:
+      - The records do not establish that credential files were accessed in production.
+    conflicts:
+      - The advisory's affected/patched-version table differs from its own prose and the CVE affected range; the conservative remediation is the later 0.6.4 or 2025.7.01 version named in both prose records.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C006
+    statement: CVE-2025-53110 and GHSA-hc55-p739-j48w describe a colliding-prefix path-validation flaw in the MCP Filesystem server that allowed access to unintended files; the authoritative records advise upgrading to 0.6.4 or 2025.7.01.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-53110
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, references, and CISA ADP SSVC exploitation field
+      - source_id: SRC-ghsa-cve-2025-53110
+        support: direct
+        exact_locators:
+          - Advisory title, package, affected and patched versions, description, credit, lines 133-154
+    corroboration: The CVE record and maintainer advisory independently expose the same advisory identifier and unintended-file-access mechanism.
+    limitations:
+      - The records do not establish that credential files were accessed in production.
+    conflicts:
+      - The advisory's affected/patched-version table differs from its own prose and the CVE affected range; the conservative remediation is the later 0.6.4 or 2025.7.01 version named in both prose records.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C007
+    statement: CISA's ADP enrichment for CVE-2025-53109 and CVE-2025-53110 recorded exploitation as none, so the disclosures do not establish production exploitation.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-53109
+        support: direct
+        exact_locators:
+          - CISA ADP SSVC options, Exploitation none, updated 2025-07-02
+      - source_id: SRC-cve-2025-53110
+        support: direct
+        exact_locators:
+          - CISA ADP SSVC options, Exploitation none, updated 2025-07-02
+    corroboration: Neither maintainer advisory claims production exploitation.
+    limitations:
+      - None is the catalog assessment at review time and is not proof that exploitation never occurred.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C008
+    statement: AWS SDKs and tools use plaintext local shared configuration and credential files at documented default locations and can load those files automatically.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-shared-credential-files
+        support: direct
+        exact_locators:
+          - Shared files and default locations, lines 5-15
+          - Location overrides, lines 34-65
+    corroboration: Google Cloud separately documents a well-known local credential JSON file used by ADC.
+    limitations:
+      - The documentation establishes possible file presence, not compromise or exposure in every environment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C009
+    statement: Google Cloud ADC can use a local JSON credential file in a well-known location; Google warns that service-account keys create security risk and prefers an attached service account with least-privileged roles in production.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-adc-files
+        support: direct
+        exact_locators:
+          - Search order and credential-file types, lines 66-87
+          - Local ADC file and attached-service-account guidance, lines 88-108
+    corroboration: AWS independently documents local shared credential files.
+    limitations:
+      - The warning is specific to Google Cloud credential types and does not generalize every credential file's replay properties.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C010
+    statement: Current MCP guidance recommends sandboxing local servers, restricting filesystem access, warning on sensitive locations, granting privileges explicitly, and minimizing authorization scopes.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise mitigations, lines 367-424
+          - stdio Transport Restrictions, lines 515-530
+          - Scope Minimization, lines 535-585
+    corroboration: The resource specification independently requires URI validation and recommends access controls and permission checks for sensitive resources.
+    limitations:
+      - Guidance does not prove that clients or servers implement the controls or that a sandbox policy labels every credential file.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C011
+    statement: Windows Security Event 4663 can record a file object's path, process name, subject, and ReadData access right, permitting monitoring of access to designated critical files when object auditing is configured.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-event-4663
+        support: direct
+        exact_locators:
+          - Event fields and Object Name, lines 92-150
+          - Accesses and ReadData, lines 148-160
+          - Security Monitoring Recommendations, lines 198-215
+    corroboration: Red Hat audit documentation independently records executable identity, path, outcome, and timestamp for file access.
+    limitations:
+      - Event 4663 depends on audit-policy and object-SACL configuration and may be noisy or absent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C012
+    statement: Red Hat Enterprise Linux audit records can capture file-read attempts with a shared event identifier, timestamp, success, executable, subject IDs, and path when a matching audit rule is configured.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rhel9-audit
+        support: direct
+        exact_locators:
+          - File-read audit rule and example event, lines 398-431
+          - Audit fields executable, path, and record identity, lines 447-530
+          - Persistent audit-rule guidance, lines 531-575
+    corroboration: Windows Event 4663 independently exposes analogous process, path, subject, and read-access fields.
+    limitations:
+      - Audit records exist only for configured rules; broad read auditing can be costly and environment-specific.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C013
+    statement: Correlating an MCP filesystem read with a successful operating-system read of an environment-labeled credential file by the same host and process within five minutes is a testable analytic for this technique.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations, lines 544-557
+      - source_id: SRC-microsoft-event-4663
+        support: direct
+        exact_locators:
+          - Process, Object Name, and Accesses fields, lines 129-160
+      - source_id: SRC-rhel9-audit
+        support: direct
+        exact_locators:
+          - Example records and field explanations, lines 398-530
+    corroboration: Two operating-system authorities expose equivalent path and process evidence, while MCP recommends tool-use logging.
+    limitations:
+      - Five minutes is a tuning choice, not a protocol constant; missing process correlation, unmonitored files, direct shell access, encryption, or telemetry loss create blind spots.
+      - Legitimate credential rotation, backup, or debugging can match unless allowlisted and contextualized with approval and change records.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic composes authoritative fields into an SAF-specific correlation and validates the chosen boundary with synthetic tests.
+    status: validated
+  - id: SAF-T1502-C014
+    statement: MITRE ATT&CK T1552.001 is a direct behavioral mapping because it covers searching files for credentials; T1005 is broader collection, while T1555, T1003, and T1056 cover protected stores, operating-system structures, and input capture.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1552.001-v1.3
+        support: direct
+        exact_locators:
+          - Definition, tactic, platforms, contributors, and version, lines 16-50
+      - source_id: SRC-attack-t1005
+        support: context
+        exact_locators:
+          - Definition and tactic, lines 15-37
+      - source_id: SRC-mitre-t1555
+        support: context
+        exact_locators:
+          - Definition and sub-techniques, lines 16-45
+      - source_id: SRC-mitre-t1003
+        support: context
+        exact_locators:
+          - Definition and sub-techniques, lines 16-49
+      - source_id: SRC-mitre-t1056
+        support: context
+        exact_locators:
+          - Definition and sub-techniques, lines 16-44
+    corroboration: ATT&CK's current procedure tables also place the Anthropic campaign under both T1552.001 and T1005, preserving the credential-vs-general-data distinction.
+    limitations:
+      - ATT&CK does not define SAF boundaries; the SAF neighbor split remains a framework inference.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the contract mechanism with current ATT&CK definitions.
+    status: validated
+  - id: SAF-T1502-C015
+    statement: Anthropic observed that Claude sometimes reported invalid credentials or public information as successful findings, so model-generated credential claims require corroboration from tool and system telemetry.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive summary limitation, page 3, lines 49-54
+    corroboration: The operating-system audit sources provide independent event evidence suitable for corroboration.
+    limitations:
+      - The report does not quantify the false-claim rate or test the proposed SAF analytic.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1502-C016
+    statement: A response to suspected file-based credential harvest should preserve relevant evidence, contain the involved agent or process, revoke or rotate credibly exposed material, scope unauthorized use, remove unsafe filesystem reach, and validate recovery.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-61r3
+        support: direct
+        exact_locators:
+          - Executive Summary and incident-response lifecycle, pages 8-12, lines 159-190 and 296-310
+      - source_id: SRC-google-adc-files
+        support: context
+        exact_locators:
+          - Service-account-key risk and attached-account guidance, lines 87-108
+      - source_id: SRC-mcp-security-2025-11-25
+        support: context
+        exact_locators:
+          - Local server and proxy restrictions, lines 404-424 and 515-530
+    corroboration: NIST supplies the response lifecycle; MCP and cloud authority guidance identifies the relevant access-control and credential-risk conditions.
+    limitations:
+      - Exact containment and credential lifecycle procedures depend on the credential issuer and affected platform.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The procedure specializes general incident-response outcomes to the documented technique boundary without prescribing product-specific commands.
+    status: validated

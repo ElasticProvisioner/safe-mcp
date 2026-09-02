@@ -1,0 +1,122 @@
+version: 1
+technique_id: SAF-T1405
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1405/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1405/technique-contract.yml
+  supports: Internal scope, neutral name, supplied tactic, clean-room mode, and completion
+    criteria.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1405/quality-review.yml
+  supports: Review gates, strict validator result, and detector validation status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1405/detection-rule.yml
+  supports: The standalone deterministic detection analytic.
+- id: LOCAL-detection-events
+  path: tests/SAF-T1405/test-logs.json
+  supports: Three positive and three negative synthetic discovery events.
+- id: LOCAL-detection-expected
+  path: tests/SAF-T1405/expected-results.json
+  supports: Expected classification for every detector test case.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1405/test_detection_rule.py
+  supports: Executable deterministic detector validation.
+- id: LOCAL-detection-output
+  path: tests/SAF-T1405/validation-output.txt
+  supports: Passing detector result recorded on 2026-09-01.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1405/source-coverage.yml
+  supports: Search passes, saturation, selected examples, gaps, exclusions, and evidence
+    classification.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1405/publication-rights.yml
+  supports: Publication-rights review for every cited source.
+- id: LOCAL-integrated-detection-proof
+  path: research/techniques/SAF-T1405/validation/detection-output.txt
+  supports: Isolated and integrated deterministic detector results.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1405/validation/isolated-validator-output.txt
+  supports: Isolated and integrated strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1405-X001
+  candidate: Claim that confirmed production breaches used this technique.
+  origin: Required production-breach research pass.
+  attempted_searches:
+  - NVD nine-query MCP tool-identity set.
+  - CISA KEV full-catalog MCP filter.
+  - Direct first-party security news-page reviews.
+  consulted_source_ids:
+  - SRC-nvd-mcp-tool-identity-corpus-2026
+  - SRC-cisa-kev-2026-09-01
+  reason: No direct production incident qualified in the reviewed direct-authority
+    corpus.
+  prohibited_publishable_text:
+  - Confirmed production breaches used Tool Obfuscation/Renaming
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1405-X002
+  candidate: Claim that CVE-2026-46519 is a direct tool-renaming vulnerability.
+  origin: NVD tool-name keyword result.
+  attempted_searches:
+  - Full NVD CVE record review.
+  - Exact maintainer advisory URL obtained from NVD.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-46519
+  - SRC-ghsa-cr22-wjx7-2w6m
+  reason: The flaw is missing tools/call enforcement for a known name and requires
+    no deceptive metadata.
+  prohibited_publishable_text:
+  - CVE-2026-46519 is a direct Tool Obfuscation/Renaming vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1405-X003
+  candidate: Claim that a zero-trust tool registry has empirically prevented tool
+    squatting in production.
+  origin: Tool-squatting architecture paper.
+  attempted_searches:
+  - Full paper review including limitations and future validation discussion.
+  consulted_source_ids:
+  - SRC-tool-squatting-2025
+  reason: The paper presents a conceptual architecture and does not provide the claimed
+    empirical production evidence.
+  prohibited_publishable_text:
+  - empirically eliminated tool squatting in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1405-X004
+  candidate: Claim that renaming alone caused the downstream harm measured by MCP
+    Security Bench.
+  origin: MCP Security Bench aggregate mixed-attack table.
+  attempted_searches:
+  - Reviewed attack construction, Table 3, Appendix C.2.3, and Table 12.
+  consulted_source_ids:
+  - SRC-mcp-security-bench-2510.15994
+  reason: The reported NC-FE outcome couples name collision with a response-stage
+    false error.
+  prohibited_publishable_text:
+  - name collision alone produced a 14.62 percent attack success rate
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1405-X005
+  candidate: Claim that metadata scanners reliably detect preference manipulation.
+  origin: MPMA defense appendix and semantic-defense study.
+  attempted_searches:
+  - Reviewed MPMA Appendix E.2 and Table 4.
+  - Reviewed semantic descriptor Table XXIV and limitations.
+  consulted_source_ids:
+  - SRC-mpma-2025
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  reason: Both controlled studies retain false negatives or residual unsafe outcomes,
+    and the semantic study also reports false positives.
+  prohibited_publishable_text:
+  - metadata scanners reliably detect all preference manipulation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

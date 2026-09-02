@@ -1,0 +1,93 @@
+version: 1
+technique_id: SAF-T1203
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1203/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1203/technique-contract.yml
+  supports: Scope, name, tactic, reconciled neighbor distinctions, and completion constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1203/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1203/detection-rule.yml
+  supports: Detection logic, fields, false positives, limitations, and traceability
+    map.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1203/test-logs.json
+  supports: Ten inert positive, negative, malformed, and normalization fixtures.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1203/test_detection_rule.py
+  supports: Deterministic evaluator and fixture assertions.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1203/validation/detection-test.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1203/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1203-X001
+  candidate: A direct production MCP server-binary replacement incident exists.
+  origin: Required production-breach search.
+  attempted_searches:
+  - site:cisa.gov "MCP server" "backdoored"
+  - site:cloud.google.com/blog/topics/threat-intelligence "MCP server binary" tamper
+  - site:unit42.paloaltonetworks.com MCP "binary replacement"
+  consulted_source_ids:
+  - SRC-unit42-mcp-sampling-2025
+  - SRC-redhat-cve-2026-44192
+  reason: Only adjacent malicious-server research and an enabling file-write vulnerability
+    were found; neither reports replacement and later launch of an installed MCP server
+    binary.
+  prohibited_publishable_text:
+  - MCP server binaries have been replaced in production
+  - first observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1203-X002
+  candidate: CVE-2026-44192 directly demonstrates SAF-T1203.
+  origin: Current MCP advisory search.
+  attempted_searches:
+  - site:access.redhat.com/security/cve "MCP server" overwrite programs libraries
+  consulted_source_ids:
+  - SRC-redhat-cve-2026-44192
+  reason: The advisory establishes arbitrary file writes and potential program overwrite
+    but not server-artifact replacement, persistence, or subsequent host launch.
+  prohibited_publishable_text:
+  - CVE-2026-44192 is a Backdoored Server Binary vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1203-X003
+  candidate: A valid code signature rules out a backdoored binary.
+  origin: Detection-design challenge review.
+  attempted_searches:
+  - site:nist.gov code signing compromised keys malicious signed code
+  consulted_source_ids:
+  - SRC-nist-code-signing-2018
+  - SRC-mandiant-solarwinds
+  reason: NIST describes compromised signing infrastructure and Mandiant documented
+    a signed trojanized DLL.
+  prohibited_publishable_text:
+  - valid signature proves the server binary is safe
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1203-X004
+  candidate: Malicious MCP packages mentioned in a mitigation article are direct SAF-T1203
+    production incidents.
+  origin: Current breach follow-up.
+  attempted_searches:
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP malicious packages
+  consulted_source_ids: []
+  reason: The article pointed to secondary open-source reporting and did not establish
+    post-deployment binary replacement; it was not used as a packet source.
+  prohibited_publishable_text:
+  - malicious MCP packages prove post-deployment server replacement
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

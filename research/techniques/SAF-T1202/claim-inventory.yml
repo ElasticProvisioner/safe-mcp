@@ -1,0 +1,337 @@
+version: 1
+technique_id: SAF-T1202
+claims:
+  - id: SAF-T1202-C001
+    statement: MCP HTTP authorization uses an OAuth client, authorization server, and protected MCP resource server, with access tokens presented on every authorized HTTP request.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Purpose and Scope; Roles; Access Token Usage, lines 99-140 and 239-267"]
+    corroboration: The MCP security-considerations page independently describes the same token and resource-server boundary.
+    limitations: [Authorization is optional and this claim applies only to MCP HTTP authorization deployments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C002
+    statement: MCP clients that desire refresh tokens must keep them confidential, may request offline access when advertised, and cannot assume a refresh token will be issued.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Refresh Tokens, lines 272-279"]
+    corroboration: RFC 9700 separately requires confidentiality of refresh tokens in transit and storage.
+    limitations: [The MCP specification delegates issuance policy to the authorization server.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C003
+    statement: MCP warns that stolen stored, cached, or logged tokens can produce requests that appear legitimate, requires secure storage, and requires refresh-token rotation for public clients.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Theft, lines 93-95"]
+    corroboration: RFC 9700 Sections 2.2.2 and 4.14 specify rotation or sender constraint for public clients.
+    limitations: [Requests that appear legitimate are not necessarily indistinguishable when contextual telemetry exists.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C004
+    statement: A successfully replayed refresh token lets an attacker mint access tokens and access resource servers on the resource owner's behalf.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.14.1, Refresh Token Protection, paragraphs 1-3"]
+    corroboration: Google Cloud independently describes copied refresh tokens being used to refresh access indefinitely.
+    limitations: [Actual access remains bounded by token validity, client binding, scope, audience, expiration, and revocation policy.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C005
+    statement: In an MCP deployment, successful attacker use of an unrevoked and replayable refresh token can preserve access across successive access-token lifetimes without repeating the interactive authorization flow.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: context
+        exact_locators: ["Roles; Refresh Tokens, lines 132-140 and 272-279"]
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Sections 2.2.2 and 4.14.1-4.14.2"]
+      - source_id: SRC-google-oauth-token-mitigation
+        support: corroborating
+        exact_locators: ["How an attacker can use compromised OAuth tokens, lines 296-310"]
+    corroboration: The three sources jointly establish the MCP role, refresh-token replay consequence, and persistence behavior.
+    limitations: [No directly reviewed MCP production incident established the complete behavior as of 2026-09-01.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The end-to-end MCP behavior is synthesized from normative MCP and OAuth behavior plus a first-party cloud implementation analysis.
+    status: validated
+  - id: SAF-T1202-C006
+    statement: Better Auth before 1.6.11 failed to authenticate confidential clients on refresh grants in legacy OIDC and MCP plugins, allowing a holder of a valid refresh token and client ID to mint access and rotated refresh tokens until revocation or expiry.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-pw9m-5jxm-xr6h
+        support: direct
+        exact_locators: ["Affected versions; Summary; Details; Patches; Impact, lines 138-198"]
+    corroboration: NVD CVE-2026-53512 independently indexed the affected MCP plugin and fixed version, but the advisory is the directly reviewed authority used for detail.
+    limitations: [The advisory establishes a vulnerable condition, not observed exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C007
+    statement: Mattermost versions fixed in 10.11.20, 11.6.5, 11.7.3, and 11.8.0 failed to invalidate OAuth refresh tokens after account deactivation, allowing fresh access tokens; the reviewed NVD record showed CISA SSVC exploitation as none.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-9571
+        support: direct
+        exact_locators: ["Description, lines 76-85; Change History, lines 106-156"]
+    corroboration: The NVD record attributes the CNA data and affected ranges to Mattermost, Inc.
+    limitations: [This is not an MCP-specific vulnerability and no production exploitation was established.]
+    conflicts: [NIST and CNA CVSS 3.1 base scores differ; the technique does not rely on either score.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C008
+    statement: UNC6395 used compromised OAuth tokens associated with Salesloft Drift integrations to access Google Workspace email and exfiltrate data from Salesforce customer instances during August 2025; responders revoked active access and refresh tokens.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-gtig-drift-2025
+        support: direct
+        exact_locators: ["Update and Introduction, lines 77-99"]
+      - source_id: SRC-salesloft-drift-2026
+        support: corroborating
+        exact_locators: ["Mandiant investigation summary and Drift/Salesforce Security Update, lines 199-229 and 392-397"]
+    corroboration: Google Threat Intelligence Group/Mandiant and Salesloft independently describe token theft, use, affected integrations, and revocation.
+    limitations: [The sources do not state whether the actor actually exchanged a refresh token, so this is adjacent production token abuse rather than proof of the defining renewal step.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C009
+    statement: In April 2022, attackers used stolen OAuth user tokens issued to Heroku and Travis CI integrations to enumerate organizations, list repositories, and clone private repositories from dozens of organizations; GitHub requested revocation of all affected application tokens.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-github-oauth-incident-2022
+        support: direct
+        exact_locators: ["April 27 update and Impact/Response sections, lines 429-503"]
+    corroboration: GitHub reported platform-level investigation and direct victim notification.
+    limitations: [The report does not identify refresh-token exchange or MCP, so it is an adjacent production token-abuse example.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C010
+    statement: Refresh-token rotation detects replay when both attacker and legitimate client use a token family, but the authorization server cannot determine which party submitted the invalidated token.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.14.2, refresh-token rotation bullets"]
+    corroboration: MCP independently requires rotation for public clients.
+    limitations: [Detection requires token-family state and reuse; first malicious use before legitimate reuse may not alert.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C011
+    statement: A successful refresh by a disabled subject or a server-detected reuse of an invalidated refresh-token family is a high-confidence persistence signal, while successful normal refresh alone is not.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.14.2, replay detection and automatic revocation recommendations"]
+      - source_id: SRC-nvd-cve-2026-9571
+        support: corroborating
+        exact_locators: ["Description, lines 78-80"]
+      - source_id: SRC-mitre-t1550-001
+        support: context
+        exact_locators: ["Detection Strategy AN0527-AN0529, lines 81-88"]
+      - source_id: SRC-ms-entra-risk-detections-2026
+        support: context
+        exact_locators: ["Anomalous token detection, lines 108-115 and 223-230"]
+    corroboration: The vulnerability and ATT&CK detection guidance support the two analytic branches.
+    limitations: [Lifecycle synchronization errors and recovery testing can create legitimate lookalikes; absent reuse/lifecycle data causes false negatives.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic combines normative replay semantics with lifecycle and contextual detection guidance.
+    status: validated
+  - id: SAF-T1202-C012
+    statement: Effective response requires revoking the affected OAuth grant or token family and accounting for still-valid access tokens; endpoint containment or password reset alone may not invalidate copied tokens.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-oauth-token-mitigation
+        support: direct
+        exact_locators: ["Best practices for remediation, lines 353-368"]
+      - source_id: SRC-ms-token-tactics-2022
+        support: corroborating
+        exact_locators: ["Response and investigation, lines 79-86"]
+      - source_id: SRC-rfc7009
+        support: context
+        exact_locators: ["Sections 1 and 2, token revocation request and consequences"]
+    corroboration: Google and Microsoft separately warn that copied tokens survive some endpoint/account actions.
+    limitations: [Exact revocation behavior and access-token residual lifetime are provider-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C013
+    statement: Audience and scope restriction reduce the resources and actions reachable through a stolen token but do not by themselves prevent use against the intended MCP resource.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Resource Parameter Implementation and Token Handling, lines 207-267"]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: ["Sections 2.3 and 4.10.2"]
+    corroboration: Both sources require or recommend audience/resource restriction.
+    limitations: [The controls constrain blast radius; they are not proof-of-possession controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C014
+    statement: MITRE ATT&CK T1550.001 covers use of stolen application access tokens and explicitly notes long-term access through OAuth refresh tokens.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1550-001
+        support: direct
+        exact_locators: ["Technique description, lines 16-52"]
+    corroboration: ATT&CK T1528 separately covers token theft, supporting the acquisition-versus-use distinction.
+    limitations: [T1550.001 is broader than MCP and is assigned to ATT&CK Lateral Movement rather than Persistence.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF maps its narrower persistence behavior to the broader ATT&CK sub-technique.
+    status: validated
+  - id: SAF-T1202-C015
+    statement: Creating, adding, or co-opting an OAuth application integration for persistence is behaviorally distinct from reusing an already issued refresh-token grant.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0003
+        support: direct
+        exact_locators: ["Cloud Application Integration T1671 entry, line 74"]
+      - source_id: SRC-ms-app-consent-playbook
+        support: corroborating
+        exact_locators: ["Details of consent grant attack, lines 328-345"]
+    corroboration: MITRE defines integration persistence; Microsoft describes the registration, consent, and token issuance sequence.
+    limitations: [The behaviors may co-occur in one intrusion.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The boundary is an SAF taxonomy decision based on distinct mechanisms and observables.
+    status: validated
+  - id: SAF-T1202-C016
+    statement: Sender-constraining refresh tokens or rotating them, expiring inactive refresh tokens, and revoking them after security events reduce successful replay or its duration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Sections 2.2.2 and 4.14.2"]
+      - source_id: SRC-rfc9449
+        support: corroborating
+        exact_locators: ["Sections 1, 2, and 10 on DPoP sender-constrained tokens"]
+    corroboration: DPoP supplies the proof-of-possession mechanism referenced by RFC 9700.
+    limitations: [Rotation detects replay only after competing use; sender constraint depends on protecting the bound key.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C017
+    statement: Google Cloud documents that copied gcloud OAuth refresh tokens can preserve access from an attacker-controlled endpoint and that traffic can still be logged as the compromised identity.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-google-oauth-token-mitigation
+        support: direct
+        exact_locators: ["Overview and How an attacker can use compromised OAuth tokens, lines 283-310"]
+    corroboration: MITRE T1550.001 describes token use without ordinary login and its detection challenges.
+    limitations: [This is Google Cloud CLI guidance, not an MCP incident or controlled study with measured detection performance.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1202-C018
+    statement: The selected analytic cannot detect an attacker who is the only party using a still-valid refresh token unless lifecycle or contextual evidence marks the use as suspicious.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.14.2, rotation detects compromise after both parties use the family"]
+      - source_id: SRC-mitre-t1550-001
+        support: context
+        exact_locators: ["Detection Strategy AN0527-AN0529, lines 81-88"]
+      - source_id: SRC-rfc10017
+        support: direct
+        exact_locators: ["Sections 5.1.2 and 5.2.1, lines 167-216"]
+    corroboration: Both sources show that replay/lifecycle/context, not mere refresh success, creates the useful signal.
+    limitations: [Provider-specific risk engines may detect additional anomalies not modeled here.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is the negative-space implication of rotation semantics and contextual detection guidance.
+    status: validated
+  - id: SAF-T1202-C019
+    statement: The defining behavior can expose or alter any MCP resource action permitted by the renewed token, while availability impact is conditional on authorized destructive or resource-intensive operations.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.14.1, attacker can access resource servers on behalf of resource owner"]
+      - source_id: SRC-ghsa-pw9m-5jxm-xr6h
+        support: corroborating
+        exact_locators: ["Impact, lines 192-195"]
+    corroboration: The advisory states renewed access tokens carry the original user's authorized scope.
+    limitations: [The actual consequence depends on granted scopes, MCP server capabilities, approval gates, and resource-server authorization.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: CIA consequences are inferred from the bounded permissions of renewed access tokens.
+    status: validated
+  - id: SAF-T1202-C020
+    statement: A 2018 USENIX study used dynamic symbolic execution to identify and demonstrate refresh-token injection in an SSO SDK, where the injected refresh token renewed an access token after expiry and enabled victim-account access under stated identity-provider or token-acquisition preconditions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-s3kvetter-2018
+        support: direct
+        exact_locators: ["Abstract and system architecture, pages 1-6; Section 7.2 Refresh token Injection, pages 11-12"]
+    corroboration: The paper documents its analysis method, concrete demonstration, prerequisites, and responsible disclosure.
+    limitations: [The demonstration concerns an SSO SDK rather than MCP, and its weakest attacker model depended on an identity provider that did not require a client secret.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

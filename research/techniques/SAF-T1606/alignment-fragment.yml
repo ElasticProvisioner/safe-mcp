@@ -1,0 +1,21 @@
+version: 1
+issues:
+  - id: SAF-T1606-A001
+    triggered_by: SAF-T1606
+    affects:
+      - SAF-T1105
+      - SAF-T1502
+      - SAF-T1606
+    change: >-
+      Register file-tool requests whose immediate result is names, entry metadata,
+      matching paths, or directory structure as the SAF-T1606 boundary.
+    reason: >-
+      The frozen contract stops before reading file contents and treats path-boundary
+      bypass as an enabling or co-occurring mechanism rather than the discovery objective.
+    severity: medium
+    status: resolved
+    resolution: >-
+      The content-reading role maps narrowly to SAF-T1502, the path-boundary role
+      maps to SAF-T1105, six canonical mitigations cover authorization, privilege,
+      audit, and anomaly monitoring, ATT&CK T1083 maps directly, and eleven detector
+      cases validate the boundary.

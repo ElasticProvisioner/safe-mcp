@@ -1,259 +1,76 @@
-title: MCP Server Proxy Masquerade Detection
-id: 959fce5b-4ad0-45cf-93e3-9dabd31f255e
+title: MCP Server Proxy Masquerade Identity and Relay Correlation
+id: 09f59f0c-9477-4c82-a66d-3c49f37139bf
 status: experimental
-description: |
-  Detects potential proxy masquerade attacks through network and certificate anomalies.
-  This rule monitors for signs that MCP traffic is being routed through unauthorized proxy servers.
-  IMPORTANT: Proxy masquerade attacks are specifically designed to evade detection.
-  Deploy certificate pinning and behavioral analytics for comprehensive protection.
-author: SAF-MCP Contributors
-date: 2025-12-16
-modified: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1407
-  - https://attack.mitre.org/techniques/T1090/
-  - https://attack.mitre.org/techniques/T1557/
-  - https://attack.mitre.org/techniques/T1036/
+description: >-
+  Detects a normalized MCP session that has both a mismatch from the approved
+  server identity and a relay-like protected-resource, authorization-server, or
+  tool-catalog association, excluding explicitly approved gateways.
+author: OpenAI Codex clean-room author
+date: 2026-09-01
 logsource:
-  product: network
-  service: firewall
+  category: mcp_session
+  product: mcp
+  definition: Normalized MCP client, endpoint identity, TLS, OAuth discovery, and tool inventory telemetry.
 detection:
-  # Connections to known proxy/anonymization services
-  selection_proxy_services:
-    dst_port:
-      - 443
-      - 8443
-      - 8080
-      - 3128
-    app_protocol: 'https'
-    dst_ip|cidr:
-      # Example ranges - customize based on environment
-      - '198.51.100.0/24'  # Documentation range (replace with actual threat intel)
-
-  # Unusual connection patterns for MCP traffic
-  selection_mcp_anomaly:
-    src_process|contains:
-      - 'mcp'
-      - 'claude'
-      - 'ai-agent'
-    dst_port: 443
-    bytes_sent|gt: 1048576  # Large uploads may indicate exfiltration
-
-  # Certificate anomalies
-  selection_cert_mismatch:
-    tls_issuer|not|contains:
-      - 'DigiCert'
-      - 'Let''s Encrypt'
-      - 'Cloudflare'
-      - 'Amazon'
-      - 'Google Trust Services'
-    dst_port: 443
-
-  filter_legitimate:
-    dst_domain|endswith:
-      - '.anthropic.com'
-      - '.openai.com'
-      - '.googleapis.com'
-      - '.azure.com'
-
-  condition: (selection_proxy_services or selection_mcp_anomaly or selection_cert_mismatch) and not filter_legitimate
-
-falsepositives:
-  - Legitimate corporate proxy configurations
-  - VPN connections
-  - CDN-fronted services
-  - Development/testing environments with self-signed certificates
-
-level: medium
-
-tags:
-  - attack.defense_evasion
-  - attack.t1090
-  - attack.t1090.003
-  - attack.t1090.004
-  - attack.t1557
-  - attack.t1036
-  - safe.t1407
-  - mcp.proxy
-
+  selection_identity:
+    approved_identity_mismatch: true
+  selection_relay:
+    relay_association_signal: true
+  filter_approved_gateway:
+    approved_gateway: true
+  condition: selection_identity and selection_relay and not filter_approved_gateway
 fields:
-  - src_ip
-  - dst_ip
-  - dst_port
-  - dst_domain
-  - tls_issuer
-  - tls_subject
-  - bytes_sent
-  - bytes_received
-
----
-# DNS-based proxy detection
-title: MCP API Endpoint DNS Resolution Anomaly
-id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
-status: experimental
-description: |
-  Detects DNS resolution anomalies for known MCP API endpoints that may indicate
-  DNS hijacking for proxy redirection.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1407
-  - https://attack.mitre.org/techniques/T1557/
-logsource:
-  product: dns_server
-  service: query
-detection:
-  # Known API endpoints resolving to unexpected addresses
-  selection_api_queries:
-    query|contains:
-      - 'api.'
-      - 'mcp.'
-      - 'tools.'
-      - 'agent.'
-    query|endswith:
-      - '.com'
-      - '.io'
-      - '.ai'
-
-  # Responses pointing to private IP ranges (suspicious for public APIs)
-  selection_private_response:
-    answer|cidr:
-      - '10.0.0.0/8'
-      - '172.16.0.0/12'
-      - '192.168.0.0/16'
-      - '127.0.0.0/8'
-
-  # Short TTL values may indicate dynamic proxy infrastructure
-  selection_short_ttl:
-    ttl|lt: 300
-
-  condition: selection_api_queries and (selection_private_response or selection_short_ttl)
-
+  - session_id
+  - approved_server_uri
+  - configured_server_uri
+  - resolved_server_uri
+  - tls_peer_identity
+  - protected_resource
+  - authorization_servers
+  - server_info
+  - tool_catalog_fingerprint
+  - approved_identity_mismatch
+  - relay_association_signal
+  - approved_gateway
 falsepositives:
-  - Split-horizon DNS configurations
-  - Internal API endpoints
-  - Development environments
-  - CDN configurations with short TTLs
-
+  - Legitimate gateway or service-mesh mediation not yet entered into the approval inventory.
+  - Planned endpoint migration with stale URI, certificate, resource, or authorization-server baselines.
+  - Shared authorization infrastructure or cloned tool catalogs combined with an unrelated identity mismatch.
 level: high
-
 tags:
-  - attack.defense_evasion
+  - saf.t1407
+  - attack.defense-evasion
+  - attack.t1036
   - attack.t1557
-  - safe.t1407
-  - mcp.dns
-
----
-# TLS certificate chain monitoring
-title: MCP Endpoint Certificate Chain Anomaly
-id: b2c3d4e5-f6a7-8901-bcde-f12345678901
-status: experimental
-description: |
-  Detects certificate chain anomalies for MCP server connections that may indicate
-  MITM proxy interception with forged certificates.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1407
-logsource:
-  product: tls
-  service: handshake
-detection:
-  # Self-signed certificates for production endpoints
-  selection_self_signed:
-    tls_issuer: tls_subject
-    dst_port: 443
-
-  # Certificate issued recently (potential attacker-generated cert)
-  selection_new_cert:
-    tls_not_before|gt: -7d  # Issued within last 7 days
-
-  # Certificate validity period anomalies
-  selection_short_validity:
-    tls_validity_days|lt: 30
-
-  # Missing Certificate Transparency
-  selection_no_ct:
-    tls_ct_logs: null
-
-  # Known MCP-related hostnames
-  selection_mcp_hosts:
-    dst_domain|contains:
-      - 'mcp'
-      - 'api'
-      - 'agent'
-      - 'tool'
-
-  filter_development:
-    dst_domain|contains:
-      - 'localhost'
-      - '.local'
-      - '.dev'
-      - '.test'
-
-  condition: (selection_self_signed or selection_short_validity or selection_no_ct) and selection_mcp_hosts and not filter_development
-
-falsepositives:
-  - Development and testing environments
-  - Internal services with private PKI
-  - Certificate rotation during renewal windows
-  - Legitimate use of short-lived certificates
-
-level: high
-
-tags:
-  - attack.defense_evasion
-  - attack.t1557
-  - attack.credential_access
-  - safe.t1407
-  - mcp.tls
-
----
-# Latency-based proxy detection
-title: MCP API Response Latency Anomaly
-id: c3d4e5f6-a7b8-9012-cdef-123456789012
-status: experimental
-description: |
-  Detects unusual API response latency patterns that may indicate traffic
-  being routed through an additional proxy hop.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1407
-logsource:
-  product: application
-  service: mcp_client
-detection:
-  # Significant latency increase from baseline
-  selection_high_latency:
-    response_time_ms|gt: 500
-    api_endpoint|contains:
-      - '/tools/'
-      - '/mcp/'
-      - '/v1/'
-
-  # Latency variance anomaly
-  selection_latency_variance:
-    response_time_stddev|gt: 200
-    sample_count|gt: 10
-
-  # Geographic latency inconsistency
-  selection_geo_mismatch:
-    expected_region: 'us-east'
-    observed_latency_ms|gt: 300
-
-  condition: selection_high_latency or selection_latency_variance or selection_geo_mismatch
-
-falsepositives:
-  - Network congestion
-  - API service degradation
-  - Geographic distance to API endpoints
-  - Legitimate CDN routing changes
-
-level: low
-
-tags:
-  - attack.defense_evasion
-  - attack.t1090
-  - safe.t1407
-  - mcp.latency
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1407-C013, SAF-T1407-C014]
+  telemetry_claim_ids: [SAF-T1407-C001, SAF-T1407-C004, SAF-T1407-C013]
+  limitation_claim_ids: [SAF-T1407-C015, SAF-T1407-C023]
+  validation_artifacts:
+    - tests/SAF-T1407/cases.json
+    - tests/SAF-T1407/test_detection_rule.py
+    - research/techniques/SAF-T1407/validation/detection-test.txt
+    - research/techniques/SAF-T1407/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1407-C001, SAF-T1407-C004, SAF-T1407-C013]
+      rationale: MCP connection, endpoint identity, and authorization metadata must be normalized into one session record.
+    selection_identity:
+      claim_ids: [SAF-T1407-C005, SAF-T1407-C013]
+      rationale: Standards-defined resource and TLS comparisons support an explicit approved-identity mismatch field.
+    selection_relay:
+      claim_ids: [SAF-T1407-C006, SAF-T1407-C013, SAF-T1407-C014]
+      rationale: Resource, authorization, or catalog association supplies a second signal consistent with relay or reuse.
+    filter_approved_gateway:
+      claim_ids: [SAF-T1407-C014, SAF-T1407-C015]
+      rationale: Explicit gateway approval suppresses expected mediation while retaining unapproved identity shifts.
+    condition:
+      claim_ids: [SAF-T1407-C014]
+      rationale: Requiring both independent conditions reduces alerts on merely unapproved development servers.
+    fields:
+      claim_ids: [SAF-T1407-C013]
+      rationale: The output fields preserve the identity tuple needed for investigation and tuning.
+    falsepositives:
+      claim_ids: [SAF-T1407-C015]
+      rationale: Gateways, migrations, shared authorization, and cloned catalogs can create legitimate correlation matches.

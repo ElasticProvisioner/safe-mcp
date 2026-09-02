@@ -1,0 +1,61 @@
+version: 1
+technique_id: SAF-T1405
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1405
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records the neutral seed, prohibited inputs, independent searches, no prior-artifact access, and pre-integration freeze constraint.
+  contract_and_scope:
+    status: passed
+    notes: Scope is limited to deceptive tool identity presentation used in discovery, review, or selection and excludes instruction-only, backend-only, and authorization-only mechanisms.
+  technical_accuracy:
+    status: passed
+    notes: Protocol name semantics, controlled results, benchmark coupling, CVE boundary, and impact conditions were checked against exact locators.
+  claim_traceability:
+    status: passed
+    notes: Twelve validated claims carry source relations, exact locators, limitations, and inference records; all are exposed in the Evidence Summary.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a readable semantic citation plus hidden SAF-TRACE linkage or a declared local-artifact link; five unsupported propositions are excluded.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is justified by two independent controlled MCP evaluations and is not inflated to Observed.
+  research_saturation:
+    status: passed
+    notes: Two final exact-query passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production, catalog, advisory, demonstration, exploitation-status, impact, remediation, and boundary classifications are recorded; the direct incident gap is explicit.
+  detection_quality:
+    status: passed
+    notes: The provider-bound definition-drift analytic declares telemetry, logic, three positives, three negatives, false positives, limitations, and tuning.
+  mitigation_quality:
+    status: passed
+    notes: Controls address origin disambiguation, definition integrity, change approval, least privilege, and call-time enforcement while preserving adoption limits.
+  framework_alignment:
+    status: passed
+    notes: Supplied tactic, analogous T1036 mapping, canonical neighbors, mitigations, stable source IDs, and validation paths are reconciled in the integrated repository.
+  publication_rights:
+    status: passed
+    notes: All cited sources are used through attribution, factual reference, nominative reference, or independent paraphrase; no protected expression or third-party artifact is reproduced.
+  safe_publication:
+    status: passed
+    notes: The example and detector corpus are inert, synthetic, credential-free, and non-destructive.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1405
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1405/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1405
+      result: passed
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1405/test_detection_rule.py
+    result: '{"cases": 6, "negatives": 3, "positives": 3, "status": "passed"}'
+    waiver: null
+unresolved: []

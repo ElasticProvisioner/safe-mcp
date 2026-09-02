@@ -1,93 +1,116 @@
-
----
-
-`techniques/SAF-T2103/detection-rule.yml`
-
-```yaml
-title: Code Sabotage via Malicious Agentic Pull Request
-id: 2e0a9149-6f5e-4b3a-9c72-1a3b4f9098e1
-status: experimental
-description: >
-  Detects suspicious pull requests, especially those authored by agents/bots or
-  service accounts, that modify CI/CD workflows, deployment infrastructure, or
-  AI tooling/extension code in ways consistent with SAF-T2103 code sabotage.
-author: SAF-MCP Team
-date: 2025-11-22
+title: Agent-Originated Sensitive Repository Change with Weak Authorization
+id: 8dd9d96a-4fba-5b66-9f42-44c6d9c24889
+status: test
+description: >-
+  Triages agent-originated writes to sensitive repository paths when an
+  abstract code-risk indicator is present and approval is weak or context is
+  untrusted. The rule does not infer malicious intent.
 references:
-  - https://attack.mitre.org/techniques/T1677/
-  - https://attack.mitre.org/detectionstrategies/DET0533/
-  - https://unit42.paloaltonetworks.com/github-actions-supply-chain-attack/
-  - https://www.cisa.gov/news-events/alerts/2025/03/18/supply-chain-compromise-third-party-tj-actionschanged-files-cve-2025-30066-and-reviewdogaction
-  - https://thehackernews.com/2025/07/malicious-pull-request-infects-6000.html
-  - https://orca.security/resources/blog/pull-request-nightmare-github-actions-rce/
-  - https://www.tomshardware.com/tech-industry/cyber-security/hacker-injects-malicious-potentially-disk-wiping-prompt-into-amazons-ai-coding-assistant-with-a-simple-pull-request-told-your-goal-is-to-clean-a-system-to-a-near-factory-state-and-delete-file-system-and-cloud-resources
-logsource:
-  product: github
-  service: audit
-  definition: Pull request events enriched with changed file paths and diff snippets
-detection:
-  selection_pr_events:
-    event_type:
-      - pull_request.opened
-      - pull_request.synchronize
-      - pull_request.edited
-  selection_ai_or_bot_actor:
-    actor_login|endswith:
-      - "[bot]"
-      - "-bot"
-      - "-agent"
-    # Optionally include known MCP/agent service accounts here
-  selection_sensitive_paths:
-    file_path|contains:
-      - ".github/workflows/"
-      - ".gitlab-ci.yml"
-      - "Jenkinsfile"
-      - "azure-pipelines.yml"
-      - "Dockerfile"
-      - "k8s/"
-      - "infra/"
-      - "deploy/"
-      - "terraform/"
-      - "ansible/"
-      - "extensions/"
-      - "vs-code/"
-      - "vscode/"
-  selection_suspicious_diff:
-    diff_added|contains:
-      - "curl "
-      - "wget "
-      - "Invoke-WebRequest"
-      - "powershell "
-      - "bash -c"
-      - "sh -c"
-      - "base64"
-      - "nc "
-      - "aws s3 rm"
-      - "aws ec2 terminate-instances"
-  condition: selection_pr_events AND selection_sensitive_paths AND selection_ai_or_bot_actor
-  # For higher precision, you can require suspicious diff content as well:
-  # condition: selection_pr_events AND selection_sensitive_paths AND selection_ai_or_bot_actor AND selection_suspicious_diff
-fields:
-  - event_time
-  - actor_login
-  - actor_ip
-  - actor_user_agent
-  - repository
-  - pull_request_number
-  - pull_request_title
-  - pull_request_url
-  - file_path
-  - diff_added
-  - diff_removed
-falsepositives:
-  - Legitimate automation/bot PRs refactoring CI/CD or deployment code under strict review
-  - Bulk migrations or security-hardening PRs that introduce new tooling and scripts
-level: high
+  - https://code.visualstudio.com/docs/agents/run/security
+  - https://www.microsoft.com/en-us/security/blog/2026/07/16/least-privilege-for-ai-agents-identity-access-and-tool-binding/
+author: OpenAI SAF-MCP research agent
+date: 2026-09-02
 tags:
-  - attack.T1677
-  - attack.T1195
-  - attack.T1552
-  - saf-mcp.saf-t2103
-  - supply-chain
-  - ci-cd
-  - github
+  - saf.t2103
+logsource:
+  category: application
+  product: agentic_development_audit
+detection:
+  selection_actor:
+    actor.type:
+      - ai_agent
+      - coding_agent
+      - automation_agent
+  selection_action:
+    action:
+      - file_write
+      - commit
+      - push
+      - pull_request_update
+  selection_sensitive_path:
+    changed_paths|startswith:
+      - src/
+      - lib/
+      - app/
+      - test/
+      - tests/
+      - .github/workflows/
+    changed_paths|contains:
+      - security
+      - build
+  selection_risk_indicator:
+    change.indicators:
+      - test_disabled
+      - security_check_removed
+      - build_guard_weakened
+      - unauthorized_config_change
+      - opaque_behavior_change
+  selection_weak_authorization:
+    approval.status:
+      - missing
+      - denied
+      - bypassed
+  selection_untrusted_context:
+    context.untrusted_content: true
+  condition: >-
+    selection_actor and selection_action and selection_sensitive_path and
+    selection_risk_indicator and (selection_weak_authorization or
+    selection_untrusted_context)
+falsepositives:
+  - Authorized emergency automation when approval telemetry is delayed or missing.
+  - Approved refactoring classified by a coarse change-risk sensor.
+level: high
+fields:
+  - timestamp
+  - actor.type
+  - actor.id
+  - agent.session_id
+  - action
+  - repository
+  - ref
+  - changed_paths
+  - approval.status
+  - context.untrusted_content
+  - change.indicators
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T2103-C014
+  telemetry_claim_ids:
+    - SAF-T2103-C013
+  limitation_claim_ids:
+    - SAF-T2103-C015
+  validation_artifacts:
+    - tests/SAF-T2103/cases.json
+    - tests/SAF-T2103/test_detector.py
+  components:
+    logsource:
+      claim_ids: [SAF-T2103-C013]
+      rationale: Agent and application audit events provide actor, action, and correlation fields.
+    selection_actor:
+      claim_ids: [SAF-T2103-C013, SAF-T2103-C014]
+      rationale: The actor must be attributable to an agent identity before the event is in scope.
+    selection_action:
+      claim_ids: [SAF-T2103-C002, SAF-T2103-C014]
+      rationale: Repository-modifying actions are the observable execution step.
+    selection_sensitive_path:
+      claim_ids: [SAF-T2103-C003, SAF-T2103-C014]
+      rationale: Source, test, workflow, build, and security paths carry the behavior-changing state.
+    selection_risk_indicator:
+      claim_ids: [SAF-T2103-C003, SAF-T2103-C014]
+      rationale: A separate change classifier supplies an abstract potentially harmful behavior signal.
+    selection_weak_authorization:
+      claim_ids: [SAF-T2103-C010, SAF-T2103-C014]
+      rationale: Missing, denied, or bypassed approval raises the authorization risk.
+    selection_untrusted_context:
+      claim_ids: [SAF-T2103-C010, SAF-T2103-C014]
+      rationale: Untrusted context is an alternative risk factor when approval records exist.
+    condition:
+      claim_ids: [SAF-T2103-C014, SAF-T2103-C015]
+      rationale: Requiring the conjunction limits noise while retaining the documented intent limitation.
+    falsepositives:
+      claim_ids: [SAF-T2103-C015]
+      rationale: Legitimate automation and coarse classification can satisfy the observable conjunction.
+    fields:
+      claim_ids: [SAF-T2103-C013]
+      rationale: These fields support evaluation, correlation, and investigation.

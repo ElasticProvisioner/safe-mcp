@@ -1,0 +1,202 @@
+version: 1
+technique_id: SAF-T3001
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG security guidance [nist.gov, owasp.org]"
+        - "ATT&CK Impact and stored data manipulation [attack.mitre.org]"
+      material_changes: [Established the runtime retrieval boundary, control baseline, and inferential ATT&CK mapping.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG poisoning incident postmortem [microsoft.com, cisa.gov]"
+        - "RAG poisoning CVE [nvd.nist.gov]"
+        - "RAG poisoning advisory [langchain.com, llamaindex.ai]"
+      material_changes: [Recorded no exact production incident or vulnerability and classified adjacent memory-poisoning and RAGFlow leads.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG backdoor [arxiv.org, usenix.org, aclanthology.org]"
+        - "retrieval corpus poisoning [aclanthology.org]"
+      material_changes: [Established demonstrated status from BadRAG, PoisonedRAG, and RIPRAG.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG poisoning defense evaluation [usenix.org, aclanthology.org]"
+        - "RAG provenance integrity monitoring [owasp.org, microsoft.com]"
+      material_changes: [Bounded the candidate analytic to provenance and integrity signals and recorded defense limitations.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG backdoor limitation false positive [arxiv.org]"
+        - "RAG poisoning production incident [cisa.gov, microsoft.com]"
+      material_changes: [Added practical preprocessing, query-variation, and production-evidence caveats.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "conditional retrieval corpus poisoning RAG backdoor [aclanthology.org]"
+        - "RAG poisoning defense evaluation [usenix.org]"
+      material_changes: [Added Confundo practical-pipeline evidence and corpus-poisoning precursor classification.]
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG poisoned retrieval corpus incident [cisa.gov, microsoft.com]"
+        - "RAG corpus poisoning advisory [nvd.nist.gov]"
+      material_changes: [Added and bounded Microsoft's observed AI recommendation-poisoning campaign as direct-memory rather than retrieval-corpus evidence.]
+    - pass: saturation_follow_up_3
+      completed_on: "2026-09-02"
+      queries:
+        - "RAG document poisoning case study [microsoft.com]"
+        - "RAG backdoor poisoning defense benchmark [aclanthology.org]"
+      material_changes: []
+    - pass: saturation_follow_up_4
+      completed_on: "2026-09-02"
+      queries:
+        - "knowledge base poisoning trigger RAG real incident [cisa.gov]"
+        - "vector database poisoning CVE RAG [nvd.nist.gov]"
+        - "poisoned document retrieval mitigation false positive [usenix.org]"
+      material_changes: []
+  rationale: >-
+    Direct research covers the complete mechanism, independent studies corroborate
+    prerequisites and outcomes, official practice sources cover controls, and
+    authority-restricted incident and vulnerability searches expose the production
+    gap. The final two distinct follow-ups added no material boundary, evidence,
+    example, mitigation, or detection change.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 8
+  selected_examples:
+    - SRC-badrag
+    - SRC-usenix-confundo-2026
+    - SRC-usenix-poisonedrag-2025
+    - SRC-riprag
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-badrag
+      identifier: BadRAG controlled demonstration
+      relationship: direct_demonstration
+      exploitation_status: Reproduced in controlled research across five datasets, three retrievers, and multiple generators.
+      impact: Triggered queries retrieve poison and can induce selected refusal or sentiment behavior while clean queries are minimally affected.
+      remediation: Evaluated embedding-norm and fluency filters were insufficient; stronger token-level and provenance controls remain research directions.
+      selected: true
+      rationale: Directly exercises the defining unchanged-component, corpus-only backdoor contract.
+    - source_id: SRC-usenix-poisonedrag-2025
+      identifier: PoisonedRAG controlled demonstration
+      relationship: direct_demonstration
+      exploitation_status: Reproduced in controlled datasets, language models, and three application tests.
+      impact: Target questions can receive attacker-selected answers after a few malicious texts are inserted.
+      remediation: Evaluated paraphrasing, perplexity, duplicate filtering, and knowledge expansion were incomplete or operationally costly.
+      selected: true
+      rationale: Direct high-impact end-to-end knowledge-corruption demonstration.
+    - source_id: SRC-riprag
+      identifier: RIPRAG controlled demonstration
+      relationship: direct_demonstration
+      exploitation_status: Reproduced against black-box RAG configurations using target-system feedback.
+      impact: One injected document achieved substantial to complete success in evaluated configurations.
+      remediation: RAGuard reduced but did not eliminate reported attack success; interaction controls can constrain optimization.
+      selected: true
+      rationale: Directly removes internal-knowledge assumptions and tests a modern defense.
+    - source_id: SRC-usenix-confundo-2026
+      identifier: Confundo controlled demonstration
+      relationship: direct_demonstration
+      exploitation_status: Evaluated in practical RAG configurations with preprocessing and query variation.
+      impact: Poisoned content can manipulate factual correctness, opinions, or hallucination behavior after pipeline transformations.
+      remediation: The official summary reports resilience against evaluated defenses and a defensive content-protection use case; no complete mitigation is claimed.
+      selected: true
+      rationale: Adds practical-pipeline robustness evidence and a material contrary constraint on earlier demonstrations.
+    - source_id: SRC-ms-recommendation-poisoning-2026
+      identifier: AI Recommendation Poisoning in-the-wild attempts
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Microsoft observed more than 50 prompt-based attempts; effectiveness and persistence varied.
+      impact: Attempts sought persistent promotional influence over future assistant recommendations.
+      remediation: Prompt filtering, content separation, memory controls, monitoring, user review, and hunting guidance are described.
+      selected: false
+      rationale: The delivery writes assistant memory through prompts rather than planting trigger-conditioned retrieval-corpus passages.
+    - source_id: SRC-nvd-cve-2025-27135
+      identifier: CVE-2025-27135
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Publicly disclosed SQL injection in RAGFlow versions 0.15.1 and earlier.
+      impact: Unsanitized input reaches an SQL execution component with high confidentiality, integrity, and availability impact.
+      remediation: NVD reported no patched version at initial publication; later status was not used to infer a corpus-poisoning fix.
+      selected: false
+      rationale: Product adjacency does not make SQL injection evidence of the RAG corpus-backdoor mechanism.
+    - source_id: SRC-corpus-poisoning
+      identifier: EMNLP 2023 retrieval-corpus poisoning
+      relationship: historical_analogy
+      exploitation_status: Controlled dense-retrieval demonstration.
+      impact: Small injected passage sets can dominate retrieval for broad query sets.
+      remediation: The paper benchmarks retriever robustness but does not establish a complete generated-output mitigation.
+      selected: false
+      rationale: It demonstrates the retrieval prerequisite but not the downstream generator outcome required by this contract.
+    - source_id: SRC-biasrag
+      identifier: BiasRAG controlled fairness backdoor
+      relationship: rejected
+      exploitation_status: Controlled research with retriever-training poisoning and corpus manipulation.
+      impact: Evaluated fairness-related bias in generated responses.
+      remediation: Paper limitations and defenses do not restore the corpus-only unchanged-retriever boundary.
+      selected: false
+      rationale: The method poisons retriever training and therefore crosses a different boundary.
+sources_consulted:
+  - SRC-badrag
+  - SRC-biasrag
+  - SRC-usenix-confundo-2026
+  - SRC-corpus-poisoning
+  - SRC-mitre-attack-t1565
+  - SRC-mitre-ta0040
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-nist-aml
+  - SRC-nvd-cve-2025-27135
+  - SRC-owasp-rag-security
+  - SRC-usenix-poisonedrag-2025
+  - SRC-riprag
+sources_cited:
+  - SRC-badrag
+  - SRC-usenix-confundo-2026
+  - SRC-mitre-attack-t1565
+  - SRC-mitre-ta0040
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-nist-aml
+  - SRC-owasp-rag-security
+  - SRC-usenix-poisonedrag-2025
+  - SRC-riprag
+sources_rejected:
+  - source_id: SRC-biasrag
+    reason: Retriever-training poisoning exceeds the unchanged-retriever corpus-only contract.
+  - source_id: SRC-corpus-poisoning
+    reason: Establishes poisoned retrieval but not the required generated-output outcome.
+  - source_id: SRC-ms-zero-trust-memory-2026
+    reason: Broad catalog guidance is useful corroboration but less direct than selected primary research and OWASP controls.
+  - source_id: SRC-nvd-cve-2025-27135
+    reason: SQL injection in a RAG-branded product is adjacent and not evidence of trigger-conditioned corpus retrieval.
+sources_blocked: []
+conflicts:
+  - issue: Earlier demonstrations can degrade sharply after document preprocessing or under varied user queries.
+    resolution: Confundo is included, and claims are explicitly configuration-bounded rather than generalized to all RAG systems.
+  - issue: High attack-success rates could be misread as proof of production exploitation.
+    resolution: Evidence status is Demonstrated, and the production incident gap is explicit.
+  - issue: Provenance and integrity signals may be interpreted as definitive attack detection.
+    resolution: The analytic is labeled a candidate and its approved-source and metadata limitations are stated and tested.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T3001-C001
+    - SAF-T3001-C002
+    - SAF-T3001-C003
+    - SAF-T3001-C004
+  rationale: >-
+    Multiple independent controlled studies demonstrate the complete persistent
+    corpus insertion, trigger-conditioned retrieval, and generated-output path.
+    No direct production compromise meeting the exact contract was found, so the
+    evidence does not support Observed status.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

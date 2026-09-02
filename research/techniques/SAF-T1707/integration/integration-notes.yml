@@ -1,0 +1,109 @@
+version: 1
+technique_id: SAF-T1707
+bundle_status: validated_ready_for_freeze
+destination_repository_modified: false
+canonical_files:
+  - techniques/SAF-T1707/README.md
+  - techniques/SAF-T1707/detection-rule.yml
+  - research/techniques/SAF-T1707/clean-room-attestation.yml
+  - research/techniques/SAF-T1707/technique-contract.yml
+  - research/techniques/SAF-T1707/claim-inventory.yml
+  - research/techniques/SAF-T1707/source-coverage.yml
+  - research/techniques/SAF-T1707/publication-rights.yml
+  - research/techniques/SAF-T1707/quality-review.yml
+  - research/techniques/SAF-T1707/traceability-ledger.yml
+  - tests/SAF-T1707/test_detection.py
+  - tests/SAF-T1707/events.json
+  - validation/detection-test.txt
+  - validation/strict-validator.txt
+fragments:
+  source_manifest:
+    file: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+    source_ids:
+      - SRC-mcp-authorization-2026
+      - SRC-mcp-authorization-security-2026
+      - SRC-mcp-security-2026
+      - SRC-mcp-index
+      - SRC-mcp-authorization-2025
+      - SRC-mcp-security-2025
+      - SRC-rfc9700
+      - SRC-rfc9700-errata
+      - SRC-rfc6749
+      - SRC-rfc7636
+      - SRC-oauth21-draft13
+      - SRC-fett-oauth-analysis
+      - SRC-fett-oauth-abstract
+      - SRC-fastapi-advisory
+      - SRC-nvd-2025-68481
+      - SRC-authlib-advisory
+      - SRC-nvd-2025-68158
+      - SRC-fastify-advisory
+      - SRC-nvd-2026-18165
+      - SRC-openclaw-advisory
+      - SRC-nvd-2026-28477
+      - SRC-nvd-state-query
+      - SRC-nvd-oauth-query
+      - SRC-nvd-saturation-1
+      - SRC-nvd-saturation-2
+      - SRC-cisa-kev
+      - SRC-cisa-search-state
+      - SRC-cisa-search-incident
+      - SRC-cisa-search-saturation
+      - SRC-owasp-logging
+      - SRC-mitre-t1204-001
+  framework:
+    file: framework-fragment.yml
+    destination: research/framework-model.yml
+    synthetic_tactic_ids: []
+    synthetic_neighbor_ids: [SAF-T1706, SAF-T1708, SAF-T1709]
+    synthetic_mitigation_ids: []
+  alignment:
+    file: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+    issue_ids: [SAF-T1707-A001]
+history:
+  synthetic_mock_anchor: 0ff91ae6866c97b32f78f2b0ac397dcb9a7b2dcd
+  destination_history_consulted: false
+  note: The SHA identifies only the isolated mock repository's initialization commit and is not a destination commit.
+mechanical_integration_steps:
+  - Copy canonical files only after verifying FREEZE.sha256.
+  - Append source records by source ID, rejecting collisions unless records are byte-equivalent.
+  - Reconcile synthetic neighbor IDs using only the written distinctions; update contract, framework, alignment, and Related Techniques together if IDs change.
+  - Append the framework record only after related technique paths exist.
+  - Append the alignment issue or close it after neighbor reconciliation.
+  - Re-run detector tests and strict validation in the destination repository.
+  - Preserve evidence label, claim meaning, example selection, exclusions, credits, and rights conclusions; any substantive change requires renewed research and a new freeze.
+unresolved_mechanical_joins:
+  - Destination neighbor IDs are intentionally unresolved by clean-room design.
+credits:
+  technique_author: OpenAI Codex
+  framework_team: SAF Technique Research Team
+  source_teams:
+    - Model Context Protocol maintainers
+    - IETF OAuth Working Group and RFC authors
+    - OWASP Cheat Sheet Series Team
+    - MITRE ATT&CK Team
+    - NIST NVD and CISA
+  vulnerability_reporters_and_reviewers:
+    - David Bors and Snyk Security Labs
+    - kleju13, Matteo Collina, and Ulises Gascon
+    - aether-ai-agent
+source_archive:
+  status: archived_outside_bundle
+  path: ../source-acquisition
+  manifest: ../source-acquisition/SOURCES.sha256
+  manifest_sha256: 25384e41257aa6760eee5bd1333c0bf98437829d450f6b48973a4291e6b34d34
+  manifest_entries: 61
+  publication_bundle_contains_third_party_source_corpus: false
+attestation: The bundle was authored and validated without reading any prohibited target artifact or destination registry.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1009, SAF-T1507, SAF-T1706]
+  canonical_mitigations: [SAF-M-12, SAF-M-13, SAF-M-18, SAF-M-38]
+  attack_mapping: {id: T1204.001, type: analogous_delivery}
+  validation_proof:
+    - research/techniques/SAF-T1707/validation/detection-test.txt
+    - research/techniques/SAF-T1707/validation/strict-validator.txt
+  source_corpus_hash: 25384e41257aa6760eee5bd1333c0bf98437829d450f6b48973a4291e6b34d34
+  source_archive: Source bodies remain outside the repository; canonical source records and the frozen source-acquisition manifest hash preserve the reviewed evidence disposition.

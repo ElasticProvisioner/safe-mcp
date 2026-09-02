@@ -1,63 +1,77 @@
-title: Steganographic Exfiltration via AI Code Blocks (SAF-T1912)
-id: 8f1c9ab0-4e3a-4c89-bf4a-7ce99212c4dd
+title: Suspicious Carrier Features in Sensitive Agent Response Egress
+id: 118d8725-3f36-4cd7-9d84-60baccc304b7
 status: experimental
-description: >
-  Detects attempts to hide/exfiltrate data inside AI-generated code blocks,
-  especially when the content does not match the declared language, contains
-  high-entropy strings, or includes unusual markers typical of covert channels.
-author: Rajiv Shrestha
-date: 2025-11-26
-references:
-  - https://modelcontextprotocol.io/specification
-  - https://owasp.org/www-project-top-10-for-large-language-model-applications/
-  - https://attack.mitre.org/techniques/T1041/
-
-logsource:
-  product: mcp
-  service: response_generator
-
-detection:
-
-  suspicious_language_mismatch:
-    ai.response.code_block.language:
-      - "json"
-      - "python"
-      - "text"
-      - "bash"
-    ai.response.code_block.content|contains:
-      - "<?xml"
-      - "BEGIN RSA"
-      - "-----BEGIN"
-      - "ZW5jb2Rl"        # base64 fragments
-      - "aHR0c"           # url-encoded payloads
-
-  high_entropy_block:
-    ai.response.code_block.entropy: 
-      - ">7.0"            # Very high entropy content
-
-  unusual_volume:
-    ai.response.code_block.length: 
-      - ">5000"           # Abnormally large code blocks for simple requests
-
-  suspicious_markers:
-    ai.response.code_block.content|contains:
-      - "###---"
-      - "[[DATA]]"
-      - "<!--payload-->"
-      - "/*hidden*/"
-      - "#exfil"
-      - "stego"
-
-  condition: suspicious_language_mismatch OR high_entropy_block OR unusual_volume OR suspicious_markers
-
-falsepositives:
-  - Long configuration files legitimately provided to the user
-  - Binary-like encoded blobs for valid machine learning data
-  - Legitimate Base64 used in documentation examples
-
-level: high
-
+description: >-
+  Flags an outward agent response after sensitive-context access when the
+  destination is external or untrusted and the response has an observable
+  carrier anomaly or lacks required binary-media attestation. This is carrier
+  triage, not proof of a decoded secret or universal linguistic steganalysis.
+author: SAF clean-room research
+date: 2026-09-02
 tags:
-  - attack.exfiltration
-  - attack.T1041
-  - safe.t1912
+  - saf.t1912
+logsource:
+  category: agent_response
+  product: saf-mcp
+detection:
+  sensitive_egress:
+    event_type: agent_response
+    sensitive_context_accessed: true
+    destination_trust:
+      - external
+      - untrusted
+  carrier_anomaly:
+    - invisible_unicode_count|gt: 0
+    - bidi_control_count|gt: 0
+    - mixed_script_confusable_count|gt: 0
+    - max_unexpected_whitespace_run|gte: 3
+    - encoded_blob_length|gte: 32
+    - media_attested: false
+  condition: sensitive_egress and carrier_anomaly
+falsepositives:
+  - Legitimate code, encoded data, signed payloads, or intentionally preserved formatting.
+  - Natural multilingual text that triggers mixed-script confusable heuristics.
+  - Binary media from an approved producer that is not yet connected to the attestation service.
+level: high
+fields:
+  - event_type
+  - response_id
+  - response_content_type
+  - destination
+  - destination_trust
+  - sensitive_context_accessed
+  - model_id
+  - model_version
+  - serializer_policy
+  - invisible_unicode_count
+  - bidi_control_count
+  - mixed_script_confusable_count
+  - max_unexpected_whitespace_run
+  - encoded_blob_length
+  - media_attested
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1912-C018]
+  telemetry_claim_ids: [SAF-T1912-C001, SAF-T1912-C021]
+  limitation_claim_ids: [SAF-T1912-C019, SAF-T1912-C020]
+  validation_artifacts:
+    - tests/SAF-T1912/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids: [SAF-T1912-C018, SAF-T1912-C021]
+      rationale: The analytic belongs at the response egress boundary with correlated agent telemetry.
+    sensitive_egress:
+      claim_ids: [SAF-T1912-C018]
+      rationale: Sensitive access plus an external or untrusted destination bounds the confidentiality-risk context.
+    carrier_anomaly:
+      claim_ids: [SAF-T1912-C007, SAF-T1912-C018, SAF-T1912-C019]
+      rationale: These deterministic features cover observable tested carrier families while retaining explicit blind spots.
+    condition:
+      claim_ids: [SAF-T1912-C018]
+      rationale: Requiring both context and a carrier signal narrows alerts beyond content anomalies alone.
+    falsepositives:
+      claim_ids: [SAF-T1912-C019]
+      rationale: Legitimate encoded, formatted, multilingual, and unattested content can share the selected features.
+    fields:
+      claim_ids: [SAF-T1912-C001, SAF-T1912-C021]
+      rationale: Investigation needs response, provenance, destination, model, serializer, and carrier-feature context.

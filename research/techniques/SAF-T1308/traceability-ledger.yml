@@ -1,0 +1,178 @@
+version: 1
+technique_id: SAF-T1308
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1308/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1308/technique-contract.yml
+  supports: Internal scope, name, tactic, evidence level, and synthetic relationship
+    metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1308/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1308/detection-rule.yml
+  supports: The explicitly labeled detection analytic, fields, limitations, and claim
+    mappings.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1308/test-logs.json
+  supports: Eight inert synthetic detection cases and expected outcomes.
+- id: LOCAL-detection-harness
+  path: tests/SAF-T1308/test_detection_rule.py
+  supports: Deterministic execution of the detection cases against the YAML analytic.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1308/clean-room-attestation.yml
+  supports: Clean-room boundary, allowed inputs, prohibited inputs, and generator
+    record.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1308/source-coverage.yml
+  supports: Query log, candidate selection, two no-change passes, and evidence assessment.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1308/validation/detection-test.txt
+  supports: Isolated and integrated deterministic detection-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1308/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1308-X001
+  candidate: A fixed release for CVE-2026-14541.
+  origin: The CVE record points to a patch location but does not name a fixed release.
+  attempted_searches:
+  - Review complete CNA and CISA ADP containers and referenced patch metadata.
+  consulted_source_ids:
+  - SRC-cve-2026-14541
+  reason: The direct authority does not state a fixed version, so inferring one would
+    be untraceable.
+  prohibited_publishable_text:
+  - fixed in version
+  - upgrade to the fixed MCP Toolbox release
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X002
+  candidate: Active exploitation of the three selected CVEs.
+  origin: Potential breach/vulnerability impact claim.
+  attempted_searches:
+  - Review CISA ADP exploitation fields
+  - vendor exploit status
+  - and CISA KEV 2026.09.01 exact membership.
+  consulted_source_ids:
+  - SRC-cve-2026-14541
+  - SRC-cve-2026-67332
+  - SRC-oxdc-adv-2026-0003
+  - SRC-cisa-kev-2026-09-01
+  reason: No reviewed direct source establishes active exploitation; KEV absence is
+    not proof of non-exploitation.
+  prohibited_publishable_text:
+  - actively exploited
+  - observed exploitation of CVE-2026-14541
+  - known exploited Better Auth flaw
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X003
+  candidate: Storm-0558 as a direct instance of valid-token MCP scope substitution.
+  origin: First-party incident report.
+  attempted_searches:
+  - Review the full Microsoft token-forgery
+  - validation
+  - access
+  - and mitigation sections.
+  consulted_source_ids:
+  - SRC-microsoft-storm-0558
+  reason: The incident involved forged tokens and a non-MCP service; only consequence
+    calibration is transferable.
+  prohibited_publishable_text:
+  - Storm-0558 demonstrated Token Scope Substitution
+  - production MCP exploitation by Storm-0558
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X004
+  candidate: Better Auth grant-resource widening permits operations outside independently
+    granted scopes.
+  origin: GHSA-p2fr-6hmx-4528 impact interpretation.
+  attempted_searches:
+  - Review advisory Details
+  - Impact
+  - affected configurations
+  - patches
+  - and workarounds.
+  consulted_source_ids:
+  - SRC-cve-2026-67332
+  - SRC-ghsa-p2fr-6hmx-4528
+  reason: The advisory bounds practical impact by scopes granted independently of
+    the vulnerable flow.
+  prohibited_publishable_text:
+  - unrestricted access to every resource
+  - bypasses all OAuth scopes
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X005
+  candidate: OX Dovecot as an MCP vulnerability.
+  origin: Audience-to-scope vendor advisory.
+  attempted_searches:
+  - Review CVE record and complete official OX CSAF product and vulnerability sections.
+  consulted_source_ids:
+  - SRC-cve-2026-73208
+  - SRC-oxdc-adv-2026-0003
+  reason: The affected product is Dovecot; it is useful only as a non-MCP semantic-substitution
+    analogy.
+  prohibited_publishable_text:
+  - MCP vulnerability CVE-2026-73208
+  - Dovecot MCP server
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X006
+  candidate: CISA KEV non-inclusion proves the selected CVEs were never exploited.
+  origin: Exact KEV membership checks.
+  attempted_searches:
+  - Check selected CVE identifiers against catalog version 2026.09.01 and review direct
+    advisory exploit fields.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-14541
+  - SRC-cve-2026-67332
+  - SRC-oxdc-adv-2026-0003
+  reason: A bounded catalog absence cannot prove universal non-exploitation.
+  prohibited_publishable_text:
+  - never exploited
+  - CISA confirms no exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X007
+  candidate: A qualifying public controlled end-to-end MCP reproduction.
+  origin: Demonstration and empirical-evidence research pass.
+  attempted_searches:
+  - Review proof
+  - reproduction
+  - technical-detail
+  - and exploit-status fields in the selected direct records.
+  consulted_source_ids:
+  - SRC-cve-2026-14541
+  - SRC-ghsa-p2fr-6hmx-4528
+  - SRC-oxdc-adv-2026-0003
+  reason: The reviewed records establish disclosures and maintainer analysis, not
+    a public controlled end-to-end MCP experiment.
+  prohibited_publishable_text:
+  - demonstrated end to end
+  - public reproduction confirmed the complete technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1308-X008
+  candidate: CISA Cyber Safety Review Board material as independent corroboration
+    for Storm-0558.
+  origin: Direct first-party report lead.
+  attempted_searches:
+  - Open the exact CISA CSRB report URL and verify the returned media type and content.
+  consulted_source_ids: []
+  reason: The exact URL returned an HTML error document rather than the report, so
+    no proposition was attributed to it.
+  prohibited_publishable_text:
+  - the CISA review board independently confirmed the Storm-0558 details
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

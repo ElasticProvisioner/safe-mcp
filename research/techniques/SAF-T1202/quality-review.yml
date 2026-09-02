@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T1202
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The fresh-agent attestation records allowed inputs, prohibited inputs, exact searches, reviewed sources, freeze-before-integration, and no prior-artifact access.
+  contract_and_scope:
+    status: passed
+    notes: Renewal under an existing grant is in scope; acquisition, malicious integration creation, and downstream tool use are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Normative MCP and OAuth sources support roles, replay consequences, lifecycle, binding, rotation, expiration, and revocation.
+  claim_traceability:
+    status: passed
+    notes: Twenty validated claims include direct source IDs, exact locators, limitations, conflicts, and inference labels.
+  source_or_omit:
+    status: passed
+    notes: Publishable units carry hidden readable traces or declared local-artifact links; five unsupported propositions are excluded.
+  evidence_classification:
+    status: passed
+    notes: The overall behavior is Research-Derived because component demonstration and vulnerabilities do not establish an end-to-end MCP production incident.
+  research_saturation:
+    status: passed
+    notes: All five research passes and two consecutive no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Five candidates were classified and four highest-impact examples selected with remediation and limitations.
+  detection_quality:
+    status: passed
+    notes: The deterministic analytic requires successful refresh plus lifecycle or family-reuse context and documents lookalikes and blind spots.
+  mitigation_quality:
+    status: passed
+    notes: Controls address sender binding, rotation, lifetime, revocation, scope, telemetry, and response at the defining boundary.
+  framework_alignment:
+    status: passed
+    notes: The Persistence tactic, analogous ATT&CK mapping, canonical SAF-T1504 prerequisite, omitted unmatched application-consent boundary, and eight mitigation joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All eighteen cited sources have a rights record; only independent paraphrase and nominative references are used.
+  safe_publication:
+    status: passed
+    notes: Examples use inert family, client, and subject identifiers and contain no credentials, payloads, or destructive instructions.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1202
+      result: passed
+      notes: Executed in an isolated synthetic mock repository.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1202/test_detection_rule.py
+    result: "PASS: 8 cases; 3 expected alerts; 5 expected non-alerts"
+    waiver: null
+
+unresolved: []

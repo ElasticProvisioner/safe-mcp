@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1703
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1703
+  neutral_name: Tool-Chaining Pivot
+allowed_inputs:
+- Neutral target identifier SAF-T1703, neutral name Tool-Chaining Pivot, and tactic
+  ATK-TA0008 supplied by the commissioning user.
+- Generic technique template, blank research packet schemas, authoring skill instructions,
+  and generic strict validator.
+- Independently discovered direct-authority protocol, vendor, vulnerability, and peer-reviewed
+  research sources.
+prohibited_inputs:
+- Existing techniques/SAF-T1703/README.md or any prior target technique prose.
+- Existing techniques/SAF-T1703/detection-rule.yml or any prior target analytic.
+- Existing research/techniques/SAF-T1703/ packet content or metadata.
+- Target git history, git diff, git blame, commit messages, pull request content,
+  or issue discussions.
+- Catalog or README descriptions beyond the supplied neutral identifier, name, and
+  tactic.
+- Shared source, framework, and alignment registries.
+- SAF websites, prior target context, or previous conversation content about this
+  target.
+independent_research:
+  searches:
+  - Direct MCP specification review for tool semantics, host architecture, and security
+    duties.
+  - Direct vendor-authority search for cross-tool, tool-output, prompt-injection,
+    lateral-movement, incident, and red-team evidence.
+  - Direct CVE authority and vendor-advisory search for MCP prompt-injection chains.
+  - Direct conference and publisher search for empirical cross-tool detection and
+    exploitation evidence.
+  - Two final domain-restricted saturation searches after all material leads were
+    classified.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-agt
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-redteam-update-2026
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-openai-atlas
+  - SRC-openai-monitor
+  - SRC-openai-url
+  - SRC-anthropic-rfi
+  - SRC-usenix-attriguard
+  - SRC-usenix-muzzle
+  - SRC-cve-cursor
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-34072
+  - SRC-contextleak
+  - SRC-mitre-t1072
+  - SRC-mitre-t1021
+  - SRC-mitre-t1210
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-anthropic-containment
+  - SRC-arxiv-cross-tool-2026
+  - SRC-arxiv-mcp-threat
+  - SRC-cisa-bulletin
+  - SRC-nvd-34072
+  - SRC-google-ai-misuse
+  - SRC-t1206-ms-config-risk
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrators may inspect target repository artifacts only after verifying FREEZE.sha256.
+- Replace synthetic neighbor placeholders and repository-history SHA only during post-freeze
+  integration, with changes reviewed as integration deltas.
+- Do not silently import wording or evidence from prior SAF-T1703 artifacts.
+attestation: This bundle was independently authored from the supplied neutral target
+  and directly reviewed external authorities. No prohibited target artifact, registry,
+  repository history, SAF site, or previous target conversation was accessed before
+  the canonical bundle was frozen.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools: SRC-mcp-tools-2026-07-28
+    SRC-mcp-arch: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-annotations: SRC-mcp-annotations-2026-03-16
+    SRC-ms-xpia: SRC-ms-indirect-injection-2025
+    SRC-ms-gov: SRC-ms-agt
+    SRC-ms-ir: SRC-microsoft-tool-poisoning-2026-06-30
+    SRC-ms-redteam: SRC-ms-redteam-update-2026
+    SRC-ms-gateway: SRC-microsoft-ai-gateway-incident
+    SRC-ghsa-cursor: SRC-ghsa-cursor-4cxx-2025
+    SRC-openai-design: SRC-openai-agent-pi-defense-2026
+    SRC-arxiv-cross-tool: SRC-arxiv-cross-tool-2026
+    SRC-ms-misconfig: SRC-t1206-ms-config-risk
+  new_shared_source_records:
+  - SRC-openai-atlas
+  - SRC-openai-monitor
+  - SRC-openai-url
+  - SRC-anthropic-rfi
+  - SRC-usenix-attriguard
+  - SRC-usenix-muzzle
+  - SRC-cve-cursor
+  - SRC-cve-34072
+  - SRC-contextleak
+  - SRC-mitre-t1072
+  - SRC-mitre-t1021
+  - SRC-mitre-t1210
+  - SRC-anthropic-containment
+  - SRC-arxiv-mcp-threat
+  - SRC-cisa-bulletin
+  - SRC-nvd-34072
+  - SRC-google-ai-misuse
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0008
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+    SAF-T9998: SAF-T1102
+    SAF-T9999: SAF-T1104
+    additional_overlap_review: SAF-T1701
+  validation_proofs:
+  - research/techniques/SAF-T1703/validation/detection-test.txt
+  - research/techniques/SAF-T1703/validation/strict-validator.txt
+  status: integrated_and_validated

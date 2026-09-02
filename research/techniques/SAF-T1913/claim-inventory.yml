@@ -1,0 +1,572 @@
+version: 1
+technique_id: SAF-T1913
+claims:
+  - id: SAF-T1913-C001
+    statement: >-
+      In MCP protocol revision 2026-07-28, a Streamable HTTP server exposes one
+      POST endpoint and a client sends each JSON-RPC request as its own HTTP POST
+      whose body is one JSON-RPC request.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Streamable HTTP, opening summary, paragraphs 1-6
+          - Sending Messages, requirements 1-6
+    corroboration: RFC 9110 supplies the underlying POST request-content semantics.
+    limitations:
+      - Applies to the 2026-07-28 Streamable HTTP revision, not stdio or custom transports.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C002
+    statement: >-
+      A tools/call request identifies the tool in params.name and carries the
+      caller-supplied values in params.arguments.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Protocol Messages, Calling Tools, request example
+          - Data Types, Tool, inputSchema description
+    corroboration: The Streamable HTTP page reproduces a tools/call body with name and arguments.
+    limitations:
+      - The schema describes message shape; it does not determine whether argument content is authorized.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C003
+    statement: >-
+      HTTP POST asks the target resource to process the representation enclosed
+      in the request according to that resource's semantics.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9110
+        support: direct
+        exact_locators:
+          - Section 9.3.3, POST, paragraphs 1-6
+    corroboration: MCP's current transport binds each JSON-RPC client message to an HTTP POST body.
+    limitations:
+      - Generic HTTP semantics do not identify sensitive data or establish adversarial use.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C004
+    statement: >-
+      When sensitive data is placed in tools/call arguments addressed to an
+      adversary-controlled remote MCP server using Streamable HTTP, the MCP client
+      transmits that data across the host-to-server boundary in an HTTP POST body.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Sending Messages, requirements 1-6
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Calling Tools request example
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators:
+          - How the Attack Works
+          - Experiment 1: Attacking Cursor with Tool Poisoning
+    corroboration: Invariant directly demonstrated sensitive values being transmitted in a hidden tool parameter.
+    limitations:
+      - No reviewed source states that Invariant's experiment used Streamable HTTP rather than another MCP transport.
+      - No qualifying production incident for this exact transport-specific behavior was found.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The complete behavior joins the normative POST transport and tools/call
+        message shape to a controlled tool-parameter exfiltration result; no single
+        reviewed source establishes all three elements together.
+    status: validated
+
+  - id: SAF-T1913-C005
+    statement: >-
+      Luca Beurer-Kellner and Marc Fischer reported a controlled MCP tool-poisoning
+      experiment in which an agent read sensitive local files and sent their contents
+      to a malicious server through a concealed tool parameter.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - How the Attack Works, paragraphs 1-4
+          - Experiment 1: Attacking Cursor with Tool Poisoning
+          - Authors footer
+    corroboration: The current MCP Tools specification confirms that arguments are carried in tools/call.
+    limitations:
+      - The article does not identify the MCP transport used by the experiment.
+      - This is a controlled demonstration, not evidence of production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C006
+    statement: >-
+      The MCP specification states that hosts must obtain explicit user consent
+      before exposing user data to servers or invoking tools, while noting that the
+      protocol cannot itself enforce these principles.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-overview-2026
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety, Key Principles, Data Privacy and Tool Safety
+          - Security and Trust & Safety, Implementation Guidelines
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators:
+          - User Interaction Model, human-in-the-loop guidance
+    corroboration: The Tools page recommends confirmation prompts and user-visible invocation indicators.
+    limitations:
+      - These requirements do not prove that any particular host displays full arguments or enforces consent correctly.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C007
+    statement: >-
+      Protocol revision 2026-07-28 requires Mcp-Method on all Streamable HTTP
+      requests and Mcp-Name on tools/call requests so intermediaries can identify
+      the MCP operation without parsing the body.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Request Metadata, opening paragraph
+          - Standard Request Headers table and tools/call example
+    corroboration: The page's server-validation section requires header and body values to match.
+    limitations:
+      - Earlier protocol revisions do not require these headers.
+      - The headers identify method and tool name, not whether arguments contain sensitive data.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C008
+    statement: >-
+      OpenTelemetry HTTP client spans model an outbound request with required
+      http.request.method, server.address, server.port, and url.full attributes;
+      request-body size is opt-in.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span, definition
+          - HTTP client span attributes table
+          - http.request.method well-known values
+    corroboration: MCP's required request headers add application-specific operation and tool identifiers.
+    limitations:
+      - The HTTP span convention does not define approval state, destination trust, or sensitive-data classification.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C009
+    statement: >-
+      Correlating an outbound POST and tools/call identity with an untrusted
+      destination, absent approval, and a positive DLP classification is a defensible
+      analytic for suspicious HTTP POST exfiltration.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Standard Request Headers table
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span attributes table
+      - source_id: SRC-attack-m1057-v1.1
+        support: corroborating
+        exact_locators:
+          - Data-in-Transit Monitoring
+          - Techniques Addressed by Mitigation, T1048 row
+    corroboration: ATT&CK describes HTTP/S exfiltration analytics and DLP inspection of outbound sensitive content.
+    limitations:
+      - This analytic design has been validated only against synthetic fixtures, not a production corpus.
+      - Destination trust and DLP labels are environment-provided fields, not native MCP fields.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The sources define observable components and control goals, while the
+        correlation and alert threshold are SAF analytic choices.
+    status: validated
+
+  - id: SAF-T1913-C010
+    statement: >-
+      Transport metadata alone cannot establish that a POST body contains sensitive
+      data; the analytic therefore depends on host-side or gateway DLP metadata and
+      loses content visibility when that metadata is absent.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - HTTP client span attributes table
+      - source_id: SRC-attack-m1057-v1.1
+        support: direct
+        exact_locators:
+          - Sensitive Data Categorization
+          - Data-in-Transit Monitoring
+    corroboration: MCP method and name headers expose operation metadata but no content classification.
+    limitations:
+      - Product-specific telemetry could expose additional fields not described by these standards.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion follows from the metadata fields defined by the reviewed standards and the separate DLP function.
+    status: validated
+
+  - id: SAF-T1913-C011
+    statement: >-
+      An approved transfer to an allowlisted partner can resemble the transport
+      pattern, so the detector suppresses only events that are both explicitly
+      approved and destined for a trusted or partner-allowlisted server.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-overview-2026
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety, User Consent and Control
+      - source_id: SRC-attack-m1057-v1.1
+        support: corroborating
+        exact_locators:
+          - Exfiltration Restrictions
+          - Data-in-Transit Monitoring
+    corroboration: The MCP consent principles and ATT&CK DLP guidance both distinguish authorized from unauthorized movement.
+    limitations:
+      - A compromised trusted server or mistaken approval can evade this suppression model.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact suppression expression is a conservative analytic tuning choice.
+    status: validated
+
+  - id: SAF-T1913-C012
+    statement: >-
+      CVE-2025-34072 and the underlying disclosure document prompt-injection-driven
+      data exfiltration through Slack link unfurling in the deprecated Anthropic Slack
+      MCP Server; this is adjacent because data is embedded in a URL and fetched by
+      Slack preview services rather than carried in an MCP POST body.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-34072
+        support: direct
+        exact_locators:
+          - CNA title, English description, affected record, and references
+          - CISA ADP SSVC exploitation=poc record
+      - source_id: SRC-cve-34072
+        support: direct
+        exact_locators:
+          - The Lethal Trifecta
+          - Breaking The Security Boundary
+          - Leakage Scenario Walkthrough
+          - Responsible Disclosure
+    corroboration: The CVE record cites the original researcher disclosure and classifies exploitation evidence as proof of concept.
+    limitations:
+      - The channel is link-unfurl HTTP fetching, not tools/call data in an MCP POST body.
+      - The disclosure did not establish production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C013
+    statement: >-
+      AWS bulletin 2026-054-AWS states that CVE-2026-15643 in HealthLake MCP Server
+      versions before 0.0.14 could let a remote authenticated user redirect pagination
+      requests and exfiltrate temporary AWS credentials to an arbitrary endpoint; AWS
+      fixed it in 0.0.14 and credited Marios Gyftos.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aws-cve-2026-15643
+        support: direct
+        exact_locators:
+          - Description
+          - Impacted versions
+          - Resolution
+          - Workarounds
+          - Acknowledgement
+      - source_id: SRC-cve-2026-15643
+        support: corroborating
+        exact_locators:
+          - CNA title, English description, affected record, and references
+          - CISA ADP SSVC exploitation=none record
+    corroboration: The AWS-authored CNA record repeats the affected range, mechanism, and fixed version.
+    limitations:
+      - This is SSRF in server-side pagination, not sensitive tools/call content sent by an MCP client.
+      - The CISA ADP record reported no exploitation evidence at its 2026-07-15 timestamp.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1913-C014
+    statement: >-
+      As of 2026-09-02, the reviewed direct-authority corpus identified no qualifying
+      production incident, direct vulnerability, or complete public demonstration of
+      sensitive tools/call arguments exfiltrated specifically through Streamable HTTP POST.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+        support: direct
+        exact_locators:
+          - API response totalResults=77 and English descriptions reviewed for exfiltration relationships
+      - source_id: SRC-nvd-http-post-query-2026-09-02
+        support: direct
+        exact_locators:
+          - API response totalResults=3; all three records reviewed as non-MCP or different mechanisms
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - Catalog version 2026.09.01; CVE-2025-34072 and CVE-2026-15643 exact-ID check returned no entries
+      - source_id: SRC-nvd-sat-tools-call-2026-09-02
+        support: corroborating
+        exact_locators:
+          - API response totalResults=0
+      - source_id: SRC-nvd-sat-mcp-post-2026-09-02
+        support: corroborating
+        exact_locators:
+          - API response totalResults=0
+      - source_id: SRC-nvd-sat-tool-args-2026-09-02
+        support: corroborating
+        exact_locators:
+          - API response totalResults=0
+      - source_id: SRC-nvd-sat-mcp-method-2026-09-02
+        support: corroborating
+        exact_locators:
+          - API response totalResults=0
+    corroboration: Selected original and first-party sources supplied only component demonstrations or adjacent mechanisms.
+    limitations:
+      - This is a bounded corpus conclusion, not a claim that the behavior has never occurred.
+      - Keyword catalog coverage can miss private, unreported, differently described, or newly disclosed events.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to the documented authority sources and queries reviewed on the stated date.
+    status: validated
+
+  - id: SAF-T1913-C015
+    statement: >-
+      The immediate impact is a confidentiality loss whose severity can be high when
+      tool arguments contain credentials, private keys, or other high-sensitivity data;
+      integrity and availability impact are not inherent to the bounded exfiltration step.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - How the Attack Works
+          - Experiment 1: Attacking Cursor with Tool Poisoning
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators:
+          - Security and Trust & Safety, Data Privacy
+    corroboration: The controlled experiment used MCP configuration and SSH-key material as the sensitive data.
+    limitations:
+      - Actual severity depends on data sensitivity, destination, prior access, and whether the request completes.
+      - Follow-on credential use is outside this technique.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating applies the demonstrated confidentiality consequence to the narrower HTTP transport condition.
+    status: validated
+
+  - id: SAF-T1913-C016
+    statement: >-
+      Explicit, intelligible tool approval, destination allowlisting, and DLP inspection
+      of outbound sensitive content constrain the defining data transfer.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - User Interaction Model
+      - source_id: SRC-mcp-overview-2026
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety, Key Principles
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: corroborating
+        exact_locators:
+          - Mitigations, M1037 Filter Network Traffic
+      - source_id: SRC-attack-m1057-v1.1
+        support: corroborating
+        exact_locators:
+          - Exfiltration Restrictions
+          - Data-in-Transit Monitoring
+    corroboration: The controls address approval, destination, and content as separate failure points.
+    limitations:
+      - Approval can be mistaken, allowlists can include compromised servers, and DLP can miss transformed or unknown data.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: No single source prescribes this exact MCP control stack; it composes protocol and ATT&CK guidance.
+    status: validated
+
+  - id: SAF-T1913-C017
+    statement: >-
+      When sensitive credentials may have crossed the boundary, responders should
+      contain the destination and affected session, preserve request and approval
+      telemetry, determine the exposed data class, and rotate or revoke affected credentials.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-cve-2026-15643
+        support: direct
+        exact_locators:
+          - Workarounds, least privilege and credential rotation guidance
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Standard Request Headers
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: corroborating
+        exact_locators:
+          - HTTP client span attributes table
+    corroboration: The transport and span fields provide the request metadata needed to bound the event.
+    limitations:
+      - Rotation is relevant only to credentials or revocable secrets; other data needs source-specific response.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response is a bounded synthesis of source remediation and available telemetry.
+    status: validated
+
+  - id: SAF-T1913-C018
+    statement: >-
+      MCP server-side request forgery is operationally distinct because it induces a
+      client or server to request an unintended destination, whereas SAF-T1913 uses the
+      selected remote MCP endpoint and abuses the content of a normal tools/call POST.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators:
+          - Server-Side Request Forgery, Attack Description and Risks
+      - source_id: SRC-aws-cve-2026-15643
+        support: corroborating
+        exact_locators:
+          - Description
+    corroboration: AWS's HealthLake advisory documents the unintended-pagination-destination pattern.
+    limitations:
+      - An attack chain can contain both behaviors, which should be recorded separately.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The distinction applies the published SSRF mechanism to the bounded SAF contract.
+    status: validated
+
+  - id: SAF-T1913-C019
+    statement: >-
+      MITRE ATT&CK T1048 is an analogous mapping because it includes HTTP/S transfer
+      to an alternate network location, but its definition depends on relationship to
+      a command-and-control channel and does not model MCP tools/call semantics.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: direct
+        exact_locators:
+          - Technique description
+          - ID, tactic, version, and contributors
+    corroboration: The T1048 detection strategy includes HTTP POST bursts as an outbound exfiltration signal.
+    limitations:
+      - Mapping type is Analogous, not Direct.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: MCP requests may or may not be separate from an existing command-and-control channel.
+    status: validated
+
+  - id: SAF-T1913-C020
+    statement: >-
+      The 2026-07-28 Streamable HTTP revision removed the standalone GET stream and
+      protocol-level sessions present in earlier revisions, so detectors must account
+      for protocol version before relying on current POST and header behavior.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Opening revision-change note
+          - Backward Compatibility, Earlier Streamable HTTP Revisions
+      - source_id: SRC-mcp-transports-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Streamable HTTP, Sending Messages to the Server
+          - Listening for Messages from the Server
+    corroboration: The superseded 2025-11-25 page documents the earlier GET and session behaviors.
+    limitations:
+      - Implementations can support older revisions and custom transports.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1802
+name: File Collection
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0009
+adversary_objective: Obtain file content through MCP-exposed resource or tool operations
+  by abusing an authorized collection capability or crossing its intended file-access
+  boundary.
+scope:
+  security_boundary: The boundary between file content the MCP deployment is intended
+    to expose and content readable by the server process but not authorized for the
+    actor, session, tool, or resource request.
+  in_scope:
+  - Enumerating file-bearing resources as preparation for selecting content to collect.
+  - Reading, returning, staging, or attaching file content through an MCP resource
+    or tool.
+  - File access that exceeds an approved root, path policy, actor authorization, or
+    explicit approval boundary.
+  out_of_scope:
+  - Enumeration that reveals names or metadata without retrieving file content.
+  - Transfer of already collected data to an external destination when no file retrieval
+    occurs in the same behavior.
+  - Credential theft from non-file sources such as process memory, identity APIs,
+    or databases.
+  affected_components:
+  - MCP host and client
+  - MCP resource server
+  - MCP tool server
+  - Agent orchestration and approval layer
+  - Host filesystem and external attachment service
+nearest_neighbors:
+- technique_id: SAF-T1606
+  distinction: 'Synthetic isolation placeholder for file enumeration: discovery stops
+    at names or metadata, whereas this technique requires retrieval of file content.'
+- technique_id: SAF-T1913
+  distinction: 'Synthetic isolation placeholder for data transfer: transfer concerns
+    moving content after collection, whereas this technique''s defining outcome is
+    obtaining file content.'
+required_evidence:
+- Establish MCP operations that can enumerate or retrieve file-bearing resources or
+  invoke tools.
+- Establish the intended authorization or path boundary and the mechanism by which
+  collection crosses or abuses it.
+- Establish prerequisites, immediate outcome, and evidence classification for the
+  complete behavior.
+- Search current incident, advisory, vulnerability, exploitation, and government catalog
+  authorities.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP resource-list, resource-read, and tool-call events with timestamp, session,
+    actor, server, operation, arguments, result, and approval state.
+  - Normalized requested and resolved paths, configured approved roots, bytes returned,
+    and destination or attachment identifiers.
+safe_example_constraints:
+- Use synthetic paths rooted under /srv/example and placeholder content only.
+- Do not include credentials, destructive operations, or an externally reachable destination.
+completion_evidence:
+- Every substantive publishable line links to validated claims and reviewed direct-authority
+  sources or declared local artifacts.
+- Candidate examples are relationship-classified and the four highest-impact qualifying
+  examples are selected.
+- Two consecutive saturation passes record no material changes.
+- The executable detector and fixtures pass in isolation, rights review passes, and
+  strict validation passes.

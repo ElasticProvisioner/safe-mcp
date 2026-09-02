@@ -1,0 +1,89 @@
+version: 1
+technique_id: SAF-T1103
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1103/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1103/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1103/quality-review.yml
+  supports: Validation commands, results, review date, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1103/detection-rule.yml
+  supports: The standalone experimental detection analytic.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1103/test-events.json
+  supports: Nine positive, negative, scope-boundary, and time-boundary cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1103/test_detection_rule.py
+  supports: Deterministic detection validation logic.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1103/validation/detection-test.txt
+  supports: Compact captured detection-test result.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1103/validation/strict-validator.txt
+  supports: Compact captured strict isolated-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1103-X001
+  candidate: A public production breach used fake tool invocation.
+  origin: Required breach and exploited-incident research pass.
+  attempted_searches:
+  - Forty direct NVD/arXiv keyword queries and two complete CISA KEV reviews on 2026-09-01.
+  consulted_source_ids:
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-2026-09-01
+  reason: No reviewed primary source established production exploitation; only advisories
+    and controlled verification qualified.
+  prohibited_publishable_text:
+  - confirmed production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1103-X002
+  candidate: Empirical caller-identity confusion rates from arXiv:2603.07473.
+  origin: Academic gap-and-challenge research pass.
+  attempted_searches:
+  - Direct arXiv API query for tool invocation and security followed by exact abstract-page
+    review.
+  consulted_source_ids:
+  - SRC-withdrawn-caller-identity-2603.07473
+  reason: The author withdrew the paper for methodological flaws and unresolved ethics/data-collection
+    concerns.
+  prohibited_publishable_text:
+  - most MCP servers rely on persistent authorization states
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1103-X003
+  candidate: JSON-RPC session theft or authentication bypass is itself fake tool invocation.
+  origin: NVD adjacent-vulnerability review.
+  attempted_searches:
+  - Direct NVD queries for MCP, forged calls, client calls, and tool execution spoofing.
+  consulted_source_ids:
+  - SRC-nvd-t1103-corpus
+  reason: Those paths issue an actual protocol call through a different session or
+    identity boundary rather than forging model provenance or callable binding.
+  prohibited_publishable_text:
+  - session hijack is fake tool invocation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1103-X004
+  candidate: Any prompt-injection-induced registered tool call is function spoofing.
+  origin: Academic detection and defense review.
+  attempted_searches:
+  - Direct arXiv queries for tool invocation security and complete AEGIS review.
+  consulted_source_ids:
+  - SRC-aegis-2603.12621
+  - SRC-pact-2605.11039
+  reason: A genuine model-emitted registered call has valid call provenance; manipulation
+    occurred at a different decision boundary.
+  prohibited_publishable_text:
+  - all prompt injection is function spoofing
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

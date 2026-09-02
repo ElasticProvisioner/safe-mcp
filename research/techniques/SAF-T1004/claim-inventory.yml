@@ -1,0 +1,343 @@
+version: 1
+technique_id: SAF-T1004
+claims:
+  - id: SAF-T1004-C001
+    statement: MCP runtime serverInfo identity is self-reported, protocol-unverified, and unsuitable by itself for security decisions.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-2026-schema
+        support: direct
+        exact_locators:
+          - 'ResultMetaObject: io.modelcontextprotocol/serverInfo; notes after fields name and version'
+          - 'Implementation: fields name, title, version, description, websiteUrl'
+    corroboration: The reviewed schema is the controlling protocol source for this runtime metadata statement.
+    limitations:
+      - This does not establish how every client presents or uses serverInfo.
+      - It does not establish the identity of a package, publisher, or network endpoint.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C002
+    statement: The official MCP Registry uses authenticated reverse-DNS-style namespaces to associate a server name with a GitHub account or domain.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators:
+          - 'Trust and Security > Verifying Server Authenticity'
+      - source_id: SRC-mcp-registry-auth
+        support: corroborating
+        exact_locators:
+          - 'Authentication method/name-format table'
+          - 'DNS Authentication'
+          - 'HTTP Authentication'
+    corroboration: The Registry overview and authentication documentation independently describe the account-or-domain namespace binding.
+    limitations:
+      - Namespace authentication does not establish that every package or endpoint association is correct.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C003
+    statement: Server identity needs binding across registry metadata, package identifiers or hashes, and remote endpoint information rather than a display label alone.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators:
+          - 'Server metadata is stored in standardized server.json'
+          - 'Trust and Security > Verifying Server Authenticity'
+      - source_id: SRC-mcp-registry-package-types
+        support: direct
+        exact_locators:
+          - 'npm Packages > Ownership Verification: mcpName'
+          - 'Docker/OCI Images > Ownership Verification: io.modelcontextprotocol.server.name annotation'
+          - 'MCPB Packages > Verification: fileSha256 and client validation'
+      - source_id: SRC-mcp-registry-remote
+        support: direct
+        exact_locators:
+          - 'Remote server example: name, title, remotes.url'
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: context
+        exact_locators:
+          - 'Resource Parameter and Token Audience Binding'
+    corroboration: The three Registry documents expose separate namespace, package, digest, and endpoint fields; the authorization specification supplies related canonical-resource context.
+    limitations:
+      - The sources do not prescribe one universal identity tuple for every MCP implementation.
+      - The analytic identity tuple in this packet is a defensive synthesis.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The multi-field binding recommendation synthesizes separately documented identity and location fields.
+    status: validated
+  - id: SAF-T1004-C004
+    statement: CVE-2026-45781 affected MCP Registry versions before 1.7.9 and failed open on OCI HTTP 429 responses, skipping the package-to-server-name annotation check.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-oci-rate-limit
+        support: direct
+        exact_locators:
+          - 'Summary and affected/patched versions'
+          - 'internal/validators/registries/oci.go:104-141'
+      - source_id: SRC-nvd-cve-2026-45781
+        support: corroborating
+        exact_locators:
+          - Description
+          - 'Affected: modelcontextprotocol registry < 1.7.9'
+    corroboration: NVD corroborates the affected range and fail-open behavior reported by the maintainer advisory.
+    limitations:
+      - The flaw permitted an association under an authenticated namespace; it did not transfer control of the referenced OCI image bytes.
+      - The maintainer scored the issue Low at CVSS 3.5.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C005
+    statement: The CVE-2026-45781 advisory demonstrates acceptance and storage through the actual publish path while expressly excluding a production attack.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-oci-rate-limit
+        support: direct
+        exact_locators:
+          - 'Proof of concept: actual publish path and explicit production exclusions'
+          - 'Attack chain and trust-boundary analysis'
+          - 'Credits and remediation developer'
+    corroboration: The advisory itself distinguishes the controlled proof from production exploitation.
+    limitations:
+      - No production service attack occurred in the proof.
+      - No live namespace was created.
+      - User interaction was required.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C006
+    statement: Official Registry presence is not complete safety assurance because moderation is minimal and deeper scanning is delegated.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators:
+          - 'Trust and Security > Security Scanning'
+      - source_id: SRC-mcp-registry-moderation
+        support: direct
+        exact_locators:
+          - Disclaimer
+          - What We Remove
+          - What We Don't Remove
+      - source_id: SRC-mcp-registry-tos
+        support: context
+        exact_locators:
+          - Overview and warranty disclaimer
+    corroboration: The Registry overview, moderation policy, and terms consistently bound the assurance provided by listing.
+    limitations:
+      - These policies can change and do not establish the safety of any particular server.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C007
+    statement: A substituted MCP endpoint can receive tool requests and expose credentials or resource data; trusted endpoint configuration and TLS verification reduce the risk.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators:
+          - 'Remote Azure MCP Server protection > Protect the endpoint'
+          - 'Local server protection and third-party server guidance'
+          - 'Inventory and detect unregistered servers'
+    corroboration: No independent end-to-end incident source was identified; this remains first-party defensive guidance.
+    limitations:
+      - The source is guidance, not an incident report or exploit demonstration.
+      - It does not quantify detection accuracy.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C008
+    statement: TLS clients construct expected reference identifiers independently, match them against presented identities, and terminate automated connections on mismatch.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9525
+        support: direct
+        exact_locators:
+          - 'Section 2: Source Domain and Reference Identifier definitions'
+          - 'Section 6.1.1: construction of reference identifiers'
+          - 'Section 6.6: consequences of mismatch'
+          - 'Section 7: limitations of TLS identity checks'
+    corroboration: RFC 9525 is the controlling standard reviewed for service-identity verification behavior.
+    limitations:
+      - A correctly authenticated endpoint can still be malicious.
+      - TLS identity validation does not bind a package or registry publisher.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C009
+    statement: The technique is Demonstrated but Medium severity; the demonstrated registry effect was limited while downstream data exposure is a supported but undemonstrated consequence.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-oci-rate-limit
+        support: direct
+        exact_locators:
+          - 'Impact and CVSS rationale'
+          - 'Proof of concept: actual publish path and explicit production exclusions'
+      - source_id: SRC-nvd-cve-2026-45781
+        support: corroborating
+        exact_locators:
+          - 'CISA SSVC: exploitation=poc, automatable=no, technicalImpact=partial'
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: context
+        exact_locators:
+          - 'Remote Azure MCP Server protection > Protect the endpoint'
+    corroboration: The advisory and NVD bound the demonstrated effect; Microsoft guidance supports only the conditional downstream consequence.
+    limitations:
+      - Medium severity is an SAF synthesis, not the advisory's rating.
+      - Credential or resource-data exposure was not demonstrated by CVE-2026-45781.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The overall label and severity combine a direct controlled demonstration with separately supported conditional impact.
+    status: validated
+  - id: SAF-T1004-C010
+    statement: Unicode confusable matching is an inclusive, version-sensitive, font-dependent heuristic and should not be a sole blocking signal.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-uts39
+        support: direct
+        exact_locators:
+          - 'Section 4: Confusable Detection'
+          - 'Section 4.1: Skeleton algorithm and version instability'
+          - 'Section 4.4: Limitations and font dependence'
+    corroboration: UTS 39 directly describes the algorithm and its interpretation limits.
+    limitations:
+      - The standard does not evaluate this packet's detector or a specific MCP implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The recommendation against sole-signal blocking applies the standard's documented limitations to this defensive use.
+    status: validated
+  - id: SAF-T1004-C011
+    statement: CVE-2026-30856 is adjacent evidence for tool-resolution collision, not direct server-identity collision evidence.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Summary and affected/patched versions
+          - Proof of concept
+          - Impact
+          - Credits
+      - source_id: SRC-nvd-cve-2026-30856
+        support: corroborating
+        exact_locators:
+          - Description and references
+          - Affected version range and CVSS record
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - 'Tool Names: uniqueness and aggregation collision guidance'
+    corroboration: NVD corroborates the affected range; the MCP Tools specification establishes the tool-identity context.
+    limitations:
+      - The collision occurs among tool identifiers after server configuration.
+      - It does not demonstrate substitution of a server publisher, package, or endpoint identity.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The adjacent classification compares the disclosed tool-resolution boundary with the frozen server-selection boundary.
+    status: validated
+  - id: SAF-T1004-C012
+    statement: The 2022 Azure-themed npm typosquatting campaign is historical package-name analogy, not MCP incident evidence.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-azure-typosquat
+        support: direct
+        exact_locators:
+          - Article byline
+          - 'Attack overview and package count'
+          - 'Targeted Azure package naming pattern'
+          - 'Payload analysis and data collection'
+          - 'Mitigations and download-count limitation'
+    corroboration: No second source was needed to classify the directly reviewed article as a non-MCP analogy.
+    limitations:
+      - The campaign predates the relevant MCP ecosystem.
+      - It does not demonstrate an MCP server collision or compromise.
+      - Dependency-confusion involvement was presented as a possibility and was not established.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1004-C013
+    statement: ATT&CK T1036.005 is analogous, not direct, because its masquerading abstraction does not specify MCP server resolution or binding.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attck-t1036
+        support: direct
+        exact_locators:
+          - Technique definition and procedure examples
+    corroboration: The mapping is intentionally bounded to the directly reviewed ATT&CK definition.
+    limitations:
+      - ATT&CK does not specify MCP registry names, package bindings, or server endpoint resolution.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping the frozen MCP boundary to the broader ATT&CK concept is an SAF analytic judgment.
+    status: validated
+  - id: SAF-T1004-C014
+    statement: No qualifying production breach was established in the reviewed corpus as of 2026-09-01; the statement is bounded to documented searches and is not universal.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-oci-rate-limit
+        support: context
+        exact_locators:
+          - 'Proof of concept: actual publish path and explicit production exclusions'
+      - source_id: SRC-nvd-cve-2026-45781
+        support: context
+        exact_locators:
+          - 'CISA SSVC: exploitation=poc, automatable=no, technicalImpact=partial'
+    corroboration: The complete bounded search record and all rejected incident leads are preserved in source-coverage.yml and traceability-ledger.yml.
+    limitations:
+      - Search indexes and source availability are incomplete.
+      - The result cannot prove that no qualifying production incident exists.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The bounded absence statement is the result of the documented search process, not a proposition established by one external source.
+    status: validated

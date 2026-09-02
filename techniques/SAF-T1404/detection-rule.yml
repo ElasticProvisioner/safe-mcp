@@ -1,88 +1,76 @@
-title: SAF-T1404 MCP Response Tampering (Narrative/Tool Mismatch)
-id: be1a6c82-66c5-47ef-ad3a-84f760115c8f
+title: Response digest mismatch before MCP result consumption
+id: 7ea19ee4-5edc-4ea5-a0b2-2fe7aa727404
 status: experimental
-description: |
-  Detects potential response tampering where a session includes high-risk MCP tool usage
-  (exec/network/sensitive file access) and the assistant output contains concealment language
-  or otherwise presents a misleading benign summary. This rule assumes correlation by session_id.
-author: Vikranth Kumar Shivaa
-date: 2025-12-12
+description: >-
+  Correlates a canonical response digest recorded at trusted transport receipt
+  with the digest recorded immediately before model or downstream consumption.
+  An unexplained mismatch indicates post-receipt modification; missing telemetry
+  is reported separately and does not create an integrity alert.
+author: The SAF-MCP Authors
+date: "2026-09-01"
 references:
-  - https://modelcontextprotocol.io/specification/2024-11-05#security-and-trust-safety
-  - https://genai.owasp.org/llmrisk/llm01-prompt-injection/
-  - https://cheatsheetseries.owasp.org/cheatsheets/LLM_Prompt_Injection_Prevention_Cheat_Sheet.html
+  - https://attack.mitre.org/techniques/T1565/002/
+  - https://www.rfc-editor.org/rfc/rfc8785.html
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1404-C009, SAF-T1404-C010]
+  telemetry_claim_ids: [SAF-T1404-C001, SAF-T1404-C009, SAF-T1404-C013]
+  limitation_claim_ids: [SAF-T1404-C009, SAF-T1404-C010, SAF-T1404-C011]
+  validation_artifacts:
+    - techniques/SAF-T1404/detection-rule.yml
+    - tests/SAF-T1404/test-logs.json
+    - tests/SAF-T1404/test_detection_rule.py
+    - research/techniques/SAF-T1404/validation/detection-tests.txt
+    - research/techniques/SAF-T1404/validation/strict-validator.txt
+  components:
+    selection_receipt:
+      claim_ids: [SAF-T1404-C009]
+      rationale: The first checkpoint supplies the origin-side digest and correlation identifiers.
+    selection_consumption:
+      claim_ids: [SAF-T1404-C009]
+      rationale: The second checkpoint supplies the destination-side digest for the same request.
+    filter_authorized_transform:
+      claim_ids: [SAF-T1404-C010]
+      rationale: Explicitly approved transformations are legitimate digest-changing operations.
+    condition:
+      claim_ids: [SAF-T1404-C009, SAF-T1404-C010]
+      rationale: A correlated mismatch is meaningful only when both checkpoints exist and no approved transformation intervened.
+    logsource:
+      claim_ids: [SAF-T1404-C001, SAF-T1404-C013]
+      rationale: MCP host transport and context-assembly audit events can bind results to requests and consumption.
+    falsepositives:
+      claim_ids: [SAF-T1404-C010]
+      rationale: Inconsistent canonicalization and unrecorded redaction or normalization can produce benign mismatches.
+    fields:
+      claim_ids: [SAF-T1404-C009, SAF-T1404-C010]
+      rationale: These fields preserve the two digests, correlation identity, server/tool context, and authorization state needed for triage.
 logsource:
   product: mcp
-  service: conversation_audit
+  service: host_response_integrity
 detection:
-  # Assumed event schema (example-only):
-  # - event_type: tool_call | assistant_message | context_ingest
-  # - session_id: string
-  # - tool_name: string (for tool_call)
-  # - parameters.path / parameters.command: string (for tool_call)
-  # - content: string (for assistant_message/context_ingest)
-
-  selection_exec_or_network_tool:
-    event_type: tool_call
-    tool_name|contains:
-      - execute_command
-      - run_shell
-      - exec
-      - shell
-      - bash
-      - sh
-      - http
-      - fetch
-
-  selection_sensitive_file_access:
-    event_type: tool_call
-    tool_name|contains:
-      - read_file
-      - write_file
-    parameters.path|contains:
-      - "/.ssh/"
-      - "/etc/shadow"
-      - "/etc/sudoers"
-      - ".env"
-
-  selection_tamper_phrases:
-    event_type: assistant_message
-    content|contains:
-      - "do not mention"
-      - "don't mention"
-      - "do not disclose"
-      - "don't tell the user"
-      - "omit"
-      - "keep it harmless"
-      - "no sensitive data was accessed"
-      - "nothing sensitive was accessed"
-      - "no changes were made"
-      - "nothing was executed"
-
-  selection_tamper_phrases_in_context:
-    event_type: context_ingest
-    content|contains:
-      - "do not mention"
-      - "don't mention"
-      - "do not disclose"
-      - "don't tell the user"
-      - "keep it harmless"
-
-  # Correlation note: Sigma backends vary in how they express cross-event joins.
-  # This rule is written as example logic; implementors should correlate by session_id
-  # and time window (e.g., within 2 minutes).
-  condition: (selection_exec_or_network_tool or selection_sensitive_file_access) and (selection_tamper_phrases or selection_tamper_phrases_in_context)
-
+  selection_receipt:
+    checkpoint: trusted_receipt
+    event_type: mcp_response_digest
+  selection_consumption:
+    checkpoint: pre_consumption
+    event_type: mcp_response_digest
+  filter_authorized_transform:
+    transform_authorized: true
+  condition: >-
+    correlate selection_receipt and selection_consumption by trace_id,
+    request_id, server_id, and tool_name; alert when canonical_sha256 differs
+    and not filter_authorized_transform
 falsepositives:
-  - Legitimate automation in tightly controlled environments where tool-call ledgers are displayed separately
-  - Benign summaries that omit detail but do not contradict the tool ledger
-  - Security training or demonstrations containing these phrases in context
+  - Approved redaction, schema normalization, or encoding conversion that was not marked transform_authorized.
+  - Different canonicalization implementations or binary-digest conventions at the two checkpoints.
+fields:
+  - trace_id
+  - request_id
+  - server_id
+  - tool_name
+  - receipt_canonical_sha256
+  - consumption_canonical_sha256
+  - transform_authorized
 level: high
 tags:
-  - attack.defense_evasion
-  - safe.t1404
-
-# Fallback (tool-only) guidance:
-# If assistant_message/context_ingest logs are unavailable, alert on high-risk tool usage
-# that targets sensitive paths/commands, but treat results as lower-confidence and tune heavily.
-
+  - saf.t1404

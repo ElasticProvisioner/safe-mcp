@@ -1,0 +1,83 @@
+version: 1
+technique_id: SAF-T1706
+name: OAuth Token Pivot Replay
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Use a captured OAuth bearer access token from an MCP or agent-connected
+  component to authenticate as the token subject at another reachable protected resource,
+  gaining lateral access without repeating the original login flow.
+scope:
+  security_boundary: The boundary between the workload or MCP component legitimately
+    holding an OAuth access token and the protected resource that accepts possession
+    of that token as authority.
+  in_scope:
+  - Replay of a captured OAuth bearer access token by a different presenter.
+  - Cross-resource reuse caused by missing or incorrect audience validation.
+  - Lateral access obtained with the token's existing subject and scopes.
+  out_of_scope:
+  - Theft or minting of the token before use; acquisition is a prerequisite.
+  - Authorization-code replay, refresh-token replay, client-assertion replay, token
+    forgery, and session-cookie replay.
+  - MCP token passthrough where an intermediary forwards a client token as its normal
+    operating behavior.
+  - Actions performed after lateral authentication, including collection, exfiltration,
+    persistence, or impact.
+  affected_components:
+  - MCP clients, hosts, and servers that store or transmit OAuth bearer access tokens.
+  - OAuth authorization servers and protected resource servers.
+  - Agent-connected SaaS, cloud, database, and administrative APIs.
+nearest_neighbors:
+- technique_id: SAF-T1504
+  distinction: Token Theft via API Response ends when token material is obtained
+    from a response; SAF-T1706 begins when the captured OAuth access token is presented.
+- technique_id: SAF-T1506
+  distinction: Infrastructure Token Theft ends when an infrastructure-issued token
+    is acquired; SAF-T1706 requires replay of an OAuth access token at a protected resource.
+- technique_id: SAF-T1304
+  distinction: Credential Relay Chain covers broader propagation or substitution
+    of credentials; SAF-T1706 specifically requires replay of a captured OAuth access
+    token by a different presenter.
+- technique_id: SAF-T1308
+  distinction: Token Scope Substitution covers grant, scope, or audience misbinding;
+    SAF-T1706 additionally requires adversarial presentation of a captured token as
+    authentication material.
+required_evidence:
+- Establish bearer-token possession semantics and OAuth replay countermeasures.
+- Establish MCP audience validation, resource binding, and no-passthrough requirements.
+- Establish an MCP or agentic controlled demonstration or record the evidence gap.
+- Search authoritative incident, vulnerability, advisory, fix, and exploitation-status
+  sources.
+- Establish operational telemetry, tested analytic behavior, false positives, and
+  blind spots.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Accepted protected-resource authentication events with timestamp, resource_id,
+    token audience, and a non-reversible token fingerprint.
+  - Presenter or workload identity, source context, result, sender-constraint state,
+    and approved-handoff indicator.
+safe_example_constraints:
+- Use inert resource identifiers and irreversible synthetic token fingerprints.
+- Do not publish live tokens, exploit payloads, attacker infrastructure, or destructive
+  follow-on actions.
+- Describe vulnerable products only to the minimum needed for evidence classification
+  and remediation.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE linkage or
+  a declared local artifact.
+- All unverified, adjacent, conflicting, blocked, and out-of-scope leads are omitted
+  and ledgered.
+- All five research passes and two final no-material-change authority-only passes
+  are recorded.
+- Two to four highest-impact candidates are selected with explicit relationship and
+  evidence limits.
+- Detection tests cover positive, negative, boundary, malformed, and legitimate-lookalike
+  cases.
+- Framework, alignment, rights, credits, quality, and clean-room integrity records
+  pass strict isolated validation.

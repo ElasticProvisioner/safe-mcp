@@ -1,0 +1,79 @@
+version: 1
+technique_id: SAF-T1904
+name: Chat-Based Backchannel
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0011
+adversary_objective: Establish a repeatable bidirectional operator-control path to
+  a tool-capable agent through an external chat service outside the authorized control
+  plane.
+scope:
+  security_boundary: The trust boundary between an external chat identity or conversation
+    and the agent host's authorized command, tool, and response path.
+  in_scope:
+  - An adversary can place messages in a chat conversation the agent reads.
+  - The agent or connector treats those messages as actionable input and can invoke
+    tools or privileged commands.
+  - The agent or connector returns results, status, or control feedback through the
+    same chat service, creating a repeatable bidirectional path.
+  out_of_scope:
+  - One-shot prompt injection without a repeatable returned control path.
+  - A malicious MCP server controlling the host through the MCP trust boundary rather
+    than an external chat service.
+  - Exfiltration through chat without inbound operator control.
+  - Legitimate chat operations authorized by stable sender, conversation, application,
+    and approval policy.
+  affected_components:
+  - Agent or MCP host
+  - Chat connector, bot, or channel plugin
+  - External chat service and conversation
+  - Tool invocation and approval subsystem
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection can supply one-shot adversarial input but lacks the
+    required repeatable bidirectional chat control loop.
+- technique_id: SAF-T1911
+  distinction: Parameter Exfiltration can transmit data through a chat-tool argument
+    but lacks inbound operator control when used alone.
+- technique_id: SAF-T1903
+  distinction: Malicious Server Control Channel crosses the MCP server trust boundary
+    rather than the external chat identity boundary.
+required_evidence:
+- Establish that a chat service can deliver external messages to an application and
+  carry application-authored replies.
+- Establish that an agent can invoke tools or privileged commands from model-controlled
+  input.
+- Establish the external sender or conversation authorization prerequisite and the
+  immediate control outcome.
+- Classify whether the complete chat-to-tool-to-chat loop is observed, demonstrated,
+  research-derived, or hypothesized.
+- Search current production-incident and vulnerability authorities, rank direct candidates,
+  and select no more than four highest-impact examples or state the evidence gap.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Chat connector receipt and send events with timestamp, service, tenant, immutable
+    sender ID, application ID, conversation ID, message or event ID, reply relation,
+    and authorization decision.
+  - Agent session and tool telemetry with timestamp, session ID, tool or command name,
+    result, approval state, and linked chat conversation ID.
+safe_example_constraints:
+- Use inert identifiers and non-destructive synthetic tool names.
+- Do not include real credentials, secrets, production tenant IDs, or exploit payloads.
+- Demonstrate detection semantics only; do not reproduce vulnerable product behavior.
+completion_evidence:
+- Every substantive publishable unit has a validated claim ID and reviewed source
+  locators or a declared local artifact.
+- Unverified or displaced candidates are omitted from publishable prose and recorded
+  in traceability-ledger.yml.
+- Five research passes and two consecutive authority-only no-material-change passes
+  are recorded.
+- The detection analytic passes positive, negative, boundary, missing-field, and malformed-field
+  tests.
+- Rights, quality, framework, and clean-room reviews pass with no unresolved blocking
+  issue.

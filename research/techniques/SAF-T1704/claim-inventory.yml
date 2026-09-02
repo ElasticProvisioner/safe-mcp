@@ -1,0 +1,308 @@
+version: 1
+technique_id: SAF-T1704
+claims:
+  - id: SAF-T1704-C001
+    statement: The current MCP architecture assigns authorization, consent, client isolation, and cross-server coordination to the host, while each client maintains one server connection.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators: [Architecture sections Hosts, Clients, and Servers; lines 74-133]
+    corroboration: Current protocol tool guidance separately assigns security confirmation and validation to the client.
+    limitations: [Defines intended architecture, not universal implementation behavior.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C002
+    statement: MCP servers supply tool definitions and results to clients, and tool annotations are untrusted hints rather than a security enforcement boundary.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Tools sections Listing Tools, Calling Tools, Tool Metadata, Security Considerations; lines 106-219, 299-333, 725-737]
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: corroborating
+        exact_locators: [Security boundary and annotations discussion; lines 30-49 and 73-127]
+    corroboration: The MCP project blog explicitly warns that an untrusted server may lie in annotations.
+    limitations: [Does not establish that every client gives server content to the same model context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C003
+    statement: In a controlled two-server experiment, a malicious server tool description caused the host model to use a trusted email server to send sensitive content to an attacker-controlled address without invoking the malicious tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Experiment 2 and Cross-Server Tool Shadowing; lines 81-116]
+    corroboration: Trail of Bits independently demonstrated pre-invocation malicious tool-description influence during use of other tools.
+    limitations: [Controlled demonstration, not a production incident; tested client behavior may change.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C004
+    statement: Independent testing found malicious MCP tool descriptions could influence supported clients before the malicious tool was invoked and while other tools were used.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trailofbits-line-jumping-2025
+        support: direct
+        exact_locators: [Line jumping tests and cross-server model relay; lines 18-26 and 63-75]
+    corroboration: Invariant Labs documented a concrete cross-server email action using the same class of metadata influence.
+    limitations: [The report did not claim a production compromise or stable behavior across later client versions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C005
+    statement: MCPTox evaluated 1,312 malicious cases constructed from 353 tools on 45 real MCP servers under 20 model settings and counted success only when poisoned metadata caused a separate legitimate tool action.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcptox-2025
+        support: direct
+        exact_locators: [Sections 3.1-3.4, 4.1-4.4, 5; Table 2]
+    corroboration: The Invariant and Trail of Bits demonstrations establish the same cross-tool mechanism in client experiments.
+    limitations: [Single-turn benchmark with semi-automated and manually crafted attacks; not incident telemetry.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C006
+    statement: CVE-2025-6514 allowed a crafted authorization endpoint supplied by an untrusted MCP server to reach operating-system command execution in vulnerable mcp-remote clients.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [Technical analysis and attack path; lines 150-209 and 342-345]
+      - source_id: SRC-nvd-cve-6514
+        support: corroborating
+        exact_locators: [CVE Description and References]
+    corroboration: NVD independently records the crafted authorization_endpoint command-injection condition.
+    limitations: [Product-specific implementation flaw; operating-system exploitability differed by platform.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C007
+    statement: CVE-2025-6514 affected mcp-remote versions 0.0.5 through 0.1.15, was fixed in 0.1.16, and had no known exploitation recorded by CISA-ADP in the reviewed NVD record.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [Affected versions, fix, and recommendations; lines 150-174]
+      - source_id: SRC-nvd-cve-6514
+        support: corroborating
+        exact_locators: [Configurations and CISA-ADP exploitation assessment]
+    corroboration: Vendor research and NVD agree on the affected range and malicious-server condition.
+    limitations: [No-known-exploitation is a bounded database statement, not proof of non-exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C008
+    statement: CVE-2025-6515 used predictable oatpp-mcp SSE session identifiers to let a network attacker hijack a client session and inject malicious server responses; the researcher demonstrated client influence with Claude.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-6515-2025
+        support: direct
+        exact_locators: [Session hijacking, demonstration, affected conditions, and remediation; lines 203-247]
+      - source_id: SRC-nvd-cve-6515
+        support: corroborating
+        exact_locators: [CVE Description, CVSS, and CISA-ADP fields]
+    corroboration: NVD records predictable/reusable session identifiers and malicious server-response injection.
+    limitations: [Requires network access and an affected SSE implementation; demonstration did not establish a production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C009
+    statement: The CVE-2025-6515 example is a legacy transport/session path because the 2026-07-28 MCP specification removed protocol-level sessions.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-release-2026-07-28
+        support: direct
+        exact_locators: [Sessions removed section; lines 42-77]
+      - source_id: SRC-jfrog-cve-6515-2025
+        support: context
+        exact_locators: [Affected HTTP SSE implementation; lines 232-247]
+    corroboration: The vulnerability report itself limits the condition to oatpp-mcp HTTP SSE session handling.
+    limitations: [Legacy clients and implementations may remain deployed; removal from the current protocol does not remove deployed risk.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C010
+    statement: The technique's impact depends on host-held privilege, target sensitivity, credential isolation, cross-server policy, and whether independent approval interrupts the causal chain.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Demonstrated consequences and mitigations; lines 67-129]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: [Sandboxing, untrusted metadata, cross-server influence, and credential isolation; sections lines 68-89]
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: context
+        exact_locators: [Multi-server risk and annotations-not-enforcement discussion; lines 73-127]
+      - source_id: SRC-ms-rug-pull-catalog-2026
+        support: corroborating
+        exact_locators: [Compromised service-agent scenario and consequences; lines 30-44]
+    corroboration: Independent protocol and operational guidance identify privilege and cross-server control as impact-shaping factors.
+    limitations: [Qualitative risk inference; no population-wide loss distribution is available.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The factors are synthesized from direct demonstrations and defensive guidance rather than measured as a single risk model.
+    status: validated
+
+  - id: SAF-T1704-C011
+    statement: MCP host or gateway telemetry can identify which agent invoked which MCP server and when, with invocation metadata; current MCP also supports method/name routing headers and trace context.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-m365-mcp-monitoring-2026
+        support: direct
+        exact_locators: [Monitor and observe MCP server activity; lines 498-508]
+      - source_id: SRC-mcp-release-2026-07-28
+        support: corroborating
+        exact_locators: [New routing headers and W3C Trace Context support; lines 42-77]
+    corroboration: Microsoft Azure MCP guidance separately recommends centralized tool inventory and audit correlation.
+    limitations: [Product telemetry varies; metadata fingerprints and causal server lists are not guaranteed standard fields.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1704-C012
+    statement: Correlating a changed catalog from a low-trust server with a near-time unapproved sensitive call to a different server in the same causal trace is a testable behavioral analytic for the defining pivot.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Cross-server tool shadowing sequence; lines 81-116]
+      - source_id: SRC-microsoft-m365-mcp-monitoring-2026
+        support: context
+        exact_locators: [Invocation metadata available for anomaly detection; lines 498-508]
+    corroboration: The analytic reproduces the defining demonstration's ordered metadata-to-different-server action using documented telemetry classes.
+    limitations: [The 600-second window and required fields are engineering choices validated only with synthetic fixtures.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources establish mechanism and telemetry, while the exact correlation logic is an authored analytic.
+    status: validated
+
+  - id: SAF-T1704-C013
+    statement: Legitimate multi-server workflows can resemble the analytic, and absent provenance, fingerprints, trace continuity, or accurate trust labels create detection blind spots.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: [Cross-server risks, audit correlation, and monitoring limits; lines 71-105]
+      - source_id: SRC-mcptox-2025
+        support: context
+        exact_locators: [Section 5 limitations]
+    corroboration: Operational guidance notes both legitimate multi-server use and incomplete security telemetry coverage.
+    limitations: [False-positive and blind-spot claims are qualitative and deployment dependent.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Detection limitations are derived by comparing the analytic's field requirements with documented telemetry and evaluation limits.
+    status: validated
+
+  - id: SAF-T1704-C014
+    statement: Schema pinning and change approval, per-server isolation, independent input/result validation, least privilege, sensitive-action confirmation, and audit logging interrupt distinct stages of the pivot chain.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Mitigations; lines 119-129]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Security Considerations; lines 725-737]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: [Sandboxing, metadata, credential isolation, inventory, and audit controls; lines 68-105]
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: context
+        exact_locators: [Annotations are hints, not enforcement; lines 105-127]
+      - source_id: SRC-ms-rug-pull-catalog-2026
+        support: corroborating
+        exact_locators: [Recommended controls; lines 45-68]
+    corroboration: Protocol, independent research, and vendor operational guidance converge on layered host-side controls.
+    limitations: [No cited source establishes complete prevention across all clients or implementation vulnerabilities.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The controls are mapped to the authored technique chain from multiple direct recommendations.
+    status: validated
+
+  - id: SAF-T1704-C015
+    statement: OAuth resource indicators, audience validation, least-scope tokens, and a ban on token passthrough reduce cross-service token misuse but do not by themselves govern metadata-mediated tool selection.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Roles and scope, resource binding, access-token use; lines 132-267]
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: corroborating
+        exact_locators: [Token binding, mix-up, open redirect, and confused deputy; lines 78-178]
+    corroboration: Both current normative authorization pages distinguish resource-bound token controls from host/tool behavior.
+    limitations: [The second clause is a boundary inference; secure authorization still reduces some implementation-pivot paths.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The specification defines what authorization controls address; comparison with the demonstrated metadata path establishes what they do not cover alone.
+    status: validated
+
+  - id: SAF-T1704-C016
+    statement: MITRE ATT&CK T1210 is analogous for exploit-based Compromised-Server Pivot variants, but it is narrower because the defining metadata-mediated behavior can cross a trust boundary without exploiting software in the target remote service.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1210
+        support: direct
+        exact_locators: [Definition, tactic, and version metadata; lines 15-41]
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: context
+        exact_locators: [Cross-server tool shadowing; lines 81-116]
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: context
+        exact_locators: [Host-managed cross-server interaction; lines 74-133]
+    corroboration: The vulnerability examples establish an exploit path while the defining direct demonstration establishes a non-software-exploit path.
+    limitations: [Analogous mapping, not an assertion that ATT&CK T1210 fully represents the SAF behavior.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the ATT&CK definition with the independently established SAF contract boundary.
+    status: validated

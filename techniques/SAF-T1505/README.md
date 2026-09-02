@@ -1,464 +1,233 @@
 # SAF-T1505: In-Memory Secret Extraction
 
 ## Overview
-**Tactic**: Credential Access (ATK-TA0006), Exfiltration (ATK-TA0010)  
-**Technique ID**: SAF-T1505  
-**Severity**: Critical  
-**First Observed**: Research-based threat (2024-2025)  
-**Last Updated**: 2026-04-14  
-**Author**: Sumit Yadav (rockerritesh4@gmail.com)
+
+- **Tactic**: Credential Access (ATK-TA0006)
+- **Technique ID**: SAF-T1505
+- **Research Packet**: [research/techniques/SAF-T1505](../../research/techniques/SAF-T1505/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1505/traceability-ledger.yml)
+- **Documentation Status**: Stable
+- **Evidence Status**: Demonstrated
+- **Severity**: High
+- **Severity Rationale**: Unauthorized access to live signing keys, database credentials, personal access tokens, or paid API keys can produce high confidentiality impact; integrity or availability impact requires follow-on use. <!-- SAF-TRACE: claims=SAF-T1505-C018; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+- **First Observed**: Not observed in production in the direct-authority corpus reviewed on 2026-09-01; controlled demonstrations are public. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C009; sources=SRC-arxiv-2504.03767v2,SRC-cisa-kev-in-memory-secrets-2026-09-01,SRC-nvd-cve-2026-32625,SRC-nvd-cve-2026-29872,SRC-nvd-cve-2026-40159 -->
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+In-Memory Secret Extraction is the unauthorized acquisition of authentication material or another secret from live process-wide environment or runtime state held by an MCP host, agent runtime, or server. The crossed boundary separates that state from a user session, tool, child server, extension, or remote destination that is not authorized to receive it. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-arxiv-2504.03767v2,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+
+### In Scope
+
+- Resolving an attacker-controlled reference against a host process environment and returning or transmitting the resulting secret. <!-- SAF-TRACE: claims=SAF-T1505-C005; sources=SRC-ghsa-4pcc-j6m6-wcwx -->
+- Reading one user's secret from process-global state through a different, unauthorized session. <!-- SAF-TRACE: claims=SAF-T1505-C006; sources=SRC-pham-minh-cve-2026-29872 -->
+- Giving an untrusted MCP subprocess a secret-bearing parent environment that it can read. <!-- SAF-TRACE: claims=SAF-T1505-C007; sources=SRC-ghsa-pj2r-f9mw-vrcq -->
+
+### Out of Scope
+
+- Prompt injection or malicious-package delivery is an entry mechanism; it is outside this technique unless live secret state is actually acquired. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C007; sources=SRC-arxiv-2504.03767v2,SRC-ghsa-pj2r-f9mw-vrcq -->
+- Reads from persistent files, keychains, vaults, databases, and cloud metadata are separate because the source is not live application state. <!-- SAF-TRACE: claims=SAF-T1505-C015; sources=SRC-mitre-t1003 -->
+- Code execution that merely creates access and follow-on exfiltration or token replay are adjacent behaviors; the technique ends at unauthorized acquisition. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C008; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-mp29-fxh8-92px,SRC-nvd-cve-2026-67531 -->
+
+### Distinguishing Characteristics
+
+The defining observable is a join between a live secret-bearing state container and an unauthorized recipient. A file read lacks the live-state source; code execution without a secret read is only enabling; an outbound transfer after acquisition is follow-on activity. <!-- SAF-TRACE: claims=SAF-T1505-C008,SAF-T1505-C010,SAF-T1505-C015; sources=SRC-ghsa-mp29-fxh8-92px,SRC-nvd-cve-2026-67531,SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872,SRC-mitre-t1003 -->
 
 ## Description
-In-Memory Secret Extraction is an attack technique that exploits the semantic understanding capabilities of embedding models and vector databases to identify, extract, and exfiltrate API keys and other credentials from AI systems. Unlike traditional pattern-matching approaches, this technique leverages the semantic similarity between prompts and stored embeddings to circumvent standard security controls.
 
-Attackers exploit the fact that modern LLM systems use embedding models (such as Word2Vec, BERT, or sentence transformers) to convert text into high-dimensional vector representations. The threat model is that, by crafting queries with high semantic similarity to credential-related content, adversaries can retrieve or infer API keys from vector stores, prompt caches, or model contexts without triggering keyword-based detection systems. Direct end-to-end credential extraction from MCP-integrated stores has not been demonstrated in the open literature as of this writing; the technique describes a credible threat assembled from primitives that have been independently demonstrated (embedding-layer perturbation, prompt-cache timing side-channels, system-prompt extraction). See "Current Status" below for the specific evidence base.
+MCP stdio implementations may legitimately retrieve credentials from the environment. That design choice makes environment presence ordinary; extraction arises only when an implementation lets an unauthorized session, user-controlled configuration, or untrusted child process read the live value. <!-- SAF-TRACE: claims=SAF-T1505-C002,SAF-T1505-C011; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq -->
+
+The behavior is demonstrated rather than observed. Radosevich and Halloran reproduced an MCP tool chain that located API keys in environment variables and disclosed them through Slack, while three product disclosures document different runtime-state boundary failures. No reviewed authority establishes a qualifying production breach. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007,SAF-T1505-C009; sources=SRC-arxiv-2504.03767v2,SRC-ghsa-4pcc-j6m6-wcwx,SRC-nvd-cve-2026-32625,SRC-pham-minh-cve-2026-29872,SRC-nvd-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq,SRC-nvd-cve-2026-40159,SRC-cisa-kev-in-memory-secrets-2026-09-01 -->
 
 ## Attack Vectors
 
-### Primary Vector: Semantic Similarity Exploitation
-- **Method**: Craft prompts with high semantic similarity to API key queries
-- **Prerequisites**: Understanding of embedding models and vector similarity metrics
-- **Persistence**: Queries can bypass traditional keyword filters
-- **Detection Difficulty**: High - semantically similar but lexically different from known patterns
-
-### Secondary Vectors
-
-#### 1. Vector Store Query Manipulation
-- **Target**: ChromaDB, Pinecone, Weaviate, FAISS, or other vector databases
-- **Method**: Submit queries designed to retrieve embeddings containing credentials
-- **Exploitation**: Use cosine similarity or other distance metrics to locate sensitive information
-- **Impact**: Systematic extraction of stored API keys
-
-#### 2. Activation Embedding Analysis
-- **Target**: Neural network activation layers
-- **Method**: Analyze activation patterns to identify credential-containing contexts
-- **Prerequisites**: Access to model internals or activation outputs
-- **Sophistication**: Requires ML expertise
-
-#### 3. Prompt Caching Exploitation
-- **Target**: Cached prompts that may contain API keys
-- **Method**: Query semantically similar prompts to trigger cache hits and observe timing or shared-cache side-channels
-- **Adjacent research**: "Auditing Prompt Caching in Language Model APIs" ([arXiv:2502.07776](https://arxiv.org/abs/2502.07776)) demonstrates timing side-channels and cross-user cache sharing in production LLM APIs. Direct retrieval of credentials from cache is a theoretical extension of those primitives to MCP environments where prompts may contain secrets, and has not been independently demonstrated.
-- **Impact**: Inference about candidate cached prompt content (including potential credentials) via timing or cross-tenant cache hits
+- **Primary Vector**: Untrusted MCP configuration or tool-mediated input reaches logic that resolves, shares, or reads live runtime secret state. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C005,SAF-T1505-C006; sources=SRC-arxiv-2504.03767v2,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872 -->
+- **Secondary Vectors**: An untrusted local server inherits the host environment, or a sandbox escape enables process access without itself proving extraction. <!-- SAF-TRACE: claims=SAF-T1505-C007,SAF-T1505-C008; sources=SRC-ghsa-pj2r-f9mw-vrcq,SRC-ghsa-mp29-fxh8-92px,SRC-nvd-cve-2026-67531 -->
+- **Affected Components**: MCP hosts, agent runtimes, server-configuration validators, local MCP subprocess launchers, multi-user session state, and sandboxed extensions. <!-- SAF-TRACE: claims=SAF-T1505-C003,SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007,SAF-T1505-C008; sources=SRC-mcp-security-2025-11-25,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq,SRC-ghsa-mp29-fxh8-92px,SRC-nvd-cve-2026-67531 -->
+- **Trust Boundary Crossed**: Secret-owner process or session to an unauthorized user, session, subprocess, extension, or remote destination. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
 
 ## Technical Details
 
 ### Prerequisites
-- Understanding of embedding models (Word2Vec, BERT, Sentence Transformers)
-- Knowledge of vector similarity metrics (cosine similarity, Euclidean distance)
-- Access to MCP server with vector store integration
-- Basic understanding of semantic search mechanisms
+
+- The MCP or agent process holds a usable secret in environment or runtime state. <!-- SAF-TRACE: claims=SAF-T1505-C002; sources=SRC-mcp-authorization-2025-11-25 -->
+- Attacker-controlled input, a different session, or an untrusted child reaches a code path that can reference or inherit that state. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+- Session isolation, input/source separation, or child-environment minimization is absent or ineffective. <!-- SAF-TRACE: claims=SAF-T1505-C012,SAF-T1505-C013,SAF-T1505-C014; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
 
 ### Attack Flow
 
-```mermaid
-graph TD
-    A[Attacker] -->|Crafts Query| B[Semantic Analysis]
-    B -->|High Similarity| C[Vector Store Query]
-    C -->|Retrieves| D[API Key Embeddings]
-    
-    D -->|Extract| E[Credential Extraction]
-    E -->|Exfiltrate| F[External System]
-    
-    G[Legitimate User] -->|Stores Data| H[Vector Database]
-    H -->|Contains| D
-    
-    I[Embedding Model] -->|Processes| B
-    I -->|Generates| D
-    
-    style A fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style D fill:#fc8d59,stroke:#000,stroke-width:2px,color:#000
-    style E fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style F fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-```
+1. **Setup**: An adversary supplies MCP configuration, controls an untrusted child command, or reaches a session that shares process-global state. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+2. **Trigger**: The runtime validates the configuration, starts the child, or services the cross-session access. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+3. **Boundary Crossing**: A process-wide lookup or inheritance occurs without recipient authorization or session ownership enforcement. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+4. **Objective**: The unauthorized recipient obtains the secret value; later transfer or use is a separate action. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C018; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
 
-### Example Attack Scenarios
+### Example Scenario
 
-#### Scenario 1: Vector Store Credential Retrieval
+An authenticated low-privilege user submits a remote MCP endpoint configuration containing a placeholder named `SERVICE_API_KEY`. During validation, the host resolves the placeholder from its live environment and contacts `collector.example.invalid`; the example uses no real key or reachable collection service. <!-- SAF-TRACE: claims=SAF-T1505-C005; sources=SRC-ghsa-4pcc-j6m6-wcwx -->
 
-**Step 1: Reconnaissance**
-```python
-# Attacker analyzes the embedding model used by target
-from sentence_transformers import SentenceTransformer
+## Evidence and Current State
 
-model = SentenceTransformer('all-MiniLM-L6-v2')
+### Evidence Summary
 
-# Known API key patterns
-legitimate_query = "What is my OpenAI API key?"
-embedding = model.encode(legitimate_query)
-```
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1505-C001 | A controlled MCP workflow extracted environment-held API keys and disclosed them through Slack. | Demonstrated | SRC-arxiv-2504.03767v2: [Radosevich and Halloran](https://arxiv.org/pdf/2504.03767) | Controlled evaluation; prompt injection and exfiltration are adjacent. |
+| SAF-T1505-C002 | MCP stdio implementations may retrieve credentials from the environment. | Research-Derived | SRC-mcp-authorization-2025-11-25: [MCP Authorization](https://modelcontextprotocol.io/docs/2025-11-25/specification/basic/authorization) | Does not require full environment inheritance. |
+| SAF-T1505-C003 | Local MCP servers may have host access and should be sandboxed with restricted resources. | Research-Derived | SRC-mcp-security-2025-11-25: [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) | Broad compromise guidance. |
+| SAF-T1505-C004 | Obtained tokens can enable apparently legitimate access; storage and lifetime controls limit impact. | Research-Derived | SRC-mcp-authorization-2025-11-25: [MCP Authorization](https://modelcontextprotocol.io/docs/2025-11-25/specification/basic/authorization) | Does not establish extraction mechanics. |
+| SAF-T1505-C005 | LibreChat could resolve process environment placeholders from user MCP URLs. | Demonstrated | SRC-ghsa-4pcc-j6m6-wcwx and SRC-nvd-cve-2026-32625: [LibreChat advisory](https://github.com/danny-avila/LibreChat/security/advisories/GHSA-4pcc-j6m6-wcwx) | PoC and vulnerability, not production exploitation. |
+| SAF-T1505-C006 | A GitHub MCP Agent exposed process-global tokens across sessions. | Demonstrated | SRC-pham-minh-cve-2026-29872 and SRC-nvd-cve-2026-29872: [Pham Minh disclosure](https://github.com/lilmingwa13/security-research/blob/main/CVE-2026-29872.md) | No fixed release identified; display modification aided observation. |
+| SAF-T1505-C007 | PraisonAI passed a secret-bearing parent environment to user-selected MCP children. | Demonstrated | SRC-ghsa-pj2r-f9mw-vrcq and SRC-nvd-cve-2026-40159: [PraisonAI advisory](https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-pj2r-f9mw-vrcq) | Affected-range discrepancy; untrusted child and user interaction required. |
+| SAF-T1505-C008 | FrontMCP sandbox escape was enabling but did not demonstrate secret acquisition. | Research-Derived | SRC-ghsa-mp29-fxh8-92px and SRC-nvd-cve-2026-67531: [FrontMCP advisory](https://github.com/agentfront/frontmcp/security/advisories/GHSA-mp29-fxh8-92px) | Enables process access only. |
+| SAF-T1505-C009 | No qualifying production breach was found in the bounded 2026-09-01 corpus. | Research-Derived | SRC-cisa-kev-in-memory-secrets-2026-09-01 and the reviewed PoC sources | Bounded absence claim; KEV absence is not proof of non-exploitation. |
+| SAF-T1505-C010 | A contextual analytic can join untrusted input or recipients with secret-like live-state access. | Research-Derived | SRC-ghsa-4pcc-j6m6-wcwx, SRC-ghsa-pj2r-f9mw-vrcq, and SRC-pham-minh-cve-2026-29872 | Synthetic schema; not independently evaluated. |
+| SAF-T1505-C011 | Environment use alone is normal and requires trust and authorization context. | Research-Derived | SRC-mcp-authorization-2025-11-25 and SRC-ghsa-pj2r-f9mw-vrcq | Context may be unavailable. |
+| SAF-T1505-C012 | Untrusted configuration should not resolve process environment placeholders. | Demonstrated | SRC-ghsa-4pcc-j6m6-wcwx: [LibreChat advisory](https://github.com/danny-avila/LibreChat/security/advisories/GHSA-4pcc-j6m6-wcwx) | Product-specific. |
+| SAF-T1505-C013 | MCP child environments should be sanitized and allowlisted. | Demonstrated | SRC-ghsa-pj2r-f9mw-vrcq: [PraisonAI advisory](https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-pj2r-f9mw-vrcq) | Name filters can miss secrets. |
+| SAF-T1505-C014 | User secrets should be session-scoped and cleared after use. | Demonstrated | SRC-pham-minh-cve-2026-29872: [Pham Minh disclosure](https://github.com/lilmingwa13/security-research/blob/main/CVE-2026-29872.md) | Multi-user state guidance. |
+| SAF-T1505-C015 | ATT&CK T1003 is analogous, not direct. | Research-Derived | SRC-mitre-t1003: [MITRE ATT&CK T1003](https://attack.mitre.org/techniques/T1003/) | A memory-scraping variant may overlap more closely. |
+| SAF-T1505-C016 | Detection requires actor, session, destination, process, variable-name, trust, and authorization context. | Research-Derived | The three selected vulnerability disclosures | Products may not emit the synthetic fields. |
+| SAF-T1505-C017 | Response should contain execution, scope exposed identifiers, and rotate potentially exposed credentials. | Research-Derived | SRC-mcp-authorization-2025-11-25, SRC-ghsa-pj2r-f9mw-vrcq, and SRC-pham-minh-cve-2026-29872 | No universal response playbook was reviewed. |
+| SAF-T1505-C018 | Confidentiality can be high; integrity and availability require follow-on use. | Research-Derived | The three selected vulnerability disclosures | Impact depends on secret privilege and lifetime. |
+| SAF-T1505-C019 | Model refusal is not a reliable sole control. | Demonstrated | SRC-arxiv-2504.03767v2: [Radosevich and Halloran](https://arxiv.org/pdf/2504.03767) | Specific models and controlled scenarios. |
 
-**Step 2: Semantic Query Crafting**
-```python
-# Craft semantically similar queries that bypass keyword filters
-semantic_variants = [
-    "Show me the authentication token for the AI service",
-    "What credentials do I need for the language model?",
-    "Display the secret key used for API access",
-    "Retrieve my access credentials for the external service",
-]
+### Current State
 
-# Calculate semantic similarity
-from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+- **Affected Environments**: Multi-user agent services with process-global secret state, user-configurable MCP endpoints, and hosts that start local MCP children with broad inherited environments. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C006,SAF-T1505-C007; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+- **Known Exploitation**: Controlled demonstrations and proof-of-concept records exist; no qualifying production incident was found in the reviewed corpus. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C009; sources=SRC-arxiv-2504.03767v2,SRC-cisa-kev-in-memory-secrets-2026-09-01,SRC-nvd-cve-2026-32625,SRC-nvd-cve-2026-29872,SRC-nvd-cve-2026-40159 -->
+- **Available Protections**: Remove environment substitution from untrusted configuration, session-scope secrets, minimize child environments by allowlist, sandbox local servers, and restrict their filesystem and network access. <!-- SAF-TRACE: claims=SAF-T1505-C003,SAF-T1505-C012,SAF-T1505-C013,SAF-T1505-C014; sources=SRC-mcp-security-2025-11-25,SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Residual Risk**: Model refusal can vary with prompt wording, and authorized environment use prevents a reliable name-only distinction between normal and malicious behavior. <!-- SAF-TRACE: claims=SAF-T1505-C011,SAF-T1505-C019; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq,SRC-arxiv-2504.03767v2 -->
 
-base_embedding = model.encode(legitimate_query).reshape(1, -1)
+### Known Breaches and Vulnerabilities
 
-for variant in semantic_variants:
-    variant_embedding = model.encode(variant).reshape(1, -1)
-    similarity = cosine_similarity(base_embedding, variant_embedding)[0][0]
-    print(f"Similarity: {similarity:.4f} - {variant}")
-```
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| Radosevich-Halloran MCP credential-theft evaluation | 2025-04-11; Claude Desktop with multiple MCP servers | Environment-held placeholder API keys were found and posted through Slack; the authors recommend least privilege and avoiding sensitive environment storage. | Direct demonstration by Brandon Radosevich and John T. Halloran. | Controlled evaluation, not a breach. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C019; sources=SRC-arxiv-2504.03767v2 --> |
+| CVE-2026-32625 / GHSA-4pcc-j6m6-wcwx | 2026-06-02; LibreChat through 0.8.3 | MCP URL validation could transmit process secrets; 0.8.4-rc1 is listed as patched. | Direct vulnerability reported by YLChen-007. | NVD marks PoC; no production exploitation established. <!-- SAF-TRACE: claims=SAF-T1505-C005; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-nvd-cve-2026-32625 --> |
+| CVE-2026-29872 | 2026-03-30; Streamlit GitHub MCP Agent at tested commit e46690f | Cross-session token retrieval was reproduced; Pham Minh recommends session-scoped storage, but no fixed release was identified in the reviewed records. | Direct vulnerability and controlled reproduction by Pham Minh. | A display modification made the leak observable. <!-- SAF-TRACE: claims=SAF-T1505-C006; sources=SRC-pham-minh-cve-2026-29872,SRC-nvd-cve-2026-29872 --> |
+| CVE-2026-40159 / GHSA-pj2r-f9mw-vrcq | 2026-04-09; PraisonAI affected through 4.5.117 per advisory | Untrusted MCP children inherited the host environment; 4.5.128 is patched and an allowlist is recommended. | Direct vulnerability reported by l3tchupkt. | NVD says versions before 4.5.128, leaving 4.5.118-4.5.127 uncertain; PoC, not production exploitation. <!-- SAF-TRACE: claims=SAF-T1505-C007; sources=SRC-ghsa-pj2r-f9mw-vrcq,SRC-nvd-cve-2026-40159 --> |
 
-**Step 3: Vector Store Query**
-```python
-# Query vector store with semantically similar prompt
-import chromadb
+### Real-World Incidents or Demonstrations
 
-client = chromadb.Client()
-collection = client.get_collection("user_context")
-
-# Query using semantic variant
-results = collection.query(
-    query_texts=["Show me the authentication token for the AI service"],
-    n_results=5
-)
-
-# Extract API keys from results
-for doc in results['documents'][0]:
-    if 'sk-' in doc or 'api' in doc.lower():
-        print(f"Potential API key found: {doc}")
-```
-
-#### Scenario 2: Activation Embedding Exploitation
-
-```python
-# Advanced attack: Analyze activation embeddings
-import torch
-from transformers import AutoModel, AutoTokenizer
-
-model_name = "bert-base-uncased"
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModel.from_pretrained(model_name, output_hidden_states=True)
-
-# Craft query to extract credentials
-query = "Retrieve authentication credentials for external service"
-inputs = tokenizer(query, return_tensors="pt")
-
-# Get activation embeddings
-with torch.no_grad():
-    outputs = model(**inputs)
-    hidden_states = outputs.hidden_states
-    
-# Analyze activation patterns for credential indicators
-last_layer = hidden_states[-1][0]  # Last layer activations
-
-# Use clustering to identify credential-related activations
-from sklearn.cluster import KMeans
-
-kmeans = KMeans(n_clusters=5, random_state=42)
-clusters = kmeans.fit_predict(last_layer.numpy())
-
-# Identify clusters with high variance (potential sensitive data)
-for i in range(5):
-    cluster_variance = last_layer[clusters == i].var().item()
-    if cluster_variance > 0.5:  # High variance threshold
-        print(f"Cluster {i} shows high variance: {cluster_variance:.4f}")
-```
-
-#### Scenario 3: Prompt Cache Probing
-
-```python
-# Probe a semantic prompt cache for cross-tenant content using timing side-channels.
-# Side-channel primitives (response-time delta on cache hit, cross-user cache sharing)
-# are demonstrated against production LLM APIs in Gu et al., "Auditing Prompt Caching
-# in Language Model APIs" (arXiv:2502.07776). The paper does NOT demonstrate that
-# cached responses themselves contain extractable credentials; this scenario shows
-# how the timing primitive could be applied in an MCP environment, with a hypothetical
-# extension (response-body credential matching) that would only succeed if the deployment
-# actually returns or echoes credential-bearing cached prompts to the caller.
-import time
-
-CACHE_HIT_LATENCY_DELTA_MS = 50  # tune per deployment
-
-def probe_prompt_cache(target_api_endpoint):
-    cache_trigger_queries = [
-        "What authentication method should I use?",
-        "How do I configure API access?",
-        "Show example of API key configuration",
-        "What are my service credentials?",
-    ]
-
-    for query in cache_trigger_queries:
-        baseline_ms = measure_cold_query_latency(target_api_endpoint, query)
-        t0 = time.perf_counter()
-        response = send_query(target_api_endpoint, query)
-        elapsed_ms = (time.perf_counter() - t0) * 1000
-
-        likely_cache_hit = (baseline_ms - elapsed_ms) > CACHE_HIT_LATENCY_DELTA_MS
-        if likely_cache_hit:
-            log_cache_hit_signal(query, elapsed_ms, baseline_ms)
-
-            # Hypothetical MCP-specific extension: if the deployment echoes cached
-            # prompt content into responses, response-body credential matching could
-            # turn a cache-hit signal into a credential leak. This is NOT demonstrated
-            # by the cited paper, and is only meaningful conditional on a cache hit.
-            if contains_api_key_pattern(response):
-                flag_for_review(query, response)
-
-def contains_api_key_pattern(text):
-    """Detect API key patterns in response"""
-    patterns = [
-        r'sk-[a-zA-Z0-9]{32,}',     # OpenAI
-        r'AKIA[0-9A-Z]{16}',         # AWS
-        r'AIza[0-9A-Za-z\-_]{35}',  # Google
-        r'ya29\.[0-9A-Za-z\-_]+',   # Google OAuth
-    ]
-    import re
-    for pattern in patterns:
-        if re.search(pattern, text):
-            return True
-    return False
-```
-
-### Advanced Attack Techniques (2024-2025 Research)
-
-According to recent research on embedding security and prompt manipulation, attackers have developed the following variations:
-
-#### 1. Embedding-Layer Perturbation as a Building Block
-"Embedding Poisoning: Bypassing Safety Alignment via Embedding Semantic Shift" ([arXiv:2509.06338](https://arxiv.org/abs/2509.06338)) demonstrates that imperceptible perturbations injected into the embedding layer of an aligned LLM can bypass safety guardrails without modifying weights or visible input. The paper targets safety-alignment bypass on aligned models; it does not poison vector stores or target credential storage directly.
-
-The relevance to credential extraction in MCP environments is theoretical: the same primitive — perturbing or crafting embeddings to evade semantic filters — could in principle be applied to:
-
-- Bypass embedding-based credential filters that classify queries by semantic similarity to known credential-extraction patterns
-- Construct queries whose embeddings sit just inside a vector-store retrieval threshold for credential-bearing chunks while sitting outside the lexical or keyword filter
-
-```python
-def create_perturbed_query_embedding(target_embedding, perturbation):
-    """
-    Illustrative analogue of the embedding-layer perturbation primitive from
-    Yuan et al. (arXiv:2509.06338). NOT a faithful reproduction of their attack,
-    which targets the LLM's embedding layer in-process. Shown here only to make
-    the threat model concrete for MCP environments.
-    """
-    perturbed = 0.7 * target_embedding + 0.3 * perturbation
-    perturbed = perturbed / np.linalg.norm(perturbed)
-    return perturbed
-```
-
-#### 2. Prompt Leakage as a Credential-Adjacent Risk
-"You Can't Steal Nothing: Mitigating Prompt Leakages in LLMs via System Vectors" ([arXiv:2509.21884](https://arxiv.org/abs/2509.21884)) demonstrates a prompt-leakage attack capable of extracting system prompts from advanced models (including GPT-4o and Claude 3.5 Sonnet) and proposes SysVec — encoding system prompts as internal representation vectors — as a mitigation. The paper is primarily a defense paper; the attack it demonstrates is system-prompt extraction, not credential extraction.
-
-The relevance to SAF-T1505 is indirect: in MCP deployments where API keys, OAuth tokens, or other secrets are placed into the system prompt or are otherwise reachable via the same context window, the prompt-leakage primitive demonstrated in the paper becomes a credential-leakage primitive. This is a corollary, not a result the paper claims.
-
-#### 3. Adaptive-Threshold Cache Probing (Theoretical)
-"vCache: Verified Semantic Prompt Caching" ([arXiv:2502.03771](https://arxiv.org/abs/2502.03771)) is a defense paper: it proposes an online algorithm to estimate per-prompt similarity thresholds for safe semantic-cache reuse. It does not describe an attack.
-
-The reason it appears here is that any system using per-prompt or adaptive thresholds for semantic-cache retrieval also exposes those thresholds to inference. An attacker who can probe a deployment with controlled inputs may be able to:
-
-- Estimate the effective similarity threshold the cache uses for a given prompt
-- Craft semantically similar but lexically different queries that fall inside that threshold
-- Increase the probability of returning a cached response that originated from another user's session
-
-This is a hypothesized side-channel built on top of vCache-style adaptive caching, not a result demonstrated in the cited paper.
+No qualifying production incident was identified. The strongest end-to-end evidence is the controlled Radosevich-Halloran MCP credential-theft workflow; the three selected CVEs are vulnerability and PoC evidence, not breaches. <!-- SAF-TRACE: claims=SAF-T1505-C001,SAF-T1505-C009; sources=SRC-arxiv-2504.03767v2,SRC-cisa-kev-in-memory-secrets-2026-09-01,SRC-nvd-cve-2026-32625,SRC-nvd-cve-2026-29872,SRC-nvd-cve-2026-40159 -->
 
 ## Impact Assessment
-- **Confidentiality**: Critical - Direct extraction or inference of API keys and credentials
-- **Integrity**: High - Compromised credentials enable system manipulation
-- **Availability**: Medium - Stolen credentials can be used for resource exhaustion
-- **Scope**: Network-wide - Affects all systems sharing vector stores or embedding models
 
-### Current Status (2025-2026)
-Security researchers have documented emerging primitives that compose into the threat described here, though end-to-end credential extraction from MCP-integrated vector stores has not been demonstrated in the open literature:
-- Prompt-cache timing side-channels and cross-user cache sharing have been measured against production LLM APIs ([arXiv:2502.07776](https://arxiv.org/abs/2502.07776))
-- Embedding-layer perturbation has been shown to bypass safety alignment in aligned LLMs ([arXiv:2509.06338](https://arxiv.org/abs/2509.06338))
-- System-prompt extraction from advanced models has been demonstrated, with system-vector encoding proposed as a mitigation ([arXiv:2509.21884](https://arxiv.org/abs/2509.21884))
-- Vector database security remains an active research area with few deployed mitigations
-- MCP servers with vector store integration lack comprehensive embedding security controls
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | Signing keys, database credentials, personal access tokens, and API keys can cross to unauthorized recipients when held in reachable live state. <!-- SAF-TRACE: claims=SAF-T1505-C018; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq --> |
+| Integrity | Low | Extraction alone does not alter state; integrity impact depends on later use of a write-capable secret. <!-- SAF-TRACE: claims=SAF-T1505-C018; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq --> |
+| Availability | None | The extraction mechanism does not require disruption; later credential use may create separate availability effects. <!-- SAF-TRACE: claims=SAF-T1505-C018; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq --> |
+| Scope | Multi-System | A live secret may authorize downstream repositories, databases, model APIs, or other services, subject to its privilege and lifetime. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C018; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq --> |
+
+### Severity Conditions
+
+- **Severity increases when**: Long-lived or high-privilege secrets share a process with untrusted users, configuration, tools, or child servers. <!-- SAF-TRACE: claims=SAF-T1505-C018; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872,SRC-ghsa-pj2r-f9mw-vrcq -->
+- **Severity decreases when**: Secrets are short-lived, session-bound, audience-restricted, absent from broad process state, and passed only through explicit allowlists. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C013,SAF-T1505-C014; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP configuration audit | Remote server configuration validation | Timestamp, actor, session, transport, destination host and trust, input trust, referenced environment-variable names | Record names only; never values. <!-- SAF-TRACE: claims=SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 --> |
+| MCP process-launch audit | Local server child creation | Timestamp, parent, child, package or command trust, inherited variable names, allowlist decision | Normalize trust and allowlist decisions. <!-- SAF-TRACE: claims=SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 --> |
+| Runtime secret-access audit | Secret identifier access | Owner session, requesting session, secret identifier, authorization result | A missing ownership signal is a blind spot. <!-- SAF-TRACE: claims=SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 --> |
+
 ### Indicators of Compromise (IoCs)
-- Queries with high semantic similarity to credential-related prompts
-- Unusual patterns in vector store query logs
-- Embeddings with anomalous similarity scores
-- Activation patterns indicating credential extraction attempts
-- Repeated queries with lexically different but semantically similar content
-- Clustering of queries around credential-containing embedding regions
 
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. Attackers continuously develop new injection techniques and obfuscation methods. Organizations should:
-- Use AI-based anomaly detection to identify novel attack patterns
-- Regularly update detection rules based on threat intelligence
-- Implement multiple layers of detection beyond pattern matching
-- Consider semantic analysis of prompt embeddings and query patterns
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: In-Memory Secret Extraction
-id: a7f3b2c1-89d4-4e2a-bc3d-567890abcdef
-status: experimental
-description: Detects potential API key exfiltration through semantic embedding manipulation
-author: SAF-MCP Team
-date: 2025-11-16
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1505
-  - https://arxiv.org/abs/2509.06338
-  - https://arxiv.org/abs/2502.07776
-logsource:
-  product: mcp
-  service: vector_store
-detection:
-  selection_semantic_similarity:
-    query_type: 'vector_search'
-    semantic_similarity:
-      - '>0.85'  # High similarity threshold
-    query_context|contains:
-      - 'credential'
-      - 'authentication'
-      - 'token'
-      - 'key'
-      - 'secret'
-  
-  selection_embedding_anomaly:
-    embedding_cluster_distance: '<0.2'  # Anomalously close to credential cluster
-    query_variance: '>0.5'  # High activation variance
-  
-  selection_cache_exploitation:
-    cache_hit: true
-    response_contains_credential_pattern: true
-    query_semantic_variant: true  # Lexically different, semantically similar
-  
-  selection_activation_analysis:
-    activation_layer_analysis: true
-    credential_pattern_detected: true
-    cluster_variance: '>0.5'
-  
-  condition: selection_semantic_similarity or selection_embedding_anomaly or selection_cache_exploitation or selection_activation_analysis
-
-falsepositives:
-  - Legitimate API key management queries from authorized users
-  - System administration tasks involving credential rotation
-  - Development and testing activities with API keys
-  - Documentation queries about API authentication
-
-level: critical
-tags:
-  - attack.credential_access
-  - attack.t1552
-  - attack.exfiltration
-  - attack.t1041
-  - safe.t1505
-```
+- No durable universal IoC was identified; destination hosts, secret names, and child identities are environment-specific behavioral context. <!-- SAF-TRACE: claims=SAF-T1505-C010,SAF-T1505-C011; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872,SRC-mcp-authorization-2025-11-25 -->
 
 ### Behavioral Indicators
-- Rapid succession of semantically similar queries
-- Queries from unusual geographic locations or IP addresses
-- Pattern of queries exploring embedding space around credential clusters
-- Activation patterns inconsistent with legitimate use cases
-- Vector store queries with incrementally adjusted semantic content
-- Unusual access patterns to prompt caching systems
+
+- An untrusted MCP server configuration references a secret-like environment name while resolving to an external destination. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- An untrusted or unknown MCP child receives a non-allowlisted secret-like environment name. <!-- SAF-TRACE: claims=SAF-T1505-C007,SAF-T1505-C010; sources=SRC-ghsa-pj2r-f9mw-vrcq,SRC-ghsa-4pcc-j6m6-wcwx,SRC-pham-minh-cve-2026-29872 -->
+- A requesting session accesses a secret owned by another session without an explicit authorization decision. <!-- SAF-TRACE: claims=SAF-T1505-C006,SAF-T1505-C010; sources=SRC-pham-minh-cve-2026-29872,SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq -->
+
+### Detection Analytic
+
+The standalone example analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Detect an unauthorized recipient joined to a secret-like live-state access signal. <!-- SAF-TRACE: claims=SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Rule Status**: Experimental because the normalized event schema is synthetic and no reviewed source evaluates this detector. <!-- SAF-TRACE: claims=SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Detection Logic**: Alert on any of the three reviewed boundary patterns: untrusted remote substitution, untrusted child inheritance, or unauthorized cross-session secret access. <!-- SAF-TRACE: claims=SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Correlation Window**: Single normalized event; implementations may correlate configuration validation to the resulting outbound request in one transaction. <!-- SAF-TRACE: claims=SAF-T1505-C005,SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Known False Positives**: Approved local servers may legitimately receive an explicitly allowlisted minimum environment. <!-- SAF-TRACE: claims=SAF-T1505-C002,SAF-T1505-C011; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq -->
+- **Known Limitations**: Existing products may not emit ownership or trust context; secret-name heuristics miss unusual names and must not log values. <!-- SAF-TRACE: claims=SAF-T1505-C010,SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Tuning Guidance**: Maintain local trusted-destination, trusted-child, authorized-sharing, and explicit variable allowlists. <!-- SAF-TRACE: claims=SAF-T1505-C011,SAF-T1505-C013; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](../../tests/SAF-T1505/test-logs.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1505/test_detection_rule.py)
+- **Expected Result**: Eight of eight cases pass, including three positives and negative, boundary, malformed, and expected false-positive cases. <!-- SAF-TRACE: claims=SAF-T1505-C010,SAF-T1505-C011,SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872,SRC-mcp-authorization-2025-11-25 -->
+- **Last Validated**: 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **Feasibility Waiver**: None; the analytic has deterministic synthetic cases. <!-- SAF-TRACE: claims=SAF-T1505-C010; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
 
 ## Mitigation Strategies
 
 ### Preventive Controls
 
-1. **[SAF-M-63: Embedding-Based API Key Detection and Filtering](../../mitigations/SAF-M-63/README.md)**: **PRIMARY MITIGATION** - Real-time semantic analysis of queries using embedding similarity to detect and block credential extraction attempts. Supports both local deployment (e.g., `all-MiniLM-L6-v2`) and API-based solutions (OpenAI, Google, Cohere). See SAF-M-63 for accuracy and false-positive characteristics under specific test conditions; raw performance numbers should not be quoted out of context.
-
-2. **[SAF-M-30: Embedding Sanitization and Validation](../../mitigations/SAF-M-30/README.md)**: Implement comprehensive validation of embeddings before storage to ensure no credential patterns are embedded in vector representations. Use semantic analysis to detect and redact credential-like content.
-
-3. **[SAF-M-29: Vector Store Integrity Verification](../../mitigations/SAF-M-29/README.md)**: Cryptographically verify vector store contents and maintain integrity checksums for embeddings. Implement access controls restricting queries to authorized users only.
-
-4. **Semantic Similarity-Based Prompt Rejection**: Implement real-time semantic analysis to reject queries with high similarity (>0.85 cosine similarity) to known credential-extraction patterns. Use embedding models to calculate similarity scores for all incoming queries.
-
-5. **Embedding-Based Credential Filtering**: Scan all prompts and responses using embedding analysis to detect API key patterns. According to "Universal Sentence Encoder" ([arXiv:1803.11175](https://arxiv.org/abs/1803.11175)), sentence-level embeddings can effectively capture semantic meaning for filtering purposes.
-
-6. **Vector Store API Key Sanitization**: Implement pre-storage validation that calculates semantic distance from known credential patterns. Reject embeddings with distance below an empirically chosen threshold (e.g., <0.3 cosine distance) from API-key pattern embeddings; calibrate the threshold against your own data rather than copying a fixed value.
-
-7. **Prompt Cache Security Measures**: Prompt-cache timing side-channels and cross-user cache sharing have been demonstrated against production LLM APIs ("Auditing Prompt Caching in Language Model APIs", [arXiv:2502.07776](https://arxiv.org/abs/2502.07776)), so even if cached entries do not directly expose credentials, cache behavior can leak information about prior queries. Mitigations should include:
-   - Cache entry validation for credential patterns before insertion
-   - Per-tenant cache isolation to avoid cross-user inference
-   - Constant-time cache lookup paths or noise injection to blunt timing side-channels
+1. **[SAF-M-52: Input Validation Pipeline](../../mitigations/SAF-M-52/README.md)**: Do not apply environment substitution to user-controlled MCP endpoint configuration. <!-- SAF-TRACE: claims=SAF-T1505-C012; sources=SRC-ghsa-4pcc-j6m6-wcwx -->
+2. **[SAF-M-74: Per-Invocation Capability Brokering](../../mitigations/SAF-M-74/README.md)**: Build a strict allowlist for each MCP child instead of copying the parent environment. <!-- SAF-TRACE: claims=SAF-T1505-C013; sources=SRC-ghsa-pj2r-f9mw-vrcq -->
+3. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Keep user credentials in session-scoped storage, bind them to the owner, clear them after use, and avoid process-global state. <!-- SAF-TRACE: claims=SAF-T1505-C014; sources=SRC-pham-minh-cve-2026-29872 -->
+4. **[SAF-M-9: Sandboxed Testing](../../mitigations/SAF-M-9/README.md)**: Sandbox local MCP servers with minimal privileges and restrict filesystem and network access. <!-- SAF-TRACE: claims=SAF-T1505-C003; sources=SRC-mcp-security-2025-11-25 -->
 
 ### Detective Controls
 
-1. **[SAF-M-32: Continuous Vector Store Monitoring](../../mitigations/SAF-M-32/README.md)**: Real-time monitoring of vector database queries with semantic anomaly detection.
-
-2. **Embedding Anomaly Detection**: Implement clustering-based anomaly detection on stored embeddings (e.g., k-means or DBSCAN) and alert on points that fall outside established clusters or near known credential-pattern centroids.
-
-3. **Activation Embedding Monitoring**: Where the deployment exposes intermediate activations (e.g., self-hosted models), monitor activation distributions per layer for drift relative to a baseline of legitimate traffic, and alert when query-time activations fall in regions associated with credential-bearing training or context data. This is an emerging detection direction without an established peer-reviewed reference for credential extraction specifically.
-
-4. **Semantic Distance Analysis**: Continuously measure semantic distance between queries and known credential-extraction patterns. Use metrics from "A Survey on Metric Learning for Feature Vectors and Structured Data" ([arXiv:1306.6709](https://arxiv.org/abs/1306.6709)).
+1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Record variable names, owners, recipient trust, and allowlist outcomes while redacting values. <!-- SAF-TRACE: claims=SAF-T1505-C016; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20/README.md)**: Require an unauthorized or untrusted recipient so legitimate stdio credential use does not alert by itself. <!-- SAF-TRACE: claims=SAF-T1505-C011; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq -->
 
 ### Response Procedures
 
-1. **Immediate Actions**:
-   - Block queries with semantic similarity >0.85 to credential patterns
-   - Quarantine suspicious embeddings from vector store
-   - Rotate potentially compromised API keys
-   - Enable enhanced logging for vector store access
-   - Alert security team of potential credential exfiltration
+#### Immediate Actions
 
-2. **Investigation Steps**:
-   - Analyze query logs for semantic patterns
-   - Review vector store access logs for anomalous queries
-   - Calculate cosine similarity of all recent queries to credential patterns
-   - Examine embedding clusters for poisoned vectors
-   - Audit prompt cache for credential leakage
-   - Review activation embedding logs for extraction attempts
+- Stop the affected session or process and prevent further launches or outbound requests on the implicated configuration. <!-- SAF-TRACE: claims=SAF-T1505-C017; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- **[SAF-M-37: Token Rotation and Invalidation](../../mitigations/SAF-M-37/README.md)** and **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Rotate each potentially exposed credential according to its issuing service and shorten token lifetime where supported. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C017; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
 
-3. **Remediation**:
-   - Sanitize vector store of credential-containing embeddings
-   - Implement semantic filtering on all future queries
-   - Rotate all API keys that may have been exposed
-   - Update embedding models with credential detection capabilities
-   - Enhance monitoring rules based on attack characteristics
-   - Apply differential privacy to embedding generation
-   - Implement rate limiting on semantically similar queries
+#### Investigation Steps
+
+- Preserve redacted configuration-validation, child-launch, secret-access, and destination telemetry; do not capture secret values. <!-- SAF-TRACE: claims=SAF-T1505-C016,SAF-T1505-C017; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- Identify affected secret names, owner sessions, unauthorized recipients, and any follow-on use in the issuing services. <!-- SAF-TRACE: claims=SAF-T1505-C004,SAF-T1505-C017; sources=SRC-mcp-authorization-2025-11-25,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+
+#### Remediation
+
+- Patch the affected implementation and enforce input separation, session scoping, or child-environment allowlisting for the relevant variant. <!-- SAF-TRACE: claims=SAF-T1505-C012,SAF-T1505-C013,SAF-T1505-C014; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872 -->
+- Re-run positive, negative, boundary, malformed, and expected false-positive tests before restoring the path. <!-- SAF-TRACE: claims=SAF-T1505-C010,SAF-T1505-C011; sources=SRC-ghsa-4pcc-j6m6-wcwx,SRC-ghsa-pj2r-f9mw-vrcq,SRC-pham-minh-cve-2026-29872,SRC-mcp-authorization-2025-11-25 -->
 
 ## Related Techniques
-- [SAF-T2106](../SAF-T2106/README.md): Context Memory Poisoning via Vector Store Contamination - Related vector store exploitation
-- [SAF-T1501](../SAF-T1501/README.md): Full-Schema Poisoning (FSP) - Credential extraction through schema manipulation
-- [SAF-T1001](../SAF-T1001/README.md): Tool Poisoning Attack - Related injection technique
-- [SAF-T1503](../SAF-T1503/README.md): Prompt Cache Exploitation - Related caching vulnerability
 
-## References
-
-### Primary Research Papers (arXiv)
-- [Efficient Estimation of Word Representations in Vector Space - Mikolov et al., 2013](https://arxiv.org/abs/1301.3781)
-- [BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding - Devlin et al., 2018](https://arxiv.org/abs/1810.04805)
-- [Universal Sentence Encoder - Cer et al., 2018](https://arxiv.org/abs/1803.11175)
-- [You Can't Steal Nothing: Mitigating Prompt Leakages in LLMs via System Vectors - Cao et al., 2025](https://arxiv.org/abs/2509.21884)
-- [Embedding Poisoning: Bypassing Safety Alignment via Embedding Semantic Shift, 2025](https://arxiv.org/abs/2509.06338)
-- [Redundancy, Isotropy, and Intrinsic Dimensionality of Prompt-based Text Embeddings, 2025](https://arxiv.org/abs/2506.01435)
-- [vCache: Verified Semantic Prompt Caching - Schroeder et al., 2025](https://arxiv.org/abs/2502.03771)
-- [Auditing Prompt Caching in Language Model APIs - Gu et al., ICML 2025](https://arxiv.org/abs/2502.07776)
-- [A Survey on Metric Learning for Feature Vectors and Structured Data - Bellet et al., 2013](https://arxiv.org/abs/1306.6709)
-- [How Small Transformation Expose the Weakness of Semantic Similarity Measures - Nikiema et al., 2025](https://arxiv.org/abs/2509.09714)
-- [Convolutional Neural Network Architectures for Matching Natural Language Sentences - Hu et al., 2015](https://arxiv.org/abs/1503.03244)
-
-### Additional Trusted Sources
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [A Malware Detection Method Based on LLM to Mine Semantics of API - EAI Publications, 2024](https://publications.eai.eu/index.php/airo/article/view/8880)
-- [Finetuning as a Defense Against LLM Secret-leaking - Berkeley EECS-2024-135](https://www2.eecs.berkeley.edu/Pubs/TechRpts/2024/EECS-2024-135.pdf)
-- [LLM Embedding Security: How to Defend Against Them - Galileo AI, 2024](https://galileo.ai/blog/llm-embedding-security-risks-defenses)
-- [A survey on privacy risks and protection in large language models - Springer, 2025](https://link.springer.com/article/10.1007/s44443-025-00177-1)
-- [Embedding-based classifiers can detect prompt injection attacks - CEUR Workshop Proceedings, 2024](https://ceur-ws.org/Vol-3920/paper15.pdf)
-- [NIST Privacy Framework](https://www.nist.gov/privacy-framework)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1502: File-Based Credential Harvest](../SAF-T1502/README.md) | Alternative source | SAF-T1502 reads credential-bearing files rather than live runtime state; vaults and databases remain outside this direct join. See the [contract](../../research/techniques/SAF-T1505/technique-contract.yml). |
+| [SAF-T1305: Host OS Priv-Esc (RCE)](../SAF-T1305/README.md) | Prerequisite or enabling | Code execution can create process access but does not establish extraction unless live secret material is actually reached. See the [contract](../../research/techniques/SAF-T1505/technique-contract.yml). |
+| [SAF-T1911: Parameter Exfiltration](../SAF-T1911/README.md) | Follow-on | SAF-T1911 begins after acquisition and transfers the value through outbound tool parameters. See the [contract](../../research/techniques/SAF-T1505/technique-contract.yml). |
 
 ## MITRE ATT&CK Mapping
 
-**Note**: The following mappings represent the closest analogues in the MITRE ATT&CK framework. As of 2025, ATT&CK does not include specific techniques for AI/ML systems, vector databases, or embedding stores. These mappings are provided to help organizations align SAF-MCP techniques with existing security frameworks and controls.
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1003](https://attack.mitre.org/techniques/T1003/) | OS Credential Dumping | Analogous | Both concern credential acquisition from memory, but T1003 focuses on operating-system credential material and privileged memory or stores; SAF-T1505 includes application-level environment and session state. <!-- SAF-TRACE: claims=SAF-T1505-C015; sources=SRC-mitre-t1003 --> |
 
-- [T1552 - Unsecured Credentials](https://attack.mitre.org/techniques/T1552/) - *Closest match*: Extraction of credentials from unsecured storage (vector stores/embedding databases are analogous to unsecured credential storage)
-- [T1041 - Exfiltration Over C2 Channel](https://attack.mitre.org/techniques/T1041/) - Exfiltration of extracted credentials to external systems
-- [T1213 - Data from Information Repositories](https://attack.mitre.org/techniques/T1213/) - Querying and extracting sensitive information from data repositories (vector stores qualify as information repositories)
+## References
+
+1. **SRC-arxiv-2504.03767v2**: [MCP Safety Audit — Brandon Radosevich and John T. Halloran](https://arxiv.org/pdf/2504.03767), version 2, 2025-04-11.
+2. **SRC-mcp-authorization-2025-11-25**: [Model Context Protocol Authorization](https://modelcontextprotocol.io/docs/2025-11-25/specification/basic/authorization), Model Context Protocol maintainers, 2025-11-25.
+3. **SRC-mcp-security-2025-11-25**: [Model Context Protocol Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices), Model Context Protocol maintainers, 2025-11-25.
+4. **SRC-ghsa-4pcc-j6m6-wcwx**: [LibreChat advisory GHSA-4pcc-j6m6-wcwx](https://github.com/danny-avila/LibreChat/security/advisories/GHSA-4pcc-j6m6-wcwx), reported by YLChen-007 and published by danny-avila, 2026-06-02.
+5. **SRC-nvd-cve-2026-32625**: [NVD CVE-2026-32625](https://nvd.nist.gov/vuln/detail/CVE-2026-32625), NIST NVD and the originating CNA.
+6. **SRC-pham-minh-cve-2026-29872**: [CVE-2026-29872 disclosure](https://github.com/lilmingwa13/security-research/blob/main/CVE-2026-29872.md), Pham Minh, 2026.
+7. **SRC-nvd-cve-2026-29872**: [NVD CVE-2026-29872](https://nvd.nist.gov/vuln/detail/CVE-2026-29872), NIST NVD and the originating CNA.
+8. **SRC-ghsa-pj2r-f9mw-vrcq**: [PraisonAI advisory GHSA-pj2r-f9mw-vrcq](https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-pj2r-f9mw-vrcq), reported by l3tchupkt and published by MervinPraison, 2026-04-09.
+9. **SRC-nvd-cve-2026-40159**: [NVD CVE-2026-40159](https://nvd.nist.gov/vuln/detail/CVE-2026-40159), NIST NVD and the originating CNA.
+10. **SRC-ghsa-mp29-fxh8-92px**: [FrontMCP advisory GHSA-mp29-fxh8-92px](https://github.com/agentfront/frontmcp/security/advisories/GHSA-mp29-fxh8-92px), reported by fg0x0 and remediated by frontegg-david, 2026-07-26.
+11. **SRC-nvd-cve-2026-67531**: [NVD CVE-2026-67531](https://nvd.nist.gov/vuln/detail/CVE-2026-67531), NIST NVD and the originating CNA.
+12. **SRC-cisa-kev-in-memory-secrets-2026-09-01**: [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog), catalog version 2026.09.01.
+13. **SRC-mitre-t1003**: [MITRE ATT&CK T1003 OS Credential Dumping](https://attack.mitre.org/techniques/T1003/), MITRE ATT&CK team.
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-11-16 | Initial documentation of In-Memory Secret Extraction | Sumit Yadav (rockerritesh4@gmail.com) |
-| 1.1 | 2026-04-14 | Source-integrity pass. **Citation corrections:** updated arXiv:2502.03771 to current title ("vCache: Verified Semantic Prompt Caching", Schroeder et al.); corrected arXiv:1503.03244 title to "Convolutional Neural Network Architectures for Matching Natural Language Sentences" (Hu et al. 2015); corrected arXiv:2509.09714 title (singular "Transformation"). **Removed citations whose arXiv IDs point to unrelated papers:** arXiv:1406.2673 (actually a Mondrian Forests paper, not Medhat sentiment analysis), arXiv:0806.2414 (actually an RNA pseudoknot paper, not Caruana 2006 supervised-learning comparison). **Removed citations that were real papers but did not support the inline claim:** arXiv:1506.06579 (Yosinski deep-visualization — real paper, but cited as support for activation-anomaly detection in a credential-extraction context, which it does not support); the bullets that depended on these were rewritten to stand on their own and are now explicitly labeled as emerging/uncited recommendations rather than as research-backed controls. **Reframed citations that overstated the source:** arXiv:2502.07776 is now cited only for cache timing side-channels and cross-user cache sharing (what the paper actually demonstrates), in the secondary-vector list, the Scenario 3 code comments, the Current Status section, and Preventive Control #7 — not for direct cached-credential retrieval; arXiv:2509.06338 is now framed as an embedding-layer perturbation primitive that bypasses safety alignment, with the credential-extraction connection presented as a theoretical extension; arXiv:2509.21884 is now framed as a prompt-leakage attack with SysVec as a defense, with the credential-leakage connection presented as a corollary in MCP deployments where secrets sit in the system prompt; arXiv:2502.03771 (vCache) is now framed as a defense paper whose adaptive-threshold mechanism could in principle expose a side-channel, not an attack basis. **Removed unsourced claims:** "94.2% accuracy / <2% false positives" performance numbers for SAF-M-63 (raw numbers belong in the mitigation README, not here). **Other:** removed "Recommended Embedding Models" vendor-listing section (out of scope for a threat document); de-duplicated SAF-M-32 from Preventive Controls (kept under Detective Controls) and renumbered; softened the <0.3 cosine-distance threshold to an empirically-calibrated example; updated "Current Status (2025)" to "(2025-2026)"; replaced subjective wording ("sophisticated") per style guide. **No technical claims about the attack itself were strengthened** — several were softened or explicitly labeled as theoretical extensions. The Description was caveated to make clear that direct end-to-end credential extraction from MCP-integrated stores has not been demonstrated in the open literature; the technique is a credible threat assembled from independently demonstrated primitives. Scenario 3 was renamed from "Prompt Cache Poisoning" to "Prompt Cache Probing" and the example code was rewritten to observe cache-hit timing signals (which the cited paper supports), with the response-body credential-matching extension explicitly labeled as a hypothetical MCP-specific behavior. | Bishnu Bista |
 
+| Version | Date | Changes | Author |
+| --- | --- | --- | --- |
+| 1.0 | 2026-09-01 | Independent clean-room authoring, evidence packet, and tested analytic | OpenAI Codex clean-room author |

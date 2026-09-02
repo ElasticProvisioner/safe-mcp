@@ -1,0 +1,187 @@
+version: 1
+technique_id: SAF-T1902
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1902/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1902/technique-contract.yml
+  supports: Internal scope, tactic, neighbor boundary, safe-example constraints, and
+    completion criteria.
+- id: LOCAL-claim-inventory
+  path: research/techniques/SAF-T1902/claim-inventory.yml
+  supports: Validated claims, source relationships, exact locators, limitations, and
+    inference labels.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1902/source-coverage.yml
+  supports: Five-pass research, two no-change passes, candidate ranking, gaps, conflicts,
+    and evidence classification.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1902/publication-rights.yml
+  supports: Publication-rights and attribution review.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1902/clean-room-attestation.yml
+  supports: Clean-room inputs, prohibitions, provenance, contamination status, and
+    integration constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1902/quality-review.yml
+  supports: Quality gates, strict validation command, and detector-test result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1902/detection-rule.yml
+  supports: The standalone detection analytic and traceability metadata.
+- id: LOCAL-detector
+  path: tests/SAF-T1902/detect_covert_response.py
+  supports: Executable Unicode-tag and response-to-egress correlation logic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1902/test_detection.py
+  supports: Positive, negative, boundary, malformed-input, carrier, and normalization
+    tests.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1902/fixtures/events.jsonl
+  supports: Three alerting and five non-alerting synthetic fixture cases.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1902/validation/detector-test-output.txt
+  supports: Canonical recorded detector-test command and passing output.
+- id: LOCAL-validator-result
+  path: research/techniques/SAF-T1902/validation/strict-validator-output.txt
+  supports: Canonical isolated strict-validator command and passing output.
+- id: LOCAL-source-fragment
+  path: research/techniques/SAF-T1902/integration/source-manifest-fragment.yml
+  supports: Direct-source authority, authorship, locators, review state, and archive
+    exceptions.
+- id: LOCAL-framework-fragment
+  path: research/techniques/SAF-T1902/integration/framework-fragment.yml
+  supports: Proposed framework record, relationships, mitigation, and tested detection
+    join.
+- id: LOCAL-alignment-fragment
+  path: research/techniques/SAF-T1902/integration/alignment-fragment.yml
+  supports: Explicit post-freeze canonical alignment work.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1902/integration/integration-notes.yml
+  supports: Mechanical reconciliation instructions and synthetic placeholder disclosure.
+- id: LOCAL-neighbor
+  path: techniques/SAF-T1102/README.md
+  supports: Canonical nearest-neighbor boundary for prompt injection.
+- id: LOCAL-mitigation
+  path: mitigations/SAF-M-22/README.md
+  supports: Canonical semantic-output-validation mitigation join.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1902-X001
+  candidate: Treat the selected examples as evidence of a confirmed production compromise
+    campaign.
+  origin: Potential overclassification of public demonstrations and advisory records.
+  attempted_searches:
+  - Direct CVE Program, CISA KEV, NVD, maintainer advisory, vendor, original-researcher,
+    and author-manuscript endpoint review.
+  consulted_source_ids:
+  - SRC-cursor-cve-2025-54132
+  - SRC-cve-2025-32711
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-cve-2025-54132
+  reason: No reviewed direct authority establishes a production victim or campaign
+    using the contracted mechanism.
+  prohibited_publishable_text:
+  - confirmed response-channel campaign in the wild
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X002
+  candidate: Classify CVE-2025-32711 as a direct covert-response vulnerability.
+  origin: High-severity Microsoft 365 Copilot information-disclosure CVE lead.
+  attempted_searches:
+  - Direct CVE Program JSON, referenced vendor URL, and authority-catalog review.
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  reason: The available authority text does not establish that concealed response
+    content was the communication carrier.
+  prohibited_publishable_text:
+  - EchoLeak proves this exact response channel
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X003
+  candidate: Include the archived Slack MCP unfurl demonstration as a direct example.
+  origin: Original-researcher Slack MCP disclosure and exact linked implementation
+    artifacts.
+  attempted_searches:
+  - Direct original-researcher page, Slack unfurl documentation, exact linked source
+    file, and archived repository security policy review.
+  consulted_source_ids:
+  - SRC-cve-34072
+  - SRC-slack-unfurl-docs
+  - SRC-slack-mcp-source
+  - SRC-mcp-servers-archived-security
+  reason: The data-bearing URL is supplied to an explicit outbound tool action rather
+    than concealed in the agent response.
+  prohibited_publishable_text:
+  - Slack MCP is a direct covert-response case
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X004
+  candidate: Include hidden MCP tool-description metadata as a response carrier.
+  origin: Original-researcher MCP security survey.
+  attempted_searches:
+  - Direct researcher page and versioned MCP tools specification review.
+  consulted_source_ids:
+  - SRC-embrace-red-2025-05-02
+  - SRC-mcp-tools-2025-11-25
+  reason: Tool descriptions operate during discovery and selection; they are not response
+    content under the frozen contract.
+  prohibited_publishable_text:
+  - tool metadata is itself a response channel
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X005
+  candidate: Treat all persistent agent C2 as this response-carrier technique.
+  origin: Agent Commander and Promptware Kill Chain research.
+  attempted_searches:
+  - Direct original-researcher and direct arXiv author-manuscript review for the communication
+    path.
+  consulted_source_ids:
+  - SRC-rehberger-agent-commander
+  - SRC-nassi-promptware-kill-chain
+  reason: Persistence and C2 do not satisfy the technique unless the C2 data is concealed
+    in response content with a receiver path.
+  prohibited_publishable_text:
+  - every agent C2 loop is SAF-T1902
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X006
+  candidate: Assert that the Cursor vulnerability appears in CISA KEV or has known
+    exploitation.
+  origin: Government-catalog verification requirement.
+  attempted_searches:
+  - Direct CISA KEV catalog page and JSON endpoint; direct NVD page; maintainer advisory
+    exploitation review.
+  consulted_source_ids:
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-cve-2025-54132
+  - SRC-cursor-cve-2025-54132
+  reason: Authority catalog endpoints were unavailable or non-substantive and the
+    maintainer advisory does not state known exploitation.
+  prohibited_publishable_text:
+  - CISA lists CVE-2025-54132 as exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1902-X007
+  candidate: Claim the detector's 120-second window or entropy threshold is universally
+    optimal.
+  origin: Local detector design and ATT&CK encoded-content guidance.
+  attempted_searches:
+  - Direct MITRE DET0108, OpenAI URL-exfiltration study, RFC 4648, and selected demonstration
+    review.
+  consulted_source_ids:
+  - SRC-attack-det0108
+  - SRC-openai-url
+  - SRC-rfc4648
+  reason: Authorities support the analytic features but not universal numeric parameters;
+    the values are local tested defaults.
+  prohibited_publishable_text:
+  - 120 seconds is the universal covert-channel threshold
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

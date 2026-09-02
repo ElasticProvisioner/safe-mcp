@@ -1,0 +1,23 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2105
+    name: Disinformation Output
+    documentation_status: stable
+    evidence_status: observed
+    tactics: [ATK-TA0040]
+    technique_path: techniques/SAF-T2105/README.md
+    research_packet: research/techniques/SAF-T2105
+    related_techniques: [SAF-T2106, SAF-T1102]
+    mitigations: [SAF-M-3, SAF-M-11, SAF-M-12, SAF-M-22, SAF-M-30, SAF-M-32, SAF-M-36, SAF-M-51]
+    detection:
+      rule: techniques/SAF-T2105/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T2105/test_detection_rule.py
+        - tests/SAF-T2105/cases.json
+        - research/techniques/SAF-T2105/validation/detection-test.txt
+        - research/techniques/SAF-T2105/validation/strict-validator.txt
+        - research/techniques/SAF-T2105/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1565
+        type: analogous

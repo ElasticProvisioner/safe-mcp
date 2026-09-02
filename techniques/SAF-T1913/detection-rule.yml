@@ -1,0 +1,99 @@
+title: Sensitive Data in Outbound MCP tools/call POST
+id: ab8fe83a-faa9-4ff2-8f9c-2b4ccf017df7
+status: experimental
+description: >-
+  Identifies an outbound MCP tools/call carried by HTTP POST when a privacy-preserving
+  DLP classifier marks the request as containing sensitive data and the transfer is
+  not both approved and directed to a trusted or partner-allowlisted server.
+logsource:
+  category: application
+  product: mcp_gateway
+  service: outbound_http
+detection:
+  selection_transport:
+    http.request.method: POST
+    mcp.method: tools/call
+  selection_sensitive:
+    dlp.data_classes|count|gt: 0
+  filter_authorized:
+    approval.state: approved
+    destination.trust:
+      - trusted
+      - partner_allowlisted
+  condition: selection_transport and selection_sensitive and not filter_authorized
+fields:
+  - timestamp
+  - client.id
+  - actor.id
+  - request.id
+  - http.request.method
+  - server.address
+  - url.full
+  - http.response.status_code
+  - http.request.body.size
+  - mcp.protocol_version
+  - mcp.method
+  - mcp.name
+  - approval.state
+  - destination.trust
+  - dlp.data_classes
+falsepositives:
+  - Approved exports to a newly onboarded destination whose trust label has not propagated.
+  - Incorrect or overly broad DLP classification of benign tool arguments.
+  - Emergency transfers that bypass the normal approval workflow.
+level: high
+tags:
+  - saf.t1913
+  - attack.exfiltration
+  - attack.t1048
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1913-C009
+    - SAF-T1913-C011
+  telemetry_claim_ids:
+    - SAF-T1913-C007
+    - SAF-T1913-C008
+  limitation_claim_ids:
+    - SAF-T1913-C010
+    - SAF-T1913-C020
+  validation_artifacts:
+    - tests/SAF-T1913/test_detection.py
+    - tests/SAF-T1913/fixtures.jsonl
+    - research/techniques/SAF-T1913/validation/detection-test.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1913-C007
+        - SAF-T1913-C008
+      rationale: Current MCP request headers and outbound HTTP client spans provide the normalized application and network event.
+    selection_transport:
+      claim_ids:
+        - SAF-T1913-C001
+        - SAF-T1913-C007
+      rationale: The defining transport is POST and the MCP operation must be tools/call.
+    selection_sensitive:
+      claim_ids:
+        - SAF-T1913-C009
+        - SAF-T1913-C010
+      rationale: A nonempty privacy-preserving DLP classification supplies the content-risk signal absent from transport metadata.
+    filter_authorized:
+      claim_ids:
+        - SAF-T1913-C006
+        - SAF-T1913-C011
+      rationale: Suppression requires both explicit approval and a trusted destination to preserve alerts for either control failure.
+    condition:
+      claim_ids:
+        - SAF-T1913-C009
+        - SAF-T1913-C011
+      rationale: The conjunction binds mechanism, sensitive content, and authorization context while excluding the bounded legitimate lookalike.
+    fields:
+      claim_ids:
+        - SAF-T1913-C007
+        - SAF-T1913-C008
+        - SAF-T1913-C010
+      rationale: Investigation fields retain operation and destination context while using data-class labels instead of raw secrets.
+    falsepositives:
+      claim_ids:
+        - SAF-T1913-C011
+      rationale: Approval, destination trust, and DLP classification can be stale, exceptional, or inaccurate.

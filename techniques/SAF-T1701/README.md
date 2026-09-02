@@ -1,230 +1,127 @@
 # SAF-T1701: Cross-Tool Contamination
 
+- **Tactic**: Lateral Movement (ATK-TA0008)
+- **Technique ID**: SAF-T1701
+- **Evidence Status**: Demonstrated
+- **Documentation Status**: Draft
+- **Severity**: High
+- **First Observed**: Controlled agent-tool evaluations published in 2024 <!-- SAF-TRACE: claims=SAF-T1701-C002; sources=SRC-injecagent-2024 -->
+- **Last Updated**: 2026-09-02
+- **Research Packet**: [source-or-omit evidence](../../research/techniques/SAF-T1701/source-coverage.yml)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1701/traceability-ledger.yml)
+
 ## Overview
-**Tactic**: Lateral Movement (ATK-TA0008)  
-**Technique ID**: SAF-T1701  
-**Severity**: High  
-**First Observed**: Not observed in production (Conceptual technique based on MCP multi-tool orchestration patterns)  
-**Last Updated**: 2025-12-06
+
+Cross-Tool Contamination occurs when adversary-controlled content returned by one tool is interpreted as instruction-bearing context and causes the host or model to invoke a different tool across a capability, server, data, or authorization boundary. <!-- SAF-TRACE: claims=SAF-T1701-C002; sources=SRC-injecagent-2024 -->
+
+The immediate adversary objective is to pivot from a data channel exposed by one tool into capabilities held by another tool without a matching, explicit user request. <!-- SAF-TRACE: claims=SAF-T1701-C002,SAF-T1701-C003; sources=SRC-injecagent-2024,SRC-invariant-github-mcp-2025 -->
+
+## Scope
+
+This technique requires a source-tool result influenced by an adversary, a later call to a distinct tool or server in the same execution context, and a causal link between the untrusted result and that later call. <!-- SAF-TRACE: claims=SAF-T1701-C002; sources=SRC-injecagent-2024 -->
+
+Tool-description poisoning before invocation, a direct malicious user prompt, and a single-tool input-validation flaw are neighboring mechanisms rather than instances of this technique. <!-- SAF-TRACE: claims=SAF-T1701-C012; sources=SRC-invariant-tpa-2025-04-01 -->
+
+The technique ends at the cross-tool pivot; collection, exfiltration, modification, or execution performed afterward is a downstream impact. <!-- SAF-TRACE: claims=SAF-T1701-C002; sources=SRC-injecagent-2024 -->
 
 ## Description
-Cross-Tool Contamination is a lateral movement technique in Model Context Protocol (MCP)–based systems where an attacker that controls one MCP tool (the *entry tool*) uses shared credentials, configuration, or trust relationships to drive actions through **other** tools or connectors in the same host or workspace.
 
-Because MCP is explicitly designed to let AI applications connect to many external systems (files, APIs, databases, cloud services) through a common tool interface, a single host or agent framework often orchestrates multiple MCP servers and tools in one place. If the runtime does not enforce strong isolation between tools—especially around secret storage, network egress, and policy—compromising any one tool can give an attacker an entry point to pivot into other connected services and systems.
+MCP hosts can assemble tools from multiple servers, and tool results can contain structured or unstructured content that the model consumes. The specification labels tools model-controlled and requires servers to validate inputs, enforce access controls, rate-limit calls, and sanitize outputs; clients are advised to show tool inputs, confirm sensitive operations, validate results, and log usage. <!-- SAF-TRACE: claims=SAF-T1701-C001; sources=SRC-mcp-tools-2025-11-25 -->
 
-Instead of directly exploiting every target tool or SaaS connector, the adversary: (1) Gains influence over one tool (e.g., via prompt injection, malicious MCP server, or compromised package), (2) Enumerates shared credentials or capabilities exposed to that tool's runtime, (3) Reuses those credentials or trust relationships to access higher-value tools, services, or tenants that were never meant to be reachable from the original tool. This pattern combines elements of unsecured credentials, use of alternate authentication material, and valid accounts abuse.
+The security risk is a property of the combined session: a tool that exposes untrusted data can taint the execution path before a separate tool with sensitive or outward-facing capability is selected. Static annotations may inform host policy, but they neither make the model resist injection nor enforce isolation. <!-- SAF-TRACE: claims=SAF-T1701-C008; sources=SRC-mcp-annotations-2026-03-16 -->
 
 ## Attack Vectors
-- **Primary Vector**: Compromised MCP tool reusing shared secrets from global credential stores (environment variables, config files, unscoped secrets managers, or client-level authorization headers)
-- **Secondary Vectors**: 
-  - Misconfigured privilege boundaries where all tools run under same OS user with identical filesystem and network access
-  - Multi-MCP/multi-server orchestration aggregating tools from different security domains without segregation
-  - Supply chain attacks via malicious MCP servers registered through marketplaces receiving same credentials as trusted tools
-  - Tool interaction policies that are allow-by-default, enabling any tool to invoke any connector
+
+- **Collaborative content**: an issue, review, message, document, or similar record is returned by a source tool and embeds instructions that redirect later tool use. <!-- SAF-TRACE: claims=SAF-T1701-C002,SAF-T1701-C003,SAF-T1701-C004; sources=SRC-injecagent-2024,SRC-invariant-github-mcp-2025,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- **Cross-server pivot**: content obtained through one server induces a call to another server that can read sensitive data, write externally, or execute an action. <!-- SAF-TRACE: claims=SAF-T1701-C004,SAF-T1701-C005; sources=SRC-invariant-whatsapp-mcp-2025-04-07,SRC-invisible-prompts-2025 -->
+- **Over-broad tool grants**: an authorization defect can amplify the pivot by making tools available to low-privilege users or prompt-injected content that should not be authorized to call them. <!-- SAF-TRACE: claims=SAF-T1701-C006; sources=SRC-vulncheck-cve-2026-58168,SRC-nvd-cve-2026-58168 -->
 
 ## Technical Details
 
-### Prerequisites
-- Tool compromise or coercion (attacker controls behavior of at least one MCP tool through prompt injection, malicious server, trojanized package, or misconfigured hook)
-- Shared or insufficiently scoped credentials (secrets stored in locations readable by all tools: common env vars, global files, shared secrets manager)
-- Weak tool isolation (tools share filesystem namespace and process identity with no strict tool-to-secrets mapping)
-- Limited monitoring of per-tool behavior (logs don't attribute actions to specific tool identity; no baseline for expected service calls per tool)
+The defining sequence is: a source tool returns adversary-influenced data; the host places that result in model context; the result changes planning; and a distinct target tool is called with sensitive arguments or effect. The cross-tool edge, not a particular payload phrase, is the stable behavioral invariant. <!-- SAF-TRACE: claims=SAF-T1701-C002,SAF-T1701-C007; sources=SRC-injecagent-2024,SRC-invariant-toxic-flow-2025 -->
 
-### Attack Flow
+In a controlled GitHub MCP demonstration, content in a public issue redirected an agent that had private-repository access and caused private material to be placed in a public pull request. The researchers described this as an architectural agent/tool-flow problem rather than a defect in the server code. <!-- SAF-TRACE: claims=SAF-T1701-C003; sources=SRC-invariant-github-mcp-2025 -->
 
-1. **Entry Tool Compromise**: Attacker gains control of low-privilege tool (e.g., `markdown_helper`, `log_viewer`, `notes_search`) via prompt injection, malicious MCP server implementation, or compromised dependency
-2. **Environment & Credential Discovery**: From compromised tool's runtime, attacker reads environment variables for API keys/OAuth tokens/service principals, enumerates config directories (`~/.config`, app data dirs), queries secrets manager or host keychain, uses MCP discovery APIs to list available tools/servers and metadata
-3. **Target Identification**: Using discovered metadata and secrets, attacker identifies higher-value connectors (cloud deployment/CI-CD tools, database/CRM connectors, internal admin tooling)
-4. **Cross-Tool Pivot**: Attacker replays/reuses credentials meant for other tools by presenting cloud API keys, OAuth tokens, or refresh tokens to REST endpoints the compromised tool never normally calls, either directly via raw HTTP or indirectly via client impersonating another tool identity
-5. **Post-Pivot Actions**: With newly obtained access, attacker exfiltrates data from other tools' backends, modifies infrastructure, plants persistence via new tools/webhooks/scheduled jobs, or triggers actions across multiple tenants/projects sharing same host or credentials
+In a controlled WhatsApp MCP demonstration, an attacker message surfaced through a listing tool and induced subsequent use of other capabilities to disclose contact information. A separate experiment on the same page used malicious tool metadata and is excluded from this technique. <!-- SAF-TRACE: claims=SAF-T1701-C004,SAF-T1701-C012; sources=SRC-invariant-whatsapp-mcp-2025-04-07,SRC-invariant-tpa-2025-04-01 -->
 
-### Example Scenario
+An ACL 2025 controlled demonstration placed a hidden instruction in external content returned to an agent and observed an MCP email tool being used to transmit protected data. <!-- SAF-TRACE: claims=SAF-T1701-C005; sources=SRC-invisible-prompts-2025 -->
 
-```json
-{
-  "entry_tool": {
-    "name": "docs_summarizer",
-    "scope": ["read_repo"],
-    "compromise": "prompt_injection"
-  },
-  "shared_credentials": {
-    "store": "~/.mcp/credentials.json",
-    "contains": [
-      "cloud_admin_pat",
-      "ci_cd_pat"
-    ],
-    "permissions": "readable_by_all_tools"
-  },
-  "pivot": {
-    "target_tool": "deployment_admin",
-    "target_service": "cloud-api.company.com",
-    "required_scope": "cloud:DeployFull",
-    "method": "reuse cloud_admin_pat over HTTPS"
-  },
-  "impact": {
-    "action": "deploy modified container image to staging and production",
-    "scope": "multi-environment"
-  }
-}
-```
+DeepTutor before 1.4.10 omitted a deny result when an MCP-tool grant was absent, allowing low-privilege users or prompt-injected content to enumerate and invoke configured tools. The vendor advisory record and NVD identify 1.4.10 as the fixed version; this is an enabling authorization vulnerability, not by itself proof of a production cross-tool incident. <!-- SAF-TRACE: claims=SAF-T1701-C006; sources=SRC-vulncheck-cve-2026-58168,SRC-nvd-cve-2026-58168 -->
 
-**Note**: All values are illustrative and not derived from a specific platform. Replace field names and paths with your actual telemetry schema when modeling this technique.
+## Evidence and Current State
+
+Controlled demonstrations in an academic benchmark and independent MCP case studies establish the end-to-end source-result-to-different-tool mechanism. <!-- SAF-TRACE: claims=SAF-T1701-C002,SAF-T1701-C003,SAF-T1701-C004,SAF-T1701-C005; sources=SRC-injecagent-2024,SRC-invariant-github-mcp-2025,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-invisible-prompts-2025 -->
+
+The reviewed incident and vulnerability corpus did not yield a directly documented production incident; the evidence label therefore remains Demonstrated rather than Observed. Search scope and exclusions are recorded in the [source coverage ledger](../../research/techniques/SAF-T1701/source-coverage.yml).
+
+### Evidence Summary
+
+| Claim | Summary | Evidence |
+|---|---|---|
+| SAF-T1701-C001 | MCP tool results enter model-controlled workflows, while the protocol assigns result validation, confirmation, access control, sanitization, and logging duties to implementations. | SRC-mcp-tools-2025-11-25 |
+| SAF-T1701-C002 | Empirical research formalizes and tests indirect instructions arriving through one tool result and triggering a different tool. | SRC-injecagent-2024 |
+| SAF-T1701-C003 | A controlled GitHub MCP demonstration crossed from public issue content to private-repository access and a public write. | SRC-invariant-github-mcp-2025 |
+| SAF-T1701-C004 | A controlled WhatsApp MCP demonstration crossed from an attacker-controlled message returned by one operation into use of another capability. | SRC-invariant-whatsapp-mcp-2025-04-07 |
+| SAF-T1701-C005 | A controlled MCP experiment crossed from untrusted external content to an email tool with sensitive data. | SRC-invisible-prompts-2025 |
+| SAF-T1701-C006 | CVE-2026-58168 removed an authorization boundary around configured MCP tools before DeepTutor 1.4.10. | SRC-vulncheck-cve-2026-58168, SRC-nvd-cve-2026-58168 |
+| SAF-T1701-C007 | Cross-tool dataflow is a more durable detection basis than prompt-text matching alone. | SRC-invariant-toxic-flow-2025, SRC-adaptive-attacks-2025 |
+| SAF-T1701-C008 | Session taint and host-enforced approval or blocking are appropriate controls when untrusted-data and impact-capable tools coexist. | SRC-mcp-annotations-2026-03-16 |
+| SAF-T1701-C009 | Correlation needs a session identifier plus tool-call identity, arguments, result, trust, approval, and effect fields. | SRC-otel-genai-2026, SRC-otel-session-2026, SRC-mcp-tools-2025-11-25 |
+| SAF-T1701-C010 | Proposed detection is behavioral and testable but does not establish universal accuracy; content-only defenses are bypassable and may have false positives or negatives. | SRC-adaptive-attacks-2025, SRC-formal-security-2024 |
+| SAF-T1701-C011 | Confirmation, least privilege, result validation, output sanitization, isolation, and cross-tool flow policy reduce the defining pivot. | SRC-mcp-tools-2025-11-25, SRC-mcp-annotations-2026-03-16 |
+| SAF-T1701-C012 | Tool-description poisoning can shadow a trusted tool but precedes invocation and is a neighboring mechanism. | SRC-invariant-tpa-2025-04-01 |
+| SAF-T1701-C013 | ATT&CK T1080 is an analogy for adversary-controlled shared content affecting another execution context, not an exact protocol mapping. | SRC-mitre-t1080-2025 |
 
 ## Impact Assessment
-- **Confidentiality**: High - A low-scope tool can be abused to reach tools and backends holding sensitive customer data, credentials, or internal code
-- **Integrity**: High - Attackers can modify infrastructure, pipelines, configurations, or records managed by higher-privilege tools
-- **Availability**: Medium–High - Misuse of deployment or automation connectors can degrade or disrupt environments (e.g., scaling malicious workloads or deleting resources)
-- **Scope**: Workspace/Organization-wide - Single host often aggregates many MCP tools and connectors; contamination can fan out across services, tenants, and environments
+
+Severity is High because the pivot can combine a low-trust content source with otherwise legitimate tools that read private data, publish externally, modify state, or execute code; realized impact remains bounded by the target tool's effective permissions and approval path. <!-- SAF-TRACE: claims=SAF-T1701-C003,SAF-T1701-C004,SAF-T1701-C005,SAF-T1701-C006; sources=SRC-invariant-github-mcp-2025,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-invisible-prompts-2025,SRC-vulncheck-cve-2026-58168 -->
 
 ## Detection Methods
 
-### Telemetry Requirements
+Correlate an untrusted source-tool result with a later high-impact call to a different tool or server in the same session, especially when the call lacks explicit user intent or approval and carries values derived from the earlier result. <!-- SAF-TRACE: claims=SAF-T1701-C007,SAF-T1701-C009; sources=SRC-invariant-toxic-flow-2025,SRC-otel-genai-2026,SRC-otel-session-2026 -->
 
-To detect Cross-Tool Contamination, you need (or should derive) fields such as:
+The repository analytic uses a ten-minute window and requires an instruction-like untrusted result followed by a distinct high-impact tool call. Its executable fixtures cover positive sequences, same-tool activity, different sessions, expired windows, trusted content, low-impact calls, and explicitly approved user workflows. See the [detection rule](detection-rule.yml), [test cases](../../tests/SAF-T1701/test-cases.yml), and [validation proof](../../research/techniques/SAF-T1701/validation/detector-test.txt). <!-- SAF-TRACE: claims=SAF-T1701-C007,SAF-T1701-C009,SAF-T1701-C010; sources=SRC-invariant-toxic-flow-2025,SRC-otel-genai-2026,SRC-adaptive-attacks-2025 -->
 
-**Tool-level identity and scope:**
-- `source_tool_id`, `source_tool_name`
-- `source_tool_scope` (e.g., helper, read_only, admin)
-
-**Target service/tool information:**
-- `dest_service`, `dest_service_scope`
-- `dest_tenant_id` / `dest_project_id`
-
-**Authentication and token metadata:**
-- Token or credential identifiers (`token_id`, `credential_id`)
-- OAuth audience/client (`oauth_aud`, `oauth_client_id`)
-- Flags for token reuse or audience mismatch if available
-
-**Session and user context:**
-- `user_id`, `session_id`
-- `workspace_id` or `tenant_id`
-
-**Tool invocation graph:**
-- Sequences of tools invoked within a session
-- Number of distinct services reached by each tool in a time window
-
-### Indicators of Compromise (IoCs)
-- Low-privilege or "helper" tool suddenly calling administrative endpoints (project creation, deployment, user management) or cloud/SaaS APIs usually associated with different, higher-privilege tools
-- Short-lived sequences where `source_tool_scope` is read_only or helper, but `dest_service_scope` is admin, cloud_superuser, or equivalent
-- Single tool uses same token identifier as multiple other tools or services within small time window
-- MCP sessions where same OAuth access token or API key is seen across multiple unrelated tools
-- Tool that historically only touches one backend suddenly fans out to several new services
-- Audit logs showing creation or modification of resources (pipelines, cloud deployments, secrets) attributed to tool that normally lacks such capabilities
-- Tool invocations that conflict with configured privilege boundaries or policy definitions
-
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. Attackers continuously develop new injection techniques and obfuscation methods. Organizations should:
-- Use AI-based anomaly detection to identify novel attack patterns
-- Regularly update detection rules based on threat intelligence
-- Implement multiple layers of detection beyond pattern matching
-- Consider behavioral analytics of per-tool service access patterns
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: Cross-Tool Contamination Detection
-id: c9fbeec2-8120-4bb0-b835-fe13c420d918
-status: experimental
-description: Detects potential cross-tool contamination in MCP environments by identifying low-scope tools reusing credentials to access higher-privilege services or an unusual fan-out to multiple services in short sessions
-author: SAF-MCP Team
-date: 2025-12-06
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1701
-  - https://attack.mitre.org/techniques/T1550/
-  - https://attack.mitre.org/techniques/T1552/
-  - https://attack.mitre.org/techniques/T1078/
-logsource:
-  product: mcp
-  service: tool_runtime
-detection:
-  selection_scope_mismatch:
-    source_tool_scope:
-      - read_only
-      - helper
-    dest_service_scope:
-      - admin
-      - cloud_superuser
-      - ci_controller
-  selection_credential_reuse:
-    token_reused: true
-    oauth_audience_mismatch: true
-  selection_service_fanout:
-    source_tool_scope:
-      - read_only
-      - helper
-    distinct_target_services|gte: 3
-    timeframe: 5m
-  condition: (selection_scope_mismatch and selection_credential_reuse) or selection_service_fanout
-falsepositives:
-  - Break-glass workflows that temporarily let helper tools drive admin actions under strict approval
-  - Automated maintenance jobs that legitimately reuse shared service accounts for multi-service operations
-  - Bulk migration or onboarding tasks where helper tool is intentionally granted broader temporary access
-level: high
-tags:
-  - attack.lateral_movement
-  - attack.t1078
-  - attack.t1550
-  - attack.t1552
-  - safe.t1701
-```
-
-### Behavioral Indicators
-- Read-only tools performing admin actions unexpectedly
-- Sudden cross-tenant or cross-project access from tools with no documented need
-- Rapid reuse of same credential across unrelated tools within short time windows
-- First-time service calls from tools that have never accessed those backends historically
-- Privilege escalation patterns where helper tools chain to admin connectors
-- Unusual network egress from low-privilege tools to production cloud APIs or internal admin services
+Tune instruction indicators, impact classes, trust labels, and the correlation window to the deployment. The rule can miss paraphrased contamination, incomplete telemetry, long-delay pivots, or same-tool abuse, and it can alert on legitimate automation that lacks auditable approval. <!-- SAF-TRACE: claims=SAF-T1701-C010; sources=SRC-adaptive-attacks-2025,SRC-formal-security-2024 -->
 
 ## Mitigation Strategies
 
-### Preventive Controls
-1. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Enforce deny-by-default interaction policies so that tools cannot automatically call higher-privilege connectors or access unrelated domains without explicit allowlists and approvals
-2. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Issue short-lived, least-privileged OAuth scopes and API keys per tool. Warn or block when an MCP server requests more permissions than its documented function requires
-3. **Per-Tool Secret Isolation**: Use OS keychains, encrypted stores, or secrets managers with access control such that each tool or MCP server gets its own secret namespace. Avoid shared "global" credential files or environment variables readable by all tools
-4. **Domain & Network Isolation**: Partition tools by security domain (e.g., "local utilities", "prod cloud admin") and enforce separate containers/VMs where feasible with network egress policies restricting which destinations each tool can reach
-5. **Secure Plugin / MCP Server Onboarding**: Maintain an allowlisted registry of approved MCP servers and tools. Review and sign configurations before exposing new tools that connect to sensitive systems
-
-### Detective Controls
-1. **Per-Tool Audit Logging**: Log every tool invocation with tool identity, destination service, credential/token identifier (hashed), and user/session context
-2. **Behavioral Analytics**: Build baselines for typical services and scopes used per tool, normal fan-out (number of services) per tool session. Alert on deviations like read-only tools performing admin actions or sudden cross-tenant/cross-project access
-3. **Token-Use Analytics**: Track where each token or credential is used. Raise alerts when same token is seen across unrelated tools or services. Correlate with time windows to spot rapid reuse pivots
-
-### Response Procedures
-1. **Immediate Actions**:
-   - Disable or quarantine the compromised tool or MCP server
-   - Revoke or rotate tokens and API keys observed in suspicious cross-tool use
-   - Temporarily restrict high-privilege tools and connectors to manual approval only
-2. **Investigation Steps**:
-   - Reconstruct tool invocation graphs for affected sessions
-   - Identify which tools, services, and tenants were touched using reused credentials
-   - Review code and configuration of compromised tool (and any new tools registered during incident)
-3. **Remediation**:
-   - Introduce or tighten privilege boundaries and per-tool secret isolation
-   - Update onboarding processes for MCP servers and tools (security review, signing)
-   - Add or refine analytics to detect similar pivot patterns earlier
+- **[SAF-M-21: Output Context Isolation](../../mitigations/SAF-M-21/README.md)** and **[SAF-M-69: Out-of-Band Authorization for Privileged Tool Invocations](../../mitigations/SAF-M-69/README.md)**: Mark results from tools that expose adversary-controlled data as untrusted and carry that taint through the session; block or require explicit approval before later sensitive or outward-facing calls. <!-- SAF-TRACE: claims=SAF-T1701-C008,SAF-T1701-C011; sources=SRC-mcp-annotations-2026-03-16,SRC-mcp-tools-2025-11-25 -->
+- **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)** and **[SAF-M-74: Per-Invocation Capability Brokering](../../mitigations/SAF-M-74/README.md)**: Give each user and workflow only the tools and resource scopes required, and enforce authorization at the server rather than relying on model judgment or descriptive annotations. <!-- SAF-TRACE: claims=SAF-T1701-C006,SAF-T1701-C011; sources=SRC-vulncheck-cve-2026-58168,SRC-mcp-tools-2025-11-25 -->
+- **[SAF-M-22: Semantic Output Validation](../../mitigations/SAF-M-22/README.md)**, **[SAF-M-5: Content Sanitization](../../mitigations/SAF-M-5/README.md)**, and **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Validate tool results against declared schemas, sanitize untrusted output, display sensitive call inputs, and retain session-level call/result/approval audit records. <!-- SAF-TRACE: claims=SAF-T1701-C001,SAF-T1701-C009,SAF-T1701-C011; sources=SRC-mcp-tools-2025-11-25,SRC-otel-genai-2026,SRC-otel-session-2026 -->
+- **[SAF-M-1: Control/Data Flow Separation](../../mitigations/SAF-M-1/README.md)**: Isolate high-impact tools and destinations with sandbox, filesystem, network, and write controls because annotations are advisory rather than enforcement. <!-- SAF-TRACE: claims=SAF-T1701-C008,SAF-T1701-C011; sources=SRC-mcp-annotations-2026-03-16,SRC-mcp-tools-2025-11-25 -->
+- **[SAF-M-70: Tool-Invocation Anomaly Detection & Baselining](../../mitigations/SAF-M-70/README.md)**: Monitor same-session transitions from untrusted source results to distinct high-impact tools, retaining intent and approval context for investigation. <!-- SAF-TRACE: claims=SAF-T1701-C007,SAF-T1701-C009,SAF-T1701-C011; sources=SRC-invariant-toxic-flow-2025,SRC-otel-genai-2026,SRC-otel-session-2026 -->
 
 ## Related Techniques
-- [SAF-T1702](../SAF-T1702/README.md): Shared-Memory Poisoning - Poisoned shared vector stores can influence higher-privilege agents that then drive cross-tool actions
-- [SAF-T1703](../SAF-T1703/README.md): Tool-Chaining Pivot - Uses implicit trust and chaining between tools to escalate privileges, often complementary with Cross-Tool Contamination
-- [SAF-T1001](../SAF-T1001/README.md): Tool Poisoning Attack - Provides initial compromise vector for tools that then execute Cross-Tool Contamination pivots
 
-## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [Model Context Protocol – Tools Specification](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)
-- [Model Context Protocol – Introductory Overview](https://modelcontextprotocol.io/docs/getting-started/intro)
-- [LangChain Security Policy (Least-Privilege & Sandbox Guidance)](https://python.langchain.com/docs/security/)
-- [OWASP Top 10 for Large Language Model Applications (LLM05, LLM07)](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [MCP Security Checklist (SlowMist) – Multi-MCP, Isolation, and Tool Permissions](https://github.com/slowmist/MCP-Security-Checklist)
-- [MCP Security: Key Risks, Controls & Best Practices](https://www.reco.ai/learn/mcp-security)
+- **[SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md)**: malicious instructions reside in tool definitions or annotations before a result is returned; this technique instead begins with adversary-controlled result content. <!-- SAF-TRACE: claims=SAF-T1701-C012; sources=SRC-invariant-tpa-2025-04-01 -->
+- **[SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md)**: prompt injection establishes adversarial instruction influence; this technique additionally requires an indirect source-tool result followed by a call to a distinct target tool. <!-- SAF-TRACE: claims=SAF-T1701-C002; sources=SRC-injecagent-2024 -->
 
 ## MITRE ATT&CK Mapping
-- [TA0008 - Lateral Movement](https://attack.mitre.org/tactics/TA0008/)
-- [T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/)
-- [T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550/)
-- [T1552 - Unsecured Credentials](https://attack.mitre.org/techniques/T1552/)
+
+- **ATK-TA0008 — Lateral Movement**: the technique pivots between tool trust or capability domains in a shared agent execution context. <!-- SAF-TRACE: claims=SAF-T1701-C013; sources=SRC-mitre-t1080-2025 -->
+- **T1080 — Taint Shared Content (analogous)**: both mechanisms seed adversary-controlled shared content that affects another execution context, but T1080 describes executable content in shared storage, whereas this technique describes instruction-bearing tool output driving another tool. <!-- SAF-TRACE: claims=SAF-T1701-C013; sources=SRC-mitre-t1080-2025 -->
+
+## References
+
+- [SRC-mcp-tools-2025-11-25](https://modelcontextprotocol.io/specification/2025-11-25/server/tools) — Model Context Protocol, “Tools,” 2025-11-25.
+- [SRC-mcp-annotations-2026-03-16](https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/) — MCP Blog, “Tool Annotations as Risk Vocabulary,” 2026-03-16.
+- [SRC-injecagent-2024](https://aclanthology.org/2024.findings-acl.624.pdf) — Zhan et al., “InjecAgent,” Findings of ACL 2024.
+- [SRC-adaptive-attacks-2025](https://aclanthology.org/anthology-files/pdf/naacl/2025.naacl-findings.395.pdf) — Zhan et al., adaptive indirect prompt-injection attacks, Findings of NAACL 2025.
+- [SRC-invisible-prompts-2025](https://aclanthology.org/2025.findings-emnlp.376.pdf) — Xiong et al., “Invisible Prompts, Visible Threats,” Findings of EMNLP 2025.
+- [SRC-invariant-github-mcp-2025](https://invariantlabs.ai/blog/mcp-github-vulnerability) — Invariant Labs GitHub MCP controlled demonstration.
+- [SRC-invariant-whatsapp-mcp-2025-04-07](https://invariantlabs.ai/blog/whatsapp-mcp-exploited) — Invariant Labs WhatsApp MCP controlled demonstrations.
+- [SRC-invariant-tpa-2025-04-01](https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks) — Invariant Labs tool-poisoning research.
+- [SRC-invariant-toxic-flow-2025](https://invariantlabs.ai/blog/toxic-flow-analysis) — Invariant Labs toxic-flow analysis.
+- [SRC-formal-security-2024](https://invariantlabs.ai/theme/research/ai_agents_with_formal_security.pdf) — Beurer-Kellner et al., “AI Agents with Formal Security Guarantees,” 2024.
+- [SRC-vulncheck-cve-2026-58168](https://www.vulncheck.com/advisories/deeptutor-insecure-default-grants-unrestricted-mcp-tool-access-to-non-admin-users) — VulnCheck advisory for CVE-2026-58168.
+- [SRC-nvd-cve-2026-58168](https://nvd.nist.gov/vuln/detail/CVE-2026-58168) — NVD record for CVE-2026-58168.
+- [SRC-otel-genai-2026](https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/) — OpenTelemetry generative-AI attribute registry.
+- [SRC-otel-session-2026](https://opentelemetry.io/docs/specs/semconv/general/session/) — OpenTelemetry session semantic conventions.
+- [SRC-mitre-t1080-2025](https://attack.mitre.org/techniques/T1080/) — MITRE ATT&CK T1080, Taint Shared Content.
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-12-06 | Initial documentation | Arjun Subedi (Astha.ai) |
+
+| Version | Date | Author | Changes |
+|---|---|---|---|
+| 1.0 | 2026-09-02 | Frank Kautz, SAF Technique Author; OpenAI Codex, Research and Drafting | Clean-room initial publication candidate with tested behavioral detection. |

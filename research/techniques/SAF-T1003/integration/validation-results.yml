@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1003
+date: "2026-09-01"
+scope: isolated_clean_room_bundle
+
+canonical_research_validator:
+  status: passed
+  command: env PYTHONPATH=/private/tmp/saf-t1003-validator-deps python3 scripts/validate-technique-research.py SAF-T1003
+  validator: repository current scripts/validate-technique-research.py
+  environment: /private/tmp/saf-t1003-mock.haDFGm
+  strict_mode: true
+  output: PASS SAF-T1003
+  synthetic_join_records:
+    - source-manifest-fragment.yml copied to research/source-manifest.yml
+    - framework-fragment.yml copied to research/framework-model.yml
+    - Empty alignment ledger
+    - Six neighboring-technique existence stubs with no technique prose
+    - Nonzero synthetic history SHA in the mock only
+  bundle_owned_fields_validated: true
+
+detection_test:
+  status: passed
+  command: python3 techniques/SAF-T1003/tests/test_detection.py
+  total_cases: 7
+  alerts: 4
+  non_alerts: 3
+  expected_false_positives: 1
+  failures: 0
+  deterministic_repeat:
+    before_sha256: 3aec405949f4e8a432f738af4d42a0253a02cfdbd760640e53cb3b2d91478960
+    after_sha256: 3aec405949f4e8a432f738af4d42a0253a02cfdbd760640e53cb3b2d91478960
+  result: techniques/SAF-T1003/tests/results/test-results.json
+
+syntax_and_integrity:
+  yaml:
+    status: passed
+    files_checked: 12
+    parser: Ruby Psych safe_load with aliases enabled
+  json_and_ndjson:
+    status: passed
+    files_checked: 3
+  python_syntax:
+    status: passed
+    files_checked: 1
+    command: env PYTHONPYCACHEPREFIX=/private/tmp/saf-t1003-pycache python3 -m py_compile techniques/SAF-T1003/tests/test_detection.py
+  local_links:
+    status: passed
+    links_checked: 4
+  hidden_html_v1:
+    status: passed
+    trace_comments: 42
+    canonical_claim_ids: 20
+    canonical_source_ids: 13
+    unresolved_claim_ids: 0
+    unresolved_source_ids: 0
+
+deliberately_deferred_real_repository_checks:
+  - Shared source-manifest ID collision resolution
+  - SAF tactic confirmation in the shared framework model
+  - Neighbor-prose boundary reconciliation
+  - Honest repository-history commit SHA
+  - Post-placement canonical validation and link review

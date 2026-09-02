@@ -1,0 +1,84 @@
+version: 1
+technique_id: SAF-T1805
+name: Context Snapshot Capture
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0009
+adversary_objective: Obtain a point-in-time copy of active agent execution context
+  that belongs to another owner or trust domain.
+scope:
+  security_boundary: The authorization boundary between the identity requesting a
+    context snapshot, history, checkpoint, trace, or equivalent serialized state and
+    the owner or tenant whose active agent context is returned.
+  in_scope:
+  - Unauthorized read, export, or serialization of active agent execution context.
+  - Identifier collision, handle misuse, or missing ownership validation that returns
+    another principal's active context.
+  - Context snapshots containing system instructions, conversation turns, tool results,
+    resource content, or checkpoint and trace state.
+  out_of_scope:
+  - Modification of the context without obtaining a copy of it.
+  - Prompt injection that influences an agent but does not capture active context.
+  - Enumeration of long-lived memory that is not part of an active execution snapshot.
+  - Transfer of already captured material outside the environment, which is follow-on
+    exfiltration.
+  affected_components:
+  - MCP host or client context assembly
+  - Resource and tool-result handling
+  - Agent memory, checkpoint, and history services
+  - Trace and observability stores
+  - Application authorization and tenant-isolation layers
+nearest_neighbors:
+- technique_id: SAF-T1603
+  distinction: Synthetic integration placeholder for fixed instruction extraction;
+    Context Snapshot Capture requires acquisition of active assembled or persisted
+    execution state, not only a static prompt string.
+- technique_id: SAF-T1204
+  distinction: Synthetic integration placeholder for context mutation; that behavior
+    changes state, while this technique obtains a point-in-time copy.
+- technique_id: SAF-T1505
+  distinction: Synthetic integration placeholder for persistent-memory collection;
+    that behavior targets long-lived memory independently of an active thread or execution
+    snapshot.
+- technique_id: SAF-T1102
+  distinction: Synthetic integration placeholder for prompt-induced data disclosure;
+    that behavior uses adversarial instructions to cause disclosure, while this technique
+    directly reads or serializes stored active context.
+required_evidence:
+- Establish that agent execution state can be serialized as checkpoints, histories,
+  traces, resources, or tool results.
+- Establish a demonstrated or disclosed path that crosses owner or tenant authorization
+  when that state is returned.
+- Establish prerequisites, immediate collection outcome, and limits on any claimed
+  impact.
+- Search direct authority breach and vulnerability sources and rank two to four material
+  examples or record the gap.
+- Derive a detector from auditable actor, owner, tenant, authorization, approval,
+  object, content-class, and result fields.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Application audit events for context snapshot, checkpoint history, trace export,
+    and active-history reads.
+  - Actor, owner, actor tenant, owner tenant, authorization decision, approval status,
+    result, object identifiers, content classes, item count, byte count, destination,
+    and timestamp.
+safe_example_constraints:
+- Use only invented identifiers and example.invalid destinations.
+- Do not include exploit payloads, production endpoints, credentials, or copied private
+  context.
+- Represent captured content by classifications and counts rather than sensitive values.
+completion_evidence:
+- Every substantive README unit maps to validated claims and reviewed authority sources
+  or a declared local artifact.
+- Excluded candidates are ledgered and prohibited wording is absent from the README.
+- All five research passes and two consecutive no-change passes are recorded.
+- The standalone detector passes positive, negative, boundary, and malformed-input
+  fixtures.
+- Rights, clean-room, framework, and quality gates pass in the isolated validator
+  model.

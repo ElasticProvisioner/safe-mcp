@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T2104
+bundle_status: frozen_clean_room_candidate
+created_on: "2026-09-02"
+destination_repository_accessed: false
+mechanical_integration_only:
+  - Copy techniques/SAF-T2104, research/techniques/SAF-T2104, tests/SAF-T2104, and validation artifacts without changing claim-bearing prose.
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml by stable source ID, preserving existing identical records and escalating any collision.
+  - Merge framework-fragment.yml into research/framework-model.yml by technique ID.
+  - Merge alignment-fragment.yml into research/alignment-ledger.yml after checking stable IDs.
+  - Replace the synthetic repository-history SHA in traceability-ledger.yml with the honest integration commit.
+synthetic_joins:
+  - id: SAF-T9997
+    label: Instruction Manipulation
+    action: Resolve to the destination technique that owns adversarial instruction or context manipulation; update contract, README, and framework fragment together.
+  - id: SAF-T9998
+    label: Unauthorized Tool Invocation
+    action: Resolve to the destination technique that owns unauthorized tool use; update contract, README, and framework fragment together.
+  - id: repository_history
+    label: Synthetic nonzero SHA
+    action: Replace 1111111111111111111111111111111111112104 with the honest integration commit before publication.
+protected_freeze_fields:
+  - name
+  - adversary_objective
+  - scope
+  - claims and evidence classification
+  - selected examples and exclusions
+  - detector logic and fixtures
+  - source locators and publication-rights decisions
+required_post_integration_checks:
+  - Validate source-manifest collisions by source ID and content.
+  - Confirm actual nearest-neighbor IDs without consulting prior target prose during generation.
+  - Run python3 scripts/validate-technique-research.py SAF-T2104 in the destination repository.
+  - Recompute repository freeze or release metadata under destination policy.
+known_gaps:
+  - No qualifying production incident was identified.
+  - In-the-wild exploitation status for the reviewed enabling CVEs was not established.
+  - Direct CISA KEV feed review was blocked in the research environment.
+  - Synthetic neighboring technique IDs and repository-history provenance require mechanical reconciliation.
+attestation_status: passed
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-authorization-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-agentdojo-2406.13352: SRC-debenedetti-et-al-agentdojo
+    SRC-mitre-financial-theft-v1.2: SRC-mitre-t1657-2026
+    SRC-microsoft-recommendation-poisoning-2026: SRC-ms-recommendation-poisoning-2026
+    SRC-microsoft-mcp-misconfig-2026: SRC-t1206-ms-config-risk
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T1102, SAF-T1309, SAF-T1915]
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+  attack_mapping: {id: T1657, type: direct}
+  validation_proof:
+    - research/techniques/SAF-T2104/validation/detection-test.txt
+    - research/techniques/SAF-T2104/validation/strict-validator.txt
+    - research/techniques/SAF-T2104/validation/canonical-validation.txt
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve reviewed-source metadata and frozen evidence references.

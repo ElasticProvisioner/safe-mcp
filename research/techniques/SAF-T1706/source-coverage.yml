@@ -1,0 +1,328 @@
+version: 1
+technique_id: SAF-T1706
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - RFC Editor exact documents 6750, 9700, 8707, 9449, 7662, 9068, and 7009
+        - Model Context Protocol Authorization and Security Best Practices, revision 2025-11-25
+      material_changes:
+        - Bounded the behavior to replay of an OAuth bearer access token at a protected resource.
+        - Established audience restriction, resource binding, sender constraint, and no-passthrough requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - NVD exact CVE records and government API keyword queries recorded in SRC-nvd-search-corpus
+        - CISA KEV catalog version 2026.09.01 exact identifier checks
+        - First-party Google GTIG, Salesloft, and GitHub incident reports
+      material_changes:
+        - Found direct MCP audience-confusion vulnerability CVE-2026-14541.
+        - Found adjacent MCP bearer-token replay demonstration CVE-2026-47250.
+        - Selected two high-impact production OAuth analogies with explicit MCP limitations.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - GHSA-6mx4-4h42-r8vh exact advisory URL supplied by NVD
+        - mcp-server-kubernetes v3.7.0 exact release URL supplied by NVD
+        - Google mcp-toolbox pull request 3450 exact URL supplied by NVD
+      material_changes:
+        - Classified the public Kubernetes demonstration as adjacent because its bearer credential was not established as OAuth.
+        - Confirmed fixed versions without reproducing exploit payloads.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - MITRE ATT&CK exact technique pages T1550.001 and T1528
+        - RFC 7662 introspection fields and RFC 7009 revocation behavior
+        - RFC 9449 DPoP and RFC 8707 resource indicators
+      material_changes:
+        - Designed a behavioral analytic for audience mismatch and cross-presenter token-fingerprint reuse.
+        - Added explicit multi-instance lookalike suppression and telemetry blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - NVD rejected and adjacent records CVE-2025-68129, CVE-2026-82462, and CVE-2026-53431
+        - Direct-versus-adjacent challenge against the technique contract
+        - CISA KEV checks for selected CVEs
+      material_changes:
+        - Preserved Research-Derived status because no direct production OAuth-MCP replay incident or end-to-end public OAuth-MCP demonstration was found.
+        - Excluded authorization-code, refresh-token, client-assertion, forgery, and acquisition-only behavior.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - NVD authority-only keyword query "MCP bearer token replay"
+        - NVD authority-only keyword query "Model Context Protocol token replay"
+        - NVD authority-only keyword query "captured token replayed"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - NVD authority-only keyword query "AI agent OAuth token replay"
+        - NVD authority-only keyword query "MCP access token audience confusion"
+        - NVD authority-only keyword query "agent token pivot bearer"
+      material_changes: []
+  rationale: >-
+    Standards, current MCP specifications, government vulnerability records,
+    first-party incident and implementation records, and framework detection
+    guidance cover every publishable proposition. The final two independent
+    authority-only passes returned only already classified records or no
+    records, so they did not change scope, claims, examples, controls, or label.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 20
+  selected_examples:
+    - SRC-nvd-cve-2026-14541
+    - SRC-ghsa-6mx4-4h42-r8vh
+    - SRC-google-gtig-drift
+    - SRC-github-oauth-incident-2022
+  no_qualifying_examples_rationale: >-
+    Four examples qualify, but none is a direct production incident of the
+    complete OAuth-MCP behavior. The evidence gap remains explicit.
+  candidates:
+    - source_id: SRC-nvd-cve-2026-14541
+      identifier: CVE-2026-14541
+      relationship: direct_vulnerability
+      exploitation_status: No public exploitation was reported in the reviewed NVD and first-party fix records.
+      impact: Valid OAuth tokens minted for unrelated Google applications could reach protected MCP tools and data.
+      remediation: Upgrade Google mcp-toolbox from 1.4.0 to 1.5.0 or later and configure audience validation.
+      selected: true
+      rationale: Highest-impact direct MCP evidence for the audience-confusion mechanism.
+    - source_id: SRC-ghsa-6mx4-4h42-r8vh
+      identifier: CVE-2026-47250 / GHSA-6mx4-4h42-r8vh
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public controlled proof on a local kind cluster; no production exploitation reported.
+      impact: An agent-mediated flow disclosed a Kubernetes bearer token that was replayed to the Kubernetes API.
+      remediation: Upgrade mcp-server-kubernetes to 3.7.0 or later and restrict cluster-executable flags.
+      selected: true
+      rationale: Strongest controlled MCP token-replay demonstration, but the token was not established as OAuth.
+    - source_id: SRC-google-gtig-drift
+      identifier: UNC6395 Salesloft Drift compromise (2025)
+      relationship: historical_analogy
+      exploitation_status: Observed in production.
+      impact: Stolen OAuth tokens enabled access to Salesforce data and a small number of connected Google Workspace accounts.
+      remediation: Revoke and rotate Drift-related tokens and credentials, investigate connected applications, and harden integration secrets.
+      selected: true
+      rationale: High-impact modern production evidence of OAuth-token pivoting across connected SaaS boundaries; not MCP.
+    - source_id: SRC-github-oauth-incident-2022
+      identifier: Heroku and Travis CI OAuth token theft (2022)
+      relationship: historical_analogy
+      exploitation_status: Observed in production.
+      impact: Stolen tokens authenticated to GitHub APIs, exposed private repositories, and led to downstream npm infrastructure access.
+      remediation: GitHub revoked affected tokens, notified users, and supported credential rotation and repository review.
+      selected: true
+      rationale: High-impact first-party production analogy explicitly referenced by the DPoP standard; predates MCP.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-54030
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: A malicious MCP server could steal a token intended for a legitimate server.
+      remediation: Apply vendor updates and isolate authorization-server and resource-server bindings.
+      selected: false
+      rationale: Token acquisition enables replay but ends before this contract begins.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-18655
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: A crafted endpoint could disclose credentials or OAuth tokens from an MCP server.
+      remediation: Apply the vendor patch and restrict configurable endpoints.
+      selected: false
+      rationale: Credential exfiltration is a prerequisite rather than replay.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-50143
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Redirect behavior could leak a bearer token from an MCP client.
+      remediation: Upgrade and enforce origin-preserving redirect policy.
+      selected: false
+      rationale: Token leakage is acquisition-only evidence.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-31951
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Header placeholder handling could expose an OpenID access token.
+      remediation: Upgrade LibreChat and remove unsafe interpolation paths.
+      selected: false
+      rationale: It establishes token theft, not protected-resource replay.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-25650
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: A Salesforce MCP connector could disclose an authentication token.
+      remediation: Apply the vendor fix and rotate exposed credentials.
+      selected: false
+      rationale: Disclosure alone does not establish replay.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-20205
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Splunk MCP logs could retain clear authentication tokens.
+      remediation: Upgrade, stop credential logging, purge affected logs, and rotate tokens.
+      selected: false
+      rationale: Logging creates acquisition opportunity but is not the replay action.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-41495
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: n8n-MCP could log Authorization bearer tokens.
+      remediation: Upgrade and rotate credentials exposed in logs.
+      selected: false
+      rationale: Acquisition-only record.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-42282
+      relationship: enabling_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: n8n-MCP could log OAuth credential arguments.
+      remediation: Upgrade and rotate exposed OAuth credentials.
+      selected: false
+      rationale: Credential exposure is outside the defining replay boundary.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-34953
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: An MCP endpoint could accept arbitrary bearer tokens.
+      remediation: Apply vendor authentication validation fixes.
+      selected: false
+      rationale: Arbitrary-token authentication bypass differs from replay of a valid captured OAuth access token.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-8719
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Any valid OAuth token could be bound to an administrative identity.
+      remediation: Apply the product fix and bind token subject and audience to local identity.
+      selected: false
+      rationale: Privilege binding, not cross-presenter token replay, is the defining defect.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-9810
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: A valid token could be accepted as a WordPress administrator without correct user binding.
+      remediation: Upgrade and enforce token-to-user binding.
+      selected: false
+      rationale: Identity binding failure is adjacent but mechanism-distinct.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2026-65594
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Resource-isolation failure could expose an OAuth authorization boundary.
+      remediation: Upgrade and enforce authorization-resource isolation.
+      selected: false
+      rationale: Authorization isolation does not establish captured-token replay.
+    - source_id: SRC-nvd-search-corpus
+      identifier: CVE-2025-62610
+      relationship: historical_analogy
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Missing audience verification enabled cross-service access outside MCP.
+      remediation: Apply the Hono fix and validate token audience.
+      selected: false
+      rationale: Mechanistically relevant but lower-value than the direct MCP vulnerability and production analogies.
+    - source_id: SRC-nvd-cve-2025-68129
+      identifier: CVE-2025-68129
+      relationship: rejected
+      exploitation_status: Rejected CVE record.
+      impact: The rejected description concerned ID-token and access-token confusion.
+      remediation: No CVE remediation applies to a rejected record.
+      selected: false
+      rationale: Rejected record and token-type confusion do not substantiate this technique.
+    - source_id: SRC-nvd-cve-2026-82462
+      identifier: CVE-2026-82462
+      relationship: rejected
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: OIDC callback access-token substitution could alter identity binding.
+      remediation: Apply the vendor callback validation fix.
+      selected: false
+      rationale: Callback substitution is a different boundary and not MCP protected-resource replay.
+    - source_id: SRC-nvd-cve-2026-53431
+      identifier: CVE-2026-53431
+      relationship: rejected
+      exploitation_status: Disclosed vulnerability; exploitation status not established.
+      impact: Captured client assertions could be replayed against a token endpoint.
+      remediation: Enforce assertion freshness and replay protection.
+      selected: false
+      rationale: Client-assertion replay is expressly out of scope.
+
+sources_consulted:
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9449
+  - SRC-rfc7662
+  - SRC-rfc9068
+  - SRC-rfc7009
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-47250
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-release-mcp-k8s-3.7.0
+  - SRC-google-gtig-drift
+  - SRC-salesloft-drift-update
+  - SRC-github-oauth-incident-2022
+  - SRC-mitre-t1550-001
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-search-corpus
+  - SRC-nvd-cve-2025-68129
+  - SRC-nvd-cve-2026-82462
+  - SRC-nvd-cve-2026-53431
+sources_cited:
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9449
+  - SRC-rfc7662
+  - SRC-rfc9068
+  - SRC-rfc7009
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-47250
+  - SRC-ghsa-6mx4-4h42-r8vh
+  - SRC-release-mcp-k8s-3.7.0
+  - SRC-google-gtig-drift
+  - SRC-salesloft-drift-update
+  - SRC-github-oauth-incident-2022
+  - SRC-mitre-t1550-001
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-nvd-search-corpus
+sources_rejected:
+  - source_id: SRC-nvd-cve-2025-68129
+    reason: NVD marks the CVE rejected; it also concerns token-type confusion rather than protected-resource replay.
+  - source_id: SRC-nvd-cve-2026-82462
+    reason: The record concerns OIDC callback substitution outside the MCP resource boundary.
+  - source_id: SRC-nvd-cve-2026-53431
+    reason: The record concerns client-assertion replay at a token endpoint, expressly outside scope.
+sources_blocked: []
+
+conflicts:
+  - issue: A public MCP replay demonstration exists, but its Kubernetes bearer token is not established as OAuth.
+    resolution: Cite it only as adjacent evidence and retain Research-Derived status for the OAuth-specific end-to-end behavior.
+  - issue: Production incidents show OAuth token pivoting, but not an MCP authorization flow.
+    resolution: Label them historical analogies and state the MCP evidence gap next to each use.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1706-C004
+    - SAF-T1706-C006
+  rationale: >-
+    The complete technique is an explicit inference joining standardized bearer
+    semantics, MCP resource-binding requirements, and a direct MCP
+    audience-confusion vulnerability. The controlled replay demonstration used
+    a non-OAuth bearer token and the observed OAuth incidents were not MCP, so
+    neither raises the end-to-end label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

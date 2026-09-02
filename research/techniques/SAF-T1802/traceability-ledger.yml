@@ -1,0 +1,148 @@
+version: 1
+technique_id: SAF-T1802
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1802/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1802/technique-contract.yml
+  supports: Internal scope, name, tactic, completion criteria, and synthetic integration
+    placeholders.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1802/clean-room-attestation.yml
+  supports: Clean-room method, allowed and prohibited inputs, source provenance constraint,
+    and contamination status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1802/source-coverage.yml
+  supports: Research passes, candidate ranking, saturation, conflicts, and bounded
+    evidence status.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1802/publication-rights.yml
+  supports: Publication-rights disposition, attribution, trademarks, and absence of
+    copied expression.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1802/quality-review.yml
+  supports: Quality gates, strict validation, detection-test command, and results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1802/detection-rule.yml
+  supports: Standalone behavioral analytic design and traceability annotations.
+- id: LOCAL-detection-script
+  path: tests/SAF-T1802/detect_file_collection.py
+  supports: Executable reference implementation of the documented analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1802/test_detection_rule.py
+  supports: Automated positive, negative, boundary, malformed-record, and deterministic-output
+    assertions.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1802/fixtures.jsonl
+  supports: Synthetic normalized events and expected labels used by the executable
+    detector.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1802/validation/detection-test.txt
+  supports: Captured passing test output.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1802/validation/isolated-strict-validation.txt
+  supports: Captured strict-validator output from the synthetic isolated repository.
+- id: LOCAL-source-corpus-hash
+  path: research/techniques/SAF-T1802/validation/source-corpus.sha256
+  supports: Sorted SHA-256 inventory for the separate direct-authority acquisition
+    corpus.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1802/validation/canonical-validation.txt
+  supports: Captured destination detector result and the sole pending catalog-neighbor validation condition.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1802/integration/integration-notes.yml
+  supports: Synthetic placeholder semantics, post-freeze registry reconciliation,
+    history replacement, and validation requirements.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1802-X001
+  candidate: Treat the Anthropic GTG-1002 campaign as a direct File Collection production
+    incident.
+  origin: Direct incident-report review.
+  attempted_searches:
+  - Full review of the report's campaign lifecycle, data collection, tooling, and
+    limitations sections.
+  - Comparison with the technique contract requiring retrieval of file content.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  reason: The report establishes agentic database and system-information collection
+    but does not identify retrieval of file content.
+  prohibited_publishable_text:
+  - GTG-1002 proved MCP file collection in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1802-X002
+  candidate: State that the selected file-collection CVEs are actively exploited in
+    production.
+  origin: Vulnerability and government-catalog research pass.
+  attempted_searches:
+  - Compared every selected identifier with the CISA KEV 2026.09.01 catalog.
+  - Reviewed CVE ADP exploitation fields and project advisory exploitation statements.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-73498
+  - SRC-cve-2026-46555
+  - SRC-cve-2026-40576
+  - SRC-cve-2025-53109
+  reason: Public PoCs and disclosures support Demonstrated or direct-vulnerability
+    status, not documented production exploitation.
+  prohibited_publishable_text:
+  - selected CVEs are known exploited vulnerabilities
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1802-X003
+  candidate: Treat MCP roots as a sandbox that prevents filesystem access outside
+    the advertised locations.
+  origin: Protocol-boundary review.
+  attempted_searches:
+  - Full review of the current Roots overview, important note, and security considerations.
+  - Reconciliation with resource-server path validation guidance.
+  consulted_source_ids:
+  - SRC-mcp-2026-roots
+  - SRC-mcp-resources-2026
+  reason: The current specification explicitly makes roots informational and not protocol-enforced
+    access control.
+  prohibited_publishable_text:
+  - roots automatically sandbox every MCP server
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1802-X004
+  candidate: Detect File Collection reliably from suspicious tool names or file-like
+    parameter names alone.
+  origin: Detection-research pass.
+  attempted_searches:
+  - Reviewed FlowGuard's triage, evidence-adjudication, false-positive, and MarkItDown
+    case-study sections.
+  - Compared tool metadata with MCP request and result semantics.
+  consulted_source_ids:
+  - SRC-flowguard-2607.14754v1
+  - SRC-mcp-tools-2026-07-28
+  reason: Benign-looking tools can reach file sinks, legitimate file tools are common,
+    and runtime backend evidence is required.
+  prohibited_publishable_text:
+  - tool names alone prove malicious file collection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1802-X005
+  candidate: Publish npm 0.6.3 as the unqualified MCP Filesystem remediation floor.
+  origin: Official advisory and CVE reconciliation.
+  attempted_searches:
+  - Compared both project advisory metadata blocks with both canonical CVE descriptions
+    and recommendation text.
+  consulted_source_ids:
+  - SRC-ghsa-cve-2025-53109
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-cve-2025-53110
+  reason: Official sources conflict; the conservative higher floor is 0.6.4 or 2025.7.01
+    and the conflict must remain disclosed.
+  prohibited_publishable_text:
+  - 0.6.3 is the definitive safe npm release
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

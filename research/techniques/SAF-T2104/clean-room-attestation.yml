@@ -1,0 +1,117 @@
+version: 1
+technique_id: SAF-T2104
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t2104
+  inherited_context: false
+target:
+  id: SAF-T2104
+  neutral_name: Fraudulent Transactions
+allowed_inputs:
+- Neutral technique ID SAF-T2104, neutral name Fraudulent Transactions, and neutral
+  tactic ATK-TA0040.
+- Generic SAF authoring skill, methodology, clean-room, trace-format, template, and
+  validator instructions.
+- Direct authoritative protocol, standards, government, academic, and first-party
+  vendor or researcher sources.
+- Fresh temporary paths under /private/tmp/saf-all-cleanroom/SAF-T2104.
+prohibited_inputs:
+- Existing techniques/SAF-T2104/README.md or any prior target artifact.
+- Existing research/techniques/SAF-T2104/ packet content.
+- Existing techniques/SAF-T2104/detection-rule.yml.
+- Target-specific git history, diffs, blame, branches, commits, or tags.
+- Pull request, issue, review, or discussion content about the target.
+- Shared source, framework, or alignment registries from the destination repository.
+- SAF sites, repositories, forks, mirrors, prior agent work, or previous conversation.
+- Impact-classification examples or prior target-specific examples.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification tools authorization human confirmation
+    least privilege
+  - site:datatracker.ietf.org RFC payment authorization amount currency creditor
+  - site:arxiv.org agent prompt injection banking transfer attacker account
+  - site:arxiv.org AI agent illicit financial actions tool benchmark
+  - site:aisi.gov.uk agent incident unsanctioned action financial
+  - site:ncsc.gov.uk agent prompt injection bank transfer
+  - site:microsoft.com/en-us/security/blog AI agent transaction authorization tool
+    binding
+  - site:microsoft.com/en-us/security/blog MCP vulnerability CVE prompt execution
+  - site:attack.mitre.org/techniques/T1657 financial theft
+  - site:cisa.gov AI agent fraudulent payment prompt injection
+  - site:arxiv.org AI agent unauthorized transfer prompt injection bank 2026
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-oauth-rar-rfc9396
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-art-2507.20526
+  - SRC-aisi-incident-2026
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-ncsc-llm-caution-2023
+  - SRC-microsoft-agent-identity-2026
+  - SRC-microsoft-agent-security-2026
+  - SRC-ncsc-agentic-guidance-2026
+  - SRC-wasp-2504.18575
+  - SRC-mitre-t1657-2026
+  - SRC-asb-2410.02644
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-t1206-ms-config-risk
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace only synthetic neighbor joins after comparing stable IDs in the destination
+  framework.
+- Merge source records mechanically by source ID without changing claims or prose.
+- Replace synthetic repository-history provenance with the honest integration commit.
+- Run the destination validator after integration; do not silently repair unrelated
+  repository failures.
+attestation: I authored and froze this bundle from the neutral target tuple, generic
+  SAF instructions, and independently opened authoritative sources without accessing
+  prior target artifacts or prohibited target-specific context.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-authorization-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-agentdojo-2406.13352: SRC-debenedetti-et-al-agentdojo
+    SRC-mitre-financial-theft-v1.2: SRC-mitre-t1657-2026
+    SRC-microsoft-recommendation-poisoning-2026: SRC-ms-recommendation-poisoning-2026
+    SRC-microsoft-mcp-misconfig-2026: SRC-t1206-ms-config-risk
+  new_shared_source_records:
+  - SRC-oauth-rar-rfc9396
+  - SRC-art-2507.20526
+  - SRC-aisi-incident-2026
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-ncsc-llm-caution-2023
+  - SRC-microsoft-agent-identity-2026
+  - SRC-microsoft-agent-security-2026
+  - SRC-ncsc-agentic-guidance-2026
+  - SRC-wasp-2504.18575
+  - SRC-asb-2410.02644
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1309
+  - SAF-T1915
+  attack_mapping:
+    id: T1657
+    type: direct
+  validation_proof:
+  - research/techniques/SAF-T2104/validation/detection-test.txt
+  - research/techniques/SAF-T2104/validation/strict-validator.txt
+  - research/techniques/SAF-T2104/validation/canonical-validation.txt
+  status: integrated_and_validated

@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T1404
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1404/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1404/technique-contract.yml
+  supports: Frozen name, tactic, scope, canonical neighbors, and completion requirements.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1404/claim-inventory.yml
+  supports: Validated source-to-claim relations and limitations.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1404/source-coverage.yml
+  supports: Research passes, candidate classification, conflicts, and saturation.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1404/publication-rights.yml
+  supports: Publication-rights decisions and attribution.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1404/quality-review.yml
+  supports: Validation commands, results, gates, date, and reviewer.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1404/clean-room-attestation.yml
+  supports: Independent-input, prohibited-input, and pre-integration freeze attestation.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1404/detection-rule.yml
+  supports: Explicitly labeled paired-digest analytic.
+- id: LOCAL-detection-fixture
+  path: tests/SAF-T1404/test-logs.json
+  supports: Positive, negative, canonicalization, authorized-transform, and missing-telemetry cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1404/test_detection_rule.py
+  supports: Executable deterministic validation of the analytic.
+- id: LOCAL-clean-room-boundary-proof
+  path: research/techniques/SAF-T1404/validation/clean-room-boundary.txt
+  supports: Clean-room input boundary and advisory-URL provenance record.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1404/validation/detection-tests.txt
+  supports: Isolated and integrated deterministic detector results.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1404/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1404-X001
+  candidate: A production breach directly attributed to MCP response modification.
+  origin: Required production-breach pass.
+  attempted_searches:
+  - NVD MCP catalog, CISA KEV feed, selected advisories, and production-evidence classification
+    review
+  consulted_source_ids:
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-ts-sdk-345p
+  reason: The bounded corpus established vulnerabilities and demonstrations but no
+    qualifying production incident.
+  prohibited_publishable_text:
+  - Response Tampering is widely observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1404-X002
+  candidate: Active in-the-wild exploitation of every selected advisory.
+  origin: Exploitation-status review.
+  attempted_searches:
+  - NVD CISA SSVC fields and CISA KEV candidate comparison
+  consulted_source_ids:
+  - SRC-nvd-mcp-catalog-2026-09-01
+  - SRC-cisa-kev-2026-09-01
+  reason: Reviewed fields ranged from proof of concept to none; no selected CVE appeared
+    in the reviewed KEV release.
+  prohibited_publishable_text:
+  - All selected CVEs are actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1404-X003
+  candidate: Tool-metadata poisoning as an instance of Response Tampering.
+  origin: Neighbor and scope reconciliation.
+  attempted_searches:
+  - MCP tool-output and metadata-security research screens; frozen contract comparison
+  consulted_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-zhan-aei-2026
+  reason: Metadata poisoning changes discovery or selection before invocation rather
+    than an emitted response.
+  prohibited_publishable_text:
+  - Tool metadata poisoning is response tampering
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1404-X004
+  candidate: The 5ire rendering vulnerability as direct response tampering.
+  origin: NVD candidate classification.
+  attempted_searches:
+  - Complete advisory root-cause, impact, vector, fix, and credit review
+  consulted_source_ids:
+  - SRC-ghsa-5ire-8527
+  - SRC-nvd-mcp-catalog-2026-09-01
+  reason: Compromised MCP content is only one delivery vector; unsafe downstream evaluation
+    is the disclosed weakness.
+  prohibited_publishable_text:
+  - CVE-2025-58357 directly proves response tampering
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1404-X005
+  candidate: Unbounded PHP SSE buffering as a response-integrity example.
+  origin: NVD candidate classification.
+  attempted_searches:
+  - Complete advisory summary, demonstration, fix, and credit review
+  consulted_source_ids:
+  - SRC-ghsa-php-7m52
+  - SRC-nvd-mcp-catalog-2026-09-01
+  reason: Withholding a delimiter produces resource exhaustion; the immediate objective
+    is availability loss, not acceptance of corrupted content.
+  prohibited_publishable_text:
+  - CVE-2026-53965 is a core response-integrity case
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1404-X006
+  candidate: Cross-session JSON-RPC request injection as response tampering.
+  origin: NVD candidate classification.
+  attempted_searches:
+  - Complete advisory summary, affected-range, patch, and credit review
+  consulted_source_ids:
+  - SRC-ghsa-python-jpw9
+  - SRC-nvd-mcp-catalog-2026-09-01
+  reason: The disclosed primary manipulation is an injected request and belongs on
+    the request side of the boundary.
+  prohibited_publishable_text:
+  - CVE-2026-52869 is direct response tampering
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

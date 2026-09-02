@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1602
+status: integrated_and_validated
+
+mechanical_join_inputs:
+  source_manifest_fragment: research/techniques/SAF-T1602/source-manifest-fragment.yml
+  framework_fragment: research/techniques/SAF-T1602/framework-fragment.yml
+  alignment_fragment: research/techniques/SAF-T1602/alignment-fragment.yml
+
+synthetic_or_provisional_values:
+  - value: ATK-TA0007
+    kind: tactic identifier
+    provenance: Supplied directly in the assignment; not read from a repository registry.
+    integration_action: Confirm only that the identifier exists; do not change technique prose unless the supplied contract is invalid.
+  - value: server-, resource-, and prompt-enumeration roles
+    kind: provisional neighboring technique roles
+    provenance: Independently defined clean-room boundary roles without reading the catalog.
+    integration_action: SAF-T1601 is the canonical server-enumeration neighbor; the resource and prompt roles have no exact catalog match and were removed mechanically.
+  - value: source IDs in source-manifest-fragment.yml
+    kind: independently minted source identifiers
+    provenance: Derived from direct authority titles and versions without reading the shared source manifest.
+    integration_action: Reuse existing canonical IDs on URL/hash match or add new records; update references mechanically without changing source meaning.
+  - value: "1234567890abcdef1234567890abcdef12345678"
+    kind: isolated mock history SHA
+    provenance: Synthetic nonzero value required only to exercise strict validator history checks.
+    integration_action: Replace with the honest integration commit after the frozen bundle is joined; it supports no inherited history claim.
+  - value: empty mitigation list
+    kind: deferred framework join
+    provenance: Existing mitigation artifacts were prohibited pre-freeze.
+    integration_action: Add only mitigations whose defining controls match catalog authorization, filtering, or audit behavior; do not invent a mapping.
+
+external_corpus:
+  staging_path: /private/tmp/saf-all-cleanroom/SAF-T1602-retry/sources
+  bundled_path: research/sources/SAF-T1602
+  intended_repository_path: omitted
+  note: Archives and extracted text remain in the frozen external bundle with hashes and locators; reference-only rights do not authorize repository redistribution.
+
+post_freeze_reconciliation:
+  canonical_neighbor:
+    - SAF-T1601
+  removed_unmatched_neighbor_roles:
+    - resource enumeration
+    - prompt enumeration
+  canonical_mitigations:
+    - SAF-M-12
+    - SAF-M-13
+    - SAF-M-16
+    - SAF-M-20
+    - SAF-M-29
+    - SAF-M-37
+  attack_mapping:
+    id: T1046
+    type: analogous
+  source_archive_disposition: omitted_from_repository_under_reference_only_rights
+  validation_artifacts:
+    - research/techniques/SAF-T1602/validation/detection-test.txt
+    - research/techniques/SAF-T1602/validation/strict-validator.txt
+  result: integrated_and_validated
+
+material_change_policy: >-
+  The bundle may be joined only by deterministic path copies, source-ID
+  reconciliation, and registry-list insertion. Any change to contract, claims,
+  prose, evidence label, examples, detection logic, mappings, or exclusions
+  invalidates the freeze and requires a new clean-room research cycle.

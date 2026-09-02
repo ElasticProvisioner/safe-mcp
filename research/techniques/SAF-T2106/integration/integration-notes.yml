@@ -1,0 +1,40 @@
+version: 1
+technique_id: SAF-T2106
+frozen_on: "2026-09-02"
+supplied_tactic: ATK-TA0040
+post_freeze_actions:
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml without changing frozen source records.
+  - Merge framework-fragment.yml into research/framework-model.yml and alignment-fragment.yml into research/alignment-ledger.yml.
+  - Replace synthetic neighbor placeholders SAF-T9101 and SAF-T9102 with canonical non-overlapping neighbors after destination inspection.
+  - Replace the synthetic repository-history SHA with the real integration commit in destination-only integration metadata; do not edit the frozen bundle.
+  - Re-run the canonical validator in the destination after reconciliation.
+github_provenance:
+  - url: https://github.com/open-webui/open-webui/security/advisories/GHSA-7r82-qhg4-6wvj
+    authority_source: https://nvd.nist.gov/vuln/detail/CVE-2026-44554
+    method: Exact advisory URL was obtained from the directly reviewed NVD record before the advisory was opened.
+synthetic_validation_neighbors:
+  - {id: SAF-T9101, purpose: Isolated validator target for current-turn prompt-injection boundary.}
+  - {id: SAF-T9102, purpose: Isolated validator target for model-poisoning boundary.}
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-resources: SRC-mcp-resources-2025-11-25
+    SRC-agentpoison: SRC-neurips-agentpoison-2024
+    SRC-poisonedrag: SRC-usenix-poisonedrag-2025
+    SRC-otel-genai: SRC-otel-genai-2026
+    SRC-ms-memory-context: SRC-ms-zero-trust-memory-2026
+    SRC-attack-t1565: SRC-mitre-t1565.001
+    SRC-ms-ai-recommendation: SRC-ms-recommendation-poisoning-2026
+    SRC-ms-ragflow: SRC-microsoft-ai-gateway-incident
+    SRC-ms-semantic-kernel: SRC-microsoft-semantic-kernel-cves-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T1102, SAF-T2107, SAF-T2105]
+  canonical_mitigations: [SAF-M-12, SAF-M-22, SAF-M-29, SAF-M-30, SAF-M-32, SAF-M-51, SAF-M-69, SAF-M-74]
+  attack_mapping: {id: T1565.001, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T2106/validation/detection-test.txt
+    - research/techniques/SAF-T2106/validation/strict-validator.txt
+    - research/techniques/SAF-T2106/validation/canonical-validation.txt
+  dependency_resolution: Independently authored SAF-T2107 resolves the model-weight-poisoning boundary and both techniques pass strict canonical validation.
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve reviewed-source metadata and frozen evidence references.

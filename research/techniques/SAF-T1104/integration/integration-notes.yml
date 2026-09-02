@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1104
+freeze_scope: clean_room_bundle
+integration_status: deferred_until_after_freeze
+joins:
+  tactics:
+    - value: ATK-TA0002
+      disposition: existing_identifier_to_resolve_post_freeze
+  related_techniques:
+    - value: SAF-T9001
+      synthetic: true
+      label: Prompt Injection Delivery
+      disposition: resolve_to_repository_identifier_or_remove_post_freeze
+    - value: SAF-T9002
+      synthetic: true
+      label: Tool Definition Manipulation
+      disposition: resolve_to_repository_identifier_or_remove_post_freeze
+  mitigations: []
+  source_ids:
+    - SRC-mcp-tools-2026-07-28
+    - SRC-mcp-auth-2026-07-28
+    - SRC-mcp-security-best-practices-2025-11-25
+    - SRC-rfc8707
+    - SRC-invariant-whatsapp-mcp-2025
+    - SRC-invariant-tool-poisoning-2025
+    - SRC-agentdojo-2024
+    - SRC-nvd-cve-2026-27966
+    - SRC-ghsa-3645-fxcv-hqr4
+    - SRC-nvd-cve-2026-29783
+    - SRC-ghsa-g8r9-g2v8-jv6f
+    - SRC-nvd-cve-2025-67510
+    - SRC-ghsa-898v-775g-777c
+    - SRC-nvd-cve-2025-53097
+    - SRC-ghsa-wr2q-46pg-f228
+    - SRC-nvd-cve-2026-76072
+    - SRC-vulncheck-cve-2026-76072
+    - SRC-nvd-cve-2025-32711
+    - SRC-cisa-kev-2026-09-01
+    - SRC-owasp-mcp-security
+    - SRC-anthropic-claude-code-security
+    - SRC-nist-sp800-207
+    - SRC-mitre-attack-t1106
+  source_id_disposition: provisional_clean_room_ids_require_collision_check_post_freeze
+  history_sha:
+    - value: "1111111111111111111111111111111111111111"
+      synthetic: true
+      disposition: replace_with_real_integration_commit_after_repository_history_is_permitted
+  paths:
+    - value: techniques/SAF-T1104/README.md
+      disposition: target_path_to_verify_post_freeze
+    - value: techniques/SAF-T1104/detection-rule.yml
+      disposition: target_path_to_verify_post_freeze
+    - value: techniques/SAF-T1104/test-logs.json
+      disposition: target_path_to_verify_post_freeze
+    - value: techniques/SAF-T1104/test_detection_rule.py
+      disposition: target_path_to_verify_post_freeze
+    - value: research/techniques/SAF-T1104
+      disposition: packet_path_to_verify_post_freeze
+constraints:
+  - Do not inspect repository catalogs, shared registries, technique content, history, or prior artifacts until freeze verification succeeds.
+  - Resolve every synthetic or provisional join after freeze and before any integration proposal.
+  - Do not integrate, commit, or push as part of this handoff.

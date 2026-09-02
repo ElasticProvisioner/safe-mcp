@@ -1,0 +1,98 @@
+version: 1
+technique_id: SAF-T1401
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1401
+  inherited_context: false
+target:
+  id: SAF-T1401
+  neutral_name: Line Jumping
+allowed_inputs:
+- Neutral technique ID, neutral name, and tactic supplied as the seed.
+- Generic SAF templates, authoring method, current direct authorities, and an isolated
+  mock validator.
+prohibited_inputs:
+- Existing techniques/SAF-T1401/README.md.
+- Existing research/techniques/SAF-T1401/ packet.
+- Existing techniques/SAF-T1401/detection-rule.yml.
+- Existing tests, catalog descriptions, shared registries, SAF pages, bundles, and
+  neighboring techniques.
+- Git history, diff, blame, branches, commits, and pull request material.
+- Previous conversation target content.
+independent_research:
+  searches:
+  - Direct current MCP index, specification, and implementation-guidance review.
+  - Direct NVD API exact records and focused MCP keyword queries.
+  - Direct exact-identifier review of the current CISA KEV feed.
+  - Direct arXiv API queries plus complete primary-paper review.
+  - Direct MITRE ATT&CK technique-page review.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026-07-28
+  - SRC-mcp-client-best-practices-2026-07-28
+  - SRC-ghsa-6cvf-cfch-4g7m
+  - SRC-nvd-cve-2026-79745
+  - SRC-ghsa-weknora
+  - SRC-nvd-api-cve-2026-30856
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-jfsa-2025-001494691
+  - SRC-cisa-kev-2026-09-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2506.01333
+  - SRC-mitre-t1574-v2
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile the two synthetic neighbor IDs against the real framework without showing
+  the frozen author the catalog.
+- Replace the isolated-validation history SHA with the real nonzero integration commit.
+- Merge source and framework fragments without exposing the clean-room author to the
+  existing target.
+attestation: This packet was produced from the neutral seed and independently opened
+  direct authorities without access to prohibited target or repository context, then
+  frozen before isolated mock validation or any future integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-ghsa-67q9-58vj-32qx: SRC-ghsa-weknora
+    SRC-nvd-cve-2026-30856: SRC-nvd-api-cve-2026-30856
+    SRC-jfsa-2026-001653030: SRC-jfrog-jfsa-2026-001653030
+    SRC-nvd-cve-2026-25905: SRC-nvd-cve-2026-25905
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-arxiv-2512.06556v2: SRC-jamshidi-2026-arxiv-2512-06556
+    SRC-arxiv-2506.01333v1: SRC-etdi-2506.01333
+  new_shared_source_records:
+  - SRC-mcp-resources-2026-07-28
+  - SRC-mcp-client-best-practices-2026-07-28
+  - SRC-ghsa-6cvf-cfch-4g7m
+  - SRC-nvd-cve-2026-79745
+  - SRC-nvd-api-cve-2026-30856
+  - SRC-jfsa-2025-001494691
+  - SRC-mitre-t1574-v2
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-2
+  - SAF-M-6
+  - SAF-M-10
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1001
+    SAF-T9999: SAF-T1205
+  status: integrated_and_repository_validated

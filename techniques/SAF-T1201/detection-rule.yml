@@ -1,85 +1,77 @@
-title: MCP Rug Pull Attack Detection - Behavioral Changes
-id: b2d8f7e3-1a9c-4f6e-8d5b-9e3a2c7f8b1d
-status: experimental
-description: Detects potential MCP rug pull attacks through behavioral changes in approved tools after establishment period
-author: SAF-MCP Team
-date: 2025-01-15
-modified: 2025-01-15
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1201
-  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
-  - https://attack.mitre.org/techniques/T1195/
-  - https://attack.mitre.org/techniques/T1554/
+title: MCP Tool Definition Changed Without Reapproval
+id: 1ccad182-7a3e-4cb5-a154-6adf560999fd
+status: test
+description: >-
+  Detects a complete MCP tool-definition observation whose canonical hash differs
+  from the latest approved hash for the same provenance-scoped server and tool,
+  when no approval covers the newly observed hash.
+author: Fred Kautz; OpenAI Research
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: tool_execution
+  category: application
+  product: mcp_host
+  service: tool_inventory
 detection:
-  selection_tool_execution:
-    event_type: "tool_execution"
-    tool_name: "*"
-  selection_behavioral_change:
-    - network_activity: "new_connections"
-    - file_access: "expanded_scope"
-    - permission_request: "escalated"
-    - error_pattern: "changed"
-    - resource_usage: "increased"
-    - execution_time: "anomalous"
-  selection_network_indicators:
-    network_connections|contains:
-      - "http://"
-      - "https://"
-      - "ftp://"
-      - "unknown_domain"
-      - "suspicious_tld"
-    outbound_data|contains:
-      - "base64"
-      - "encrypted_payload"
-      - "data_exfiltration"
-  selection_file_indicators:
-    file_access_pattern|contains:
-      - "credential_files"
-      - "system_directories" 
-      - "user_data"
-      - "configuration_files"
-      - "log_files"
-    new_file_types|contains:
-      - ".key"
-      - ".pem"
-      - ".env"
-      - ".config"
-      - ".db"
-  selection_timing_indicators:
-    days_since_approval: ">30"
-    execution_count: ">50"
-    behavioral_change_detected: true
-    baseline_deviation: ">2_std_dev"
-  condition: selection_tool_execution and (selection_behavioral_change or selection_network_indicators or selection_file_indicators) and selection_timing_indicators
+  selection_complete:
+    event_type: mcp_tool_definition_observed
+    approved_definition_hash|exists: true
+    observed_definition_hash|exists: true
+    server_id|exists: true
+    tool_name|exists: true
+  selection_changed:
+    definition_hash_match: false
+  selection_unapproved:
+    reapproval_status: absent
+  condition: selection_complete and selection_changed and selection_unapproved
+fields:
+  - timestamp
+  - server_id
+  - tool_name
+  - approved_definition_hash
+  - observed_definition_hash
+  - approval_id
+  - reapproval_status
+  - session_id
 falsepositives:
-  - Legitimate tool updates and feature additions with proper approval
-  - Network connectivity changes due to infrastructure updates  
-  - System updates changing tool execution environment
-  - Performance optimization changes affecting tool behavior
-  - New legitimate features requiring expanded file access
-  - Debugging and troubleshooting activities by developers
-  - Load balancing changes affecting tool performance metrics
+  - Legitimate change observed before its approval event is ingested.
+  - Canonicalization algorithm changes without a versioned migration.
+  - Distinct servers incorrectly collapsed to one server_id alias.
 level: high
 tags:
-  - attack.persistence
-  - attack.t1195
-  - attack.t1554
-  - attack.t1027
-  - safe.t1201
-  - mcp.rug_pull
-  - mcp.behavioral_change
-  - supply_chain
-fields:
-  - tool_name
-  - event_type
-  - network_connections
-  - file_access_pattern
-  - days_since_approval
-  - execution_count
-  - baseline_deviation
-  - behavioral_change_type
-  - user_id
-  - timestamp 
+  - saf.t1201
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1201-C008
+    - SAF-T1201-C016
+  telemetry_claim_ids:
+    - SAF-T1201-C001
+    - SAF-T1201-C016
+  limitation_claim_ids:
+    - SAF-T1201-C009
+    - SAF-T1201-C017
+  validation_artifacts:
+    - techniques/SAF-T1201/test_detection_rule.py
+    - techniques/SAF-T1201/test-logs.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1201-C001, SAF-T1201-C016]
+      rationale: Tool inventory, approval, and invocation events are required to compare lifecycle state.
+    selection_complete:
+      claim_ids: [SAF-T1201-C008, SAF-T1201-C016]
+      rationale: Complete provenance, name, and both hashes are required for a defensible comparison.
+    selection_changed:
+      claim_ids: [SAF-T1201-C008]
+      rationale: A changed canonical definition hash is the core integrity signal.
+    selection_unapproved:
+      claim_ids: [SAF-T1201-C002, SAF-T1201-C011]
+      rationale: The technique requires the changed state to retain an older approval rather than receive renewed consent.
+    condition:
+      claim_ids: [SAF-T1201-C016]
+      rationale: All completeness, change, and approval-state conditions must hold together.
+    fields:
+      claim_ids: [SAF-T1201-C016, SAF-T1201-C017]
+      rationale: Output fields support triage, identity disambiguation, and false-positive analysis.
+    falsepositives:
+      claim_ids: [SAF-T1201-C010, SAF-T1201-C017]
+      rationale: Legitimate upgrades and lifecycle races can resemble an unauthorized change.

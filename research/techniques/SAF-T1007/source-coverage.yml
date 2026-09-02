@@ -1,0 +1,97 @@
+version: 1
+technique_id: SAF-T1007
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct current MCP resolver: https://modelcontextprotocol.io/specification/latest/basic/authorization"
+        - "Direct current MCP Elicitation and Security Best Practices pages, version 2026-07-28"
+        - "Direct RFC Editor URL: https://www.rfc-editor.org/rfc/rfc9700.txt"
+      material_changes: [Bound the technique to URL-mode external OAuth and the initiating-user/completing-user invariant.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=model context protocol oauth"
+        - "NVD API keywordSearch=oauth authorization phishing"
+        - "NVD API keywordSearch=oauth consent phishing"
+        - "NVD API keywordSearch=MCP OAuth account takeover"
+        - "CISA KEV full catalog exact-ID checks"
+      material_changes: [Selected CVE-2026-31944 as direct and CVE-2026-42230 as adjacent; no direct production incident found.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct MCP SEP-1036 page and current Elicitation phishing section"
+        - "Exact GHSA-vf7j-7mrx-hp7g after NVD/CVE canonical-URL provenance"
+        - "Microsoft Learn first-party search API: OAuth Consent Grant simulation"
+      material_changes: [Established a public end-to-end PoC and Demonstrated evidence status.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "Current MCP Elicitation same-user, connect-URL, safe-URL, and identity requirements"
+        - "Microsoft Learn first-party search API: protect against consent phishing"
+        - "Direct MITRE ATT&CK T1566.002 and T1528 pages"
+      material_changes: [Defined authoritative-subject correlation analytic, controls, response, and framework mappings.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=url mode elicitation"
+        - "NVD API keywordSearch=MCP cross user OAuth"
+        - "MCP first-party llms-full catalog local search for phish, consent, authorization URL, and callback"
+        - "Microsoft Security first-party site search: MCP OAuth phishing"
+      material_changes: [Added current adjacent OAuth campaigns, rejected open redirect and bearer-token theft as different boundaries, and narrowed absence wording.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=MCP OAuth initiator victim callback"
+        - "Microsoft first-party site search: MCP OAuth callback token theft"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=MCP OAuth authorization link account linkage"
+        - "Microsoft first-party site search: MCP authorization URL victim token"
+      material_changes: []
+  rationale: Current MCP and OAuth authorities, direct CVE and vendor evidence, NVD and CISA status, current first-party incident research, detection guidance, and framework definitions cover every publishable proposition. The final two narrow passes after the last adjacent lead added no controlling fact, example, conflict, or remediation change.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 4
+  selected_examples: [SRC-ghsa-vf7j-7mrx-hp7g, SRC-ghsa-f6x8-65q6-j9m9]
+  no_qualifying_examples_rationale: One direct demonstrated vulnerability and one adjacent MCP OAuth phishing vulnerability were the highest-value examples; no direct production incident qualified.
+  candidates:
+    - {source_id: SRC-ghsa-vf7j-7mrx-hp7g, identifier: CVE-2026-31944 / GHSA-vf7j-7mrx-hp7g, relationship: direct_vulnerability, exploitation_status: public_poc_no_production_exploitation_identified, impact: Victim third-party OAuth access bound to attacker account with high confidentiality and bounded integrity impact., remediation: Fixed in LibreChat 0.8.3-rc1., selected: true, rationale: Exact match to initiator/completer identity misbinding and cross-user token storage.}
+    - {source_id: SRC-ghsa-f6x8-65q6-j9m9, identifier: CVE-2026-42230 / GHSA-f6x8-65q6-j9m9, relationship: adjacent_incident_or_vulnerability, exploitation_status: CISA_SSVS_none_and_not_in_KEV, impact: Denial of MCP OAuth consent could redirect a victim to an attacker site., remediation: Fixed in n8n 1.123.32, 2.17.4, and 2.18.1., selected: true, rationale: High-relevance MCP OAuth phishing boundary, but no cross-user token binding.}
+    - {source_id: SRC-ms-oauth-redirection-2026, identifier: Microsoft OAuth redirection campaigns, relationship: historical_analogy, exploitation_status: observed_production_campaigns, impact: Redirected users to phishing and malware delivery infrastructure without stealing OAuth tokens., remediation: OAuth app governance and cross-domain monitoring., selected: false, rationale: Production observation is valuable context but uses standards-compliant redirects outside MCP.}
+    - {source_id: SRC-ms-shinyhunters-oauth-2026, identifier: ShinyHunters-associated OAuth consent campaigns, relationship: historical_analogy, exploitation_status: observed_production_campaigns, impact: OAuth-backed SaaS access, persistence, and data exfiltration., remediation: Connected-app governance and event monitoring., selected: false, rationale: Malicious application consent differs from benign MCP server cross-user binding.}
+sources_consulted: &all_sources
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-rfc9700
+  - SRC-nvd-cve-2026-31944
+  - SRC-ghsa-vf7j-7mrx-hp7g
+  - SRC-nvd-cve-2026-42230
+  - SRC-ghsa-f6x8-65q6-j9m9
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ms-oauth-redirection-2026
+  - SRC-ms-shinyhunters-oauth-2026
+  - SRC-ms-consent-phishing-2021
+  - SRC-mslearn-protect-consent-phishing
+  - SRC-mitre-t1566-002
+  - SRC-mitre-t1528
+sources_cited: *all_sources
+sources_rejected:
+  - {source_id: SRC-ms-oauth-redirection-2026, reason: Observed production campaign used OAuth error redirects and did not misbind a victim grant to an MCP initiator.}
+  - {source_id: SRC-ms-shinyhunters-oauth-2026, reason: Observed production activity used malicious connected-app consent, not the defining MCP callback identity failure.}
+sources_blocked: []
+conflicts:
+  - {issue: A severe public CVE can be mistaken for a production incident., resolution: Classified CVE-2026-31944 as demonstrated because NVD records a PoC and neither NVD nor CISA KEV establishes production exploitation.}
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1007-C002]
+  rationale: The LibreChat advisory contains a complete end-to-end PoC for the exact cross-user token-binding behavior; no primary source documents a production incident.
+source_archive: {manifest: ../../source-manifest.yml, validation_status: passed}
+rights_review: {audit: publication-rights.yml, status: passed}

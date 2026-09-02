@@ -1,0 +1,144 @@
+version: 1
+technique_id: SAF-T1202
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1202
+  neutral_name: OAuth Token Persistence
+allowed_inputs:
+- Seed metadata limited to SAF-T1202, OAuth Token Persistence, and ATK-TA0003 Persistence.
+- Generic author-saf-technique skill and its methodology, research, clean-room, and
+  trace-format references.
+- techniques/TEMPLATE.md, blank research schemas, research/README.md, and the current
+  validator.
+- Minimal synthetic framework identifiers required only to exercise validation in
+  an isolated mock.
+- Independently reviewed direct external authorities discovered without SAF-derived
+  vocabulary.
+prohibited_inputs:
+- techniques/SAF-T1202/README.md
+- research/techniques/SAF-T1202/
+- techniques/SAF-T1202/detection-rule.yml
+- Technique-catalog descriptions, shared source/framework/alignment registries, prior
+  bundles, or other technique prose.
+- SAF or SAFE websites, repositories, examples naming targets, or derived terminology.
+- Git history, diffs, blame, commits, branches, tags, or releases for the target.
+- Pull request content, review commentary, or issue discussions about the target.
+- Previous conversation content or inherited summaries about the target.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification/2026-07-28 refresh tokens authorization
+    security
+  - site:rfc-editor.org OAuth refresh token replay rotation revocation DPoP
+  - OAuth stolen token incident site:cloud.google.com/blog/topics/threat-intelligence
+  - OAuth stolen user token incident site:github.blog
+  - OAuth refresh token account deactivation site:nvd.nist.gov/vuln/detail
+  - MCP refresh token client authentication site:nvd.nist.gov/vuln/detail
+  - OAuth refresh token injection site:usenix.org/conference
+  - OAuth refresh token security empirical site:dl.acm.org OR site:ieeexplore.ieee.org
+  - OAuth refresh token detection site:attack.mitre.org
+  - token theft anomalous token detection site:learn.microsoft.com/security
+  - OAuth stolen refresh token mitigation site:cloud.google.com/architecture
+  - CVE-2026-53512 exploitation status site:nvd.nist.gov
+  - CVE-2026-9571 fixed versions exploitation status site:nvd.nist.gov
+  - OAuth refresh token rotation false positive legitimate retry site:rfc-editor.org
+  - token replay detection limitations site:learn.microsoft.com
+  - MCP refresh token compromise production incident advisory
+  - OAuth refresh token revocation bypass 2026 advisory
+  - stolen refresh token production incident postmortem
+  - refresh token reuse detection limitation rotation
+  - offline access token persistence MCP incident
+  - OAuth grant survives account deactivation vulnerability
+  - refresh credential replay incident
+  - token family replay false positive
+  opened_source_ids:
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  - SRC-github-oauth-incident-2022
+  - SRC-google-oauth-token-mitigation
+  - SRC-gtig-drift-2025
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mitre-t1550-001
+  - SRC-mitre-ta0003
+  - SRC-ms-app-consent-playbook
+  - SRC-ms-entra-risk-detections-2026
+  - SRC-ms-token-tactics-2022
+  - SRC-nvd-cve-2026-9571
+  - SRC-rfc10017
+  - SRC-rfc7009
+  - SRC-rfc9449
+  - SRC-rfc9700
+  - SRC-salesloft-drift-2026
+  - SRC-usenix-s3kvetter-2018
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  mock_root: /private/tmp/saf-all-cleanroom/SAF-T1202/mock
+  validator_command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1202/validator-deps
+    /Users/fkautz/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3
+    scripts/validate-technique-research.py SAF-T1202
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  validator_result: PASS SAF-T1202
+  detection_command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1202/validator-deps
+    /Users/fkautz/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3
+    tests/SAF-T1202/test_detection_rule.py
+  detection_result: 'PASS: 8 cases; 3 expected alerts; 5 expected non-alerts'
+  deliberately_deferred_real_repository_joins:
+  - Shared source-manifest reconciliation.
+  - Shared framework and alignment registration.
+  - Replacement of synthetic neighbor IDs and history SHA.
+integration_constraints:
+- Freeze the complete standalone bundle before opening any target or shared registry
+  artifact.
+- Keep downloaded source caches and the synthetic validator mock outside the bundle.
+- Do not integrate, commit, push, or reconcile this draft within the clean-room task.
+- The GitHub advisory was opened only after the directly reviewed NVD authority supplied
+  CVE-2026-53512 and the exact GHSA URL; this provenance is retained in the source
+  manifest.
+attestation: I generated this technique from the neutral seed, generic methodology,
+  allowed scaffolds, and independently reviewed external authorities without accessing
+  any prohibited prior target artifact or inherited target context.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-auth-security-2026-07-28: SRC-mcp-auth-security-2026-07-28
+    SRC-rfc9700: SRC-rfc9700
+    SRC-mitre-ta0003: SRC-mitre-ta0003
+  new_shared_source_records:
+  - SRC-rfc7009
+  - SRC-rfc9449
+  - SRC-google-oauth-token-mitigation
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  - SRC-nvd-cve-2026-9571
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-2026
+  - SRC-github-oauth-incident-2022
+  - SRC-ms-token-tactics-2022
+  - SRC-ms-app-consent-playbook
+  - SRC-mitre-t1550-001
+  - SRC-usenix-s3kvetter-2018
+  - SRC-rfc10017
+  - SRC-ms-entra-risk-detections-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-20
+  - SAF-M-31
+  - SAF-M-37
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1504
+    SAF-T9002: omitted_no_exact_catalog_neighbor
+  status: integrated_and_repository_validated

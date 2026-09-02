@@ -1,0 +1,38 @@
+version: 1
+technique_id: SAF-T1404
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1404
+
+gates:
+  clean_room_integrity: {status: passed, notes: Attestation records fresh generation, prohibited inputs, no prior access, and pre-integration freeze.}
+  contract_and_scope: {status: passed, notes: Result-side integrity boundary and canonical nearest neighbors are explicit.}
+  technical_accuracy: {status: passed, notes: Protocol behavior, advisories, controlled demonstration, prerequisites, and limitations use direct reviewed sources.}
+  claim_traceability: {status: passed, notes: All thirteen claims include source relations, exact locators, limitations, and inference records.}
+  source_or_omit: {status: passed, notes: Publishable substantive units carry hidden traces or declared local-artifact links; unsupported leads are excluded.}
+  evidence_classification: {status: passed, notes: Demonstrated is supported by a direct controlled experiment; production observation is not claimed.}
+  research_saturation: {status: passed, notes: Separate authority, vulnerability, demonstration, detection, contrary, and two no-change follow-up passes are recorded.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Six candidates are classified; three highest-value direct or boundary-clarifying examples are selected and the production gap is explicit.}
+  detection_quality: {status: passed, notes: Five deterministic cases cover alert, unchanged, canonical ordering, authorized transformation, and missing telemetry.}
+  mitigation_quality: {status: passed, notes: Controls address fixed origins, instance isolation, structural validation, paired digests, and transformation authorization.}
+  framework_alignment: {status: passed, notes: Tactic, evidence state, canonical neighbors, mitigations, paths, source IDs, and detection artifacts are reconciled in the integrated repository.}
+  publication_rights: {status: passed, notes: All cited uses are paraphrase or factual reference with attribution; no copied code, figures, tables, or exploit payloads.}
+  safe_publication: {status: passed, notes: Example and fixtures use inert placeholder content and omit operational exploit details.}
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1404
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1404/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1404
+      result: passed
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1404/test_detection_rule.py
+    result: "PASS (5/5 cases)"
+    waiver: null
+
+unresolved: []

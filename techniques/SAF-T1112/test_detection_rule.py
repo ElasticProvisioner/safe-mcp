@@ -1,160 +1,89 @@
 #!/usr/bin/env python3
-"""
-Test script for SAF-T1112 Sampling Request Abuse detection rule validation.
-
-This script validates that the example detection logic correctly identifies
-suspicious MCP sampling activity from the provided test log data.
-"""
+"""Deterministic, inert tests for the SAF-T1112 experimental analytic."""
 
 from __future__ import annotations
 
 import json
-import re
-import sys
-import uuid
+from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
-
-try:
-    import yaml  # type: ignore
-except Exception:  # pragma: no cover
-    yaml = None
 
 
-SENSITIVE_TOOLS = {
-    "read_file",
-    "fs.read",
-    "http_request",
-    "web.fetch",
-    "run_shell",
-    "execute_command",
-}
-
-SENSITIVE_FOLLOW_ON_MARKERS = (
-    "read_file",
-    "run_shell",
-    "http_request",
-    "credential_lookup",
-)
+WINDOW_SECONDS = 300
+COUNT_THRESHOLD = 5
+TOKEN_THRESHOLD = 16384
+UNSAFE_APPROVAL = {"absent", "auto_approved"}
 
 
-def load_rule(rule_path: Path) -> Dict[str, Any]:
-    text = rule_path.read_text(encoding="utf-8")
-
-    if yaml is not None:
-        data = yaml.safe_load(text)
-        if not isinstance(data, dict):
-            raise ValueError("Rule file did not parse into a mapping")
-        return data
-
-    # Minimal fallback validation when PyYAML is unavailable.
-    required_markers = [
-        "title:",
-        "id:",
-        "status:",
-        "description:",
-        "author:",
-        "date:",
-        "logsource:",
-        "detection:",
-        "method: sampling/createMessage",
-        "safe.t1112",
-    ]
-    for marker in required_markers:
-        if marker not in text:
-            raise ValueError(f"Missing required marker in detection-rule.yml: {marker}")
-
-    # Return metadata parsed with regex for basic validation.
-    title_match = re.search(r"^title:\s*(.+)$", text, re.MULTILINE)
-    id_match = re.search(r"^id:\s*([0-9a-fA-F-]+)$", text, re.MULTILINE)
-    date_match = re.search(r"^date:\s*(\d{4}-\d{2}-\d{2})$", text, re.MULTILINE)
-
-    return {
-        "title": title_match.group(1).strip() if title_match else "",
-        "id": id_match.group(1).strip() if id_match else "",
-        "date": date_match.group(1).strip() if date_match else "",
-        "detection": {
-            "selection_sampling": {
-                "event_type": "mcp.request",
-                "method": "sampling/createMessage",
-            }
-        },
-    }
-
-
-def validate_rule_metadata(rule: Dict[str, Any]) -> None:
-    title = rule.get("title")
-    if not title or "Sampling" not in str(title):
-        raise ValueError("Detection rule title is missing or does not mention Sampling")
-
-    rule_id = str(rule.get("id", "")).strip()
+def parse_event(event: object) -> tuple[dict[str, object] | None, bool]:
+    if not isinstance(event, dict):
+        return None, True
+    required = ("timestamp", "server_id", "session_id", "direction", "method", "requested_max_tokens", "approval_state")
+    if any(key not in event for key in required):
+        return None, True
     try:
-        uuid.UUID(rule_id)
-    except Exception as exc:
-        raise ValueError(f"Detection rule id is not a valid UUID: {rule_id}") from exc
+        timestamp = datetime.fromisoformat(str(event["timestamp"]).replace("Z", "+00:00"))
+    except ValueError:
+        return None, True
+    tokens = event["requested_max_tokens"]
+    if isinstance(tokens, bool) or not isinstance(tokens, int) or tokens < 0:
+        return None, True
+    normalized = dict(event)
+    normalized["parsed_timestamp"] = timestamp
+    return normalized, False
 
-    date = str(rule.get("date", "")).strip()
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", date):
-        raise ValueError(f"Detection rule date is not YYYY-MM-DD: {date}")
+
+def evaluate(events: list[object]) -> tuple[bool, int]:
+    malformed = 0
+    relevant: list[dict[str, object]] = []
+    for raw in events:
+        event, bad = parse_event(raw)
+        malformed += int(bad)
+        if event is None:
+            continue
+        if event["direction"] != "server_to_client" or event["method"] != "sampling/createMessage":
+            continue
+        if event["approval_state"] in UNSAFE_APPROVAL:
+            return True, malformed
+        relevant.append(event)
+
+    groups: dict[tuple[str, str], list[dict[str, object]]] = defaultdict(list)
+    for event in relevant:
+        groups[(str(event["server_id"]), str(event["session_id"]))].append(event)
+
+    for grouped in groups.values():
+        grouped.sort(key=lambda item: item["parsed_timestamp"])
+        for start in range(len(grouped)):
+            window = []
+            for event in grouped[start:]:
+                elapsed = (event["parsed_timestamp"] - grouped[start]["parsed_timestamp"]).total_seconds()
+                if elapsed > WINDOW_SECONDS:
+                    break
+                window.append(event)
+            token_sum = sum(int(item["requested_max_tokens"]) for item in window)
+            if len(window) >= COUNT_THRESHOLD and token_sum >= TOKEN_THRESHOLD:
+                return True, malformed
+    return False, malformed
 
 
-def detect_sampling_abuse(event: Dict[str, Any]) -> bool:
-    if event.get("event_type") != "mcp.request":
-        return False
-    if event.get("method") != "sampling/createMessage":
-        return False
-
-    burst_count = int(event.get("burst_count", 0))
-    max_tokens = int(event.get("max_tokens", 0))
-    requested_tools = {str(t) for t in event.get("requested_tools", [])}
-    approval_state = str(event.get("approval_state", ""))
-    follow_on_action = str(event.get("follow_on_action", ""))
-
-    suspicious_volume = burst_count >= 3
-    suspicious_tokens = max_tokens >= 4000
-    suspicious_tooling = any(tool in SENSITIVE_TOOLS for tool in requested_tools)
-    weak_approval = approval_state in {"missing", "auto_approved"}
-    suspicious_follow_on = any(marker in follow_on_action for marker in SENSITIVE_FOLLOW_ON_MARKERS)
-
-    return any(
-        [
-            suspicious_volume,
-            suspicious_tokens,
-            suspicious_tooling,
-            weak_approval,
-            suspicious_follow_on,
-        ]
+def main() -> None:
+    payload = json.loads(Path(__file__).with_name("test-logs.json").read_text(encoding="utf-8"))
+    cases = payload["cases"]
+    alerting = 0
+    categories = set()
+    for case in cases:
+        actual_alert, actual_malformed = evaluate(case["events"])
+        assert actual_alert is case["expected_alert"], f"{case['id']}: alert={actual_alert}"
+        assert actual_malformed == case.get("expected_malformed", 0), f"{case['id']}: malformed={actual_malformed}"
+        alerting += int(actual_alert)
+        categories.add(case["category"])
+    required = {"positive", "negative", "boundary", "malformed", "legitimate-lookalike"}
+    assert required <= categories, f"missing categories: {sorted(required - categories)}"
+    print(
+        f"PASS SAF-T1112 detection tests: {len(cases)} cases, {alerting} alerting, "
+        f"{len(cases) - alerting} non-alerting; categories=" + ",".join(sorted(categories))
     )
 
 
-def main() -> int:
-    here = Path(__file__).resolve().parent
-    rule_path = here / "detection-rule.yml"
-    logs_path = here / "test-logs.json"
-
-    rule = load_rule(rule_path)
-    validate_rule_metadata(rule)
-
-    cases: List[Dict[str, Any]] = json.loads(logs_path.read_text(encoding="utf-8"))
-    failures: List[str] = []
-
-    for case in cases:
-        actual = detect_sampling_abuse(case)
-        expected = bool(case.get("expected_detection"))
-        if actual != expected:
-            failures.append(
-                f"{case.get('case_id')}: expected {expected}, got {actual}"
-            )
-
-    if failures:
-        print("SAF-T1112 detection validation failed:")
-        for failure in failures:
-            print(f"  - {failure}")
-        return 1
-
-    print(f"SAF-T1112 detection validation passed for {len(cases)} test cases.")
-    return 0
-
-
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()

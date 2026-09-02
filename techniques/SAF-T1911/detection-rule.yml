@@ -1,278 +1,94 @@
-title: MCP Parameter Exfiltration Detection
-id: e004e53d-8c44-4b5c-851c-550c20020c21
+title: Sensitive Data Flow into Untrusted MCP Tool Arguments
+id: 3e50cc5c-9866-4af1-9406-348b8bfb3288
 status: experimental
-description: |
-  Detects potential data exfiltration through unused or optional MCP tool parameters.
-  This rule monitors for signs that sensitive data is being smuggled in tool call parameters.
-  IMPORTANT: Parameter exfiltration can use novel encoding and obfuscation techniques.
-  Deploy strict schema validation and ML-based anomaly detection for comprehensive protection.
-author: SAF-MCP Contributors
-date: 2025-12-16
-modified: 2025-12-16
+description: >-
+  Detects an enriched MCP tools/call event when host-side data lineage indicates
+  that sensitive source content flowed into arguments sent to an untrusted
+  destination and no scoped policy exception was approved.
+date: 2026-09-02
+modified: 2026-09-02
 references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1911
-  - https://attack.mitre.org/techniques/T1041/
-  - https://attack.mitre.org/techniques/T1567/
-  - https://attack.mitre.org/techniques/T1029/
+  - https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - https://invariantlabs.ai/blog/whatsapp-mcp-exploited
 logsource:
-  product: mcp
-  service: tool_invocation
+  category: mcp_tool_call
+  product: mcp_host
+  definition: >-
+    Normalized host-side pre-dispatch events enriched with destination trust,
+    sensitive-data lineage, and policy-exception state.
 detection:
-  # Undefined parameters in tool calls
-  selection_undefined_params:
-    event_type: 'tool_call'
-    schema_validation: 'failed'
-    has_extra_properties: true
-
-  # Large parameter payloads indicating data exfiltration
-  selection_large_payload:
-    total_params_size_bytes|gt: 10240  # 10KB threshold
-    event_type: 'tool_call'
-
-  # Sensitive credential patterns in parameters
-  selection_credential_patterns:
-    parameter_value|re:
-      - '(?i)password\s*[:=]\s*\S+'
-      - '(?i)api[_-]?key\s*[:=]\s*\S+'
-      - '(?i)secret\s*[:=]\s*\S+'
-      - '(?i)token\s*[:=]\s*\S+'
-      - 'AKIA[0-9A-Z]{16}'  # AWS Access Key ID
-      - '(?i)bearer\s+[a-zA-Z0-9._-]+'
-      - 'sk-[a-zA-Z0-9]{32,}'  # OpenAI API key pattern
-      - '-----BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY-----'
-
-  # High entropy strings (encoded data)
-  selection_high_entropy:
-    parameter_entropy|gt: 5.5
-    parameter_length|gt: 50
-
-  # Suspicious parameter names commonly used for hiding data
-  selection_suspicious_param_names:
-    parameter_name|contains:
-      - 'note'
-      - 'metadata'
-      - 'debug'
-      - 'internal'
-      - 'extra'
-      - 'custom'
-      - 'context'
-      - 'trace'
-      - 'comment'
-      - 'memo'
-      - '_data'
-      - 'raw'
-
-  # Base64 encoded data detection
-  selection_base64:
-    parameter_value|re: '^[A-Za-z0-9+/]{40,}={0,2}$'
-
-  filter_known_legitimate:
-    tool_name|in:
-      - 'logging_tool'
-      - 'debug_helper'
-      - 'telemetry_reporter'
-
-  condition: >
-    (selection_undefined_params or selection_large_payload or selection_credential_patterns) and not filter_known_legitimate
-    or (selection_suspicious_param_names and (selection_high_entropy or selection_base64))
-
-falsepositives:
-  - Legitimate debugging and telemetry data
-  - Rich text content in messaging/documentation tools
-  - Application-specific metadata fields
-  - Backward compatibility parameters
-
-level: high
-
-tags:
-  - attack.exfiltration
-  - attack.ta0010
-  - attack.t1041
-  - attack.t1567
-  - attack.t1029
-  - attack.t1132
-  - safe.t1911
-  - mcp.exfiltration
-
+  selection_parameter_exfiltration:
+    event.category: mcp_tool
+    event.action: tools/call
+    dataflow.sensitive_to_arguments: true
+    destination.trust: untrusted
+  filter_authorized_exception:
+    policy.exception.approved: true
+  condition: selection_parameter_exfiltration and not filter_authorized_exception
 fields:
-  - session_id
-  - user_id
-  - tool_name
-  - parameter_names
-  - parameter_sizes
-  - total_payload_size
-  - parameter_entropy
   - timestamp
-
----
-# Correlation rule for collection-to-exfiltration pattern
-title: MCP Data Collection Followed by Parameter Exfiltration
-id: f1a2b3c4-d5e6-7f89-0abc-def123456789
-status: experimental
-description: |
-  Detects pattern where sensitive file access is followed by tool calls with
-  large or suspicious parameters, indicating a collect-then-exfiltrate attack.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1911
-  - https://attack.mitre.org/techniques/T1119/
-logsource:
-  product: mcp
-  service: tool_invocation
-detection:
-  # Stage 1: Data collection
-  selection_collection:
-    tool_name|contains:
-      - 'read_file'
-      - 'file_read'
-      - 'get_env'
-      - 'database_query'
-      - 'fetch_secret'
-    path|contains:
-      - '.env'
-      - 'credentials'
-      - '.aws'
-      - '.ssh'
-      - 'config'
-      - 'secret'
-
-  # Stage 2: Potential exfiltration (within 5 minutes)
-  selection_exfiltration:
-    tool_name|contains:
-      - 'send_'
-      - 'post_'
-      - 'create_'
-      - 'upload_'
-      - 'notify'
-      - 'webhook'
-      - 'email'
-      - 'message'
-    total_params_size_bytes|gt: 1024
-
-  timeframe: 5m
-  condition: selection_collection | followed_by(selection_exfiltration)
-
+  - session.id
+  - server.id
+  - tool.name
+  - destination.trust
+  - dataflow.source.classification
+  - dataflow.sensitive_to_arguments
+  - approval.full_arguments_visible
+  - policy.exception.approved
 falsepositives:
-  - Legitimate configuration management workflows
-  - Authorized secret rotation processes
-  - Development and testing activities
-
-level: critical
-
-tags:
-  - attack.exfiltration
-  - attack.collection
-  - attack.t1119
-  - attack.t1041
-  - safe.t1911
-  - mcp.multi_stage
-
----
-# Chunked exfiltration detection
-title: MCP Chunked Parameter Exfiltration
-id: a2b3c4d5-e6f7-8901-bcde-f12345678901
-status: experimental
-description: |
-  Detects repeated tool calls with consistent parameter structures that may
-  indicate chunked data exfiltration to avoid size-based detection.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1911
-  - https://attack.mitre.org/techniques/T1030/
-logsource:
-  product: mcp
-  service: tool_invocation
-detection:
-  # Repeated calls with similar structure
-  selection_repeated_pattern:
-    event_type: 'tool_call'
-
-  # Parameters suggesting chunking
-  selection_chunking_indicators:
-    parameter_name|contains:
-      - 'chunk'
-      - 'part'
-      - 'segment'
-      - 'index'
-      - 'sequence'
-      - 'offset'
-
-  # High-entropy data in chunks
-  selection_chunk_data:
-    parameter_entropy|gt: 5.0
-    parameter_length|range: '100-5000'  # Consistent chunk sizes
-
-  # Aggregate: 5+ similar calls in 10 minutes
-  timeframe: 10m
-  condition: selection_repeated_pattern and selection_chunking_indicators and selection_chunk_data | count() > 5
-
-falsepositives:
-  - Legitimate file upload tools with chunking
-  - Streaming data processing
-  - Pagination in data retrieval tools
-
+  - Legitimate support, backup, or analysis workflows sending classified data to an external service without a recorded scoped exception.
+  - Incorrect destination-trust or data-classification enrichment.
 level: high
-
 tags:
+  - saf.t1911
   - attack.exfiltration
-  - attack.t1030
-  - safe.t1911
-  - mcp.chunking
-
----
-# Entropy-based detection for encoded exfiltration
-title: High Entropy Parameter Content Detection
-id: b3c4d5e6-f7a8-9012-cdef-123456789012
-status: experimental
-description: |
-  Detects parameters with unusually high entropy values that may indicate
-  encoded or encrypted exfiltration payloads.
-author: SAF-MCP Contributors
-date: 2025-12-16
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1911
-  - https://attack.mitre.org/techniques/T1132/
-logsource:
-  product: mcp
-  service: tool_invocation
-detection:
-  # High entropy in string parameters
-  selection_high_entropy_string:
-    parameter_type: 'string'
-    parameter_entropy|gt: 6.0  # Very high entropy
-    parameter_length|gt: 100
-
-  # Base64 pattern with high entropy
-  selection_encoded_base64:
-    parameter_value|re: '^[A-Za-z0-9+/]+={0,2}$'
-    parameter_length|gt: 50
-    parameter_entropy|gt: 5.5
-
-  # Hex-encoded data
-  selection_encoded_hex:
-    parameter_value|re: '^[0-9a-fA-F]+$'
-    parameter_length|gt: 40
-    parameter_length|divisible: 2  # Valid hex has even length
-
-  filter_expected_encoded:
-    tool_name|in:
-      - 'image_processor'
-      - 'file_upload'
-      - 'binary_handler'
-
-  condition: (selection_high_entropy_string or selection_encoded_base64 or selection_encoded_hex) and not filter_expected_encoded
-
-falsepositives:
-  - Legitimate binary data handling
-  - Cryptographic operations
-  - Image/media processing tools
-
-level: medium
-
-tags:
-  - attack.exfiltration
-  - attack.t1132
-  - safe.t1911
-  - mcp.entropy
+  - attack.t1020
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1911-C011
+    - SAF-T1911-C013
+    - SAF-T1911-C018
+  telemetry_claim_ids:
+    - SAF-T1911-C001
+    - SAF-T1911-C008
+    - SAF-T1911-C011
+  limitation_claim_ids:
+    - SAF-T1911-C012
+    - SAF-T1911-C013
+    - SAF-T1911-C017
+  validation_artifacts:
+    - tests/SAF-T1911/events.json
+    - tests/SAF-T1911/test_detection_rule.py
+    - tests/SAF-T1911/test-logs.json
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1911-C001
+        - SAF-T1911-C008
+      rationale: MCP tool calls and their audit context are the required event source.
+    selection_parameter_exfiltration:
+      claim_ids:
+        - SAF-T1911-C011
+        - SAF-T1911-C018
+      rationale: The selection implements the bounded sensitive-source-to-argument-to-untrusted-destination sequence.
+    filter_authorized_exception:
+      claim_ids:
+        - SAF-T1911-C013
+      rationale: Explicit scoped policy exceptions separate intended external data transfers from unauthorized ones.
+    condition:
+      claim_ids:
+        - SAF-T1911-C011
+        - SAF-T1911-C013
+      rationale: Alert only on the full enriched sequence when no approved exception applies.
+    fields:
+      claim_ids:
+        - SAF-T1911-C008
+        - SAF-T1911-C011
+        - SAF-T1911-C012
+      rationale: The listed fields support investigation, tuning, and identification of missing enrichment.
+    falsepositives:
+      claim_ids:
+        - SAF-T1911-C013
+      rationale: Legitimate external tool workflows can share the protocol-level behavior and require policy context.

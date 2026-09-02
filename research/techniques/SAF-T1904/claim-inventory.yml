@@ -1,0 +1,320 @@
+version: 1
+technique_id: SAF-T1904
+claims:
+  - id: SAF-T1904-C001
+    statement: MCP hosts coordinate clients and servers, enforce security and consent, and route messages bidirectionally between participants.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2025-06-18
+        support: direct
+        exact_locators: [Host, Clients, Design Principles]
+    corroboration: The base protocol separately specifies request, response, and notification message forms.
+    limitations: [The architecture does not describe an adversarial chat-service control loop.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C002
+    statement: MCP tools may be discovered and invoked by a model, while the specification calls for human visibility, denial capability, validation, access control, rate limiting, and output sanitization.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: [Overview, Tool, Security Considerations]
+    corroboration: MCP security guidance independently treats authorization as a host and deployment responsibility.
+    limitations: [The specification does not guarantee that every implementation exposes or enforces every suggested control.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C003
+    statement: Slack can deliver message events to an application, and its first-party Events API example sends retrieved message text to an LLM and posts the answer in the originating thread.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-events-api-20260902
+        support: direct
+        exact_locators: [How the Events API works, Responding to events, first-party LLM response example]
+      - source_id: SRC-slack-chat-postmessage
+        support: corroborating
+        exact_locators: [Usage info, thread_ts argument, Response]
+    corroboration: The chat.postMessage reference separately documents application-authored messages and replies.
+    limitations: [The first-party sample demonstrates message-to-model-to-reply plumbing, not malicious use or a consequential tool call.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C004
+    statement: Slack message and event records expose identifiers and timestamps suitable for correlating a sender, application, channel, event, and reply.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-message-event-20260902
+        support: direct
+        exact_locators: [Message events, Message event properties]
+      - source_id: SRC-slack-events-api-20260902
+        support: corroborating
+        exact_locators: [Event delivery, event wrapper fields]
+    corroboration: The Events API envelope adds team, app, event ID, and event timestamp context.
+    limitations: [Field availability varies by event subtype and granted scope.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C005
+    statement: Slack Audit Logs expose actor, action, entity, context, and application attribution but do not expose message content.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-audit-logs-20260902
+        support: direct
+        exact_locators: [Audit event schema, Limitations]
+    corroboration: Message content and identifiers must therefore come from connector or bot event telemetry for the proposed analytic.
+    limitations: [The documentation does not establish what a particular deployment retains outside the Audit Logs API.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C006
+    statement: Telegram bots can receive Update objects by webhook or polling, send replies, and authenticate webhook delivery with a secret-token header.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-telegram-bot-api-10-3
+        support: direct
+        exact_locators: [Update, getUpdates, setWebhook, sendMessage, reply_parameters]
+    corroboration: The selected Telegram advisory documents the consequence when this webhook authentication boundary failed in one implementation.
+    limitations: [The Bot API primitives alone do not imply that a bot invokes agent tools.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C007
+    statement: An external chat ingress, model- or command-controlled tool path, and correlated outbound chat reply can together form a repeatable operator-control backchannel when the sender or conversation is outside authorized policy.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: context
+        exact_locators: [Overview, Tool]
+      - source_id: SRC-slack-events-api-20260902
+        support: context
+        exact_locators: [Event delivery, first-party LLM response example]
+      - source_id: SRC-telegram-bot-api-10-3
+        support: context
+        exact_locators: [Update, setWebhook, sendMessage]
+      - source_id: SRC-ghsa-xh72-v6v9-mwhc
+        support: corroborating
+        exact_locators: [Summary, Impact]
+    corroboration: Multiple vendor advisories independently show unauthorized chat-originated traffic reaching command, approval, or credential paths.
+    limitations: [No reviewed authority documents the complete adversarial inbound-message to consequential-tool-call to attacker-observed-reply sequence in one incident or evaluation.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The end-to-end behavior is composed from directly documented chat, agent-tool, and vulnerable authorization components; no source alone establishes the complete loop.
+    status: validated
+
+  - id: SAF-T1904-C008
+    statement: Before OpenClaw 2026.4.15, affected Feishu webhook or card-action configurations could fail open and allow unauthenticated traffic to reach command dispatch without expected signature or replay protection.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-xh72-v6v9-mwhc
+        support: direct
+        exact_locators: [Summary, Impact, Affected versions]
+      - source_id: SRC-nvd-openclaw-corpus-20260902
+        support: corroborating
+        exact_locators: [CVE-2026-44109]
+    corroboration: NVD independently catalogs CVE-2026-44109 and carries a CISA SSVC entry that records exploitation as none.
+    limitations: [The advisory is a vulnerability disclosure, not evidence of production exploitation or an attacker-observed returned response.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C009
+    statement: A pre-fix OpenClaw Telegram webhook could accept forged updates, spoof sender and chat identifiers, bypass sender allowlists, and reach privileged bot commands when webhook-secret validation was absent.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-fhvm-j76f-qmjv
+        support: direct
+        exact_locators: [Summary, Impact, Patched versions]
+      - source_id: SRC-nvd-openclaw-corpus-20260902
+        support: corroborating
+        exact_locators: [CVE-2026-28454]
+    corroboration: NVD catalogs CVE-2026-28454 with the forged-update and privileged-command consequence.
+    limitations: [Webhook mode had to be enabled and reachable; the advisory header and body disagree between 2026.2.2 and 2026.2.1 as the first patched release, so the conservative remediation is the newer version.]
+    conflicts:
+      - issue: The upstream advisory header and body list different first patched versions.
+        resolution: Preserve the inconsistency and recommend 2026.2.2 or later, which satisfies both statements.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C010
+    statement: Before OpenClaw 2026.3.28, a Discord command-authorized user outside the configured approver list could resolve pending host-execution approvals through text commands.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-98hh-7ghg-x6rq
+        support: direct
+        exact_locators: [Summary, Impact, Patched versions]
+      - source_id: SRC-nvd-openclaw-corpus-20260902
+        support: corroborating
+        exact_locators: [CVE-2026-41303]
+    corroboration: NVD catalogs the authorization bypass and a CISA SSVC exploitation value of none.
+    limitations: [The actor still required command-sender authorization and a pending execution request; the advisory does not report exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C011
+    statement: Before OpenClaw 2026.5.4, an authorized non-owner chat sender could issue device-pairing bootstrap codes and enroll a device with persistent operator or node credentials until manual removal.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-xr4f-mjxj-w6w5
+        support: direct
+        exact_locators: [Summary, Impact, Patched versions]
+      - source_id: SRC-nvd-openclaw-corpus-20260902
+        support: corroborating
+        exact_locators: [CVE-2026-32905]
+    corroboration: NVD catalogs the persistent-credential consequence and CISA SSVC exploitation value of none.
+    limitations: [The sender already needed authorized chat-command access; the advisory does not document production exploitation or a returned control loop.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C012
+    statement: No qualifying production incident or complete adversarial chat-to-tool-to-chat demonstration was found in the reviewed direct-authority corpus as of 2026-09-02.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-openclaw-corpus-20260902
+        support: direct
+        exact_locators: [complete 592-record corpus, selected and comparator CVE records]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: [catalogVersion 2026.09.01, vulnerabilities]
+    corroboration: CISA and UK NCSC authority-site incident/advisory queries produced no qualifying case, and none of the selected CVEs appeared in the reviewed KEV snapshot.
+    limitations: [This is a bounded search result and must not be read as proof that no such incident or demonstration exists.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C013
+    statement: MITRE ATT&CK T1102.002 provides a non-agentic historical analogy in which commands and results traverse a legitimate web service bidirectionally.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: direct
+        exact_locators: [Description, Procedure Examples]
+    corroboration: The parent T1102 page classifies web-service use under command and control.
+    limitations: [ATT&CK T1102.002 does not describe MCP, tool-capable agents, or the chat identity boundary defined here.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1904-C014
+    statement: A practical analytic is to correlate an unauthorized or identity-ambiguous inbound chat event with a tool invocation in the same agent session and an outbound reply to the same conversation within five minutes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-message-event-20260902
+        support: context
+        exact_locators: [Message event properties]
+      - source_id: SRC-slack-chat-postmessage
+        support: context
+        exact_locators: [Arguments, Response]
+      - source_id: SRC-mitre-t1102-002-v1-1
+        support: context
+        exact_locators: [Detection]
+    corroboration: The local detection test suite exercises this correlation over positive, negative, boundary, missing-field, and malformed-field cases.
+    limitations: [The five-minute window is a tunable analytic choice, not a protocol constant, and correlation requires a deployment-specific session/conversation join.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The proposed analytic composes documented provider fields and historical web-service C2 detection concepts into an SAF-specific correlation.
+    status: validated
+
+  - id: SAF-T1904-C015
+    statement: Legitimate authorized chat operations can produce the same message-tool-reply sequence, and Slack Audit Logs alone cannot supply message-content correlation.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-audit-logs-20260902
+        support: direct
+        exact_locators: [Audit event schema, Limitations]
+      - source_id: SRC-slack-events-api-20260902
+        support: context
+        exact_locators: [first-party LLM response example]
+    corroboration: The local negative test suppresses stable approved chatops while the missing-correlation tests do not alert.
+    limitations: [A deployment may have richer proprietary telemetry than the public API documents.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The false-positive conclusion follows from the identical documented plumbing used for legitimate and unauthorized operations.}
+    status: validated
+
+  - id: SAF-T1904-C016
+    statement: Defensive controls should bind policy to immutable sender, conversation, and application identifiers; authenticate webhooks; minimize connector and tool privilege; require approval for consequential actions; and patch affected integrations.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: [Security Considerations]
+      - source_id: SRC-mcp-security-spec-2025-11-25
+        support: context
+        exact_locators: [Authorization, Security Best Practices]
+      - source_id: SRC-telegram-bot-api-10-3
+        support: direct
+        exact_locators: [setWebhook, secret_token]
+      - source_id: SRC-ghsa-fhvm-j76f-qmjv
+        support: corroborating
+        exact_locators: [Patched versions, Mitigation]
+    corroboration: The selected advisories independently prescribe upgrades and tighter authorization checks for their affected paths.
+    limitations: [Control names and enforcement points vary by provider and implementation; no single control prevents every path.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The defense combines provider, protocol, and advisory controls around the technique's external-identity-to-tool boundary.}
+    status: validated
+
+  - id: SAF-T1904-C017
+    statement: Consequences are conditional on the connected tools and privileges and can include unauthorized commands, host-execution approval, persistent credential enrollment, confidentiality loss, integrity loss, or availability effects.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-xh72-v6v9-mwhc
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-ghsa-98hh-7ghg-x6rq
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-ghsa-xr4f-mjxj-w6w5
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: context
+        exact_locators: [Security Considerations]
+    corroboration: The three advisories document different concrete consequences while the MCP specification explains that tools can expose arbitrary functions.
+    limitations: [Severity cannot be assigned without the deployment's reachable tools, data, approval model, and credential scope.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Impact is bounded by directly disclosed consequences and generalized only to the privileges exposed by a particular agent deployment.}
+    status: validated

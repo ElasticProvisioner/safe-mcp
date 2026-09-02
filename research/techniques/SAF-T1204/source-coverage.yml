@@ -1,0 +1,218 @@
+version: 1
+technique_id: SAF-T1204
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+        - Direct open https://modelcontextprotocol.io/specification/2025-06-18/server/resources
+        - "site:docs.langchain.com long-term memory store namespace agent"
+      material_changes:
+        - Established that MCP delivers model- or application-controlled context but does not define persistent agent memory.
+        - Established a first-party cross-thread memory implementation and namespace boundary.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov memory poisoning LLM"
+        - "site:nvd.nist.gov prompt injection agent memory"
+        - "site:cve.org memory poisoning AI agent"
+        - "site:cisa.gov AI agent prompt injection memory"
+        - "site:microsoft.com/security/blog memory poisoning AI agent incident"
+        - "site:security.googleblog.com agent memory poisoning incident"
+        - "site:anthropic.com/news agent memory prompt injection incident"
+        - "site:openai.com/index memory prompt injection security incident"
+      material_changes:
+        - Found Microsoft Defender observations of 50 in-the-wild implantation attempts from 31 companies, with variable effectiveness.
+        - Found an adjacent OpenClaw trust-label advisory and a CVE-number conflict between NVD and the upstream advisory.
+        - Found no qualifying direct product CVE or fully documented production breach for the complete chain.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org LLM agent memory injection persistent memory poisoning attack"
+        - "site:proceedings.neurips.cc agent memory poisoning AgentPoison"
+        - "site:aclanthology.org agent memory injection attack persistent"
+        - "site:usenix.org LLM agent memory poisoning prompt injection"
+      material_changes:
+        - Selected MINJA and AgentPoison as peer-reviewed direct demonstrations with distinct attacker prerequisites.
+        - Added an independent realistic-memory study as contrary evidence limiting generalization.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:learn.microsoft.com AI Memory Context Poisoning audit version rollback"
+        - "site:microsoft.com/security/blog Guarding AI memory MemoryUpdated"
+        - "site:docs.langchain.com shared memory prompt injection namespace read-only"
+      material_changes:
+        - Established lifecycle logging, MemoryUpdated telemetry, provenance, retrieval review, rollback, and isolation controls.
+        - Defined a cross-session same-memory-ID correlation analytic and documented content-filter limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org memory poisoning realistic pre-existing memory defense"
+        - "site:proceedings.neurips.cc memory injection limitations shared memory"
+        - "site:github.com/openclaw/openclaw/security/advisories/GHSA-57r2-h2wj-g887"
+      material_changes:
+        - Narrowed production wording to observed attempts rather than confirmed successful implantation.
+        - Preserved shared-memory and direct-database-access assumptions and realistic-memory reductions as prominent limitations.
+        - Reclassified the OpenClaw advisory as adjacent and excluded the disputed CVE identifier from selected examples.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:proceedings.neurips.cc persistent memory prompt injection agent 2026"
+        - "site:aclanthology.org memory poisoning agent future sessions"
+        - "site:microsoft.com/security/blog AI Agent Context Poisoning memory incident vulnerability"
+        - "site:nvd.nist.gov/vuln/detail AI assistant memory prompt injection"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:proceedings.neurips.cc long-term context poisoning agent memory"
+        - "site:aclanthology.org query-only memory injection agent"
+        - "site:microsoft.com/en-us/security/blog persistent context implant AI memory"
+        - "site:nvd.nist.gov/vuln/detail context poisoning agent"
+      material_changes: []
+  rationale: >-
+    Direct protocol, implementation, incident-report, advisory, government,
+    peer-reviewed, and contrary-evidence sources cover every publishable claim.
+    Two narrower whitelist-only follow-ups returned the same controlling sources
+    or unrelated results and added no requirement, qualifying example,
+    corroboration, limitation, remediation change, or detection constraint.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-ms-recommendation-poisoning-2026
+    - SRC-ms-redteam-update-2026
+    - SRC-neurips-minja-2025
+    - SRC-neurips-agentpoison-2024
+  no_qualifying_examples_rationale: >-
+    Four examples qualify for publication, but none is a fully documented direct
+    production breach or direct product vulnerability for the complete chain.
+    Microsoft observed real-world attempts but explicitly reported variable
+    effectiveness; the other selected cases are controlled demonstrations. The
+    OpenClaw advisory lacks the durable-memory and later-retrieval steps.
+  candidates:
+    - source_id: SRC-ms-recommendation-poisoning-2026
+      identifier: Microsoft AI Recommendation Poisoning campaign observations
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_attempts_with_variable_effectiveness
+      impact: Attempts sought persistent promotional bias across later assistant recommendations, including health and finance contexts.
+      remediation: Microsoft reports evolving prompt filtering, content separation, memory controls, monitoring, and cases no longer reproducible.
+      selected: true
+      rationale: Highest-relevance in-the-wild campaign evidence, retained with a prominent limitation that successful persistence was not confirmed.
+    - source_id: SRC-ms-redteam-update-2026
+      identifier: Microsoft 2025-2026 deployed-agent red-team engagements
+      relationship: direct_demonstration
+      exploitation_status: controlled_red_team_observed_high_frequency
+      impact: Persistent-memory seeding propagated across sessions and appeared in high-impact attack-chain engagements.
+      remediation: Microsoft recommends whole-session behavioral correlation and agent-component supply-chain controls.
+      selected: true
+      rationale: Direct end-to-end controlled evidence in deployed agentic systems, though public detail is aggregated.
+    - source_id: SRC-neurips-minja-2025
+      identifier: MINJA query-only memory injection
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Evaluated attacks redirected healthcare, shopping, and QA agent reasoning after malicious records were stored and retrieved.
+      remediation: No product patch; the paper evaluates prompt detection and memory sanitization and reports important limitations.
+      selected: true
+      rationale: Strongest peer-reviewed demonstration with a low-privilege query-only attacker.
+    - source_id: SRC-neurips-agentpoison-2024
+      identifier: AgentPoison long-term-memory and RAG backdoor
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Triggered malicious retrieval and actions across driving, healthcare, and QA agents at low poison rates.
+      remediation: No product patch; paper evaluates perplexity filtering and query rephrasing with residual attack success.
+      selected: true
+      rationale: High-impact peer-reviewed demonstration covering multiple safety-relevant agent domains, with stronger attacker access clearly stated.
+    - source_id: SRC-arxiv-memory-defense-2026
+      identifier: Realistic-memory MINJA robustness study
+      relationship: direct_demonstration
+      exploitation_status: controlled_public_demonstration
+      impact: Demonstrated lower but nonzero attack success and material dependence on existing memory and retrieval count.
+      remediation: Evaluated moderation and trust-aware retrieval; threshold calibration produced security-utility tradeoffs.
+      selected: false
+      rationale: Retained as contrary evidence rather than a top example because it is a non-peer-reviewed student project with a narrower setup.
+    - source_id: SRC-ghsa-openclaw-57r2
+      identifier: GHSA-57r2-h2wj-g887
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_exploitation_claimed
+      impact: Webhook-triggered cron output could appear as a trusted System event and strengthen prompt injection.
+      remediation: Fixed in OpenClaw 2026.4.20 by preserving untrusted labels through delivery helpers.
+      selected: false
+      rationale: It does not establish durable memory storage or later cross-session retrieval.
+    - source_id: SRC-nvd-cve-2026-44999
+      identifier: CVE-2026-44999
+      relationship: rejected
+      exploitation_status: unknown
+      impact: NVD describes the OpenClaw trust-label issue, but the upstream advisory calls it low severity and says no known CVE.
+      remediation: NVD references the upstream fix; the upstream advisory gives fixed version 2026.4.20.
+      selected: false
+      rationale: Identifier conflict and missing defining persistence chain make it unsuitable as a selected direct vulnerability.
+
+sources_consulted:
+  - SRC-arxiv-memory-defense-2026
+  - SRC-ghsa-openclaw-57r2
+  - SRC-langchain-deepagents-production
+  - SRC-langchain-long-term-memory
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1546
+  - SRC-ms-guarding-ai-memory-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-redteam-update-2026
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-neurips-agentpoison-2024
+  - SRC-neurips-minja-2025
+  - SRC-nvd-cve-2026-44999
+sources_cited:
+  - SRC-arxiv-memory-defense-2026
+  - SRC-ghsa-openclaw-57r2
+  - SRC-langchain-deepagents-production
+  - SRC-langchain-long-term-memory
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-attack-t1546
+  - SRC-ms-guarding-ai-memory-2026
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-redteam-update-2026
+  - SRC-ms-zero-trust-memory-2026
+  - SRC-neurips-agentpoison-2024
+  - SRC-neurips-minja-2025
+  - SRC-nvd-cve-2026-44999
+sources_rejected:
+  - source_id: SRC-nvd-cve-2026-44999
+    reason: The upstream advisory conflicts on CVE assignment and the described issue is adjacent to, not a complete instance of, the technique.
+sources_blocked: []
+
+conflicts:
+  - issue: NVD assigns CVE-2026-44999 while the linked upstream GHSA says No known CVE.
+    resolution: Cite the conflict only in the evidence packet, use the stable GHSA identifier for the adjacent advisory, and do not select it as a direct vulnerability.
+  - issue: MINJA reports high averages in controlled settings while a later study reports large reductions with pre-existing relevant memory.
+    resolution: Preserve both results, state their settings, and avoid universal effectiveness claims.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1204-C004
+    - SAF-T1204-C005
+    - SAF-T1204-C006
+    - SAF-T1204-C008
+  rationale: >-
+    The complete durable-write, later-retrieval, and influence chain has been
+    reproduced in peer-reviewed studies and deployed-system red-team
+    engagements. Public reporting of production attempts does not establish a
+    confirmed successful production compromise, so Observed would overstate the
+    available evidence.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

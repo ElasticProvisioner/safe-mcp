@@ -1,0 +1,107 @@
+version: 1
+technique_id: SAF-T1112
+integration_mode: mechanical_only_after_verified_freeze
+
+canonical_bundle_paths:
+  technique_directory: techniques/SAF-T1112
+  research_directory: research/techniques/SAF-T1112
+  source_manifest_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+  validation_directory: validation
+  freeze_manifest: FREEZE.sha256
+
+synthetic_tactic_joins: []
+assigned_tactic_join:
+  tactic_id: ATK-TA0002
+  supplied_name: Execution
+  provenance: Supplied neutral assignment; not discovered from or validated against a shared registry before freeze.
+  integration_action: Confirm the destination tactic record resolves to the same ID; do not change technique substance.
+
+synthetic_neighbor_joins:
+  - id: SAF-T9001
+    placeholder_label: Prompt or response manipulation
+    integration_action: Replace only with an exact destination neighbor covering ordinary MCP content manipulation, or omit the join without rewriting the frozen distinction.
+  - id: SAF-T9002
+    placeholder_label: Unauthorized tool invocation
+    integration_action: Replace only with an exact destination neighbor covering host tool-authorization crossing, or omit the join without rewriting the frozen distinction.
+  - id: SAF-T9003
+    placeholder_label: Resource exhaustion
+    integration_action: Replace only with an exact destination neighbor covering generic request-driven availability pressure, or omit the join without rewriting the frozen distinction.
+
+synthetic_mitigation_joins:
+  - id: SAF-M-901
+    placeholder_label: Disable unsupported capability
+    integration_action: Replace with an exact destination mitigation for capability disablement or omit.
+  - id: SAF-M-902
+    placeholder_label: Enforce review and validation
+    integration_action: Replace with an exact destination mitigation for request-specific approval and content validation or omit.
+  - id: SAF-M-903
+    placeholder_label: Enforce budgets and migrate
+    integration_action: Replace with an exact destination mitigation for rate/token limits or deprecated-feature migration, or omit.
+
+source_id_joins:
+  - SRC-apress-sampling-abuse-2026
+  - SRC-arxiv-sampling-query-2026
+  - SRC-cisa-kev-2026
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-inspector-web-2026
+  - SRC-mcp-llms-index-2026
+  - SRC-mcp-sampling-2025
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-schema-2025
+  - SRC-mcp-schema-2026
+  - SRC-mcp-security-practices-2025
+  - SRC-mcp-spec-2026
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-mitre-t1204-2025
+  - SRC-mitre-terms-2026
+  - SRC-nvd-mcp-query-2026
+  - SRC-nvd-sampling-query-2026
+  - SRC-opentelemetry-genai-repo-2026
+  - SRC-opentelemetry-moved-2026
+source_id_integration_action: >-
+  For each enumerated source, compare canonical URL and reviewed version against
+  the destination source registry. Preserve the frozen ID when unused; reuse an
+  identical destination ID when canonical identity matches; on collision,
+  mechanically remap every fragment reference without changing claims or prose.
+
+synthetic_history_joins:
+  - sha: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    path: research/techniques/SAF-T1112/traceability-ledger.yml
+    purpose: Nonzero isolated strict-validator placeholder only; supports no external proposition.
+    integration_action: Replace with an honest destination history SHA after integration, then rerun validation without changing publishable substance.
+
+path_joins:
+  - fragment: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+    action: Merge source records by reconciled source ID.
+  - fragment: framework-fragment.yml
+    destination: research/framework-model.yml
+    action: Merge the SAF-T1112 technique record after resolving synthetic neighbor and mitigation joins.
+  - fragment: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+    action: Merge issue records by unique issue ID.
+  - fragment: techniques/SAF-T1112
+    destination: techniques/SAF-T1112
+    action: Copy the immutable technique directory byte-for-byte.
+  - fragment: research/techniques/SAF-T1112
+    destination: research/techniques/SAF-T1112
+    action: Copy the immutable research directory byte-for-byte except the required mechanical history-SHA reconciliation.
+
+material_change_rule: >-
+  Any change to scope, claim text, evidence status, source selection, traces,
+  detection semantics, thresholds, rights conclusions, or publishable prose is
+  non-mechanical and invalidates this clean-room handoff; stop and re-author or
+  issue a new freeze instead of silently adapting the bundle.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1102, SAF-T1104, SAF-T2102]
+  canonical_mitigations: [SAF-M-22, SAF-M-29, SAF-M-69, SAF-M-73]
+  attack_mapping: {id: T1204, type: conditional_analogy}
+  validation_proof:
+    - research/techniques/SAF-T1112/validation/detection-test.txt
+    - research/techniques/SAF-T1112/validation/strict-validator.txt
+  source_archive: External clean-room corpus remains outside the repository; canonical source records contain review evidence and locators only.

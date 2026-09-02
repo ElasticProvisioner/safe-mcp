@@ -1,0 +1,88 @@
+version: 1
+technique_id: SAF-T1801
+name: Automated Data Harvesting
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0009
+adversary_objective: Cause an agentic system to autonomously enumerate, retrieve,
+  and aggregate a broader set of data than the user-directed task requires by using
+  data-reading MCP tools or resources available to the agent.
+scope:
+  security_boundary: The task-intent and data-minimization boundary between a user's
+    bounded request and the wider data scope available through the agent's authorized
+    MCP connections.
+  in_scope:
+  - Automated or systematically repeated successful reads across multiple data objects
+    through MCP resources or data-reading tools.
+  - Agentic collection directed by a malicious operator, indirect prompt injection,
+    poisoned tool metadata, or compromised orchestration after the prerequisite access
+    exists.
+  - Collection into agent context, working state, or a local staging result; subsequent
+    transmission is not required.
+  out_of_scope:
+  - A single data retrieval that is proportionate to the user's stated task.
+  - Initial prompt injection, tool poisoning, credential theft, or exploitation used
+    only to obtain control or access.
+  - Transmission of already collected data to an external destination, destructive
+    modification, persistence, or availability impact.
+  affected_components:
+  - MCP host and client orchestration
+  - MCP servers exposing resources or data-reading tools
+  - Connected filesystems, repositories, messaging stores, databases, and APIs
+  - Agent context, task state, and audit pipeline
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection supplies control; SAF-T1801 begins when the agent systematically
+    acquires data through available MCP interfaces.
+- technique_id: SAF-T1803
+  distinction: Database Dump is a database-focused specialization; SAF-T1801 spans
+    repositories, messages, filesystems, databases, and APIs.
+- technique_id: SAF-T1804
+  distinction: API Data Harvest is an API-focused specialization; SAF-T1801 is source-agnostic
+    and requires automated breadth, repetition, or systematic enumeration.
+- technique_id: SAF-T1910
+  distinction: Covert Channel Exfiltration moves acquired material outside the trusted
+    boundary through a covert channel; SAF-T1801 ends at acquisition or aggregation.
+required_evidence:
+- Establish that MCP resources and tools can list or retrieve data and that clients
+  or models may invoke them automatically.
+- Establish a directly observed or demonstrated agentic sequence that automatically
+  collects multiple records or large data volumes through MCP-connected capabilities.
+- Search production incidents, controlled demonstrations, CVE records, vendor advisories,
+  fixed versions, exploitation status, and government known-exploitation catalogs.
+- Establish audit telemetry and a bounded behavioral analytic for repeated successful
+  data reads.
+- Challenge the distinction from prompt-injection delivery, one-object retrieval,
+  unauthorized path access, and downstream exfiltration.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP host or gateway audit events with event.timestamp, event.action, event.outcome,
+    session.id, actor.id, server.id, data.object.id, data.access_mode, approval.state,
+    and approval.scope.
+  - A normalized indication that a tools/call operation reads data, because tool names
+    and argument schemas are server-defined.
+safe_example_constraints:
+- Use inert example.invalid resources, synthetic object identifiers, and placeholder
+  data.
+- Omit prompt-injection payloads, secrets, exploit code, and deployable exfiltration
+  instructions.
+- Show only the minimum request sequence needed to explain collection and telemetry.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and directly reviewed
+  sources with exact locators.
+- All unverified candidates are omitted from publishable prose and preserved in the
+  exclusion ledger.
+- All five research passes and two final authority-only no-material-change passes
+  are recorded.
+- Production incidents, vulnerabilities, demonstrations, exploitation state, and remediations
+  are separately classified.
+- The deterministic detector passes positive, negative, boundary, malformed, and expected
+  false-positive cases.
+- Publication-rights, safe-publication, framework-alignment, source-or-omit, and clean-room
+  gates pass before freeze.

@@ -1,0 +1,30 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1112
+    name: Sampling Request Abuse
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0002
+    technique_path: techniques/SAF-T1112/README.md
+    research_packet: research/techniques/SAF-T1112
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1104
+      - SAF-T2102
+    mitigations:
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-73
+    detection:
+      rule: techniques/SAF-T1112/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1112/test_detection_rule.py
+        - techniques/SAF-T1112/test-logs.json
+        - research/techniques/SAF-T1112/validation/detection-test.txt
+        - research/techniques/SAF-T1112/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1204
+        type: conditional_analogy

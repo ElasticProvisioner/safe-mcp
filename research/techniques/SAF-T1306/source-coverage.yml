@@ -1,0 +1,163 @@
+version: 1
+technique_id: SAF-T1306
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct MCP authorization specification and SEP issuer-mix-up review.
+        - Direct IETF RFC issuer, metadata, protected-resource discovery, and OAuth security review.
+      material_changes: [Established the issuer-association boundary and 2026 MCP mitigation matrix.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Direct NVD API records for CVE-2025-10619 and CVE-2025-4143.
+        - Direct CISA KEV 2026.09.01 identifier membership check.
+        - Direct CISA multi-agency advisory review for actor-controlled authorization infrastructure.
+      material_changes: [Classified two MCP-adjacent CVEs and one production historical analogy; no direct MCP production incident qualified.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct full review of arXiv:1601.01229v4 and RFC 9700 mix-up evidence.
+      material_changes: [Added a generic OAuth implementation demonstration with an explicit non-MCP limitation.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct MCP TypeScript SDK authentication error documentation review.
+        - Direct Cisco and CISA authorization-infrastructure detection guidance review.
+      material_changes: [Defined issuer-mismatch telemetry, compatibility blind spots, and migration false positives.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Challenged directness of protocol changes, demonstrations, both CVEs, and TACACS analogies.
+        - Checked author attribution and excluded unsupported project authorship.
+      material_changes: [Reduced overall status to Research-Derived and omitted unsupported direct-incident, fixed-version, exploitation, and author claims.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Rechecked current MCP specification, CISA KEV snapshot, and NVD relationships against the contract.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Rechecked source-to-claim locators, example ranking, exclusions, and detection boundaries.
+      material_changes: []
+  rationale: Direct protocol, implementation, formal research, official advisory, current vulnerability, exploitation-catalog, detection, and framework sources cover every publishable proposition. Two challenge passes did not alter the evidence level, examples, contract, or analytic.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-mcp-release-2026-07-28
+    - SRC-fett-oauth-analysis
+    - SRC-cisa-aa25-239a
+    - SRC-nvd-cve-2025-10619
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-mcp-release-2026-07-28
+      identifier: July 2026 MCP authorization-server mix-up remediation
+      relationship: direct_vulnerability
+      exploitation_status: No exploitation reported by the source
+      impact: Protocol weakness could allow code or token disclosure in multi-server flows lacking issuer binding.
+      remediation: Current specification requires issuer validation and rejection before redemption.
+      selected: true
+      rationale: Highest-directness MCP example, although it is protocol remediation rather than a production event.
+    - source_id: SRC-fett-oauth-analysis
+      identifier: OAuth IdP mix-up implementation demonstration
+      relationship: historical_analogy
+      exploitation_status: Reproduced in controlled OAuth and OpenID Connect implementations
+      impact: Client could disclose an honest provider's code to a malicious provider, enabling impersonation or resource access.
+      remediation: Bind the authorization response to the provider identity and compare before redemption.
+      selected: true
+      rationale: Strongest empirical evidence for the generic defining mechanism, but it predates and does not test MCP.
+    - source_id: SRC-cisa-aa25-239a
+      identifier: AA25-239A actor-controlled TACACS+ authorization infrastructure
+      relationship: historical_analogy
+      exploitation_status: Observed state-sponsored activity
+      impact: Administrator authentication attempts and credentials were exposed to actor-controlled infrastructure, supporting further access.
+      remediation: Remove unexpected AAA servers, restrict flows, and monitor configuration and network telemetry.
+      selected: true
+      rationale: Highest-impact production analogy for adversary-controlled authorization infrastructure, explicitly outside MCP and OAuth.
+    - source_id: SRC-nvd-cve-2025-10619
+      identifier: CVE-2025-10619
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public proof of concept; no direct production exploitation established
+      impact: OAuth Server Discovery input could produce OS command execution in sequa-mcp through 1.0.13.
+      remediation: Upgrade to 1.0.14 and constrain discovery input.
+      selected: true
+      rationale: Highest-impact MCP-adjacent discovery vulnerability, but command injection rather than issuer mix-up is the defining mechanism.
+    - source_id: SRC-nvd-cve-2025-4143
+      identifier: CVE-2025-4143
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA enrichment reports none known
+      impact: Conditional credential theft or impersonation could follow insufficient redirect URI validation.
+      remediation: Apply the vendor correction and validate redirect URIs; exact fixed version omitted because reviewed metadata conflicts.
+      selected: false
+      rationale: Redirect URI validation is a different mechanism and ranks below the four selected examples.
+    - source_id: SRC-cisco-arcanedoor
+      identifier: ArcaneDoor AAA authentication hook
+      relationship: rejected
+      exploitation_status: Observed espionage campaign behavior
+      impact: Modified AAA handling enabled attacker authentication bypass.
+      remediation: Follow vendor incident guidance and restore trusted device configuration.
+      selected: false
+      rationale: Local authentication-process modification is not a rogue authorization server or issuer-association failure.
+sources_consulted:
+  - SRC-mitre-t1528
+  - SRC-attack-t1556
+  - SRC-cisa-aa25-239a
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisco-arcanedoor
+  - SRC-cisco-security-warnings
+  - SRC-cisco-state-campaigns
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-sep-2468
+  - SRC-mcp-ts-auth-errors
+  - SRC-mcp-release-2026-07-28
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  - SRC-fett-oauth-analysis
+  - SRC-rfc8414
+  - SRC-rfc9207
+  - SRC-rfc9700
+  - SRC-rfc9728
+sources_cited:
+  - SRC-mitre-t1528
+  - SRC-attack-t1556
+  - SRC-cisa-aa25-239a
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisco-security-warnings
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-sep-2468
+  - SRC-mcp-ts-auth-errors
+  - SRC-mcp-release-2026-07-28
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  - SRC-fett-oauth-analysis
+  - SRC-rfc8414
+  - SRC-rfc9207
+  - SRC-rfc9700
+  - SRC-rfc9728
+sources_rejected:
+  - source_id: SRC-cisco-arcanedoor
+    reason: The first-party incident describes an AAA hook and authentication bypass, not a rogue authorization server or issuer association failure.
+  - source_id: SRC-cisco-state-campaigns
+    reason: The first-party report is corroborative AAA context but less direct and less current than the selected multi-agency advisory.
+sources_blocked: []
+conflicts:
+  - issue: CVE-2025-4143 version data in the reviewed NVD record is internally inconsistent.
+    resolution: Retained only the mechanism and bounded impact; omitted an exact fixed-version statement.
+  - issue: The protocol and formal sources establish the behavior more strongly than the production incident corpus.
+    resolution: Classified the complete MCP technique as Research-Derived and labeled non-MCP examples as historical or adjacent.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T1306-C003, SAF-T1306-C009]
+  rationale: MCP's current specification and final SEP directly identify and close the protocol exposure, while RFCs and formal research demonstrate the generic OAuth mechanism. No reviewed authoritative source establishes an end-to-end MCP production incident or MCP-specific public reproduction.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

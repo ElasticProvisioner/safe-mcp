@@ -1,0 +1,192 @@
+version: 1
+technique_id: SAF-T3001
+claims:
+  - id: SAF-T3001-C001
+    statement: Corpus-only poisoning can make trigger-matching RAG queries retrieve attacker content and produce a selected response without modifying the retriever or generator.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-badrag
+        support: direct
+        exact_locators: [Abstract; Sections 3.1-3.3; Figure 1]
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: corroborating
+        exact_locators: [Abstract; Sections 3-4]
+    corroboration: Independent BadRAG and PoisonedRAG experiments exercise the full corpus-to-output path.
+    limitations: [Controlled evaluations do not establish a production compromise.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C002
+    statement: BadRAG reported 98.2-99.8 percent top-1 triggered retrieval and 0.05-0.21 percent clean-query poison retrieval for Contriever with ten adversarial passages.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-badrag
+        support: direct
+        exact_locators: [Section 5.2; Table 1; pages 7-8]
+    corroboration: PoisonedRAG independently reports targeted knowledge corruption with few inserted passages.
+    limitations: [The figures are evaluation-specific and should not be generalized to every retriever or corpus.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C003
+    statement: PoisonedRAG demonstrated targeted answer corruption across three datasets, eight language models, and three application tests, with at least 90 percent headline attack success using five texts per target.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators: [Abstract; Sections 5.2-5.5; Tables 1-5]
+    corroboration: BadRAG and RIPRAG independently demonstrate related corpus-only output manipulation.
+    limitations: [Most experiments are question-answering tasks; success remains configuration-dependent.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C004
+    statement: RIPRAG demonstrated black-box feedback optimization with one poisoned document and reported attack-success rates from 0.35 to 1.00 across evaluated configurations.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-riprag
+        support: direct
+        exact_locators: [Abstract; Sections 3, 5.2-5.3; Tables 1-3; pages 16882-16890]
+    corroboration: PoisonedRAG separately demonstrated both black-box and white-box retriever-knowledge settings.
+    limitations: [The method requires target interaction and may be constrained by moderation, cost, or rate limits.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C005
+    statement: Confundo reports that preprocessing and query variation weaken prior poison attacks and demonstrates a generator designed to retain effectiveness across those practical transformations.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-confundo-2026
+        support: direct
+        exact_locators: [Official USENIX presentation page, abstract paragraphs 1-3]
+    corroboration: RIPRAG documents a separate black-box adaptation path.
+    limitations: [The reviewed official page provides summary claims, not deployment incident evidence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C006
+    statement: The contract boundary is runtime retrieval-corpus state rather than transient prompt content, training-time model weights, or direct memory writes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-aml
+        support: context
+        exact_locators: [Sections 3.2.1-3.2.2, pages 21-27; Section 4.4.1, pages 44-49; Glossary, page 97]
+      - source_id: SRC-badrag
+        support: direct
+        exact_locators: [Sections 3.1-3.3]
+    corroboration: NIST distinguishes poisoning/backdoors from runtime prompt injection while BadRAG defines unchanged model components.
+    limitations: [The boundary is a SAF classification inference, not NIST terminology.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Synthesizes authoritative taxonomy with the demonstrated RAG mechanism.}
+    status: validated
+  - id: SAF-T3001-C007
+    statement: The immediate consequence is answer-integrity loss; downstream severity depends on whether humans or automated components act on the generated result.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators: [Sections 5.2 and 5.5]
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: context
+        exact_locators: [Lines 43-54; 162-181]
+      - source_id: SRC-nist-aml
+        support: context
+        exact_locators: [Executive Summary; Section 4.4.1]
+    corroboration: Controlled answer manipulation and adjacent real-world recommendation-poisoning attempts establish the integrity concern while preserving the mechanism boundary.
+    limitations: [The sources do not establish a uniform severity for all deployments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C008
+    statement: ATT&CK Impact and Stored Data Manipulation are the closest enterprise mappings for attacker-inserted stored content that changes later outcomes.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0040
+        support: context
+        exact_locators: [Official tactic page, definition]
+      - source_id: SRC-mitre-attack-t1565
+        support: context
+        exact_locators: [Official technique page, description; Stored Data Manipulation sub-technique]
+    corroboration: Both official ATT&CK entries align with the immediate integrity objective and stored-state mechanism.
+    limitations: [ATT&CK does not define this RAG-specific technique; the mapping is inferential.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Maps a new AI mechanism to the closest official enterprise concepts.}
+    status: validated
+  - id: SAF-T3001-C009
+    statement: Source approval, document hashing, index write restriction, provenance, replayable retrieval traces, quarantine, and rollback are relevant preventive and investigative controls.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-rag-security
+        support: direct
+        exact_locators: [Sections 1, 5, 7, 11-14]
+    corroboration: Microsoft runtime retrieval hygiene guidance independently emphasizes provenance and monitoring.
+    limitations: [These controls reduce exposure and aid response but are not proven complete prevention.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C010
+    statement: Alerting on a returned passage with an unapproved source or failed integrity verification is a testable candidate signal, not proof of poisoning.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-rag-security
+        support: context
+        exact_locators: [Sections 1, 5, 7, 12 and 14]
+    corroboration: The local test corpus validates the event logic, including negative and suppression cases.
+    limitations: [It misses malicious but intact content admitted through approved sources and depends on complete metadata.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Operationalizes OWASP controls as a bounded detection candidate.}
+    status: validated
+  - id: SAF-T3001-C011
+    statement: Published evaluations show that paraphrasing, perplexity or duplicate filtering, and retrieval guardrails can reduce some attacks yet leave residual success or operational false positives.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators: [Section 6; Tables 7-8; Appendices H-I]
+      - source_id: SRC-riprag
+        support: corroborating
+        exact_locators: [Section 5.3; defense results]
+      - source_id: SRC-badrag
+        support: corroborating
+        exact_locators: [Section 6.3]
+    corroboration: Three independent evaluations report distinct defense limitations.
+    limitations: [Results cover selected defenses and cannot establish that all future defenses fail.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T3001-C012
+    statement: Microsoft's in-the-wild recommendation-poisoning observations concern prompts written to assistant memory, not the exact trigger-conditioned retrieval-corpus backdoor defined here.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: direct
+        exact_locators: [Lines 43-63; 79-119; 178-185; 284-304]
+    corroboration: Microsoft's catalog separately describes retrieval-store and memory/context poisoning categories.
+    limitations: [Absence of a reviewed exact production incident is a research gap, not proof that none has occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Applies the clean-room contract boundary to an adjacent observed campaign.}
+    status: validated

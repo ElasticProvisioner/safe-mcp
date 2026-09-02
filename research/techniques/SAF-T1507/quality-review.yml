@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1507
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent /root/cleanroom_saf_t1507
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Clean-room attestation records a fresh agent, no inherited target context, no prior-artifact access, independent searches, source openings, strict mock validation, and pre-integration freeze.
+  contract_and_scope:
+    status: passed
+    notes: The behavior is bounded to receipt and redemption of a victim-issued authorization code across the redirect and token-exchange boundaries; injection and post-issuance theft are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Protocol mechanics, prerequisites, control failures, vulnerabilities, and limitations were checked against current MCP and OAuth authorities.
+  claim_traceability:
+    status: passed
+    notes: Nineteen validated claims contain direct locators, limitations, inference labels, and source relations.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or declared local artifact; all exclusions remain absent.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is limited to an explicit MCP inference; direct vulnerabilities and component tests do not elevate it to Demonstrated or Observed.
+  research_saturation:
+    status: passed
+    notes: An initial follow-up added CVE-2026-67336 and reset saturation; the final two consecutive narrow official NVD passes added no changes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production incidents, CVEs, first-party advisories, patches, exploitation status, and contrary candidates were separately reviewed; three highest-impact qualifying direct vulnerabilities were selected and no breach was claimed.
+  detection_quality:
+    status: passed
+    notes: Ten deterministic cases cover positive, negative, boundary, malformed, known retry, and expected false-positive behavior; all passed.
+  mitigation_quality:
+    status: passed
+    notes: Controls address exact redirects, S256 PKCE, downgrade rejection, callback hardening, single use, and audience restriction with stated limits.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0006 and analogous ATT&CK T1528 are reconciled; the two synthetic neighbor roles map post-freeze to SAF-T1009 and SAF-T1504 with eight canonical mitigation joins.
+  publication_rights:
+    status: passed
+    notes: All cited sources are paraphrased and attributed; no quotation, source code, protected diagram, dataset, or source corpus is bundled.
+  safe_publication:
+    status: passed
+    notes: The sole technical example uses reserved addresses and opaque non-redeemable values; no live code, token, verifier, callback, payload, or exploit steps are supplied.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1507/test_detection_rule.py
+      result: passed
+      output: PASS 10 cases (5 alert, 5 no-alert)
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1507
+      result: passed
+      output: PASS SAF-T1507
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1507/test_detection_rule.py
+    result: PASS 10 cases with 5 alert and 5 no-alert outcomes across all required categories.
+    waiver: null
+
+unresolved: []

@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T1105
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/cleanroom_saf_t1105
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records no inherited context or prohibited prior-artifact access; isolated validation precedes freeze.
+  contract_and_scope:
+    status: passed
+    notes: Contract is limited to a path-bearing tool request causing an out-of-scope filesystem operation.
+  technical_accuracy:
+    status: passed
+    notes: Current protocol, CWE, vendor, researcher, and maintainer sources support the mechanism, prerequisites, and bounded outcomes.
+  claim_traceability:
+    status: passed
+    notes: All 17 claims have full IDs, directly reviewed sources, locators, limitations, and validated status.
+  source_or_omit:
+    status: passed
+    notes: Same-line hidden traces cover every substantive publishable unit; four excluded leads do not appear as asserted facts.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by an end-to-end controlled public-endpoint reproduction and is not elevated to Observed.
+  research_saturation:
+    status: passed
+    notes: Five passes and two consecutive no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production incidents, advisories, vulnerabilities, exploitation status, versions, fixes, and example selection were searched separately.
+  detection_quality:
+    status: passed
+    notes: Ten deterministic synthetic cases cover positive, negative, prefix-boundary, link-resolution, no-access, blocked, override, and missing-field behavior.
+  mitigation_quality:
+    status: passed
+    notes: Controls address canonical path resolution, containment, link handling, privileges, isolation, logging, and fixed versions.
+  framework_alignment:
+    status: passed
+    notes: The Execution tactic and canonical SAF-T1102 and SAF-T1104 neighbor boundaries are reconciled with the analogous ATT&CK mappings.
+  publication_rights:
+    status: passed
+    notes: Factual paraphrase only; no third-party code, diagrams, payloads, datasets, or protected expression reproduced.
+  safe_publication:
+    status: passed
+    notes: Scenario and tests use inert placeholder paths and content only.
+
+validation:
+  commands:
+    - command: python3 tests/SAF-T1105/test_detection_rule.py
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1105
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1105/test_detection_rule.py
+    result: "PASS 10/10 cases: 6 alerts and 4 non-alerts matched expectations"
+    waiver: null
+
+unresolved: []

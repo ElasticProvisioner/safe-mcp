@@ -1,105 +1,91 @@
-title: MCP Compromised-Server Pivot Detection
-id: 4263F4F1-BEFB-4ED6-9218-37B1CA204C81
+title: Compromised MCP Server Cross-Trust Pivot
+id: 8f3d8b72-f7fc-4d84-92cf-e6df6433f18a
 status: experimental
-description: Detects potential compromised-server pivot attacks for lateral movement in MCP workspace environments
-author: SAF-MCP Team
-date: 2025-01-20
+description: >-
+  Detects a changed catalog from an untrusted or compromised MCP server followed
+  within ten minutes by an unapproved high-sensitivity call to a different MCP
+  server in the same causal trace.
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1704
-  - https://attack.mitre.org/techniques/T1021/
-  - https://attack.mitre.org/techniques/T1028/
-  - https://modelcontextprotocol.io/specification
-logsource:
-  category: mcp_server_activity
-  product: mcp
-  service: workspace_monitoring
-detection:
-  # File system pivot indicators
-  selection_file_pivot:
-    EventType: 'file_access'
-    SourceType: 'mcp_server'
-    TargetPath|contains:
-      - '/workspace/shared'
-      - '/.mcp/config'
-      - '/workspace/build-scripts'
-    AccessType:
-      - 'write'
-      - 'modify'
-    FileExtension|in:
-      - '.sh'
-      - '.py'
-      - '.js'
-      - '.json'
-      - '.yaml'
-      - '.yml'
-  
-  # Network pivot indicators
-  selection_network_pivot:
-    EventType: 'network_connection'
-    SourceType: 'mcp_server'
-    DestinationType: 'workspace_host'
-    DestinationPort|not in:
-      - '443'
-      - '80'
-    ConnectionDirection: 'outbound'
-    Protocol: 'tcp'
-  
-  # Process execution pivot indicators
-  selection_process_pivot:
-    EventType: 'process_execution'
-    SourceType: 'mcp_server'
-    TargetHost: 'different_host'
-    ProcessName|contains:
-      - 'ssh'
-      - 'scp'
-      - 'rsync'
-      - 'docker'
-      - 'kubectl'
-  
-  # Container escape indicators
-  selection_container_escape:
-    EventType: 'container_activity'
-    SourceType: 'mcp_server'
-    Action:
-      - 'host_mount'
-      - 'privileged_execution'
-      - 'socket_access'
-    TargetType: 'host_system'
-  
-  # Configuration manipulation indicators
-  selection_config_manipulation:
-    EventType: 'configuration_change'
-    SourceType: 'mcp_server'
-    TargetPath|contains:
-      - '/.mcp/config'
-      - '/workspace/.env'
-      - '/workspace/docker-compose.yml'
-    ChangeType:
-      - 'credential_added'
-      - 'network_config_modified'
-      - 'container_config_modified'
-  
-  condition:
-    selection_file_pivot or
-    selection_network_pivot or
-    selection_process_pivot or
-    selection_container_escape or
-    selection_config_manipulation
-
-falsepositives:
-  - Legitimate workspace automation scripts accessing shared resources
-  - Normal MCP server communication with workspace services
-  - Authorized container operations for development workflows
-  - Expected configuration updates from deployment tools
-
-level: high
-
+  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - https://learn.microsoft.com/en-us/microsoft-365/admin/manage/manage-tools-for-agent?view=o365-worldwide
+author: OpenAI Codex clean-room research agent
+date: 2026-09-02
 tags:
+  - saf.t1704
   - attack.lateral_movement
-  - attack.t1021        # Remote Services
-  - attack.t1028       # Windows Remote Management
-  - attack.t1055       # Process Injection
-  - attack.t1550       # Use Alternate Authentication Material
-  - attack.t1611       # Escape to Host
-  - safe.t1704         # Compromised-Server Pivot
-
+logsource:
+  category: application
+  product: mcp_host_or_gateway
+  service: mcp_audit
+detection:
+  source_catalog_change:
+    event_type: mcp.tool_catalog_change
+    source_server_trust:
+      - untrusted
+      - compromised
+    metadata_fingerprint_changed: true
+  target_sensitive_call:
+    event_type: mcp.tool_call
+    operation_sensitivity: high
+    user_approved: false
+  correlation:
+    same_fields:
+      - trace_id
+    different_fields:
+      - source_server_id
+      - target_server_id
+    causal_membership: source_server_id in causal_context_server_ids
+    ordered_within_seconds: 600
+  condition: source_catalog_change then target_sensitive_call and correlation
+fields:
+  - timestamp
+  - trace_id
+  - source_server_id
+  - source_server_trust
+  - metadata_fingerprint_changed
+  - target_server_id
+  - target_tool_name
+  - operation_sensitivity
+  - user_approved
+  - causal_context_server_ids
+falsepositives:
+  - Approved catalog rollout followed by legitimate cross-server orchestration.
+  - Misclassified server trust or tool sensitivity.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1704-C003
+    - SAF-T1704-C012
+  telemetry_claim_ids:
+    - SAF-T1704-C011
+  limitation_claim_ids:
+    - SAF-T1704-C013
+  validation_artifacts:
+    - tests/SAF-T1704/test_detection_rule.py
+    - tests/SAF-T1704/fixtures.jsonl
+    - tests/SAF-T1704/test-logs.json
+    - research/techniques/SAF-T1704/validation/detection-test.txt
+    - research/techniques/SAF-T1704/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1704-C011]
+      rationale: Host or gateway audit events preserve server and invocation identity.
+    source_catalog_change:
+      claim_ids: [SAF-T1704-C003, SAF-T1704-C012]
+      rationale: The defining demonstration begins with malicious server-supplied tool metadata.
+    target_sensitive_call:
+      claim_ids: [SAF-T1704-C003, SAF-T1704-C010, SAF-T1704-C012]
+      rationale: The pivot becomes material when host authority reaches a different sensitive target without approval.
+    correlation:
+      claim_ids: [SAF-T1704-C011, SAF-T1704-C012, SAF-T1704-C013]
+      rationale: Trace, server identity, sequence, and window are required to distinguish causal cross-server action.
+    condition:
+      claim_ids: [SAF-T1704-C012]
+      rationale: The ordered conjunction encodes the bounded behavioral hypothesis.
+    fields:
+      claim_ids: [SAF-T1704-C011, SAF-T1704-C013]
+      rationale: These fields support investigation and expose missing-provenance blind spots.
+    falsepositives:
+      claim_ids: [SAF-T1704-C013]
+      rationale: Legitimate orchestrated workflows can create the same sequence after an approved change.

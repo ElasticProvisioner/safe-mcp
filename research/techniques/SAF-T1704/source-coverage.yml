@@ -1,0 +1,240 @@
+version: 1
+technique_id: SAF-T1704
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - site:modelcontextprotocol.io specification 2026 architecture hosts clients servers cross-server
+        - site:modelcontextprotocol.io specification 2026 tools metadata annotations security authorization
+      material_changes:
+        - Established the current host-managed isolation and cross-server boundary.
+        - Established that server-supplied metadata/results are untrusted and client-governed.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov MCP malicious server authorization_endpoint client RCE
+        - site:jfrog.com MCP remote RCE session hijack malicious response
+        - site:cisa.gov MCP server breach tool poisoning lateral movement
+      material_changes:
+        - Selected CVE-2025-6514 and CVE-2025-6515 as high-impact product-specific variants.
+        - Found no direct-authority production incident establishing the complete technique.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - site:invariantlabs.ai MCP cross-server tool shadowing
+        - site:trailofbits.com MCP line jumping cross-server
+        - site:arxiv.org MCP tool poisoning cross-tool benchmark
+      material_changes:
+        - Selected the Invariant two-server experiment as the defining end-to-end demonstration.
+        - Added independent client testing and MCPTox benchmark corroboration.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - site:learn.microsoft.com MCP server security tool metadata cross-server monitoring
+        - site:modelcontextprotocol.io 2026 trace context headers tools security
+      material_changes:
+        - Defined required gateway/host invocation, approval, trust, fingerprint, and causal-trace telemetry.
+        - Authored an ordered ten-minute correlation analytic and layered controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - site:modelcontextprotocol.io 2026 sessions removed stateless
+        - site:nvd.nist.gov CVE-2025-6514 exploitation CVE-2025-6515 exploitation
+        - site:attack.mitre.org T1210 Exploitation of Remote Services
+      material_changes:
+        - Limited CVE-2025-6515 to legacy session transports.
+        - Classified T1210 as analogous rather than equivalent.
+        - Preserved production-incident and detector-field evidence gaps.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov OR site:jfrog.com MCP compromised server cross-server pivot lateral movement vulnerability
+      material_changes:
+        - Added CVE-2026-14541 to the exclusion ledger because its authorization flow runs in the opposite direction.
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov MCP malicious server client command injection session hijack CVE
+      material_changes:
+        - Added CVE-2025-58062 as a direct but redundant, lower-impact authorization-endpoint variant not selected over CVE-2025-6514.
+    - pass: saturation_follow_up_3
+      completed_on: "2026-09-02"
+      queries:
+        - site:learn.microsoft.com MCP compromised server cross-server action tool metadata lineage detection 2026
+        - site:invariantlabs.ai OR site:trailofbits.com MCP cross-server production incident
+      material_changes:
+        - Added current Microsoft rug-pull defensive guidance as corroboration without treating its scenario as incident evidence.
+    - pass: saturation_follow_up_4
+      completed_on: "2026-09-02"
+      queries:
+        - site:cisa.gov Model Context Protocol compromised server incident
+        - site:cert.org Model Context Protocol tool poisoning incident
+      material_changes: []
+    - pass: saturation_follow_up_5
+      completed_on: "2026-09-02"
+      queries:
+        - site:modelcontextprotocol.io 2026 compromised server cross-server tool metadata detection lineage
+        - site:learn.microsoft.com/en-us/security MCP compromises cross-entity instructions
+      material_changes: []
+  rationale: >-
+    Direct protocol authority covers the trust boundary; independent demonstrations
+    and an empirical paper cover the mechanism; NVD and discovering-vendor reports
+    cover vulnerability variants; current Microsoft guidance covers operational
+    controls and telemetry; and ATT&CK covers the closest analogous enterprise
+    mapping. After three follow-ups resolved new but non-label-changing candidates,
+    two consecutive direct-authority searches produced no material contract,
+    evidence-label, example-selection, detector, or mitigation change.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 7
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-jfrog-cve-2025-6514
+    - SRC-jfrog-cve-6515-2025
+  no_qualifying_examples_rationale: >-
+    Three non-production examples qualify. No reviewed CISA, CERT, NVD, vendor,
+    protocol-project, or original-research authority established the complete
+    technique in a production compromise; that remains an explicit evidence gap.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Experiment 2 - Cross-Server Tool Shadowing
+      relationship: direct_demonstration
+      exploitation_status: Controlled end-to-end demonstration.
+      impact: A malicious server influenced a trusted email-server action and disclosure to an attacker-controlled address.
+      remediation: Pin and visibly review tool metadata and enforce cross-server dataflow policy.
+      selected: true
+      rationale: Defining end-to-end behavior with the clearest causal chain and immediate cross-trust outcome.
+    - source_id: SRC-trailofbits-line-jumping-2025
+      identifier: Jumping the Line client experiments
+      relationship: direct_demonstration
+      exploitation_status: Controlled multi-client testing.
+      impact: Malicious metadata influenced model behavior before tool invocation and during use of other tools.
+      remediation: Vet servers, scan/pin descriptions, disable unnecessary servers, and require approvals.
+      selected: false
+      rationale: Strong independent corroboration but less concrete cross-trust impact than the selected Invariant example.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: direct_vulnerability
+      exploitation_status: Proof of concept; reviewed NVD CISA-ADP record reported no known exploitation.
+      impact: Critical operating-system command execution on a connected client through a malicious authorization endpoint.
+      remediation: Upgrade mcp-remote to 0.1.16 or later and connect over authenticated HTTPS to trusted servers.
+      selected: true
+      rationale: Highest-impact reviewed implementation path from an untrusted server to host authority.
+    - source_id: SRC-jfrog-cve-6515-2025
+      identifier: CVE-2025-6515
+      relationship: direct_vulnerability
+      exploitation_status: Researcher demonstration; reviewed NVD CISA-ADP record reported no known exploitation.
+      impact: A network attacker could inject malicious server responses into a connected client session.
+      remediation: Use cryptographically random identifiers, enforce session separation, or move to the current sessionless protocol.
+      selected: true
+      rationale: Distinct response-channel path with a demonstrated client effect and explicit legacy limitation.
+    - source_id: SRC-nvd-cve-58062
+      identifier: CVE-2025-58062
+      relationship: direct_vulnerability
+      exploitation_status: Proof of concept reported by CISA-ADP; no production incident established.
+      impact: Windows client command execution from an attacker-controlled authorization-server endpoint.
+      remediation: Upgrade openmcp-client to 0.1.12 or later.
+      selected: false
+      rationale: Direct but lower-rated and mechanistically redundant with the broader, higher-impact CVE-2025-6514 example.
+    - source_id: SRC-nvd-cve-2026-14541
+      identifier: CVE-2026-14541
+      relationship: rejected
+      exploitation_status: CISA-ADP exploitation assessment reported none.
+      impact: Unrelated Google access tokens could be accepted by an affected MCP toolbox server.
+      remediation: Configure and validate audience/client identity; avoid affected configuration.
+      selected: false
+      rationale: The unauthorized client enters one server; a compromised server does not pivot through host authority to another trust domain.
+    - source_id: SRC-jfrog-agent-supply-chain-2026
+      identifier: postmark-mcp hidden BCC report
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Reported malicious package behavior; original linked report was not reviewable at its former page.
+      impact: A server copied messages using its own legitimate downstream Postmark capability.
+      remediation: Package vetting, version control, and server isolation.
+      selected: false
+      rationale: The behavior remains within the server's own downstream capability and does not establish a host-mediated pivot into another trust domain.
+
+sources_consulted:
+  - SRC-huang-tool-poisoning-2026
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jfrog-agent-supply-chain-2026
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfrog-cve-6515-2025
+  - SRC-jfsa-2025-6514
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcptox-2025
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-microsoft-m365-mcp-monitoring-2026
+  - SRC-ms-rug-pull-catalog-2026
+  - SRC-mitre-t1210
+  - SRC-nvd-cve-2026-14541
+  - SRC-nvd-cve-58062
+  - SRC-nvd-cve-6514
+  - SRC-nvd-cve-6515
+  - SRC-trailofbits-line-jumping-2025
+sources_cited:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfrog-cve-6515-2025
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcptox-2025
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-microsoft-m365-mcp-monitoring-2026
+  - SRC-ms-rug-pull-catalog-2026
+  - SRC-mitre-t1210
+  - SRC-nvd-cve-6514
+  - SRC-nvd-cve-6515
+  - SRC-trailofbits-line-jumping-2025
+sources_rejected:
+  - source_id: SRC-huang-tool-poisoning-2026
+    reason: Version-sensitive client findings added no unique support beyond stronger original demonstrations and current protocol/vendor guidance.
+  - source_id: SRC-jfrog-agent-supply-chain-2026
+    reason: Secondary report describes a server using its own legitimate downstream capability; the original incident page was unavailable and the behavior is out of contract.
+  - source_id: SRC-jfsa-2025-6514
+    reason: Redundant short advisory superseded for publication by the fuller discovering-team report and NVD record.
+  - source_id: SRC-nvd-cve-2026-14541
+    reason: Opposite-direction authorization bypass without compromised-server-to-host pivot behavior.
+  - source_id: SRC-nvd-cve-58062
+    reason: Direct but lower-impact duplicate authorization-endpoint variant not selected over CVE-2025-6514.
+sources_blocked: []
+
+conflicts:
+  - issue: Current MCP removed protocol-level sessions, while CVE-2025-6515 relies on predictable SSE session identifiers.
+    resolution: Retain the vulnerability only as a legacy implementation example and state that current sessionless protocol behavior does not share that mechanism.
+  - issue: Microsoft describes rug-pull behavior as more than theoretical but does not provide a production incident record for the complete scenario.
+    resolution: Use the source as defensive practice corroboration, not as observed-incident evidence.
+  - issue: Legitimate multi-server orchestration can resemble the detection sequence.
+    resolution: Require untrusted/compromised source state, changed fingerprint, different target, high sensitivity, absent approval, and shared causal trace; document residual false positives.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1704-C003
+  rationale: >-
+    The complete defining chain is directly demonstrated in Invariant's two-server
+    experiment and independently corroborated by Trail of Bits and MCPTox. The
+    absence of a qualifying production incident prevents Observed status; product
+    vulnerabilities support variants but do not independently raise the label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

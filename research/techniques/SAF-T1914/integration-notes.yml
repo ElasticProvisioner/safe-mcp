@@ -1,0 +1,43 @@
+version: 1
+technique_id: SAF-T1914
+generation_mode: clean_room
+integration_status: integrated_and_validated
+
+synthetic_dependencies:
+  - placeholder: SAF-T1102
+    semantic_role: Nearest neighbor for indirect prompt injection as a delivery or control mechanism.
+    required_action: Resolve the actual destination technique ID without changing the frozen distinction unless evidence warrants a separately reviewed revision.
+  - placeholder: SAF-T1309
+    semantic_role: Nearest neighbor for unauthorized tool invocation as a broader action primitive.
+    required_action: Resolve the actual destination technique ID without changing the frozen distinction unless evidence warrants a separately reviewed revision.
+  - placeholder: "1111111111111111111111111111111111111111"
+    semantic_role: Non-provenance validator placeholder for the first clean-room version-history row.
+    required_action: Replace with the actual integration commit after merge; never represent this value as repository history.
+
+proposed_joins:
+  - source: framework-fragment.yml
+    destination: research/framework-model.yml
+    operation: Append or reconcile the SAF-T1914 technique record after resolving synthetic neighbors.
+  - source: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+    operation: Append the issue, resolve real neighbor IDs, and close it after reciprocal alignment review.
+  - source: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+    operation: Append source records after checking for ID collisions and preserving named-author credits.
+
+constraints:
+  - Do not consult or modify destination framework artifacts until after the bundle's immutable freeze is verified.
+  - Preserve the clean-room evidence, source, rights, and exclusion records as the provenance baseline.
+  - Resolve any source-ID collision mechanically; update every matching claim, trace, coverage, and rights reference together.
+  - Rerun the destination strict validator and detector tests after all joins and identifier replacements.
+  - Record the actual integration commit and retain this file as evidence that the synthetic SHA was not provenance.
+
+contamination_status: none_detected
+unresolved: []
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  freeze_manifest_sha256: c2b21d5e866ad3145311dc83002b36ed0e6e4a332c45710b9de27db56bf70198
+  canonical_neighbors: [SAF-T1102, SAF-T1309]
+  canonical_mitigations: [SAF-M-5, SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-17, SAF-M-21, SAF-M-22, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-72, SAF-M-74]
+  detector: "2 test methods passed across 9 fixture classes plus window tuning"
+  strict_validator: "PASS SAF-T1914"

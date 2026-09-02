@@ -1,0 +1,147 @@
+version: 1
+technique_id: SAF-T1102
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1102/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1102/technique-contract.yml
+  supports: Scope, tactic, name, neighbors, and detection requirement.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1102/claim-inventory.yml
+  supports: Validated publishable propositions, source locators, limitations, conflicts,
+    and inference labels.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1102/source-coverage.yml
+  supports: Research passes, saturation, candidate selection, source disposition,
+    and evidence classification.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1102/publication-rights.yml
+  supports: Publication-rights review and attribution decisions.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1102/clean-room-attestation.yml
+  supports: Clean-room inputs, prohibitions, independent searches, and freeze boundary.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1102/quality-review.yml
+  supports: Quality gates and executed validation commands.
+- id: LOCAL-traceability
+  path: research/techniques/SAF-T1102/traceability-ledger.yml
+  supports: Local artifact declarations and the exclusion ledger.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1102/detection-rule.yml
+  supports: Experimental correlation analytic and its component-level claim mapping.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1102/detection-fixtures.json
+  supports: Three positive and four negative synthetic event sequences.
+- id: LOCAL-expected-results
+  path: tests/SAF-T1102/expected-results.json
+  supports: Machine-readable expected detection decisions and counts.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1102/test_detection_rule.py
+  supports: Deterministic reference implementation and assertions.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1102/validation/detection-test.txt
+  supports: Captured passing detection-test output.
+- id: LOCAL-validator-result
+  path: research/techniques/SAF-T1102/validation/strict-validator.txt
+  supports: Captured canonical strict isolated validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1102-X001
+  candidate: Treat the technique as observed in a production MCP compromise.
+  origin: Breach and incident research pass.
+  attempted_searches:
+  - Direct review of official CVE records, maintainer advisory, primary researcher
+    reports, and controlled MCP demonstrations.
+  - Explicit comparison of production-incident language with each source's test or
+    exploitation status.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-invariant-github-mcp-2025
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  reason: The qualifying evidence is controlled or disclosed; none establishes a production
+    victim.
+  prohibited_publishable_text:
+  - Attackers exploited SAF-T1102 in a confirmed production MCP breach.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1102-X002
+  candidate: Use CVE-2025-32711 as a direct MCP example.
+  origin: Official vulnerability research pass.
+  attempted_searches:
+  - Direct review of the official CVE JSON description, affected product, scoring,
+    references, and exploitation enrichment.
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  reason: The record covers Microsoft 365 Copilot AI command injection but establishes
+    no MCP path.
+  prohibited_publishable_text:
+  - CVE-2025-32711 is a direct MCP prompt-injection vulnerability.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1102-X003
+  candidate: Use CVE-2025-53773 as a direct MCP example.
+  origin: Official vulnerability and researcher-report pass.
+  attempted_searches:
+  - Direct review of the official CVE JSON and the exact researcher URL supplied by
+    its references.
+  consulted_source_ids:
+  - SRC-cve-2025-53773
+  - SRC-rehberger-cve-2025-53773
+  reason: The vulnerability is a broader Copilot settings boundary; MCP tool output
+    is only an optional delivery angle.
+  prohibited_publishable_text:
+  - CVE-2025-53773 requires MCP to achieve prompt-injection code execution.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1102-X004
+  candidate: Select CVE-2024-5184 / EmailGPT as a direct example.
+  origin: OWASP example lead.
+  attempted_searches:
+  - Checked the OWASP lead and attempted direct authority routes for a primary advisory.
+  consulted_source_ids:
+  - SRC-owasp-llm01-2025
+  reason: A directly reviewed primary advisory, authoritative impact statement, and
+    remediation record were not obtained.
+  prohibited_publishable_text:
+  - CVE-2024-5184 is a verified direct SAF-T1102 example with confirmed impact.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1102-X005
+  candidate: Generalize InjecAgent or AgentDojo benchmark outcomes to production incidence.
+  origin: Empirical research pass.
+  attempted_searches:
+  - Reviewed benchmark composition, threat model, configurations, findings, and stated
+    limitations.
+  consulted_source_ids:
+  - SRC-injecagent-acl-2024
+  - SRC-agentdojo-2024
+  reason: Benchmark outcomes are configuration-specific evaluation evidence, not prevalence
+    or incident measurements.
+  prohibited_publishable_text:
+  - Production MCP agents are compromised at the benchmark attack-success rate.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1102-X006
+  candidate: Classify any malicious or untrusted MCP server as prompt injection.
+  origin: Contract and nearest-neighbor challenge pass.
+  attempted_searches:
+  - Compared MCP trust guidance with controlled tool-description, tool-result, and
+    external-content demonstrations.
+  consulted_source_ids:
+  - SRC-mcp-overview-2026
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  reason: SAF-T1102 requires manipulation of model instruction authority; server trust
+    alone does not establish that behavior.
+  prohibited_publishable_text:
+  - Connecting an untrusted MCP server is sufficient to prove prompt injection.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

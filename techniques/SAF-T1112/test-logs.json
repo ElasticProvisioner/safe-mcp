@@ -1,92 +1,134 @@
-[
-  {
-    "case_id": "benign-single-approved",
-    "expected_detection": false,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "weather-helper",
-    "origin_request_id": "req-001",
-    "burst_count": 1,
-    "max_tokens": 600,
-    "requested_tools": [],
-    "approval_state": "user_approved",
-    "follow_on_action": "none",
-    "notes": "Single approved text-only sampling request."
-  },
-  {
-    "case_id": "benign-tool-approved",
-    "expected_detection": false,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "weather-helper",
-    "origin_request_id": "req-002",
-    "burst_count": 1,
-    "max_tokens": 800,
-    "requested_tools": [
-      "get_weather"
-    ],
-    "approval_state": "user_approved",
-    "follow_on_action": "tool_use:get_weather",
-    "notes": "Normal tool-enabled sampling against a low-risk tool."
-  },
-  {
-    "case_id": "quota-drain-burst",
-    "expected_detection": true,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "code-summarizer",
-    "origin_request_id": "req-003",
-    "burst_count": 6,
-    "max_tokens": 8000,
-    "requested_tools": [],
-    "approval_state": "auto_approved",
-    "follow_on_action": "none",
-    "notes": "Repeated large requests likely intended to burn quota."
-  },
-  {
-    "case_id": "sensitive-tool-after-sampling",
-    "expected_detection": true,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "code-summarizer",
-    "origin_request_id": "req-004",
-    "burst_count": 1,
-    "max_tokens": 1200,
-    "requested_tools": [
-      "read_file"
-    ],
-    "approval_state": "missing",
-    "follow_on_action": "read_file:~/.aws/credentials",
-    "notes": "Sampling request is immediately followed by sensitive local file access."
-  },
-  {
-    "case_id": "noisy-legitimate-multi-step",
-    "expected_detection": false,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "research-assistant",
-    "origin_request_id": "req-005",
-    "burst_count": 2,
-    "max_tokens": 3200,
-    "requested_tools": [
-      "search_docs"
-    ],
-    "approval_state": "user_approved",
-    "follow_on_action": "tool_use:search_docs",
-    "notes": "Legitimate multi-step analysis with review and a non-sensitive tool."
-  },
-  {
-    "case_id": "conversation-carryover-auto-approved",
-    "expected_detection": true,
-    "event_type": "mcp.request",
-    "method": "sampling/createMessage",
-    "server_name": "review-helper",
-    "origin_request_id": "req-006",
-    "burst_count": 2,
-    "max_tokens": 2200,
-    "requested_tools": [],
-    "approval_state": "auto_approved",
-    "follow_on_action": "prompt_state_mutation",
-    "notes": "Auto-approved nested request that may alter later model behavior."
-  }
-]
+{
+  "schema": "saf-t1112-controlled-detection-cases-v1",
+  "cases": [
+    {
+      "id": "positive-missing-approval",
+      "category": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-a","session_id":"sess-a","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":512,"approval_state":"absent","include_context":"none","tool_choice_mode":"none","result_state":"pending"}
+      ]
+    },
+    {
+      "id": "positive-auto-approved",
+      "category": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-b","session_id":"sess-b","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":1024,"approval_state":"auto_approved","include_context":"none","tool_choice_mode":"none","result_state":"completed"}
+      ]
+    },
+    {
+      "id": "positive-burst",
+      "category": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-c","session_id":"sess-c","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:01:00Z","server_id":"srv-c","session_id":"sess-c","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:00Z","server_id":"srv-c","session_id":"sess-c","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:03:00Z","server_id":"srv-c","session_id":"sess-c","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":2048,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:04:00Z","server_id":"srv-c","session_id":"sess-c","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":2048,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "negative-other-method",
+      "category": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-d","session_id":"sess-d","direction":"server_to_client","method":"tools/call","requested_max_tokens":20000,"approval_state":"absent"}
+      ]
+    },
+    {
+      "id": "boundary-four-requests",
+      "category": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-e","session_id":"sess-e","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":5000,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:01:00Z","server_id":"srv-e","session_id":"sess-e","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":5000,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:00Z","server_id":"srv-e","session_id":"sess-e","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":5000,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:03:00Z","server_id":"srv-e","session_id":"sess-e","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":5000,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "boundary-token-below",
+      "category": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-f","session_id":"sess-f","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":3276,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:01:00Z","server_id":"srv-f","session_id":"sess-f","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":3276,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:00Z","server_id":"srv-f","session_id":"sess-f","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":3276,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:03:00Z","server_id":"srv-f","session_id":"sess-f","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":3276,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:04:00Z","server_id":"srv-f","session_id":"sess-f","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":3279,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "boundary-exact-threshold",
+      "category": "boundary",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-g","session_id":"sess-g","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:01:15Z","server_id":"srv-g","session_id":"sess-g","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:30Z","server_id":"srv-g","session_id":"sess-g","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:03:45Z","server_id":"srv-g","session_id":"sess-g","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":2048,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:05:00Z","server_id":"srv-g","session_id":"sess-g","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":2048,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "boundary-outside-window",
+      "category": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-h","session_id":"sess-h","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:01:15Z","server_id":"srv-h","session_id":"sess-h","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:30Z","server_id":"srv-h","session_id":"sess-h","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:03:45Z","server_id":"srv-h","session_id":"sess-h","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:05:01Z","server_id":"srv-h","session_id":"sess-h","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "malformed-missing-timestamp",
+      "category": "malformed",
+      "expected_alert": false,
+      "expected_malformed": 1,
+      "events": [
+        {"server_id":"srv-i","session_id":"sess-i","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":20000,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "malformed-bad-token-value",
+      "category": "malformed",
+      "expected_alert": false,
+      "expected_malformed": 1,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-j","session_id":"sess-j","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":"many","approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "legitimate-single-approved",
+      "category": "legitimate-lookalike",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-k","session_id":"sess-k","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":32000,"approval_state":"explicitly_approved","include_context":"none","tool_choice_mode":"none","result_state":"completed"}
+      ]
+    },
+    {
+      "id": "legitimate-spaced-batch",
+      "category": "legitimate-lookalike",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-l","session_id":"sess-l","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:02:00Z","server_id":"srv-l","session_id":"sess-l","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:04:00Z","server_id":"srv-l","session_id":"sess-l","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:06:00Z","server_id":"srv-l","session_id":"sess-l","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"},
+        {"timestamp":"2026-09-02T12:08:00Z","server_id":"srv-l","session_id":"sess-l","direction":"server_to_client","method":"sampling/createMessage","requested_max_tokens":4096,"approval_state":"explicitly_approved"}
+      ]
+    },
+    {
+      "id": "negative-client-direction",
+      "category": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","server_id":"srv-m","session_id":"sess-m","direction":"client_to_server","method":"sampling/createMessage","requested_max_tokens":20000,"approval_state":"absent"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+version: 1
+technique_id: SAF-T1911
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT-OPEN https://modelcontextprotocol.io/specification/2025-11-25/server/tools"
+        - "DIRECT-OPEN https://modelcontextprotocol.io/specification/2025-11-25/architecture/index"
+        - "DIRECT-OPEN https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+      material_changes:
+        - Established the tools/call argument path, host boundary, confirmation and logging guidance, and local-server privilege constraints.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT-OPEN original researcher disclosure https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks"
+        - "DIRECT-OPEN original researcher disclosure https://invariantlabs.ai/blog/whatsapp-mcp-exploited"
+        - "DIRECT-OPEN OWASP authority page https://owasp.org/www-project-mcp-top-10/"
+        - "AUTHORITY-CATALOG-FILTER NVD keyword Model Context Protocol parameter data exfiltration (endpoint rejected as unsafe by retrieval layer)"
+        - "AUTHORITY-CATALOG-FILTER CISA KEV Model Context Protocol data exfiltration (feed returned HTTP 403)"
+      material_changes:
+        - Classified two controlled demonstrations as direct demonstrations and found no qualifying production incident or direct vulnerability in the accessible reviewed corpus.
+        - Classified local-server startup-command exfiltration as adjacent because it bypasses the host-issued tool-argument boundary.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT-OPEN Invariant controlled Cursor sensitive-file parameter experiment"
+        - "DIRECT-OPEN Invariant controlled WhatsApp MCP chat-history and contact parameter experiments"
+      material_changes:
+        - Established end-to-end Parameter Exfiltration through a malicious server parameter, a trusted message tool, and two distinct instruction-delivery paths.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT-OPEN MCP Tools Security Considerations input display and tool audit logging"
+        - "DIRECT-OPEN MCP Security Best Practices local server restrictions and scope minimization"
+        - "DIRECT-OPEN https://invariantlabs.ai/blog/introducing-mcp-scan runtime logging boundary"
+        - "DIRECT-OPEN https://attack.mitre.org/techniques/T1020/ detection and mapping boundary"
+      material_changes:
+        - Defined a bounded host-enriched data-lineage analytic and documented missing-lineage, encoding, redaction, non-MCP, and legitimate-workflow limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT-OPEN current MCP tools confirmation guidance versus April 2025 client experiment"
+        - "DIRECT-OPEN current MCP changelog https://modelcontextprotocol.io/specification/2025-11-25/changelog"
+        - "DIRECT-OPEN OWASP beta status and October 2026 next-release roadmap"
+        - "DIRECT-OPEN Invariant reports for failed or narrower results and current-client caveats"
+      material_changes:
+        - Narrowed client claims to the tested April 2025 environments and recorded that current susceptibility, production exploitation, direct CVEs, and detector accuracy remain unestablished.
+        - Preserved prompt or tool-description injection and collection as neighbors rather than conflating them with the exfiltration boundary.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "AUTHORITY-ONLY REOPEN MCP Tools 2025-11-25, MCP key changes, and Invariant original tool-poisoning report"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "AUTHORITY-ONLY REOPEN MCP Security Best Practices, Invariant WhatsApp report, OWASP MCP Top 10 beta, and MITRE ATT&CK T1020"
+      material_changes: []
+  rationale: >-
+    The directly reviewed corpus covers the current protocol path and control
+    guidance, two end-to-end researcher demonstrations, scanner scope,
+    neighboring risk categories, and framework analogy. A contrary-result pass
+    narrowed claims to tested dates and environments. Two subsequent
+    authority-only passes added no controlling requirement, qualifying example,
+    material fact, corroboration, exception, or detection constraint. Blocked
+    official-catalog endpoints remain a stated integration gap and do not support
+    an absolute absence claim.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 4
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+  no_qualifying_examples_rationale: >-
+    Two direct controlled demonstrations qualified and were selected. No direct
+    production breach or direct disclosed vulnerability qualified in the
+    accessible reviewed corpus. The NVD filtered endpoint could not be opened
+    and the CISA KEV feed returned HTTP 403, so the technique states only the
+    bounded reviewed-corpus result and carries authoritative-catalog recheck as
+    an integration gap.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Tool Poisoning Experiment 1
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration_only
+      impact: Sensitive configuration and private-key data were transmitted through an unrelated tool parameter in the tested setup.
+      remediation: Current MCP guidance recommends full input display, confirmation, and logging; the source does not document a product patch.
+      selected: true
+      rationale: Highest-relevance direct demonstration of the defining sensitive-data-in-tool-argument boundary.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: Invariant WhatsApp MCP Experiments 1 and 2
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration_only
+      impact: Chat history or contact data was transmitted through message-tool fields to an attacker-controlled recipient.
+      remediation: The report recommends caution and illustrates visibility constraints; it does not document a vendor patch or production response.
+      selected: true
+      rationale: High-impact cross-server demonstration with both malicious-description and injected-message delivery variants.
+    - source_id: SRC-mcp-security-2025-11-25
+      identifier: MCP Local Server Compromise guidance
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: generic_attack_guidance_not_incident
+      impact: A malicious local process can access or transmit host data when server privileges are not constrained.
+      remediation: Restrict local server filesystem and network access and require explicit privilege grants.
+      selected: false
+      rationale: The documented example uses server process behavior rather than a host-issued MCP tool argument.
+    - source_id: SRC-owasp-mcp-top10-v0.1
+      identifier: OWASP MCP03 Tool Poisoning and MCP10 Context Over-Sharing
+      relationship: rejected
+      exploitation_status: guidance_not_incident_or_advisory
+      impact: The beta categories describe risk families but do not document a specific affected product, exploit, incident, or remediation state.
+      remediation: General category guidance only.
+      selected: false
+      rationale: Useful for scope distinctions, but not a qualifying breach, vulnerability, or demonstration record.
+
+catalog_access_gaps:
+  - authority: NIST National Vulnerability Database
+    attempted_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Model%20Context%20Protocol
+    result: Retrieval layer rejected the filtered URL as unsafe; no response body was reviewed.
+    consequence: Direct-CVE absence is not claimed and must be rechecked during integration.
+  - authority: CISA Known Exploited Vulnerabilities Catalog
+    attempted_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    result: HTTP 403; no feed body was reviewed.
+    consequence: Known-exploitation absence is not claimed and must be rechecked during integration.
+
+sources_consulted:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-attack-t1020-v1.3
+  - SRC-owasp-mcp-top10-v0.1
+sources_cited:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-attack-t1020-v1.3
+  - SRC-owasp-mcp-top10-v0.1
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: The April 2025 experiment reported incomplete argument visibility, whereas the current 2025-11-25 MCP tools page recommends showing inputs before dispatch.
+    resolution: Attribute the UI result only to the tested environment and date; treat full-input display as current guidance, not proof of implementation.
+  - issue: Tool-description scanning can detect inducing instructions but does not prove runtime parameter transmission.
+    resolution: Require tools/call plus host-side data-lineage evidence for the bounded analytic and state the scanner limitation.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1911-C004
+    - SAF-T1911-C006
+  rationale: >-
+    Two directly reviewed original researcher reports document end-to-end
+    controlled transmission of sensitive data through tool-call fields. The
+    label is Demonstrated because neither report establishes a real production
+    incident, and adjacent guidance or risk taxonomies do not raise the label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

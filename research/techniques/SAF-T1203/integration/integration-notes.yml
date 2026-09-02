@@ -1,0 +1,46 @@
+version: 1
+technique_id: SAF-T1203
+freeze_date: "2026-09-01"
+author:
+  name: OpenAI Codex clean-room research agent
+  role: Independent author and research reviewer
+seed_identifiers:
+  technique_id: SAF-T1203
+  tactic_id: ATK-TA0003
+  tactic_is_synthetic: false
+synthetic_identifiers:
+  neighbors:
+    - {id: SAF-T9001, label: Malicious MCP Server Installation, action: Replace with an existing canonical neighbor or create an approved mapping after freeze verification.}
+    - {id: SAF-T9002, label: Tool Metadata Poisoning, action: Replace with an existing canonical neighbor or create an approved mapping after freeze verification.}
+  mitigations:
+    - {id: SAF-M-9001, label: Verify Server Artifact Integrity, action: Replace with the canonical mitigation ID after freeze verification.}
+    - {id: SAF-M-9002, label: Restrict Server Artifact Writes, action: Replace with the canonical mitigation ID after freeze verification.}
+  source_ids:
+    - SRC-mcp-ts-stdio-v2
+    - SRC-mcp-sep-1024
+    - SRC-mitre-t1554-v2.2
+    - SRC-mitre-det0336-v1
+    - SRC-mitre-t1195-v1.7
+    - SRC-mitre-t1505-v1.5
+    - SRC-mandiant-unc3886-2024
+    - SRC-mandiant-sunburst-2020
+    - SRC-redhat-cve-2024-3094
+    - SRC-nvd-cve-2024-3094
+    - SRC-unit42-mcp-sampling-2025
+    - SRC-redhat-cve-2026-44192
+    - SRC-nist-sp800-53r5.1
+    - SRC-nist-code-signing-2018
+  repository_history_sha: "1111111111111111111111111111111111111203"
+path_joins:
+  - {fragment: source-manifest-fragment.yml, destination: research/source-manifest.yml, key: sources, action: Merge by id after collision review.}
+  - {fragment: framework-fragment.yml, destination: research/framework-model.yml, key: techniques, action: Merge by technique_id after neighbor and mitigation reconciliation.}
+  - {fragment: alignment-fragment.yml, destination: research/alignment-ledger.yml, key: issues, action: Merge by id after identifier reconciliation.}
+mechanical_replacements_required:
+  - Verify FREEZE.sha256 before any edit.
+  - Check every provisional source ID for collision and replace consistently if required.
+  - Replace synthetic neighbor and mitigation IDs consistently in README, contract, framework fragment, and alignment fragment.
+  - Replace the synthetic repository-history SHA with the honest integration commit only after integration.
+  - Re-run detection tests and strict validation against the integrated registries.
+prohibited_integration_shortcuts:
+  - Do not silently upgrade the Research-Derived evidence class without a directly reviewed end-to-end MCP replacement source.
+  - Do not relabel adjacent or historical examples as direct MCP incidents.

@@ -1,0 +1,88 @@
+version: 1
+technique_id: SAF-T1502
+name: File-Based Credential Harvest
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Obtain reusable authentication material by causing an MCP or
+  agentic component with filesystem visibility to locate and read credential-bearing
+  files.
+scope:
+  security_boundary: The boundary between the files readable by the MCP or agent process
+    and the credential material the user or service did not intend to expose to the
+    model, tool result, or adversary-directed workflow.
+  in_scope:
+  - Discovery or reading of ordinary files that contain credentials, tokens, keys,
+    certificates, or authentication configuration through an MCP resource, filesystem
+    tool, or agent-controlled local process.
+  - Successful retrieval of credential material into an MCP result, model context,
+    or agent workflow; later reuse or transfer is follow-on behavior.
+  - Bypass of an intended filesystem allowlist when the bypass directly permits credential-file
+    access.
+  out_of_scope:
+  - Extraction from operating-system credential stores, password managers, browser
+    vaults, process memory, registry secrets, or cloud secret-manager APIs.
+  - Capturing credentials as a user types them, phishing, or malicious login portals.
+  - Initial compromise, malicious MCP-server installation, arbitrary code execution,
+    and downstream credential use, lateral movement, or exfiltration except as prerequisites
+    or follow-on effects.
+  - Collection of non-credential local files where credential access is not the immediate
+    objective.
+  affected_components:
+  - MCP host or client that authorizes or dispatches filesystem-related operations.
+  - MCP server or agent tool with local or mounted filesystem read capability.
+  - Local process identity, sandbox, mounted directories, file resources, and tool-result/model-context
+    boundary.
+nearest_neighbors:
+- technique_id: SAF-T1505
+  distinction: In-Memory Secret Extraction covers secrets obtained from process or
+    model memory; SAF-T1502 is limited to ordinary file and configuration reads.
+- technique_id: SAF-T1911
+  distinction: Parameter Exfiltration covers onward transfer through outbound tool
+    parameters; SAF-T1502 ends when file-resident credential material enters the
+    tool result, model context, or adversary-directed workflow.
+- technique_id: SAF-T1003
+  distinction: Malicious MCP-Server Distribution covers delivery of malicious server
+    capability; SAF-T1502 describes use of already available filesystem access.
+required_evidence:
+- Current MCP specifications establishing model-controlled tools, file-like resources,
+  and result delivery.
+- Direct incident evidence establishing agentic or MCP-assisted credential extraction
+  from configuration files in a deployed intrusion.
+- Current CVE and first-party advisory evidence for unintended-file access in a filesystem
+  MCP server, including affected versions, remediation, exploitation status, and conflicts.
+- Current authority documentation establishing that credential material can reside
+  in local files and that file-read telemetry exposes paths and process identity.
+- Separate searches for production incidents, vulnerabilities, controlled demonstrations,
+  detection, defenses, contrary evidence, and neighboring behaviors.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized MCP tool or resource-read events with timestamp, host, session, server,
+    tool or method, arguments or resource URI, approval state, process identity, and
+    outcome.
+  - Operating-system file-access events with timestamp, host, process identity, subject,
+    file path, read access, success, and an environment-maintained credential-file
+    sensitivity label.
+safe_example_constraints:
+- Use only inert paths, fictitious identities, placeholder values, and non-deployable
+  event records.
+- Do not publish live secrets, operational payloads, traversal strings, symlink recipes,
+  or commands that retrieve credential files.
+- Describe CVE mechanism and remediation without exploit instructions.
+completion_evidence:
+- Every substantive publishable unit resolves through a validated claim and directly
+  reviewed source, or through a declared local artifact.
+- Unverified candidates and unsupported absence claims are omitted from publishable
+  prose and retained in the exclusion ledger.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Positive, negative, boundary, malformed-field, normalization, and expected false-positive
+  detection cases pass.
+- Rights, alignment, safe-publication, and clean-room integrity reviews pass with
+  no unresolved bundle-owned issue.
+- The canonical validator passes in a strict isolated synthetic mock before freeze.

