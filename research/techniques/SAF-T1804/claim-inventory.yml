@@ -1,0 +1,227 @@
+version: 1
+technique_id: SAF-T1804
+claims:
+  - id: SAF-T1804-C001
+    statement: MCP servers can expose model-controlled tools that query APIs and resource methods that enumerate and read identified content.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tools specification: Introduction; tools/list; tools/call"]
+      - source_id: SRC-mcp-resources-2025-11-25
+        support: direct
+        exact_locators: ["Resources specification: resources/list; resources/read"]
+    corroboration: The two normative protocol pages independently define the tool and resource paths used by the technique.
+    limitations: [The specification defines capability, not malicious use or an affected deployment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C002
+    statement: MCP authorization guidance requires least-privilege scopes, audience-restricted tokens, and bearer-token validation on protected requests.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Scope selection; resource indicators; access-token usage"]
+    corroboration: MCP security guidance separately recommends progressive least-privilege scope elevation.
+    limitations: [Authorization is optional for some transports and compliant deployments may still grant data access broader than a particular task.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C003
+    statement: MCP security guidance rejects token passthrough and recommends narrow, progressively elevated scopes with logged authorization decisions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["Token passthrough; scope minimization; progressive elevation"]
+    corroboration: The MCP authorization specification supplies the matching audience and least-privilege requirements.
+    limitations: [The guidance does not impose row-, field-, or task-level policies for every downstream API.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C004
+    statement: A public advisory demonstrates that a default-exposed MCP server with configured Pinot credentials could allow unauthenticated callers to list tables and execute read queries against the connected cluster.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators: ["Summary; Why this is critical; MCP tool exposure; affected and patched versions"]
+      - source_id: SRC-nvd-mcp-corpus-20260901
+        support: corroborating
+        exact_locators: ["JSONPath $.vulnerabilities[?(@.cve.id=='CVE-2026-49257')]"]
+    corroboration: NVD independently records the CVE, affected versions, advisory reference, and public proof-of-concept status.
+    limitations: [The advisory demonstrates vulnerability and potential cluster access, not confirmed production exploitation or bulk theft.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C005
+    statement: A public ADX MCP advisory demonstrates KQL injection in metadata tools that can cross a read-only metadata trust boundary and execute arbitrary queries.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-vphc-468g-8rfp
+        support: direct
+        exact_locators: ["Summary; Impact; affected versions; CVE and credits"]
+      - source_id: SRC-nvd-mcp-corpus-20260901
+        support: corroborating
+        exact_locators: ["JSONPath $.vulnerabilities[?(@.cve.id=='CVE-2026-33980')]"]
+    corroboration: NVD records the CVE and advisory trail.
+    limitations: [The sources show an arbitrary-query path, not production exploitation; NVD and the GitHub advisory disagree on affected-version notation and patched-release status.]
+    conflicts:
+      - NVD version metadata and a patch reference differ from the GitHub advisory, which lists affected versions through 0.1.0 and no patched release.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C006
+    statement: NIST recommends API response-size, pagination, time-range, query-complexity, rate-limit, and telemetry controls to constrain scraping and investigation gaps.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-228-upd1
+        support: direct
+        exact_locators: ["PDF pp. 23-25, REC-API-15-3, REC-API-15-4, REC-API-16, REC-API-18"]
+    corroboration: ATT&CK detection guidance independently identifies large programmatic repository access and burst downloads as suspicious behaviors.
+    limitations: [NIST presents contextual controls and examples; it does not prescribe universal numeric detector thresholds.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C007
+    statement: ATT&CK detects repository collection through programmatic or excessive access, large enumeration, and burst downloads correlated by identity, source, and time.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1213-v3.4
+        support: direct
+        exact_locators: ["T1213 Data from Information Repositories; DET0413; AN1160-AN1163"]
+    corroboration: NIST API guidance independently supports logging volume, request, error, and enforcement-decision signals.
+    limitations: [ATT&CK describes repository collection generally and does not encode MCP session or task-intent semantics.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Applying ATT&CK repository-access behaviors to MCP data-query telemetry is a framework-to-implementation inference.}
+    status: validated
+  - id: SAF-T1804-C008
+    statement: A controlled MCP-SQL benchmark observed genuine authorization-policy failures and reported that deterministic RBAC, query-cost, interception, and risk controls improved policy compliance.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-securemcp-2605-05260
+        support: direct
+        exact_locators: ["Sections 4-5; 2,400-query experiment; Table 2; Discussion and Limitations"]
+    corroboration: The public vulnerability advisories independently demonstrate concrete read-boundary failures in MCP data servers.
+    limitations: [One model, one researcher-designed IoT-SQL benchmark, rule-based controls, and a controlled environment limit generalization.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C009
+    statement: In the Salesloft Drift incident, compromised OAuth tokens were used to access connected Salesforce data and conduct systematic exports and secret-oriented searches.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-gtig-drift-2025
+        support: direct
+        exact_locators: ["Incident overview; observed query activity; recommendations"]
+      - source_id: SRC-salesloft-drift-update
+        support: corroborating
+        exact_locators: ["Investigation conclusion; API-call findings; remediation and logging guidance"]
+    corroboration: Salesloft's first-party incident page confirms API calls through the Drift integration and the response timeline.
+    limitations: [The incident is an adjacent production API collection case; it does not establish MCP or model-directed execution.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C010
+    statement: Microsoft reports that Silk Typhoon used stolen API keys and OAuth applications to collect email data through Microsoft Graph and EWS, including downstream access through service providers.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-silk-typhoon-2025
+        support: direct
+        exact_locators: ["Supply-chain targeting overview; cloud application abuse; hunting guidance"]
+    corroboration: The report provides first-party hunting and alert recommendations tied to the described activity.
+    limitations: [This is an API-collection analogy, not an MCP incident, and cannot raise the technique's evidence status.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1804-C011
+    statement: The complete API Data Harvest technique is demonstrated by public MCP data-server cases, while no direct production MCP incident was identified in the reviewed authority corpus.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators: ["MCP tool exposure and impact"]
+      - source_id: SRC-ghsa-vphc-468g-8rfp
+        support: direct
+        exact_locators: ["KQL injection impact"]
+      - source_id: SRC-nvd-mcp-corpus-20260901
+        support: context
+        exact_locators: ["Complete keyword-search result corpus reviewed 2026-09-02"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: ["Catalog version 2026.09.01; selected CVE identifier check"]
+    corroboration: Two independent product cases demonstrate the read path; NVD and KEV checks bound, but cannot prove, the production-exploitation gap.
+    limitations: [Absence from reviewed catalogs is not proof that no production incident exists; GitHub advisories are public demonstrations, not incident reports.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The overall label combines two direct demonstrations and an explicitly bounded negative search result.}
+    status: validated
+  - id: SAF-T1804-C012
+    statement: Confidentiality impact can be high when broad credentials reach sensitive multi-collection data, while integrity and availability impact are not intrinsic to the read-focused core behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators: ["Impact and CVSS confidentiality assessment"]
+      - source_id: SRC-ghsa-vphc-468g-8rfp
+        support: corroborating
+        exact_locators: ["Impact and CVSS confidentiality assessment"]
+    corroboration: Both direct advisories assign high confidentiality impact to their data-access paths.
+    limitations: [Actual sensitivity and blast radius depend on downstream data, identity scope, and deployment controls.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The technique-level rating generalizes bounded advisory impacts only to deployments meeting stated conditions.}
+    status: validated
+  - id: SAF-T1804-C013
+    statement: A starter detector can combine list-to-read sequencing, target breadth, page count, returned-record count, and response bytes, provided thresholds are locally tuned and approved bulk jobs are excluded.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-228-upd1
+        support: direct
+        exact_locators: ["PDF pp. 23-25, volume limits, contextual rate limits, telemetry"]
+      - source_id: SRC-mitre-t1213-v3.4
+        support: corroborating
+        exact_locators: ["DET0413 behavioral chain and analytics"]
+    corroboration: The two authorities converge on volume, identity, endpoint, and temporal correlation while leaving values deployment-specific.
+    limitations: [The local thresholds are hypotheses validated only against synthetic fixtures and may miss low-and-slow or unlogged retrieval.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The precise correlation and starter values are an authored analytic derived from authoritative behavioral guidance.}
+    status: validated
+  - id: SAF-T1804-C014
+    statement: API Data Harvest directly maps to ATT&CK T1213 because its immediate objective is collection from an information repository, with MCP adding a distinct task-intent and delegated-authority boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1213-v3.4
+        support: direct
+        exact_locators: ["T1213 definition, tactic, platforms, and procedure scope"]
+    corroboration: Direct MCP data-server demonstrations show collection paths that meet the repository-objective definition.
+    limitations: [ATT&CK does not model MCP protocol roles or user-task justification, so the mapping is behavioral rather than architectural.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Mapping a protocol-specific SAF behavior to ATT&CK requires a scope comparison.}
+    status: validated

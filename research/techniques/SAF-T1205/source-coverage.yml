@@ -1,0 +1,216 @@
+version: 1
+technique_id: SAF-T1205
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io specification tools list_changed tool definitions security considerations'
+        - 'direct open: https://modelcontextprotocol.io/specification/2025-11-25/server/tools'
+      material_changes:
+        - Established model-controlled tool definitions, list-change notification, confirmation, and logging semantics.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov MCP tool description poisoning dynamic change CVE'
+        - 'site:nvd.nist.gov rug pull MCP'
+        - 'site:cisa.gov Model Context Protocol vulnerabilities'
+        - 'site:microsoft.com/security/blog MCP rug pull incident breach production'
+        - 'site:unit42.paloaltonetworks.com MCP rug pull incident production'
+        - 'site:snyk.io/blog MCP rug pull incident breach'
+      material_changes:
+        - Selected CVE-2025-64443 as an enabling vulnerability and recorded no direct production breach in the reviewed corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:invariantlabs.ai rug pull MCP'
+        - 'site:arxiv.org/abs/2506.02040 MCP rug pull experiments tool changes'
+        - 'site:arxiv.org MCP post-approval tool descriptions rug pull'
+      material_changes:
+        - Selected Song et al. RQ1 as a direct controlled demonstration and Invariant's Cursor result as adjacent impact evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:learn.microsoft.com MCP updated tool metadata re-approval'
+        - 'site:cloud.google.com MCP dynamic tool manipulation audit logging'
+        - 'site:learn.microsoft.com/en-us notifications/tools/list_changed rug-pull approval reset MCP'
+      material_changes:
+        - Added reapproval, permission reset, normalized hash comparison, proxy logging, and investigation fields.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail tool description MCP 2026'
+        - 'site:cisa.gov MCP rug pull exploitation'
+        - 'site:arxiv.org MCP rug pull attacks limitations'
+        - 'site:learn.microsoft.com Visual Studio MCP Always Trust updated server'
+      material_changes:
+        - Preserved product-specific exceptions, legitimate-update false positives, stable-identity requirements, and controlled-study limitations.
+    - pass: saturation_follow_up_material_change
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:learn.microsoft.com/en-us MCP tool hash changes approval security rug pull'
+        - 'site:modelcontextprotocol.io tool definition integrity approval'
+      material_changes:
+        - Added Azure App Service SHA-256 comparison and Visual Studio permission-reset implementation evidence.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:learn.microsoft.com/en-us MCP tool hash changes approval security rug pull'
+        - 'site:modelcontextprotocol.io/specification/2025-11-25 notifications/tools/list_changed integrity approval'
+        - 'site:nvd.nist.gov/vuln/detail MCP rug pull'
+        - 'site:arxiv.org/abs MCP rug pull post-approval tool definitions'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov/vuln/detail CVE MCP compromised tool metadata description'
+        - 'site:cisa.gov Model Context Protocol tool poisoning incident'
+        - 'site:unit42.paloaltonetworks.com MCP rug pull production'
+        - 'site:snyk.io/blog MCP rug pull production incident'
+      material_changes: []
+  rationale: >-
+    Current versioned protocol material, primary controlled research, named
+    researcher disclosures, official Microsoft and Google implementation
+    guidance, a Docker advisory, NVD/CISA exploitation metadata, and MITRE
+    mapping authority cover every publishable proposition. Final narrow passes
+    produced only already classified adjacent vulnerabilities and duplicate
+    controls; no new direct incident, direct vulnerability, stronger example,
+    conflict, remediation change, or detection constraint was found.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 8
+  selected_examples:
+    - SRC-song-mcp-attack-v4
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-docker-ghsa-46gc-2025
+  no_qualifying_examples_rationale: >-
+    Three examples were selected, but only Song et al. directly demonstrate the
+    temporal redefinition step. No primary production incident or direct CVE was
+    found; adjacent examples remain explicitly bounded and do not raise the
+    technique evidence status.
+  candidates:
+    - source_id: SRC-song-mcp-attack-v4
+      identifier: arXiv:2506.02040v4 RQ1 Test 2
+      relationship: direct_demonstration
+      exploitation_status: controlled_research_only
+      impact: Benign aggregator listings continued to direct users to replaced malicious server code without relisting or warning.
+      remediation: Researchers removed the repositories after seven days; the paper recommends trusted hosting and signed definitions/code.
+      selected: true
+      rationale: Highest-confidence direct evidence for post-trust redefinition, with no production victims.
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Cursor tool-poisoning experiment
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled_research_only
+      impact: The controlled poisoned-description experiment caused access and transmission of sensitive local files.
+      remediation: Researchers recommend visible descriptions, pinning, hashes, and cross-server boundaries.
+      selected: true
+      rationale: High-impact adjacent evidence for what a later malicious definition can do, but not proof of the temporal step.
+    - source_id: SRC-docker-ghsa-46gc-2025
+      identifier: CVE-2025-64443 / GHSA-46gc-mwh4-cc5r
+      relationship: enabling_vulnerability
+      exploitation_status: none_reported_in_cisa_ssvc
+      impact: Browser-based attackers could manipulate tools behind an affected Docker MCP Gateway in SSE or streaming mode.
+      remediation: Fixed in 0.28.0; use default stdio mode as the documented workaround.
+      selected: true
+      rationale: Highest-relevance current disclosed vulnerability, but it enables tool manipulation rather than proving retained post-approval trust.
+    - source_id: SRC-nvd-cve-2025-64443
+      identifier: CVE-2025-64443 NVD record
+      relationship: enabling_vulnerability
+      exploitation_status: none_reported_in_cisa_ssvc
+      impact: Corroborates the Docker advisory and high potential integrity impact.
+      remediation: Version 0.28.0 fixes the issue.
+      selected: false
+      rationale: Corroborating record for the selected advisory, not a separate example.
+    - source_id: SRC-nvd-cve-2025-58357
+      identifier: CVE-2025-58357
+      relationship: rejected
+      exploitation_status: proof_of_concept_reported
+      impact: Content injection from a compromised server into 5ire client interactions.
+      remediation: Fixed in 5ire 0.14.0.
+      selected: false
+      rationale: The server is already compromised and injects content; the record does not establish post-trust definition replacement under retained approval.
+    - source_id: SRC-ms-indirect-injection-2025
+      identifier: Microsoft hosted MCP rug-pull guidance
+      relationship: direct_demonstration
+      exploitation_status: conceptual_guidance_not_incident
+      impact: Describes bounded exfiltration or manipulation after dynamic amendment.
+      remediation: Prompt Shields and software supply-chain controls.
+      selected: false
+      rationale: Authoritative corroboration, but not an independently reported experiment or breach.
+    - source_id: SRC-ms-rug-pull-catalog-2026
+      identifier: Microsoft AI attack catalog rug-pull entry
+      relationship: direct_demonstration
+      exploitation_status: cataloged_attack_pattern_not_incident
+      impact: Catalogs post-approval malicious alteration and cross-agent/tool consequences.
+      remediation: Layered identity, vetting, monitoring, sandboxing, and escalation controls.
+      selected: false
+      rationale: Current authority and mapping source, not an additional observed event.
+    - source_id: SRC-azure-appservice-mcp-2026
+      identifier: Azure App Service MCP dynamic spec update
+      relationship: rejected
+      exploitation_status: legitimate_feature
+      impact: Legitimate hot reload changes and hashes tool lists before notification.
+      remediation: Not applicable; retained as detection and false-positive evidence.
+      selected: false
+      rationale: Implementation behavior, not a vulnerability or adversarial example.
+
+sources_consulted:
+  - SRC-azure-appservice-mcp-2026
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-docker-ghsa-46gc-2025
+  - SRC-google-mcp-security-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1554
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-rug-pull-catalog-2026
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-nvd-cve-2025-64443
+  - SRC-nvd-cve-2025-58357
+  - SRC-song-mcp-attack-v4
+sources_cited:
+  - SRC-azure-appservice-mcp-2026
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-docker-ghsa-46gc-2025
+  - SRC-google-mcp-security-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-t1554
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-rug-pull-catalog-2026
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-nvd-cve-2025-64443
+  - SRC-song-mcp-attack-v4
+sources_rejected:
+  - source_id: SRC-nvd-cve-2025-58357
+    reason: Adjacent compromised-server content injection does not establish the defining temporal redefinition step.
+sources_blocked: []
+
+conflicts:
+  - issue: MCP permits tool-list change, while security guidance treats post-approval semantic change as requiring renewed trust.
+    resolution: The technique excludes approved evolution and detects only a changed definition lacking a matching approval for the current hash.
+  - issue: The direct study changes a referenced repository rather than exercising an in-session list_changed event.
+    resolution: The scope includes both update-path and protocol-notification redefinition under retained trust; the limitation is explicit and the analytic covers the protocol event path.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1205-C003
+  rationale: >-
+    Song et al. directly reproduced benign registration followed by malicious
+    replacement under unchanged aggregator listing status. This establishes the
+    defining temporal trust transition in a controlled environment. No reviewed
+    primary source establishes a production incident, so Observed is not supported.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

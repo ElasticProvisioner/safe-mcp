@@ -1,0 +1,228 @@
+version: 1
+technique_id: SAF-T1703
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1703/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1703/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, evidence requirements, and canonical
+    neighbor distinctions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1703/quality-review.yml
+  supports: Review gates, validation commands, detector result, and strict-validation
+    result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1703/detection-rule.yml
+  supports: The labeled behavioral detection analytic and its component traceability.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1703/test_detection_rule.py
+  supports: Deterministic implementation of the normalized-event detection condition.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1703/test-logs.json
+  supports: Two positive and six negative inert behavioral fixtures, including time-boundary
+    tests.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1703/validation/detection-test.txt
+  supports: Captured isolated and canonical passing detector output.
+- id: LOCAL-strict-result
+  path: research/techniques/SAF-T1703/validation/strict-validator.txt
+  supports: Captured isolated and canonical strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1703-X001
+  candidate: The original LayerX Claude Desktop extension demonstration described
+    by the official MCP tool-annotation post.
+  origin: Exact LayerX URL supplied by SRC-mcp-annotations.
+  attempted_searches:
+  - Opened the exact direct-authority URL https://layerxsecurity.com/blog/claude-desktop-extensions-rce/.
+  consulted_source_ids:
+  - SRC-mcp-annotations-2026-03-16
+  reason: The original page returned HTTP 403, so its details were not independently
+    reviewable and could not support publishable claims.
+  prohibited_publishable_text:
+  - LayerX proved Claude Desktop extension RCE
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X002
+  candidate: CVE-2025-54135 is listed in CISA Known Exploited Vulnerabilities and
+    therefore exploited in production.
+  origin: Direct CISA KEV JSON endpoint attempted during vulnerability research.
+  attempted_searches:
+  - Opened https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json;
+    the endpoint returned HTTP 403 in the research environment.
+  - Reviewed the CISA weekly bulletin entry but found it insufficient to establish
+    KEV catalog status or exploitation details.
+  consulted_source_ids:
+  - SRC-cisa-bulletin
+  - SRC-cve-cursor
+  - SRC-ghsa-cursor-4cxx-2025
+  reason: Direct KEV status could not be verified, and the vendor advisory did not
+    establish production exploitation.
+  prohibited_publishable_text:
+  - CVE-2025-54135 is known exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X003
+  candidate: Observed LiteLLM, RAGFlow, and Kestra compromises are production examples
+    of Tool-Chaining Pivot.
+  origin: SRC-microsoft-ai-gateway-incident current incident report.
+  attempted_searches:
+  - Reviewed the complete Microsoft incident account and compared each reported boundary
+    transition to the contract.
+  consulted_source_ids:
+  - SRC-microsoft-ai-gateway-incident
+  reason: The incidents used conventional gateway or application exploitation and
+    did not require adversarial content from one tool inducing a second tool call.
+  prohibited_publishable_text:
+  - LiteLLM compromise was a Tool-Chaining Pivot
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X004
+  candidate: ContextLeak is a direct cross-tool pivot example.
+  origin: SRC-contextleak research paper.
+  attempted_searches:
+  - Reviewed the abstract and threat model for the number and identity of tool boundaries.
+  consulted_source_ids:
+  - SRC-contextleak
+  reason: The malicious tool can receive disclosed context itself; a distinct second
+    target tool or service is not required.
+  prohibited_publishable_text:
+  - ContextLeak directly demonstrates Tool-Chaining Pivot
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X005
+  candidate: The WebPilot-to-Zapier example can be stated as a fully validated selected
+    incident.
+  origin: SRC-openai-url historical summary.
+  attempted_searches:
+  - Reviewed the OpenAI paper's historical example and citation trail.
+  - Did not use unrestricted discovery to locate unofficial copies of the original
+    artifact.
+  consulted_source_ids:
+  - SRC-openai-url
+  reason: The later paper supports historical context, but the original artifact was
+    not independently opened and reviewed in this clean-room run.
+  prohibited_publishable_text:
+  - WebPilot-to-Zapier is a selected validated incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X006
+  candidate: T1021 Remote Services is an exact framework mapping.
+  origin: SRC-mitre-t1021 mapping review.
+  attempted_searches:
+  - Compared the current T1021 definition and sub-techniques to the contract's tool-boundary
+    mechanism.
+  consulted_source_ids:
+  - SRC-mitre-t1021
+  reason: SAF-T1703 need not use a remote-service protocol or valid account, so an
+    exact mapping would overstate the mechanism.
+  prohibited_publishable_text:
+  - T1021 is an exact mapping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X007
+  candidate: T1210 Exploitation of Remote Services is an exact framework mapping.
+  origin: SRC-mitre-t1210 mapping review.
+  attempted_searches:
+  - Compared the current T1210 definition to the contract's agent-mediated cross-tool
+    mechanism.
+  consulted_source_ids:
+  - SRC-mitre-t1210
+  reason: SAF-T1703 does not require exploitation of a remote-service software vulnerability.
+  prohibited_publishable_text:
+  - T1210 is an exact mapping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X008
+  candidate: Tool annotations such as openWorldHint are enforceable security controls.
+  origin: SRC-mcp-annotations.
+  attempted_searches:
+  - Reviewed the official tool-annotation post's trust and enforcement caveats.
+  consulted_source_ids:
+  - SRC-mcp-annotations-2026-03-16
+  reason: The source explicitly characterizes annotations as untrusted hints rather
+    than enforcement.
+  prohibited_publishable_text:
+  - tool annotations enforce security policy
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X009
+  candidate: A fixed five-minute window is an industry-standard threshold for detecting
+    cross-tool pivots.
+  origin: Local analytic design during the detection pass.
+  attempted_searches:
+  - Reviewed SRC-microsoft-tool-poisoning-2026-06-30, SRC-ms-agt, and SRC-usenix-attriguard
+    for an authoritative universal threshold.
+  consulted_source_ids:
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-agt
+  - SRC-usenix-attriguard
+  reason: Sources support causal sequence analysis but do not standardize a five-minute
+    threshold; the README labels it as a tunable local design.
+  prohibited_publishable_text:
+  - five minutes is the industry standard
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X010
+  candidate: The Hugging Face model-evaluation security incident is a direct Tool-Chaining
+    Pivot production example.
+  origin: Domain-restricted OpenAI saturation search lead.
+  attempted_searches:
+  - Compared the authority's search-result description to the contract before deciding
+    whether it warranted inclusion.
+  consulted_source_ids: []
+  reason: The reported agent pursued its evaluation goal through autonomous exploitation;
+    no attacker-controlled upstream tool content inducing a second authorized tool
+    boundary was established.
+  prohibited_publishable_text:
+  - Hugging Face incident was a Tool-Chaining Pivot
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X011
+  candidate: SAF-T1102 and SAF-T1104 are existing canonical repository techniques.
+  origin: Synthetic mock-repository validation design.
+  attempted_searches:
+  - No target repository catalog inspection was permitted before freeze; placeholders
+    were chosen only to satisfy isolated referential validation.
+  consulted_source_ids: []
+  reason: Their existence and names are intentionally not asserted; both are explicitly
+    labeled integration placeholders.
+  prohibited_publishable_text:
+  - SAF-T1102 and SAF-T1104 are canonical
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X012
+  candidate: Observed unauthenticated MCP servers are direct Tool-Chaining Pivot incidents.
+  origin: SRC-ms-misconfig.
+  attempted_searches:
+  - Reviewed the server identity, authentication, execution context, and required
+    number of tool boundaries in the Microsoft report.
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  reason: The observed condition allows direct single-server access and does not establish
+    adversarial influence causing an agent to invoke a second distinct tool.
+  prohibited_publishable_text:
+  - unauthenticated MCP exposure directly proves Tool-Chaining Pivot
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1703-X013
+  candidate: A January 2025 finding of no novel persistent AI prompt attacks proves
+    that no production Tool-Chaining Pivot incident exists today.
+  origin: SRC-google-ai-misuse contrary historical evidence.
+  attempted_searches:
+  - Compared the source publication date and observed actor scope with the 2025-2026
+    direct demonstrations and red-team evidence.
+  consulted_source_ids:
+  - SRC-google-ai-misuse
+  reason: The source is time-bounded and cannot prove absence outside its actor corpus
+    or after publication.
+  prohibited_publishable_text:
+  - Google proved no production Tool-Chaining Pivot exists
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

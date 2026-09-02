@@ -1,0 +1,37 @@
+[
+  {
+    "name": "positive_unapproved_returned",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": true, "document.source_approved": false, "document.integrity_verified": true, "deployment.environment": "production"},
+    "expected": true
+  },
+  {
+    "name": "positive_integrity_failure",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": true, "document.source_approved": true, "document.integrity_verified": false, "deployment.environment": "production"},
+    "expected": true
+  },
+  {
+    "name": "negative_approved_and_verified",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": true, "document.source_approved": true, "document.integrity_verified": true, "deployment.environment": "production"},
+    "expected": false
+  },
+  {
+    "name": "boundary_not_returned",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": false, "document.source_approved": false, "document.integrity_verified": false, "deployment.environment": "production"},
+    "expected": false
+  },
+  {
+    "name": "boundary_wrong_action",
+    "event": {"event.action": "rag_ingestion", "retrieval.returned": true, "document.source_approved": false, "document.integrity_verified": false, "deployment.environment": "production"},
+    "expected": false
+  },
+  {
+    "name": "missing_required_metadata",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": true, "deployment.environment": "production"},
+    "expected": false
+  },
+  {
+    "name": "suppressed_test_traffic",
+    "event": {"event.action": "rag_retrieval", "retrieval.returned": true, "document.source_approved": false, "document.integrity_verified": false, "deployment.environment": "test"},
+    "expected": false
+  }
+]

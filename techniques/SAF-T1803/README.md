@@ -1,330 +1,251 @@
-# SAF-T1803 — Database Dump
+# SAF-T1803: Database Dump
 
-**Tactics:** Collection, Exfiltration  
-**Technique ID:** SAF-T1803  
-**Status:** Stable (v1.0)  
-**First Observed:** Early 2000s (bulk database breach and SQL-based data exfiltration campaigns) [1][2][7]  
-**Last Updated:** 2025-11-29  
-**Author:** Pratikshya Regmi
+## Overview
 
----
+- **Tactic**: Collection (ATK-TA0009)
+- **Technique ID**: SAF-T1803
+- **Research Packet**: [research/techniques/SAF-T1803](../../research/techniques/SAF-T1803/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1803/traceability-ledger.yml)
+- **Documentation Status**: Stable
+- **Evidence Status**: Observed
+- **Severity**: High
+- **Severity Rationale**: Broad exports can expose credentials, personal information, financial data, configurations, and proprietary records when the database identity can read them. <!-- SAF-TRACE: claims=SAF-T1803-C016; sources=SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11,SRC-postgresql-pgdump-18 -->
+- **First Observed**: 2025-11-13, in Anthropic's report of a production agentic intrusion campaign. <!-- SAF-TRACE: claims=SAF-T1803-C003; sources=SRC-anthropic-espionage-2025-11 -->
+- **Last Updated**: 2026-09-02
 
-## Summary
+## Scope
 
-A **Database Dump** attack uses Model Context Protocol (MCP) tools as the execution plane for **bulk database exfiltration**: running wide-table `SELECT` queries, invoking logical backup commands, or exporting large structured datasets from production databases, data warehouses, or analytic stores [1][2][3][4]. Classic database-theft campaigns rely on SQL injection, compromised credentials, or insider abuse to dump entire tables (for example, users, credentials, finance, telemetry) and stage them for exfiltration [1][2][6][7]; in SAF-T1803, the same outcome is achieved when LLM agents drive over-privileged MCP tools to perform bulk exports.
+Database Dump covers an MCP-connected or agentic database capability being directed or abused to create, stream, or assemble a broad reusable copy of database contents beyond the operator's intended task. It crosses the authorization and human-intent boundary between the MCP host or agent and the database identity, export function, or query interface. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C014; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
-Rather than deploying custom exfiltration implants, adversaries (or misaligned agents) abuse existing MCP tools such as `sql_query`, `db.execute`, HTTP/cloud SDK wrappers, or file export tools. With one or a small number of tool calls, they can pull millions of rows from production tables, export them as CSV/Parquet, and stage them in files or object storage that are easy to exfiltrate. Because these tools are often designed for analytics, reporting, and maintenance, **benign and malicious usage can look very similar**, making schema-aware detection, tight scoping, and strong guardrails critical [1][3][4][8][10].
+### In Scope
 
-**Why “First Observed: Early 2000s (bulk database breach and SQL-based data exfiltration campaigns)”** — Large-scale, purpose-built database theft has been publicly documented for decades, including early 2000s incidents where attackers used SQL injection and compromised DB accounts to dump entire customer and payment databases [1][2][6][7]. SAF-T1803 generalizes these database-dump patterns to the MCP ecosystem, where LLM agents orchestrate bulk data access via tools instead of custom exfiltration malware alone.
+- A logical dump, export, or systematic bulk read whose result is returned, downloaded, or staged as broad database content. <!-- SAF-TRACE: claims=SAF-T1803-C002,SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+- Query-language injection into an apparently narrow MCP database tool when it directly enables unauthorized bulk retrieval. <!-- SAF-TRACE: claims=SAF-T1803-C004; sources=SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp -->
+- Repeated collection across tables when its immediate objective and reusable result are equivalent to a logical dump. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
----
+### Out of Scope
 
-## ATTACK / ATLAS Mapping
+- A narrow, authorized query that returns only the records needed for the stated task. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+- Theft of a pre-existing backup without causing the database or connected tool to create or stream the logical export. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+- Restore-time execution, database modification, credential theft, or later exfiltration as separate objectives after collection. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
-- **MITRE ATTACK**
-  - **T1213 – Data from Information Repositories** — adversaries access and collect data from databases and other repositories; SAF-T1803 maps MCP-driven database dumps directly to this technique [1][2][3].  
-  - **T1213.006 – Databases** — explicit sub-technique for accessing database content; SAF-T1803 focuses on **bulk, table- or schema-level** export abuse through tools [2].  
-  - **T1074 – Data Staged** — SAF-T1803 typically stages large query results as files, temporary tables, or objects for subsequent exfiltration [3][4].  
-  - **T1041 / T1567 – Exfiltration Over C2 / Web Services (Related)** — SAF-T1803 often feeds staged dumps into HTTP, cloud, or SaaS channels used for exfiltration [3][4][9].
+### Distinguishing Characteristics
 
-- **MITRE D3FEND / Enterprise Mitigations**
-  - **M1041 – Data Loss Prevention** — schema-aware monitoring and policy enforcement at DB, storage, and egress layers to detect and block bulk exfiltration [3][8][11].  
-  - **M1018 – User Account Management** — least privilege for DB roles and service accounts used by MCP tools, including strong governance for production vs analytics access [3][11][12].
+Breadth and reusable output distinguish a dump from a targeted query; creating or streaming the export distinguishes it from theft of a backup artifact; its immediate objective is collection rather than restoration, modification, or later transfer. The related SAF identifiers below are synthetic clean-room integration joins, not claims about existing repository content. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
-- **OWASP Top‑10 for LLM Applications (2025)**
-  - **LLM01/LLM03/LLM05** — Prompt injection, data supply-chain issues, and excessive agency can all lead to agents triggering overly broad queries or export/backup tools that dump production databases [4][9][13].
+## Description
 
----
+An adversary may use a legitimate dump/export capability, systematic reads, or query injection to collect database content through an MCP tool. MCP defines model-controlled tool calls carrying a tool name and arguments, while database utilities such as PostgreSQL `pg_dump` can emit data and schema in reusable script or archive formats within the connected role's privileges. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C004; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp -->
 
-## Technical Description
+The behavior can appear operationally legitimate because the same interfaces support administration, backup, analytics, and troubleshooting. The security failure is not database reading alone; it is broad collection beyond the authorized task or human intent, especially when a client over-trusts a narrow-looking tool or does not expose inputs and results for confirmation. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C004,SAF-T1803-C008,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-mandiant-snowflake-hunting-2024 -->
 
-A typical MCP deployment connects an LLM host to one or more MCP servers that expose tools for interacting with real systems (databases, data warehouses, cloud storage, observability, etc.). SAF-T1803 describes how those tools can be turned into **high-bandwidth data-theft capabilities**:
+Production evidence exists for agentic database extraction, but the reviewed report does not reveal the database product, exact MCP tool call, query text, or byte count, and it does not prove that a dedicated dump utility was used. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C015; sources=SRC-anthropic-espionage-2025-11,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 -->
 
-1) **Wide-Table Data Extraction.**  
-   An attacker-controlled prompt, compromised MCP server, or misconfigured policy causes the agent to call generic query tools (`sql_query`, `db.execute`, `run_query`) with broad statements such as `SELECT * FROM users` or time-unbounded queries across large tables. Without strict row limits, column masking, or schema constraints, a single query can return sensitive data on millions of customers, credentials, or transactions [1][2][3][6]. The tool may stream rows back to the LLM host or write them to files.
+## Attack Vectors
 
-2) **Abuse of Logical Backup and Dump Utilities.**  
-   Some MCP tools wrap logical backup utilities or managed-DB admin APIs (for example, `pg_dump`, `mysqldump`, `BACKUP DATABASE`, export endpoints). If these are exposed as general-purpose tools (“backup database”, “export table”), an LLM agent can be convinced to run full-schema or full-database dumps, often compressed and ready for exfiltration [2][3][7][10].
+- **Primary Vector**: A model-controlled MCP database tool is invoked to export or bulk-read content beyond the approved task. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C003; sources=SRC-mcp-tools-2026-07-28,SRC-anthropic-espionage-2025-11 -->
+- **Secondary Vector — Query Injection**: Unvalidated identifiers or expressions turn a metadata-oriented tool into an arbitrary-query path. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C005; sources=SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server -->
+- **Secondary Vector — Systematic Reads**: Repeated table or view retrieval assembles a dump-equivalent output without invoking a named dump function. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C014; sources=SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+- **Affected Components**: MCP host or agent orchestrator, MCP database or command server, database service identity, and any response, file, or object-store staging channel. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C009; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18,SRC-postgresql-pg-stat-activity-18 -->
+- **Trust Boundary Crossed**: The authorization and human-intent boundary between the requested task and the database operations performed with the tool's effective privileges. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25 -->
 
-3) **Cloud Analytics and Data-Lake Export.**  
-   In cloud environments, MCP servers may have tools that read from managed warehouses or lakes (e.g., BigQuery, Snowflake, Redshift) and then export to object storage for downstream jobs. Attackers can redirect this machinery to bulk-export high-value datasets (user profiles, telemetry, logs) into attacker-chosen buckets or paths [3][4][11][14].
+## Technical Details
 
-4) **Multi-Source Aggregation for Enrichment.**  
-   Modern analytics often join across multiple sources. An attacker can chain multiple MCP queries and exports to build a **joined, enriched dataset** (for example, users + auth logs + payment history), then stage it as a single, exfil-ready artifact.
+### Prerequisites
 
-5) **Staging and Exfiltration Chaining.**  
-   Database dumps produced via MCP usually do not leave the environment immediately. Instead, they are staged as:
-   - Large tool results visible in agent logs or output panes.  
-   - Files written to local disks, shared volumes, or object storage.  
-   - Temporary tables or internal datasets in analytics platforms.  
+- A reachable MCP or agent capability can query the database, execute an export utility, or invoke an equivalent command path. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18 -->
+- The connected database identity can read data whose breadth or sensitivity exceeds the task's intended scope. <!-- SAF-TRACE: claims=SAF-T1803-C002,SAF-T1803-C016; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11 -->
+- Authorization, input validation, confirmation, output limits, or isolation do not stop the operation. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-cve-2026-33980 -->
 
-   Follow-on exfiltration techniques then move these staged artifacts out of the environment, often through HTTP, cloud APIs, or developer tooling [3][4][9][11].
+### Attack Flow
 
-**Stealth and Abuse of “Analytics” Semantics.**  
-Dangerous actions can be triggered by innocent-sounding prompts (“pull everything so we don’t miss edge cases”, “create a full backup for safety”, “export all historic data for churn analysis”), or by poisoned/compromised MCP servers that reinterpret benign arguments as bulk exports. Because these operations resemble legitimate analytics and reporting, robust **policy enforcement, role scoping, and volume-aware monitoring** are required to distinguish normal use from SAF-T1803 [3][4][8][9][11].
+1. **Reconnaissance or Setup**: The adversary or compromised agent identifies database tools, schemas, identities, and accessible tables. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C006; sources=SRC-anthropic-espionage-2025-11,SRC-mitre-attack-t1213-006 -->
+2. **Delivery**: Attacker-controlled instructions, a compromised session, or unsafe tool arguments reach the MCP-connected workflow. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C004; sources=SRC-anthropic-espionage-2025-11,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp -->
+3. **Trigger or Execution**: The system invokes a dump, export, bulk-read, or injected database operation. <!-- SAF-TRACE: claims=SAF-T1803-C002,SAF-T1803-C004; sources=SRC-postgresql-pgdump-18,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp -->
+4. **Boundary Crossing**: The operation inherits database privileges while validation, approval, or intent checks fail to constrain its breadth. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-postgresql-pgdump-18 -->
+5. **Objective**: Broad database results are returned, downloaded, or staged for reuse. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C014; sources=SRC-anthropic-espionage-2025-11,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+6. **Follow-On Activity**: Subsequent analysis, credential abuse, or exfiltration is possible but belongs to separate behavior after the dump is obtained. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C014,SAF-T1803-C016; sources=SRC-anthropic-espionage-2025-11,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
----
+### Example Scenario
 
-## Architecture Diagram
+A synthetic analytics agent receives a request for one quarterly summary but invokes an MCP database export returning a large reusable dataset without approval. The observable boundary is the mismatch among the task, operation breadth, and approval state; the example contains no exploit string or live system detail. <!-- SAF-TRACE: claims=SAF-T1803-C010,SAF-T1803-C014; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
 
-```mermaid
-flowchart LR
-  U[User / Attacker] -->|Prompt / Task| L[LLM Host]
-  L -->|Tool selection| M[MCP Server]
-  M -->|Tool call| T1[SQL / DB Tools]
-  M -->|Tool call| T2[Export / File Tools]
-  M -->|Tool call| T3[HTTP / Cloud SDK Tools]
+The inert event shows only the normalized fields required by the experimental analytic. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
 
-  T1 --> D[(Operational Databases)]
-  T1 --> W[(Data Warehouses / Lakes)]
-  T2 --> S[(Staged Dumps / Files)]
-  T3 --> X[(External Destinations)]
-
-  style D fill:#fffbdd,stroke:#ffb300,stroke-width:1px
-  style W fill:#fffbdd,stroke:#ffb300,stroke-width:1px
-  style S fill:#ffdddd,stroke:#ff0000,stroke-width:1px
-  style X fill:#ffdddd,stroke:#ff0000,stroke-width:1px
-
-  subgraph Collection & Staging
-    D
-    W
-    S
-  end
-
-  subgraph Exfiltration
-    X
-  end
+```json
+{
+  "mcp.method": "tools/call",
+  "database.operation": "export",
+  "result.bytes": 12582912,
+  "approval.state": "not_requested",
+  "actor.is_approved_backup": false
+}
 ```
 
----
+## Evidence and Current State
 
-## Sub‑Techniques
+### Evidence Summary
 
-**SAF‑T1803.001 — Full-Table SELECT Dump via MCP Query Tools.**  
-MCP query tools (`sql_query`, `db.execute`, etc.) execute broad SELECT statements (for example, `SELECT * FROM users`) or time-unbounded queries across high-value tables, returning large result sets to the LLM host or writing them to files.
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1803-C001 | MCP database tools are model-controlled calls and need implementation safeguards. | Research-Derived | SRC-mcp-tools-2026-07-28: [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) | No standard dump tool or audit schema. |
+| SAF-T1803-C002 | PostgreSQL `pg_dump` produces privilege-bounded logical exports. | Demonstrated | SRC-postgresql-pgdump-18: [PostgreSQL pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) | Authorized utility behavior, not MCP abuse. |
+| SAF-T1803-C003 | A 2025 agentic campaign mapped a database and downloaded extracted account data and password hashes. | Observed | SRC-anthropic-espionage-2025-11: [Anthropic incident report](https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf) | Product, tool call, query, and byte count undisclosed. |
+| SAF-T1803-C004 | CVE-2026-33980 allows arbitrary KQL through three ADX MCP metadata tools. | Demonstrated | SRC-cve-2026-33980: [CVE record](https://cveawg.mitre.org/api/cve/CVE-2026-33980); SRC-ghsa-vphc-468g-8rfp: [Advisory](https://github.com/pab1it0/adx-mcp-server/security/advisories/GHSA-vphc-468g-8rfp) | PoC retrieves selected data, not a complete dump. |
+| SAF-T1803-C005 | A patch commit exists, but no patched release is listed and affected-version records conflict. | Research-Derived | SRC-adx-patch-0abe0ee: [Patch](https://github.com/pab1it0/adx-mcp-server/commit/0abe0ee55279e111281076393e5e966335fffd30); SRC-pypi-adx-mcp-server: [PyPI](https://pypi.org/project/adx-mcp-server/) | Publication of the patch in a package release is unestablished. |
+| SAF-T1803-C006 | ATT&CK T1213.006 covers database collection and multi-source anomaly detection. | Research-Derived | SRC-mitre-attack-t1213-006: [ATT&CK](https://attack.mitre.org/techniques/T1213/006/) | Broader than the MCP intent boundary. |
+| SAF-T1803-C007 | UNC5537 exported significant data from customer Snowflake instances using stolen credentials. | Observed analogy | SRC-mandiant-unc5537-2024: [Mandiant incident report](https://cloud.google.com/blog/topics/threat-intelligence/unc5537-snowflake-data-theft-extortion) | No MCP or agentic system. |
+| SAF-T1803-C008 | Table, query, application, and export anomalies need backup and pipeline baselines. | Demonstrated | SRC-mandiant-snowflake-hunting-2024: [Mandiant hunting guide](https://services.google.com/fh/files/misc/snowflake-threat-hunting-guide.pdf) | Snowflake-specific; no precision or recall measurement. |
+| SAF-T1803-C009 | `pg_stat_activity` supplies useful session fields with privilege, truncation, and durability limits. | Demonstrated | SRC-postgresql-pg-stat-activity-18: [PostgreSQL monitoring](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW) | Point-in-time view, not durable audit by itself. |
+| SAF-T1803-C010 | Cross-layer correlation can flag unapproved large dump-like calls. | Research-Derived | SRC-mcp-tools-2026-07-28; SRC-mandiant-snowflake-hunting-2024; SRC-postgresql-pg-stat-activity-18 | Synthetic threshold; misses fragmented or mislabeled collection. |
+| SAF-T1803-C011 | Authorization, validation, confirmation, limits, sandboxing, and logging constrain the technique. | Research-Derived | SRC-mcp-security-2025-11-25: [MCP security guidance](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices); SRC-mcp-tools-2026-07-28 | Several client controls are recommendations, not uniform mandates. |
+| SAF-T1803-C012 | Response should preserve cross-layer evidence, contain access, rotate exposed secrets, and scope follow-on transfer. | Research-Derived | SRC-mandiant-unc5537-2024; SRC-mandiant-snowflake-hunting-2024 | Product- and incident-specific execution required. |
+| SAF-T1803-C013 | CVE-2026-75133 enabled unauthenticated full MySQL dumps before Keep Backup Daily 2.1.4. | Research-Derived analogy | SRC-cve-2026-75133: [CVE record](https://cveawg.mitre.org/api/cve/CVE-2026-75133); SRC-wordpress-keep-backup-daily: [Plugin changelog](https://wordpress.org/plugins/keep-backup-daily/#developers); SRC-cisa-kev-2026-09-01: [KEV feed](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json) | Non-MCP; not evidence of production exploitation. |
+| SAF-T1803-C014 | Breadth, reusable output, and creation of the export define the scope boundary. | Research-Derived | SRC-postgresql-pgdump-18; SRC-mitre-attack-t1213-006 | Related SAF IDs are synthetic integration joins. |
+| SAF-T1803-C015 | One direct agentic case was found, without an exact MCP dump call; no second direct case emerged from bounded official searches. | Research-Derived | SRC-anthropic-espionage-2025-11; SRC-nvd-mcp-database-search; SRC-cisa-kev-2026-09-01 | Bounded corpus, not universal absence. |
+| SAF-T1803-C016 | Dumps primarily threaten confidentiality; other effects need separate actions or operational side effects. | Research-Derived | SRC-mitre-attack-t1213-006; SRC-anthropic-espionage-2025-11; SRC-postgresql-pgdump-18 | Impact depends on contents, privilege, and scope. |
 
-**SAF‑T1803.002 — Logical Backup / Dump Utility Abuse.**  
-Wrapper tools around database backup utilities or managed-DB export APIs (for example, `pg_dump`, `mysqldump`, `BACKUP DATABASE`, “export table”) are invoked by agents to create full logical backups of schemas, databases, or warehouses, which are then staged for exfiltration.
+### Current State
 
-**SAF‑T1803.003 — Analytics Export / Data-Lake Extraction.**  
-MCP analytics tools read from warehouses/lakes and export datasets (CSV, Parquet, Avro) to object storage. Attackers repurpose these capabilities to bulk-export PII, logs, or internal telemetry to attacker-controlled or weakly monitored buckets [3][4][11][14].
+- **Affected Environments**: MCP or agentic deployments that expose database query, export, or command capabilities with data-bearing credentials. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C004; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp -->
+- **Known Exploitation**: One reviewed production campaign includes agentic database extraction, but it does not reveal an exact MCP dump call; CVE-2026-33980 has a PoC and no identified production exploitation in the reviewed record. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C004,SAF-T1803-C015; sources=SRC-anthropic-espionage-2025-11,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 -->
+- **Available Protections**: Server-side authorization, strict input validation, scoped tools and credentials, human confirmation, rate limits, output controls, sandboxing, and durable audit logs. <!-- SAF-TRACE: claims=SAF-T1803-C005,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server -->
+- **Residual Risk**: Legitimate administration and backup resemble collection, and staged, fragmented, or mislabeled reads can evade a simple normalized analytic. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28,SRC-postgresql-pg-stat-activity-18 -->
 
-**SAF‑T1803.004 — Multi-Source Enriched Dump.**  
-Agents orchestrate multiple tools and queries to join across sources (user profiles, auth logs, billing, support tickets), then write a **single enriched dump** containing a highly valuable composite dataset for downstream exfiltration.
+### Known Breaches and Vulnerabilities
 
----
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| Anthropic GTG-1002 campaign | Reported 2025-11-13; Claude Code with custom MCP servers | A successful compromise included database mapping, extraction, complete-result download, and analysis. | Direct production agentic incident | No database product, exact MCP tool call, query, or byte count. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C015; sources=SRC-anthropic-espionage-2025-11,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 --> |
+| CVE-2026-33980 / GHSA-vphc-468g-8rfp | Published 2026-03-20; Azure Data Explorer MCP Server, with conflicting affected-version records | KQL injection enables arbitrary queries through three metadata tools; commit `0abe0ee` validates inputs, but no patched release is listed. | Direct MCP vulnerability | Public PoC is selected retrieval, not a full dump; exploitation status is PoC. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C005; sources=SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server --> |
+| UNC5537 Snowflake campaign | Reported 2024-06-10; customer instances accessed with stolen credentials | Significant data export; about 165 potentially exposed organizations were notified. | High-impact historical analogy | No MCP or agentic system; Mandiant found no Snowflake enterprise-environment breach. <!-- SAF-TRACE: claims=SAF-T1803-C007; sources=SRC-mandiant-unc5537-2024 --> |
+| CVE-2026-75133 | Published 2026-04-29; Keep Backup Daily before 2.1.4 | Unauthenticated trigger for a full MySQL dump; 2.1.4 hardened backup output and credited Elymaro. | Mechanism analogy for dump exposure | Non-MCP, no established production exploitation, and not listed in the reviewed KEV feed. <!-- SAF-TRACE: claims=SAF-T1803-C013; sources=SRC-cve-2026-75133,SRC-wordpress-keep-backup-daily,SRC-cisa-kev-2026-09-01 --> |
 
-## Adversary Playbook (Procedures)
+### Real-World Incident
 
-**Recon.**  
-Identify which MCP servers and tools are available to the LLM: generic SQL/DB tools, warehouse/lake query tools, export/backup utilities, HTTP/cloud SDK tools, and file tools. Determine where high-value data lives (production OLTP DBs, analytics warehouses, data lakes, log storage, backups) and which roles/credentials the MCP tools use [1][2][3][11].
+#### Anthropic GTG-1002 Campaign (2025)
 
-**Gain Control of the Agent Path.**  
-Use prompt injection, compromised MCP servers, stolen API keys, or misconfigured auto-approval policies to influence which tools the agent calls and with what arguments [4][9][13]. Compromise configuration or tool metadata so agents “helpfully” choose bulk export code paths.
+Anthropic's Threat Intelligence team described a production campaign in which Claude Code and MCP-based tooling supported live intrusions. In one successful compromise, the system mapped the database, extracted account data and password hashes, downloaded complete results, and analyzed them. The report supports the Observed label, while its undisclosed product and call details prevent attributing a named dump utility or exact MCP invocation. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C015; sources=SRC-anthropic-espionage-2025-11,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 -->
 
-**Discover Schema and Sensitivity.**  
-Leverage database metadata queries (for example, `information_schema`, sys catalogs, warehouse information functions) to enumerate tables, columns, and approximate sensitivity (names like `users`, `customers`, `payments`, `tokens`, `session_logs`). Use small sampled queries to validate data value and distribution.
+## Impact Assessment
 
-**Weaponize “Analytics” and “Backup” Semantics.**  
-Craft instructions like “for robust analysis, first export all historic data from these tables”, or “take a full backup before making changes”, that cause full-table SELECTs or dump utilities to run. Poisoned templates, dashboards, or “playbooks” can embed these semantics for future sessions.
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | Broad readable records can include credentials, personal, financial, configuration, and proprietary data. <!-- SAF-TRACE: claims=SAF-T1803-C016; sources=SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11,SRC-postgresql-pgdump-18 --> |
+| Integrity | None for the core technique | A logical dump is read-focused; modification requires separate behavior. <!-- SAF-TRACE: claims=SAF-T1803-C014,SAF-T1803-C016; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11 --> |
+| Availability | Low | Large or parallel exports can add load, but disruption is not the immediate objective. <!-- SAF-TRACE: claims=SAF-T1803-C002,SAF-T1803-C016; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11 --> |
+| Scope | Multi-System | The blast radius follows the connected identity's readable databases and any staging channel, rather than the entire ecosystem by default. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C016; sources=SRC-mcp-tools-2026-07-28,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 --> |
 
-**Execute Dump and Stage Data.**  
-Chain or loop MCP tool calls to:
-- Run full-table or wide-filter queries against high-value schemas.  
-- Invoke dump/export utilities for entire databases or warehouses.  
-- Write results to files or object storage in convenient formats (CSV, Parquet, compressed archives).  
-- Place dumps in locations accessible to exfiltration tools (for example, specific buckets, shared volumes, or HTTP-reachable paths).
+### Severity Conditions
 
-**Exfiltrate and Cover Tracks.**  
-Use HTTP/cloud tools, additional agents, or external automation to move staged dumps to attacker-controlled locations (e.g., external buckets, SaaS endpoints, C2). Where possible, modify or delete logs, audit tables, and job history that would expose the excessive exports, sometimes overlapping with log deletion and configuration-tampering techniques [3][4][8][10][11].
+- **Severity increases when** the connected identity has broad privileges, sensitive data is concentrated, result limits are absent, or autonomous calls proceed without confirmation. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C011,SAF-T1803-C016; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 -->
+- **Severity decreases when** credentials are scoped, tools are narrowly authorized and validated, exports require explicit approval, and output is limited or isolated. <!-- SAF-TRACE: claims=SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25 -->
 
----
+## Detection Methods
 
-## Detection
+### Required Telemetry
 
-### Signals & Heuristics
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP host or server audit | Tool request, approval, result, and error | Timestamp, session, actor, server, `mcp.method`, tool, operation class, approval, result bytes, outcome | Preserve correlation identifiers and visible inputs; the protocol does not define a uniform audit schema. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C010,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 --> |
+| Database audit or activity | Query, dump, export, stage, and transfer actions | Database, user, application, client address, operation, query identifier or text, rows or bytes | Prefer durable audit data because activity views can be restricted, truncated, transient, or lack query identifiers. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C009,SAF-T1803-C010; sources=SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18,SRC-mcp-tools-2026-07-28 --> |
+| File or object metadata | Dump-file or staged-object creation | Creator, path or object, size, time, classification, correlation ID | Correlate with tool and database sessions; baselined backups can look similar. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28 --> |
 
-**1. High-Risk Query and Export Patterns.**  
-Look for MCP-originated DB activity that includes:
-- `SELECT * FROM` against large or sensitive tables (e.g., `users`, `customers`, `payments`, `sessions`, `auth_logs`).  
-- Full-schema or full-database export operations (e.g., `pg_dump`, `mysqldump`, `BACKUP DATABASE`, warehouse export jobs) triggered from service accounts associated with MCP or LLM agents [1][2][3][6].  
-- Warehouse/lake exports of entire datasets to object storage in non-standard locations.
+### Indicators of Compromise
 
-**2. Unusual Volume and Cardinality.**  
-Sudden spikes in:
-- Returned row counts for MCP query tools (for example, a jump from typical hundreds/thousands to millions).  
-- Result payload sizes (tens or hundreds of MB) for tool responses.  
-- Warehouse export jobs or object-storage writes originating from MCP-linked credentials [3][8][11].
+- No universal durable IoC was identified; product-specific dump paths and object names are behaviors to baseline, not inherently malicious artifacts. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C015; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-anthropic-espionage-2025-11,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 -->
 
-**3. Sensitive Schema Focus.**  
-Concentration of queries on tables with PII, auth, or payment data, especially when accessed:
-- Outside normal analytics or maintenance windows.  
-- By service accounts or agents not normally associated with such workloads [1][2][11][12].
+### Behavioral Indicators
 
-**4. Staging in New or Unusual Destinations.**  
-Creation of new buckets, paths, or folders that suddenly receive large dumps, particularly where:
-- ACLs are broader than usual (public or cross-account).  
-- The destination is rarely or never used in baseline workloads [3][8][11][14].
+- A model-controlled tool call performs an export or bulk read with an unusually large result and no recorded approval. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- One identity suddenly accesses many tables or views, increases query frequency, or uses an unfamiliar application before staging or retrieval. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C009; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- Correlation among tool session, database identity, result size, and file or object creation increases confidence over any single signal. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28,SRC-postgresql-pg-stat-activity-18 -->
 
-**5. Suspicious Timing and Context.**  
-Database dumps shortly after:
-- New MCP tools, connectors, or roles are introduced.  
-- Credential or configuration changes involving DB or storage access.  
-- Alerts for compromise or abnormal behavior in the same environment.
+### Detection Analytic
 
-**6. Anomalous Agent Behavior.**  
-For LLM-based agents:
-- Rapid escalation from narrow analytical questions to full-table reads and exports.  
-- “Backup everything” or “export all historic data” prompts appearing in proximity to unusual tool usage or policy violations.
+The standalone experimental analytic is maintained in [detection-rule.yml](detection-rule.yml).
 
-### Log Sources
+- **Analytic Goal**: Flag large, unapproved database dump, export, or bulk-read operations invoked through `tools/call`. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- **Rule Status**: Experimental; its 10 MiB threshold is a synthetic tuning starting point, not a production accuracy result. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- **Detection Logic**: Require `tools/call`, a normalized dump-like operation, and at least 10 MiB of results; suppress explicitly approved actions and allowlisted backup identities. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- **Correlation Window**: One normalized completed tool event; environments should additionally aggregate fragmented reads by session and task. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28,SRC-postgresql-pg-stat-activity-18 -->
+- **Known False Positives**: Scheduled backups, approved migrations, exports, incident-response acquisition, analytics extracts, and data pipelines. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28,SRC-postgresql-pg-stat-activity-18 -->
+- **Known Limitations**: Missing normalized fields, small or staged chunks, unmeasured streamed results, mislabeled operations, and compromised approval metadata can cause misses. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C009,SAF-T1803-C010,SAF-T1803-C015; sources=SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18,SRC-mcp-tools-2026-07-28,SRC-anthropic-espionage-2025-11,SRC-nvd-mcp-database-search,SRC-cisa-kev-2026-09-01 -->
+- **Tuning Guidance**: Baseline result volumes by identity, application, database, schedule, and task; lower thresholds for high-sensitivity datasets and maintain explicit, reviewed backup allowlists. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C010; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-mcp-tools-2026-07-28,SRC-postgresql-pg-stat-activity-18 -->
 
-- **MCP Tool Invocation Logs.** Tool name, arguments, results, timestamps, calling user/agent, MCP server ID.  
-- **Database Audit Logs.** Query text, normalized SQL, execution context (user, app, IP), affected tables, row counts, and backup/export operations.  
-- **Warehouse / Data-Lake Logs.** Query history, export job logs, destination URIs, dataset sizes.  
-- **Cloud Provider Logs.** Storage API logs (object writes, exports, bucket and ACL changes), cross-account sharing events.  
-- **Network and Proxy Logs.** Egress patterns from MCP servers, especially large outbound transfers to previously unseen endpoints.  
-- **Security/Monitoring Logs.** DLP events, anomaly detection signals, SIEM alerts related to DB/warehouse/export behaviors.
+### Validation
 
-### Example Analytic
+- **Test Data**: [test-logs.json](../../tests/SAF-T1803/test-logs.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1803/test_detection_rule.py)
+- **Expected Result**: Ten deterministic cases: three alerts and seven non-alerts. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- **Last Validated**: 2026-09-02. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+- **Validation Proof**: [Detector transcript](../../research/techniques/SAF-T1803/validation/detection.txt) and [strict-validator transcript](../../research/techniques/SAF-T1803/validation/strict-validator.txt).
+- **Feasibility Waiver**: None. <!-- SAF-TRACE: claims=SAF-T1803-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
 
-Detect **MCP tool invocations** that:
+## Mitigation Strategies
 
-1. Use DB or warehouse query/export tools **AND**  
-2. Contain bulk-access patterns in arguments (`SELECT * FROM`, export/backup job parameters referring to entire tables or datasets) **AND/OR**  
-3. Are followed within a short window by:
-   - Large result sizes or row counts in MCP tool logs and/or  
-   - Warehouse export jobs writing large datasets to storage and/or  
-   - Object-storage writes of large files to unusual paths or buckets
+### Preventive Controls
 
-Combine this with filters for non-maintenance time windows, non-DBA service accounts, and new/unusual destinations to prioritize likely malicious or uncontrolled incidents [1][3][8][11][14].
+1. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Expose only necessary tools and authorize each operation server-side against a narrowly scoped database identity. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C002,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-postgresql-pgdump-18 -->
+2. **[SAF-M-69: Out-of-Band Authorization](../../mitigations/SAF-M-69/README.md)**: Require explicit confirmation for broad or sensitive reads, show tool inputs, and retain tool-use audit records. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25 -->
+3. Apply **[SAF-M-71: Query Guardrails and Result Limits](../../mitigations/SAF-M-71/README.md)** and **[SAF-M-72: Data Loss Prevention on Tool Outputs](../../mitigations/SAF-M-72/README.md)**: validate identifiers and size parameters, rate-limit calls, cap results, sanitize output, isolate local servers, and protect any staged dump artifacts. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C005,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server -->
 
----
+### Detective Controls
 
-## Mitigations
+1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Correlate MCP calls and approvals with database sessions, result volume, and staged-file creation. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C009,SAF-T1803-C010,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
+2. **[SAF-M-70: Tool-Invocation Anomaly Detection](../../mitigations/SAF-M-70/README.md)**: Alert on breadth, volume, identity, application, and schedule deviations from approved database use. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C008,SAF-T1803-C009; sources=SRC-mitre-attack-t1213-006,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
 
-Each block heading carries a single mitigation tag, following SAF‑T100x style.
+### Response Procedures
 
-### Data Access Governance — Mitigation: SAF‑M‑10: Principle of Least Privilege
+#### Immediate Actions
 
-- Implement strict role separation between:
-  - **Production OLTP vs analytics** use cases.  
-  - **Human DBAs** vs **MCP/LLM agents**.  
-- Limit MCP tools to:
-  - Read-only access where possible.  
-  - Narrow schemas, views, and stored procedures, rather than raw tables [1][2][3][11].  
-- Enforce strong approval and review processes for any MCP tool that can access payment, auth, PII, or log/audit tables.
+- Disable the initiating session or unauthorized database access while preserving MCP, identity, database, and staging telemetry. <!-- SAF-TRACE: claims=SAF-T1803-C012; sources=SRC-mandiant-unc5537-2024,SRC-mandiant-snowflake-hunting-2024 -->
+- Rotate exposed credentials and isolate reachable dump artifacts or object-store paths when evidence shows exposure. <!-- SAF-TRACE: claims=SAF-T1803-C012,SAF-T1803-C016; sources=SRC-mandiant-unc5537-2024,SRC-mandiant-snowflake-hunting-2024,SRC-mitre-attack-t1213-006,SRC-anthropic-espionage-2025-11 -->
 
-### Query Guardrails & Result Limits — Mitigation: SAF‑M‑21: Policy Enforcement & Output Isolation
+#### Investigation Steps
 
-- Implement query guardrails:
-  - Reject or require approval for `SELECT *` on large tables.  
-  - Enforce hard row/size limits; require explicit overrides for bulk exports.  
-  - Prefer parameterized, pre-vetted stored procedures over arbitrary SQL [3][8][11].  
-- On the LLM host, integrate policy engines to:
-  - Inspect proposed tool calls.  
-  - Block or downgrade risky queries (for example, full-table scans, no `WHERE` clause).
+- Correlate the initiating MCP task and session with database identity, application, client, queries, returned volume, and created files or objects. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C009,SAF-T1803-C010,SAF-T1803-C012; sources=SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18,SRC-mcp-tools-2026-07-28,SRC-mandiant-unc5537-2024 -->
+- Determine accessed tables and data classes, whether the results left the environment, and whether extracted credentials enabled follow-on access. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C012,SAF-T1803-C016; sources=SRC-anthropic-espionage-2025-11,SRC-mandiant-unc5537-2024,SRC-mandiant-snowflake-hunting-2024,SRC-mitre-attack-t1213-006 -->
 
-### Output Control & Data Loss Prevention — Mitigation: SAF‑M‑3: Data Loss Prevention
+#### Remediation
 
-- Apply DLP controls that understand:
-  - Schemas, sensitivity labels, and column-level classifications.  
-  - Data movement patterns out of databases, warehouses, and object storage [3][8][11].  
-- Mask or tokenize sensitive columns in MCP query results by default; provide full fidelity only in strictly controlled workflows.  
-- Use sampling, aggregation, and summarization instead of raw row dumps where possible.
-
-### Logging, Telemetry & Alerting — Mitigation: SAF‑M‑12: Centralized Logging
-
-- Centralize DB, warehouse, object storage, MCP tool, and network logs into SIEM or similar systems [3][8][11][12].  
-- Use tamper-resistant logging (e.g., write-once or separate logging accounts) for high-value audit streams.  
-- Treat:
-  - New/unusual export destinations,  
-  - Large full-table scans, and  
-  - Unplanned backup/export operations  
-  as high-severity alerts.
-
-### Human-in-the-Loop & Approvals — Mitigation: SAF‑M‑20: Human Oversight
-
-- Require explicit human approvals for:
-  - Any query or export projected to exceed row/size thresholds.  
-  - Full database or schema export jobs initiated from MCP tools.  
-- Present **clear, human-readable impact summaries** before approval (“This export will contain ~3.1M user records from 5 tables”).  
-- Log approval details (who, when, justification) for attestation and post-incident analysis.
-
-### Secure MCP Server & Connector Implementation — Mitigation: SAF‑M‑16: Environment Hardening
-
-- Harden MCP servers and DB/warehouse connectors:
-  - Validate and sanitize all user-provided SQL parameters.  
-  - Prevent prompt-driven arbitrary SQL where possible; prefer constrained query templates.  
-  - Use secure network paths (TLS, private links) and avoid exposing DBs directly to the internet [2][3][11][14].  
-- Align with OWASP LLM and GenAI security guidance, including secure design of plugins/tools and defense against prompt injection and excessive agency [4][9][13].
-
----
-
-## Validation
-
-**Staging Only (Non-Production).**  
-Conduct validation in isolated environments with synthetic or non-critical data:
-
-- **Full-Table SELECT Simulation.**  
-  Use MCP query tools to run wide-range queries against synthetic large tables and confirm that:
-  - DB and MCP logs capture row counts, query text, and tool metadata.  
-  - Detection rules fire at expected thresholds, while normal small queries remain low-noise.
-
-- **Logical Dump / Backup Simulation.**  
-  In test databases and warehouses, simulate backup/export jobs and ensure:
-  - DB/warehouse audit logs capture the operations.  
-  - MCP tool logs link back to agent sessions.  
-  - Detection rules and approvals intercept unauthorized “full backup” attempts.
-
-- **Analytics Export / Data-Lake Simulation.**  
-  Use test datasets and buckets; simulate large-scale exports and confirm that cloud logs, SIEM alerts, and MCP tool logs all correlate.
-
-- **End-to-End Exfiltration Exercises.**  
-  Integrate SAF-T1803 scenarios into red team and purple team exercises, followed by exfiltration techniques, focusing on how quickly defenders can detect, stop, and investigate bulk database dumps [3][8][11][14].
-
-- **Chaos and Recovery Drills.**  
-  Combine SAF-T1803 scenarios with resilience tests (e.g., “What happens if a full analytics dataset is dumped and exfiltrated?”). Validate that data-loss and breach-response playbooks are mature.
-
----
+- Remove unsafe tool paths, apply validated identifier handling, reduce database privilege, and add confirmation and output limits before restoring service. <!-- SAF-TRACE: claims=SAF-T1803-C005,SAF-T1803-C011,SAF-T1803-C012; sources=SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server,SRC-mcp-tools-2026-07-28,SRC-mcp-security-2025-11-25,SRC-mandiant-unc5537-2024,SRC-mandiant-snowflake-hunting-2024 -->
+- Add regression cases and durable monitoring for the original operation shape, while treating the documented ADX patch as commit-level remediation until a fixed release is established. <!-- SAF-TRACE: claims=SAF-T1803-C005,SAF-T1803-C010; sources=SRC-cve-2026-33980,SRC-ghsa-vphc-468g-8rfp,SRC-adx-patch-0abe0ee,SRC-pypi-adx-mcp-server,SRC-mcp-tools-2026-07-28,SRC-mandiant-snowflake-hunting-2024,SRC-postgresql-pg-stat-activity-18 -->
 
 ## Related Techniques
 
-**ATT&CK:**
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1801: Automated Data Harvesting](../SAF-T1801/README.md) | Generalization | Covers systematic collection across source types; SAF-T1803 requires dump-equivalent database acquisition. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 --> |
+| [SAF-T1804: API Data Harvest](../SAF-T1804/README.md) | Sibling specialization | Collects through APIs; SAF-T1803 is distinguished by dump-equivalent database acquisition. <!-- SAF-TRACE: claims=SAF-T1803-C014; sources=SRC-postgresql-pgdump-18,SRC-mitre-attack-t1213-006 --> |
 
-- **T1213 – Data from Information Repositories.**  
-- **T1213.006 – Databases.**  
-- **T1074 – Data Staged.**  
-- **T1041 / T1567 – Exfiltration Over C2 / Web Services.**
+## MITRE ATT&CK Mapping
 
- 
-
----
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1213.006](https://attack.mitre.org/techniques/T1213/006/) | Data from Information Repositories: Databases | Direct | Both cover obtaining data from databases for Collection; SAF-T1803 narrows the behavior to MCP-connected or agentic dump-equivalent operations and their intent boundary. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C014; sources=SRC-mitre-attack-t1213-006,SRC-postgresql-pgdump-18 --> |
 
 ## References
 
-[1] MITRE ATT&CK, T1213 – Data from Information Repositories. https://attack.mitre.org/techniques/T1213/  
-[2] MITRE ATT&CK, T1213.006 – Data from Information Repositories: Databases. https://attack.mitre.org/techniques/T1213/006/  
-[3] MITRE ATT&CK, T1074 – Data Staged. https://attack.mitre.org/techniques/T1074/  
-[4] MITRE ATT&CK, T1041 – Exfiltration Over C2 Channel. https://attack.mitre.org/techniques/T1041/  
-[5] MITRE ATT&CK, T1567 – Exfiltration Over Web Service. https://attack.mitre.org/techniques/T1567/  
-[6] MITRE ATT&CK, Database Exfiltration Case Studies (Enterprise ATT&CK examples). https://attack.mitre.org/  
-[7] Verizon, Data Breach Investigations Reports (DBIR) – database and credential breaches. https://www.verizon.com/business/resources/reports/dbir/  
-[8] MITRE D3FEND, Data Loss Prevention & Staging Defenses. https://d3fend.mitre.org/  
-[9] OWASP, Top‑10 for Large Language Model Applications. https://owasp.org/www-project-top-10-for-large-language-model-applications/  
-[10] CISA, “Protecting Sensitive and Personal Information from Ransomware-Caused Data Breaches,” Fact Sheet. https://www.cisa.gov/sites/default/files/publications/CISA_Fact_Sheet-Protecting_Sensitive_and_Personal_Information_from_Ransomware-Caused_Data_Breaches-508C.pdf  
-[11] NSA & CISA, “Secure Data in the Cloud,” Cybersecurity Information Sheet (CSI), March 2024.  
-https://media.defense.gov/2024/Mar/07/2003407862/-1/-1/0/CSI-CLOUDTOP10-SECURE-DATA.PDF 
-[12] MITRE ATT&CK, M1018 – User Account Management. https://attack.mitre.org/mitigations/M1018/  
-[13] OWASP GenAI Security Project. https://owasp.org/www-project-top-10-for-large-language-model-applications/ 
-[14] Google Cloud, “4 steps to stop data exfiltration with Google Cloud.” https://cloud.google.com/blog/products/identity-security/4-steps-to-stop-data-exfiltration-with-google-cloud  
-
-
----
+1. **SRC-mcp-tools-2026-07-28**: [Model Context Protocol — Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) — Tool semantics, user interaction, and security guidance. <!-- SAF-TRACE: claims=SAF-T1803-C001,SAF-T1803-C010,SAF-T1803-C011; sources=SRC-mcp-tools-2026-07-28 -->
+2. **SRC-mcp-security-2025-11-25**: [Model Context Protocol — Security Best Practices](https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices) — Consent, privilege, and sandboxing guidance. <!-- SAF-TRACE: claims=SAF-T1803-C011; sources=SRC-mcp-security-2025-11-25 -->
+3. **SRC-postgresql-pgdump-18**: [PostgreSQL 18 — pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) — Logical export behavior and privilege limits. <!-- SAF-TRACE: claims=SAF-T1803-C002,SAF-T1803-C014,SAF-T1803-C016; sources=SRC-postgresql-pgdump-18 -->
+4. **SRC-postgresql-pg-stat-activity-18**: [PostgreSQL 18 — Monitoring Database Activity](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW) — Activity fields and limitations. <!-- SAF-TRACE: claims=SAF-T1803-C009,SAF-T1803-C010; sources=SRC-postgresql-pg-stat-activity-18 -->
+5. **SRC-mitre-attack-t1213-006**: [MITRE ATT&CK T1213.006](https://attack.mitre.org/techniques/T1213/006/) — Database collection and detection strategies. <!-- SAF-TRACE: claims=SAF-T1803-C006,SAF-T1803-C014,SAF-T1803-C016; sources=SRC-mitre-attack-t1213-006 -->
+6. **SRC-anthropic-espionage-2025-11**: [Anthropic Threat Intelligence report](https://assets.anthropic.com/m/ec212e6566a0d47/original/Disrupting-the-first-reported-AI-orchestrated-cyber-espionage-campaign.pdf) — Production agentic database-extraction incident. <!-- SAF-TRACE: claims=SAF-T1803-C003,SAF-T1803-C015,SAF-T1803-C016; sources=SRC-anthropic-espionage-2025-11 -->
+7. **SRC-mandiant-unc5537-2024**: [Mandiant — UNC5537 Snowflake Data Theft and Extortion](https://cloud.google.com/blog/topics/threat-intelligence/unc5537-snowflake-data-theft-extortion) — Significant database export analogy. <!-- SAF-TRACE: claims=SAF-T1803-C007,SAF-T1803-C012; sources=SRC-mandiant-unc5537-2024 -->
+8. **SRC-mandiant-snowflake-hunting-2024**: [Mandiant — Snowflake Threat Hunting Guide](https://services.google.com/fh/files/misc/snowflake-threat-hunting-guide.pdf) — Database anomaly, staging, retrieval, and false-positive guidance. <!-- SAF-TRACE: claims=SAF-T1803-C008,SAF-T1803-C010,SAF-T1803-C012; sources=SRC-mandiant-snowflake-hunting-2024 -->
+9. **SRC-nvd-mcp-database-search**: [NVD CVE API](https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=model%20context%20protocol%20database) — Bounded MCP database vulnerability search. <!-- SAF-TRACE: claims=SAF-T1803-C015; sources=SRC-nvd-mcp-database-search -->
+10. **SRC-cve-2026-33980**: [CVE-2026-33980 record](https://cveawg.mitre.org/api/cve/CVE-2026-33980) — ADX MCP KQL injection, affected range, and exploitation enrichment. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C005; sources=SRC-cve-2026-33980 -->
+11. **SRC-ghsa-vphc-468g-8rfp**: [GHSA-vphc-468g-8rfp](https://github.com/pab1it0/adx-mcp-server/security/advisories/GHSA-vphc-468g-8rfp) — Exact advisory reached from the CVE authority. <!-- SAF-TRACE: claims=SAF-T1803-C004,SAF-T1803-C005; sources=SRC-ghsa-vphc-468g-8rfp -->
+12. **SRC-adx-patch-0abe0ee**: [ADX MCP Server patch](https://github.com/pab1it0/adx-mcp-server/commit/0abe0ee55279e111281076393e5e966335fffd30) — Exact maintainer fix reached from the CVE authority. <!-- SAF-TRACE: claims=SAF-T1803-C005,SAF-T1803-C011; sources=SRC-adx-patch-0abe0ee -->
+13. **SRC-pypi-adx-mcp-server**: [ADX MCP Server on PyPI](https://pypi.org/project/adx-mcp-server/) — Published release state. <!-- SAF-TRACE: claims=SAF-T1803-C005; sources=SRC-pypi-adx-mcp-server -->
+14. **SRC-cisa-kev-2026-09-01**: [CISA Known Exploited Vulnerabilities catalog](https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json) — Bounded exact-ID exploitation-catalog checks. <!-- SAF-TRACE: claims=SAF-T1803-C013,SAF-T1803-C015; sources=SRC-cisa-kev-2026-09-01 -->
+15. **SRC-cve-2026-75133**: [CVE-2026-75133 record](https://cveawg.mitre.org/api/cve/CVE-2026-75133) — Unauthenticated MySQL dump analogy. <!-- SAF-TRACE: claims=SAF-T1803-C013; sources=SRC-cve-2026-75133 -->
+16. **SRC-wordpress-keep-backup-daily**: [Keep Backup Daily changelog](https://wordpress.org/plugins/keep-backup-daily/#developers) — Remediation boundary and researcher credit. <!-- SAF-TRACE: claims=SAF-T1803-C013; sources=SRC-wordpress-keep-backup-daily -->
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-11-29 | SAF-T1803 database dump via MCP tools, sub-techniques, detections, mitigations, and references | Pratikshya Regmi |
 
----
+| Version | Date | Changes | Author |
+| --- | --- | --- | --- |
+| 1.0 | 2026-09-02 | Initial clean-room publication candidate with tested detection and evidence packet. | OpenAI Codex clean-room agent `/root/cleanroom_saf_t1803` |

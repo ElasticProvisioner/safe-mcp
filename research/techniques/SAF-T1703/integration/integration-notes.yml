@@ -1,0 +1,33 @@
+version: 1
+technique_id: SAF-T1703
+frozen_bundle_policy: >-
+  Verify FREEZE.sha256 before any repository inspection or integration work.
+post_freeze_actions:
+  - Resolve SAF-T9998 and SAF-T9999 against the repository's canonical neighboring techniques; update contract, README, framework record, and alignment ledger only as an explicitly reviewed integration delta.
+  - Replace the synthetic repository-history SHA with the actual integration commit while preserving the clean-room version-history attribution.
+  - Merge source-manifest-fragment.yml, framework-fragment.yml, and alignment-fragment.yml using repository-native conflict and duplication checks.
+  - Re-run repository strict validation and detector tests after integration; do not alter the frozen bundle in place.
+prohibited_merge_behavior:
+  - Do not silently overwrite evidence status, exclusions, claims, citations, authorship, or source-rights records using prior SAF-T1703 content.
+  - Do not represent the synthetic neighbor IDs or synthetic history SHA as canonical repository facts.
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9998: SAF-T1102
+    SAF-T9999: SAF-T1104
+  additional_overlap_review:
+    - SAF-T1701
+  canonical_mitigations:
+    - SAF-M-2
+    - SAF-M-12
+    - SAF-M-14
+    - SAF-M-21
+    - SAF-M-22
+    - SAF-M-29
+    - SAF-M-69
+    - SAF-M-70
+    - SAF-M-74
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_validation:
+    detection: research/techniques/SAF-T1703/validation/detection-test.txt
+    strict: research/techniques/SAF-T1703/validation/strict-validator.txt
+  status: integrated_and_validated

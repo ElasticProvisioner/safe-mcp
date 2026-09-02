@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T1408
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1408
+  inherited_context: false
+target:
+  id: SAF-T1408
+  neutral_name: OAuth Protocol Downgrade
+allowed_inputs:
+- The author-saf-technique skill and every routed clean-room reference except the
+  prohibited impact example reference.
+- Repository-wide generic technique template, research protocol, blank packet schemas,
+  and canonical validator.
+- User-supplied target ID, neutral name, and tactic.
+- Independently opened standards-body, government, first-party vendor, CNA, and originating-project
+  sources.
+- Minimal synthetic tactic, neighbor, mitigation, source, and history records used
+  only in the isolated mock.
+prohibited_inputs:
+- techniques/SAF-T1408/README.md
+- techniques/SAF-T1408/detection-rule.yml
+- research/techniques/SAF-T1408/ and all prior target research or test artifacts
+- git history, diffs, blame, stashes, commits, and branches exposing prior target
+  content
+- pull request, issue, review comment, cached SAF page, or prior target discussion
+- previous conversation or summary containing prior SAF-T1408 content
+- shared registries, catalog descriptions, SAF sites, prior target source lists, and
+  impact-classification-examples.md
+independent_research:
+  searches:
+  - NVD API keywordSearch=PKCE
+  - 'CISA KEV 2026.09.01 catalog scan: OAuth|PKCE|Model Context Protocol'
+  - NVD API keywordSearch=OAuth downgrade
+  - NVD API keywordSearch=PKCE plain
+  - NVD API keywordSearch=Model Context Protocol OAuth
+  - 'MCP llms.txt index scan: incident|breach|downgrade|PKCE'
+  - NVD API keywordSearch=PKCE downgrade attack
+  - NVD API keywordSearch=code_challenge_method
+  - 'IANA OAuth Parameters registry scan: PKCE methods S256 and plain'
+  - 'CISA KEV exact-ID scan: CVE-2026-67336, CVE-2024-23647, CVE-2024-22258, CVE-2026-26247'
+  - NVD API keywordSearch=OAuth PKCE stripping
+  - NVD API keywordSearch=OAuth S256 downgrade
+  - NVD API keywordSearch=OAuth code_challenge removed
+  - NVD API keywordSearch=OAuth PKCE downgrade confidential client
+  opened_source_ids:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-auth-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc9700
+  - SRC-rfc7636
+  - SRC-rfc8414
+  - SRC-rfc8252
+  - SRC-iana-oauth-parameters
+  - SRC-cwe-757
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-67336
+  - SRC-nvd-2026-67336
+  - SRC-vulncheck-2026-67336
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cve-2024-23647
+  - SRC-ghsa-mrx3-gxjx-hjqj
+  - SRC-cve-2024-22258
+  - SRC-spring-cve-2024-22258
+  - SRC-cve-2026-26247
+  - SRC-nvd-2026-26247
+  - SRC-gitea-1.25.5
+  - SRC-nvd-2023-48228
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not revise evidence, claims, or prose from a comparison with prior SAF-T1408
+  content.
+- Resolve synthetic neighbor and history joins mechanically after freeze.
+- Reconcile stable source IDs against the shared manifest only after freeze and without
+  accepting new research leads.
+- Do not integrate, commit, push, or open a pull request from this clean-room run.
+mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1408
+  result: passed
+  scope: Strict isolated synthetic repository containing only the canonical validator,
+    this bundle, and minimal synthetic neighbor, registry, and history joins.
+attestation: I generated SAF-T1408 from the allowed inputs and independently reviewed
+  authority sources, detected no prior-artifact access, froze the draft before integration,
+  and left only enumerated mechanical joins for integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-auth-2025-06-18: SRC-mcp-auth-2025-06-18
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-rfc9700: SRC-rfc9700
+    SRC-rfc8414: SRC-rfc8414
+    SRC-attack-t1528: SRC-mitre-t1528
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+  new_shared_source_records:
+  - SRC-rfc7636
+  - SRC-rfc8252
+  - SRC-iana-oauth-parameters
+  - SRC-cwe-757
+  - SRC-cve-2026-67336
+  - SRC-nvd-2026-67336
+  - SRC-vulncheck-2026-67336
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cve-2024-23647
+  - SRC-ghsa-mrx3-gxjx-hjqj
+  - SRC-cve-2024-22258
+  - SRC-spring-cve-2024-22258
+  - SRC-cve-2026-26247
+  - SRC-nvd-2026-26247
+  - SRC-gitea-1.25.5
+  - SRC-nvd-2023-48228
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-20
+  - SAF-M-31
+  - SAF-M-38
+  synthetic_neighbor_mapping:
+    SAF-T1407: SAF-T1009
+    SAF-T1409: SAF-T1306
+  status: integrated_and_repository_validated

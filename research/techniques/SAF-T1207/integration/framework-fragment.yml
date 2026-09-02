@@ -1,0 +1,46 @@
+version: 1
+scope: isolated_clean_room_fragment_for_SAF-T1207
+techniques:
+  - technique_id: SAF-T1207
+    name: Hijack Update Mechanism
+    documentation_status: draft
+    evidence_status: research-derived
+    tactics: [ATK-TA0003]
+    technique_path: techniques/SAF-T1207/README.md
+    research_packet: research/techniques/SAF-T1207
+    related_techniques: [SAF-T9998, SAF-T9999]
+    mitigations: [SAF-M-998, SAF-M-999]
+    detection:
+      rule: techniques/SAF-T1207/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/fixtures/SAF-T1207/update-events.json
+        - tests/test_saf_t1207_detection.py
+        - tests/results/SAF-T1207-detection-results.json
+  - technique_id: SAF-T9998
+    name: First-Install Component Poisoning
+    documentation_status: synthetic_isolated_join
+    evidence_status: hypothesized
+    tactics: [ATK-TA0001]
+    technique_path: techniques/SAF-T9998/README.md
+    research_packet: null
+    related_techniques: [SAF-T1207]
+    mitigations: []
+    detection: {rule: null, test_status: not_applicable, test_artifacts: []}
+  - technique_id: SAF-T9999
+    name: Runtime Component Mutation
+    documentation_status: synthetic_isolated_join
+    evidence_status: hypothesized
+    tactics: [ATK-TA0003]
+    technique_path: techniques/SAF-T9999/README.md
+    research_packet: null
+    related_techniques: [SAF-T1207]
+    mitigations: []
+    detection: {rule: null, test_status: not_applicable, test_artifacts: []}
+mitigations:
+  - mitigation_id: SAF-M-998
+    name: Approved Release Enforcement
+    path: mitigations/SAF-M-998/README.md
+  - mitigation_id: SAF-M-999
+    name: Component Isolation
+    path: mitigations/SAF-M-999/README.md

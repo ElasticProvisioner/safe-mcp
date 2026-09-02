@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "window_seconds": 60,
+  "threshold": 3,
+  "cases": [
+    {
+      "name": "positive_denied_single",
+      "case_type": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "d1", "actor.id": "unknown-client", "server.address": "mcp.example", "authorization.decision": "denied", "mcp.cursor": null, "mcp.result.tool_count": 0}
+      ]
+    },
+    {
+      "name": "positive_unapproved_single",
+      "case_type": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:01:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "u1", "actor.id": "new-client", "server.address": "mcp.example", "authorization.decision": "unapproved", "mcp.cursor": null, "mcp.result.tool_count": 5}
+      ]
+    },
+    {
+      "name": "positive_three_page_burst",
+      "case_type": "positive_boundary",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:02:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "b1", "actor.id": "compromised-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p1", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:02:20Z", "rpc.method": "tools/list", "jsonrpc.request.id": "b2", "actor.id": "compromised-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p2", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:02:59Z", "rpc.method": "tools/list", "jsonrpc.request.id": "b3", "actor.id": "compromised-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p3", "mcp.result.tool_count": 8}
+      ]
+    },
+    {
+      "name": "boundary_two_pages",
+      "case_type": "negative_boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:03:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "n1", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p1", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:03:59Z", "rpc.method": "tools/list", "jsonrpc.request.id": "n2", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p2", "mcp.result.tool_count": 20}
+      ]
+    },
+    {
+      "name": "boundary_three_pages_outside_window",
+      "case_type": "negative_boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:04:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "w1", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p1", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:04:31Z", "rpc.method": "tools/list", "jsonrpc.request.id": "w2", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p2", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:05:02Z", "rpc.method": "tools/list", "jsonrpc.request.id": "w3", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p3", "mcp.result.tool_count": 8}
+      ]
+    },
+    {
+      "name": "negative_approved_single",
+      "case_type": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:06:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "a1", "actor.id": "approved-app", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": null, "mcp.result.tool_count": 4}
+      ]
+    },
+    {
+      "name": "negative_tool_call",
+      "case_type": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:07:00Z", "rpc.method": "tools/call", "jsonrpc.request.id": "c1", "actor.id": "unknown-client", "server.address": "mcp.example", "authorization.decision": "denied", "mcp.cursor": null, "mcp.result.tool_count": null}
+      ]
+    },
+    {
+      "name": "malformed_missing_actor",
+      "case_type": "malformed",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:08:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "m1", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p1", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:08:10Z", "rpc.method": "tools/list", "jsonrpc.request.id": "m2", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p2", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:08:20Z", "rpc.method": "tools/list", "jsonrpc.request.id": "m3", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p3", "mcp.result.tool_count": 8}
+      ]
+    },
+    {
+      "name": "expected_false_positive_inventory_burst",
+      "case_type": "expected_false_positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:09:00Z", "rpc.method": "tools/list", "jsonrpc.request.id": "f1", "actor.id": "inventory-job", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p1", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:09:10Z", "rpc.method": "tools/list", "jsonrpc.request.id": "f2", "actor.id": "inventory-job", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p2", "mcp.result.tool_count": 20},
+        {"timestamp": "2026-09-02T12:09:20Z", "rpc.method": "tools/list", "jsonrpc.request.id": "f3", "actor.id": "inventory-job", "server.address": "mcp.example", "authorization.decision": "approved", "mcp.cursor": "p3", "mcp.result.tool_count": 8}
+      ]
+    }
+  ]
+}

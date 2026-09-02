@@ -1,0 +1,112 @@
+version: 1
+technique_id: SAF-T1901
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+target:
+  id: SAF-T1901
+  neutral_name: Outbound Webhook C2
+  tactic: ATK-TA0011
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: OpenAI clean-room research agent
+allowed_inputs:
+- Neutral identifier SAF-T1901, neutral name Outbound Webhook C2, and tactic ATK-TA0011.
+- Generic author-saf-technique skill instructions, blank templates, clean-room reference,
+  readable trace reference, and validator.
+- Direct external authority sources independently located by constrained authority-domain
+  queries or direct known URLs.
+prohibited_inputs:
+- Any existing techniques/SAF-T1901/README.md artifact or target technique content.
+- Any existing research/techniques/SAF-T1901/ packet or prior-run evidence.
+- Any existing techniques/SAF-T1901/detection-rule.yml artifact or target test artifact.
+- Shared SAF source, framework, alignment, mitigation, or technique registries before
+  freeze.
+- SAF websites, target-specific issues, methodology impact examples, or registry prose.
+- Git history, diffs, blame, or commits for the target.
+- Pull request or issue material concerning the target.
+- Previous conversation context or prior agent output concerning the target.
+independent_research:
+  search_policy: direct_authority_only
+  searches:
+  - Official MCP specification sections for tools, security principles, and SSRF defenses.
+  - Official MITRE ATT&CK pages for bidirectional and one-way web-service communication.
+  - Official OpenTelemetry HTTP semantic conventions.
+  - Direct NVD CVE API keyword and exact-identifier queries for MCP, agent, webhook,
+    callback, arbitrary-URL, SSRF, and command-channel combinations.
+  - Official CISA KEV exact-identifier check for selected candidates.
+  - First-party vendor advisories and one ATT&CK-identified first-party research report.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-otel-http-spans-1.44.0
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-aws-cve-2026-15643
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-xqq2-4j46-vwp7
+  - SRC-nvd-token-scope-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-unit42-brute-ratel-2022
+  - SRC-ghsa-n8n-mcp
+  github_discovery_constraint: Exact GitHub Security Advisory artifacts were opened
+    only after NVD, a direct non-GitHub authority, identified their exact URLs; provenance
+    is recorded per source.
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile synthetic neighbor identifiers only after verifying FREEZE.sha256.
+- Reconcile independently created source IDs with the canonical source registry without
+  changing claim meaning.
+- Replace the synthetic repository-history SHA with a real integration commit reference
+  only after freeze.
+- Preserve Research-Derived status unless new direct evidence independently supports
+  a higher status.
+- Do not introduce shared-registry prose into the frozen clean-room evidence packet.
+mock_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1901
+  result: passed
+  environment: Fresh isolated synthetic repository assembled from this bundle and
+    generic validator only.
+attestation: I generated this draft independently from the allowed neutral target,
+  generic method, and direct external authorities; I did not access a prior target
+  artifact, shared SAF registry, repository history, pull request, issue, or previous
+  target conversation before the immutable evidence freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-principles-2026-07-28: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-security-best-practices-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-mitre-t1102-002-v1.1: SRC-mitre-t1102-002-v1-1
+    SRC-mitre-t1102-003-v1.1: SRC-mitre-t1102-003-v1-1
+    SRC-otel-http-semconv-1.44.0: SRC-otel-http-spans-1.44.0
+    SRC-aws-2026-054: SRC-aws-cve-2026-15643
+    SRC-ghsa-7r34-79r5-rcc9: SRC-ghsa-mcp-atlassian-7r34
+    SRC-nvd-direct-catalog-2026-09-02: SRC-nvd-token-scope-corpus
+    SRC-cisa-kev-2026.09.01: SRC-cisa-kev-2026-09-01
+    SRC-ghsa-4ggg-h7ph-26qr: SRC-ghsa-n8n-mcp
+  new_shared_source_records:
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-ghsa-xqq2-4j46-vwp7
+  - SRC-unit42-brute-ratel-2022
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0011
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  status: integrated_and_validated
+  resolved_dependency: SAF-T1913 independently authored, integrated, and strictly validated.

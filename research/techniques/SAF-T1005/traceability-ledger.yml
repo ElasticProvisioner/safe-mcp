@@ -1,0 +1,147 @@
+version: 1
+technique_id: SAF-T1005
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1005/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1005/technique-contract.yml
+  supports: Scope, name, tactic, neighbor distinctions, safe-example constraints,
+    and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1005/quality-review.yml
+  supports: Isolated validation command, result, detection-test result, review date,
+    and quality gates.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1005/detection-rule.yml
+  supports: Detection logic, correlation window, fields, false positives, limitations,
+    and traceability joins.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1005/test-logs.json
+  supports: Deterministic positive, negative, boundary, malformed, and expected false-positive
+    fixtures.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1005/test_detection_rule.py
+  supports: Deterministic executable detection validation.
+- id: LOCAL-detection-results
+  path: techniques/SAF-T1005/test-results.json
+  supports: Nine-of-nine passing detection validation result dated 2026-09-01.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1005/source-coverage.yml
+  supports: Five-pass research, two no-change passes, classifications, exclusions,
+    and evidence status.
+- id: LOCAL-source-fragment
+  path: research/techniques/SAF-T1005/integration/source-manifest-fragment.yml
+  supports: Independently generated source acquisition records for later shared-registry
+    reconciliation.
+- id: LOCAL-framework-fragment
+  path: research/techniques/SAF-T1005/integration/framework-fragment.yml
+  supports: Independently generated framework record for later shared-model reconciliation.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1005/integration/integration-notes.yml
+  supports: Deferred mechanical integration requirements and shared-state limitations.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1005-X001
+  candidate: A global claim that no selected vulnerability has been exploited in production.
+  origin: Production-incident, exploitation-status, NVD, and CISA KEV search passes.
+  attempted_searches:
+  - '"MCP-Pinot" "MCP Inspector" production incident compromise [cisa.gov,nvd.nist.gov]'
+  - '"LiteLLM" "MCP" unauthenticated RCE production exploitation [nvd.nist.gov,cisa.gov]'
+  - Exact selected-CVE CISA KEV domain-filtered searches.
+  consulted_source_ids:
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-horizon3-litellm-chain
+  reason: Search and advisory silence cannot establish global absence; only a bounded
+    reviewed-corpus statement is supportable.
+  prohibited_publishable_text:
+  - has never been exploited in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X002
+  candidate: Treat CVE-2025-58444 as a direct exposed-endpoint example.
+  origin: NVD vulnerability discovery and subsequent exact advisory review.
+  attempted_searches:
+  - '"MCP Inspector" vulnerability CVE remote code execution DNS rebinding [nvd.nist.gov]'
+  - Exact GHSA-g9hg-qhmf-q45m advisory review.
+  consulted_source_ids:
+  - SRC-ghsa-inspector-g9hg
+  reason: The defining entry mechanism is malicious redirect handling and XSS; endpoint
+    interaction is a consequence, making the example adjacent.
+  prohibited_publishable_text:
+  - CVE-2025-58444 is an exposed endpoint exploit
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X003
+  candidate: Treat all MCP command-injection or path-traversal vulnerabilities as
+    exposed-endpoint exploitation.
+  origin: Broad current CVE discovery pass.
+  attempted_searches:
+  - '"Model Context Protocol" endpoint unauthenticated advisory 2026 remote code execution
+    [cve.org,nvd.nist.gov]'
+  - '"Model Context Protocol" "missing authentication" endpoint CVE [cve.org]'
+  consulted_source_ids: []
+  reason: Unsafe argument parsing after authorized access crosses a different boundary;
+    search snippets were discovery only and were not used as evidence.
+  prohibited_publishable_text:
+  - all MCP command-injection vulnerabilities are exposed endpoint exploits
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X004
+  candidate: Select IBM Langflow CVE-2026-8446 among the highest-impact examples.
+  origin: Current NVD discovery followed by exact IBM security bulletin review.
+  attempted_searches:
+  - '"MCP endpoint" authentication bypass security bulletin August 2026 [ibm.com,cisa.gov]'
+  - Exact IBM bulletin 7282147 review.
+  consulted_source_ids:
+  - SRC-ibm-langflow-7282147
+  reason: Direct but lower-impact confidentiality-focused duplicate pattern than the
+    four selected examples; retained in coverage classification only.
+  prohibited_publishable_text:
+  - CVE-2026-8446 caused production compromise
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X005
+  candidate: Publish AgenticMail CVE-2026-50287 as a fully reviewed example.
+  origin: NVD search result during a late current-vulnerability pass.
+  attempted_searches:
+  - '"MCP endpoint" "missing authentication" CVE August 2026 [nvd.nist.gov,cve.org]'
+  consulted_source_ids: []
+  reason: The result was a discovery snippet only; no complete primary source was
+    opened, and higher-impact direct examples already filled the selection limit.
+  prohibited_publishable_text:
+  - AgenticMail was exploited in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X006
+  candidate: Publish Line Desktop MCP CVE-2026-49357 as a fully reviewed example.
+  origin: NVD search result during a late current-vulnerability pass.
+  attempted_searches:
+  - '"MCP endpoint" "missing authentication" CVE August 2026 [nvd.nist.gov,cve.org]'
+  consulted_source_ids: []
+  reason: The result was a discovery snippet only; no complete primary source was
+    opened, and higher-impact direct examples already filled the selection limit.
+  prohibited_publishable_text:
+  - Line Desktop MCP was exploited in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1005-X007
+  candidate: Assert CISA Known Exploited Vulnerabilities catalog membership or non-membership
+    for selected CVEs.
+  origin: Required exploitation-status verification pass.
+  attempted_searches:
+  - Direct CISA KEV catalog page, JSON feed, and CSV feed retrieval.
+  - Exact selected-CVE domain-filtered searches restricted to cisa.gov.
+  consulted_source_ids: []
+  reason: Direct retrieval returned HTTP 403 and exact searches returned no catalog
+    result; absence cannot support non-membership.
+  prohibited_publishable_text:
+  - The selected CVEs are in CISA KEV
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

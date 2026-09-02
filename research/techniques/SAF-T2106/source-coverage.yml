@@ -1,0 +1,147 @@
+version: 1
+technique_id: SAF-T2106
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries: ['site:modelcontextprotocol.io specification resources', 'site:nist.gov adversarial machine learning poisoning', 'site:attack.mitre.org stored data manipulation', 'site:opentelemetry.io gen_ai retrieval documents']
+      material_changes: [Established the host-controlled MCP context boundary, general poisoning taxonomy, stored-data analogue, and retrieval identifier telemetry.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries: ['site:nvd.nist.gov vector database poisoning CVE', 'site:ibm.com/support Langflow vector collection pollution CVE', 'site:microsoft.com/security/blog AI memory poisoning vector store']
+      material_changes: [Added direct Open WebUI, Langflow, and mem0 vulnerabilities; retained an explicit production-breach gap.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries: ['site:proceedings.neurips.cc AgentPoison poisoning memory knowledge bases', 'site:usenix.org PoisonedRAG knowledge database poisoning']
+      material_changes: [Established end-to-end demonstrated evidence and bounded empirical results.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries: ['site:learn.microsoft.com AI memory context poisoning', 'site:opentelemetry.io retrieval documents id score', 'site:attack.mitre.org DET0193']
+      material_changes: [Established write-provenance and retrieval-ID requirements for a testable correlation analytic.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries: ['site:proceedings.neurips.cc ReliabilityRAG', 'site:microsoft.com RAGFlow compromise vector store']
+      material_changes: [Added bounded contrary evidence and separated adjacent production compromise from the defining mechanism.]
+    - pass: saturation_follow_up_exploitation_status
+      completed_on: "2026-09-02"
+      queries: ['site:ibm.com/support/pages CVE-2026-13444 exploitation observed', 'site:nvd.nist.gov/vuln/detail CVE-2026-44554 exploitation status']
+      material_changes: [Confirmed CISA records exploitation none for CVE-2026-44554.]
+    - pass: saturation_follow_up_mem0
+      completed_on: "2026-09-02"
+      queries: ['site:nvd.nist.gov memory creation API data pollution']
+      material_changes: [Added CVE-2026-31245 as a direct but redundant vulnerability candidate and confirmed exploitation none in the CISA record.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries: ['site:nvd.nist.gov/vuln/detail/CVE-2026-31245 potential data pollution', 'site:ibm.com/support/pages/node/7279989 Langflow 1.10.2', 'exact GHSA-7r82-qhg4-6wvj identifier obtained from NVD', 'site:proceedings.neurips.cc AgentPoison retrieval target action']
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries: ['site:nvd.nist.gov/vuln/detail/CVE-2026-44554 exploitation none', 'site:microsoft.com AI recommendation poisoning effects varied', 'site:opentelemetry.io gen_ai retrieval documents id score', 'site:attack.mitre.org DET0193 authorized time windows']
+      material_changes: []
+  rationale: Five source-class passes plus late vulnerability and exploitation checks were followed by two distinct, consecutive passes that added no material fact or publishable claim.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 9
+  selected_examples: [SRC-neurips-agentpoison-2024, SRC-usenix-poisonedrag-2025, SRC-openwebui-ghsa, SRC-ibm-langflow]
+  no_qualifying_examples_rationale: No selected item is a verified production breach; current whitelisted authority searches found direct demonstrations and vulnerabilities but no incident proving both vector-store contamination and downstream model effect.
+  candidates:
+    - source_id: SRC-neurips-agentpoison-2024
+      identifier: AgentPoison
+      relationship: direct_demonstration
+      exploitation_status: demonstrated_in_research
+      impact: Poisoned memory retrieval induced target answers and actions across three evaluated agents.
+      remediation: Defense evaluations were incomplete; restrict writes and validate provenance.
+      selected: true
+      rationale: Strongest peer-reviewed agent-specific end-to-end demonstration.
+    - source_id: SRC-usenix-poisonedrag-2025
+      identifier: PoisonedRAG
+      relationship: direct_demonstration
+      exploitation_status: demonstrated_in_research
+      impact: Injected texts manipulated target answers and affected an evaluated LLM agent.
+      remediation: Evaluated content filters reduced some attack success but did not reliably eliminate it.
+      selected: true
+      rationale: Strong peer-reviewed RAG-specific end-to-end demonstration with defense evaluation.
+    - source_id: SRC-openwebui-ghsa
+      identifier: CVE-2026-44554 / GHSA-7r82-qhg4-6wvj
+      relationship: direct_vulnerability
+      exploitation_status: none_reported_by_cisa
+      impact: Cross-collection overwrite could replace legitimate vectors with attacker-controlled content.
+      remediation: Upgrade to Open WebUI 0.9.0 or later.
+      selected: true
+      rationale: Direct disclosed vector-collection poisoning path with downstream RAG impact.
+    - source_id: SRC-ibm-langflow
+      identifier: CVE-2026-13444
+      relationship: direct_vulnerability
+      exploitation_status: not_reported
+      impact: Shared vector namespaces permitted cross-tenant collection pollution and reads.
+      remediation: Upgrade to Langflow 1.10.2.
+      selected: true
+      rationale: Direct vendor advisory for tenant-boundary vector pollution.
+    - source_id: SRC-nvd-mem0
+      identifier: CVE-2026-31245
+      relationship: direct_vulnerability
+      exploitation_status: none_reported_by_cisa
+      impact: Unauthenticated memory creation allowed malicious or spoofed records and data pollution.
+      remediation: Restrict and authenticate memory creation; the reviewed NVD record did not identify a fixed version.
+      selected: false
+      rationale: Direct but redundant with higher-impact selected vulnerabilities and lacks a reviewed vendor remediation page.
+    - source_id: SRC-ms-recommendation-poisoning-2026
+      identifier: AI recommendation poisoning attempts
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_attempts
+      impact: Manipulative content attempted to influence AI recommendations, with effects varying by platform and time.
+      remediation: Monitor external content influence and provenance.
+      selected: false
+      rationale: Does not verify vector-store contamination or the required downstream persistent-memory path.
+    - source_id: SRC-microsoft-ai-gateway-incident
+      identifier: RAGFlow infrastructure compromise
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_compromise
+      impact: Attackers achieved code execution and credential theft in deployed RAGFlow infrastructure.
+      remediation: Harden exposed infrastructure and credentials.
+      selected: false
+      rationale: Production-relevant but not memory contamination.
+    - source_id: SRC-microsoft-semantic-kernel-cves-2026
+      identifier: CVE-2026-26030
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: not_reported
+      impact: Unsafe deserialization in an in-memory vector-store path could enable code execution.
+      remediation: Upgrade Semantic Kernel to 1.39.4 or later.
+      selected: false
+      rationale: Code execution through deserialization, not persistent attacker-record retrieval influence.
+    - source_id: SRC-nvd-anythingllm
+      identifier: CVE-2024-3033
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: not_reported
+      impact: Unauthorized vector-database reset or deletion could affect availability.
+      remediation: Apply vendor updates and enforce authorization.
+      selected: false
+      rationale: Destruction without demonstrated attacker-controlled replacement and later retrieval.
+sources_consulted: [SRC-mcp-resources-2025-11-25, SRC-neurips-agentpoison-2024, SRC-usenix-poisonedrag-2025, SRC-nist-aml, SRC-otel-genai-2026, SRC-azure-search-acl, SRC-reliabilityrag, SRC-ms-zero-trust-memory-2026, SRC-mitre-t1565.001, SRC-attack-det0193, SRC-openwebui-ghsa, SRC-nvd-openwebui, SRC-ibm-langflow, SRC-nvd-mem0, SRC-ms-recommendation-poisoning-2026, SRC-microsoft-ai-gateway-incident, SRC-microsoft-semantic-kernel-cves-2026, SRC-nvd-anythingllm]
+sources_cited: [SRC-mcp-resources-2025-11-25, SRC-neurips-agentpoison-2024, SRC-usenix-poisonedrag-2025, SRC-nist-aml, SRC-otel-genai-2026, SRC-azure-search-acl, SRC-reliabilityrag, SRC-ms-zero-trust-memory-2026, SRC-mitre-t1565.001, SRC-attack-det0193, SRC-openwebui-ghsa, SRC-nvd-openwebui, SRC-ibm-langflow, SRC-ms-recommendation-poisoning-2026, SRC-microsoft-ai-gateway-incident]
+sources_rejected:
+  - source_id: SRC-nvd-mem0
+    reason: Direct and relevant, but redundant with selected vulnerabilities and lacking a reviewed vendor remediation page.
+  - source_id: SRC-microsoft-semantic-kernel-cves-2026
+    reason: The vector-store component is involved, but the mechanism is unsafe deserialization and code execution rather than memory contamination.
+  - source_id: SRC-nvd-anythingllm
+    reason: The behavior is vector-store reset or deletion without attacker-controlled replacement and later retrieval.
+sources_blocked: []
+conflicts:
+  - issue: Empirical poisoning papers show high attack success, while ReliabilityRAG offers a bounded robust filtering method.
+    resolution: Present the attack as demonstrated, identify failed evaluated filters narrowly, and preserve ReliabilityRAG's assumptions and bounded contrary result.
+  - issue: Production reports describe manipulation attempts and RAG infrastructure compromise but do not prove the complete contracted path.
+    resolution: Exclude them from selected examples and state the production-breach gap.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T2106-C002, SAF-T2106-C004]
+  rationale: Two independent peer-reviewed studies demonstrate the defining persistent write, later semantic retrieval, and downstream influence; product advisories establish reachable write-boundary failures, while production exploitation remains unverified.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

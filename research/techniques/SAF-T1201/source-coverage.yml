@@ -1,0 +1,38 @@
+version: 1
+technique_id: SAF-T1201
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - {pass: protocol_and_authority, completed_on: "2026-09-01", queries: [Direct MCP specification review; direct OWASP and MITRE behavioral-boundary review.], material_changes: [Defined the temporal trust boundary and kept ATT&CK mapping analogous.]}
+    - {pass: known_breaches_and_vulnerabilities, completed_on: "2026-09-01", queries: [Separate direct Microsoft NVD CISA OWASP and original-research checks for production incidents advisories and exploitation status.], material_changes: [No production incident or direct CVE retained; CVE-2025-53098 classified adjacent.]}
+    - {pass: demonstration_and_empirical_research, completed_on: "2026-09-01", queries: [Direct review of author-submitted definition-mutation and aggregator repository-substitution experiments.], material_changes: [Selected two direct controlled demonstrations and bounded generalizability.]}
+    - {pass: detection_and_defense, completed_on: "2026-09-01", queries: [Direct Microsoft OWASP and original-research review for pinning reapproval isolation logging and backend-contract limits.], material_changes: [Specified a provenance-scoped definition-hash and approval-state analytic.]}
+    - {pass: gap_and_challenge, completed_on: "2026-09-01", queries: [Direct limitations product-lifecycle and nearest-boundary review challenging production model-action and universal-client claims.], material_changes: [Kept Demonstrated status and omitted unsupported generalizations.]}
+    - {pass: saturation_follow_up_1, completed_on: "2026-09-01", queries: [Current direct-authority recheck across all five categories.], material_changes: []}
+    - {pass: saturation_follow_up_2, completed_on: "2026-09-01", queries: [Independent second direct-authority recheck across all five categories and candidate identifiers.], material_changes: []}
+  rationale: Two direct controlled demonstrations support the core transition; protocol product defense and challenge authorities bound it; separate incident and vulnerability passes found no direct production case; two final passes changed nothing.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 4
+  selected_examples: [SRC-rashidi-2607.05744, SRC-song-2506.02040]
+  no_qualifying_examples_rationale: Not applicable because two direct controlled demonstrations qualify; no production incident or direct CVE qualifies.
+  candidates:
+    - {source_id: SRC-rashidi-2607.05744, identifier: Rashidi T3 definition-mutation experiment, relationship: direct_demonstration, exploitation_status: controlled_demonstration_no_production_exploitation, impact: Changed metadata reached recorded model context without protocol-forced reapproval., remediation: Pin approved metadata hashes and re-prompt on change., selected: true, rationale: Satisfies benign baseline later same-identity mutation and absent renewed approval.}
+    - {source_id: SRC-song-2506.02040, identifier: Song et al. RQ1 Test 2 repository-substitution experiment, relationship: direct_demonstration, exploitation_status: controlled_demonstration_no_production_exploitation, impact: Changed repositories retained listing state and accessibility during a seven-day observation., remediation: Require trusted hosting signing immutable resolution and re-review on change., selected: true, rationale: Tests provider-controlled delivery mutation after the trust decision.}
+    - {source_id: SRC-nvd-cve-2025-53098, identifier: CVE-2025-53098, relationship: adjacent_incident_or_vulnerability, exploitation_status: none_reported_by_cisa_ssvc, impact: Prompt-induced MCP configuration writing could lead to command execution in affected Roo Code versions., remediation: Upgrade to 3.20.3 or later and restrict auto-approved writes., selected: false, rationale: Configuration injection lacks provider-controlled same-identity post-approval mutation.}
+    - {source_id: SRC-invariant-tpa-2025-04-01, identifier: Invariant MCP tool-poisoning disclosure, relationship: rejected, exploitation_status: original_disclosure_not_full_temporal_test, impact: Demonstrates conditional tool-poisoning effects and identifies a rug-pull risk., remediation: Pin definitions and treat changes as new approval events., selected: false, rationale: Does not itself establish the full temporal transition.}
+sources_consulted: [SRC-mcp-tools-2025-11-25, SRC-rashidi-2607.05744, SRC-song-2506.02040, SRC-etdi-2506.01333, SRC-invariant-tpa-2025-04-01, SRC-invariant-mcp-scan-2025, SRC-ms-indirect-injection-2025, SRC-ms-azure-mcp-security-2026, SRC-ms-visual-studio-mcp-2026, SRC-owasp-third-party-mcp-2025, SRC-owasp-agentic-top10-2026, SRC-mitre-t1195-002, SRC-nvd-cve-2025-53098]
+sources_cited: [SRC-mcp-tools-2025-11-25, SRC-rashidi-2607.05744, SRC-song-2506.02040, SRC-etdi-2506.01333, SRC-invariant-tpa-2025-04-01, SRC-invariant-mcp-scan-2025, SRC-ms-indirect-injection-2025, SRC-ms-azure-mcp-security-2026, SRC-ms-visual-studio-mcp-2026, SRC-owasp-third-party-mcp-2025, SRC-owasp-agentic-top10-2026, SRC-mitre-t1195-002, SRC-nvd-cve-2025-53098]
+sources_rejected: []
+sources_blocked: []
+conflicts:
+  - {issue: The MCP specification permits list changes but does not define universal host approval behavior., resolution: The draft claims no universal client behavior and cites one product-specific fail-closed lifecycle implementation.}
+  - {issue: Definition hashing cannot see backend-only semantic changes., resolution: The analytic is scoped to visible definitions while artifact digests runtime policy and correlated logs cover separate paths.}
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1201-C002, SAF-T1201-C003]
+  rationale: Two distinct controlled tests establish post-trust mutation and continued delivery under retained identity; neither establishes production exploitation so Observed is unwarranted.
+source_archive: {manifest: ../../source-manifest.yml, validation_status: passed}
+rights_review: {audit: publication-rights.yml, status: passed}

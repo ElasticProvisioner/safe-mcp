@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1503
+name: Env-Var Scraping
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Collect environment-variable names and values visible to a local
+  MCP server or agent tool process, especially values that function as credentials.
+scope:
+  security_boundary: The boundary between the MCP host process environment and a separately
+    launched local stdio server or agent-tool process.
+  in_scope:
+  - A malicious or compromised local MCP server enumerates variables visible in its
+    own process environment after launch.
+  - The immediate outcome is collection of variable names and values; use, persistence,
+    or exfiltration of collected values is follow-on behavior.
+  out_of_scope:
+  - Reading .env, configuration, credential, shell-history, or key files.
+  - Stealing variables from a platform database without enumerating a live process
+    environment.
+  - Initial compromise, malicious package delivery, prompt injection, credential use,
+    and exfiltration.
+  - Reading another process's memory or /proc environment without first running in
+    the target process context.
+  affected_components:
+  - MCP host or agent runtime that launches a local server process
+  - Local stdio MCP server or agent tool process
+  - Process-launch configuration and environment allowlist
+nearest_neighbors:
+- technique_id: SAF-T1502
+  distinction: SAF-T1502 reads stored credential or configuration files, whereas SAF-T1503
+    enumerates the live environment visible to the running server process after launch.
+required_evidence:
+- Establish that MCP stdio clients launch servers as subprocesses.
+- Establish how common runtimes expose process environments to application code.
+- Establish that MCP client configuration can pass environment variables to local
+  servers.
+- Search separately for production incidents, direct vulnerabilities, public advisories,
+  controlled demonstrations, and exploitation status.
+- Establish whether any direct MCP or agentic end-to-end instance has been observed
+  or demonstrated.
+- Establish executable telemetry, false positives, and blind spots for a bounded detector.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Process-creation telemetry containing timestamp, child image or command, command
+    line, process identifier, and parent-process identity or lineage.
+  - An inventory or enrichment mapping process lineage to approved MCP hosts and local
+    MCP server instances.
+safe_example_constraints:
+- Use only synthetic variable names and redacted placeholder values.
+- Do not include collection-and-exfiltration payloads, live endpoints, or credentials.
+- Detection fixtures may name inert environment-enumeration utilities but may not
+  execute them.
+completion_evidence:
+- Every substantive publishable unit is joined to a validated claim and reviewed source
+  or a declared local artifact.
+- Unverified direct-incident, exploitation-status, and telemetry claims are omitted
+  and ledgered.
+- All five research passes and two consecutive no-change follow-ups are recorded.
+- Positive, negative, boundary, malformed, normalization, and expected-false-positive
+  detector cases pass.
+- Rights and quality reviews pass with no unresolved bundle-owned issue.

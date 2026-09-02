@@ -1,122 +1,112 @@
-title: MCP Exposed Endpoint Unauthorized Access Detection
-id: b8e2f147-3c6d-4a82-9e5b-2f1d3c4a8b7e
+title: Exposed MCP Endpoint Followed by Sensitive Action
+id: 4a6b171b-2f6c-4f65-a9b8-9dcbd5a6d005
 status: experimental
-description: Detects potential unauthorized access to exposed MCP server endpoints including NeighborJack attacks (CVE-2025-49596, CVE-2025-52882, CVE-2025-6514)
-author: Raju Kumar Yadav
-date: 2026-01-06
-modified: 2026-01-06
-references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1005
-  - https://nvd.nist.gov/vuln/detail/CVE-2025-49596
-  - https://nvd.nist.gov/vuln/detail/CVE-2025-52882
-  - https://nvd.nist.gov/vuln/detail/CVE-2025-6514
-  - https://securitylabs.datadoghq.com/articles/claude-mcp-cve-2025-52882/
-  - https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
-  - https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
-  - https://authzed.com/blog/timeline-mcp-breaches
+description: >-
+  Detects an accepted request from an untrusted network or browser zone with
+  missing or invalid access context followed by a successful sensitive MCP or
+  backend action under the same correlation identifier within 120 seconds.
+author: Clean-room authoring agent
+date: 2026-09-01
 logsource:
-  product: webserver
-  service: access
+  category: application
+  product: mcp
+  service: http_endpoint
+fields:
+  - timestamp
+  - correlation_id
+  - source_zone
+  - server_address
+  - endpoint
+  - http_method
+  - http_status
+  - auth_result
+  - origin_verdict
+  - rpc_method
+  - action_class
+  - outcome
+  - process_parent
+  - process_name
 detection:
-  # Detection for MCP endpoint access patterns
-  selection_mcp_endpoints:
-    c-uri-path|contains:
-      - '/sse'
-      - '/message'
-      - '/tools/list'
-      - '/tools/call'
-      - '/ping'
-      - '/initialize'
-
-  # Detection for suspicious MCP protocol parameters
-  selection_mcp_params:
-    c-uri-query|contains:
-      - 'transportType=stdio'
-      - 'jsonrpc'
-      - 'method=tools'
-      - 'method=ping'
-      - 'method=initialize'
-
-  # Detection for command injection attempts
-  selection_command_injection:
-    c-uri-query|contains:
-      - 'command='
-      - '&args='
-      - 'command=calc'
-      - 'command=cmd'
-      - 'command=powershell'
-      - 'command=bash'
-      - 'command=sh'
-      - 'command=curl'
-      - 'command=wget'
-      - 'command=python'
-      - 'command=node'
-      - 'command=nc'
-      - 'command=netcat'
-
-  # Detection for external/suspicious source IPs
-  selection_external_source:
-    c-ip|re: '^(?!127\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)'
-
-  # Detection for 0.0.0.0 requests (NeighborJack attack vector)
-  selection_zero_ip:
-    cs-host|contains:
-      - '0.0.0.0'
-
-  # Detection for common MCP ports from external sources
-  selection_mcp_ports:
-    cs-uri-port:
-      - 6277
-      - 6274
-      - 3000
-      - 3001
-      - 8080
-
-  # Detection for WebSocket upgrade attempts
-  selection_websocket:
-    cs-upgrade: 'websocket'
-    c-uri-path|contains:
-      - '/ws'
-      - '/socket'
-
-  # Filter for high-volume port scanning behavior
-  filter_port_scan:
-    c-ip|count: gt 20
-    timeframe: 60s
-
-  condition: >
-    (selection_mcp_endpoints and selection_mcp_params) or
-    (selection_mcp_endpoints and selection_external_source) or
-    (selection_mcp_endpoints and selection_command_injection) or
-    (selection_zero_ip and selection_mcp_ports) or
-    (selection_websocket and selection_mcp_ports) or
-    filter_port_scan
+  selection_untrusted_accept:
+    source_zone:
+      - internet
+      - browser_untrusted
+    http_status:
+      - 200
+      - 202
+    endpoint:
+      - /mcp
+      - /sse
+      - /mcp-rest/test/connection
+      - /mcp-rest/test/tools/list
+    action_class: endpoint_access
+  selection_missing_access:
+    auth_result:
+      - missing
+      - invalid
+  selection_invalid_origin:
+    source_zone: browser_untrusted
+    origin_verdict: invalid
+  selection_sensitive_success:
+    action_class:
+      - tool_invoke
+      - resource_read
+      - process_spawn
+    outcome: success
+  timeframe: 120s
+  condition: >-
+    Correlate by correlation_id and server_address: selection_untrusted_accept
+    and (selection_missing_access or selection_invalid_origin), followed by
+    selection_sensitive_success within an inclusive 120-second window.
 falsepositives:
-  - Legitimate remote MCP administration with proper authentication
-  - Authorized security testing and penetration testing
-  - Distributed MCP deployments across networks
-  - Development environments with intentionally exposed endpoints
-  - Load balancer health checks on MCP ports
+  - Intentionally public read-only MCP capabilities.
+  - Approved security scanning or synthetic monitoring.
+  - Authentication context dropped by a logging intermediary even though access was authorized.
 level: high
 tags:
-  - attack.initial_access
+  - saf.t1005
+  - attack.initial-access
   - attack.t1190
-  - attack.t1133
-  - attack.discovery
-  - attack.t1046
-  - safe.t1005
-  - cve.2025.49596
-  - cve.2025.52882
-  - cve.2025.6514
-  - mcp.exposed_endpoint
-  - neighborjack
-fields:
-  - c-uri-path
-  - c-uri-query
-  - c-ip
-  - cs-uri-port
-  - cs-method
-  - sc-status
-  - cs-host
-  - cs-upgrade
-  - cs-user-agent
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1005-C003
+    - SAF-T1005-C012
+  telemetry_claim_ids:
+    - SAF-T1005-C002
+    - SAF-T1005-C011
+    - SAF-T1005-C013
+  limitation_claim_ids:
+    - SAF-T1005-C017
+  validation_artifacts:
+    - techniques/SAF-T1005/test-logs.json
+    - techniques/SAF-T1005/test_detection_rule.py
+    - techniques/SAF-T1005/test-results.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1005-C011]
+      rationale: HTTP application telemetry carries the request and response fields needed for correlation.
+    fields:
+      claim_ids: [SAF-T1005-C002, SAF-T1005-C011, SAF-T1005-C013]
+      rationale: The fields join network provenance, access decisions, MCP operations, and outcomes.
+    selection_untrusted_accept:
+      claim_ids: [SAF-T1005-C001, SAF-T1005-C011]
+      rationale: A successful MCP or companion-route response from an untrusted zone establishes reachable accepted access.
+    selection_missing_access:
+      claim_ids: [SAF-T1005-C003, SAF-T1005-C013]
+      rationale: Missing or invalid authentication identifies the access-control condition central to the technique.
+    selection_invalid_origin:
+      claim_ids: [SAF-T1005-C001, SAF-T1005-C013]
+      rationale: An accepted invalid browser Origin represents the DNS-rebinding and browser-to-local variant.
+    selection_sensitive_success:
+      claim_ids: [SAF-T1005-C003, SAF-T1005-C012]
+      rationale: A successful sensitive action distinguishes material capability use from a harmless reachability check.
+    timeframe:
+      claim_ids: [SAF-T1005-C012]
+      rationale: A bounded temporal join keeps the public request and resulting server behavior causally proximate.
+    condition:
+      claim_ids: [SAF-T1005-C003, SAF-T1005-C012]
+      rationale: The sequence models accepted unauthorized access followed by the immediate adversary objective.
+    falsepositives:
+      claim_ids: [SAF-T1005-C017]
+      rationale: Public capabilities, scanners, and lost logging context can produce the same observable sequence.

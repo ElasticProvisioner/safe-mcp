@@ -1,0 +1,24 @@
+version: 1
+generated_on: "2026-09-02"
+techniques:
+  - technique_id: SAF-T1804
+    name: API Data Harvest
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics: [ATK-TA0009]
+    technique_path: techniques/SAF-T1804/README.md
+    research_packet: research/techniques/SAF-T1804
+    related_techniques: [SAF-T1801, SAF-T1504, SAF-T1104, SAF-T1803]
+    mitigations: [SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-71, SAF-M-72]
+    detection:
+      rule: techniques/SAF-T1804/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1804/test-logs.json
+        - techniques/SAF-T1804/test_detection_rule.py
+        - research/techniques/SAF-T1804/validation/detection-tests.txt
+        - research/techniques/SAF-T1804/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1213
+        type: direct
+    integration_note: Canonical neighbors and mitigations were joined mechanically after the independent evidence freeze.

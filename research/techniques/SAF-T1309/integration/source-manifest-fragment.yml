@@ -1,0 +1,321 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2026-07-28
+    title: Tools - Model Context Protocol Specification
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol specification maintainers
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct HTML review from the official MCP llms.txt documentation index.
+    locators:
+      - User Interaction Model, lines 92-99
+      - Calling Tools, lines 181-213
+      - Security Considerations, lines 723-737
+    review_notes: Verified model-controlled tool semantics, tools/call, confirmation, access control, input visibility, result validation, and audit logging.
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Public official source reviewed live; canonical clean-room handoff excludes the source-acquisition corpus.
+      review_evidence:
+        method: Direct full-source review with exact locators recorded in claim-inventory.yml.
+        reviewed_on: "2026-09-01"
+  - id: SRC-mcp-security-2026-07-28
+    title: Security Best Practices - Model Context Protocol
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol security guidance maintainers
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct HTML review from the official MCP llms.txt documentation index.
+    locators:
+      - State Handle Hijacking, lines 336-355
+      - Local MCP Server Compromise mitigation, lines 398-418
+      - stdio Transport Security mitigation, lines 509-524
+      - Scope Minimization, lines 588-646
+    review_notes: Verified adjacent non-prompt mechanisms, authorization and sandbox controls, progressive scopes, elevation logging, and common scope mistakes.
+    archive: *remote_archive
+  - id: SRC-ms-prompt-shields-2026-07-31
+    title: Prompt Shields in Microsoft Foundry
+    publisher: Microsoft Learn
+    authors:
+      - Microsoft Foundry documentation content team
+    version_or_date: "Last updated 2026-07-31"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/azure/foundry/openai/concepts/content-filter-prompt-shields
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct official documentation review.
+    locators:
+      - Overview and annotation fields, lines 31-49
+      - Types of input attacks, lines 50-56
+      - Document attack classes, lines 81-112
+      - Configure Prompt Shields, lines 130-140
+      - Troubleshooting and false positives, lines 163-179
+    review_notes: Verified user and document attack classifications, input and tool-response intervention points, detected and filtered fields, and tuning limitations.
+    archive: *remote_archive
+  - id: SRC-agentdojo-2406.13352v3
+    title: AgentDojo - A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents
+    publisher: arXiv / ETH Zurich and Invariant Labs
+    authors:
+      - Edoardo Debenedetti
+      - Jie Zhang
+      - Mislav Balunović
+      - Luca Beurer-Kellner
+      - Marc Fischer
+      - Florian Tramèr
+    version_or_date: arXiv:2406.13352v3, 2024-11-24
+    source_class: research
+    official_url: https://arxiv.org/html/2406.13352v3
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct arXiv abstract and HTML paper review.
+    locators:
+      - Abstract, lines 94-98
+      - Introduction, lines 103-114
+      - Components and injection tasks, lines 132-183
+      - Attack metrics and evaluation, lines 193-252
+      - Authorship and license, lines 87-95
+    review_notes: Verified the controlled end-to-end prompt-injection mechanism, stateful tool tasks, selected results, author credits, and detector or tool-isolation limitations.
+    archive: *remote_archive
+  - id: SRC-camel-2503.18813v2
+    title: Defeating Prompt Injections by Design
+    publisher: arXiv / academic author team
+    authors:
+      - Edoardo Debenedetti
+      - Ilia Shumailov
+      - Tianqi Fan
+      - Jamie Hayes
+      - Nicholas Carlini
+      - Daniel Fabian
+      - Christoph Kern
+      - Chongyang Shi
+      - Andreas Terzis
+      - Florian Tramèr
+    version_or_date: arXiv:2503.18813v2, 2025-06-24
+    source_class: research
+    official_url: https://arxiv.org/html/2503.18813v2
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct arXiv abstract and HTML paper review.
+    locators:
+      - Abstract, arXiv abstract lines 15-18
+      - System components, HTML lines 160-190
+      - AgentDojo evaluation, HTML lines 282-314
+      - Limitations, HTML lines 377-410
+    review_notes: Verified privileged and quarantined model separation, capability and policy enforcement, evaluation results, full named authorship, and explicit limitations.
+    archive: *remote_archive
+  - id: SRC-cursor-ghsa-4cxx-hrm3-49rm
+    title: Arbitrary code execution from Cursor Agent through a prompt injection via MCP Special Files
+    publisher: Cursor security advisory on GitHub
+    authors:
+      - hmwildermuth (advisory publisher)
+      - hxofir-a (reporter)
+      - MaccariTA (reporter)
+    version_or_date: Published 2025-08-02
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-4cxx-hrm3-49rm
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after the non-GitHub CVE authority supplied it.
+    locators:
+      - Affected and patched versions, lines 141-147
+      - Summary and Impact, lines 149-155
+      - Remediation, lines 157-159
+      - Credits, lines 242-245
+    review_notes: Verified affected range, 1.3.9 patch, prompt-injection/MCP-file chain, code-execution impact, remediation, and named credits.
+    discovery_provenance: https://cveawg.mitre.org/api/cve/CVE-2025-54135
+    archive: *remote_archive
+  - id: SRC-cve-2025-54135
+    title: CVE-2025-54135 CVE Record
+    publisher: CVE Program
+    authors:
+      - GitHub CNA
+      - CISA ADP Vulnrichment Team
+    version_or_date: Published 2025-08-05; updated 2025-08-05
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-54135
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct exact-identifier CVE Program API record review.
+    locators:
+      - CVE metadata, CNA title, affected versions, description, metrics, and advisory reference
+      - CISA ADP SSVC Exploitation none field
+    review_notes: Verified the CNA range before 1.3.9, CVSS 8.6, direct advisory URL, and no exploitation in CISA ADP; recorded the range conflict with the GHSA.
+    archive: *remote_archive
+  - id: SRC-cve-2025-53773
+    title: CVE-2025-53773 CVE Record
+    publisher: CVE Program
+    authors:
+      - Microsoft Security Response Center
+      - CISA ADP Vulnrichment Team
+    version_or_date: Published 2025-08-12; updated 2026-02-26
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-53773
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct exact-identifier CVE Program API record review.
+    locators:
+      - Microsoft CNA title, datePublic, affected range, description, weakness, metrics, and patch reference
+      - CISA ADP SSVC Exploitation none field
+    review_notes: Verified Visual Studio 2022 17.14.0 to before 17.14.12, local code-execution impact, CVSS 7.8, patch reference, and no exploitation in CISA ADP.
+    archive: *remote_archive
+  - id: SRC-embrace-red-cve-2025-53773
+    title: "GitHub Copilot: Remote Code Execution via Prompt Injection (CVE-2025-53773)"
+    publisher: Embrace The Red
+    authors:
+      - wunderwuzzi
+    version_or_date: "2025-08-12"
+    source_class: credible_practice
+    official_url: https://embracethered.com/blog/posts/2025/github-copilot-remote-code-execution-via-prompt-injection/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct named-researcher disclosure review from the Microsoft CNA reference trail.
+    locators:
+      - Background Research, lines 15-35
+      - Exploit Chain Explained, lines 36-46
+      - Reliability limitation, lines 84-90
+      - Recommendations and Fix, lines 91-102
+    review_notes: Verified controlled prompt-injection chain, approval-setting change, cross-platform command execution claim, reliability qualification, fix timeline, and displayed author handle.
+    archive: *remote_archive
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog JSON
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Vulnerability Management Team
+    version_or_date: Catalog version 2026.09.01, released 2026-09-01T19:22:46.2162Z
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct official JSON feed review with exact CVE-identifier membership checks.
+    locators:
+      - catalogVersion, dateReleased, and count fields
+      - Exact absence checks for CVE-2025-54135, CVE-2025-53773, CVE-2025-32711, and CVE-2025-6514
+    review_notes: Verified catalog version and that the exact reviewed candidate identifiers were not present; treated absence narrowly because KEV is not a complete incident catalog.
+    archive: *remote_archive
+  - id: SRC-mitre-attack-t1548-v2
+    title: Abuse Elevation Control Mechanism, Technique T1548
+    publisher: MITRE ATT&CK
+    authors:
+      - MITRE ATT&CK Team
+    version_or_date: Version 2.0; last modified 2026-05-12
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1548/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct official MITRE ATT&CK technique-page review.
+    locators:
+      - Definition and identifier, lines 16-29
+      - Tactic, platforms, version, and dates, lines 29-47
+    review_notes: Verified the privilege-elevation-control definition and recorded why the SAF mapping is analogous rather than direct.
+    archive: *remote_archive
+  - id: SRC-cursor-ghsa-24mc-g4xr-4395
+    title: Modification of MCP Server Definitions Bypasses Manual Re-approval
+    publisher: Cursor security advisory on GitHub
+    authors:
+      - hmwildermuth (advisory publisher)
+      - chaandrey (reporter)
+    version_or_date: Published 2025-08-01
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-24mc-g4xr-4395
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after the non-GitHub CVE authority supplied it.
+    locators:
+      - Affected and patched versions, lines 141-147
+      - Summary, Impact, and Remediation, lines 151-160
+      - Credits, lines 243-245
+    review_notes: Verified direct configuration-substitution mechanism, prerequisites, code-execution impact, reapproval remediation, and named credit; classified as adjacent.
+    discovery_provenance: https://cveawg.mitre.org/api/cve/CVE-2025-54136
+    archive: *remote_archive
+  - id: SRC-jfrog-cve-2025-6514
+    title: OS command injection in mcp-remote when connecting to untrusted MCP servers
+    publisher: JFrog Security Research
+    authors:
+      - Or Peles
+      - JFrog Security Research Team
+    version_or_date: Published and updated 2025-07-09
+    source_class: official_advisory
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full direct researcher advisory review from the CVE CNA reference.
+    locators:
+      - Identifier, severity, credit, and dates, lines 11-19
+      - Affected versions and description, lines 21-34
+      - Mitigation and references, lines 42-50
+    review_notes: Verified authorization-URL-to-shell command injection, affected versions, named researcher, and absence of advisory-supplied mitigation; classified as adjacent and omitted the payload.
+    archive: *remote_archive
+  - id: SRC-cve-2025-54136
+    title: CVE-2025-54136 CVE Record
+    publisher: CVE Program
+    authors:
+      - GitHub CNA
+      - CISA ADP Vulnrichment Team
+    version_or_date: Published 2025-08-01; updated 2025-08-04
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-54136
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct exact-identifier CVE Program API record review.
+    locators:
+      - CNA title, affected versions, description, metrics, and advisory reference
+      - CISA ADP SSVC Exploitation none field
+    review_notes: Verified direct configuration replacement after prior approval, version before 1.3, code-execution impact, and exploitation-none assessment; classified as adjacent.
+    archive: *remote_archive
+  - id: SRC-cve-2025-6514
+    title: CVE-2025-6514 CVE Record
+    publisher: CVE Program
+    authors:
+      - JFrog CNA
+      - CISA ADP Vulnrichment Team
+    version_or_date: Published and updated 2025-07-09
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-6514
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct exact-identifier CVE Program API record review.
+    locators:
+      - CNA affected range, description, metrics, and researcher or fix references
+      - CISA ADP SSVC Exploitation none field
+    review_notes: Verified affected mcp-remote versions, authorization-endpoint command injection, critical CVSS, exact JFrog advisory, and exploitation-none assessment; classified as adjacent.
+    archive: *remote_archive
+  - id: SRC-cve-2025-32711
+    title: CVE-2025-32711 CVE Record
+    publisher: CVE Program
+    authors:
+      - Microsoft Security Response Center
+      - CISA ADP Vulnrichment Team
+    version_or_date: Published 2025-06-11; updated 2026-02-26
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-32711
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct exact-identifier CVE Program API record review.
+    locators:
+      - Microsoft CNA title, hosted-service affected record, description, metrics, and patch reference
+      - CISA ADP SSVC Exploitation none field
+    review_notes: Verified AI command injection and information-disclosure scope but found no record evidence of the defining privileged tool invocation; classified as adjacent.
+    archive: *remote_archive

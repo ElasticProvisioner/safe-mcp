@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1605
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: SAF-MCP Research Team (OpenAI Codex)
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records the neutral seed, prohibited inputs, direct-authority-only research, no prior-artifact access, and isolated pre-integration validation.
+  contract_and_scope:
+    status: passed
+    notes: Scope ends at metadata enumeration and correlation; invocation, reads, manipulation, task enumeration, authorization bypass, and network discovery remain excluded.
+  technical_accuracy:
+    status: passed
+    notes: Complete current protocol pages were reviewed, including authorization, pagination, caching, deprecated roots, and self-reported identity limits.
+  claim_traceability:
+    status: passed
+    notes: Seventeen validated claims map to directly reviewed sources with exact locators, and all appear in the Evidence Summary.
+  source_or_omit:
+    status: passed
+    notes: Substantive README units use same-line hidden traces or declared local links; four rejected propositions and the rights-restricted external source cache are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is retained because the adversarial purpose is a synthesis; adjacent advisories and legitimate production observations do not raise it.
+  research_saturation:
+    status: passed
+    notes: All five passes completed, followed by two targeted no-material-change passes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: The complete 77-record NVD MCP corpus, complete current KEV catalog, and four originating advisories were reviewed; four high-impact boundary examples were selected and the direct-evidence gap is explicit.
+  detection_quality:
+    status: passed
+    notes: The experimental analytic passed all ten deterministic positive, negative, boundary, malformed, suppressed, pagination, split-context, and expected-false-positive cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls constrain discovery exposure through per-request authorization, list filtering, scope minimization, and use-time policy enforcement.
+  framework_alignment:
+    status: passed
+    notes: Post-freeze reconciliation maps follow-on use to SAF-T1104, metadata manipulation to SAF-T1001, narrower discovery boundaries to SAF-T1601 and SAF-T1602, six canonical mitigations, and T1518 as analogous.
+  publication_rights:
+    status: passed
+    notes: All uses are attributed paraphrase or factual summary; no protected expression, advisory PoC, source code, diagram, third-party artifact, or external source snapshot is redistributed.
+  safe_publication:
+    status: passed
+    notes: The only event example uses invalid domains, no credential, no invocation, no content retrieval, and no destructive or operational detail.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1605
+      result: passed
+      notes: Isolated synthetic mock repository, strict default mode, 2026-09-02.
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1605
+      result: passed
+      notes: Canonical repository after checksum-verified post-freeze reconciliation, 2026-09-02.
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1605/test_detection_rule.py
+    result: PASS 10/10 cases in both isolated and canonical repository runs; expected false-positive modeled
+    waiver: null
+
+unresolved: []

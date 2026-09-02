@@ -1,0 +1,126 @@
+version: 1
+technique_id: SAF-T1804
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1804/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1804/technique-contract.yml
+  supports: Scope, tactic, name, evidence requirements, neighbors, and safe-example
+    constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1804/quality-review.yml
+  supports: Review gates, validation commands, detector results, and dates.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1804/detection-rule.yml
+  supports: Detection analytic fields, condition, false positives, and tuning design.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1804/test-logs.json
+  supports: Positive, negative, boundary, allowlist, window, and malformed detector
+    fixtures.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1804/test_detection_rule.py
+  supports: Deterministic detector validation implementation.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1804/source-coverage.yml
+  supports: Research passes, saturation, evidence label, candidates, gaps, and conflicts.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1804/validation/detection-tests.txt
+  supports: Canonical passing result for all eight deterministic detector cases.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1804/validation/strict-validator.txt
+  supports: Canonical strict research-validator result.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1804/integration/integration-notes.yml
+  supports: Mechanical post-freeze source, history, path, framework, neighbor, mitigation, and validation joins.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1804-X001
+  candidate: A direct production MCP API Data Harvest breach has occurred.
+  origin: Required breach and incident research question.
+  attempted_searches:
+  - NVD Model Context Protocol corpus
+  - CISA KEV catalog
+  - first-party incident reports
+  - broad and narrow arXiv queries
+  consulted_source_ids:
+  - SRC-nvd-mcp-corpus-20260901
+  - SRC-cisa-kev-2026-09-01
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-update
+  reason: The reviewed authorities establish demonstrations and adjacent API incidents,
+    not a direct production MCP incident.
+  prohibited_publishable_text:
+  - confirmed production MCP API harvest breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1804-X002
+  candidate: CISA KEV absence proves the selected vulnerabilities have never been
+    exploited.
+  origin: Government-catalog identifier check.
+  attempted_searches:
+  - CISA KEV catalog version 2026.09.01 exact identifier review
+  - NVD SSVC fields and references
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-mcp-corpus-20260901
+  reason: KEV inclusion has a defined operational purpose; non-inclusion cannot prove
+    absence of exploitation.
+  prohibited_publishable_text:
+  - KEV proves these CVEs were never exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1804-X003
+  candidate: One universal numeric threshold reliably identifies API data harvesting.
+  origin: Detection design challenge pass.
+  attempted_searches:
+  - NIST SP 800-228-upd1 response
+  - pagination
+  - rate-limit
+  - and monitoring controls
+  - ATT&CK DET0413 analytics
+  consulted_source_ids:
+  - SRC-nist-sp800-228-upd1
+  - SRC-mitre-t1213-v3.4
+  reason: Both behavior and workload norms are environment-dependent; synthetic tests
+    validate mechanics, not universal efficacy.
+  prohibited_publishable_text:
+  - universal threshold guarantees detection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1804-X004
+  candidate: Internet-facing MCP scanner prevalence establishes harvested records.
+  origin: Empirical research pass.
+  attempted_searches:
+  - Padilla methods
+  - ethics
+  - results
+  - and limitations review
+  consulted_source_ids:
+  - SRC-arxiv-padilla-2608-00150
+  reason: The study reports exposures and vulnerabilities while explicitly avoiding
+    data exfiltration; it cannot establish this outcome.
+  prohibited_publishable_text:
+  - scanner confirmed harvested customer records
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1804-X005
+  candidate: DEV-0537 and PentestMCP are direct examples of API Data Harvest.
+  origin: ATT&CK reference trail and final saturation query.
+  attempted_searches:
+  - Microsoft DEV-0537 first-party report
+  - arXiv final query for MCP resource enumeration and resulting abstract
+  consulted_source_ids:
+  - SRC-microsoft-dev0537-2022
+  - SRC-arxiv-pentestmcp-2510-03610
+  reason: One lacks API-repository specificity; the other describes authorized penetration-test
+    reconnaissance.
+  prohibited_publishable_text:
+  - DEV-0537 and PentestMCP directly demonstrate API Data Harvest
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

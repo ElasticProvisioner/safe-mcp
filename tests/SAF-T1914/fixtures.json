@@ -1,0 +1,270 @@
+{
+  "cases": [
+    {
+      "name": "positive_cross_server_data_reference",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T12:00:00Z",
+          "session_id": "session-positive-ref",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-1",
+          "server_id": "records.example",
+          "tool_name": "read_record",
+          "sensitivity": ["confidential"],
+          "data_refs": ["record:synthetic-42"]
+        },
+        {
+          "timestamp": "2026-09-02T12:00:12Z",
+          "session_id": "session-positive-ref",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-1",
+          "server_id": "messaging.example",
+          "tool_name": "send_message",
+          "outbound_capable": true,
+          "data_refs": ["record:synthetic-42"],
+          "destination": "attacker@example.invalid",
+          "approval_state": "not_requested",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "positive_same_server_distinct_tool_fingerprint",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T12:01:00Z",
+          "session_id": "session-positive-fingerprint",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "list-1",
+          "server_id": "collaboration.example",
+          "tool_name": "list_private_items",
+          "sensitivity": ["restricted"],
+          "content_fingerprints": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+        },
+        {
+          "timestamp": "2026-09-02T12:01:30Z",
+          "session_id": "session-positive-fingerprint",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "publish-1",
+          "server_id": "collaboration.example",
+          "tool_name": "publish_item",
+          "outbound_capable": true,
+          "content_fingerprints": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+          "destination": "public:synthetic",
+          "approval_state": "rejected",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "boundary_exactly_120_seconds",
+      "expected_alerts": 1,
+      "events": [
+        {
+          "timestamp": "2026-09-02T13:00:00Z",
+          "session_id": "session-boundary-120",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-boundary",
+          "server_id": "source.example",
+          "tool_name": "read",
+          "sensitivity": ["secret"],
+          "data_refs": ["secret:inert-boundary"]
+        },
+        {
+          "timestamp": "2026-09-02T13:02:00Z",
+          "session_id": "session-boundary-120",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-boundary",
+          "server_id": "sink.example",
+          "tool_name": "send",
+          "outbound_capable": true,
+          "data_refs": ["secret:inert-boundary"],
+          "destination": "collector.example.invalid",
+          "approval_state": "unknown",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "negative_121_seconds",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T14:00:00Z",
+          "session_id": "session-boundary-121",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-old",
+          "server_id": "source.example",
+          "tool_name": "read",
+          "sensitivity": ["confidential"],
+          "data_refs": ["record:old"]
+        },
+        {
+          "timestamp": "2026-09-02T14:02:01Z",
+          "session_id": "session-boundary-121",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-late",
+          "server_id": "sink.example",
+          "tool_name": "send",
+          "outbound_capable": true,
+          "data_refs": ["record:old"],
+          "destination": "collector.example.invalid",
+          "approval_state": "not_requested",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "negative_explicitly_authorized_allowlisted_transfer",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T15:00:00Z",
+          "session_id": "session-legitimate",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-approved",
+          "server_id": "crm.example",
+          "tool_name": "read_customer",
+          "sensitivity": ["confidential"],
+          "data_refs": ["customer:synthetic-approved"]
+        },
+        {
+          "timestamp": "2026-09-02T15:00:45Z",
+          "session_id": "session-legitimate",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-approved",
+          "server_id": "billing.example",
+          "tool_name": "create_invoice",
+          "outbound_capable": true,
+          "data_refs": ["customer:synthetic-approved"],
+          "destination": "billing-account:synthetic",
+          "approval_state": "approved",
+          "authorized_transfer": true,
+          "destination_allowed": true
+        }
+      ]
+    },
+    {
+      "name": "negative_no_sensitive_source_label",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T16:00:00Z",
+          "session_id": "session-public",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-public",
+          "server_id": "public.example",
+          "tool_name": "read_page",
+          "sensitivity": ["public"],
+          "data_refs": ["page:public"]
+        },
+        {
+          "timestamp": "2026-09-02T16:00:10Z",
+          "session_id": "session-public",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-public",
+          "server_id": "sink.example",
+          "tool_name": "send",
+          "outbound_capable": true,
+          "data_refs": ["page:public"],
+          "destination": "recipient@example.invalid",
+          "approval_state": "not_requested",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "negative_same_tool_event",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T17:00:00Z",
+          "session_id": "session-same-tool",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "same-result",
+          "server_id": "single.example",
+          "tool_name": "combined_operation",
+          "sensitivity": ["secret"],
+          "data_refs": ["file:synthetic"]
+        },
+        {
+          "timestamp": "2026-09-02T17:00:01Z",
+          "session_id": "session-same-tool",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "same-call",
+          "server_id": "single.example",
+          "tool_name": "combined_operation",
+          "outbound_capable": true,
+          "data_refs": ["file:synthetic"],
+          "destination": "recipient@example.invalid",
+          "approval_state": "unknown",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "negative_transformed_value_without_lineage",
+      "expected_alerts": 0,
+      "events": [
+        {
+          "timestamp": "2026-09-02T18:00:00Z",
+          "session_id": "session-transform-blind-spot",
+          "event_type": "tool_result",
+          "tool_role": "source",
+          "call_id": "read-transform",
+          "server_id": "source.example",
+          "tool_name": "read",
+          "sensitivity": ["secret"],
+          "data_refs": ["value:before-transform"]
+        },
+        {
+          "timestamp": "2026-09-02T18:00:10Z",
+          "session_id": "session-transform-blind-spot",
+          "event_type": "tool_call",
+          "tool_role": "sink",
+          "call_id": "send-transform",
+          "server_id": "sink.example",
+          "tool_name": "send",
+          "outbound_capable": true,
+          "data_refs": ["value:after-transform"],
+          "destination": "collector.example.invalid",
+          "approval_state": "not_requested",
+          "authorized_transfer": false,
+          "destination_allowed": false
+        }
+      ]
+    },
+    {
+      "name": "malformed_events_are_ignored",
+      "expected_alerts": 0,
+      "events": [
+        null,
+        {"timestamp": "not-a-time", "session_id": "bad"},
+        {"timestamp": "2026-09-02T19:00:00Z", "event_type": "tool_result"},
+        {"timestamp": "2026-09-02T19:00:01Z", "session_id": "bad", "event_type": "tool_call"}
+      ]
+    }
+  ]
+}

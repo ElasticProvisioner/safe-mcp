@@ -1,0 +1,61 @@
+version: 1
+technique_id: SAF-T1915
+bundle_status: frozen_clean_room_candidate
+synthetic_tactics:
+  - ATK-TA0010
+synthetic_neighbors:
+  - technique_id: SAF-T1914
+    neutral_name: Mixer/Tumbler Laundering
+  - technique_id: SAF-T1916
+    neutral_name: Unauthorized Asset Transfer or Theft
+synthetic_mitigations: []
+synthetic_history_sha: "1111111111111111111111111111111111111111"
+source_manifest_ids:
+  - SRC-fatf-defi-2026
+  - SRC-fatf-stablecoins-2026
+  - SRC-treasury-defi-2023
+  - SRC-fbi-bybit-2025
+  - SRC-chainalysis-bybit-2025
+  - SRC-chainalysis-ronin-2022
+  - SRC-chainalysis-atomic-2024
+  - SRC-chainalysis-theft-2026
+  - SRC-fbi-defi-2022
+  - SRC-sok-cross-chain-2026
+  - SRC-pace-defi-agents-2026
+  - SRC-mitre-t1657-2026
+  - SRC-cisa-tradertraitor-2022
+  - SRC-autonomous-agents-chain-2026
+  - SRC-elliptic-cross-chain-2025
+  - SRC-cisa-kev-2026
+path_joins:
+  technique: techniques/SAF-T1915/
+  research: research/techniques/SAF-T1915/
+  tests: tests/SAF-T1915/
+  source_manifest_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+mechanical_integration_actions:
+  - Verify FREEZE.sha256 before opening any destination or shared registry.
+  - Merge the source-manifest fragment by source ID, resolving only exact duplicate IDs mechanically.
+  - Reconcile ATK-TA0010 and provisional neighbor IDs against the destination framework without changing frozen technique claims.
+  - Replace the synthetic history SHA with the honest integration commit or supported inherited-history SHA.
+  - Merge framework and alignment fragments, then rerun the repository validator and detector.
+prohibited_before_freeze:
+  - Reading or diffing prior SAF-T1915 technique, research, detection, test, history, issue, review, site, fork, or registry content.
+unresolved: []
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-cisa-kev-2026: SRC-cisa-kev-catalog-page-2026-09-01
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0010
+  canonical_neighbors: [SAF-T2104]
+  noncatalog_boundary: Mixer or tumbler laundering remains a traced out-of-scope behavior and was not assigned a false SAF identifier.
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-46, SAF-M-47, SAF-M-48, SAF-M-69, SAF-M-70, SAF-M-74]
+  attack_mapping: {id: T1657, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1915/validation/detection-test.txt
+    - research/techniques/SAF-T1915/validation/strict-validator.txt
+    - research/techniques/SAF-T1915/validation/canonical-validation.txt
+  dependency_resolution: SAF-T2104 was independently clean-room authored and integrated; destination strict validation now passes.

@@ -1,0 +1,75 @@
+version: 1
+technique_id: SAF-T1804
+name: API Data Harvest
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0009
+adversary_objective: Enumerate and retrieve records from an API- or database-backed
+  information repository through an MCP capability beyond the scope of the immediate
+  user task.
+scope:
+  security_boundary: The boundary between authority granted to an MCP-connected identity
+    and the narrower data access justified by the current user task, including downstream
+    row, field, collection, and volume boundaries.
+  in_scope:
+  - Repeated MCP resource reads or data-query tool calls that enumerate collections
+    or retrieve records at unauthorized breadth or volume.
+  - Abuse of overly broad delegated authority or a read-path authorization bypass
+    to collect API-backed data.
+  out_of_scope:
+  - Credential or token acquisition before data access.
+  - Tool invocation without the defining enumeration or retrieval outcome.
+  - Local file collection, write or mutation operations, and subsequent data transfer
+    to an attacker.
+  affected_components:
+  - MCP host or client
+  - MCP server resource or data-query tool
+  - Downstream API, database, or information repository
+  - Identity and audit service
+nearest_neighbors:
+- technique_id: SAF-T1801
+  distinction: Automated Data Harvesting spans source types; API Data Harvest requires
+    API- or repository-backed record enumeration or retrieval.
+- technique_id: SAF-T1504
+  distinction: Token Theft via API Response obtains authority; API Data Harvest begins
+    when that authority is used to enumerate or retrieve records.
+- technique_id: SAF-T1104
+  distinction: Over-Privileged Tool Abuse covers the invocation authority decision;
+    API Data Harvest requires the collection outcome.
+- technique_id: SAF-T1803
+  distinction: Database Dump requires dump-equivalent database acquisition; API Data
+    Harvest includes paginated API and repository-record collection.
+required_evidence:
+- Establish MCP resource-read or data-query capability and the relevant authorization
+  boundary.
+- Establish a demonstrated end-to-end path from capability exposure or bypass to broad
+  data retrieval.
+- Establish prerequisites, bounded impact, and whether evidence is production, demonstration,
+  or analogy.
+- Search current production incidents, vulnerability catalogs, first-party advisories,
+  empirical research, detection guidance, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP session events with actor, client, server, action, tool or resource, target,
+    approval, result, records returned, bytes returned, and page index.
+  - Identity and application context sufficient to recognize approved bulk jobs and
+    correlate source address and delegated scope.
+safe_example_constraints:
+- Use synthetic event records and inert collection names only.
+- Exclude exploit payloads, live credentials, sensitive queries, and operational secrets.
+- Keep thresholds explicitly labeled as starter values requiring local tuning.
+completion_evidence:
+- Every substantive publishable unit maps to a validated claim and reviewed source
+  or a declared local artifact.
+- Every excluded lead is recorded with exact searches and prohibited wording.
+- Five research passes and two consecutive final no-material-change passes are recorded.
+- The detection analytic passes positive, negative, boundary, allowlist, and malformed-input
+  fixtures.
+- Framework, rights, clean-room, source-archive, and strict validation gates pass
+  before immutable freeze.

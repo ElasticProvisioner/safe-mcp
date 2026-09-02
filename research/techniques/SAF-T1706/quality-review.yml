@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1706
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: Fresh clean-room SAF technique author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Permitted inputs and independent authority research are attested; no prior target artifact or registry was accessed.
+  contract_and_scope:
+    status: passed
+    notes: Scope begins at protected-resource access-token presentation and excludes acquisition, passthrough, other credential types, and follow-on actions.
+  technical_accuracy:
+    status: passed
+    notes: Bearer semantics, audience binding, sender constraint, revocation, and evidence limitations reconcile across the reviewed authorities.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims use exact locators and every substantive publishable unit resolves through hidden trace linkage or a declared local artifact.
+  source_or_omit:
+    status: passed
+    notes: Unsupported, adjacent, conflicting, unsafe, and out-of-scope propositions are omitted and recorded in fourteen closed exclusions.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is retained because the direct MCP record is a vulnerability, the public replay demonstration is not established as OAuth, and production OAuth incidents are not MCP.
+  research_saturation:
+    status: passed
+    notes: All five passes and two consecutive final authority-only no-material-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Twenty candidates were classified and the four highest-impact in-scope or explicitly adjacent examples were selected.
+  detection_quality:
+    status: passed
+    notes: Eight deterministic cases cover positives, negatives, an inclusive/exclusive time boundary, malformed data, approved handoff, and scaled-client lookalike.
+  mitigation_quality:
+    status: passed
+    notes: Resource binding, sender constraint, patching, privacy-preserving monitoring, and revocation address the defining mechanism.
+  framework_alignment:
+    status: passed
+    notes: Post-freeze reconciliation joins four canonical neighbors, four mitigations, direct T1550.001, adjacent-prerequisite T1528, repository paths, and canonical proof transcripts.
+  publication_rights:
+    status: passed
+    notes: Uses are paraphrase or factual reference; no protected code, exploit payload, figure, dataset, or quotation is reproduced; named authors and teams are credited.
+  safe_publication:
+    status: passed
+    notes: Examples use inert resource names and irreversible synthetic fingerprints; no token, operational endpoint, payload, exploit syntax, or destructive action is published.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1706
+      result: passed
+      environment: isolated synthetic mock repository
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1706/test_detection_rule.py
+    result: 8 passed, 0 failed
+    waiver: null
+
+unresolved: []
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1706/validation/detection-tests.txt
+  strict_validator_transcript: research/techniques/SAF-T1706/validation/strict-validator.txt
+  status: passed

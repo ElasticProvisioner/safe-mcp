@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1307
+name: Confused Deputy Attack
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Cause an MCP or agentic intermediary to perform a protected downstream
+  action by using authority, identity, reach, or execution capability unavailable
+  to the initiating attacker.
+scope:
+  security_boundary: The authorization boundary between an attacker-influenced initiating
+    principal and an MCP or agentic deputy that holds a distinct, more privileged
+    downstream security context.
+  in_scope:
+  - The deputy receives attacker-controlled intent and performs a protected action
+    while initiator identity, client consent, target resource, audience, or delegation
+    binding is absent or invalid.
+  - OAuth proxy authorization-code confusion, cross-resource token confusion, and
+    unauthenticated proxy-to-process launch when the deputy's distinct authority is
+    the boundary-crossing mechanism.
+  out_of_scope:
+  - Prompt or instruction injection that does not cause a separately authorized deputy
+    to cross a privilege boundary.
+  - SSRF, path traversal, command injection, token theft, or direct exploitation when
+    the intermediary has no distinct authority or the original initiator remains correctly
+    bound and authorized.
+  - Downstream persistence, collection, exfiltration, or destructive impact after
+    the immediate privileged action succeeds.
+  affected_components:
+  - MCP proxy server
+  - MCP client or host
+  - agent runtime or tool gateway
+  - authorization server and downstream resource server
+  - local process-spawning proxy
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection is a delivery and interpretation mechanism; this
+    technique additionally requires authority asymmetry and an invalid initiator-to-action
+    binding.
+- technique_id: SAF-T1707
+  distinction: CSRF Token Relay causes a browser or portal to exercise stored authority;
+    this technique is bounded more generally by loss of initiating authority context
+    and can use OAuth, tool, API, or process deputies.
+required_evidence:
+- A current authoritative definition of confused-deputy authority asymmetry and the
+  conditions that make intermediary behavior vulnerable.
+- Current MCP authorization and security requirements for client consent, redirect,
+  resource, audience, and token handling.
+- Separate searches for production incidents, vulnerabilities, advisories, exploitation
+  status, and controlled demonstrations.
+- Two to four highest-impact qualifying examples with direct, enabling, adjacent,
+  or rejected relationship classifications.
+- Operational telemetry and representative positive, negative, boundary, and legitimate-lookalike
+  detection cases.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized deputy-action events with timestamp, correlation ID, initiating principal,
+    deputy principal, requested action, target resource, initiator authorization,
+    deputy authorization, binding result, delegation ID and validity, and outcome.
+  - OAuth client registration, consent, redirect, resource, audience, state, token
+    issuance, and downstream use records when OAuth is involved.
+safe_example_constraints:
+- Use inert example domains, identities, resources, and action names.
+- Do not reproduce working command-injection payloads or live exploit code.
+- Do not include credentials, tokens, destructive commands, or operational secrets.
+- Describe only the minimum mechanism needed to distinguish the technique.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE joins.
+- Every claim has directly reviewed evidence and exact locators or is omitted.
+- Unverified examples and propositions are recorded as excluded.
+- Two consecutive saturation passes add no material evidence or limitation.
+- Detection tests pass with positive, negative, boundary, and legitimate-lookalike
+  cases.
+- Rights, framework, safe-publication, and clean-room gates pass.
+- The current strict validator passes in an isolated synthetic mock repository.

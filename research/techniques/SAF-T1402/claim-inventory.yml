@@ -1,0 +1,356 @@
+version: 1
+technique_id: SAF-T1402
+claims:
+  - id: SAF-T1402-C001
+    statement: Agent systems can recover instructions concealed in model-facing carriers and allow those instructions to influence later behavior.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-sharelock-2026
+        support: direct
+        exact_locators: ["Abstract; Sections 4.1-4.2; Section 5.2, Table 1; lines 59-63, 187-196, 299-350"]
+      - source_id: SRC-reasoning-traces-2026
+        support: direct
+        exact_locators: ["Section 4.2, Threat model and Proof-of-concept; lines 325-336"]
+      - source_id: SRC-skillcamo-2026
+        support: corroborating
+        exact_locators: ["Abstract and Sections 3.1-3.2; lines 64-68 and 115-149"]
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: corroborating
+        exact_locators: ["Summary and Impact"]
+      - source_id: SRC-greshake-ipi-2023
+        support: context
+        exact_locators: ["Sections 3.1 and 4.3; lines 118-127 and hidden-injection demonstrations"]
+    corroboration: Two independent 2026 controlled studies use different carriers, MCP tool-description shares and opaque reasoning blocks.
+    limitations: [Controlled evaluations do not establish production exploitation or universal model susceptibility.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C002
+    statement: Indirect prompt injection can arrive through externally supplied content, including content hidden from ordinary user view.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-greshake-ipi-2023
+        support: direct
+        exact_locators: ["Abstract and Sections 2-3; lines 118-127 and 158-190"]
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: corroborating
+        exact_locators: ["Summary and Impact"]
+    corroboration: ShareLock independently demonstrates an MCP-specific concealed carrier.
+    limitations: [The foundational study predates the current MCP specification and covers broader LLM-integrated applications.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C003
+    statement: MCP supplies model-visible tool definitions and tool results, and MCP resources can provide contextual content to language models.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tools specification, Overview and Tool definition; lines 78-90, 236-252, 376-439"]
+      - source_id: SRC-mcp-resources-2025-11-25
+        support: direct
+        exact_locators: ["Resources specification, Overview; lines 76-87"]
+      - source_id: SRC-reasoning-traces-2026
+        support: context
+        exact_locators: ["Abstract and Section 4.2; lines 157-163 and 325-336"]
+    corroboration: ShareLock experimentally uses tool descriptions as an MCP prompt carrier.
+    limitations: [The specifications define transport and control surfaces, not malicious intent or successful exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C004
+    statement: Concealed instructions can use distributed numeric shares, visual image carriers, or opaque encrypted model-state carriers.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-sharelock-2026
+        support: direct
+        exact_locators: ["Sections 4.1-4.2; lines 182-196 and 213-283"]
+      - source_id: SRC-skillcamo-2026
+        support: direct
+        exact_locators: ["Abstract; Sections 3.1-3.2; lines 64-68 and 115-149"]
+      - source_id: SRC-reasoning-traces-2026
+        support: direct
+        exact_locators: ["Abstract and Section 4.2; lines 157-163 and 325-336"]
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: corroborating
+        exact_locators: ["Summary and Impact"]
+    corroboration: Three independent carrier classes demonstrate the representation gap.
+    limitations: [Carrier-specific results cannot be generalized to every model, scanner, or runtime.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C005
+    statement: OpenClaw before 2026.2.15 embedded an unsanitized working-directory path into the agent system prompt, allowing control and format characters to alter prompt structure and inject instructions.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: direct
+        exact_locators: ["Summary, Impact, Affected versions, and Patched versions"]
+      - source_id: SRC-nvd-cve-2026-27001
+        support: corroborating
+        exact_locators: ["CVE description, CVSS records, and References"]
+    corroboration: The NVD record reproduces the mechanism and links the vendor advisory.
+    limitations: [The records disclose a vulnerability and bounded potential impact, not known exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C006
+    statement: GitLab disclosed that hidden prompts in merge-request comments could allow an authenticated attacker to leak information from confidential issues in specified GitLab EE versions.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-gitlab-cve-2025-6945
+        support: direct
+        exact_locators: ["CVE-2025-6945 entry under GitLab 18.5.2 patch release; lines 150-156"]
+      - source_id: SRC-nvd-cve-2025-6945
+        support: corroborating
+        exact_locators: ["CVE description, CVSS 3.1 record, and References"]
+    corroboration: NVD records the same affected ranges and a CVSS 3.1 score of 3.5 with user interaction required.
+    limitations: [The advisory does not disclose the carrier representation in detail or report exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C007
+    statement: ShareLock reconstructed instructions from threshold shares in MCP tool descriptions and achieved 94.1 percent average ASR under its ASR-at-3 evaluation across four models and two MCP clients.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-sharelock-2026
+        support: direct
+        exact_locators: ["Section 5.1 experimental setup and Section 5.2 Table 1; lines 299-350"]
+    corroboration: The threshold ablation reports zero ASR below the reconstruction threshold in Section 5.4.
+    limitations: [Tool outputs were mocked, ASR permits up to three attempts, and strict access controls may block the sensitive action.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C008
+    statement: A controlled study replayed opaque reasoning blocks that induced unrelated and long-horizon agents to perform attacker-directed file uploads without plaintext instructions in the visible conversation.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-reasoning-traces-2026
+        support: direct
+        exact_locators: ["Section 4.2, Proof-of-concept and Poisoning long-horizon traces; lines 325-336"]
+    corroboration: The paper reports cross-model compatibility as the enabling condition in the Abstract and Introduction.
+    limitations: [The test covered specific July 2026 API versions; authors later reported they could no longer launch the same attacks after disclosure.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C009
+    statement: Static or text-centered defenses can miss distributed, visual, or encoded instructions, and current prompt-shielding documentation warns that false positives and false negatives remain possible.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-sharelock-2026
+        support: direct
+        exact_locators: ["Section 5.3, Tables 3-4; lines 389-416"]
+      - source_id: SRC-skillcamo-2026
+        support: direct
+        exact_locators: ["Sections 4.2-4.4; lines 207-241"]
+      - source_id: SRC-microsoft-prompt-shields-2026
+        support: corroborating
+        exact_locators: ["Document attacks, Encoding Attacks, and Limitations; lines 89-134"]
+    corroboration: Independent academic and platform documentation identify different blind spots.
+    limitations: [Detection performance changes with models, prompts, runtime architecture, and carrier distribution.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C010
+    statement: Unicode security hazards arise from differences between visible rendering and underlying code-point sequences, but related perturbations do not affect every model or task.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-unicode-uts39
+        support: direct
+        exact_locators: ["Sections 3.1 and 4, default ignorables and confusable detection; lines 138-160 and 357-481"]
+      - source_id: SRC-bad-characters-2021
+        support: direct
+        exact_locators: ["Sections 3 and 6; lines 214-250 and 479-554"]
+      - source_id: SRC-unicode-uts55-v2
+        support: corroborating
+        exact_locators: ["Section 5.2; lines 714-772"]
+    corroboration: Unicode's standard and a controlled NLP study describe the representation mismatch from different perspectives.
+    limitations: [The Bad Characters tasks are not agent instruction-following tasks, and its negative results are task-specific.]
+    conflicts:
+      - Some invisible-character perturbations had no effect on several evaluated toxicity, NER, and sentiment models.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C011
+    statement: Representation-aware inspection should expose hidden or default-ignorable characters while accounting for legitimate use and unacceptable false-positive rates.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-unicode-uts55-v2
+        support: direct
+        exact_locators: ["Section 5.2, Blank or Invisible Characters; lines 714-772"]
+      - source_id: SRC-unicode-uts39
+        support: corroborating
+        exact_locators: ["Sections 3.1 and 4, default ignorables and confusable detection; lines 138-160 and 357-481"]
+      - source_id: SRC-mitre-t1027.018
+        support: context
+        exact_locators: ["Detection Strategies; lines 73-81"]
+      - source_id: SRC-bad-characters-2021
+        support: corroborating
+        exact_locators: ["Section 7, defenses; lines 479-554"]
+    corroboration: Both Unicode technical standards stress visibility plus contextual handling.
+    limitations: [These standards address Unicode text; they do not detect image, cryptographic, or semantic concealment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C012
+    statement: CVE-2026-29783 hides shell execution inside parameter expansion after an agent has generated a command, rather than hiding an instruction from the model-facing review boundary.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-29783
+        support: direct
+        exact_locators: ["CVE description and References"]
+    corroboration: The NVD description distinguishes prompt injection as an upstream way to influence the command from the shell-parser bypass itself.
+    limitations: [This is an exclusion-boundary claim and does not establish SAF-T1402 behavior.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1402-C013
+    statement: The reviewed NVD records and CISA KEV catalog did not establish a verified production breach or known exploitation for the selected instruction-steganography vulnerabilities as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-6945
+        support: direct
+        exact_locators: ["CVE record through 2026-06-17"]
+      - source_id: SRC-nvd-cve-2026-27001
+        support: direct
+        exact_locators: ["CVE record through 2026-06-17"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators: ["Catalog version 2026.09.01; exhaustive cveID field review"]
+    corroboration: Neither selected CVE appears in the reviewed KEV catalog.
+    limitations: [Absence from reviewed sources does not prove that exploitation has never occurred or was never privately observed.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a bounded negative finding over named reviewed authorities, not a universal absence claim.}
+    status: validated
+  - id: SAF-T1402-C014
+    statement: Harmful impact requires the recovered instruction to reach data or a tool with sufficient privilege and without an effective approval boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sharelock-2026
+        support: direct
+        exact_locators: ["Sections 3.3, 5.1, and 6; lines 152-177, 299-319, 432-437"]
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: corroborating
+        exact_locators: ["Impact and CVSS"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Security guidance; lines 78-90"]
+      - source_id: SRC-reasoning-traces-2026
+        support: corroborating
+        exact_locators: ["Section 4.2; lines 325-336"]
+      - source_id: SRC-gitlab-cve-2025-6945
+        support: corroborating
+        exact_locators: ["CVE-2025-6945 entry; lines 150-156"]
+    corroboration: The sources separately establish sensitive objectives, product impact, and human-control expectations.
+    limitations: [Impact varies by model, privileges, tool design, user choices, and downstream controls.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The conditional impact statement synthesizes controlled results and protocol control boundaries.}
+    status: validated
+  - id: SAF-T1402-C015
+    statement: Carrier normalization and visible review, context binding for opaque state, multimodal package inspection, least privilege, and sensitive-action approval address different stages of the technique.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+        support: direct
+        exact_locators: ["Patched versions and remediation description"]
+      - source_id: SRC-reasoning-traces-2026
+        support: direct
+        exact_locators: ["Sections 5.4-5.5; lines 350-377"]
+      - source_id: SRC-skillcamo-2026
+        support: direct
+        exact_locators: ["Section 3.3 and Sections 4.3-4.4; lines 152-183 and 219-241"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Security guidance; lines 78-90"]
+      - source_id: SRC-unicode-uts55-v2
+        support: direct
+        exact_locators: ["Section 5.2; lines 714-772"]
+      - source_id: SRC-sharelock-2026
+        support: context
+        exact_locators: ["Sections 5.3-6; lines 389-437"]
+      - source_id: SRC-microsoft-prompt-shields-2026
+        support: context
+        exact_locators: ["Document attacks and Limitations; lines 89-134"]
+      - source_id: SRC-mitre-t1027.018
+        support: context
+        exact_locators: ["Detection Strategies; lines 73-81"]
+    corroboration: Independent sources cover carrier, state, package, and action-stage controls.
+    limitations: [No single control covers every representation; model-based scanners and human approvals can fail.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The defense-in-depth set combines source-specific controls across the documented attack flow.}
+    status: validated
+  - id: SAF-T1402-C016
+    statement: A defensible experimental analytic correlates an anomalous untrusted carrier with later interpretation or sensitive action in the same session, while treating representation findings alone as insufficient.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1027.018
+        support: direct
+        exact_locators: ["Detection Strategies DET0557 and AN1234; lines 73-81"]
+      - source_id: SRC-unicode-uts55-v2
+        support: context
+        exact_locators: ["Section 5.2; lines 714-772"]
+      - source_id: SRC-sharelock-2026
+        support: context
+        exact_locators: ["Section 5.4, token-consumption and threshold observables; lines 417-431"]
+      - source_id: SRC-unicode-uts39
+        support: context
+        exact_locators: ["Sections 3.1 and 4; lines 138-160 and 357-481"]
+      - source_id: SRC-skillcamo-2026
+        support: context
+        exact_locators: ["Sections 3.3 and 4.3-4.4; lines 152-183 and 219-241"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Security guidance; lines 78-90"]
+      - source_id: SRC-bad-characters-2021
+        support: context
+        exact_locators: ["Sections 6-7; lines 479-554"]
+    corroboration: ATT&CK recommends joining abnormal Unicode density to decoding and follow-on activity; Unicode guidance supplies visibility and false-positive constraints.
+    limitations: [The analytic depends on provenance-rich telemetry and misses carriers that generate no recorded representation finding.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The concrete cross-source sequence analytic is a SAF design derived from cited detection principles.}
+    status: validated
+  - id: SAF-T1402-C017
+    statement: MITRE ATT&CK T1027.018 Invisible Unicode is an analogous mapping for the Unicode subset of SAF-T1402, not a direct mapping for all instruction carriers.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1027.018
+        support: direct
+        exact_locators: ["Technique definition and procedure examples; lines 38-43"]
+    corroboration: ATT&CK explicitly includes AI prompt injection using invisible Unicode.
+    limitations: [T1027.018 does not cover image, threshold-share, or opaque-reasoning carriers.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Mapping scope is narrower than the SAF technique and is therefore analogous.}
+    status: validated

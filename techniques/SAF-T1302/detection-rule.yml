@@ -1,43 +1,96 @@
-title: High-Privilege Tool Abuse
-id: 1A20BBC7-3491-4028-8960-813CA5AB5ABF
+title: Successful High-Privilege Agent Tool Call Without Bound Approval
+id: 7d472021-c2f7-4f4e-9c1e-e85d055adf02
 status: experimental
-description: Detects MCP tools executing privileged commands or accessing root-level paths.
-author: Vikranth Kumar Shivaa
-date: 2025-12-08
+description: >-
+  Detects a successful high-risk tool invocation by a low-trust requestor when
+  the tool executes with elevated effective privilege and action-bound approval
+  is missing, bypassed, or declared unnecessary. Explicitly authorized
+  break-glass activity is suppressed.
+author: OpenAI Codex clean-room research agent
+date: 2026-09-01
+modified: 2026-09-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1302
-logsource:
-  product: mcp
-  service: tool_execution
-detection:
-  selection_tools:
-    tool_name:
-      - 'execute_command'
-      - 'run_shell'
-      - 'docker_run'
-      - 'sys_admin'
-  selection_args:
-    parameters.args|contains:
-      - 'sudo'
-      - 'su -'
-      - 'chmod +s'
-      - 'chown root'
-      - 'chroot'
-      - '--privileged'
-      - '-v /:/'
-      - '/etc/shadow'
-      - '/etc/sudoers'
-  condition: selection_tools and selection_args
-level: critical
+  - https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html
 tags:
-  - attack.privilege_escalation
-  - attack.t1548
-  - safe.t1302
-falsepositives:
-  - Legitimate automated system maintenance tasks (should be allowlisted by tool name/user)
+  - saf.t1302
+logsource:
+  category: application
+  product: mcp_agent
+  definition: Normalized MCP client, agent gateway, tool broker, approval service, and downstream authorization audit events.
+detection:
+  selection_high_risk_success:
+    event_type: tool_call
+    tool_risk: high
+    outcome: success
+  selection_authority_gap:
+    requestor_privilege:
+      - low
+      - external
+      - untrusted
+    tool_effective_privilege:
+      - elevated
+      - admin
+      - root
+      - cross_tenant
+  selection_approval_gap:
+    approval_status:
+      - missing
+      - bypassed
+      - not_required
+  filter_authorized_breakglass:
+    breakglass_authorized: true
+  condition: selection_high_risk_success and selection_authority_gap and selection_approval_gap and not filter_authorized_breakglass
 fields:
   - timestamp
-  - service
+  - session_id
+  - requestor_id
+  - requestor_privilege
+  - server_id
   - tool_name
-  - parameters.args
-  - user_id
+  - tool_risk
+  - tool_effective_privilege
+  - arguments_digest
+  - approval_status
+  - approval_id
+  - policy_version
+  - outcome
+  - breakglass_authorized
+falsepositives:
+  - Approved emergency or break-glass operations whose authorization state was not propagated to the normalized event.
+  - Legitimate unattended automation deliberately configured for elevated work but mislabeled as a low-trust requestor.
+  - Incomplete log joins that lose the action-bound approval identifier.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1302-C010]
+  telemetry_claim_ids: [SAF-T1302-C006]
+  limitation_claim_ids: [SAF-T1302-C011]
+  validation_artifacts:
+    - tests/SAF-T1302/test_detection_rule.py
+    - tests/SAF-T1302/test-logs.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1302-C006]
+      rationale: OWASP and MCP guidance require structured tool and authorization audit data.
+    selection_high_risk_success:
+      claim_ids: [SAF-T1302-C010]
+      rationale: Restricts alerts to completed high-impact tool effects.
+    selection_authority_gap:
+      claim_ids: [SAF-T1302-C004, SAF-T1302-C010]
+      rationale: Encodes the defining mismatch between requestor authority and tool authority.
+    selection_approval_gap:
+      claim_ids: [SAF-T1302-C002, SAF-T1302-C010]
+      rationale: Captures missing or ineffective action approval identified by protocol guidance and disclosures.
+    filter_authorized_breakglass:
+      claim_ids: [SAF-T1302-C011]
+      rationale: Suppresses a documented legitimate high-privilege lookalike while preserving it for review.
+    condition:
+      claim_ids: [SAF-T1302-C010]
+      rationale: Correlates all required conditions and excludes explicit break-glass authorization.
+    fields:
+      claim_ids: [SAF-T1302-C006, SAF-T1302-C011]
+      rationale: Fields implement the structured telemetry and expose the analytic's blind spots.
+    falsepositives:
+      claim_ids: [SAF-T1302-C011]
+      rationale: Lists expected authorization-propagation and trust-labeling lookalikes.

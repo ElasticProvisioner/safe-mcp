@@ -1,0 +1,289 @@
+version: 1
+technique_id: SAF-T1207
+claims:
+  - id: SAF-T1207-C001
+    statement: An updater or component manager that activates an attacker-selected replacement for an already trusted component can preserve adversary-controlled code across restarts.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0003
+        support: direct
+        exact_locators: ["Persistence, lines 15-24"]
+      - source_id: SRC-mitre-t1554
+        support: direct
+        exact_locators: ["Description, lines 15-21"]
+      - source_id: SRC-vscode-agent-plugins
+        support: direct
+        exact_locators: ["Check for plugin updates, lines 514-550"]
+    corroboration: Independent framework and implementation sources establish the persistence objective, replacement mechanism, and an agent-plugin update path.
+    limitations: [No reviewed source establishes the complete sequence in a qualifying MCP production incident.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The end-to-end SAF behavior combines independently supported components.}
+    status: validated
+  - id: SAF-T1207-C002
+    statement: The official MCP Registry stores metadata mapping server versions to executable packages hosted by external package registries.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators: ["Relationship with Package Registries, lines 74-78"]
+      - source_id: SRC-mcp-registry-package-types
+        support: direct
+        exact_locators: ["Package Types, lines 67-146 and 229-285"]
+    corroboration: Two official MCP Registry documentation pages describe the same metadata-to-package boundary.
+    limitations: [Host and aggregator consumption policy is implementation-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C003
+    statement: Published MCP server metadata uses unique immutable version strings and a latest-version ordering consumed by aggregators.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-versioning
+        support: direct
+        exact_locators: ["Version Format, lines 50-108", "Aggregator Recommendations, lines 219-227"]
+    corroboration: The Registry FAQ independently confirms that updates require a new unique version and published metadata is immutable.
+    limitations: [Aggregators can layer additional policy over the official ordering.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C004
+    statement: The official MCP Registry delegates executable-code scanning to underlying package registries and downstream aggregators.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators: ["Security Scanning, lines 121-128"]
+    corroboration: Registry FAQ abuse reporting directs users first to the underlying package registry.
+    limitations: [The source does not enumerate every package-registry or downstream control.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C005
+    statement: VS Code checks installed agent plugins for updates and can pull cloned marketplace repositories or compare externally hosted versions, while npm and PyPI plugins require manual update confirmation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-agent-plugins
+        support: direct
+        exact_locators: ["Check for plugin updates, lines 514-550"]
+    corroboration: VS Code extension documentation separately establishes automated update behavior for another agent-adjacent component class.
+    limitations: [This is one host implementation and does not define MCP generally.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C006
+    statement: Mandiant guidance identifies silently updated malicious dependencies in a previously benign MCP integration as an agent supply-chain risk and recommends hashing and vetting incoming tools.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-ai-blueprint
+        support: direct
+        exact_locators: ["Supply chain resilience for skills, lines 97-100"]
+    corroboration: Google Threat Intelligence separately reports malicious code in MCP packages and supply-chain activity affecting AI software.
+    limitations: [The guidance does not name a qualifying trusted-update production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C007
+    statement: Signed update metadata with hashes, threshold keys, expiry, and version or freshness checks constrains key, repository, rollback, and mix-and-match compromise.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-tuf-security
+        support: direct
+        exact_locators: ["Security, lines 31-55"]
+      - source_id: SRC-tuf-metadata
+        support: direct
+        exact_locators: ["Metadata, lines 20-65"]
+    corroboration: The two TUF pages independently describe the security goals and the metadata that enforces them.
+    limitations: [Benefits require correct implementation, protected trusted state, and appropriate key operations.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C008
+    statement: VS Code automatically updates enabled extensions by default and verifies Marketplace extension signatures during installation.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-extension-marketplace
+        support: direct
+        exact_locators: ["Auto Update, lines 315-325", "Extension signature verification, lines 502-521"]
+      - source_id: SRC-vscode-extension-security
+        support: direct
+        exact_locators: ["Marketplace protections, lines 225-238"]
+    corroboration: Two Microsoft documentation pages independently describe update and signature behavior.
+    limitations: [VS Code extensions and VS Code agent plugins have distinct update paths.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C009
+    statement: VS Code enterprise policy can constrain extensions by publisher, ID, and version and can restrict plugin marketplaces and MCP sources.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-enterprise-extensions
+        support: direct
+        exact_locators: ["Extension allow list, lines 187-215"]
+      - source_id: SRC-vscode-ai-governance
+        support: direct
+        exact_locators: ["Agent plugin controls, lines 337-346", "MCP controls, lines 349-381"]
+    corroboration: Separate Microsoft enterprise-control pages cover software extensions and agentic sources.
+    limitations: [Controls are product-specific and depend on correct policy distribution.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C010
+    statement: The SolarWinds incident distributed digitally signed trojanized Orion updates whose malicious component loaded after installation.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mandiant-solarwinds
+        support: direct
+        exact_locators: ["Executive Summary and SUNBURST Backdoor, lines 73-94"]
+    corroboration: MITRE ATT&CK T1195.002 lists the SolarWinds compromise as a software-supply-chain procedure.
+    limitations: [The affected software was not MCP or an agentic component.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C011
+    statement: The 3CX incident distributed a trojanized legitimate application after attackers compromised Windows and macOS build environments.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mandiant-3cx
+        support: direct
+        exact_locators: ["Overview, lines 63-75", "Compromise of the 3CX Build Environment, lines 102-107"]
+    corroboration: MITRE ATT&CK T1195.002 includes the 3CX compromise as a procedure example.
+    limitations: [The affected software was not MCP or agentic software.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C012
+    statement: Malicious Axios 1.14.1 could be selected through ordinary version ranges used by sampled MCP servers during the exposure window.
+    class: observed_incident
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-supply-chain
+        support: direct
+        exact_locators: ["Axios incident, page lines 79-112"]
+      - source_id: SRC-socket-axios
+        support: direct
+        exact_locators: ["Incident summary, lines 179-195", "Additional Exposure From MCP Tooling, lines 267-285"]
+    corroboration: Google confirms the publisher-account compromise and malicious Axios update; Socket documents MCP dependency ranges.
+    limitations: [The sampled MCP servers were not shown themselves compromised or persistently replaced.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Exposure is inferred from version ranges and timing, not confirmed victim execution for each MCP server.}
+    status: validated
+  - id: SAF-T1207-C013
+    statement: A flaw in Electron's updater allowed an attacker controlling update storage to craft a signed update containing malicious nested components under affected conditions.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-electron-ghsa
+        support: direct
+        exact_locators: ["Impact and patched versions, lines 134-169"]
+    corroboration: NVD CVE-2022-29257 independently records the vulnerability and the exact advisory URL.
+    limitations: [No exploitation was established; the flaw is not MCP-specific.]
+    conflicts:
+      - NVD prose lists different 15.x/16.x/17.x fix points than the vendor advisory; the vendor advisory values are used.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C014
+    statement: Sparkle before 2.6.4 permitted replacement of a signed update in a way that bypassed EdDSA verification.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-sparkle-security
+        support: direct
+        exact_locators: ["Security and Reliability, lines 7-22"]
+    corroboration: NVD CVE-2025-0509 independently records the affected update-verification behavior.
+    limitations: [No exploitation was established; Sparkle is not MCP-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1207-C015
+    statement: ATT&CK T1195.002 expressly includes manipulation of a software update or distribution mechanism and provides a correlated updater-to-write-to-first-run detection strategy.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1195-002
+        support: direct
+        exact_locators: ["Description, lines 16-25", "Detection Strategy, lines 71-77"]
+    corroboration: Historical incidents selected in this packet match ATT&CK procedure examples.
+    limitations: [ATT&CK places this behavior under Initial Access, while SAF-T1207 is scoped to persistence after a trusted installation exists.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is analogous because tactic and lifecycle boundaries differ.}
+    status: validated
+  - id: SAF-T1207-C016
+    statement: ATT&CK Persistence includes replacing or hijacking legitimate code, and T1554 covers persistent replacement of a legitimate host binary or support file.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0003
+        support: direct
+        exact_locators: ["Persistence, lines 15-24"]
+      - source_id: SRC-mitre-t1554
+        support: direct
+        exact_locators: ["Description, lines 15-21"]
+    corroboration: The tactic definition and technique definition share the legitimate-code replacement mechanism.
+    limitations: [T1554 emphasizes modification on the host rather than upstream update distribution.]
+    conflicts: []
+    inference: {is_inference: true, rationale: T1554 is the closest persistence analogy, not a direct mapping.}
+    status: validated
+  - id: SAF-T1207-C017
+    statement: Comparing component activation records with an independent approved-release inventory of version, source, digest, signer, provenance, and verification outcome is a feasible detection design.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-tuf-metadata
+        support: direct
+        exact_locators: ["Root, targets, snapshot, and timestamp metadata, lines 20-65"]
+      - source_id: SRC-google-ai-blueprint
+        support: direct
+        exact_locators: ["Supply chain resilience for skills, lines 97-100"]
+      - source_id: SRC-mitre-t1195-002
+        support: direct
+        exact_locators: ["Detection Strategy, lines 71-77"]
+    corroboration: The sources cover the trusted release state, agent-tool integrity control, and behavioral correlation independently.
+    limitations: [Requires normalized lifecycle telemetry and an independently governed release inventory.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The analytic adapts standard update metadata to a component activation event.}
+    status: validated
+  - id: SAF-T1207-C018
+    statement: Investigation of transient package exposure requires contemporaneous resolution logs, artifact snapshots, and network telemetry; recovery should restore vetted artifacts and harden the compromised update path.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-socket-axios
+        support: direct
+        exact_locators: ["Reconstructing exposure, lines 372-395"]
+      - source_id: SRC-google-supply-chain
+        support: direct
+        exact_locators: ["Mitigation guidance, page lines 113-201"]
+    corroboration: Incident reconstruction and broader supply-chain hardening guidance are complementary.
+    limitations: [Historical reconstruction may remain incomplete when transient state was not retained.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Recovery actions apply the cited supply-chain controls to the scoped component manager.}
+    status: validated

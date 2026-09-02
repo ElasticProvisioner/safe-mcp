@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1306
+frozen_on: "2026-09-01"
+canonical_bundle: /private/tmp/saf-all-cleanroom/SAF-T1306-normalized/bundle
+post_freeze_only:
+  - Collision-check all source IDs against the shared source manifest and mechanically rename conflicts across the bundle.
+  - Replace synthetic repository-history SHA 1111111111111111111111111111111111111306 with the integrating commit without changing the historical statement.
+  - Reconcile tactic ATK-TA0004 against the shared framework while preserving the seeded Privilege Escalation assignment.
+  - Reconcile synthetic neighbor IDs and mitigation IDs against the shared framework, then rerun strict validation.
+synthetic_relationship_ids:
+  techniques:
+    - id: SAF-T9001
+      name: Authorization Code Interception
+    - id: SAF-T9002
+      name: Token Audience Confusion
+    - id: SAF-T9003
+      name: Malicious Authorization Metadata
+  mitigations:
+    - id: SAF-M-9001
+      name: Issuer-Bound Authorization Flows
+    - id: SAF-M-9002
+      name: Trusted Authorization Server Policy
+    - id: SAF-M-9003
+      name: Authorization Flow Telemetry
+synthetic_tactic_ids: []
+synthetic_source_ids:
+  - SRC-attack-t1528
+  - SRC-attack-t1556
+  - SRC-cisa-aa25-239a
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisco-arcanedoor
+  - SRC-cisco-security-warnings
+  - SRC-cisco-state-campaigns
+  - SRC-mcp-auth-2026
+  - SRC-mcp-sep-2468
+  - SRC-mcp-ts-auth-errors
+  - SRC-mcp-update-2026-07
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  - SRC-oauth-formal-analysis
+  - SRC-rfc8414
+  - SRC-rfc9207
+  - SRC-rfc9700
+  - SRC-rfc9728
+synthetic_history_shas:
+  - "1111111111111111111111111111111111111306"
+mechanical_path_joins:
+  - source-manifest-fragment.yml -> research/source-manifest.yml
+  - framework-fragment.yml -> research/framework-model.yml
+  - alignment-fragment.yml -> research/alignment-ledger.yml
+  - techniques/SAF-T1306/ -> techniques/SAF-T1306/
+  - research/techniques/SAF-T1306/ -> research/techniques/SAF-T1306/
+  - tests/SAF-T1306/ -> tests/SAF-T1306/
+source_id_collision_check_required: true
+attribution:
+  project_technique_author: omitted_not_established_clean_room
+  credited_source_authors_and_teams:
+    - Emily Lauber and the MCP working-group contributors named in SEP-2468
+    - Model Context Protocol contributors and TypeScript SDK maintainers
+    - Named IETF RFC authors
+    - Daniel Fett, Ralf Küsters, and Guido Schmitz
+    - NIST NVD, contributing CNAs, and CISA teams
+    - AA25-239A multi-agency authoring partners
+    - Cisco Trust Center and MITRE ATT&CK contributors

@@ -1,0 +1,90 @@
+version: 1
+technique_id: SAF-T1207
+policy: source_or_omit
+review_status: passed
+reviewed_on: 2026-09-01
+publishable_artifact: techniques/SAF-T1207/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1207/technique-contract.yml
+  supports: Internal scope, name, tactic, boundary, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1207/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1207/detection-rule.yml
+  supports: Experimental detection analytic.
+- id: LOCAL-detection-fixtures
+  path: tests/fixtures/SAF-T1207/update-events.json
+  supports: Ten inert positive, negative, boundary, and false-positive detection cases.
+- id: LOCAL-detection-tests
+  path: tests/test_saf_t1207_detection.py
+  supports: Executable detection validation.
+- id: LOCAL-detection-results
+  path: tests/results/SAF-T1207-detection-results.json
+  supports: Frozen detection test result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1207-X001
+  candidate: A direct production postmark-mcp malicious-update incident.
+  origin: Whitelist search lead pointing to a legacy Koi Security URL.
+  attempted_searches:
+  - site:koi.ai/blog malicious MCP package update compromised existing package
+  - site:paloaltonetworks.com postmark-mcp malicious update
+  consulted_source_ids:
+  - SRC-paloalto-koi-redirect
+  reason: The exact legacy page redirected to unrelated corporate content, so complete
+    evidence could not be reviewed.
+  prohibited_publishable_text:
+  - postmark-mcp proves SAF-T1207 was observed in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1207-X002
+  candidate: A direct production mcp-runcommand-server malicious later-version incident.
+  origin: Whitelist search lead pointing to a legacy Koi Security URL.
+  attempted_searches:
+  - site:koi.ai/blog malicious MCP package update compromised existing package
+  - site:paloaltonetworks.com mcp-runcommand-server
+  consulted_source_ids:
+  - SRC-paloalto-koi-redirect
+  reason: The full legacy article could not be reviewed after redirect; snippet text
+    was not evidence.
+  prohibited_publishable_text:
+  - mcp-runcommand-server is a verified direct SAF-T1207 incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1207-X003
+  candidate: Treat malicious first-install MCP packages or tool-metadata drift as
+    update hijacking.
+  origin: Current package research and security-guidance search results.
+  attempted_searches:
+  - site:socket.dev/blog MCP server compromised version update
+  - site:nvd.nist.gov Model Context Protocol update package registry compromise
+  consulted_source_ids:
+  - SRC-google-ai-blueprint
+  - SRC-socket-axios
+  reason: These mechanisms lack either a trusted prior installation or a software-replacement
+    activation event.
+  prohibited_publishable_text:
+  - all MCP rug pulls or malicious packages are update-mechanism hijacking
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1207-X004
+  candidate: Use NVD Electron fixed-version values despite a conflict with the vendor
+    advisory.
+  origin: SRC-nvd-cve-2022-29257 and SRC-electron-ghsa.
+  attempted_searches:
+  - site:nvd.nist.gov Electron autoUpdater signature verification vulnerability CVE
+  consulted_source_ids:
+  - SRC-nvd-cve-2022-29257
+  - SRC-electron-ghsa
+  reason: The vendor advisory is authoritative for its fixed versions; conflicting
+    NVD prose was not repeated.
+  prohibited_publishable_text:
+  - Electron 15.5.5, 16.2.6, and 17.2 are the authoritative fixed versions
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

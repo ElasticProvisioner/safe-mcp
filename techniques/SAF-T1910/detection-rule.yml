@@ -1,37 +1,97 @@
-title: Covert Channel Data Smuggling
-id: 91492581-67d7-4467-8478-f564782760d9
+title: Covert Channel Exfiltration Following Sensitive Context Access
+id: 6802ffd2-d0a6-44b6-b913-ceaab647d8c3
 status: experimental
-description: Detects high-entropy strings or suspicious encodings in tool parameters indicating data exfiltration.
-author: Vikranth Kumar Shivaa
-date: 2025-12-03
+description: >-
+  Correlates a sensitive-data access with a later unapproved external MCP tool
+  call or downstream network request in the same agent session when normalized
+  outbound content contains a fingerprint of the accessed value.
+author: The SAF-MCP Authors
+date: "2026-09-02"
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1910
+  - https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+  - https://embracethered.com/blog/posts/2025/security-advisory-anthropic-slack-mcp-server-data-leakage/
+  - https://attack.mitre.org/techniques/T1048/
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1910-C011
+    - SAF-T1910-C012
+  telemetry_claim_ids:
+    - SAF-T1910-C002
+    - SAF-T1910-C011
+  limitation_claim_ids:
+    - SAF-T1910-C013
+    - SAF-T1910-C014
+  validation_artifacts:
+    - techniques/SAF-T1910/detection-rule.yml
+    - techniques/SAF-T1910/test_detection_rule.py
+    - techniques/SAF-T1910/test-logs.json
+  components:
+    selection_sensitive_read:
+      claim_ids: [SAF-T1910-C011]
+      rationale: A data-bearing egress correlation begins with a classified read or provenance event in the same agent session.
+    selection_unapproved_egress:
+      claim_ids: [SAF-T1910-C003, SAF-T1910-C008, SAF-T1910-C011]
+      rationale: Selected evidence completes disclosure through a tool call or secondary network fetch to an unintended destination.
+    correlation:
+      claim_ids: [SAF-T1910-C011, SAF-T1910-C012]
+      rationale: Same-session temporal joining and normalized fingerprint comparison encode the evidence-backed access-to-egress sequence.
+    condition:
+      claim_ids: [SAF-T1910-C011, SAF-T1910-C014]
+      rationale: Requiring an external unapproved destination reduces alerts on documented legitimate messaging and API workflows.
+    logsource:
+      claim_ids: [SAF-T1910-C002, SAF-T1910-C011]
+      rationale: MCP call arguments and host audit records supply the tool event; application or network logs supply secondary fetches.
+    fields:
+      claim_ids: [SAF-T1910-C002, SAF-T1910-C011, SAF-T1910-C014]
+      rationale: These fields support session correlation, content matching, destination policy, investigation, and tuning.
+    falsepositives:
+      claim_ids: [SAF-T1910-C014]
+      rationale: Approved business transfers and missing approval metadata can resemble the malicious sequence.
 logsource:
+  category: application
   product: mcp
-  service: tool_execution
+  service: host_and_egress_audit
 detection:
-  selection_suspicious_patterns:
-    parameters|contains:
-      - 'base64'
-      - '=='
-      - 'data:image'
-      - 'data:application'
-  selection_high_entropy_simulation:
-    # Simplified regex for long continuous alphanumeric strings (simulating entropy check)
-    parameters|regex: '[a-zA-Z0-9+/]{20,}={0,2}'
-  condition: selection_suspicious_patterns or selection_high_entropy_simulation
-level: high
-tags:
-  - attack.exfiltration
-  - attack.t1048
-  - safe.t1910
-falsepositives:
-  - Legitimate upload of encoded file content (should be allowlisted by tool name).
-  - Cryptographic hashes or IDs in legitimate use.
+  selection_sensitive_read:
+    event.type: saf.sensitive_read
+    session.id: required
+    source.fingerprints: required
+  selection_unapproved_egress:
+    event.type:
+      - mcp.tool_call
+      - network.http_request
+    destination.trust: external
+    destination.approved: false
+    event.payload: required
+  correlation:
+    group_by: session.id
+    ordered: true
+    window_seconds: 300
+    content_match: normalized_source_fingerprint_in_egress_payload
+    normalization:
+      - unicode_nfkc
+      - iterative_url_percent_decode_twice
+      - casefold
+  condition: selection_sensitive_read followed_by selection_unapproved_egress and correlation
 fields:
   - timestamp
-  - service
-  - tool_name
-  - parameters
-  - user_id
+  - event.type
+  - session.id
+  - server.id
+  - tool.name
+  - event.payload
+  - source.classification
+  - source.fingerprints
+  - destination.domain
+  - destination.trust
+  - destination.approved
+  - approval.id
+falsepositives:
+  - Legitimate sensitive-data transfer to an external destination when approval or allowlist metadata is missing.
+  - Security validation and DLP tests that intentionally move synthetic canary values.
+level: high
+tags:
+  - saf.t1910
+  - attack.t1048
 

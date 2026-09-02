@@ -1,0 +1,85 @@
+title: Automated Data Harvesting - High Distinct-Object Read Volume
+id: d614514c-cdde-4c9e-b32b-5c5b49d0cf66
+status: experimental
+description: >-
+  Detects at least 20 distinct successful MCP data-object reads by one
+  actor, session, and server within five minutes, excluding events carrying an
+  explicit approved bulk-export scope. This is an environment-tunable heuristic,
+  not a claim of comprehensive or empirically measured production detection.
+author: OpenAI Codex clean-room author for the SAF-MCP Authors
+date: "2026-09-02"
+references:
+  - https://attack.mitre.org/techniques/T1119/
+  - https://attack.mitre.org/techniques/T1213/
+  - https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1801-C012
+    - SAF-T1801-C013
+  telemetry_claim_ids:
+    - SAF-T1801-C003
+    - SAF-T1801-C012
+  limitation_claim_ids:
+    - SAF-T1801-C013
+  validation_artifacts:
+    - techniques/SAF-T1801/detection-rule.yml
+    - techniques/SAF-T1801/test-logs.json
+    - techniques/SAF-T1801/test_detection_rule.py
+    - research/techniques/SAF-T1801/validation/detector-tests.txt
+    - research/techniques/SAF-T1801/validation/research-validator.txt
+  components:
+    collection_action:
+      claim_ids: [SAF-T1801-C003, SAF-T1801-C012, SAF-T1801-C013]
+      rationale: MCP tool logging plus ATT&CK repeated-access analytics support counting successful normalized read operations.
+    exclude_approved_bulk_export:
+      claim_ids: [SAF-T1801-C013, SAF-T1801-C014]
+      rationale: Explicit contextual approval distinguishes sanctioned bulk workflows but does not suppress other reads by actor alone.
+    condition:
+      claim_ids: [SAF-T1801-C012, SAF-T1801-C013]
+      rationale: The threshold and window are test parameters derived from ATT&CK's mutable access-volume and time-window elements.
+    logsource:
+      claim_ids: [SAF-T1801-C003, SAF-T1801-C012]
+      rationale: MCP recommends logging tool use; host or gateway audit events preserve cross-server task context.
+    fields:
+      claim_ids: [SAF-T1801-C003, SAF-T1801-C012, SAF-T1801-C013]
+      rationale: Actor, session, server, object, action, outcome, time, access mode, and approval fields support grouping and suppression.
+    falsepositives:
+      claim_ids: [SAF-T1801-C012, SAF-T1801-C013]
+      rationale: ATT&CK marks thresholds, windows, users, and expected access patterns as mutable deployment elements.
+logsource:
+  product: mcp
+  service: host_or_gateway_audit
+detection:
+  collection_action:
+    event.action:
+      - resources/read
+      - tools/call
+    event.outcome: success
+    data.access_mode: read
+  exclude_approved_bulk_export:
+    approval.state: approved
+    approval.scope: bulk_export
+  condition: >-
+    collection_action | count_distinct(data.object.id) by
+    session.id,actor.id,server.id >= 20 within 5m and not
+    exclude_approved_bulk_export
+fields:
+  - event.timestamp
+  - event.action
+  - event.outcome
+  - session.id
+  - actor.id
+  - server.id
+  - data.object.id
+  - data.access_mode
+  - approval.state
+  - approval.scope
+falsepositives:
+  - Approved backup, migration, indexing, e-discovery, security scanning, or user-requested export workflows.
+  - Roles whose normal work reads many distinct objects in short windows unless task or approval context is retained.
+level: high
+tags:
+  - saf.t1801
+  - attack.t1119
+  - attack.t1213

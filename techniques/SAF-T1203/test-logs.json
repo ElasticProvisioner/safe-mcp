@@ -1,156 +1,52 @@
-{
-  "metadata": {
-    "technique_id": "SAF-T1203",
-    "technique_name": "Backdoored Server Binary",
-    "author": "Vikranth Kumar Shivaa",
-    "created_date": "2025-12-11",
-    "version": "1.0",
-    "total_scenarios": 6,
-    "malicious_scenarios": 3,
-    "benign_scenarios": 3
+[
+  {
+    "name": "unapproved_digest_mismatch",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-a", "executable_path": "/opt/example/server", "observed_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": false},
+    "expected_alert": true
   },
-  "test_scenarios": [
-    {
-      "scenario_id": "install_writes_cron_entry",
-      "description": "Installer writes to a cron location to persist beyond service uninstall.",
-      "expected_detection": true,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T10:00:00Z",
-          "event_type": "package_install",
-          "artifact_type": "npm",
-          "package_name": "mcp-example-server",
-          "process_name": "node",
-          "command_line": "node ./scripts/postinstall.js",
-          "user": "root"
-        },
-        {
-          "timestamp": "2025-12-11T10:00:02Z",
-          "event_type": "file_write",
-          "file_path": "/etc/cron.d/mcp-example-server",
-          "process_name": "node",
-          "user": "root"
-        }
-      ]
-    },
-    {
-      "scenario_id": "install_enables_systemd_unit",
-      "description": "Installer enables a systemd unit for persistence.",
-      "expected_detection": true,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T10:05:00Z",
-          "event_type": "package_install",
-          "artifact_type": "pip",
-          "package_name": "mcp_server_toolkit",
-          "process_name": "python",
-          "command_line": "python -m pip install mcp_server_toolkit",
-          "user": "root"
-        },
-        {
-          "timestamp": "2025-12-11T10:05:03Z",
-          "event_type": "process_exec",
-          "process_name": "sh",
-          "command_line": "sh -c systemctl enable mcp-example.service && systemctl daemon-reload",
-          "user": "root"
-        },
-        {
-          "timestamp": "2025-12-11T10:05:04Z",
-          "event_type": "file_write",
-          "file_path": "/etc/systemd/system/mcp-example.service",
-          "process_name": "sh",
-          "user": "root"
-        }
-      ]
-    },
-    {
-      "scenario_id": "install_outbound_to_suspicious_destination",
-      "description": "Installer makes outbound connection to a suspicious destination during install.",
-      "expected_detection": true,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T10:10:00Z",
-          "event_type": "package_install",
-          "artifact_type": "docker",
-          "image": "example/mcp-server:latest",
-          "process_name": "docker",
-          "command_line": "docker pull example/mcp-server:latest",
-          "user": "vik"
-        },
-        {
-          "timestamp": "2025-12-11T10:10:05Z",
-          "event_type": "network_connect",
-          "process_name": "docker",
-          "network_destination": "cdn.discordapp.com",
-          "network_port": 443,
-          "user": "vik"
-        }
-      ]
-    }
-  ],
-  "benign_scenarios": [
-    {
-      "scenario_id": "normal_install_downloads_dependencies",
-      "description": "Normal install downloads dependencies but does not write persistence files or run cron/systemd commands.",
-      "expected_detection": false,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T11:00:00Z",
-          "event_type": "package_install",
-          "artifact_type": "npm",
-          "package_name": "mcp-legit-server",
-          "process_name": "npm",
-          "command_line": "npm install mcp-legit-server",
-          "user": "vik"
-        },
-        {
-          "timestamp": "2025-12-11T11:00:10Z",
-          "event_type": "network_connect",
-          "process_name": "npm",
-          "network_destination": "registry.npmjs.org",
-          "network_port": 443,
-          "user": "vik"
-        }
-      ]
-    },
-    {
-      "scenario_id": "legit_service_setup_without_persistence_paths",
-      "description": "Legitimate setup writes application config under /etc but not into cron/systemd/autostart locations.",
-      "expected_detection": false,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T11:05:00Z",
-          "event_type": "package_install",
-          "artifact_type": "binary",
-          "package_name": "mcp-legit-binary",
-          "process_name": "installer",
-          "command_line": "./install.sh --mode=server",
-          "user": "root"
-        },
-        {
-          "timestamp": "2025-12-11T11:05:03Z",
-          "event_type": "file_write",
-          "file_path": "/etc/mcp-legit-binary/config.json",
-          "process_name": "installer",
-          "user": "root"
-        }
-      ]
-    },
-    {
-      "scenario_id": "developer_writes_shell_profile",
-      "description": "Developer updates shell profile interactively (not from installer context).",
-      "expected_detection": false,
-      "logs": [
-        {
-          "timestamp": "2025-12-11T11:10:00Z",
-          "event_type": "file_write",
-          "file_path": "/Users/vik/.bashrc",
-          "process_name": "vim",
-          "user": "vik"
-        }
-      ]
-    }
-  ]
-}
-
-
+  {
+    "name": "signed_but_unapproved_digest_mismatch",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-b", "executable_path": "/opt/example/server", "observed_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": true},
+    "expected_alert": true
+  },
+  {
+    "name": "uppercase_mismatch_normalized",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-c", "executable_path": "/opt/example/server", "observed_sha256": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": true},
+    "expected_alert": true
+  },
+  {
+    "name": "approved_digest_match",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-d", "executable_path": "/opt/example/server", "observed_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": true},
+    "expected_alert": false
+  },
+  {
+    "name": "approved_upgrade",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-e", "executable_path": "/opt/example/server", "observed_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": true, "signature_valid": true},
+    "expected_alert": false
+  },
+  {
+    "name": "wrong_event_type",
+    "event": {"event_type": "file_change", "server_registered": true, "server_id": "example-f", "executable_path": "/opt/example/server", "observed_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": false},
+    "expected_alert": false
+  },
+  {
+    "name": "unregistered_server",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": false, "server_id": "example-g", "executable_path": "/tmp/unregistered", "observed_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": false},
+    "expected_alert": false
+  },
+  {
+    "name": "missing_observed_digest",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-h", "executable_path": "/opt/example/server", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": false},
+    "expected_alert": false
+  },
+  {
+    "name": "malformed_observed_digest",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-i", "executable_path": "/opt/example/server", "observed_sha256": "not-a-digest", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": false},
+    "expected_alert": false
+  },
+  {
+    "name": "uppercase_equal_digest_normalized",
+    "event": {"event_type": "mcp_server_process_start", "server_registered": true, "server_id": "example-j", "executable_path": "/opt/example/server", "observed_sha256": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "approved_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "change_approved": false, "signature_valid": true},
+    "expected_alert": false
+  }
+]

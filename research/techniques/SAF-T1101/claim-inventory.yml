@@ -1,0 +1,327 @@
+version: 1
+technique_id: SAF-T1101
+claims:
+  - id: SAF-T1101-C001
+    statement: >-
+      Command injection occurs when externally influenced input crosses a command-generation boundary without preserving the separation between data and executable syntax; it includes both altering an intended command and selecting an unintended command or program.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-78-v4.20
+        support: direct
+        exact_locators: [Description, Variant 1, Variant 2]
+    corroboration: OWASP independently describes untrusted input extending an operating-system command.
+    limitations: [The weakness definition does not establish that a particular MCP implementation is vulnerable.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C002
+    statement: >-
+      MCP tool calls carry a tool name and arguments, tools are model-controlled, and the current protocol requires servers to validate tool inputs while clients should show tool inputs and log tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Tools/call request, Tool annotations, Security considerations]
+    corroboration: The MCP architecture specification separates host, client, and server responsibilities.
+    limitations: [The protocol requirement does not prove that every implementation complies.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C003
+    statement: >-
+      The current MCP security guidance documents an OAuth authorization-URL command-injection path when a client launches an untrusted URL through a shell, and requires scheme validation and avoiding shell invocation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: [OAuth server URL validation and command injection]
+    corroboration: The JFrog mcp-remote disclosure demonstrates this class in a deployed implementation.
+    limitations: [The guidance describes a class of unsafe implementation behavior, not a flaw in every MCP client.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C004
+    statement: >-
+      CISA lists CVE-2026-42271 in the Known Exploited Vulnerabilities catalog; the affected LiteLLM MCP stdio test endpoints could let an authenticated low-privilege user execute arbitrary commands.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators: [Catalog record CVE-2026-42271]
+      - source_id: SRC-ghsa-litellm-v4p8
+        support: corroborating
+        exact_locators: [Impact, Affected versions, Patched versions]
+    corroboration: The project advisory and NVD record independently describe the vulnerable endpoints and subprocess behavior.
+    limitations: [The reviewed public KEV record identifies no victim, campaign, exploit telemetry, or incident timeline.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C005
+    statement: >-
+      CVE-2026-42271 affected LiteLLM versions from 1.74.2 before 1.83.7 because two MCP stdio test endpoints accepted command, argument, and environment fields and spawned a subprocess; version 1.83.7 restricted access to administrators.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-ghsa-litellm-v4p8
+        support: direct
+        exact_locators: [Summary, Impact, Patched versions]
+      - source_id: SRC-nvd-2026-42271
+        support: corroborating
+        exact_locators: [CVE description, Weaknesses, Configurations]
+    corroboration: NVD records the same affected range and CWE-78 classification.
+    limitations: [The advisory does not publish in-the-wild exploitation details.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C006
+    statement: >-
+      IBM reports that Langflow 1.0.0 through 1.10.1 allowed unauthenticated remote code execution through dangerous environment variables reaching its MCP stdio launcher; 1.10.2 fixes the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-ibm-2026-12940
+        support: direct
+        exact_locators: [Security Bulletin, Vulnerability Details, Remediation/Fixes]
+      - source_id: SRC-nvd-2026-12940
+        support: corroborating
+        exact_locators: [CVE description, Weaknesses, Configurations]
+    corroboration: NVD independently records CWE-78 and the affected versions.
+    limitations: [The reviewed sources do not establish exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C007
+    statement: >-
+      JFrog demonstrated that mcp-remote 0.0.5 through 0.1.15 could turn a malicious MCP server authorization endpoint into operating-system command execution; 0.1.16 fixed the flaw.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [Technical details, Attack flow, Remediation]
+      - source_id: SRC-jfsa-2025-6514
+        support: corroborating
+        exact_locators: [Overview, Affected versions, Fixed versions]
+      - source_id: SRC-nvd-2025-6514
+        support: corroborating
+        exact_locators: [CVE description, Weaknesses]
+    corroboration: JFrog's advisory and NVD record the same affected range and CWE-78 classification.
+    limitations: [The public demonstration is not evidence of exploitation against a production victim.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C008
+    statement: >-
+      Oligo demonstrated that MCP Inspector versions before 0.14.1 exposed an unauthenticated local proxy that could launch arbitrary MCP commands over stdio; 0.14.1 added session-token and origin protections.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: [Attack demonstration, Impact, Fix, Disclosure timeline]
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators: [Summary, Impact, Patched versions]
+      - source_id: SRC-nvd-2025-49596
+        support: context
+        exact_locators: [CVE description, Weaknesses]
+    corroboration: The project advisory confirms the affected and fixed ranges.
+    limitations: [The primary authorization weakness is missing access control; this example matches the full-command-selection variant, not metacharacter injection into a fixed command.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C009
+    statement: >-
+      Successful command injection can execute with the privileges of the affected component and can compromise confidentiality, integrity, and availability.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-78-v4.20
+        support: direct
+        exact_locators: [Common Consequences]
+    corroboration: The selected advisories bound impacts to the privileges of their affected processes.
+    limitations: [Downstream impact depends on component privileges, network position, and operating-system controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C010
+    statement: >-
+      Reviewed MCP command-execution flaws reached the process boundary through authorization URLs, command and argument fields, environment variables, or unauthenticated stdio proxy requests.
+    class: research_finding
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [Attack flow]
+      - source_id: SRC-ghsa-litellm-v4p8
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-ibm-2026-12940
+        support: direct
+        exact_locators: [Vulnerability Details]
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators: [Attack demonstration]
+    corroboration: Each vector is documented by a distinct publisher or affected project.
+    limitations: [The list is representative, not exhaustive.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C011
+    statement: >-
+      A technique instance requires attacker influence over command-bearing data and a reachable process-launch boundary that fails to constrain syntax, executable selection, or dangerous startup state.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-78-v4.20
+        support: direct
+        exact_locators: [Description, Variant 1, Variant 2]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: corroborating
+        exact_locators: [OAuth server URL validation and command injection, Local MCP server compromise]
+    corroboration: The selected vulnerability mechanisms exhibit both prerequisites.
+    limitations: [This boundary model is a synthesis, not a protocol-defined term.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The prerequisites are generalized from the weakness definition and reviewed MCP cases.}
+    status: validated
+  - id: SAF-T1101-C012
+    statement: >-
+      Sysmon process-creation Event ID 1 records command line, parent process, hashes, and a ProcessGUID that can support ancestry and time correlation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators: [Overview of Sysmon Capabilities, Event ID 1 Process creation]
+    corroboration: ECS provides normalized process command-line, argument, executable, entity, and parent fields.
+    limitations: [Sysmon is Windows-specific and must be installed and configured.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C013
+    statement: >-
+      Elastic Common Schema defines normalized process fields for arguments, command line, executable, entity identifiers, and parent process data.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ecs-process-current
+        support: direct
+        exact_locators: [process.args, process.command_line, process.entity_id, process.executable, process.parent]
+    corroboration: Sysmon emits several corresponding Windows process-creation values.
+    limitations: [A normalized schema does not guarantee that a data source populates every field.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C014
+    statement: >-
+      Correlating an untrusted MCP command-bearing event with a child process, then requiring shell-control syntax or an unexpected executable change, is a testable analytic for the defining boundary crossing.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators: [Event ID 1 Process creation]
+      - source_id: SRC-ecs-process-current
+        support: corroborating
+        exact_locators: [Process field definitions]
+      - source_id: SRC-mitre-t1059-current
+        support: context
+        exact_locators: [Detection guidance]
+    corroboration: ATT&CK detection guidance emphasizes abnormal interpreters, parents, contexts, and obfuscation.
+    limitations: [This is an analytic design inference validated only with synthetic fixtures, not a measured production detector.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The correlation joins protocol context to process telemetry to reduce ambiguity.}
+    status: validated
+  - id: SAF-T1101-C015
+    statement: >-
+      Process-only command-injection detection can produce both false positives and false negatives; authorized automation, administrative diagnostics, missing telemetry, indirect launch chains, and encoding require tuning.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-78-v4.20
+        support: direct
+        exact_locators: [Detection Methods]
+      - source_id: SRC-mitre-t1059-current
+        support: corroborating
+        exact_locators: [Detection guidance]
+    corroboration: The synthetic test set contains approval, time-window, missing-parent, and diagnostic boundaries.
+    limitations: [No false-positive rate is claimed without production data.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C016
+    statement: >-
+      Primary prevention is to avoid shell command construction, use direct library or process APIs with separated arguments, validate against narrow allowlists, and run with least privilege or sandboxing.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-command-injection
+        support: direct
+        exact_locators: [Defense Option 1, Defense Option 3, Additional Defenses]
+      - source_id: SRC-python-subprocess-3.14
+        support: corroborating
+        exact_locators: [Security Considerations]
+      - source_id: SRC-node-child-process-v26
+        support: corroborating
+        exact_locators: [child_process.exec command warning]
+    corroboration: CWE-78 lists library calls, parameterization, least privilege, and sandboxing as mitigations.
+    limitations: [Quoting or escaping alone is platform-dependent and is not treated as the primary control.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C017
+    statement: >-
+      MCP guidance adds client-side confirmation with displayed inputs, audit logging, authorization for local proxies, sandboxing, and least privilege as defense-in-depth controls.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Security considerations]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: [OAuth server URL validation and command injection, Local MCP server compromise, Proxy server security]
+    corroboration: The Inspector fix added session-token and origin protections to its local proxy.
+    limitations: [Confirmation and logging do not neutralize an unsafe command-construction path.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1101-C018
+    statement: >-
+      MITRE ATT&CK T1059 is an analogous mapping when exploitation launches a command or scripting interpreter, but SAF-T1101 is distinguished by the attacker-influenced MCP process-launch boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: [Technique description, Detection guidance]
+      - source_id: SRC-cwe-78-v4.20
+        support: context
+        exact_locators: [Description]
+    corroboration: Selected examples include both shell-based and full-program-selection behaviors.
+    limitations: [T1059 does not itself encode the injection weakness or MCP trust boundary.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is conditional and analogous rather than an identity.}
+    status: validated

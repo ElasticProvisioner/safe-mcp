@@ -1,0 +1,355 @@
+version: 1
+technique_id: SAF-T1404
+claims:
+  - id: SAF-T1404-C001
+    statement: >-
+      MCP tool results can carry text, images, audio, resource links, embedded
+      resources, or structured content, and clients are expected to validate
+      tool results before passing them to a language model and to log tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tool Result, lines 377-480
+          - Security Considerations, lines 723-737
+    corroboration: The controlled study exercised tool-response consumption through an MCP-compatible harness.
+    limitations:
+      - The protocol does not specify a mandatory end-to-end content signature or a universal host audit schema.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C002
+    statement: >-
+      Response Tampering is the modification, substitution, or redirection of a
+      response between its expected producer and consumer so that the consumer
+      accepts inauthentic data, threatening message integrity and decision making.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-924
+        support: direct
+        exact_locators:
+          - Description and Extended Description, lines 44-56
+      - source_id: SRC-capec-384
+        support: corroborating
+        exact_locators:
+          - Description and Prerequisites, lines 24-45
+      - source_id: SRC-attack-t1565-002
+        support: corroborating
+        exact_locators:
+          - Technique description and Impact Type, lines 16-47
+    corroboration: CWE, CAPEC, and ATT&CK independently describe message modification, endpoint redirection, and transmitted-data manipulation.
+    limitations:
+      - The SAF boundary and inclusion of MCP response provenance are an explicit framework synthesis.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The named SAF behavior specializes established integrity concepts to MCP result handling.
+    status: validated
+
+  - id: SAF-T1404-C003
+    statement: >-
+      Zhan, Zhou, Li, Jing, Li, and Haddadi demonstrated an MCP-compatible
+      man-in-the-tool proxy that intercepts a response channel, applies
+      adversarial transformations, and returns compromised outputs to agents.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-zhan-aei-2026
+        support: direct
+        exact_locators:
+          - Section 2, Adversary Model
+          - Section 3.1, Man-in-the-Tool Architecture
+          - Table A9, Potemkin tool interface
+    corroboration: MCP result types and response flow are independently defined by the MCP specification.
+    limitations:
+      - The experiment was controlled, used frozen datasets, and did not report a production compromise.
+      - The primary empirical domain was academic citation retrieval.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C004
+    statement: >-
+      In the controlled study, poisoned retrieval content changed agent verdicts
+      and structural response manipulation induced trap entry and step-budget
+      waste, but the authors report material variation by agent and tool engagement.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-zhan-aei-2026
+        support: direct
+        exact_locators:
+          - Table 3, breadth attack results
+          - Tables 5-7, depth attacks and engagement-conditional reporting
+          - Limitations
+    corroboration: The paper includes clean baselines, engagement-conditional reporting, deterministic seeds, and explicit limitations.
+    limitations:
+      - Reported rates are not general prevalence estimates for production systems.
+    conflicts:
+      - Low raw attack entry for one evaluated model was largely explained by low tool engagement rather than robustness.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C005
+    statement: >-
+      GHSA-7r34-79r5-rcc9 documents that mcp-atlassian before 0.17.0 could
+      redirect its fetcher to an attacker-controlled URL and then return crafted
+      data as Jira or Confluence tool results; version 0.17.0 fixed the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-atlassian-7r34
+        support: direct
+        exact_locators:
+          - Summary and Details, lines 148-188
+          - Impact, lines 255-261
+          - Affected and patched versions, lines 140-146
+          - Credits, lines 339-342
+      - source_id: SRC-nvd-mcp-catalog-2026-09-01
+        support: corroborating
+        exact_locators:
+          - JSON pointer /vulnerabilities/*/cve[id=CVE-2026-27826]
+    corroboration: NVD records CVE-2026-27826, the affected range, fix, and CISA SSVC exploitation value of poc.
+    limitations:
+      - The advisory is a vulnerability report and proof of concept, not a production breach report.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C006
+    statement: >-
+      GHSA-345p-7cg4-v4c7 documents that TypeScript MCP SDK versions 1.10.0
+      through 1.25.3 could misroute responses across clients when server or
+      transport instances were shared; version 1.26.0 added guards against reuse.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-ts-sdk-345p
+        support: direct
+        exact_locators:
+          - Summary and Impact, lines 151-193
+          - Patches, lines 195-201
+          - Affected and patched versions, lines 143-149
+      - source_id: SRC-nvd-mcp-catalog-2026-09-01
+        support: corroborating
+        exact_locators:
+          - JSON pointer /vulnerabilities/*/cve[id=CVE-2026-25536]
+    corroboration: NVD records CVE-2026-25536 and CISA SSVC exploitation value of none.
+    limitations:
+      - This is adjacent provenance confusion caused by concurrency and reuse, not evidence that an adversary intentionally rewrote response content.
+      - Single-client and correctly isolated server/transport deployments are not affected.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C007
+    statement: >-
+      GHSA-8527-3cch-95gf documents that crafted chat content, including content
+      delivered through a compromised MCP server, could reach unsafe evaluation
+      in 5ire 0.13.2 and lead to code execution; version 0.14.0 patched it.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-5ire-8527
+        support: direct
+        exact_locators:
+          - Summary and Vulnerability Details, lines 149-186
+          - Impact, Credits, and Patches, lines 232-246
+          - Affected and patched versions, lines 141-147
+      - source_id: SRC-nvd-mcp-catalog-2026-09-01
+        support: corroborating
+        exact_locators:
+          - JSON pointer /vulnerabilities/*/cve[id=CVE-2025-58357]
+    corroboration: NVD records CVE-2025-58357 and CISA SSVC exploitation value of poc.
+    limitations:
+      - The root cause is unsafe rendering after content delivery; a compromised MCP response is only one listed delivery vector.
+      - The advisory does not establish that response tampering occurred in production.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1404-C008
+    statement: >-
+      No qualifying direct production breach was identified in the reviewed
+      corpus as of 2026-09-01; the authoritative catalog and selected advisories
+      establish demonstrations and vulnerabilities, not production exploitation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-mcp-catalog-2026-09-01
+        support: direct
+        exact_locators:
+          - API response totalResults=77 and reviewed English descriptions
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - catalogVersion 2026.09.01; no selected candidate CVE present
+    corroboration: Direct review of the selected first-party advisories found proof-of-concept or vulnerability language rather than production-incident reporting.
+    limitations:
+      - This is a bounded absence statement about the reviewed corpus, not a claim that no incident has ever occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is derived from documented searches and classification of the reviewed records.
+    status: validated
+
+  - id: SAF-T1404-C009
+    statement: >-
+      A high-confidence analytic can compare canonical response digests captured
+      at trusted receipt and immediately before consumption for the same request;
+      an unexplained mismatch is evidence of post-receipt response modification.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1565-002
+        support: direct
+        exact_locators:
+          - Detection Strategy, lines 65-70
+      - source_id: SRC-rfc8785
+        support: corroborating
+        exact_locators:
+          - Abstract, paragraphs 1-2
+          - Sections 3.1-3.2.4, canonical representation requirements
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Calling Tools and Tool Result, lines 181-213 and 377-480
+    corroboration: ATT&CK recommends origin/destination integrity comparisons; RFC 8785 supplies a deterministic JSON form.
+    limitations:
+      - This analytic does not detect content that is already malicious or substituted at the first trusted receipt checkpoint.
+      - Binary content requires a stable byte-level digest convention outside RFC 8785.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The correlation is a SAF analytic design derived from integrity-monitoring and canonicalization authorities.
+    status: validated
+
+  - id: SAF-T1404-C010
+    statement: >-
+      Legitimate serialization differences can change raw bytes without changing
+      JSON meaning, so both checkpoints must use the same canonicalization and
+      exclude explicitly authorized transformations such as redaction.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8785
+        support: direct
+        exact_locators:
+          - Introduction, paragraphs 1-5
+          - Section 3.2, Generation of Canonical JSON Data
+    corroboration: RFC 8785 explains why hashing and signing require an invariant representation.
+    limitations:
+      - Authorized-transformation metadata is a local implementation requirement, not an MCP protocol field.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Suppression of approved transformations is a tuning choice needed to operationalize canonical digest comparison.
+    status: validated
+
+  - id: SAF-T1404-C011
+    statement: >-
+      MCP clients should validate result data before model consumption, while
+      output schemas constrain structured-result shape but do not prove the
+      truthfulness or provenance of values that satisfy the schema.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Output Schema, lines 476-587
+          - Security Considerations, lines 723-737
+      - source_id: SRC-zhan-aei-2026
+        support: corroborating
+        exact_locators:
+          - Section 2.1, Agent-Environment Interaction and Adversary Model
+          - Limitations
+    corroboration: The controlled study shows semantically false or structurally deceptive values can be delivered through valid tool interfaces.
+    limitations:
+      - Strong provenance controls and independent verification are implementation-specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Schema conformance establishes structure, while content authenticity requires a different control.
+    status: validated
+
+  - id: SAF-T1404-C012
+    statement: >-
+      Immediate response should isolate the affected response path, preserve
+      paired request/response telemetry, determine whether modification occurred
+      before or after the receipt checkpoint, and patch or reconfigure the
+      implicated adapter, transport, or shared-instance boundary before restoration.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-mcp-atlassian-7r34
+        support: context
+        exact_locators:
+          - Root cause and Impact, lines 153-188 and 255-261
+      - source_id: SRC-ghsa-ts-sdk-345p
+        support: context
+        exact_locators:
+          - Impact, affected conditions, patches, and workarounds, lines 154-229
+      - source_id: SRC-nist-sp800-61r3
+        support: corroborating
+        exact_locators:
+          - Abstract and purpose, lines 64-80
+    corroboration: The advisories identify concrete root causes and remediation states; NIST frames detection, response, and recovery as connected incident-response activities.
+    limitations:
+      - Exact containment steps depend on the host, transport, and business process.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence synthesizes advisory-specific remediation with general incident-response practice.
+    status: validated
+
+  - id: SAF-T1404-C013
+    statement: >-
+      The current Streamable HTTP specification uses one HTTP POST per JSON-RPC
+      request, relates response-stream notifications to the originating request,
+      and requires header/body consistency checks for routing metadata.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - Sending and Receiving Messages, lines 110-137
+          - Server Validation, lines 368-394
+    corroboration: The TypeScript SDK advisory documents why shared transport state and response routing must remain isolated.
+    limitations:
+      - Header/body validation covers request metadata and does not itself authenticate result content.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

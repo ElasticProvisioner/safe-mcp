@@ -1,0 +1,30 @@
+version: 1
+technique_id: SAF-T1506
+bundle_status: integrated_clean_room_candidate
+integration_performed: true
+product_registry_consulted: true_after_freeze_for_mechanical_joins_only
+target_artifact_consulted: false
+synthetic_joins:
+  - id: SAF-T9001
+    name: Synthetic Credential Discovery
+    purpose: Satisfy strict neighbor referential integrity in the isolated mock without consulting a shared registry.
+    integration_instruction: Do not add this ID to the product catalog; replace or remove only after freeze under a separate integration review.
+  - id: SAF-T9002
+    name: Synthetic OAuth Token Interception
+    purpose: Satisfy strict neighbor referential integrity in the isolated mock without consulting a shared registry.
+    integration_instruction: Do not add this ID to the product catalog; replace or remove only after freeze under a separate integration review.
+source_manifest_instruction: Merge source-manifest-fragment.yml by source ID only after collision and provenance review.
+framework_instruction: Reconcile framework-fragment.yml and alignment-fragment.yml only after the clean-room bundle is accepted; do not silently preserve synthetic joins.
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9001: SAF-T1502
+    SAF-T9002: SAF-T1507
+  canonical_mitigations: [SAF-M-13, SAF-M-16, SAF-M-17, SAF-M-24, SAF-M-29, SAF-M-31, SAF-M-37, SAF-M-74]
+  attack_mappings: [T1552.005, T1528]
+  dedicated_query_corpus: SRC-cisa-kev-infrastructure-token-2026-09-01
+  validation_artifacts:
+    - research/techniques/SAF-T1506/validation/detection-test.txt
+    - research/techniques/SAF-T1506/validation/strict-validation.txt
+  status: integrated_and_validated
+prohibited_actions_completed: []
+unresolved: []

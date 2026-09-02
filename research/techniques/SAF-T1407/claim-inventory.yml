@@ -1,0 +1,447 @@
+version: 1
+technique_id: SAF-T1407
+claims:
+  - id: SAF-T1407-C001
+    statement: MCP uses a client-host-server architecture in which a host-created client maintains a stateful one-to-one connection with a particular server and routes protocol messages bidirectionally.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-architecture
+        support: direct
+        exact_locators: ["Architecture: Core Components, Clients, lines 55-106; Design Principles, lines 111-135"]
+    corroboration: The transport specification independently defines the messages crossing that connection.
+    limitations: [The architecture does not authenticate a server beyond the selected transport and authorization mechanisms.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C002
+    statement: Streamable HTTP MCP uses a single server endpoint for client POST and optional GET exchanges, with server-generated session identifiers and a negotiated protocol-version header on later requests.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-transports-2025-11-25
+        support: direct
+        exact_locators: ["Streamable HTTP, lines 92-129", "Session Management, lines 178-202"]
+    corroboration: The MCP architecture identifies remote services as valid servers.
+    limitations: [The transport specification does not provide end-to-end provenance for an upstream server hidden behind the connected endpoint.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C003
+    statement: An MCP server supplies tool names, descriptions, schemas, and results through tools/list and tools/call exchanges, and a declared listChanged capability can notify clients that the offered set changed.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Tools: User Interaction Model, lines 78-90", "Listing Tools and Calling Tools, lines 119-217", "Tool data type, lines 234-244"]
+    corroboration: The architecture states that servers expose tools, resources, and prompts.
+    limitations: [The protocol messages do not prove whether a connected endpoint generated a result itself or relayed it from another server.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C004
+    statement: For HTTP authorization, an MCP server is an OAuth protected resource; clients discover authorization servers from protected-resource metadata, include a resource parameter, and servers validate tokens issued for their own use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Roles, lines 137-152", "Authorization Server Location, lines 157-180", "Token Audience Binding and Validation, lines 451-469"]
+      - source_id: SRC-rfc9728
+        support: corroborating
+        exact_locators: ["Sections 2, 3.3, and 5"]
+    corroboration: RFC 9728 defines the protected-resource metadata that MCP incorporates.
+    limitations: [Authorization is optional in MCP and these requirements apply to HTTP authorization deployments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C005
+    statement: RFC 9728 requires an exact match between the protected-resource identifier used to fetch metadata and the returned resource value; it states that this validation and TLS certificate checking prevent an attacker from impersonating a legitimate protected resource.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Section 3.3, paragraphs 261-265", "Section 7.3, paragraphs 352-356"]
+    corroboration: The MCP authorization specification requires clients to use RFC 9728 discovery.
+    limitations: [Exact matching authenticates the configured resource identifier; it cannot establish that a user chose the intended identifier in the first place.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C006
+    statement: RFC 9728 warns that a malicious resource server can induce a client to obtain a token for a legitimate resource and reuse it, and that an inappropriate authorization-server association can permit an undetected adversary-in-the-middle proxy to a valid authorization server.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Section 7.4, paragraphs 357-361", "Section 7.6, paragraphs 366-371"]
+    corroboration: The LibreChat advisory demonstrates the protected-resource metadata form of this attack against an MCP client.
+    limitations: [The RFC gives a standards threat model, not a production MCP incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C007
+    statement: Combining MCP's protected-resource role with RFC 9728's impersonation and proxy conditions supports the inference that an attacker-controlled MCP endpoint can masquerade as an approved server association while relaying or reusing client exchanges.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Roles and Authorization Server Discovery, lines 137-180"]
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Sections 7.3, 7.4, and 7.6"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Listing and Calling Tools, lines 119-217"]
+    corroboration: CVE-2026-54030 and CVE-2026-50143 independently demonstrate two endpoint-identity confusion paths.
+    limitations: [The inference does not establish that every masquerading endpoint relays all MCP messages or that this behavior has occurred in production.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: MCP adopts the OAuth resource-server role governed by RFC 9728; the standard's proxy and impersonation conditions therefore apply to MCP authorization, while MCP tool traffic supplies the relayed data plane.
+    status: validated
+  - id: SAF-T1407-C008
+    statement: CVE-2026-54030 publicly demonstrates a malicious MCP server supplying a legitimate server's resource identifier and authorization servers so LibreChat sends the resulting legitimate-server access token to the malicious endpoint; LibreChat 0.8.5 fixed the missing validation.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-librechat-resource
+        support: direct
+        exact_locators: ["Summary and Details, lines 152-191", "PoC steps 1-7, lines 192-208", "affected <=0.8.5-rc1; patched 0.8.5, lines 140-150", "Credit, lines 214-218"]
+      - source_id: SRC-cve-2026-54030
+        support: corroborating
+        exact_locators: ["CNA title, description, affected versions, and reference record"]
+    corroboration: The CVE Program record identifies the same affected and fixed states and points to the maintainer advisory.
+    limitations: [The advisory is a controlled proof of concept and does not document production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C009
+    statement: CVE-2026-50143 demonstrates that Apify MCP Server before 0.10.11 could construct a different-host URL from attacker-controlled Actor metadata and attach the victim bearer token to that attacker endpoint; version 0.10.11 fixed the issue.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-apify-authority
+        support: direct
+        exact_locators: ["Summary, lines 151-156", "data-flow chain, lines 175-201", "controlled PoC result, lines 202-236", "Impact and fix, lines 264-286", "credits, lines 542-545"]
+      - source_id: SRC-cve-2026-50143
+        support: corroborating
+        exact_locators: ["CNA title, description, affected versions, references, and credits"]
+    corroboration: The CVE Program record independently preserves the affected range and vendor-advisory URL.
+    limitations: [The issue redirects a nested MCP client through URL authority confusion; it does not demonstrate a full transparent proxy to a legitimate MCP upstream.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C010
+    statement: CVE-2025-6514 affected mcp-remote 0.0.5 through 0.1.15 and allowed a malicious or hijacked remote MCP server to trigger OS command execution through an authorization endpoint; 0.1.16 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: ["Byline and summary, lines 139-160", "attack scenarios and remediation, lines 162-174", "CVE summary, lines 188-220", "technical walkthrough and conclusion, lines 269-344"]
+      - source_id: SRC-cve-2025-6514
+        support: corroborating
+        exact_locators: ["CNA description, affected range, references, and publication metadata"]
+    corroboration: JFrog's CVE record and research advisory identify Or Peles and the JFrog Security Research Team and the same affected range.
+    limitations: [This is an enabling malicious-server vulnerability, not evidence that the remote endpoint proxied a genuine MCP server.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C011
+    statement: CVE-2026-45609 affected mcp-security before 0.1.9 when dynamic client registration was enabled because untrusted MCP OAuth discovery URLs were fetched without destination validation; 0.1.9 fixed it.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-spring-ssrf
+        support: direct
+        exact_locators: ["Summary, affected and patched versions, lines 134-165", "CVSS and credits, lines 167-245"]
+      - source_id: SRC-cve-2026-45609
+        support: corroborating
+        exact_locators: ["CNA description, affected versions, and reference record"]
+    corroboration: NVD records CISA's exploitation assessment as none on 2026-06-02.
+    limitations: [This SSRF weakness enables destination confusion but does not itself establish a masquerading relay or token theft.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C012
+    statement: No qualifying production MCP server-proxy masquerade incident was identified in the directly reviewed authoritative corpus through 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: hypothesized
+    sources:
+      - source_id: SRC-nvd-mcp-proxy-identity-corpus-2026
+        support: direct
+        exact_locators: ["Twenty-one NVD keyword-query result sets reviewed 2026-09-01; candidates enumerated in source-coverage.yml"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: ["Catalog release 2026-09-01T19:22:46.2162Z; checked selected CVE identifiers with no matches"]
+    corroboration: Separate arXiv and CISA official-site searches found demonstrations and adjacent records but no production incident report.
+    limitations: [This is a bounded absence statement about the reviewed corpus, not a claim that the behavior has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The claim is derived from documented negative searches across named authoritative catalogs.
+    status: validated
+  - id: SAF-T1407-C013
+    statement: A server-identity analytic can compare the approved endpoint with the configured and resolved URI, TLS peer identity, protected-resource value, authorization-server set, initialization serverInfo, and tool-catalog fingerprint exposed by MCP and OAuth exchanges.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Sections 2, 3.3, 7.1, 7.3, and 7.6"]
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Authorization Server Discovery and Token Audience Binding"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["tools/list message and Tool data type, lines 119-168 and 234-244"]
+    corroboration: CVE-2026-54030 and CVE-2026-50143 both hinge on a mismatch between the intended and actual resource or authority.
+    limitations: [MCP does not standardize an enterprise approval inventory or tool-catalog fingerprint; collectors must normalize these fields.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources define the comparison inputs; correlating them is an analytic design decision tested only on synthetic cases.
+    status: validated
+  - id: SAF-T1407-C014
+    statement: The experimental detector requires both an approved-identity mismatch and a relay-like association signal, then suppresses explicitly approved gateways, to reduce alerts on unrelated unapproved development servers.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Sections 3.3, 7.3, 7.4, and 7.6"]
+      - source_id: SRC-trustshiftprobe
+        support: context
+        exact_locators: ["Section VII detection pipeline", "Section IX, Table V and Detection Asymmetry"]
+    corroboration: The bundle's deterministic cases exercise each correlation branch and suppression.
+    limitations: [No reviewed source reports accuracy for this exact identity-correlation rule; its validation is synthetic and it remains experimental.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The correlation operationalizes standards-defined identity mismatches and research-described runtime baselining.
+    status: validated
+  - id: SAF-T1407-C015
+    statement: Legitimate gateways, endpoint migrations, shared authorization servers, and cloned tool catalogs can resemble the detector's signals, while an attacker controlling the approved endpoint, trusted certificate, or approval inventory can evade them.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Section 7.3 TLS and resource checks", "Section 7.6 application-dependent authorization-server associations"]
+      - source_id: SRC-trustshiftprobe
+        support: context
+        exact_locators: ["Threat Model strict transport isolation", "Section IX Entity Spoofing residual ASR and false-positive discussion"]
+    corroboration: Boundary and expected-false-positive cases in the bundle verify the approved-gateway suppression.
+    limitations: [The listed conditions are analytic limitations, not a measured prevalence estimate.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The limitations follow from what each observable can and cannot authenticate.
+    status: validated
+  - id: SAF-T1407-C016
+    statement: Relevant preventive controls are TLS certificate validation, exact protected-resource matching, an allowlisted authorization-server association, audience-restricted tokens, and refusal to forward tokens not issued for the receiving MCP server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Sections 3.3, 7.1, 7.3, 7.4, and 7.6"]
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Token Audience Binding and Validation, lines 451-469"]
+      - source_id: SRC-rfc8707
+        support: corroborating
+        exact_locators: ["Section 2.1, paragraphs 99-107", "Section 3, paragraph 205"]
+    corroboration: CVE-2026-54030 was fixed by enforcing the resource association required by RFC 9728.
+    limitations: [These controls do not detect a malicious endpoint that is itself the intentionally approved resource and uses its own correctly scoped tokens.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C017
+    statement: Sender-constrained and least-privilege access tokens reduce misuse and blast radius, but they do not substitute for validating the intended resource-server identity.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Sections 2.2.1 and 2.3, paragraphs 271-280"]
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators: ["Section 2.1 and Section 3"]
+    corroboration: MCP authorization separately requires server-side token audience validation.
+    limitations: [Token policy cannot prevent observation or modification of non-token MCP payloads by the endpoint the client selected.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C018
+    statement: MCP recommends showing users which tools are exposed and invoked and retaining a human ability to deny tool calls.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["User Interaction Model, lines 83-90"]
+    corroboration: The host architecture assigns user authorization and consent decisions to the host.
+    limitations: [A confirmation interface can still mislead if it attributes relayed tools to the wrong server identity.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C019
+    statement: TrustShiftProbe models a trusted or malicious MCP endpoint changing its own server-controlled results over time and explicitly excludes network-transport interception; that boundary is adjacent to, but distinct from, proxy masquerade.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trustshiftprobe
+        support: direct
+        exact_locators: ["Abstract and Introduction", "Section III Threat Model, attacker model and strict transport isolation"]
+    corroboration: The paper's Section IX separately discusses data-plane corruption and definition-plane attacks.
+    limitations: [The paper was an arXiv preprint submitted to IEEE at the reviewed version and does not evaluate server-identity proxying.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1407-C020
+    statement: ATT&CK T1036 covers manipulating an object's name or location to appear legitimate, while T1557 covers positioning to monitor or modify traffic; both are analogous rather than exact MCP mappings.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1036
+        support: direct
+        exact_locators: ["Technique description, lines 18-46"]
+      - source_id: SRC-mitre-t1557
+        support: direct
+        exact_locators: ["Technique description and metadata, lines 27-47"]
+    corroboration: RFC 9728 uses the terms impersonation and adversary-in-the-middle proxy for the relevant OAuth conditions.
+    limitations: [Neither ATT&CK entry defines MCP-specific protected-resource or tool-relay behavior.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the SAF behavior with ATT&CK definitions and records the protocol-specific gap.
+    status: validated
+  - id: SAF-T1407-C021
+    statement: A successful server proxy masquerade can expose bearer tokens, tool arguments, and returned data or permit altered results; severity rises with privileged tokens, sensitive tools, and automated invocation.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-librechat-resource
+        support: direct
+        exact_locators: ["PoC and Impact, lines 192-208"]
+      - source_id: SRC-ghsa-apify-authority
+        support: direct
+        exact_locators: ["Summary, controlled PoC, and Impact, lines 151-156, 202-236, 279-286"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Calling Tools and Tool Result"]
+    corroboration: RFC 9728 states that successful protected-resource impersonation can expose resources available to the affected client.
+    limitations: [Impact depends on what the client sends and what authority the token or tool possesses; the proxy does not automatically obtain every host secret.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Demonstrated token disclosure and protocol-defined arguments/results support the bounded impact assessment.
+    status: validated
+  - id: SAF-T1407-C022
+    statement: Response should stop the suspect session, preserve identity and MCP/OAuth telemetry, revoke exposed tokens, verify the approved endpoint and authorization association out of band, and reconnect only after the root cause is removed.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Token Theft, lines 466-470", "Communication Security, lines 473-480"]
+      - source_id: SRC-rfc9700
+        support: context
+        exact_locators: ["Sections 2.2.1 and 2.3"]
+      - source_id: SRC-rfc9728
+        support: context
+        exact_locators: ["Sections 3.3, 7.3, and 7.6"]
+    corroboration: The selected advisories identify patching and destination validation as remediation.
+    limitations: [The exact containment and revocation procedure remains platform- and authorization-server-specific.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence operationalizes the cited identity, token-theft, and remediation requirements.
+    status: validated
+  - id: SAF-T1407-C023
+    statement: No universal durable indicator identifies this behavior; useful indicators are contextual mismatches among approved identity, resolved authority, resource metadata, authorization association, and tool catalog.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Sections 3.3, 7.3, and 7.6"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Listing Tools and Tool data type"]
+    corroboration: Both direct advisories detect the wrong destination by comparing trusted and actual URL identity.
+    limitations: [A product-specific certificate, hostname, or token exposure can become a durable indicator in a particular incident.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The behavior is relational, so the observable is a mismatch rather than a single globally malicious value.
+    status: validated
+  - id: SAF-T1407-C024
+    statement: The earliest selected directly reviewed public MCP endpoint-identity demonstration was the Apify advisory published 2026-05-28; no selected source establishes earlier production observation.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-apify-authority
+        support: direct
+        exact_locators: ["Publication metadata, lines 133-149", "controlled PoC, lines 202-236"]
+      - source_id: SRC-nvd-mcp-proxy-identity-corpus-2026
+        support: corroborating
+        exact_locators: ["Reviewed candidate dates and relationships in source-coverage.yml"]
+    corroboration: The LibreChat direct demonstration was published several days later on 2026-06-02.
+    limitations: [This is first within the selected directly reviewed corpus, not a universal priority claim.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Publication dates of all qualifying selected demonstrations were compared in the documented corpus.
+    status: validated
+  - id: SAF-T1407-C025
+    statement: The technique is most relevant to remote HTTP MCP connections, nested MCP clients, gateways, and OAuth-enabled deployments; direct local stdio without a proxy is outside the remote endpoint identity condition.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-transports-2025-11-25
+        support: direct
+        exact_locators: ["stdio, lines 77-87", "Streamable HTTP, lines 92-108"]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["stdio Transport Security in Proxy Scenarios, lines 485-530"]
+      - source_id: SRC-ghsa-apify-authority
+        support: context
+        exact_locators: ["MCP client data-flow chain, lines 175-201"]
+    corroboration: The selected LibreChat and mcp-security records both concern HTTP OAuth discovery.
+    limitations: [A local proxy can still create an equivalent identity boundary; pure direct stdio is excluded, not every local deployment.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The transport and proxy preconditions define where the remote server identity can be substituted or relayed.
+    status: validated

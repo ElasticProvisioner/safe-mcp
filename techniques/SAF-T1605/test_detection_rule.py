@@ -1,142 +1,79 @@
 #!/usr/bin/env python3
-"""
-SAF-T1605 Capability Mapping Detection Rule Test Suite
-Validates the Sigma rule logic against representative log samples.
-"""
+"""Deterministic validation for the SAF-T1605 example analytic."""
 
+from __future__ import annotations
+
+import argparse
 import json
-from typing import Dict, Any, List, Tuple
+from collections import defaultdict
+from datetime import datetime
+from pathlib import Path
+
+import yaml
 
 
-class CapabilityMappingDetector:
-    """Replicates the SAF-T1605 detection logic."""
-
-    CAPABILITY_QUESTIONS = [
-        "what can you do",
-        "list the tools you have",
-        "summarize your api surface",
-        "describe your capabilities",
-        "which integrations are enabled",
-        "what automations are available",
-        "enumerate your skills",
-        "show me every action you can perform",
-    ]
-
-    POLICY_INTEREST = [
-        "what policies restrict you",
-        "what are your guardrails",
-        "actions you refuse",
-        "describe your safety rules",
-    ]
-
-    PRIVILEGED_FOCUS = [
-        "deploy_cluster",
-        "rotate_credentials",
-        "read_secret_store",
-        "database writer",
-        "cloud control",
-        "shell access",
-    ]
-
-    REPEATED_KEYWORDS = ["tool", "capability"]
-
-    TRUSTED_ACTORS = {"assistant", "system"}
-    EARLY_TURN_THRESHOLD = 3
-    REPEAT_THRESHOLD = 3
-
-    def detect(self, log_entry: Dict[str, Any]) -> Tuple[bool, List[str]]:
-        prompt = log_entry.get("prompt_text", "").lower()
-        turn_index = log_entry.get("turn_index", 0)
-        actor = log_entry.get("actor_type", "")
-        authenticated = log_entry.get("authenticated", False)
-        prompt_count = log_entry.get("prompt_count_last_60s", 0)
-
-        matches: List[str] = []
-
-        # Skip trusted system/admin actors
-        if actor in self.TRUSTED_ACTORS and authenticated:
-            return False, ["Trusted system/assistant actor"]
-
-        if turn_index > self.EARLY_TURN_THRESHOLD:
-            return False, ["Late turn index"]
-
-        for phrase in self.CAPABILITY_QUESTIONS:
-            if phrase in prompt:
-                matches.append(f"Capability question: {phrase}")
-
-        for phrase in self.POLICY_INTEREST:
-            if phrase in prompt:
-                matches.append(f"Policy probe: {phrase}")
-
-        for phrase in self.PRIVILEGED_FOCUS:
-            if phrase in prompt:
-                matches.append(f"Privileged focus: {phrase}")
-
-        if prompt_count >= self.REPEAT_THRESHOLD and any(
-            keyword in prompt for keyword in self.REPEATED_KEYWORDS
-        ):
-            matches.append("Repeated enumeration attempts")
-
-        return (len(matches) > 0), matches
+def parse_time(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
 
 
-def run_tests(test_file: str = "test-logs.json") -> Dict[str, Any]:
-    with open(test_file, "r") as handle:
-        cases = json.load(handle)
+def alerts(events: list[dict], rule: dict) -> bool:
+    detection = rule["detection"]
+    list_methods = set(detection["capability_lists"]["method"])
+    approved = set(detection["approved_inventory_suppression"]["purpose"])
+    groups: dict[tuple[str, str], list[tuple[datetime, str, str | None]]] = defaultdict(list)
 
-    detector = CapabilityMappingDetector()
-    summary = {"total": len(cases), "passed": 0, "failed": 0, "details": []}
+    for event in events:
+        actor = event.get("actor_id")
+        server = event.get("server_id")
+        method = event.get("method")
+        timestamp = parse_time(event.get("timestamp"))
+        if not all((actor, server, method, timestamp)) or event.get("result_status") != "success":
+            continue
+        groups[(actor, server)].append((timestamp, method, event.get("purpose")))
 
+    for group_events in groups.values():
+        group_events.sort()
+        for discovery_time, method, _ in group_events:
+            if method != "server/discover":
+                continue
+            window = [event for event in group_events if 0 <= (event[0] - discovery_time).total_seconds() <= 120]
+            if any(purpose in approved for _, _, purpose in window):
+                continue
+            distinct = {listed_method for _, listed_method, _ in window if listed_method in list_methods}
+            if len(distinct) >= 3:
+                return True
+    return False
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--rule", type=Path, default=Path(__file__).with_name("detection-rule.yml"))
+    parser.add_argument("--logs", type=Path, default=Path(__file__).with_name("test-logs.json"))
+    args = parser.parse_args()
+
+    rule = yaml.safe_load(args.rule.read_text(encoding="utf-8"))
+    cases = json.loads(args.logs.read_text(encoding="utf-8"))["cases"]
+    failures = []
+    classes: dict[str, int] = defaultdict(int)
     for case in cases:
-        expected = case["expected_detection"]
-        detected, matched = detector.detect(case["log_entry"])
-        passed = detected == expected
+        classes[case["class"]] += 1
+        actual = alerts(case["events"], rule)
+        if actual != case["expected_alert"]:
+            failures.append(f"{case['name']}: expected {case['expected_alert']}, got {actual}")
 
-        summary["passed" if passed else "failed"] += 1
-        summary["details"].append(
-            {
-                "test": case["test_case"],
-                "passed": passed,
-                "expected": expected,
-                "detected": detected,
-                "matches": matched,
-            }
-        )
-
-        status = "PASS" if passed else "FAIL"
-        print(f"[{status}] {case['test_case']}: expected={expected} detected={detected}")
-        if matched:
-            print(f"  matches: {matched}")
-        print()
-
-    return summary
-
-
-def print_summary(results: Dict[str, Any]) -> None:
-    print("=" * 60)
-    print("SAF-T1605 Detection Test Summary")
-    print("=" * 60)
-    print(f"Total: {results['total']}")
-    print(f"Passed: {results['passed']}")
-    print(f"Failed: {results['failed']}")
-    if results["failed"] == 0:
-        print("✓ All tests passed!")
-    else:
-        print("✗ Some tests failed. Investigate details above.")
-    print("=" * 60)
+    if failures:
+        for failure in failures:
+            print(f"FAIL {failure}")
+        return 1
+    class_summary = ", ".join(f"{count} {name}" for name, count in sorted(classes.items()))
+    print(f"PASS {len(cases)}/{len(cases)} cases ({class_summary}); expected false-positive modeled")
+    return 0
 
 
 if __name__ == "__main__":
-    import sys
-
-    test_path = sys.argv[1] if len(sys.argv) > 1 else "test-logs.json"
-    try:
-        outcome = run_tests(test_path)
-        print_summary(outcome)
-        exit(0 if outcome["failed"] == 0 else 1)
-    except FileNotFoundError:
-        print(f"Error: {test_path} not found")
-        exit(1)
-    except Exception as exc:
-        print(f"Error running tests: {exc}")
-        exit(1)
+    raise SystemExit(main())

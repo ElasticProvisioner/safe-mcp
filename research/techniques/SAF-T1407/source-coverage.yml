@@ -1,0 +1,286 @@
+version: 1
+technique_id: SAF-T1407
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT MCP 2025-11-25 architecture, transports, authorization, security best practices, and tools URLs"
+        - "DIRECT RFC Editor RFC 9728, RFC 8707, and RFC 9700 URLs"
+      material_changes:
+        - Established MCP's one-to-one client-server boundary, Streamable HTTP endpoint, server-controlled tool plane, protected-resource role, and token-audience requirements.
+        - RFC 9728 directly supplied the impersonation, malicious-resource token reuse, and undetected authorization-server proxy conditions.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: Model Context Protocol proxy"
+        - "NVD: Model Context Protocol reverse proxy"
+        - "NVD: Model Context Protocol OAuth"
+        - "NVD: Model Context Protocol authorization URL"
+        - "NVD: Model Context Protocol impersonation"
+        - "NVD: Model Context Protocol masquerade"
+        - "NVD: MCP server spoofing"
+        - "NVD: mcp-remote"
+        - "NVD: Model Context Protocol client proxy"
+        - "NVD: Model Context Protocol relay"
+        - "NVD: Model Context Protocol gateway"
+        - "NVD: MCP Inspector"
+        - "NVD: Model Context Protocol token passthrough"
+        - "CISA KEV: exact lookup of CVE-2025-6514, CVE-2026-45609, CVE-2026-54030, and CVE-2026-50143"
+        - "CISA official search: Model Context Protocol breach"
+        - "CISA official search: MCP server incident"
+        - "CISA cybersecurity advisories filter: Model Context Protocol"
+      material_changes:
+        - Identified CVE-2025-6514 and CVE-2026-45609 as high-impact enabling vulnerabilities.
+        - Identified unrelated and adjacent NVD candidates and preserved their exclusions.
+        - No qualifying production incident or KEV-listed exploitation was established.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv: all Model Context Protocol AND proxy"
+        - "arXiv: all Model Context Protocol AND impersonation"
+        - "arXiv: all Model Context Protocol AND masquerade"
+        - "arXiv: all Model Context Protocol AND man-in-the-middle"
+        - "arXiv: all Model Context Protocol AND server identity"
+        - "arXiv: all Model Context Protocol AND spoofing"
+        - "arXiv: all Model Context Protocol AND relay attack"
+        - "arXiv: all Model Context Protocol AND transparent proxy"
+        - "arXiv: all Model Context Protocol AND malicious proxy"
+        - "arXiv: all Model Context Protocol AND server provenance"
+      material_changes:
+        - Directly reviewed TrustShiftProbe and used its endpoint-vs-transport boundary and detection limitations as contrary and adjacent evidence.
+        - Search results exposed no end-to-end transparent MCP proxy-masquerade benchmark; direct product advisories became the controlling demonstrations.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT RFC 9728 Sections 3.3, 7.1, 7.3, 7.4, 7.6, 7.7, and 7.9"
+        - "DIRECT MCP authorization Token Audience Binding and Validation and security best practices URL validation sections"
+        - "DIRECT TrustShiftProbe Sections VII-IX and Table V"
+      material_changes:
+        - Selected identity tuple inputs and required both an approved-identity mismatch and relay-like association signal.
+        - Added an approved-gateway suppression and explicit unmeasured-accuracy limitation.
+        - Defined deterministic positive, negative, boundary, malformed, and expected false-positive cases.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT MITRE ATT&CK T1036 Masquerading and T1557 Adversary-in-the-Middle"
+        - "DIRECT CISA KEV selected-CVE check"
+        - "DIRECT TrustShiftProbe strict transport-isolation and residual entity-spoofing findings"
+      material_changes:
+        - Narrowed delivery, trusted-endpoint content corruption, and plain token passthrough out of scope.
+        - Classified ATT&CK mappings as analogous and retained the no-production-incident limitation.
+        - Confirmed that TLS and exact resource matching authenticate the configured identifier but cannot prove the user selected the intended identifier.
+    - pass: saturation_update_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: OAuth protected resource impersonation"
+        - "arXiv: all Model Context Protocol AND adversary-in-the-middle proxy"
+        - "NVD: MCP authorization server proxy"
+        - "arXiv: all Model Context Protocol AND resource server proxy"
+      material_changes:
+        - Added CVE-2026-59822 and CVE-2026-66012 as adjacent proxy-boundary candidates after direct CVE review.
+    - pass: saturation_update_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: MCP resource server spoofing"
+        - "arXiv: all Model Context Protocol AND OAuth proxy impersonation"
+        - "NVD: MCP protected resource metadata"
+        - "arXiv: all Model Context Protocol AND access token theft proxy"
+        - "NVD: MCP resource parameter validation"
+        - "arXiv: all Model Context Protocol AND malicious server impersonation"
+        - "NVD: malicious MCP server access token"
+      material_changes:
+        - Added CVE-2026-54030 as the controlling direct protected-resource spoofing demonstration.
+        - Added CVE-2026-50143 as a direct wrong-authority MCP connection and token-delivery demonstration.
+        - Added CVE-2025-4143 as an adjacent authorization-server redirect issue.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: MCP OAuth resource metadata spoofing"
+        - "arXiv: all Model Context Protocol AND resource metadata spoofing"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD: MCP URL authority injection"
+        - "arXiv: all Model Context Protocol AND URL authority injection"
+      material_changes: []
+  rationale: >-
+    Forty-two whitelist-only search operations covered the current MCP and OAuth
+    authority, NVD and CVE vulnerability records, CISA KEV and advisory pages,
+    arXiv demonstrations, original researcher disclosures, exact maintainer
+    advisories, detection research, contrary evidence, and ATT&CK mappings. New
+    CVEs found during saturation were reviewed and classified before two final
+    synonym passes returned no new controlling requirement, direct example,
+    remediation change, detection constraint, or neighbor distinction. Three
+    transient NVD 429 responses were resolved by later narrower successful
+    queries; no source remains blocked.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 9
+  selected_examples:
+    - SRC-ghsa-librechat-resource
+    - SRC-ghsa-apify-authority
+    - SRC-jfrog-cve-2025-6514
+    - SRC-ghsa-spring-ssrf
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ghsa-librechat-resource
+      identifier: CVE-2026-54030 / GHSA-gvpj-vm2f-2m23
+      relationship: direct_vulnerability
+      exploitation_status: controlled_public_poc; no_production_exploitation_identified
+      impact: A malicious MCP endpoint can receive a token valid for the legitimate MCP resource and then impersonate the victim to that resource.
+      remediation: LibreChat 0.8.5 validates the RFC 9728 resource association; affected through 0.8.5-rc1.
+      selected: true
+      rationale: Highest relationship confidence; the advisory demonstrates the defining fake-endpoint and legitimate-resource association.
+    - source_id: SRC-ghsa-apify-authority
+      identifier: CVE-2026-50143 / GHSA-6gr2-qh89-hxwm
+      relationship: direct_vulnerability
+      exploitation_status: controlled_public_poc; no_production_exploitation_identified
+      impact: URL authority confusion sends an MCP connection and configured bearer token to an attacker endpoint, exposing account data and billable authority.
+      remediation: Apify MCP Server 0.10.11 validates origin and path construction; earlier versions are affected.
+      selected: true
+      rationale: Directly demonstrates a trusted-looking MCP URL resolving to the attacker authority with token delivery.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: enabling_vulnerability
+      exploitation_status: controlled_public_poc; no_production_exploitation_identified
+      impact: A malicious or hijacked server can trigger client-side command execution, reaching full command execution on Windows in the disclosed test.
+      remediation: mcp-remote 0.1.16 fixes versions 0.0.5 through 0.1.15; use HTTPS and trusted servers.
+      selected: true
+      rationale: Critical high-impact evidence that a malicious or hijacked endpoint can abuse the proxy's server-trust path, though it does not prove upstream MCP relay.
+    - source_id: SRC-ghsa-spring-ssrf
+      identifier: CVE-2026-45609 / GHSA-qjp4-4jvr-xqg3
+      relationship: enabling_vulnerability
+      exploitation_status: CISA_SSV_C_none_as_of_2026-06-02; no_production_exploitation_identified
+      impact: Untrusted protected-resource and authorization URLs can cause server-side requests to attacker or internal destinations when DCR is enabled.
+      remediation: mcp-security 0.1.9 adds the fix; affected installations can supply a URL-filtering client or custom managers.
+      selected: true
+      rationale: Closely related destination-validation weakness with a distinct SSRF outcome and explicit configuration precondition.
+    - source_id: SRC-cve-2026-59822
+      identifier: CVE-2026-59822
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: Fabricated Authorization input can bypass LiteLLM MCP gateway authentication and reach MCP tooling.
+      remediation: Fixed in LiteLLM 1.84.0.
+      selected: false
+      rationale: The gateway is accurately identified; the flaw is authentication fallback, not another server's identity or authorization relationship.
+    - source_id: SRC-cve-2026-66012
+      identifier: CVE-2026-66012
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: An anonymous reverse-proxy role can reach broad SiYuan MCP tools and enable workspace compromise and administrator takeover.
+      remediation: Fixed in SiYuan 3.7.2.
+      selected: false
+      rationale: High impact but governed by missing authorization and proxy role injection, without server identity masquerade.
+    - source_id: SRC-cve-2025-59155
+      identifier: CVE-2025-59155
+      relationship: rejected
+      exploitation_status: CISA_SSV_C_none_as_of_2025-09-15
+      impact: Caller-selected HackMD API destinations can reach internal services.
+      remediation: Fixed in hackmd-mcp 1.5.0 with endpoint allowlisting.
+      selected: false
+      rationale: This is upstream API SSRF through request input, not a fake MCP server endpoint or protected-resource identity.
+    - source_id: SRC-cve-2026-67531
+      identifier: CVE-2026-67531
+      relationship: rejected
+      exploitation_status: public_poc_reported_by_CISA_ADP
+      impact: A codecall sandbox escape can execute code in the FrontMCP server process.
+      remediation: Fixed in FrontMCP 1.5.7.
+      selected: false
+      rationale: The root cause is an execution sandbox escape and has no server identity or proxy-masquerade path.
+    - source_id: SRC-cve-2025-4143
+      identifier: CVE-2025-4143
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: unknown
+      impact: Missing OAuth redirect URI validation can permit credential theft and user impersonation under additional auto-approval conditions.
+      remediation: Fixed in workers-oauth-provider 0.0.5.
+      selected: false
+      rationale: It is an authorization-server redirect validation failure, not a masquerading MCP protected resource.
+
+sources_consulted:
+  - SRC-mcp-architecture
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc9728
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-mitre-attack-t1036
+  - SRC-mitre-t1557
+  - SRC-trustshiftprobe
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-mcp-proxy-identity-corpus-2026
+  - SRC-ghsa-librechat-resource
+  - SRC-cve-2026-54030
+  - SRC-ghsa-apify-authority
+  - SRC-cve-2026-50143
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-6514
+  - SRC-ghsa-spring-ssrf
+  - SRC-cve-2026-45609
+  - SRC-cve-2026-59822
+  - SRC-cve-2026-66012
+  - SRC-cve-2025-59155
+  - SRC-cve-2026-67531
+  - SRC-cve-2025-4143
+sources_cited:
+  - SRC-mcp-architecture
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc9728
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-mitre-attack-t1036
+  - SRC-mitre-t1557
+  - SRC-trustshiftprobe
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-mcp-proxy-identity-corpus-2026
+  - SRC-ghsa-librechat-resource
+  - SRC-ghsa-apify-authority
+  - SRC-jfrog-cve-2025-6514
+  - SRC-ghsa-spring-ssrf
+sources_rejected:
+  - {source_id: SRC-cve-2026-59822, reason: Adjacent gateway authentication fallback; no masquerading server identity.}
+  - {source_id: SRC-cve-2026-66012, reason: Adjacent authorization and reverse-proxy role issue; no server impersonation.}
+  - {source_id: SRC-cve-2025-59155, reason: Upstream API SSRF rather than MCP endpoint masquerade.}
+  - {source_id: SRC-cve-2026-67531, reason: Server sandbox escape unrelated to server identity.}
+  - {source_id: SRC-cve-2025-4143, reason: OAuth redirect validation issue governed by a different boundary.}
+sources_blocked: []
+
+conflicts:
+  - issue: RFC 9728 supports optional signed resource metadata, but MCP does not require a separately trusted signature that proves an upstream server behind the connected endpoint.
+    resolution: Treat TLS and exact resource matching as controls for the configured identifier, retain out-of-band approved inventory in the analytic, and disclose that a deliberately approved malicious endpoint can evade it.
+  - issue: TrustShiftProbe calls malicious-server content corruption distinct from transport interception.
+    resolution: Keep response tampering as canonical SAF-T1404 neighbor; SAF-T1407 requires identity, authority, or protected-resource masquerade plus a proxy or relay-like association.
+  - issue: No selected source documents production exploitation.
+    resolution: Set evidence status to Demonstrated, not Observed, and state the bounded incident gap in the technique.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1407-C007, SAF-T1407-C008]
+  rationale: >-
+    RFC 9728 directly specifies the protected-resource impersonation and
+    authorization-server proxy threat, MCP adopts that protected-resource role,
+    and CVE-2026-54030 publicly demonstrates the end-to-end MCP fake endpoint,
+    legitimate authorization association, token delivery, and reuse condition.
+    CVE-2026-50143 independently demonstrates wrong-authority MCP connection and
+    token delivery. No reviewed primary source establishes production use, so
+    Observed is not justified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

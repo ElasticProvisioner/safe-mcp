@@ -1,0 +1,260 @@
+version: 1
+technique_id: SAF-T1005
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1005
+  inherited_context: false
+target:
+  id: SAF-T1005
+  neutral_name: Exposed Endpoint Exploit
+allowed_inputs:
+- Repository-local author-saf-technique SKILL.md and routed clean-room-safe references.
+- techniques/TEMPLATE.md, research/README.md, blank technique packet templates, and
+  scripts/validate-technique-research.py.
+- Repository README.md only through a command that emitted Technique ID and Technique
+  Name columns without descriptions.
+- Independently discovered, domain-filtered external standards, advisories, research,
+  and security guidance.
+- Newly created isolated mock registry, framework, neighbor, alignment, and history
+  records used only to exercise canonical validation.
+prohibited_inputs:
+- techniques/SAF-T1005/README.md from the repository target.
+- research/techniques/SAF-T1005/ and every target research artifact.
+- techniques/SAF-T1005/detection-rule.yml and every target detection or test artifact.
+- Git history, diff, blame, branches, commits, stashes, or caches exposing target
+  content.
+- Pull request, issue, review comment, fork, or cached page containing target content.
+- Any previous conversation, summary, agent context, or source list containing target
+  technique prose or conclusions.
+- research/source-manifest.yml and research/framework-model.yml before freeze.
+- impact-classification-examples.md before freeze.
+- SAF-MCP or SAFE-MCP technique pages, repositories, forks, and secureagenticframework.org
+  or safemcp.org.
+independent_research:
+  query_count: 64
+  searches:
+  - 'Streamable HTTP transport security Origin validation localhost authentication
+    MCP -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'MCP authorization specification protected resource metadata OAuth security requirements
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'Model Context Protocol security best practices confused deputy token passthrough
+    local server -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'Model Context Protocol exposed endpoint unauthenticated vulnerability remote
+    code execution -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov]'
+  - '"MCP Inspector" vulnerability CVE remote code execution DNS rebinding -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov]'
+  - '"Model Context Protocol" "DNS rebinding" CVE -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: nvd.nist.gov]'
+  - '"Model Context Protocol" unauthenticated server CVE endpoint -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cve.org]'
+  - '"MCP Inspector" security advisory DNS rebinding -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'CVE-2025-49596 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - 'CVE-2026-34742 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - 'CVE-2025-49596 exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: cve.org,nvd.nist.gov]'
+  - 'CVE-2026-34742 exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: cve.org,nvd.nist.gov]'
+  - 'Known Exploited Vulnerabilities catalog CSV download -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - '"CVE-2025-49596" Known Exploited Vulnerabilities -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: cisa.gov]'
+  - '"CVE-2026-34742" Known Exploited Vulnerabilities -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: cisa.gov]'
+  - '2025-11-25 transports Streamable HTTP Security Warning Origin localhost authentication
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - '2025-11-25 MCP lifecycle initialize tools list tools call request schema -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'MCP logging audit OpenTelemetry request tool call telemetry fields -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'MCP server security deployment authentication network exposure guidance -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'MCP OpenTelemetry semantic conventions spans tool call server address rpc method
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: opentelemetry.io]'
+  - 'MCP Python SDK OpenTelemetry tracing every request attributes -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'MCP Go SDK DNS rebinding protection allowed hosts allowed origins transport security
+    version 1.4.0 -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'HTTP server logging client address request method response status authorization
+    outcome security monitoring -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: owasp.org]'
+  - '"MCP" SDK "DNS rebinding protection" CVE 2025 2026 -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cve.org]'
+  - '"Model Context Protocol" "missing authentication" endpoint CVE -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cve.org]'
+  - '"MCP server" "exposed to the internet" incident breach -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov,nvd.nist.gov]'
+  - '"MCP Inspector" incident exploitation in the wild -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov,cisa.gov]'
+  - 'MCP exposed endpoint production incident breach unauthorized tool invocation
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: oligo.security]'
+  - 'MCP server exposed endpoint production breach incident -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: unit42.paloaltonetworks.com]'
+  - 'Model Context Protocol server incident exposed authentication exploit -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: security.microsoft.com]'
+  - 'Model Context Protocol endpoint breach incident unauthorized access -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - 'CVE-2026-42271 LiteLLM MCP endpoint -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: cve.org,nvd.nist.gov]'
+  - 'CVE-2026-48710 LiteLLM authentication bypass Starlette Host header -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: cve.org,nvd.nist.gov]'
+  - 'CVE-2026-42271 CVE-2026-48710 LiteLLM MCP RCE -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: horizon3.ai]'
+  - 'CVE-2026-42271 LiteLLM patched version security advisory -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: docs.litellm.ai]'
+  - '"CVE-2026-48710" Starlette BadHost -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: cve.org]'
+  - '"CVE-2026-48710" security advisory -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+    [domains: starlette.io]'
+  - '"CVE-2026-42271" LiteLLM security advisory -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: docs.litellm.ai]'
+  - '"CVE-2026-42271" exploitation observed -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: cisa.gov,nvd.nist.gov]'
+  - 'T1190 Exploit Public-Facing Application definition software weakness internet-facing
+    computer -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: attack.mitre.org]'
+  - 'T1210 Exploitation of Remote Services definition network service -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: attack.mitre.org]'
+  - 'NIST control restrict network access public-facing server authentication logging
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: nvlpubs.nist.gov,csrc.nist.gov]'
+  - 'OWASP API security unauthorized endpoint access authentication authorization
+    logging -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: owasp.org]'
+  - '"unauthenticated MCP endpoint" advisory fixed version 2026 -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cve.org]'
+  - '"Model Context Protocol" production breach exposed endpoint -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - '"MCP Inspector" exploitation production incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: nvd.nist.gov]'
+  - '"CVE-2025-49596" "CVE-2026-34742" "CVE-2026-42271" exploitation remediation -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov,cve.org]'
+  - '2025-11-25 Streamable HTTP Origin authentication security warning -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - 'API endpoint authentication authorization false positive public read only monitoring
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: owasp.org]'
+  - site:modelcontextprotocol.io/specification/2026-07-28 basic transports security
+    Origin authentication -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+  - site:modelcontextprotocol.io/specification/2026-07-28 authorization protected
+    resource bearer token -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+  - site:modelcontextprotocol.io/specification/2026-07-28 server tools call resources
+    read security -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP"
+  - '"Model Context Protocol" endpoint unauthenticated advisory 2026 remote code execution
+    -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: cve.org,nvd.nist.gov]'
+  - '"MCP" exposed endpoint production compromise incident 2026 -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - '"CVE-2026-34742" "CVE-2026-42271" exploitation status -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov]'
+  - '"MCP endpoint" "missing authentication" CVE August 2026 -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov,cve.org]'
+  - '"MCP endpoint" authentication bypass security bulletin August 2026 -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: ibm.com,cisa.gov]'
+  - '"mcp-pinot" exploitation observed incident -"SAF-T1005" -"SAFE-T1005" -"SAF-MCP"
+    -"SAFE-MCP" [domains: nvd.nist.gov,cisa.gov]'
+  - '"CVE-2026-49257" "CVE-2026-42271" "CVE-2025-49596" "CVE-2026-34742" -"SAF-T1005"
+    -"SAFE-T1005" -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov,cve.org]'
+  - '"CVE-2026-49257" "CVE-2026-42271" known exploited -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - '"CVE-2025-49596" "CVE-2026-34742" known exploited -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov]'
+  - '"2026-07-28" "Security & Endpoint" "Origin" "authentication" -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: modelcontextprotocol.io]'
+  - '"MCP-Pinot" "MCP Inspector" production incident compromise -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: cisa.gov,nvd.nist.gov]'
+  - '"LiteLLM" "MCP" unauthenticated RCE production exploitation -"SAF-T1005" -"SAFE-T1005"
+    -"SAF-MCP" -"SAFE-MCP" [domains: nvd.nist.gov,cisa.gov]'
+  opened_source_ids:
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-lifecycle-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-go-sdk-xw59
+  - SRC-ghsa-litellm-v4p8
+  - SRC-horizon3-litellm-chain
+  - SRC-ostif-badhost-starlette
+  - SRC-ghsa-inspector-g9hg
+  - SRC-ibm-langflow-7282147
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-owasp-logging-cheat-sheet
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not open, diff, compare, or derive from the existing repository target during
+  integration.
+- Reconcile source IDs only after the cryptographic freeze and only for stable-ID
+  collisions.
+- Reconcile framework and alignment joins mechanically after freeze without using
+  prior target prose as a lead.
+- Replace the zero repository-history SHA only with the actual integration commit
+  after it exists.
+- Run the canonical validator and repository workflows after integration; do not fabricate
+  a shared-repository pass.
+attestation: This fresh agent inherited no conversation history, used only the allowed
+  clean-room inputs, performed independent domain-filtered research, detected no prohibited
+  prior-artifact access, and froze the independently generated draft and evidence
+  set before any repository target or shared-registry contact.
+unresolved: []
+mock_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1005
+  mode: strict
+  result: passed
+  environment: isolated mock repository containing only the validator, the generated
+    bundle, and synthetic join records
+  synthetic_joins:
+  - Source manifest copied from source-manifest-fragment.yml.
+  - Framework model copied from framework-fragment.yml.
+  - Minimal neighbor README stubs and empty alignment ledger created solely to exercise
+    joins.
+  - Nonzero synthetic repository-history SHA substituted only in the mock validation
+    copy.
+  deliberately_deferred_real_joins:
+  - Shared source-ID collision reconciliation.
+  - Shared framework and alignment-ledger reconciliation.
+  - Actual repository-history commit SHA.
+access_constraints:
+- CISA KEV page, JSON feed, and CSV feed returned HTTP 403; no membership or non-membership
+  inference was published.
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+  new_shared_source_records:
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-lifecycle-2025-11-25
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-release-2026-07-28
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-inspector-7f8r
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-go-sdk-xw59
+  - SRC-ghsa-litellm-v4p8
+  - SRC-horizon3-litellm-chain
+  - SRC-ostif-badhost-starlette
+  - SRC-ghsa-inspector-g9hg
+  - SRC-ibm-langflow-7282147
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1190-v2.8
+  - SRC-owasp-logging-cheat-sheet
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  status: integrated_and_repository_validated

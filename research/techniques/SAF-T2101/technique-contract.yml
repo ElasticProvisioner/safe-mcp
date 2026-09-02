@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T2101
+name: Data Destruction
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Delete stored data or irreversibly corrupt an addressable resource
+  through an MCP or agent tool path.
+scope:
+  security_boundary: Model-selected or attacker-influenced intent crosses into an
+    authorized, state-changing external service operation.
+  in_scope:
+  - Adversary-directed deletion of records, objects, collections, databases, snapshots,
+    or equivalent stored resources through an MCP or agent tool.
+  - Attempts and successful actions where deletion or irreversible corruption is the
+    immediate objective.
+  out_of_scope:
+  - Delivery-only prompt injection, tool poisoning, command execution, or server compromise
+    without a destruction objective.
+  - Service exhaustion, data encryption for impact, disk-structure wiping, evidence
+    cleanup, and accidental administrative deletion.
+  affected_components:
+  - MCP host
+  - MCP client
+  - MCP server
+  - tool
+  - delegated identity
+  - external data service
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Instruction manipulation changes model intent; SAF-T2101 requires deletion
+    or irreversible corruption as the immediate objective.
+- technique_id: SAF-T2102
+  distinction: Service exhaustion consumes capacity; SAF-T2101 destroys stored state.
+required_evidence:
+- Establish a model-controlled or attacker-influenced agent path to a deletion-capable
+  tool.
+- Establish the effective authorization, target, approval state, and immediate destruction
+  outcome.
+- Keep delivery-only vulnerabilities and demonstrations explicitly enabling or adjacent.
+- Search current production breaches, advisories, exploitation catalogs, controlled
+  demonstrations, defenses, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP or agent tool-call timestamp, actor, server, session, tool, arguments or normalized
+    operation, target, authorization decision, approval state, and result.
+  - Target-service API action, effective identity, resource, environment, status,
+    request origin, and correlation identifier.
+safe_example_constraints:
+- Use only fictional targets and inert structured audit records.
+- Do not include live credentials, deployable payloads, destructive commands, or operational
+  exploit steps.
+completion_evidence:
+- All 16 publishable claims are validated with exact locators.
+- All unselected leads are omitted or explicitly classified in the exclusion ledger.
+- Two consecutive post-discovery saturation passes produced no material change.
+- Deterministic tests cover positive, negative, boundary, malformed, expected-false-positive,
+  and normalization cases.
+- Rights, safe-publication, and strict isolated-validator reviews pass.

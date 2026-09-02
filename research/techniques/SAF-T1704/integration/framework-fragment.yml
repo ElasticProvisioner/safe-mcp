@@ -1,0 +1,37 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1704
+    name: Compromised-Server Pivot
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0008
+    technique_path: techniques/SAF-T1704/README.md
+    research_packet: research/techniques/SAF-T1704
+    related_techniques:
+      - SAF-T1001
+      - SAF-T1004
+      - SAF-T1703
+    mitigations:
+      - SAF-M-2
+      - SAF-M-12
+      - SAF-M-14
+      - SAF-M-21
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-45
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1704/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1704/test_detection_rule.py
+        - tests/SAF-T1704/fixtures.jsonl
+        - tests/SAF-T1704/test-logs.json
+        - research/techniques/SAF-T1704/validation/detection-test.txt
+        - research/techniques/SAF-T1704/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1210
+        type: analogous

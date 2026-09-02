@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1606
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: /root/cleanroom_saf_t1606
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records no prior-artifact access, a frozen independent evidence set, exact searches, GitHub provenance, and isolated strict validation.
+  contract_and_scope:
+    status: passed
+    notes: Core behavior is bounded to directory metadata returned by a file-tool call; the frozen neighbor roles resolve mechanically to SAF-T1502 and SAF-T1105.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, roots, implementation, vulnerability, and incident statements were checked against exact locators.
+  claim_traceability:
+    status: passed
+    notes: Nineteen claims use canonical IDs, reviewed sources, exact locators, limitations, conflicts, and explicit inference records.
+  source_or_omit:
+    status: passed
+    notes: Hidden trace comments resolve for all substantive lines; five excluded candidates remain absent from publishable prose.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is limited to the complete behavior; enabling CVEs and the adjacent incident do not elevate it.
+  research_saturation:
+    status: passed
+    notes: Five passes plus two consecutive authority-only no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Ten candidates were classified; three selected high-impact examples and direct-evidence gaps are explicit.
+  detection_quality:
+    status: passed
+    notes: Eleven inert synthetic cases pass across positive, negative, boundary, malformed, and expected legitimate-lookalike classes.
+  mitigation_quality:
+    status: passed
+    notes: Controls map to roots, validation, least privilege, confirmation, logging, and remediation limits through SAF-M-12, SAF-M-20, SAF-M-29, SAF-M-69, SAF-M-70, and SAF-M-74.
+  framework_alignment:
+    status: passed
+    notes: Technique, ATT&CK, detection, neighbor, mitigation, and alignment records pass canonical repository validation after mechanical post-freeze reconciliation.
+  publication_rights:
+    status: passed
+    notes: All cited sources are paraphrased or factually referenced with named author/team attribution; no code, quotation, image, table, or dataset is republished.
+  safe_publication:
+    status: passed
+    notes: The example and test fixtures are inert and contain no payload, secret, live victim path, or destructive action.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1606/test_detection_rule.py
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1606 --draft
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1606
+      result: passed
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1606/test_detection_rule.py
+    result: 11/11 passed; positive=4, negative=3, boundary=2, malformed=1, expected_false_positive=1
+    waiver: null
+
+unresolved: []

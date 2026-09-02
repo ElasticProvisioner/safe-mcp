@@ -1,0 +1,41 @@
+version: 1
+technique_id: SAF-T1706
+integration_status: deferred_until_after_freeze
+constraints:
+  - Do not edit the frozen bundle during integration; copy it to a writable staging area and retain FREEZE.sha256 for comparison.
+  - Reconcile joins mechanically without changing evidence meaning, evidence label, claim text, exclusions, rights decisions, or detection semantics.
+deferred_joins:
+  - category: related_technique
+    placeholders: [SAF-T9001, SAF-T9002]
+    action: Map each synthetic neighbor to the destination catalog technique with the same stated boundary, or leave the relationship unresolved outside the frozen bundle.
+  - category: mitigation
+    placeholders: [SAF-M-9001, SAF-M-9002, SAF-M-9003]
+    action: Map resource binding, sender constraint, and token-reuse monitoring to destination mitigations without broadening claims.
+  - category: source_registry
+    placeholders: [All SRC identifiers in source-manifest-fragment.yml]
+    action: Detect ID or URL collisions, preserve exact archived hashes and credits, and merge only identical source identity records.
+  - category: framework_and_alignment
+    placeholders: [framework-fragment.yml, alignment-fragment.yml]
+    action: Join fragments to shared registries and rerun strict validation.
+  - category: repository_history
+    placeholders: ["1111111111111111111111111111111111111111"]
+    action: Replace the synthetic nonzero history sentinel with an honest destination commit supporting only inherited version metadata.
+  - category: source_query_archive
+    placeholders: [SRC-nvd-search-corpus]
+    action: Preserve every query string, the twelve retained JSON response files, and their per-file FREEZE.sha256 entries; keep the declared archive exception for earlier unretained responses.
+supplied_tactic:
+  id: ATK-TA0008
+  name: Lateral Movement
+  synthetic: false
+unresolved_evidence_gaps:
+  - No direct production OAuth-MCP token replay incident was found in the reviewed authoritative corpus.
+  - No public end-to-end OAuth-MCP replay demonstration was found; the controlled MCP replay used a Kubernetes bearer token not established as OAuth.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1504, SAF-T1506, SAF-T1304, SAF-T1308]
+  canonical_mitigations: [SAF-M-16, SAF-M-19, SAF-M-31, SAF-M-37]
+  attack_mappings: [T1550.001, T1528]
+  validation_proof:
+    - research/techniques/SAF-T1706/validation/detection-tests.txt
+    - research/techniques/SAF-T1706/validation/strict-validator.txt
+  source_archive: Frozen acquisition copies remain outside the repository; canonical source records retain their hashes and review evidence as remote-reviewed records.

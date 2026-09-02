@@ -1,0 +1,110 @@
+version: 1
+technique_id: SAF-T1903
+bundle_generation_mode: clean_room
+frozen_on: "2026-09-02"
+destination_repository_modified: false
+synthetic_identifiers:
+  tactics:
+    - id: ATK-TA0011
+      origin: Supplied neutral tactic identifier.
+      integration_action: Confirm it exists with the intended Command and Control semantics; preserve the supplied ID unless the catalog authority requires an explicit user-approved change.
+  neighbors:
+    - id: SAF-T1901
+      name: Malicious Server Delivery
+      integration_action: Reconcile mechanically against the destination catalog; if absent or semantically different, update the contract, README link, and framework relationship without changing the SAF-T1903 boundary.
+    - id: SAF-T1902
+      name: Server-Originated Model Steering
+      integration_action: Reconcile mechanically against the destination catalog; if absent or semantically different, update the contract, README link, and framework relationship without changing the SAF-T1903 boundary.
+  mitigations: []
+  framework_records:
+    - id: SAF-T1903
+      integration_action: Merge framework-fragment.yml by technique_id after resolving neighbor identities.
+  alignment_records: []
+  history_placeholders:
+    - value: "1903190319031903190319031903190319031903"
+      integration_action: Replace with the honest repository commit supporting the initial integrated version-history row.
+  sources:
+    - SRC-mcp-spec-2026
+    - SRC-mcp-transports-2026
+    - SRC-jfrog-pypi-reverse-shell
+    - SRC-unit42-browser-c2
+    - SRC-checkpoint-codex-cli
+    - SRC-cve-2025-61260
+    - SRC-checkpoint-claude-code
+    - SRC-cve-2025-59536
+    - SRC-elastic-unusual-domain
+    - SRC-elastic-mcp-child
+    - SRC-google-mcp-security
+    - SRC-mitre-t1071
+    - SRC-arxiv-connor
+    - SRC-unit42-ai-ir
+    - SRC-unit42-thought-experiment
+    - SRC-jfrog-server-takeover
+    - SRC-cve-2026-34742
+    - SRC-microsoft-exposed-mcp
+    - SRC-checkpoint-cursor-mcpoison
+path_joins:
+  - path: techniques/SAF-T1903/README.md
+    integration_action: Install as the clean-room technique document without consulting a prior target file.
+  - path: techniques/SAF-T1903/detection-rule.yml
+    integration_action: Install with the technique document and preserve test artifact paths.
+  - path: research/techniques/SAF-T1903/
+    integration_action: Install the complete seven-file research packet atomically.
+  - path: tests/SAF-T1903/
+    integration_action: Install all three deterministic test artifacts and re-run the test.
+  - path: research/source-manifest.yml
+    integration_action: Merge source-manifest-fragment.yml by sources[].id.
+  - path: research/framework-model.yml
+    integration_action: Merge framework-fragment.yml by techniques[].technique_id after neighbor reconciliation.
+  - path: research/alignment-ledger.yml
+    integration_action: Merge alignment-fragment.yml by issues[].id.
+  - path: scripts/validate-technique-research.py
+    integration_action: Use the destination's current canonical validator; do not copy the synthetic validator into the repository.
+fragment_merge:
+  source_manifest:
+    fragment: source-manifest-fragment.yml
+    key: sources[].id
+    action: Merge by stable source ID; reject conflicting metadata rather than overwriting silently.
+  framework_model:
+    fragment: framework-fragment.yml
+    key: techniques[].technique_id
+    action: Merge after neighbor reconciliation; preserve evidence status and detection test artifacts.
+  alignment_ledger:
+    fragment: alignment-fragment.yml
+    key: issues[].id
+    action: Merge the empty issue fragment or add only issues created by integration reconciliation.
+validation_recipe:
+  - Create a fresh synthetic repository outside the bundle.
+  - Copy the current canonical validator to scripts/validate-technique-research.py without opening destination target or shared registries.
+  - Copy bundle techniques, research packet, and tests into their canonical paths.
+  - Copy source-manifest-fragment.yml to research/source-manifest.yml, framework-fragment.yml to research/framework-model.yml, and alignment-fragment.yml to research/alignment-ledger.yml.
+  - Create minimal synthetic README stubs for SAF-T1901 and SAF-T1902 solely to satisfy foreign-key existence checks.
+  - Run the detection test and strict validator; retain compact outputs under validation/.
+integration_constraints:
+  - Do not rewrite source-backed claims, locators, limitations, conflict records, or exclusions during mechanical merge.
+  - Do not convert downloads or store availability into victim counts.
+  - Do not claim the Unit 42 extension used a standards-conformant MCP transport.
+  - Do not resolve the CVE-2025-61260 version conflict without an authoritative first-party reconciliation.
+  - Preserve the explicit named-victim evidence gap.
+  - Re-run detection tests and strict validation after integration.
+prohibited_actions:
+  - Do not silently renumber or redirect neighbor links without updating contract, README, and framework fragment together.
+  - Do not merge the isolated-validation history placeholder as a real repository commit.
+  - Do not remove hidden SAF-TRACE comments or the exclusion ledger.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-spec-2026: SRC-mcp-overview-2026
+    SRC-jfrog-pypi-reverse-shell: SRC-jfrog-malicious-mcp
+    SRC-google-mcp-security: SRC-google-mcp-security-2026
+    SRC-jfrog-server-takeover: SRC-jfrog-jfsa-2026-001653030
+    SRC-microsoft-exposed-mcp: SRC-t1206-ms-config-risk
+    SRC-checkpoint-cursor-mcpoison: SRC-checkpoint-mcpoison-2025-54136
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0011
+  canonical_neighbors: [SAF-T1003, SAF-T1001]
+  canonical_mitigations: [SAF-M-6, SAF-M-9, SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-24, SAF-M-29, SAF-M-45, SAF-M-69, SAF-M-70]
+  attack_mapping: {id: T1071, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1903/validation/canonical-validation.txt
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records preserve frozen acquisition hashes as review evidence.

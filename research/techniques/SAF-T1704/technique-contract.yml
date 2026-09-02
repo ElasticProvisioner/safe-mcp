@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1704
+name: Compromised-Server Pivot
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Convert control of one MCP server or its response channel into
+  an action in a different trust domain using authority held by the connected host.
+scope:
+  security_boundary: The host-enforced boundary between one MCP server and another
+    server, local endpoint, or protected external service.
+  in_scope:
+  - Server-originated metadata, results, or authorization responses causally influence
+    a host action in a different trust domain.
+  - The action uses host-held authority that the originating server should not directly
+    possess.
+  - Both model-mediated and implementation-vulnerability paths are included when the
+    cross-boundary outcome is established.
+  out_of_scope:
+  - The initial compromise of the originating server.
+  - Credential theft or token passthrough without a resulting cross-trust action.
+  - A server's misuse of only its own legitimate downstream capability.
+  - Ordinary injection confined to the originating server's own data or tools.
+  - Persistence, collection, or impact occurring after the immediate pivot.
+  affected_components:
+  - MCP host and client
+  - MCP server tool metadata and results
+  - Authorization discovery and transport responses
+  - Agent model and tool-routing policy
+  - Other MCP servers, local endpoints, and protected services reachable by the host
+nearest_neighbors:
+- technique_id: SAF-T1001
+  distinction: SAF-T1001 covers malicious instructions embedded in tool metadata;
+    SAF-T1704 additionally requires a resulting action in another trust domain.
+- technique_id: SAF-T1004
+  distinction: SAF-T1004 covers acquisition or substitution of a server identity or
+    channel; SAF-T1704 begins when controlled server behavior is used to pivot through
+    host authority.
+- technique_id: SAF-T1703
+  distinction: SAF-T1703 covers the broader induced cross-tool transition; SAF-T1704
+    specifically requires adversary control of the originating MCP server or response
+    channel.
+required_evidence:
+- Establish current MCP host/server boundary responsibilities from protocol authority.
+- Establish the end-to-end cross-server behavior with a direct demonstration.
+- Bound product-specific vulnerability variants, affected versions, and current applicability.
+- Search current incident and vulnerability authorities and select no more than four
+  highest-impact direct examples.
+- Test a behavioral detector or record a specific feasibility waiver.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP host or gateway catalog-change events with server identity, trust state, metadata
+    fingerprint, timestamp, and trace ID.
+  - MCP tool-call events with target server, tool, sensitivity, approval state, causal
+    server context, timestamp, and trace ID.
+safe_example_constraints:
+- Use only inert fixture identities and non-operational event records.
+- Do not reproduce exploit payloads, credentials, or destructive commands.
+- Preserve product-version and evidence limitations.
+completion_evidence:
+- Every substantive README unit is trace-linked to validated claims or a declared
+  local artifact.
+- All consulted sources are recorded with exact locators and review evidence.
+- All untraceable or out-of-scope candidates are omitted and ledgered.
+- All five research passes and two consecutive no-change follow-ups are recorded.
+- Detection fixtures pass positive, negative, boundary, false-positive, and malformed-input
+  tests.
+- Publication-rights and quality gates pass with no unresolved issue.

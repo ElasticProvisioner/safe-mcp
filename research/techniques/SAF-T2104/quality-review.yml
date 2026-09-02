@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T2104
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: Independent clean-room SAF author
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records permitted inputs, prohibited inputs, independent searches, and no prior-artifact access.
+  contract_and_scope:
+    status: passed
+    notes: The contract requires adversarial influence, a value-bearing action, a material authorization mismatch, and downstream acceptance.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, authorization, controlled demonstrations, prerequisites, and limitations use direct locators.
+  claim_traceability:
+    status: passed
+    notes: All fifteen publishable claims are validated and linked to reviewed source records.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has an inline hidden trace or declared local-artifact link; unsupported leads are excluded.
+  evidence_classification:
+    status: passed
+    notes: Two direct controlled demonstrations support Demonstrated; the production incident gap prevents Observed.
+  research_saturation:
+    status: passed
+    notes: All five passes and two final consecutive no-material-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nine candidates are classified by relationship, exploitation status, impact, remediation, and selection rationale.
+  detection_quality:
+    status: passed
+    notes: Deterministic fixtures cover positive, negative, boundary, malformed or missing fields, expected false positive, and Unicode normalization cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls bind authorization to transaction terms, enforce identity and approval, constrain action, and preserve auditability.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0040, canonical neighbors SAF-T1102, SAF-T1309, and SAF-T1915, six mitigations, and direct ATT&CK T1657 mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited uses are paraphrase-only with author or responsible-team attribution; no protected artifacts are reproduced.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures use inert placeholder identifiers and contain no deployable prompts, credentials, or endpoints.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T2104
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T2104/test_detection_rule.py
+    result: 11 of 11 fixtures passed across all required categories.
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: PASS 11/11 fixtures
+    validator_result: PASS SAF-T2104
+    proof: research/techniques/SAF-T2104/validation/canonical-validation.txt
+unresolved: []

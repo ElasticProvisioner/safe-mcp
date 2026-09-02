@@ -1,0 +1,84 @@
+{
+  "cases": [
+    {
+      "name": "cross-user high-risk action",
+      "expected": true,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m1","writer_principal_id":"user-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T01:00:00Z","memory_ids":["m1"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T01:02:00Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m1"]}
+      ]
+    },
+    {
+      "name": "same principal different session",
+      "expected": true,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m2","writer_principal_id":"agent-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"unknown","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:10:00Z","memory_ids":["m2"],"reader_principal_id":"agent-a","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:11:00Z","principal_id":"agent-a","session_id":"s2","risk":"critical","context_memory_ids":["m2"]}
+      ]
+    },
+    {
+      "name": "same principal same session",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m3","writer_principal_id":"agent-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m3"],"reader_principal_id":"agent-a","reader_session_id":"s1","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:02:00Z","principal_id":"agent-a","session_id":"s1","risk":"high","context_memory_ids":["m3"]}
+      ]
+    },
+    {
+      "name": "approved curator",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m4","writer_principal_id":"curator","writer_session_id":"s1","writer_role":"trusted_curator","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"approved"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m4"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:02:00Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m4"]}
+      ]
+    },
+    {
+      "name": "retrieval without action",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m5","writer_principal_id":"user-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m5"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"}
+      ]
+    },
+    {
+      "name": "action at five-minute boundary",
+      "expected": true,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m6","writer_principal_id":"user-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"rejected"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m6"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:06:00Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m6"]}
+      ]
+    },
+    {
+      "name": "action after five-minute boundary",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m7","writer_principal_id":"user-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m7"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:06:01Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m7"]}
+      ]
+    },
+    {
+      "name": "write older than one day",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-08-30T00:00:00Z","memory_id":"m8","writer_principal_id":"user-a","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:00:01Z","memory_ids":["m8"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:01:00Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m8"]}
+      ]
+    },
+    {
+      "name": "missing writer provenance",
+      "expected": false,
+      "events": [
+        {"event_type":"memory_write","timestamp":"2026-09-01T00:00:00Z","memory_id":"m9","writer_session_id":"s1","tenant_id":"demo","namespace":"shared","source_trust":"untrusted","review_status":"unreviewed"},
+        {"event_type":"memory_read","timestamp":"2026-09-01T00:01:00Z","memory_ids":["m9"],"reader_principal_id":"agent-b","reader_session_id":"s2","tenant_id":"demo","namespace":"shared"},
+        {"event_type":"agent_action","timestamp":"2026-09-01T00:02:00Z","principal_id":"agent-b","session_id":"s2","risk":"high","context_memory_ids":["m9"]}
+      ]
+    }
+  ]
+}

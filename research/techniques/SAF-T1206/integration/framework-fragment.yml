@@ -1,0 +1,18 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1206
+    name: Credential Implant in Config
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics: [ATK-TA0003]
+    technique_path: techniques/SAF-T1206/README.md
+    research_packet: research/techniques/SAF-T1206
+    related_techniques: [SAF-T9001, SAF-T9002, SAF-T9003]
+    mitigations: [SAF-M-9001, SAF-M-9002, SAF-M-9003]
+    detection:
+      rule: techniques/SAF-T1206/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1206/test-events.json
+        - tests/SAF-T1206/test_detection_rule.py
+        - validation/detection-test.txt

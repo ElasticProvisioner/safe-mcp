@@ -1,0 +1,265 @@
+version: 1
+technique_id: SAF-T1913
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct current-version resolution at https://modelcontextprotocol.io/specification
+        - Direct review of https://modelcontextprotocol.io/llms.txt
+        - Direct review of the 2026-07-28 Streamable HTTP, Tools, and Security Best Practices pages
+        - Direct review of RFC 9110 Section 9.3.3 at the RFC Editor
+      material_changes:
+        - Bound the mechanism to sensitive tools/call arguments in a current Streamable HTTP POST body.
+        - Added current Mcp-Method and Mcp-Name header observables and protocol-version limits.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct NVD API: keywordSearch=Model Context Protocol"
+        - "Direct NVD API: keywordSearch=HTTP POST exfiltration"
+        - Direct CISA KEV catalog download and exact-ID checks
+        - Direct CVE Program records for CVE-2025-34072, CVE-2026-15643, CVE-2025-49596, CVE-2025-6514, CVE-2026-41271, and CVE-2026-56348
+        - Direct AWS bulletin 2026-054-AWS
+        - Direct original Embrace The Red Slack MCP disclosure
+      material_changes:
+        - Selected three ranked, high-impact adjacent examples because they illuminate the boundary while no direct transport-specific incident or vulnerability qualified.
+        - Preserved an explicit gap for production observation and direct vulnerability evidence.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Direct original Invariant Labs tool-poisoning disclosure and experiment review
+        - Direct original Embrace The Red leakage walkthrough review
+      material_changes:
+        - Established a controlled tool-parameter exfiltration component result.
+        - Kept the overall label Research-Derived because the Invariant experiment does not identify its transport.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct current MCP Request Metadata and Standard Request Headers review
+        - Direct OpenTelemetry Semantic Conventions 1.44.0 HTTP client span review
+        - Direct MITRE ATT&CK T1048 version 1.6 technique and detection review
+        - Direct MITRE ATT&CK M1057 version 1.1 DLP review
+      material_changes:
+        - Defined a privacy-preserving analytic using method, MCP operation, tool, destination trust, approval, DLP class, and body size rather than retained raw content.
+        - Added protocol-version, encryption, compromised-trust, and DLP-coverage blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Direct current MCP SSRF guidance review for alternate boundary and failure mode
+        - Direct superseded 2025-11-25 transport and tools pages for changed behavior
+        - Direct CVE review for MCP RCE, command injection, non-MCP SSRF, and POST-endpoint credential exfiltration analogies
+        - Exact CISA KEV checks for the selected CVEs
+      material_changes:
+        - Rejected adjacent RCE, SSRF, URI-unfurl, and non-MCP POST records as proof of the defining behavior.
+        - Narrowed current-revision detection claims and the ATT&CK mapping to Analogous.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct NVD API: keywordSearch=tools/call exfiltration (totalResults=0)"
+        - "Direct NVD API: keywordSearch=MCP HTTP POST data exfiltration (totalResults=0)"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct NVD API: keywordSearch=Model Context Protocol tool arguments exfiltration (totalResults=0)"
+        - "Direct NVD API: keywordSearch=Mcp-Method exfiltration (totalResults=0)"
+      material_changes: []
+  rationale: >-
+    Current protocol, HTTP, telemetry, ATT&CK, first-party advisory, original
+    researcher, CVE Program, NVD, and CISA authority classes cover every
+    publishable proposition. Four narrower official-catalog variants produced
+    two consecutive no-change passes. The remaining uncertainty is explicit:
+    no source in the reviewed corpus establishes a production or complete public
+    instance of the exact tools/call-over-Streamable-HTTP behavior.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 8
+  selected_examples:
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-cve-34072
+    - SRC-aws-cve-2026-15643
+  no_qualifying_examples_rationale: >-
+    No qualifying direct production incident or direct vulnerability for the exact
+    POST-body mechanism was identified. Three adjacent examples were selected and
+    ranked because they are the strongest current evidence about sensitive-data
+    movement in MCP systems, but none may raise the technique evidence label. The
+    remaining gap is a public source that identifies sensitive tools/call arguments,
+    Streamable HTTP POST, and receipt by an adversary-controlled remote MCP server in
+    one end-to-end production event or controlled evaluation.
+  candidates:
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Labs MCP Tool Poisoning Experiment 1
+      rank: 1
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Controlled demonstration; no production exploitation established.
+      impact: Demonstrated MCP configuration and SSH-key content transmitted to a malicious server in a concealed tool parameter.
+      remediation: Researcher recommends clear UI, server and tool pinning, cross-server controls, and dataflow guardrails.
+      selected: true
+      rationale: Closest evidence to the argument-data mechanism, but the reviewed page does not state whether Streamable HTTP carried the call.
+    - source_id: SRC-cve-34072
+      identifier: CVE-2025-34072 / Anthropic Slack MCP Server link-unfurl disclosure
+      rank: 2
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Proof of concept; no production exploitation established.
+      impact: Demonstrated zero-click disclosure of private data through attacker-crafted links and Slack preview requests.
+      remediation: The server was deprecated; the disclosure recommends disabling link and media unfurling and constraining destinations.
+      selected: true
+      rationale: High-impact MCP data exfiltration demonstration, but data travels in a URI and preview fetch rather than an MCP POST body.
+    - source_id: SRC-aws-cve-2026-15643
+      identifier: CVE-2026-15643 / AWS bulletin 2026-054-AWS
+      rank: 3
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none on 2026-07-15.
+      impact: A remote authenticated user might redirect pagination and disclose temporary AWS credentials to an arbitrary endpoint.
+      remediation: Fixed in awslabs.healthlake-mcp-server 0.0.14; AWS advises least privilege and possible credential rotation.
+      selected: true
+      rationale: Strong first-party, high-impact arbitrary-endpoint evidence, but the mechanism is server-side request forgery.
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596 / MCP Inspector missing authentication
+      relationship: enabling_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none in the reviewed CVE record.
+      impact: Critical unauthenticated remote command execution against affected Inspector proxy deployments.
+      remediation: Upgrade to MCP Inspector 0.14.1 or later.
+      selected: false
+      rationale: Command execution could enable later exfiltration but is not the defining POST-body data transfer.
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514 / mcp-remote command injection
+      relationship: enabling_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none in the reviewed CVE record.
+      impact: Critical OS command injection when connecting to an untrusted MCP server.
+      remediation: Affected range ends at 0.1.15 in the CNA record; the referenced maintainer patch addresses the issue.
+      selected: false
+      rationale: Authorization-URL command injection is an execution mechanism, not sensitive data in a tools/call POST.
+    - source_id: SRC-cve-2026-41271
+      identifier: CVE-2026-41271 / Flowise APIChain prompt-injection SSRF
+      relationship: historical_analogy
+      exploitation_status: CISA ADP recorded proof-of-concept evidence.
+      impact: Potential internal reconnaissance and data exfiltration through attacker-directed GET or POST API-chain requests.
+      remediation: Fixed in Flowise 3.1.0.
+      selected: false
+      rationale: Agentic and HTTP-relevant, but non-MCP SSRF with a different boundary and mechanism.
+    - source_id: SRC-cve-2026-56348
+      identifier: CVE-2026-56348 / n8n credential exfiltration restriction bypass
+      relationship: historical_analogy
+      exploitation_status: CISA ADP recorded exploitation none in the reviewed CVE record.
+      impact: Authenticated users could make a server forward credentials to unauthorized hosts through a POST endpoint.
+      remediation: Fixed in n8n 2.20.0.
+      selected: false
+      rationale: The record involves POST and credential exfiltration but is not MCP and does not use tools/call arguments.
+    - source_id: SRC-cisa-kev-2026-09-01
+      identifier: CISA KEV catalog exact-ID check
+      relationship: rejected
+      exploitation_status: Neither selected CVE appeared in catalog version 2026.09.01.
+      impact: No candidate impact can be inferred from catalog absence.
+      remediation: Not applicable; this is a coverage check.
+      selected: false
+      rationale: Catalog absence cannot establish no exploitation and is not an example of the technique.
+
+sources_consulted:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-transports-2026
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-transports-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc9110
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-otel-semconv-1.44.0
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-attack-m1057-v1.1
+  - SRC-cve-34072
+  - SRC-cve-2025-34072
+  - SRC-aws-cve-2026-15643
+  - SRC-cve-2026-15643
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-http-post-query-2026-09-02
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-cve-2026-41271
+  - SRC-cve-2026-56348
+  - SRC-nvd-sat-tools-call-2026-09-02
+  - SRC-nvd-sat-mcp-post-2026-09-02
+  - SRC-nvd-sat-tool-args-2026-09-02
+  - SRC-nvd-sat-mcp-method-2026-09-02
+sources_cited:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-streamable-http-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-rfc9110
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-otel-http-spans-1.44.0
+  - SRC-mitre-attack-t1048-v1.6
+  - SRC-attack-m1057-v1.1
+  - SRC-cve-34072
+  - SRC-cve-2025-34072
+  - SRC-aws-cve-2026-15643
+  - SRC-cve-2026-15643
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-http-post-query-2026-09-02
+  - SRC-cisa-kev-2026-09-01
+sources_rejected:
+  - source_id: SRC-mcp-doc-index-2026
+    reason: Discovery index only; no substantive proposition was sourced from it.
+  - source_id: SRC-mcp-transports-2026
+    reason: High-level summary; detailed current transport page is controlling.
+  - source_id: SRC-mcp-tools-2025-11-25
+    reason: Superseded by revision 2026-07-28 for current normative behavior.
+  - source_id: SRC-mcp-security-2025-11-25
+    reason: Superseded by revision 2026-07-28 for current security guidance.
+  - source_id: SRC-otel-semconv-1.44.0
+    reason: Version index only; detailed HTTP span convention supports telemetry claims.
+  - source_id: SRC-cve-2025-49596
+    reason: Enabling command-execution vulnerability with a different mechanism.
+  - source_id: SRC-cve-2025-6514
+    reason: Enabling authorization-URL command-injection vulnerability with a different mechanism.
+  - source_id: SRC-cve-2026-41271
+    reason: Non-MCP SSRF historical analogy, not evidence of the bounded behavior.
+  - source_id: SRC-cve-2026-56348
+    reason: Non-MCP credential-forwarding historical analogy, not evidence of the bounded behavior.
+  - source_id: SRC-nvd-sat-tools-call-2026-09-02
+    reason: Zero-result saturation query; added no evidence.
+  - source_id: SRC-nvd-sat-mcp-post-2026-09-02
+    reason: Zero-result saturation query; added no evidence.
+  - source_id: SRC-nvd-sat-tool-args-2026-09-02
+    reason: Zero-result saturation query; added no evidence.
+  - source_id: SRC-nvd-sat-mcp-method-2026-09-02
+    reason: Zero-result saturation query; added no evidence.
+sources_blocked: []
+
+conflicts:
+  - issue: Invariant directly demonstrates hidden tool-parameter exfiltration, but does not name the transport.
+    resolution: Classified the complete HTTP-specific behavior as Research-Derived rather than Demonstrated.
+  - issue: Selected CVEs and disclosures establish MCP data exfiltration through link unfurling or SSRF.
+    resolution: Labeled every selected example adjacent and prohibited it from elevating the technique status.
+  - issue: MCP transport behavior changed between 2025-11-25 and 2026-07-28.
+    resolution: Scoped normative and detection claims to protocol version 2026-07-28 and recorded backward-compatibility limits.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1913-C004
+  rationale: >-
+    The current MCP specification independently establishes the HTTP POST transport
+    and tools/call argument shape, while Invariant establishes sensitive-data transfer
+    through a hidden tool parameter. Joining those components supports the exact
+    behavior as an explicit inference. No reviewed source establishes the complete
+    transport-specific behavior in production or a public controlled evaluation.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

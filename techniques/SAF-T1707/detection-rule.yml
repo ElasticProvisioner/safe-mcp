@@ -1,182 +1,103 @@
-title: CSRF Token Relay Detection (SAF-T1707)
-id: b8c9d0e1-f2a3-4b5c-9d0e-1f2a3b4c5d6e
-status: experimental
-description: |
-  Detects potential CSRF Token Relay behavior where a web/MCP application uses
-  a stored OAuth access token to perform unintended, state-changing operations
-  on different resources (projects/tenants) within the same resource server.
-  Focuses on CSRF patterns (missing CSRF tokens, suspicious Origin/Referer)
-  on high-risk endpoints that trigger OAuth-backed calls to multi-tenant APIs.
-author: Arjun Subedi (Astha.ai)
-date: 2025-11-29
-modified: 2025-11-29
+title: Cross-Session Acceptance of an OAuth State Value
+id: 0ec1720d-12ec-4b5c-9da7-17071b4881ef
+status: stable
+description: >-
+  Detects a successful OAuth callback whose privacy-preserving session binding
+  differs from the session that created the same state digest, or a state digest
+  accepted more than once inside a ten-minute correlation window.
 references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1707
-  - https://attack.mitre.org/techniques/T1550/001/
-  - https://attack.mitre.org/techniques/T1528/
-  - https://owasp.org/www-community/attacks/csrf
-  - https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
-  - https://datatracker.ietf.org/doc/html/rfc6749
-  - https://www.cise.ufl.edu/~butler/pubs/dimva15.pdf
-logsource:
-  product: webapp
-  service: mcp_portal
-  category: application
-
-detection:
-  # Base selection: state-changing requests to sensitive endpoints
-  selection_base:
-    http.request.method:
-      - POST
-      - PUT
-      - PATCH
-      - DELETE
-    # Sensitive paths that trigger OAuth-backed multi-resource operations
-    # Customize these paths to match your application
-    http.request.path|contains:
-      - "/mcp/project/"
-      - "/mcp/tenant/"
-      - "/configureAgent"
-      - "/connectResource"
-      - "/setIamPolicy"
-      - "/grantRole"
-      - "/updateIamPolicy"
-      - "/rotateKeys"
-      - "/linkResource"
-
-  # Detection 1: Missing or invalid CSRF token
-  selection_missing_csrf:
-    # Option A: If app logs CSRF validation outcome
-    csrf.valid: false
-    # Option B: If app logs specific CSRF events
-    # security.event:
-    #   - "CSRF_TOKEN_MISSING"
-    #   - "CSRF_TOKEN_INVALID"
-    #   - "CSRF_VALIDATION_FAILED"
-
-  # Detection 2: Suspicious Origin header
-  # Requests from untrusted or unexpected origins
-  selection_suspicious_origin:
-    # Option A: Cross-origin requests from untrusted domains
-    http.request.headers.origin|startswith: "http"
-    # Option B: Missing Origin header on state-changing requests (suspicious)
-    # http.request.headers.origin: null
-    # Option C: Origin doesn't match expected application domain
-    # http.request.headers.origin|not_contains: "trusted-domain.com"
-
-  # Detection 3: Suspicious Referer header
-  selection_suspicious_referer:
-    # Option A: Referer from untrusted domain
-    http.request.headers.referer|startswith: "http"
-    http.request.headers.referer|not_contains: "trusted-domain.com"
-    # Option B: Missing Referer on state-changing requests
-    # http.request.headers.referer: null
-
-  # Detection 4: Multi-resource activity pattern
-  # Same session/user triggering operations on multiple resources
-  # Note: This requires time-series correlation, implement in SIEM
-  selection_multi_resource:
-    target.resource_id: "*"
-    # Pattern: Multiple distinct resource_ids from same session within time window
-    # Requires aggregation: count distinct resource_ids by session.id within 5 minutes
-
-  # Detection 5: Resource switch without UI context
-  # Request changes active resource without corresponding navigation event
-  selection_resource_switch:
-    target.resource_id: "*"
-    # Pattern: Resource change without corresponding UI event
-    # Requires correlation with front-end logs
-    ui.navigation_event: null
-
-  # Detection 6: Rapid resource escalation
-  # Multiple resources accessed in quick succession
-  selection_rapid_escalation:
-    target.resource_id: "*"
-    # Pattern: Access to multiple resources within short time window
-    # Requires time-series analysis
-    time_window: "<300"  # Within 5 minutes
-
-  # Detection 7: MCP tool invocation anomaly
-  # MCP tool called targeting unexpected resource via webhook/cross-origin
-  selection_mcp_anomaly:
-    mcp.tool.name: "*"
-    mcp.server.name: "*"
-    # Pattern: Tool invocation from unexpected source
-    request.source:
-      - "webhook"
-      - "cross_origin"
-      - "external_api"
-
-  condition: selection_base and (
-    selection_missing_csrf or
-    selection_suspicious_origin or
-    selection_suspicious_referer or
-    selection_multi_resource or
-    selection_resource_switch or
-    selection_rapid_escalation or
-    selection_mcp_anomaly
-  )
-
-fields:
-  - event.id
-  - event.timestamp
-  - user.id
-  - user.email
-  - user.name
-  - session.id
-  - source.ip
-  - source.geo.country
-  - http.request.method
-  - http.request.path
-  - http.request.url
-  - http.request.body
-  - http.request.headers.origin
-  - http.request.headers.referer
-  - http.request.headers.user_agent
-  - csrf.valid
-  - csrf.token
-  - security.event
-  - target.resource_id
-  - target.resource_type
-  - target.service
-  - auth.user_role
-  - oauth.token_id
-  - oauth.scope
-  - oauth.client_id
-  - mcp.server.name
-  - mcp.tool.name
-  - ui.navigation_event
-  - request.source
-
-falsepositives:
-  - >
-    Internal automation or bulk administrative operations legitimately
-    performing multiple project/tenant changes via the same session. Tune
-    by scoping to user-facing endpoints and normal maintenance windows.
-  - >
-    Environments where CSRF protection is not implemented but requests
-    are constrained by network segmentation or other compensating controls.
-    In such cases, consider this rule as a prompt to harden the application.
-  - >
-    Legitimate cross-origin integrations that use allowed Origins and
-    have their own CSRF protections. Maintain an allow-list of known-good
-    origins and paths.
-  - >
-    Legitimate API clients that perform bulk operations across multiple
-    resources as part of normal business workflows.
-  - >
-    Testing or staging environments where CSRF protections may be relaxed
-    for development purposes.
-
-level: high
-
+  - https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices
+  - https://www.rfc-editor.org/rfc/rfc9700.html
+author:
+  - OpenAI Codex
+  - SAF Technique Research Team
+date: 2026-09-02
+modified: 2026-09-02
 tags:
-  - attack.lateral_movement
-  - attack.t1550.001
-  - attack.t1528
-  - safe.t1707
-  - csrf
-  - oauth
-  - token_relay
-  - cross_resource_attack
-
+  - saf.t1707
+  - attack.t1204.001
+logsource:
+  category: application
+  product: oauth_client
+  service: authorization_callback
+detection:
+  request_start:
+    event_type: authorization_request_started
+    fields_required:
+      - state_digest
+      - client_id
+      - redirect_uri
+      - initiating_session_binding
+      - timestamp
+  callback_success:
+    event_type: authorization_callback_accepted
+    outcome: success
+    fields_required:
+      - state_digest
+      - client_id
+      - redirect_uri
+      - callback_session_binding
+      - timestamp
+  cross_session_correlation:
+    join_keys:
+      - state_digest
+      - client_id
+      - redirect_uri
+    condition: initiating_session_binding != callback_session_binding
+    max_span_seconds: 600
+  duplicate_acceptance:
+    group_by:
+      - state_digest
+      - client_id
+    condition: count(callback_success) > 1
+    max_span_seconds: 600
+  condition: cross_session_correlation or duplicate_acceptance
+falsepositives:
+  - Legitimate callback brokers that intentionally move an authorization response between browser processes without first normalizing both events to the same protected transaction binding.
+  - Duplicate delivery generated by a client retry path when state is not consumed atomically; this remains a security defect but may not reflect adversary activity.
+fields:
+  - timestamp
+  - state_digest
+  - client_id
+  - redirect_uri
+  - initiating_session_binding
+  - callback_session_binding
+  - outcome
+level: medium
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1707-C014
+  telemetry_claim_ids:
+    - SAF-T1707-C013
+  limitation_claim_ids:
+    - SAF-T1707-C016
+  validation_artifacts:
+    - tests/SAF-T1707/test_detection.py
+    - tests/SAF-T1707/events.json
+    - research/techniques/SAF-T1707/validation/detection-test.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1707-C013]
+      rationale: OAuth client callback logs are the minimum event source for the correlation.
+    request_start:
+      claim_ids: [SAF-T1707-C013, SAF-T1707-C014]
+      rationale: The initiating transaction and protected session binding form the correlation baseline.
+    callback_success:
+      claim_ids: [SAF-T1707-C013, SAF-T1707-C014]
+      rationale: Only accepted callbacks can establish the suspicious completed transition.
+    cross_session_correlation:
+      claim_ids: [SAF-T1707-C014]
+      rationale: A binding mismatch for the same state digest expresses the technique boundary.
+    duplicate_acceptance:
+      claim_ids: [SAF-T1707-C014, SAF-T1707-C016]
+      rationale: Reuse of a supposedly single-use state is an independent high-signal condition.
+    condition:
+      claim_ids: [SAF-T1707-C014]
+      rationale: Either cross-session success or duplicate success warrants investigation.
+    falsepositives:
+      claim_ids: [SAF-T1707-C016]
+      rationale: Brokered callbacks and retries can mimic the observable without malicious relay.
+    fields:
+      claim_ids: [SAF-T1707-C013, SAF-T1707-C016]
+      rationale: These fields support triage without storing raw state, tokens, or session identifiers.

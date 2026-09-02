@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1902
+name: Covert Channel in Responses
+status: ready_for_review
+created_on: "2026-09-02"
+updated_on: "2026-09-02"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0011
+
+adversary_objective: >-
+  Exchange control state or collected information through concealed response
+  content while bypassing the review and policy path intended for explicit
+  communications.
+
+scope:
+  security_boundary: >-
+    Untrusted tool, resource, model, or retrieved content crosses into trusted
+    response processing, rendering, relay, or outbound retrieval.
+  in_scope:
+    - Encoded, visually suppressed, steganographic, or renderer-active carriers in MCP or agent responses.
+    - Automatic or user-mediated response retrieval that transfers attacker-selected response data to a cooperating receiver.
+    - Persistent response callbacks when retained agent state recreates the concealed carrier.
+  out_of_scope:
+    - Plain prompt or response injection without a concealed response carrier and receiver path.
+    - Tool-description or registry metadata poisoning at discovery time.
+    - Explicit approved tool-based export, transport tunneling below response semantics, or follow-on code execution.
+  affected_components:
+    - MCP host
+    - MCP client
+    - MCP server tool-result handler
+    - model and persistent memory
+    - rich-content renderer and link handler
+    - outbound network control and external receiver
+
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: >-
+      Response Injection changes model interpretation through malicious content;
+      SAF-T1902 additionally requires a concealed response carrier and a receiver
+      or callback path. SAF-T1102 is an isolated-validation placeholder that must
+      be reconciled with the canonical framework after freeze.
+
+required_evidence:
+  - Establish the response content forms and boundary through direct MCP authority sources.
+  - Establish the concealed-carrier and receiver mechanism through a standard and end-to-end demonstrations.
+  - Establish prerequisites, bounded impact, activation differences, and contrary conditions.
+  - Search direct authority sources for production breaches, disclosed vulnerabilities, current remediation, and exploitation status.
+  - Select at most four highest-impact direct examples or explicitly record the evidence gap.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Pre-render response text with timestamp, session identifier, event type, and tool or server provenance.
+    - Renderer decision and outbound destination URL with timestamp, session identifier, and automatic-fetch flag.
+    - Persistent context or memory change events for repeated-channel investigation.
+
+safe_example_constraints:
+  - Use only reserved invalid domains, inert placeholder values, and non-destructive response content.
+  - Do not reproduce working secrets, active collection endpoints, exploit payloads, or bypass instructions.
+  - Keep detector fixtures synthetic and scoped to carrier recognition and event correlation.
+
+completion_evidence:
+  - Every substantive publishable unit is linked to a validated claim and reviewed source or declared local artifact.
+  - Direct-source locators, named authors or responsible teams, rejected leads, conflicts, and exclusions are recorded.
+  - All five research passes and two consecutive no-change passes are complete.
+  - The executable detector passes positive, negative, malformed-input, and correlation-boundary tests.
+  - Publication rights, framework proposals, integration constraints, clean-room attestation, and strict isolated validation pass before freeze.

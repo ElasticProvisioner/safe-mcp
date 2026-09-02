@@ -1,0 +1,243 @@
+version: 1
+sources:
+  - id: SRC-attack-t1005
+    title: Data from Local System (T1005)
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK contributors]
+    version_or_date: "2025-10-24"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1005/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official technique page.
+    review_notes: Reviewed the definition, version, and contributor metadata for a bounded analogous mapping.
+    locators: ["Definition, lines 15-26", "Version and contributors, lines 30-37"]
+    review_status: opened_reviewed
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: The clean-room packet records direct review provenance without redistributing the remote page.
+      review_evidence: {method: browser_open, reviewed_on: "2026-09-01", locators_recorded: true}
+  - id: SRC-attack-t1083
+    title: File and Directory Discovery (T1083)
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK contributors, Austin Clark, c2defense]
+    version_or_date: "2025-10-24"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1083/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official technique page.
+    review_notes: Reviewed the enumeration definition and mapping boundary.
+    locators: ["Definition, lines 15-27", "Version and contributors, lines 31-39"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-aws-cve-2026-15415
+    title: CVE-2026-15415 — AWS HealthOmics MCP Server
+    publisher: Amazon Web Services
+    authors: [AWS Security, Rotimi Akinyele]
+    version_or_date: "2026-07-13"
+    source_class: official_advisory
+    official_url: https://aws.amazon.com/security/security-bulletins/2026-060-aws/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official vendor bulletin.
+    review_notes: Reviewed affected versions, traversal write impact, fix, workaround state, and credit.
+    locators: ["Description, lines 224-234", "Resolution, workarounds, and acknowledgement, lines 236-250"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-aws-cve-2026-18953
+    title: CVE-2026-18953 — AWS Transform MCP Server
+    publisher: Amazon Web Services
+    authors: [AWS Security, Drew Raines]
+    version_or_date: "2026-08-25"
+    source_class: official_advisory
+    official_url: https://aws.amazon.com/security/security-bulletins/2026-075-aws/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official vendor bulletin.
+    review_notes: Reviewed affected versions, arbitrary-write impact, bounded code-execution consequence, fix, and credit.
+    locators: ["Description, lines 224-234", "Resolution and workarounds, lines 236-250"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-aws-cve-2026-4270
+    title: CVE-2026-4270 — AWS API MCP Server
+    publisher: Amazon Web Services
+    authors: [AWS Security, Varonis Threat Labs]
+    version_or_date: "2026-03-16"
+    source_class: official_advisory
+    official_url: https://aws.amazon.com/security/security-bulletins/2026-007-AWS/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official vendor bulletin.
+    review_notes: Reviewed affected versions, restriction bypass, content-exposure outcome, fix, workaround state, and credit.
+    locators: ["Description and impacted versions, lines 224-239", "Resolution and acknowledgement, lines 241-255"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-cwe-22
+    title: CWE-22 — Improper Limitation of a Pathname to a Restricted Directory
+    publisher: The MITRE Corporation
+    authors: [CWE Content Team]
+    version_or_date: "CWE 4.20"
+    source_class: protocol_or_standard
+    official_url: https://cwe.mitre.org/data/definitions/22.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official CWE entry.
+    review_notes: Reviewed definition, consequences, and prevention guidance.
+    locators: ["Description and Extended Description, lines 51-55", "Common Consequences, lines 58-64", "Potential Mitigations, lines 65-89"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-cwe-59
+    title: CWE-59 — Improper Link Resolution Before File Access
+    publisher: The MITRE Corporation
+    authors: [CWE Content Team]
+    version_or_date: "CWE 4.20"
+    source_class: protocol_or_standard
+    official_url: https://cwe.mitre.org/data/definitions/59.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official CWE entry.
+    review_notes: Reviewed link-following definition, consequences, and mitigation guidance.
+    locators: ["Description", "Common Consequences", "Potential Mitigations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-cve-2025-53109
+    title: GHSA-q66q-fx2p-7w4m — Filesystem MCP Server symlink validation bypass
+    publisher: GitHub Advisory Database
+    authors: [Model Context Protocol maintainers, Elad Beber]
+    version_or_date: "2025-07-01"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-q66q-fx2p-7w4m
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after a non-GitHub authority supplied the identifier and URL.
+    review_notes: Reviewed as an excluded direct case; recorded the page's internal fixed-version conflict.
+    locators: ["Affected and patched versions", "Summary and remediation", "Credits"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-cve-2025-53110
+    title: GHSA-hc55-p739-j48w — Filesystem MCP Server prefix validation bypass
+    publisher: GitHub Advisory Database
+    authors: [Model Context Protocol maintainers, Elad Beber]
+    version_or_date: "2025-07-01"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/servers/security/advisories/GHSA-hc55-p739-j48w
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after a non-GitHub authority supplied the identifier and URL.
+    review_notes: Reviewed as an excluded direct case; recorded the page's internal fixed-version conflict.
+    locators: ["Affected and patched versions", "Summary and remediation", "Credits"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-cve-2026-74798
+    title: GHSA-43jx-gxq4-jpjc — SiYuan database_clean path traversal
+    publisher: GitHub Security Advisories
+    authors: [SiYuan maintainers, alham-rizvi]
+    version_or_date: "2026-08-31"
+    source_class: official_advisory
+    official_url: https://github.com/siyuan-note/siyuan/security/advisories/GHSA-43jx-gxq4-jpjc
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened only after VulnCheck supplied its identifier and URL.
+    review_notes: Reviewed affected and fixed versions, mechanism, explicit no-live-kernel-test limitation, and credit.
+    locators: ["Affected and patched versions, lines 136-152", "Summary, lines 160-179", "Test limitation, lines 278-294", "Credits, lines 415-417"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-google-mcp-logging-2025
+    title: How to secure your remote MCP server on Google Cloud
+    publisher: Google Cloud
+    authors: [Lanre Ogunmola, Biodun Awojobi]
+    version_or_date: "2025-07-08"
+    source_class: credible_practice
+    official_url: https://cloud.google.com/blog/products/identity-security/how-to-secure-your-remote-mcp-server-on-google-cloud?e=0
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official Google Cloud article.
+    review_notes: Reviewed the logging and auditing field recommendations.
+    locators: ["Logging and auditing, lines 181-184"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-mcp-release-2026-07-28
+    title: MCP 2026-07-28 protocol release
+    publisher: Model Context Protocol
+    authors: [David Soria Parra, Den Delimarsky]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-07-28-protocol-release/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official release article.
+    review_notes: Reviewed release currency and roots deprecation as context; the source is consulted but not cited in publishable prose.
+    locators: ["Release date and authors", "Protocol changes and roots deprecation"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-mcp-resources-2026-07-28
+    title: Model Context Protocol — Resources
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/resources
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the current official specification page.
+    review_notes: Reviewed file-resource and security requirements.
+    locators: ["file://, lines 397-399", "Security Considerations, lines 439-445"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-mcp-tools-2026-07-28
+    title: Model Context Protocol — Tools
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the current official specification page.
+    review_notes: Reviewed invocation, validation, access-control, and audit requirements.
+    locators: ["User Interaction Model, lines 86-99", "Calling Tools, lines 181-195", "Security Considerations, lines 725-737"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2025-67364
+    title: CVE-2025-67364 Detail
+    publisher: National Vulnerability Database
+    authors: [NIST National Vulnerability Database]
+    version_or_date: "2026-08-18"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-67364
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the official government vulnerability record.
+    review_notes: Reviewed as an excluded direct candidate; no fixed version was established in the reviewed record.
+    locators: ["Description", "CWE and reference metadata", "Change history"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-varonis-cve-2026-4270
+    title: How We Found an LFI Vulnerability in AWS's Remote MCP Server
+    publisher: Varonis
+    authors: [Coby Abrams, Varonis Threat Labs]
+    version_or_date: "2026-03-16"
+    source_class: research
+    official_url: https://www.varonis.com/blog/local-file-inclusion-in-aws-remote-mcp-server
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the original research report.
+    review_notes: Reviewed the public-endpoint reproduction, mechanism, outcome, and researcher attribution; operational payload details were not retained.
+    locators: ["How we discovered the LFI vulnerability, lines 96-101", "How does the vulnerability work, lines 112-136"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-vulncheck-cve-2026-74798
+    title: SiYuan Kernel Path Traversal via database_clean MCP Tool
+    publisher: VulnCheck
+    authors: [VulnCheck, alham-rizvi]
+    version_or_date: "2026-08-31"
+    source_class: official_advisory
+    official_url: https://www.vulncheck.com/advisories/siyuan-kernel-path-traversal-via-database-clean-mcp-tool
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct browser review of the CNA advisory.
+    review_notes: Reviewed affected and fixed versions, path behavior, impact, and credit.
+    locators: ["Affected version, CVSS, credit, and Description, lines 14-44"]
+    review_status: opened_reviewed
+    archive: *remote_archive

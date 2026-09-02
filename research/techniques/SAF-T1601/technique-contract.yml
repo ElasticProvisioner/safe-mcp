@@ -1,0 +1,83 @@
+version: 1
+technique_id: SAF-T1601
+name: MCP Server Enumeration
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Identify the MCP servers available to a compromised or misused
+  host context, and characterize enough of each server's protocol identity and exposed
+  capability surface to prioritize follow-on activity.
+scope:
+  security_boundary: The boundary between an actor's foothold in a host, client, account,
+    or adjacent network context and the MCP integration topology and server metadata
+    available through configuration, connection establishment, or protocol discovery
+    operations.
+  in_scope:
+  - Enumerating configured or reachable MCP server endpoints from a host or client
+    context.
+  - Establishing MCP connections and using initialization or discovery responses to
+    identify or fingerprint servers.
+  - Correlating server identifiers, transports, protocol versions, and advertised
+    capability classes to prioritize follow-on activity.
+  out_of_scope:
+  - Invoking a discovered tool, reading a resource, or retrieving a prompt for collection,
+    execution, or impact.
+  - Registering, substituting, or modifying an MCP server or its metadata.
+  - Generic network-service scanning that does not establish or infer an MCP server
+    relationship.
+  - Enumerating individual tools, resources, or prompts within one already-selected
+    server as the immediate objective.
+  affected_components:
+  - MCP host and client configuration
+  - MCP client-to-server transport
+  - MCP initialization and discovery messages
+  - MCP server identity and capability metadata
+nearest_neighbors:
+- technique_id: SAF-T1602
+  distinction: Tool Enumeration inventories tools inside one known MCP server, while
+    SAF-T1601's immediate objective is the set and identity of servers. Generic network
+    endpoint discovery has no exact SAF neighbor and remains represented by the external
+    ATT&CK T1046 analogy.
+required_evidence:
+- Establish the MCP host-client-server relationship and one-client-per-server connection
+  model.
+- Establish the server identity, protocol version, capability negotiation, and discovery
+  operations visible during or after initialization.
+- Establish whether adversarial enumeration has been observed in production, directly
+  demonstrated, or remains an inference from legitimate protocol behavior.
+- Search production incidents, vulnerabilities, official advisories, exploitation
+  status, and public demonstrations separately; classify every candidate and select
+  only qualifying high-impact examples.
+- Establish telemetry fields and a bounded analytic that distinguishes rapid multi-server
+  discovery from routine startup, health checks, and administration.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Host or client audit events containing timestamp, actor or process identity, session,
+    server identifier or endpoint, transport, method, response status, and approval
+    or configuration-change context.
+  - MCP connection and JSON-RPC event records containing initialize and discovery
+    method names, negotiated protocol version, serverInfo, capability classes, and
+    correlation identifiers.
+safe_example_constraints:
+- Use inert example.test endpoints, placeholder identities, and metadata-only discovery
+  messages.
+- Do not include credentials, exploit payloads, destructive commands, or instructions
+  for bypassing authorization.
+- Limit the scenario to discovery and stop before tool invocation, resource access,
+  prompt retrieval, or persistence.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and directly reviewed
+  sources with exact locators or to a declared repository artifact.
+- Unverified incident, vulnerability, and exploitation candidates are omitted from
+  publishable prose and retained in the exclusion ledger.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Positive, negative, boundary, malformed, and expected false-positive detection cases
+  pass deterministically.
+- Clean-room integrity, publication-rights, framework-alignment, and safe-publication
+  gates pass in an isolated synthetic mock.

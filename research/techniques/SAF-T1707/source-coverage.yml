@@ -1,0 +1,235 @@
+version: 1
+technique_id: SAF-T1707
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of MCP revision 2026-07-28 Authorization, Authorization Security Considerations, and Security Best Practices from the official MCP index.
+        - Direct review of RFC 9700, RFC 6749, RFC 7636, and OAuth 2.1 draft 13 from RFC Editor or IETF authority URLs.
+      material_changes:
+        - Fixed the defining boundary at valid state accepted outside the initiating user-agent session.
+        - Classified the MCP-specific end-to-end application as an inference.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - NVD API keywordSearch OAuth state CSRF and OAuth CSRF; individual NVD records for CVE-2025-68481, CVE-2025-68158, CVE-2026-18165, and CVE-2026-28477.
+        - CISA KEV JSON identifier comparison and CISA site searches for OAuth state CSRF and incident terms.
+        - Exact GitHub advisory URLs opened only after those URLs were supplied in NVD records; provenance is recorded in the source notes.
+      material_changes:
+        - Selected three direct implementation vulnerabilities and bounded their impacts.
+        - Rejected missing-state cases and classified OpenClaw as adjacent.
+        - Recorded no qualifying production MCP incident.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of the formal OAuth analysis cited by RFC 9700, including the State Leak Attack and fixed-model sections.
+      material_changes:
+        - Added a direct formal demonstration of state replay and session-integrity failure outside MCP.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of OWASP Logging Cheat Sheet event, interaction, exclusion, and verification guidance.
+        - Cross-check of current MCP state-validation guidance and RFC 9700 mitigations.
+      material_changes:
+        - Defined a privacy-preserving cross-session and duplicate-acceptance analytic with deterministic tests.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Challenged directness against current and superseded MCP documentation, CISA searches, NVD query results, and the direct MITRE ATT&CK T1204.001 page.
+        - Checked whether PKCE, missing-state CSRF, code substitution, bearer replay, state-handle hijacking, or malicious-link delivery collapse the boundary.
+      material_changes:
+        - Preserved PKCE/code interception, missing-state CSRF, token replay, and state-handle hijacking as separate mechanisms.
+        - Limited ATT&CK T1204.001 to delivery analogy.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - Official NVD API keywordSearch OAuth state browser session CSRF; official RFC Editor RFC 9700 errata page; CISA KEV recheck.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - Official NVD API keywordSearch login CSRF OAuth state session; official CISA site search; exact current MCP authorization page re-fetch and semantic comparison.
+      material_changes: []
+  rationale: >-
+    The corpus covers controlling MCP and OAuth requirements, a formal
+    demonstration, current direct vulnerabilities, current NVD and KEV catalogs,
+    detection guidance, and framework comparison. The last two authority-only
+    passes yielded only already-classified direct, enabling, adjacent, or rejected
+    candidates and no change to the contract, selected examples, claims, analytic,
+    or evidence status.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 10
+  selected_examples:
+    - SRC-fett-oauth-state-leak
+    - SRC-fastapi-advisory
+    - SRC-authlib-advisory
+    - SRC-fastify-advisory
+  no_qualifying_examples_rationale: >-
+    Four non-incident examples qualify, but no production MCP or agentic breach
+    using a relayed valid CSRF token was identified. OpenClaw is agentic but used
+    code-only callback substitution without valid-state relay. Catalog absence is
+    bounded to the reviewed date and does not prove non-exploitation.
+  candidates:
+    - source_id: SRC-fett-oauth-state-leak
+      identifier: OAuth State Leak Attack formal demonstration
+      relationship: direct_demonstration
+      exploitation_status: demonstrated_in_formal_web_model
+      impact: Login-session integrity failure in which a victim context is logged in under an attacker authorization result.
+      remediation: Bind fresh transaction values to the browser session, prevent referer leakage, and apply PKCE or equivalent transaction binding.
+      selected: true
+      rationale: Directly demonstrates the relay primitive and session-integrity consequence, while remaining explicitly non-MCP.
+    - source_id: SRC-fastapi-advisory
+      identifier: CVE-2025-68481 / GHSA-5j53-63w8-8625
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_described_no_production_exploitation_claimed
+      impact: Login CSRF; application-dependent account linking can permit victim-account takeover.
+      remediation: Upgrade to 15.0.2 or later and bind state to the initiating session.
+      selected: true
+      rationale: Direct valid-state relay with clear browser-correlation failure and high bounded impact.
+    - source_id: SRC-authlib-advisory
+      identifier: CVE-2025-68158 / GHSA-fg6f-75jq-6523
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_described_no_production_exploitation_claimed
+      impact: Victim browser completes attacker-originated OAuth login or account-link flow.
+      remediation: Use the fixed 1.6.6 release per NVD and bind state to the initiating session.
+      selected: true
+      rationale: Direct state relay despite cache-backed state validation; version-boundary conflict is disclosed.
+    - source_id: SRC-fastify-advisory
+      identifier: CVE-2026-18165 / GHSA-p8h8-rj28-m8q9
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_described_no_production_exploitation_claimed
+      impact: Silent login of the victim browser to the attacker account without exposing victim credentials or tokens.
+      remediation: Upgrade to 8.3.0 and enable hostPrefixedCookies, or use protected server-side session binding.
+      selected: true
+      rationale: Shows that matching both state and PKCE cookies is insufficient when a related host can plant them.
+    - source_id: SRC-openclaw-advisory
+      identifier: CVE-2026-28477 / GHSA-7rcp-mxpq-72pj
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_known_exploitation_reported_in_reviewed_advisory
+      impact: Manual Chutes OAuth callback could accept an attacker-controlled authorization code.
+      remediation: Upgrade to 2026.2.14 or later and require the full redirect including expected state.
+      selected: false
+      rationale: Agentic relevance is high, but the defect substituted code without relaying a valid state token.
+    - source_id: SRC-nvd-saturation-1
+      identifier: CVE-2025-43856 Immich
+      relationship: rejected
+      exploitation_status: no_production_exploitation_claimed
+      impact: Account-linking login CSRF and potential victim-account takeover.
+      remediation: Upgrade to 1.132.0 or later.
+      selected: false
+      rationale: The disclosed callback did not check state; that is ordinary missing-state CSRF, outside the contract.
+    - source_id: SRC-nvd-saturation-1
+      identifier: CVE-2026-34460 NamelessMC
+      relationship: rejected
+      exploitation_status: no_production_exploitation_claimed
+      impact: Victim session can be authenticated as an attacker-linked account.
+      remediation: Upgrade to 2.2.5 or later.
+      selected: false
+      rationale: The callback did not validate state server-side, so no valid token was relayed through a failed session-binding check.
+    - source_id: SRC-nvd-saturation-1
+      identifier: CVE-2026-56425 MISP AAD authentication plugin
+      relationship: enabling_vulnerability
+      exploitation_status: no_production_exploitation_claimed
+      impact: State replay weakness coexisted with session leakage, fixation, transport, and logging defects.
+      remediation: Use dedicated random single-use state, rotate sessions, require HTTPS, and sanitize logging.
+      selected: false
+      rationale: The multi-weakness record does not demonstrate a complete valid-state cross-session relay outcome.
+    - source_id: SRC-nvd-saturation-2
+      identifier: CVE-2023-27490 NextAuth.js
+      relationship: enabling_vulnerability
+      exploitation_status: no_production_exploitation_claimed
+      impact: Compromised OAuth session could bypass CSRF checks and log an attacker in as the victim.
+      remediation: Upgrade to 4.20.1 or later and enforce state, PKCE, and nonce checks.
+      selected: false
+      rationale: The authority description combines traffic interception and partial-session failure without establishing the exact relay boundary.
+    - source_id: SRC-nvd-saturation-2
+      identifier: CVE-2021-43777 Redash
+      relationship: rejected
+      exploitation_status: no_production_exploitation_claimed
+      impact: Predictable state weakened Google Login CSRF protection.
+      remediation: Use the patched OAuth implementation and session-stored redirect state.
+      selected: false
+      rationale: Predictable misuse of state is not acceptance of a valid attacker-flow token across protected sessions.
+sources_consulted:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-doc-index-2026
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-rfc9700-state-relay
+  - SRC-rfc9700-errata
+  - SRC-rfc6749-state-binding
+  - SRC-rfc7636-state-relay
+  - SRC-oauth21-draft13
+  - SRC-fett-oauth-state-leak
+  - SRC-fett-oauth-analysis
+  - SRC-fastapi-advisory
+  - SRC-nvd-2025-68481
+  - SRC-authlib-advisory
+  - SRC-nvd-2025-68158
+  - SRC-fastify-advisory
+  - SRC-nvd-2026-18165
+  - SRC-openclaw-advisory
+  - SRC-nvd-2026-28477
+  - SRC-nvd-state-query
+  - SRC-nvd-oauth-query
+  - SRC-nvd-saturation-1
+  - SRC-nvd-saturation-2
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisa-search-state
+  - SRC-cisa-search-incident
+  - SRC-cisa-search-saturation
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-mitre-t1204-001
+sources_cited:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-doc-index-2026
+  - SRC-rfc9700-state-relay
+  - SRC-rfc7636-state-relay
+  - SRC-oauth21-draft13
+  - SRC-fett-oauth-state-leak
+  - SRC-fastapi-advisory
+  - SRC-nvd-2025-68481
+  - SRC-authlib-advisory
+  - SRC-nvd-2025-68158
+  - SRC-fastify-advisory
+  - SRC-nvd-2026-18165
+  - SRC-openclaw-advisory
+  - SRC-nvd-2026-28477
+  - SRC-nvd-state-query
+  - SRC-nvd-saturation-1
+  - SRC-cisa-kev-2026-09-01
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-mitre-t1204-001
+sources_rejected:
+  - source_id: SRC-mcp-authorization-2025-11-25
+    reason: Superseded protocol revision retained only for change challenge; current 2026-07-28 text controls.
+  - source_id: SRC-mcp-security-spec-2025-11-25
+    reason: Superseded security page retained only for change challenge; current 2026-07-28 text controls.
+sources_blocked: []
+conflicts:
+  - issue: Authlib upstream advisory display ambiguously lists 1.6.5 as both affected and patched.
+    resolution: Use NVD's normalized fixed release 1.6.6 for the research packet and omit a detailed version boundary from publishable prose.
+  - issue: Re-fetched MCP HTML had dynamic presentation-asset hash changes.
+    resolution: Plain-text semantic comparison of the named authorization-response requirements found no material content change.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T1707-C007, SAF-T1707-C019]
+  rationale: >-
+    Direct authorities establish the OAuth primitive, defenses, formal attack,
+    and several implementation vulnerabilities. The MCP-specific end-to-end
+    application remains an explicit framework inference because no qualifying
+    MCP incident or demonstration was identified.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

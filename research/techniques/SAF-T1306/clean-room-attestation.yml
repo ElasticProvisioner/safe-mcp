@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1306
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1306
+  neutral_name: Rogue Authorization Server
+allowed_inputs:
+- The explicit seed containing the technique ID, neutral name, tactic, clean-room
+  constraints, output path, and reporting requirements.
+- Generic repository templates, blank research schemas, the author-saf-technique skill,
+  and the current validator implementation.
+- Independently discovered direct authoritative sources on approved first-party and
+  standards domains.
+prohibited_inputs:
+- techniques/SAF-T1306/README.md from the existing repository.
+- research/techniques/SAF-T1306/ from the existing repository.
+- techniques/SAF-T1306/detection-rule.yml from the existing repository.
+- Shared source, framework, alignment, SAF, or SAFE registries and sites.
+- Git history, diffs, blame, branches, commits, and repository search.
+- Pull request descriptions, reviews, comments, and prior bundles.
+- Previous conversation content beyond the clean-room seed.
+independent_research:
+  searches:
+  - Direct review of versioned Model Context Protocol authorization specification
+    and final SEP-2468.
+  - Direct review of IETF RFCs 8414, 9207, 9700, and 9728 for issuer, discovery, and
+    mix-up requirements.
+  - Direct review of first-party MCP TypeScript SDK authentication error documentation.
+  - Direct review of formal OAuth mix-up research on arXiv.
+  - Direct NVD API review for CVE-2025-10619 and CVE-2025-4143.
+  - Direct review of the CISA KEV 2026.09.01 JSON feed and multi-agency advisory AA25-239A.
+  - Direct review of first-party Cisco security and incident materials and MITRE ATT&CK
+    technique pages.
+  opened_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-sep-2468
+  - SRC-mcp-release-2026-07-28
+  - SRC-rfc9700
+  - SRC-rfc9207
+  - SRC-rfc8414
+  - SRC-rfc9728
+  - SRC-mcp-ts-auth-errors
+  - SRC-fett-oauth-analysis
+  - SRC-nvd-cve-2025-10619
+  - SRC-nvd-cve-2025-4143
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cisa-aa25-239a
+  - SRC-cisco-arcanedoor
+  - SRC-cisco-security-warnings
+  - SRC-cisco-state-campaigns
+  - SRC-mitre-t1528
+  - SRC-attack-t1556
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect or reconcile against existing SAF-T1306 artifacts before the freeze
+  hash is recorded.
+- Keep all shared source IDs, framework joins, and relationship IDs synthetic until
+  post-freeze integration.
+- Validate only in an isolated synthetic repository containing this bundle and synthetic
+  neighbor and mitigation stubs.
+- Integration must preserve the frozen bundle and record any mechanical ID substitutions
+  separately.
+isolated_validation:
+  repository: /private/tmp/saf-t1306-normalized-mock-20260901
+  validator_source: scripts/validate-technique-research.py copied unchanged from the
+    current repository
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1306
+  result: PASS SAF-T1306
+  detection_command: python3 tests/SAF-T1306/test_detection_rule.py
+  detection_result: 'PASS: 9 cases; 5 alerts; 4 negatives; 1 documented maintenance
+    false positive'
+deferred_joins:
+- Source-ID collision checking against the shared source manifest.
+- Reconciliation of three synthetic neighbor IDs and three synthetic mitigation IDs.
+- Replacement of the synthetic nonzero history SHA with the integrating commit.
+- Verification of the seeded tactic and registration of framework and alignment fragments.
+attestation: The draft and evidence packet were produced without reading any pre-existing
+  SAF-T1306 artifact, shared registry, SAF or SAFE site or repository, repository
+  history, pull request, or prior bundle.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2026: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-update-2026-07: SRC-mcp-release-2026-07-28
+    SRC-rfc9700: SRC-rfc9700
+    SRC-rfc9207: SRC-rfc9207
+    SRC-rfc8414: SRC-rfc8414
+    SRC-rfc9728: SRC-rfc9728
+    SRC-oauth-formal-analysis: SRC-fett-oauth-analysis
+    SRC-nvd-cve-2025-4143: SRC-nvd-cve-2025-4143
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-attack-t1528: SRC-mitre-t1528
+  new_shared_source_records:
+  - SRC-mcp-sep-2468
+  - SRC-mcp-ts-auth-errors
+  - SRC-nvd-cve-2025-10619
+  - SRC-cisa-aa25-239a
+  - SRC-cisco-arcanedoor
+  - SRC-cisco-security-warnings
+  - SRC-cisco-state-campaigns
+  - SRC-attack-t1556
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-20
+  - SAF-M-31
+  - SAF-M-37
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1507
+    SAF-T9002: SAF-T1304
+    SAF-T9003: SAF-T1406
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-13
+    SAF-M-9002: SAF-M-14
+    SAF-M-9003: SAF-M-18
+  normalization_refreeze:
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1306-normalized/bundle
+    freeze_manifest_sha256: 21ba075e50b566556a98a29c56364e44f46f806180a7bd1392fda3a457d9b00e
+    scope: Mechanical relocation of test artifacts to canonical tests/SAF-T1306 paths; no research or substantive change.
+  status: integrated_and_repository_validated

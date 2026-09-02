@@ -1,0 +1,38 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1805
+    name: Context Snapshot Capture
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0009
+    technique_path: techniques/SAF-T1805/README.md
+    research_packet: research/techniques/SAF-T1805
+    related_techniques:
+      - SAF-T1603
+      - SAF-T1204
+      - SAF-T1505
+      - SAF-T1102
+    mitigations:
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-20
+      - SAF-M-21
+      - SAF-M-29
+      - SAF-M-37
+      - SAF-M-69
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1805/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1805/detect_context_snapshot_capture.py
+        - tests/SAF-T1805/events.jsonl
+        - tests/SAF-T1805/expected_alerts.json
+        - tests/SAF-T1805/test_detector.py
+        - research/techniques/SAF-T1805/validation/detection-tests.txt
+        - research/techniques/SAF-T1805/validation/strict-validator.txt
+        - research/techniques/SAF-T1805/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1213
+        type: analogous

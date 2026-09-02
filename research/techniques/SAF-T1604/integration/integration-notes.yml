@@ -1,0 +1,119 @@
+version: 1
+technique_id: SAF-T1604
+freeze_state: integrated_and_validated_after_verified_freeze
+generated_on: 2026-09-02
+
+integration_policy:
+  - Replace target files atomically; do not inspect old target prose or a diff that reveals it.
+  - Shared registries may be opened only after this bundle is frozen and only for collision-free mechanical joins.
+  - Do not introduce new facts, examples, sources, classifications, or omissions from old target material.
+
+synthetic_joins:
+  tactics: []
+  tactic_note: ATK-TA0007 was user-supplied and is not synthetic.
+  neighbors:
+    - id: SAF-T1601
+      label: MCP Server Enumeration
+      action: Reconciled as the canonical endpoint or service-discovery neighbor.
+    - id: SAF-T1605
+      label: Capability Mapping
+      action: Reconciled as the canonical capability-mapping neighbor.
+  mitigations:
+    - id: no_exact_match
+      label: Minimize Unnecessary Version Detail
+      action: Preserved as an explicit canonical mitigation gap.
+    - id: SAF-M-29
+      label: Restrict Discovery Access
+      action: Reconciled with SAF-M-16 for scope limitation, SAF-M-12 for logging, and SAF-M-20 for anomaly correlation.
+  history_sha:
+    value: "1111111111111111111111111111111111111111"
+    action: Replace with the honest integration commit SHA; do not claim inherited prior history.
+
+source_id_joins:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-2026-versioning
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc9110-server
+  - SRC-nmap-vscan
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-anthropic-espionage-2025-11
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-cisa-kev-2026-09-01
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-attack-t1518
+  - SRC-attack-t1592-004
+source_id_action: Reuse identical stable IDs when the canonical URL and record semantics match; otherwise rename consistently across all bundle files without changing the source set.
+
+path_joins:
+  - source: techniques/SAF-T1604/
+    destination: techniques/SAF-T1604/
+    action: Atomic target replacement after freeze.
+  - source: research/techniques/SAF-T1604/
+    destination: research/techniques/SAF-T1604/
+    action: Atomic target replacement after freeze.
+  - source: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+    action: Merge only records not already represented after stable-ID reconciliation.
+  - source: framework-fragment.yml
+    destination: research/framework-model.yml
+    action: Merge the technique record after replacing synthetic joins.
+  - source: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+    action: Merge reconciliation issues and resolve the medium synthetic-join issue during integration.
+  - source: validation/
+    destination: research/techniques/SAF-T1604/validation/
+    action: Retained as isolated and canonical validation proof.
+
+completed_real_repository_joins:
+  - Reconciled source-ID collisions in the real source manifest.
+  - Replaced synthetic neighbor roles and reconciled mitigation roles, including the explicit banner-minimization gap.
+  - Replaced the synthetic history SHA with the baseline integration SHA.
+  - Merged framework and alignment records and reran strict repository validation.
+
+acquisition_corpus:
+  included_in_bundle: false
+  retained_at: /private/tmp/saf-t1604-sources
+  files:
+    - path: anthropic-campaign.pdf
+      sha256: f35a7b90d06e60c6fc14c99c12945f3d13026861dee97ebb2ed5ac5e1d8bebf5
+    - path: apache-core.html
+      sha256: ad9d21f5483d45567405632681a6707896c00012a74db2e7e874f1b459fdaf4f
+    - path: apache-vulnerabilities.html
+      sha256: 32095247ca1e16b4637d0f3b8816cda4ff76a1e3fd017f5c915ecaa0c5b81781
+    - path: attack-t1046.html
+      sha256: 8d2041a9c3fc11164cb1dbb71ba76347f74dab256248702eb2aeba203ac2039b
+    - path: known_exploited_vulnerabilities.json
+      sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e
+    - path: mcp-discovery.html
+      sha256: f6687100100233e9511e4151fce77aeab30af5bd8d0005306f4c7581b3c27be8
+    - path: mcp-versioning.html
+      sha256: 486be7a45b441221d76b9b6f8e8d54ed15e25037cc7d0d3e95b86cb2d6a16fc8
+    - path: nginx-core.html
+      sha256: f99f5989fa846e74d6c533581389ecb8e3f55b9c7dcb9948f5c37315e1ad4b3a
+    - path: nmap-vscan.html
+      sha256: 259c521c8da71c4eff883f25e9750a6e5c36b4ccfa3972a96975c0814681e3ae
+    - path: owasp-logging.html
+      sha256: f4c36a910b2f9b403bd1e97a6ec878f103419385b882722b821235c9c9977f77
+    - path: rfc9110.html
+      sha256: d431760660ea44e130f6e919dab216df2d0b3a490567a98089267523368fe1e5
+
+contamination:
+  detected: false
+  details: []
+
+post_freeze_reconciliation:
+  canonical_neighbors: [SAF-T1601, SAF-T1605]
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-20, SAF-M-29]
+  unmatched_mitigation_role: Minimize Unnecessary Version Detail
+  attack_mappings:
+    - {id: T1046, type: analogous}
+    - {id: T1518, type: analogous}
+  validation_artifacts:
+    - research/techniques/SAF-T1604/validation/detection-test.txt
+    - research/techniques/SAF-T1604/validation/strict-validator.txt
+  acquisition_corpus_disposition: omitted_from_repository_under_reference_only_rights
+  result: integrated_and_validated

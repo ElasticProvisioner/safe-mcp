@@ -1,0 +1,79 @@
+version: 1
+technique_id: SAF-T1005
+name: Exposed Endpoint Exploit
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Obtain initial unauthorized access to a deployed MCP HTTP endpoint or an MCP
+  support, inspection, test, or management endpoint, then invoke a protocol
+  capability or privileged backend action.
+
+scope:
+  security_boundary: >-
+    Untrusted network client or browser origin into an MCP server, companion
+    proxy, or management interface that can invoke capabilities or act with
+    server-side authority.
+  in_scope:
+    - Directly reachable sensitive MCP operations with missing, disabled, or bypassed authentication or authorization.
+    - Browser-to-local access enabled by missing Origin, Host, or DNS-rebinding protection.
+    - Support or test routes whose access-control failure permits tool, resource, configuration, or backend-process actions.
+  out_of_scope:
+    - Server impersonation or name collision, which changes the trusted endpoint identity and belongs to SAF-T1004.
+    - OAuth authorization phishing, which induces a user authorization decision and belongs to SAF-T1007.
+    - Command injection in arguments supplied after an authorized tool invocation, which belongs to SAF-T1101.
+    - Follow-on privilege escalation, persistence, collection, exfiltration, or impact after the initial unauthorized invocation.
+  affected_components:
+    - Streamable HTTP and legacy SSE endpoints
+    - Local MCP listeners reachable from browsers
+    - Inspection proxies and test or management routes
+    - Tool and resource handlers
+    - Edge gateways, Origin checks, Host checks, authentication, and authorization middleware
+    - Downstream services reached with server-side credentials
+
+nearest_neighbors:
+  - technique_id: SAF-T1004
+    distinction: >-
+      SAF-T1004 changes or collides with server identity; SAF-T1005 reaches the
+      actual endpoint through exposure or a failed access boundary.
+  - technique_id: SAF-T1007
+    distinction: >-
+      SAF-T1007 depends on a user completing an authorization flow; SAF-T1005
+      reaches a sensitive operation without a valid authorization decision.
+  - technique_id: SAF-T1101
+    distinction: >-
+      SAF-T1101 abuses unsafe command parsing after a tool is reached;
+      SAF-T1005 is complete when endpoint exposure yields an unauthorized
+      sensitive invocation.
+
+required_evidence:
+  - Establish that an untrusted network client or browser origin can reach the endpoint boundary.
+  - Establish the missing, disabled, or bypassed access-control condition and the sensitive operation accepted.
+  - Establish whether end-to-end behavior is observed, demonstrated, research-derived, or hypothesized.
+  - Search current production incidents, vulnerabilities, advisories, exploitation status, demonstrations, remediation, and contrary evidence.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - HTTP request and response fields including timestamp, correlation ID, source zone, server, route, method, and status.
+    - Authentication, authorization, Origin or Host decision, RPC method, action classification, and outcome.
+    - Endpoint process or downstream action telemetry joined by correlation or trace identifier.
+
+safe_example_constraints:
+  - Use only synthetic events, reserved invalid domains, placeholder identifiers, and non-destructive operation names.
+  - Do not publish exploit URLs, live targets, credentials, executable commands, or destructive payloads.
+  - Show only the minimum fields required to explain and validate the analytic.
+
+completion_evidence:
+  - Every substantive publishable unit is joined to a validated claim and directly reviewed source or declared local artifact.
+  - Excluded or unverified candidates are omitted from publishable prose and recorded in traceability-ledger.yml.
+  - All five research passes and two consecutive no-change saturation passes are recorded.
+  - Positive, negative, boundary, malformed, and expected false-positive detection tests pass deterministically.
+  - Publication rights, clean-room integrity, evidence classification, framework alignment, and quality gates pass in the isolated mock repository.

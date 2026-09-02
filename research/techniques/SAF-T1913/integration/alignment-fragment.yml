@@ -1,0 +1,29 @@
+version: 1
+issues:
+  - id: SAF-T1913-A001
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1001
+      - SAF-T1902
+      - SAF-T1911
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    finding: Clean-room validation used three synthetic neighbor IDs because the shared framework registry was prohibited before freeze.
+    resolution: SAF-T1001 resolves prerequisite tool poisoning, SAF-T1911 resolves the broader parameter-transfer channel, and SAF-T1902 resolves response or URI-carrier exfiltration. SSRF remains an explicit conceptual out-of-scope boundary because no exact canonical SAF technique exists.
+  - id: SAF-T1913-A002
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1913
+    severity: medium
+    status: resolved
+    finding: No shared SAF mitigation IDs were consulted; the technique proposes approval, destination filtering, DLP, and MCP-aware egress telemetry roles.
+    resolution: Nine canonical mitigations cover audit, allowlisting, scope, callback destinations, privilege, approval, anomaly detection, output DLP, and per-invocation capability controls.
+  - id: SAF-T1913-A003
+    triggered_by: SAF-T1913
+    affects:
+      - SAF-T1913
+    severity: low
+    status: resolved
+    finding: MITRE ATT&CK T1048 resembles the channel but does not model MCP tools/call semantics.
+    resolution: Record the mapping as Analogous, not Direct.

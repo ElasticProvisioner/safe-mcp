@@ -1,0 +1,25 @@
+version: 1
+technique_id: SAF-T1111
+frozen_on: "2026-09-01"
+mechanical_joins:
+  tactics:
+    - {synthetic: ATK-TA0002, action: Confirm the supplied Execution tactic ID and name in the canonical tactic registry.}
+  neighbors:
+    - {synthetic: SAF-T1110, behavior_boundary: Input-driven agent hijacking, action: Replace with the canonical neighbor ID and name without changing independently sourced scope facts.}
+    - {synthetic: SAF-T1112, behavior_boundary: Direct command-interpreter abuse, action: Replace with the canonical neighbor ID and name without changing independently sourced scope facts.}
+  mitigations:
+    - {synthetic: SAF-M-1, behavior: Isolated agent execution, action: Resolve to the canonical mitigation ID or register a new mitigation issue.}
+    - {synthetic: SAF-M-2, behavior: Agent approval policy, action: Resolve to the canonical mitigation ID or register a new mitigation issue.}
+  source_ids:
+    - {scope: all SRC identifiers in source-manifest-fragment.yml, action: Deduplicate against the shared manifest only after freeze; preserve URLs, authors, locators, dates, and provenance.}
+  repository_history:
+    - {synthetic_sha: "1111111111111111111111111111111111111111", action: Replace with the honest integration commit SHA after atomic replacement; do not inspect old target content.}
+  paths:
+    - {fragment: source-manifest-fragment.yml, destination: research/source-manifest.yml}
+    - {fragment: framework-fragment.yml, destination: research/framework-model.yml}
+    - {fragment: alignment-fragment.yml, destination: research/alignment-ledger.yml}
+validation_constraints:
+  - Replace target artifacts atomically without opening prior target files or revealing them in a diff.
+  - Re-run detection, strict research validation, and repository regression tests after joins.
+  - Source caches and the synthetic mock remain outside the bundle.
+research_changes_after_freeze: prohibited

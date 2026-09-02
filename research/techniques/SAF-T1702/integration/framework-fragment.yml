@@ -1,0 +1,33 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1702
+    name: Shared-Memory Poisoning
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0008
+    technique_path: techniques/SAF-T1702/README.md
+    research_packet: research/techniques/SAF-T1702
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1705
+    mitigations:
+      - SAF-M-12
+      - SAF-M-21
+      - SAF-M-29
+      - SAF-M-30
+      - SAF-M-32
+      - SAF-M-69
+      - SAF-M-74
+    detection:
+      test_status: passed
+      rule: techniques/SAF-T1702/detection-rule.yml
+      test_artifacts:
+        - tests/SAF-T1702/test_detector.py
+        - tests/SAF-T1702/fixtures.json
+        - tests/SAF-T1702/test-results.json
+        - research/techniques/SAF-T1702/validation/detection-test.txt
+        - research/techniques/SAF-T1702/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1565.001
+        type: analogous

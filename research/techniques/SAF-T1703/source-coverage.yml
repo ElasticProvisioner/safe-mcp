@@ -1,0 +1,279 @@
+version: 1
+technique_id: SAF-T1703
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct review: MCP 2026-07-28 Tools and Architecture specifications"
+        - "Direct review: MCP official tool-annotation security guidance"
+      material_changes:
+        - Established host composition, isolated client-server sessions, tool-result flow, and protocol security responsibilities.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "Domain-restricted CVE and NVD search for MCP prompt injection, tool poisoning, exfiltration, and code execution"
+        - "Direct vendor incident and advisory search for cross-tool and cross-server agent chains"
+      material_changes:
+        - Selected CVE-2025-54135 and CVE-2025-34072 as direct vulnerabilities.
+        - Classified current AI-gateway compromises as adjacent infrastructure exploitation.
+        - Recorded the absence of a contract-exact, public external-adversary production incident.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct OpenAI search for prompt-injection red-team demonstrations and cross-plugin evidence"
+        - "Direct USENIX publisher search for tool-output injection, cross-application attack, and causal attribution research"
+      material_changes:
+        - Selected the OpenAI Atlas demonstration and retained AttriGuard as causal-detection evidence.
+        - Classified MUZZLE and OpenAI URL-exfiltration evidence as corroborating but not selected examples.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct Microsoft guidance search for MCP telemetry correlation, action guards, provenance, and sequence governance"
+        - "Direct protocol review for input validation, confirmations, result validation, and logging"
+      material_changes:
+        - Defined a cross-event behavioral analytic using trace, causality, tool identity, intent, approval, and action class.
+        - Added a locally chosen 300-second inclusive window with explicit tuning limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "Direct Anthropic and OpenAI search for contrary evidence, accidental injections, and incident-evidence limits"
+        - "Direct MITRE ATT&CK review of T1072, T1021, and T1210"
+      material_changes:
+        - Bounded evidence at Demonstrated rather than Observed.
+        - Marked T1072 analogous and rejected T1021 and T1210 as narrower mechanism mappings.
+    - pass: iterative_follow_up_material
+      completed_on: "2026-09-02"
+      queries:
+        - "site:microsoft.com/en-us/security/blog cross-tool agent prompt injection MCP incident"
+      material_changes:
+        - Added Microsoft AI Red Team deployed-system evidence of zero-click chains with lateral-movement outcomes.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "site:usenix.org/conference/usenixsecurity26 tool output tool call prompt injection agent"
+        - "site:microsoft.com/en-us/security/blog tool response subsequent tool agent injection"
+        - "site:openai.com tool output subsequent tool prompt injection"
+        - "site:anthropic.com tool output subsequent tool prompt injection"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "site:cve.org/CVERecord MCP tool poisoning"
+        - "site:nvd.nist.gov/vuln/detail MCP tool poisoning"
+        - "site:microsoft.com/en-us/security/blog agent cross-server tool poisoning incident"
+        - "site:openai.com/index agent cross-tool prompt injection"
+      material_changes: []
+  rationale: >-
+    Direct protocol, vendor, CVE, original advisory, conference, incident,
+    detection, and framework authorities cover every publishable proposition.
+    A material Microsoft red-team lead found during follow-up was incorporated;
+    the two subsequent domain-restricted passes produced no contract-changing
+    source, example, mapping, detection field, or evidence-status change.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 11
+  selected_examples:
+    - SRC-ms-redteam-update-2026
+    - SRC-ghsa-cursor-4cxx-2025
+    - SRC-cve-34072
+    - SRC-openai-atlas
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-ms-redteam-update-2026
+      identifier: Microsoft AI Red Team deployed-agent engagements, 2025-2026
+      relationship: direct_demonstration
+      exploitation_status: Authorized red-team exploitation against deployed agentic systems; not a public external-adversary incident.
+      impact: Several zero-click end-to-end chains beginning with external input achieved exfiltration or lateral movement.
+      remediation: Microsoft recommends compound-action review, deterministic approval, provenance, sequence analysis, and supply-chain controls.
+      selected: true
+      rationale: Highest-impact direct lateral-movement evidence, although public details do not expose customer identities or a full event trace.
+    - source_id: SRC-ghsa-cursor-4cxx-2025
+      identifier: CVE-2025-54135 / GHSA-4cxx-hrm3-49rm
+      relationship: direct_vulnerability
+      exploitation_status: Publicly disclosed and demonstrated; no production exploitation established by the reviewed advisory.
+      impact: Persistent code execution through prompt-injected MCP configuration after project restart.
+      remediation: Cursor added approval for MCP-related configuration changes in version 1.3.9.
+      selected: true
+      rationale: Direct, high-impact cross-boundary chain with a vendor patch and independent CVE identifier.
+    - source_id: SRC-cve-34072
+      identifier: CVE-2025-34072
+      relationship: direct_vulnerability
+      exploitation_status: Publicly disclosed controlled demonstration; no production exploitation established.
+      impact: Local-secret retrieval and disclosure through a distinct Slack-mediated path.
+      remediation: The experimental unmaintained server was archived; mitigation requires removing it or isolating and constraining tools.
+      selected: true
+      rationale: Direct multi-capability data-disclosure chain with clear prerequisites and boundary transitions.
+    - source_id: SRC-openai-atlas
+      identifier: OpenAI Atlas malicious-email red-team scenario
+      relationship: direct_demonstration
+      exploitation_status: Automated red-team demonstration, patched; not reported as an in-the-wild intrusion.
+      impact: An email encountered during a routine workflow induced a later unintended resignation email.
+      remediation: OpenAI reports that the discovered attack was patched and incorporated into ongoing hardening.
+      selected: true
+      rationale: Direct cross-application action with user-visible integrity impact and first-party characterization.
+    - source_id: SRC-usenix-attriguard
+      identifier: AttriGuard benchmark demonstrations
+      relationship: direct_demonstration
+      exploitation_status: Controlled empirical evaluation across models and benchmarks.
+      impact: Untrusted tool outputs induced unauthorized tool calls affecting confidentiality or integrity properties.
+      remediation: Causal attribution and user-intent controls reduced attack success in the reported evaluation.
+      selected: false
+      rationale: Strong direct evidence retained for detection design, but displaced from the four-example set by higher-impact vulnerability and deployed-system evidence.
+    - source_id: SRC-usenix-muzzle
+      identifier: MUZZLE cross-application web-agent demonstrations
+      relationship: direct_demonstration
+      exploitation_status: Controlled research evaluation.
+      impact: Cross-application prompt-injection attacks violated confidentiality, availability, or privacy properties.
+      remediation: The work is an evaluation framework rather than a production patch advisory.
+      selected: false
+      rationale: Corroborating empirical evidence; less contract-specific than selected tool and MCP examples.
+    - source_id: SRC-microsoft-ai-gateway-incident
+      identifier: LiteLLM, RAGFlow, and Kestra observed compromises
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed production compromises of AI infrastructure.
+      impact: Gateway or application compromise, credential access, and data exfiltration.
+      remediation: Patch vulnerable gateways, rotate credentials, restrict exposure, and investigate control-plane access.
+      selected: false
+      rationale: Conventional infrastructure exploitation did not require adversarial influence propagating from one agent tool into another.
+    - source_id: SRC-contextleak
+      identifier: ContextLeak malicious-tool demonstrations
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Controlled empirical research.
+      impact: A malicious tool can induce an agent to disclose context as tool arguments.
+      remediation: Context-confidentiality auditing and stronger tool/data-flow controls are proposed.
+      selected: false
+      rationale: The mechanism can complete through one malicious tool without the distinct second-boundary pivot required by the contract.
+    - source_id: SRC-openai-url
+      identifier: WebPilot cross-plugin historical example
+      relationship: historical_analogy
+      exploitation_status: Prior controlled demonstration summarized in a later OpenAI paper.
+      impact: A page retrieved through one plugin induced another plugin to retrieve and disclose user email data.
+      remediation: Restrict exact-URL retrieval and enforce source-to-sink information-flow policy.
+      selected: false
+      rationale: Highly relevant historical analogy, but the original artifact was not independently re-opened and therefore was omitted from publishable example claims.
+    - source_id: SRC-arxiv-cross-tool-2026
+      identifier: Cross-Tool Poisoning Attacks against MCP-Integrated AI Agents
+      relationship: direct_demonstration
+      exploitation_status: Controlled preprint evaluation across seven MCP clients.
+      impact: Poisoned tool content induced unauthorized follow-on tool calls.
+      remediation: The paper evaluates attack behavior and defenses rather than documenting a vendor patch.
+      selected: false
+      rationale: Direct corroboration, but the final four prioritize a peer-reviewed causal study, vendor vulnerabilities, and deployed-system red-team evidence.
+    - source_id: SRC-t1206-ms-config-risk
+      identifier: Observed unauthenticated MCP server exposures
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed exposed and severely insecure remote MCP deployments; not a reported cross-tool compromise.
+      impact: Unauthenticated access to sensitive internal tools and data under server security context.
+      remediation: Require authentication, user-scoped authorization, exposure control, and least-privilege execution context.
+      selected: false
+      rationale: The defining defect is single-server authentication and execution context, not adversarial influence crossing into a second tool boundary.
+sources_consulted:
+  - SRC-anthropic-rfi
+  - SRC-contextleak
+  - SRC-cve-34072
+  - SRC-cve-cursor
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-t1021
+  - SRC-mitre-t1072
+  - SRC-mitre-t1210
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-ms-agt
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-redteam-update-2026
+  - SRC-ms-indirect-injection-2025
+  - SRC-openai-atlas
+  - SRC-openai-monitor
+  - SRC-openai-url
+  - SRC-usenix-attriguard
+  - SRC-usenix-muzzle
+  - SRC-anthropic-containment
+  - SRC-arxiv-cross-tool-2026
+  - SRC-arxiv-mcp-threat
+  - SRC-cisa-bulletin
+  - SRC-google-ai-misuse
+  - SRC-t1206-ms-config-risk
+  - SRC-nvd-34072
+  - SRC-openai-agent-pi-defense-2026
+sources_cited:
+  - SRC-anthropic-rfi
+  - SRC-cve-34072
+  - SRC-cve-cursor
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-t1072
+  - SRC-ms-agt
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-redteam-update-2026
+  - SRC-ms-indirect-injection-2025
+  - SRC-openai-atlas
+  - SRC-openai-monitor
+  - SRC-usenix-attriguard
+sources_rejected:
+  - source_id: SRC-mcp-annotations-2026-03-16
+    reason: Useful direct practice context, but no unique publishable proposition remained after higher-authority protocol and direct evidence were used.
+  - source_id: SRC-microsoft-ai-gateway-incident
+    reason: Observed compromises were conventional gateway or application exploitation without agent-mediated cross-tool influence.
+  - source_id: SRC-openai-url
+    reason: Later-paper historical summary was retained for research context, but the original cross-plugin artifact was not independently re-opened.
+  - source_id: SRC-usenix-muzzle
+    reason: Empirical corroboration was less tool-boundary-specific than AttriGuard and the selected examples.
+  - source_id: SRC-contextleak
+    reason: The demonstrated context disclosure can occur through one malicious tool without a distinct target boundary.
+  - source_id: SRC-mitre-t1021
+    reason: Remote Services is narrower and requires a remote-service mechanism not inherent to this technique.
+  - source_id: SRC-mitre-t1210
+    reason: Exploitation of Remote Services requires a software-vulnerability mechanism not inherent to this technique.
+  - source_id: SRC-openai-agent-pi-defense-2026
+    reason: Direct defense research corroborated source-to-sink controls but added no unique publishable proposition after higher-priority sources were selected.
+  - source_id: SRC-anthropic-containment
+    reason: Direct practice guidance corroborated defense in depth but added no unique publishable proposition after protocol and incident-response sources were selected.
+  - source_id: SRC-arxiv-cross-tool-2026
+    reason: Direct preprint evidence was relevant but redundant with peer-reviewed and first-party demonstrations used in the technique.
+  - source_id: SRC-arxiv-mcp-threat
+    reason: The preprint threat model and experiments duplicated higher-priority protocol and empirical evidence.
+  - source_id: SRC-cisa-bulletin
+    reason: The weekly bulletin is a secondary CVE listing and did not establish exploitation status or technical detail beyond direct authorities.
+  - source_id: SRC-nvd-34072
+    reason: NVD supported identifier and source discovery, while publishable technical claims use the original researcher advisory.
+  - source_id: SRC-google-ai-misuse
+    reason: The January 2025 threat-intelligence assessment is useful contrary historical context but predates the selected 2025-2026 demonstrations and cannot establish current absence.
+  - source_id: SRC-t1206-ms-config-risk
+    reason: Observed unauthenticated MCP exposure is a single-server authorization problem, not a cross-tool pivot.
+sources_blocked: []
+blocked_leads:
+  - url: https://layerxsecurity.com/blog/claude-desktop-extensions-rce/
+    provenance: Exact URL supplied by SRC-mcp-annotations-2026-03-16, a direct non-GitHub MCP authority.
+    result: HTTP 403; not used as a source or publishable claim.
+  - url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    provenance: Direct CISA catalog endpoint.
+    result: HTTP 403 during review; no KEV exploitation-status claim was made.
+conflicts:
+  - issue: Microsoft reports zero-click lateral-movement outcomes in deployed-system red-team engagements, but no named external-adversary incident or complete event trace is public.
+    resolution: Classified the technique as Demonstrated, selected the engagements as direct demonstrations, and preserved the production-incident gap.
+  - issue: MCP tool composition is intended behavior and many prompt-like inputs observed in internal agents were accidental or non-malicious.
+    resolution: The contract requires unsupported user intent, a distinct boundary, consequential action, causal linkage, and absent or bypassed approval; the detector documents remaining false positives.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1703-C003
+    - SAF-T1703-C004
+    - SAF-T1703-C018
+  rationale: >-
+    Direct red-team, benchmark, and vulnerability demonstrations establish the
+    complete source-influence-to-second-boundary mechanism. The public corpus
+    does not support Observed because it lacks a named external-adversary
+    production incident with an auditable contract-exact event sequence.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

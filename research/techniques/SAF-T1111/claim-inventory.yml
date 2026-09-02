@@ -1,0 +1,392 @@
+version: 1
+technique_id: SAF-T1111
+claims:
+  - id: SAF-T1111-C001
+    statement: Adversaries have intentionally used an AI coding-agent CLI as a model-mediated execution and orchestration intermediary for live cyber operations.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-tir-2025-08
+        support: direct
+        exact_locators: [pages 4-9, GTG-2002 case study]
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators: [pages 3 and 6-12, executive summary and attack lifecycle]
+    corroboration: Two separate Anthropic Threat Intelligence investigations document the defining behavior in different campaigns.
+    limitations: [Visibility is vendor-specific and victims are not publicly identified.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C002
+    statement: GTG-1002 used Claude Code and MCP-connected tools across live intrusions, with the agent performing most tactical work and humans retaining selected authorization decisions.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators: [pages 3, 6-12, operational architecture through response]
+    corroboration: The report's architecture, lifecycle, tempo, and response sections describe the same campaign from distinct evidence angles.
+    limitations: [The source is the service provider's own investigation and withholds victim identities and indicators.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C003
+    statement: GTG-2002 used Claude Code during a multi-organization data-theft and extortion campaign, including reconnaissance, credential activity, intrusion support, and data analysis.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-tir-2025-08
+        support: direct
+        exact_locators: [pages 4-9, Vibe hacking case study]
+    corroboration: The summary, technical sophistication, lifecycle, and mitigation subsections provide internal corroboration.
+    limitations: [No independent victim report or complete indicator set was located in the reviewed direct-authority corpus.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C004
+    statement: Major coding-agent CLIs support command or tool execution and expose unattended, non-interactive, or permission-bypass modes.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-codex-cli
+        support: direct
+        exact_locators: [codex exec table and Flag combinations and safety tips]
+      - source_id: SRC-anthropic-claude-cli
+        support: direct
+        exact_locators: [CLI flags table entries for print and dangerously-skip-permissions]
+      - source_id: SRC-google-gemini-sandbox
+        support: corroborating
+        exact_locators: [Overview of sandboxing and Quickstart]
+    corroboration: Three first-party product documentation sets establish comparable execution surfaces without asserting identical implementations.
+    limitations: [Mode names and safeguards vary by product and version.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C005
+    statement: Approval prompts, command policies, folder or working-directory boundaries, and sandboxing are intended to constrain agent CLI actions, while bypass modes require external isolation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-claude-code-security
+        support: direct
+        exact_locators: [Permission-based architecture and Built-in protections]
+      - source_id: SRC-openai-codex-cli
+        support: direct
+        exact_locators: [codex exec unsafe-mode entry and Flag combinations and safety tips]
+      - source_id: SRC-google-gemini-sandbox
+        support: corroborating
+        exact_locators: [Overview of sandboxing and Configuration]
+      - source_id: SRC-ghsa-gemini-trust
+        support: corroborating
+        exact_locators: [Folder Trust in Headless Mode and Tool Allowlisting under --yolo]
+    corroboration: Independent first-party documentation across three products converges on isolation and approval boundaries.
+    limitations: [Documentation states intended controls, not measured effectiveness against every adversary.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C006
+    statement: Claude Code advisories disclosed confirmation-bypass paths requiring untrusted content in agent context and fixed them in later versions.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-claude-command-bypass
+        support: direct
+        exact_locators: [Description, affected versions, patched versions, and credits]
+      - source_id: SRC-ghsa-claude-exfil
+        support: direct
+        exact_locators: [Description, affected versions, patched versions, and credits]
+      - source_id: SRC-nvd-t1103-corpus
+        support: corroborating
+        exact_locators: [CVE-2025-54795 and CVE-2025-55284 records]
+    corroboration: NVD records corroborate identifiers, ranges, impacts, and CISA SSVC exploitation state.
+    limitations: [These vulnerabilities describe input-driven approval bypass, not deliberate adversary operation of a CLI.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C007
+    statement: CVE-2025-59532 allowed model-generated working-directory state to widen Codex CLI's writable sandbox boundary; fixed versions validate the original workspace boundary.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-codex-sandbox
+        support: direct
+        exact_locators: [Description, Remediation, affected versions, patched versions, and credit]
+      - source_id: SRC-nvd-t1103-corpus
+        support: corroborating
+        exact_locators: [CVE-2025-59532 record]
+    corroboration: The maintainer advisory and NVD record agree on the flaw, affected range, and fixes.
+    limitations: [No reviewed source established exploitation in the wild; the behavior is adjacent to the intentional-use contract.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C008
+    statement: CVE-2026-12537 and GHSA-wpqr-6v78-jr5g document headless Gemini CLI trust and allowlist weaknesses fixed in Gemini CLI 0.39.1 and run-gemini-cli 0.1.22.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-gemini-trust
+        support: direct
+        exact_locators: [Folder Trust in Headless Mode, Tool Allowlisting under --yolo, Patches, and Credits]
+      - source_id: SRC-nvd-t1103-corpus
+        support: corroborating
+        exact_locators: [CVE-2026-12537 record]
+    corroboration: The maintainer advisory and NVD record establish the affected configurations and fixed versions.
+    limitations: [The advisory is an adjacent hostile-input workflow, not a production incident of deliberate CLI weaponization.]
+    conflicts: [The original GHSA page displayed no CVE while the later NVD record assigns CVE-2026-12537; both identifiers are retained with dates.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C009
+    statement: The reviewed NVD and CISA records did not establish in-the-wild exploitation of the four reviewed product vulnerabilities as of 2026-09-01.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-t1103-corpus
+        support: direct
+        exact_locators: [CISA SSVC exploitation fields for the reviewed CVEs and keyword query results dated 2026-09-01]
+      - source_id: SRC-cisa-kev-catalog-page-2026-09-01
+        support: corroborating
+        exact_locators: [catalogVersion 2026.09.01, exact-ID absence check]
+    corroboration: Neither the NVD exploitation fields nor the current KEV catalog established active exploitation for the reviewed records.
+    limitations: [Catalog absence does not prove that exploitation has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a narrow dated absence conclusion from two government catalogs.
+    status: validated
+  - id: SAF-T1111-C010
+    statement: Sysmon process-creation telemetry can include full command lines for current and parent processes plus process and session identifiers for correlation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators: [Overview of Sysmon Capabilities, bullets for process creation, process GUID, and session GUID]
+    corroboration: The same official page identifies process creation and network connection telemetry as investigation inputs.
+    limitations: [Sysmon provides telemetry but not analysis, and equivalent fields vary on non-Windows platforms.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C011
+    statement: A recognized agent CLI parent spawning a shell while its parent command line contains a documented unsafe-mode marker is a deterministic but narrow analytic for risky agent execution.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators: [Overview of Sysmon Capabilities]
+      - source_id: SRC-openai-codex-cli
+        support: direct
+        exact_locators: [unsafe bypass mode and safety tips]
+      - source_id: SRC-anthropic-claude-cli
+        support: corroborating
+        exact_locators: [dangerously-skip-permissions flag]
+      - source_id: SRC-ghsa-gemini-trust
+        support: corroborating
+        exact_locators: [Tool Allowlisting under --yolo]
+      - source_id: SRC-anthropic-tir-2025-08
+        support: context
+        exact_locators: [pages 4-9, request patterns and provider enforcement]
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: context
+        exact_locators: [pages 6-13, request tempo, target breadth, and provider response]
+    corroboration: Telemetry and flag semantics are independently documented; the conjunction is SAF-authored and tested synthetically.
+    limitations: [The alert does not prove malicious intent and misses sessions without exposed markers or shell lineage.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The source facts support each feature; combining them into an analytic is an explicit defensive inference.
+    status: validated
+  - id: SAF-T1111-C012
+    statement: Authorized isolated automation is an expected false positive, and absent parent-lineage, unknown agent names, direct tool calls, or retained approvals are analytic blind spots.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-codex-cli
+        support: direct
+        exact_locators: [unsafe-mode warning and isolated-runner guidance]
+      - source_id: SRC-sysmon-15-21
+        support: context
+        exact_locators: [statement that Sysmon does not provide analysis]
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: context
+        exact_locators: [pages 6-12, diverse autonomous tool use]
+      - source_id: SRC-anthropic-claude-cli
+        support: corroborating
+        exact_locators: [dangerously-skip-permissions flag]
+      - source_id: SRC-ghsa-gemini-trust
+        support: corroborating
+        exact_locators: [Tool Allowlisting under --yolo]
+      - source_id: SRC-anthropic-claude-code-security
+        support: corroborating
+        exact_locators: [sandbox and approval guidance]
+    corroboration: Product guidance establishes legitimate isolated use; incident evidence shows execution paths broader than a single shell lineage.
+    limitations: [Environment-specific baselines are required.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: False positives and blind spots follow from the rule design and documented execution options.
+    status: validated
+  - id: SAF-T1111-C013
+    statement: The process-lineage analytic can be deterministically tested with positive, negative, boundary, malformed, normalization, and expected-lookalike synthetic events.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators: [documented process, parent command-line, process GUID, and session GUID fields]
+      - source_id: SRC-openai-codex-cli
+        support: corroborating
+        exact_locators: [documented bypass marker]
+    corroboration: The test fixtures instantiate the documented fields and marker semantics without executing commands.
+    limitations: [Synthetic tests validate deterministic logic, not field availability or effectiveness in production.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Representative case design is derived from the documented fields and product modes.
+    status: validated
+  - id: SAF-T1111-C014
+    statement: ATT&CK T1059 directly maps the command-interpreter execution performed through the agent CLI, while AI-mediated planning is additional SAF context.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: [T1059 description, Execution tactic, and DET0516 detection strategy]
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: corroborating
+        exact_locators: [pages 6-12, commands and tools executed by the framework]
+    corroboration: ATT&CK defines interpreter abuse and the incident report supplies the agent-mediated instance.
+    limitations: [ATT&CK T1059 does not model the AI orchestration layer.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The direct mapping applies to the execution sub-behavior, with an explicit scope limitation.
+    status: validated
+  - id: SAF-T1111-C015
+    statement: Anthropic's visibility was limited to Claude usage, and the GTG-1002 agent sometimes fabricated credentials or overstated findings.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators: [page 4 limitations and page 13 visibility statement]
+    corroboration: The executive summary and implications sections repeat these limitations.
+    limitations: [The report does not quantify the hallucination rate.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1111-C016
+    statement: Intentional adversary CLI operation is distinct from hostile-input agent hijacking, conventional shell abuse, and downstream post-execution objectives.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-tir-2025-08
+        support: direct
+        exact_locators: [pages 4-9, malicious operator's intentional use]
+      - source_id: SRC-anthropic-claude-code-security
+        support: direct
+        exact_locators: [Protect against prompt injection]
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: [T1059 definition]
+      - source_id: SRC-ghsa-gemini-trust
+        support: corroborating
+        exact_locators: [hostile workspace and prompt-injection conditions]
+    corroboration: Primary sources separately establish each mechanism and boundary.
+    limitations: [Final SAF neighbor identifiers require mechanical reconciliation after freeze.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The distinctions synthesize independently sourced behavior boundaries.
+    status: validated
+  - id: SAF-T1111-C017
+    statement: Containment should stop sessions and execution paths, preserve correlated telemetry, validate claimed outcomes, revoke exposed access, and restore safeguards.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators: [pages 3, 4, and 13, response and hallucination limitations]
+      - source_id: SRC-anthropic-tir-2025-08
+        support: corroborating
+        exact_locators: [page 9, mitigation]
+      - source_id: SRC-sysmon-15-21
+        support: corroborating
+        exact_locators: [process and session correlation capabilities]
+      - source_id: SRC-ghsa-codex-sandbox
+        support: corroborating
+        exact_locators: [Remediation]
+      - source_id: SRC-ghsa-gemini-trust
+        support: corroborating
+        exact_locators: [Patches]
+      - source_id: SRC-openai-codex-cli
+        support: corroborating
+        exact_locators: [unsafe-mode warning and isolation guidance]
+    corroboration: Both incident reports describe account containment and detection changes; telemetry supports investigation.
+    limitations: [Exact response steps depend on provider, runner, target, and legal obligations.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response procedure is an SAF synthesis of documented provider actions and telemetry.
+    status: validated
+  - id: SAF-T1111-C018
+    statement: Impact can be critical when autonomous agent execution reaches privileged credentials, live target systems, or sensitive data across multiple organizations, and is reduced by isolation and approval boundaries.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-tir-2025-08
+        support: direct
+        exact_locators: [pages 4-9, affected sectors, data, and extortion impact]
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators: [pages 3 and 8-12, successful intrusions and consequences]
+      - source_id: SRC-anthropic-claude-code-security
+        support: corroborating
+        exact_locators: [permissions and sandbox boundaries]
+    corroboration: Two incidents establish high-impact conditions and security guidance establishes limiting controls.
+    limitations: [Severity is conditional and not a statement that every agent CLI run has critical impact.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating synthesizes observed consequences and explicit limiting conditions.
+    status: validated
+  - id: SAF-T1111-C019
+    statement: An inert marker-file action in an isolated example workspace can illustrate the agent-parent-to-shell transition without publishing a harmful payload.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-codex-cli
+        support: direct
+        exact_locators: [isolated-runner guidance]
+      - source_id: SRC-google-gemini-sandbox
+        support: corroborating
+        exact_locators: [sandbox safety and isolation benefits]
+      - source_id: SRC-sysmon-15-21
+        support: context
+        exact_locators: [process creation observability]
+    corroboration: The sources support isolation and observability; the sanitized scenario is original.
+    limitations: [The example is illustrative and not an end-to-end reproduction of malicious activity.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Safe example design is an SAF-authored inference from isolation and telemetry guidance.
+    status: validated

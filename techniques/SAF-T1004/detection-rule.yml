@@ -1,61 +1,130 @@
-title: Detection of Server Impersonation / Name-Collision (SAF-T1004)
-id: 9f3c2a8e-7d4b-4c2f-9a1e-8e2b7f9c1d23
+title: MCP Server Identity Binding Discrepancy
+id: a69cd1e5-b4ea-5eb9-be7a-186912acc2af
 status: experimental
-description: Detects indicators of server impersonation or name-collision attacks across DNS, ARP, TLS, and local registry events. Message-text selections are illustrative; operators should tailor them to their own telemetry pipeline. Elevate from medium to high only when correlated with expected MCP server identity, registry changes, or DHCP/ARP anomalies.
-author: Ryan Jennings
-date: 2025-11-22
-modified: 2026-07-01
+description: >-
+  Detects a security-relevant MCP server install, configuration, resolution, or
+  connection when publisher or package binding is unverified, an approved alias
+  resolves to a different canonical server tuple, or TLS endpoint identity fails.
+author: SAF-MCP clean-room research packet
+date: 2026-09-01
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1004
-  - https://attack.mitre.org/techniques/T1557/
-  - https://attack.mitre.org/techniques/T1557/002/
-  - https://attack.mitre.org/techniques/T1557/003/
-logsource:
-  product: windows
-  service: system
-detection:
-  selection_dns:
-    EventID: 1014
-    Provider_Name: "Microsoft-Windows-DNS-Client"
-    Message|contains:
-      - "timed out after none of the configured DNS servers responded"
-      - "DNSSEC validation failed"
-  selection_odr:
-    Provider_Name: "ODR"
-    Message|contains:
-      - "duplicate service registration"
-      - "name collision"
-  selection_arp:
-    Provider_Name: "Microsoft-Windows-TCPIP"
-    Message|contains:
-      - "duplicate ARP entry"
-      - "MAC address mismatch"
-  selection_tls_untrusted_ca:
-    EventID: 36882
-    Provider_Name: "Schannel"
-    Message|contains:
-      - "issued by an untrusted"
-      - "untrusted certificate authority"
-      - "self-signed certificate"
-  selection_tls_hostname_mismatch:
-    EventID: 36884
-    Provider_Name: "Schannel"
-    Message|contains:
-      - "host name"
-      - "hostname"
-      - "name mismatch"
-  condition: selection_dns or selection_odr or selection_arp or selection_tls_untrusted_ca or selection_tls_hostname_mismatch
-falsepositives:
-  - Legitimate service redeployments that temporarily create duplicate registry entries
-  - Controlled test environments using self-signed certificates
-  - Planned DNS cutovers during maintenance windows
-  - Routine DNS-client timeouts (1014) unrelated to name collision
-  - Schannel events (36882/36884) from upstream misconfigurations rather than spoofing
-level: medium
+  - https://modelcontextprotocol.io/specification/2026-07-28/schema
+  - https://modelcontextprotocol.io/registry/package-types
+  - https://learn.microsoft.com/en-us/azure/developer/azure-mcp-server/security
+  - https://www.rfc-editor.org/rfc/rfc9525.html
 tags:
-  - attack.credential_access
-  - attack.collection
-  - attack.t1557
-  - attack.t1557.002
-  - attack.t1557.003
-  - safe.t1004
+  - saf.t1004
+logsource:
+  product: mcp
+  category: server_resolution
+  definition: Normalized discovery, install, configuration, resolution, and connection telemetry with an approved identity baseline.
+detection:
+  selection_action:
+    action:
+      - configure
+      - connect
+      - install
+      - resolve
+  selection_unverified_namespace:
+    publisher_namespace_verified: false
+  selection_unverified_binding:
+    package_binding_status:
+      - failed
+      - skipped
+      - unknown
+  selection_approved_alias_tuple_mismatch:
+    approved_alias_match: true
+    canonical_identity_tuple_match: false
+  selection_tls_identity_mismatch:
+    tls_identity_status: mismatch
+  condition: >-
+    selection_action and
+    (selection_unverified_namespace or selection_unverified_binding or
+    selection_approved_alias_tuple_mismatch or selection_tls_identity_mismatch)
+fields:
+  - timestamp
+  - event_type
+  - action
+  - actor
+  - client_id
+  - decision
+  - discovery_source
+  - alias
+  - server_name
+  - registry_url
+  - authenticated_publisher_namespace
+  - package_identifier
+  - immutable_artifact_digest
+  - endpoint_uri
+  - expected_tls_reference_identity
+  - resolved_certificate_identities
+  - publisher_namespace_verified
+  - package_binding_status
+  - tls_identity_status
+  - approved_identity
+falsepositives:
+  - A legitimate server migration retains a familiar alias while changing its endpoint or package before the approved baseline is updated.
+  - Two unrelated servers use the same human-readable title while their authenticated namespaces differ.
+  - An upstream verifier is temporarily unavailable and a fail-closed pipeline records the binding as unknown.
+  - A separate confusable-name heuristic flags a legitimate multilingual name.
+level: medium
+severity_by_match:
+  tls_identity_mismatch: high
+  unverified_namespace_or_binding: high
+  approved_alias_tuple_mismatch: medium
+limitations:
+  - Requires normalized identity and approval-baseline telemetry that products may not currently emit.
+  - Does not establish malicious intent or validate a live certificate chain.
+  - Does not detect a malicious server that retains every approved identity attribute.
+  - Unicode confusable similarity is intentionally not a primary match condition because it is inclusive, version-sensitive, and font-dependent.
+tuning:
+  - Populate approved_identity from authenticated publisher, package, digest, endpoint, and TLS reference-identity records.
+  - Review legitimate migrations and duplicate display titles without allowlisting failed namespace, package, or TLS verification.
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1004-C003
+    - SAF-T1004-C007
+    - SAF-T1004-C008
+  telemetry_claim_ids:
+    - SAF-T1004-C003
+    - SAF-T1004-C007
+    - SAF-T1004-C008
+  limitation_claim_ids:
+    - SAF-T1004-C006
+    - SAF-T1004-C007
+    - SAF-T1004-C008
+    - SAF-T1004-C010
+  validation_artifacts:
+    - techniques/SAF-T1004/test_detection_rule.py
+    - techniques/SAF-T1004/fixtures/detection-events.json
+    - techniques/SAF-T1004/test-results.json
+    - techniques/SAF-T1004/test-log.jsonl
+  components:
+    logsource:
+      claim_ids: [SAF-T1004-C003, SAF-T1004-C007, SAF-T1004-C008]
+      rationale: The sources establish the identity attributes and endpoint-verification outcomes that the normalized log source must retain.
+    selection_action:
+      claim_ids: [SAF-T1004-C003, SAF-T1004-C007]
+      rationale: Install, configuration, resolution, and connection are the frozen security-relevant decision points.
+    selection_unverified_namespace:
+      claim_ids: [SAF-T1004-C002, SAF-T1004-C003]
+      rationale: An authenticated publisher namespace is one required identity binding, so explicit verification failure is suspicious.
+    selection_unverified_binding:
+      claim_ids: [SAF-T1004-C003, SAF-T1004-C004]
+      rationale: The direct vulnerability demonstrates why failed, skipped, or unknown package-to-server binding must not be treated as success.
+    selection_approved_alias_tuple_mismatch:
+      claim_ids: [SAF-T1004-C001, SAF-T1004-C003, SAF-T1004-C007]
+      rationale: A familiar self-reported label is insufficient when package, publisher, registry, or endpoint values differ from the approved tuple.
+    selection_tls_identity_mismatch:
+      claim_ids: [SAF-T1004-C007, SAF-T1004-C008]
+      rationale: Endpoint-substitution guidance and RFC 9525 support treating a TLS identity mismatch as a security-relevant discrepancy.
+    condition:
+      claim_ids: [SAF-T1004-C003, SAF-T1004-C004, SAF-T1004-C007, SAF-T1004-C008]
+      rationale: The condition preserves the frozen analytic intent by requiring a security-relevant action plus at least one binding, tuple, or TLS discrepancy.
+    fields:
+      claim_ids: [SAF-T1004-C003, SAF-T1004-C007, SAF-T1004-C008]
+      rationale: The field list exposes both display attributes and independently established identity values needed for comparison and investigation.
+    falsepositives:
+      claim_ids: [SAF-T1004-C006, SAF-T1004-C007, SAF-T1004-C008, SAF-T1004-C010]
+      rationale: Migration, duplicate titles, verifier outages, and multilingual similarity can resemble parts of the behavior without establishing malicious intent.

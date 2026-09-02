@@ -1,0 +1,89 @@
+version: 1
+technique_id: SAF-T1408
+frozen_on: "2026-09-01"
+integration_authorized: false
+strict_isolated_validation: passed
+detection_validation: "passed 11/11"
+
+synthetic_tactics: []
+tactic_joins:
+  - id: ATK-TA0005
+    provenance: User-supplied tactic identifier and neutral tactic label used without opening the shared framework registry.
+    action: Confirm the existing registry join mechanically; do not use registry prose to revise the frozen technique.
+
+synthetic_neighbors:
+  - id: SAF-T1407
+    provisional_name: Authorization Server Mix-Up
+    paths:
+      - techniques/SAF-T1407/README.md
+    action: Resolve to the canonical existing neighbor ID and path or register the join mechanically after freeze.
+  - id: SAF-T1409
+    provisional_name: OAuth Metadata Endpoint Injection
+    paths:
+      - techniques/SAF-T1409/README.md
+    action: Resolve to the canonical existing neighbor ID and path or register the join mechanically after freeze.
+
+synthetic_mitigations: []
+
+source_id_joins:
+  action: Reconcile stable IDs with the shared source manifest after freeze; keep reviewed-source facts and URLs unchanged.
+  ids:
+    - SRC-mcp-auth-2025-11-25
+    - SRC-mcp-auth-2025-06-18
+    - SRC-mcp-security-2025-11-25
+    - SRC-rfc9700
+    - SRC-rfc7636
+    - SRC-rfc8414
+    - SRC-rfc8252
+    - SRC-iana-oauth-parameters
+    - SRC-cwe-757
+    - SRC-attack-t1528
+    - SRC-cisa-kev-2026-09-01
+    - SRC-cve-2026-67336
+    - SRC-nvd-2026-67336
+    - SRC-vulncheck-2026-67336
+    - SRC-ghsa-9h47-pqcx-hjr4
+    - SRC-cve-2024-23647
+    - SRC-ghsa-mrx3-gxjx-hjqj
+    - SRC-cve-2024-22258
+    - SRC-spring-cve-2024-22258
+    - SRC-cve-2026-26247
+    - SRC-nvd-2026-26247
+    - SRC-gitea-1.25.5
+    - SRC-nvd-2023-48228
+
+history_shas:
+  - value: "1111111111111111111111111111111111111111"
+    synthetic: true
+    path: research/techniques/SAF-T1408/traceability-ledger.yml
+    action: Replace with an honest repository-history SHA supporting the newly integrated initial version.
+
+path_joins:
+  - fragment: source-manifest-fragment.yml
+    target: research/source-manifest.yml
+    action: Merge or stable-ID reconcile after freeze.
+  - fragment: framework-fragment.yml
+    target: research/framework-model.yml
+    action: Merge the SAF-T1408 framework record after resolving synthetic neighbors.
+  - fragment: alignment-fragment.yml
+    target: research/alignment-ledger.yml
+    action: Merge alignment issues and resolve mechanical neighbor joins.
+  - fragment: techniques/SAF-T1408/
+    target: techniques/SAF-T1408/
+    action: Atomic replacement is integration work and is not authorized in this run.
+  - fragment: research/techniques/SAF-T1408/
+    target: research/techniques/SAF-T1408/
+    action: Atomic replacement is integration work and is not authorized in this run.
+  - fragment: tests/SAF-T1408/
+    target: tests/SAF-T1408/
+    action: Copy test assets mechanically during integration.
+
+deferred_joins_only:
+  - Real shared source-ID collision resolution.
+  - Canonical neighbor-ID and local path resolution.
+  - Honest repository-history SHA replacement.
+  - Shared framework and alignment fragment merge.
+
+prohibited_integration_inputs:
+  - Prior SAF-T1408 prose, research, tests, citations, diffs, history, catalog description, or review commentary as a source of revision.
+  - Any new factual lead originating only from a shared registry or prior target artifact.

@@ -1,0 +1,115 @@
+version: 1
+technique_id: SAF-T1506
+policy: source_or_omit
+publishable_artifact: techniques/SAF-T1506/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-technique
+  path: techniques/SAF-T1506/README.md
+  supports: Publishable technique content and hidden trace anchors
+- id: LOCAL-rule
+  path: techniques/SAF-T1506/detection-rule.yml
+  supports: Detection analytic and component traceability
+- id: LOCAL-test
+  path: tests/SAF-T1506/test_detection.py
+  supports: Executable detector validation
+- id: LOCAL-fixtures
+  path: tests/SAF-T1506/fixtures.jsonl
+  supports: Four positive and four negative synthetic detector cases
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1506/clean-room-attestation.yml
+  supports: Readable author attribution and clean-room provenance
+- id: LOCAL-quality
+  path: research/techniques/SAF-T1506/quality-review.yml
+  supports: Readable team attribution and quality review
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1506/validation/detection-test.txt
+  supports: Frozen and integrated detector commands and passing results
+- id: LOCAL-strict-validation-result
+  path: research/techniques/SAF-T1506/validation/strict-validation.txt
+  supports: Frozen and integrated strict-validator commands and passing results
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1506-X001
+  candidate: Universal infrastructure-token exposure in all MCP deployments
+  origin: Scope challenge pass
+  reason: MCP use does not establish that a token source is present or reachable.
+  attempted_searches:
+  - Current MCP authorization and security exact-URL review; cloud and Kubernetes
+    platform exact-URL review
+  consulted_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-k8s-service-accounts
+  prohibited_publishable_text:
+  - Every MCP deployment always exposes cloud tokens
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1506-X002
+  candidate: Production exploitation of CVE-2025-6514 or CVE-2025-49596 for token
+    theft
+  origin: Vulnerability and contrary-evidence passes
+  reason: The CVE records reported no known exploitation and the demonstrations established
+    code execution only.
+  attempted_searches:
+  - CVE API exact-record review; original researcher exact-URL review
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-oligo-inspector-cve-2025-49596
+  prohibited_publishable_text:
+  - Both MCP vulnerabilities were exploited in production to steal infrastructure
+    tokens
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1506-X003
+  candidate: Capital One as direct MCP or agentic token-theft evidence
+  origin: Historical breach pass
+  reason: The directly reviewed government pages established a cloud breach and control
+    failures but not the token mechanics or MCP scope required here.
+  attempted_searches:
+  - DOJ exact incident page review; OCC exact enforcement page review
+  consulted_source_ids:
+  - SRC-doj-capital-one-2019
+  - SRC-occ-capital-one-2020
+  prohibited_publishable_text:
+  - Capital One proves this MCP technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1506-X004
+  candidate: CVE-2025-1974 as direct infrastructure-token theft
+  origin: Vulnerability and challenge passes
+  reason: The authoritative materials established admission-controller code execution
+    and secret disclosure, not direct evidence of the scoped acquisition behavior.
+  attempted_searches:
+  - CVE API exact-record review; Kubernetes incident page exact-URL review
+  consulted_source_ids:
+  - SRC-cve-2025-1974
+  - SRC-k8s-cve-2025-1974
+  prohibited_publishable_text:
+  - CVE-2025-1974 directly observed infrastructure token theft
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1506-X005
+  candidate: Unverified TeamPCP campaign scale and exfiltration-volume figures
+  origin: Incident and contrary-evidence passes
+  reason: The reviewed vendor report attributed scale estimates externally and stronger
+    direct authorities did not require those figures for the technique.
+  attempted_searches:
+  - FBI exact advisory review; victim report exact-URL review; Unit 42 exact report
+    review
+  consulted_source_ids:
+  - SRC-fbi-teampcp-2026
+  - SRC-litellm-incident-2026
+  - SRC-aqua-trivy-2026
+  - SRC-unit42-teampcp-2026
+  prohibited_publishable_text:
+  - TeamPCP stole exactly 300 GB from 500000 systems
+  disposition: omitted_from_publishable_technique
+  status: excluded
+reviewed_on: 2026-09-01
+review_status: passed
+unresolved: []

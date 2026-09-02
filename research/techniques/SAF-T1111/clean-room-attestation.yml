@@ -1,0 +1,118 @@
+version: 1
+technique_id: SAF-T1111
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1111
+  inherited_context: false
+target:
+  id: SAF-T1111
+  neutral_name: AI Agent CLI Weaponization
+allowed_inputs:
+- Seed metadata SAF-T1111, neutral name, and tactic ATK-TA0002.
+- Author-saf-technique skill and all required routed generic references.
+- techniques/TEMPLATE.md, research/README.md, blank technique research schemas, and
+  current validator.
+- Minimal synthetic framework, tactic, mitigation, source, history, and neighbor joins
+  needed for isolated validation.
+- Independently opened external standards-body, government, vendor, researcher, and
+  framework authorities.
+prohibited_inputs:
+- techniques/SAF-T1111/README.md and all historical forms.
+- research/techniques/SAF-T1111/ and all existing target-specific research artifacts.
+- techniques/SAF-T1111/detection-rule.yml, tests, and test logs.
+- Git history, diffs, blame, stashes, commits, branches, and review records exposing
+  target content.
+- Any pull request, issue, prior bundle, technique catalog prose, shared registry
+  lead, SAF or SAFE site, or repository containing prior target content.
+- Any previous conversation, summary, inherited agent context, or methodology example
+  naming the target.
+independent_research:
+  searches:
+  - Direct current vendor-documentation opens for Claude Code, Codex CLI, and Gemini
+    CLI security, execution, unsafe-mode, and sandbox behavior.
+  - Direct Anthropic Threat Intelligence report opens for production incidents and
+    response.
+  - Exact NVD API keyword and CVE-ID queries for Claude Code, Codex CLI, and Gemini
+    CLI.
+  - Exact CISA KEV catalog checks for all reviewed CVE identifiers.
+  - Exact GitHub advisory URLs opened only after NVD supplied their identifiers and
+    canonical URLs.
+  - Direct Microsoft Sysmon and MITRE ATT&CK authority opens for telemetry, detection,
+    and execution mapping.
+  - Two narrower no-change follow-ups covering synonyms, fixed versions, exploitation
+    fields, controls, limitations, and behavior boundaries.
+  opened_source_ids:
+  - SRC-anthropic-claude-cli
+  - SRC-anthropic-claude-code-security
+  - SRC-anthropic-espionage-2025-11
+  - SRC-anthropic-tir-2025-08
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ghsa-claude-command-bypass
+  - SRC-ghsa-claude-exfil
+  - SRC-ghsa-codex-sandbox
+  - SRC-ghsa-gemini-trust
+  - SRC-google-gemini-sandbox
+  - SRC-mitre-t1059-current
+  - SRC-sysmon-15-21
+  - SRC-nvd-t1103-corpus
+  - SRC-openai-codex-cli
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile source IDs only after freeze without introducing research leads.
+- Replace synthetic neighbor, mitigation, tactic, framework, alignment, and history
+  joins mechanically.
+- Do not inspect a diff that reveals old target content; replace whole target files
+  atomically.
+- Run the real repository validators after mechanical integration.
+mock_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1111
+  result: passed
+  deferred_real_repository_joins:
+  - Stable shared source IDs and deduplication.
+  - Existing tactic, neighbor, mitigation, framework, and alignment identifiers.
+  - Honest repository-history commit SHA after integration.
+attestation: This fresh agent received no prior technique content, opened no prohibited
+  artifact, derived the draft only from allowed generic inputs and independently reviewed
+  external authorities, and froze the draft before integration.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    original_SAF-T1110: SAF-T1102
+    original_SAF-T1112: SAF-T1101
+  synthetic_mitigation_mapping:
+    original_SAF-M-1: SAF-M-9
+    original_SAF-M-2: SAF-M-69
+  source_id_mapping:
+    SRC-anthropic-claude-security: SRC-anthropic-claude-code-security
+    SRC-nvd-cve-api: SRC-nvd-t1103-corpus
+    SRC-cisa-kev: SRC-cisa-kev-catalog-page-2026-09-01
+    SRC-ms-sysmon: SRC-sysmon-15-21
+    SRC-mitre-t1059: SRC-mitre-t1059-current
+  new_shared_source_records:
+  - SRC-anthropic-tir-2025-08
+  - SRC-anthropic-espionage-2025-11
+  - SRC-anthropic-claude-cli
+  - SRC-openai-codex-cli
+  - SRC-google-gemini-sandbox
+  - SRC-ghsa-claude-command-bypass
+  - SRC-ghsa-claude-exfil
+  - SRC-ghsa-codex-sandbox
+  - SRC-ghsa-gemini-trust
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  status: integrated_and_repository_validated

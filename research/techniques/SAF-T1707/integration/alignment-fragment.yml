@@ -1,0 +1,10 @@
+version: 1
+issues:
+  - id: SAF-T1707-A001
+    triggered_by: SAF-T1707
+    affects: [SAF-T1009, SAF-T1507, SAF-T1706, SAF-T1707]
+    change: Reconcile authorization-server mix-up, code interception, and issued-token replay with valid anti-CSRF state relayed across user-agent sessions.
+    reason: Clean-room isolation prohibited reading the shared framework registry; the distinctions are evidence-backed but the placeholder IDs are not destination facts.
+    severity: high
+    status: resolved
+    resolution: SAF-T1009 covers issuer misbinding, SAF-T1507 covers code interception, SAF-T1706 covers access-token replay after issuance, four canonical mitigations cover flow verification, PKCE, audit, and monitoring, ATT&CK T1204.001 remains a delivery-only analogy, and seven detector cases validate the session-binding boundary.

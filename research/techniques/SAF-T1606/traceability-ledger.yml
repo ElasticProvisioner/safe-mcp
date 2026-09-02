@@ -1,0 +1,144 @@
+version: 1
+technique_id: SAF-T1606
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1606/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1606/technique-contract.yml
+  supports: Internal scope, name, tactic, clean-room mode, canonical neighbor joins,
+    and completion conditions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1606/quality-review.yml
+  supports: Quality gates, commands, validation results, review date, and reviewer
+    identity.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1606/clean-room-attestation.yml
+  supports: Input isolation, searches, mock validation, freeze constraints, and integrity
+    status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1606/detection-rule.yml
+  supports: The experimental standalone analytic, its fields, logic, false positives,
+    and traceability map.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1606/test_detection_rule.py
+  supports: Deterministic evaluator and positive, negative, boundary, malformed, and
+    legitimate-lookalike assertions.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1606/test-logs.json
+  supports: Inert synthetic MCP tool-audit events used by detection validation.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1606/validation/detection-test.txt
+  supports: Frozen compact proof of the passing detection-test command and case counts.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1606/validation/strict-validator.txt
+  supports: Frozen compact proof of the passing isolated strict research validator.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1606-X001
+  candidate: A universal assertion that no production use of this technique has ever
+    occurred.
+  origin: Required production-incident search and absence assessment.
+  attempted_searches:
+  - NVD authority queries for MCP filesystem, file access, directory traversal, directory
+    listing, and enumeration synonyms.
+  - CISA KEV version 2026.09.01 exact checks for all nine candidate CVEs.
+  - Direct review of the full Anthropic GTG-1002 incident report and MITRE T1083 campaign
+    mapping.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-cve-2025-53109
+  - SRC-nvd-cve-2025-53110
+  reason: The corpus supports only a date- and corpus-bounded absence statement, never
+    a universal negative.
+  prohibited_publishable_text:
+  - No actor has ever used an MCP file tool to list directories
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1606-X002
+  candidate: An unequivocal claim that Filesystem server version 0.6.3 fixes both
+    selected vulnerabilities.
+  origin: Conflicting affected/patched fields in the project advisories and NVD.
+  attempted_searches:
+  - Compared each advisory's affected-version table, patched-version table, narrative
+    remediation, NVD affected data, and exact maintainer commit page.
+  consulted_source_ids:
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-mcp-fix-cc99bda
+  - SRC-mcp-fix-d00c60d
+  - SRC-nvd-cve-2025-53109
+  - SRC-nvd-cve-2025-53110
+  reason: Official fields conflict; the draft instead recommends the uncontested 0.6.4
+    or 2025.7.01 upgrade while disclosing uncertainty.
+  prohibited_publishable_text:
+  - Version 0.6.3 unequivocally fixes both vulnerabilities
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1606-X003
+  candidate: Treat unrelated MCP file-read, file-write, export, secret-retention,
+    or Git initialization CVEs as direct instances of directory listing.
+  origin: Authority-scoped NVD vulnerability searches.
+  attempted_searches:
+  - Reviewed exact NVD records and compared each immediate objective and boundary
+    against the contract.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-47274
+  - SRC-nvd-cve-2025-68143
+  - SRC-nvd-cve-2025-67366
+  - SRC-nvd-cve-2026-40576
+  - SRC-nvd-cve-2026-43901
+  - SRC-nvd-cve-2026-46555
+  - SRC-nvd-cve-2026-73498
+  reason: Shared filesystem vocabulary or impact does not satisfy the defining directory-metadata
+    discovery mechanism.
+  prohibited_publishable_text:
+  - All MCP path traversal CVEs are directory-listing vulnerabilities
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1606-X004
+  candidate: A claim that the experimental analytic proves malicious intent or has
+    measured detection accuracy.
+  origin: Detection design review.
+  attempted_searches:
+  - Reviewed MITRE DET0370 analytics and mutable elements.
+  - Reviewed MCP tool audit guidance and the filesystem reference server's documented
+    tool names.
+  - Searched the direct-authority corpus for MCP-specific detector accuracy or benchmark
+    results.
+  consulted_source_ids:
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-det0370-v1.0
+  reason: Deterministic synthetic correctness does not establish production precision,
+    recall, or adversary intent.
+  prohibited_publishable_text:
+  - This rule proves malicious directory discovery
+  - This detector is highly accurate
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1606-X005
+  candidate: Listing a directory necessarily discloses file contents, credentials,
+    or causes modification or outage.
+  origin: Impact calibration and vulnerability triage.
+  attempted_searches:
+  - Compared filesystem listing outputs and read-only annotations with ATT&CK's discovery
+    objective and adjacent file-content CVEs.
+  consulted_source_ids:
+  - SRC-mcp-filesystem-reference-2026-09-02
+  - SRC-attack-t1083
+  - SRC-nvd-cve-2025-67366
+  - SRC-nvd-cve-2026-46555
+  - SRC-nvd-cve-2026-73498
+  reason: Directory metadata can guide later actions, but content disclosure and impact
+    require separate operations or weaknesses.
+  prohibited_publishable_text:
+  - A directory listing necessarily reveals file contents
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

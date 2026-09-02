@@ -1,37 +1,98 @@
-title: Suspicious MCP Tool Registration (example)
-id: 2c157aae-8b99-45bc-9adb-22fbe52f654a
+title: User-Mediated Unknown MCP Server Install Followed by Local Process Start
+id: c7522b9e-0a85-4f64-b1f3-3e7db10d1ba7
 status: experimental
-description: Detects MCP tool.register events with untrusted/empty metadata, http manifest URLs, or name-similarity suggesting typosquatting. Example-only — tune to your environment.
-author: rajivsthh
-date: 2025-11-12
-references:
-  - https://modelcontextprotocol.io/docs/getting-started/intro   # Model Context Protocol spec (primary)
-  - https://www.cisa.gov/resources-tools/resources/phishing-guidance-stopping-attack-cycle-phase-one
+description: >-
+  Detects a user-initiated MCP server add, configuration write, or installation
+  deep-link acceptance followed within 15 minutes by a local process start for
+  the same user, host, and server when the source is unknown or untrusted.
 logsource:
-  product: mcp
-  service: tool_registry
-  # NOTE: MCP spec describes tool registration and capabilities metadata; map your actual event fields to
-  # the log schema described in the MCP server implementation you're using (see MCP docs link above).
+  category: application
+  product: mcp_client_and_endpoint
+  service: normalized_mcp_install_and_process_events
 detection:
-  selection:
-    event.action: "tool.register"
-    any_of:
-      - manifest_url|startswith: "http://"
-      - manifest_url|contains:
-          - "attacker"
-          - "typo"
-          - "malicious"
-      - publisher: null
-      - trust_score: null
-  condition: selection
+  selection_install:
+    event.action:
+      - mcp_server.add
+      - mcp_server.config_write
+      - mcp_deeplink.accepted
+    event.initiator: user
+  selection_start:
+    event.action: mcp_server.process_start
+    server.source_trust:
+      - unknown
+      - untrusted
+  timeframe: 15m
+  condition: >-
+    sequence by user.id, host.id, server.id with maxspan=15m
+    [selection_install] followed_by [selection_start]
 falsepositives:
-  - internal CI pipelines that register ephemeral tools
-  - developer test installs that intentionally use local manifests
+  - A verified internal development server on first use before its provenance tuple is populated.
+  - A newly built local test server whose source is temporarily classified unknown.
+fields:
+  - "@timestamp"
+  - event.action
+  - event.initiator
+  - user.id
+  - host.id
+  - server.id
+  - server.name
+  - server.source_uri
+  - server.source_trust
+  - process.parent.executable
+  - process.executable
+  - process.command_line
+  - process.code_signature.trusted
+  - process.hash.sha256
 level: high
 tags:
-  - attack.initial_access
-  - safe.t1006
-notes: |
-  - This rule references the MCP spec to guide which fields (tool meta, manifest URL, publisher, trust_score)
-    are relevant. Map these to your environment's log schema; field names here are examples only.
-  - Source: Model Context Protocol — Getting started: https://modelcontextprotocol.io/docs/getting-started/intro
+  - saf.t1006
+  - attack.execution
+  - attack.t1204.002
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1006-C014
+  telemetry_claim_ids:
+    - SAF-T1006-C013
+    - SAF-T1006-C014
+  limitation_claim_ids:
+    - SAF-T1006-C012
+    - SAF-T1006-C014
+  validation_artifacts:
+    - techniques/SAF-T1006/test_detection_rule.py
+    - techniques/SAF-T1006/test-logs.json
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1006-C013
+        - SAF-T1006-C014
+      rationale: The analytic requires normalized client events and endpoint process telemetry.
+    selection_install:
+      claim_ids:
+        - SAF-T1006-C005
+        - SAF-T1006-C007
+        - SAF-T1006-C014
+      rationale: Client installation and trust events represent the defining user-mediated boundary.
+    selection_start:
+      claim_ids:
+        - SAF-T1006-C004
+        - SAF-T1006-C013
+        - SAF-T1006-C014
+      rationale: Local process start establishes that the configured server reached execution.
+    timeframe:
+      claim_ids:
+        - SAF-T1006-C014
+      rationale: Fifteen minutes is an explicit experimental tuning assumption tested at 900 and 901 seconds.
+    condition:
+      claim_ids:
+        - SAF-T1006-C014
+      rationale: Same-user, same-host, same-server ordering prevents cross-entity joins.
+    falsepositives:
+      claim_ids:
+        - SAF-T1006-C014
+      rationale: First-use internal and development servers can initially lack populated provenance.
+    fields:
+      claim_ids:
+        - SAF-T1006-C013
+        - SAF-T1006-C014
+      rationale: The fields support entity correlation, provenance review, and process investigation.

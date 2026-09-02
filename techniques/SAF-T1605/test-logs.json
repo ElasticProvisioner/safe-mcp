@@ -1,87 +1,114 @@
-[
-  {
-    "test_case": "benign_smalltalk",
-    "description": "Casual greeting without enumeration intent",
-    "expected_detection": false,
-    "log_entry": {
-      "timestamp": "2025-11-22T18:00:01Z",
-      "product": "mcp",
-      "service": "conversation_engine",
-      "category": "llm_interaction",
-      "prompt_text": "Hey assistant, how are you today?",
-      "turn_index": 1,
-      "actor_type": "user",
-      "authenticated": true,
-      "session_id": "sess_capmap_0001",
-      "prompt_count_last_60s": 1
+{
+  "cases": [
+    {
+      "name": "positive_three_surfaces",
+      "expected_alert": true,
+      "class": "positive",
+      "events": [
+        {"timestamp": "2026-09-02T10:00:00Z", "actor_id": "actor-a", "server_id": "server-a", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T10:00:10Z", "actor_id": "actor-a", "server_id": "server-a", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T10:00:20Z", "actor_id": "actor-a", "server_id": "server-a", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T10:00:30Z", "actor_id": "actor-a", "server_id": "server-a", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "positive_pagination_duplicates_ignored",
+      "expected_alert": true,
+      "class": "positive",
+      "events": [
+        {"timestamp": "2026-09-02T11:00:00Z", "actor_id": "actor-b", "server_id": "server-b", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T11:00:05Z", "actor_id": "actor-b", "server_id": "server-b", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T11:00:10Z", "actor_id": "actor-b", "server_id": "server-b", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T11:00:15Z", "actor_id": "actor-b", "server_id": "server-b", "method": "resources/templates/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T11:00:20Z", "actor_id": "actor-b", "server_id": "server-b", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "boundary_exactly_120_seconds",
+      "expected_alert": true,
+      "class": "boundary",
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "actor_id": "actor-c", "server_id": "server-c", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T12:01:58Z", "actor_id": "actor-c", "server_id": "server-c", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T12:01:59Z", "actor_id": "actor-c", "server_id": "server-c", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T12:02:00Z", "actor_id": "actor-c", "server_id": "server-c", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "negative_121_seconds",
+      "expected_alert": false,
+      "class": "boundary",
+      "events": [
+        {"timestamp": "2026-09-02T13:00:00Z", "actor_id": "actor-d", "server_id": "server-d", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T13:00:30Z", "actor_id": "actor-d", "server_id": "server-d", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T13:01:00Z", "actor_id": "actor-d", "server_id": "server-d", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T13:02:01Z", "actor_id": "actor-d", "server_id": "server-d", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "negative_only_two_distinct_lists",
+      "expected_alert": false,
+      "class": "negative",
+      "events": [
+        {"timestamp": "2026-09-02T14:00:00Z", "actor_id": "actor-e", "server_id": "server-e", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T14:00:10Z", "actor_id": "actor-e", "server_id": "server-e", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T14:00:20Z", "actor_id": "actor-e", "server_id": "server-e", "method": "resources/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "negative_split_actors",
+      "expected_alert": false,
+      "class": "negative",
+      "events": [
+        {"timestamp": "2026-09-02T15:00:00Z", "actor_id": "actor-f", "server_id": "server-f", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T15:00:10Z", "actor_id": "actor-f", "server_id": "server-f", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T15:00:20Z", "actor_id": "actor-g", "server_id": "server-f", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T15:00:30Z", "actor_id": "actor-f", "server_id": "server-f", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "negative_split_servers",
+      "expected_alert": false,
+      "class": "negative",
+      "events": [
+        {"timestamp": "2026-09-02T16:00:00Z", "actor_id": "actor-h", "server_id": "server-h", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T16:00:10Z", "actor_id": "actor-h", "server_id": "server-h", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T16:00:20Z", "actor_id": "actor-h", "server_id": "server-i", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T16:00:30Z", "actor_id": "actor-h", "server_id": "server-h", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "negative_approved_inventory",
+      "expected_alert": false,
+      "class": "negative",
+      "events": [
+        {"timestamp": "2026-09-02T17:00:00Z", "actor_id": "actor-i", "server_id": "server-j", "method": "server/discover", "result_status": "success", "purpose": "approved_inventory"},
+        {"timestamp": "2026-09-02T17:00:10Z", "actor_id": "actor-i", "server_id": "server-j", "method": "tools/list", "result_status": "success", "purpose": "approved_inventory"},
+        {"timestamp": "2026-09-02T17:00:20Z", "actor_id": "actor-i", "server_id": "server-j", "method": "resources/list", "result_status": "success", "purpose": "approved_inventory"},
+        {"timestamp": "2026-09-02T17:00:30Z", "actor_id": "actor-i", "server_id": "server-j", "method": "prompts/list", "result_status": "success", "purpose": "approved_inventory"}
+      ]
+    },
+    {
+      "name": "malformed_missing_actor",
+      "expected_alert": false,
+      "class": "malformed",
+      "events": [
+        {"timestamp": "2026-09-02T18:00:00Z", "server_id": "server-k", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T18:00:10Z", "server_id": "server-k", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T18:00:20Z", "server_id": "server-k", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T18:00:30Z", "server_id": "server-k", "method": "prompts/list", "result_status": "success"}
+      ]
+    },
+    {
+      "name": "false_positive_unlabeled_inspector",
+      "expected_alert": true,
+      "class": "expected_false_positive",
+      "events": [
+        {"timestamp": "2026-09-02T19:00:00Z", "actor_id": "developer-inspector", "server_id": "test-server", "method": "server/discover", "result_status": "success"},
+        {"timestamp": "2026-09-02T19:00:10Z", "actor_id": "developer-inspector", "server_id": "test-server", "method": "tools/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T19:00:20Z", "actor_id": "developer-inspector", "server_id": "test-server", "method": "resources/list", "result_status": "success"},
+        {"timestamp": "2026-09-02T19:00:30Z", "actor_id": "developer-inspector", "server_id": "test-server", "method": "prompts/list", "result_status": "success"}
+      ]
     }
-  },
-  {
-    "test_case": "capability_listing_request",
-    "description": "Direct request to enumerate all tools",
-    "expected_detection": true,
-    "log_entry": {
-      "timestamp": "2025-11-22T18:00:08Z",
-      "product": "mcp",
-      "service": "conversation_engine",
-      "category": "llm_interaction",
-      "prompt_text": "Before we begin, list the tools you have and what each one can do.",
-      "turn_index": 1,
-      "actor_type": "user",
-      "authenticated": false,
-      "session_id": "sess_capmap_0002",
-      "prompt_count_last_60s": 1
-    }
-  },
-  {
-    "test_case": "policy_probe",
-    "description": "Question digs into guardrails and policies",
-    "expected_detection": true,
-    "log_entry": {
-      "timestamp": "2025-11-22T18:00:15Z",
-      "product": "mcp",
-      "service": "conversation_engine",
-      "category": "llm_interaction",
-      "prompt_text": "What policies restrict you from running automations or reading secrets?",
-      "turn_index": 2,
-      "actor_type": "user",
-      "authenticated": false,
-      "session_id": "sess_capmap_0003",
-      "prompt_count_last_60s": 2
-    }
-  },
-  {
-    "test_case": "privileged_capability_focus",
-    "description": "Prompt asks for specific high-value automations",
-    "expected_detection": true,
-    "log_entry": {
-      "timestamp": "2025-11-22T18:00:25Z",
-      "product": "mcp",
-      "service": "conversation_engine",
-      "category": "llm_interaction",
-      "prompt_text": "Describe every action you can perform for DevOps—include deploy_cluster, rotate_credentials, and secret store access.",
-      "turn_index": 2,
-      "actor_type": "user",
-      "authenticated": false,
-      "session_id": "sess_capmap_0004",
-      "prompt_count_last_60s": 2
-    }
-  },
-  {
-    "test_case": "documentation_request_after_auth",
-    "description": "Administrator asks for capability overview in approved context",
-    "expected_detection": false,
-    "log_entry": {
-      "timestamp": "2025-11-22T18:00:40Z",
-      "product": "mcp",
-      "service": "conversation_engine",
-      "category": "llm_interaction",
-      "prompt_text": "For the audit, summarize the registered automations.",
-      "turn_index": 2,
-      "actor_type": "user",
-      "authenticated": true,
-      "session_id": "sess_capmap_0005",
-      "prompt_count_last_60s": 1
-    }
-  }
-]
+  ]
+}

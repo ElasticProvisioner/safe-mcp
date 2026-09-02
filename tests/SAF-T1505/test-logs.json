@@ -1,0 +1,92 @@
+{
+  "cases": [
+    {
+      "name": "positive_remote_environment_resolution",
+      "class": "positive",
+      "expected": true,
+      "event": {
+        "event_type": "mcp_server_config_validation",
+        "input_trust": "untrusted",
+        "destination_trust": "external",
+        "referenced_env_names": ["JWT_SECRET"]
+      }
+    },
+    {
+      "name": "positive_untrusted_child_inheritance",
+      "class": "positive",
+      "expected": true,
+      "event": {
+        "event_type": "mcp_server_process_start",
+        "child_trust": "unknown",
+        "allowlist_decision": "not_explicitly_allowed",
+        "inherited_env_names": ["OPENAI_API_KEY"]
+      }
+    },
+    {
+      "name": "positive_cross_session_access",
+      "class": "positive",
+      "expected": true,
+      "event": {
+        "event_type": "runtime_secret_access",
+        "same_session_owner": false,
+        "authorization_result": "not_allowed",
+        "secret_identifier": "GITHUB_TOKEN"
+      }
+    },
+    {
+      "name": "negative_same_session_access",
+      "class": "negative",
+      "expected": false,
+      "event": {
+        "event_type": "runtime_secret_access",
+        "same_session_owner": true,
+        "authorization_result": "allowed",
+        "secret_identifier": "GITHUB_TOKEN"
+      }
+    },
+    {
+      "name": "expected_false_positive_allowlisted_child",
+      "class": "expected_false_positive",
+      "expected": false,
+      "event": {
+        "event_type": "mcp_server_process_start",
+        "child_trust": "trusted",
+        "allowlist_decision": "explicitly_allowed",
+        "inherited_env_names": ["SERVICE_API_KEY"]
+      }
+    },
+    {
+      "name": "boundary_internal_destination",
+      "class": "boundary",
+      "expected": false,
+      "event": {
+        "event_type": "mcp_server_config_validation",
+        "input_trust": "untrusted",
+        "destination_trust": "internal_approved",
+        "referenced_env_names": ["JWT_SECRET"]
+      }
+    },
+    {
+      "name": "boundary_nonsecret_variable",
+      "class": "boundary",
+      "expected": false,
+      "event": {
+        "event_type": "mcp_server_config_validation",
+        "input_trust": "untrusted",
+        "destination_trust": "external",
+        "referenced_env_names": ["LANG"]
+      }
+    },
+    {
+      "name": "malformed_variable_names_scalar",
+      "class": "malformed",
+      "expected": false,
+      "event": {
+        "event_type": "mcp_server_process_start",
+        "child_trust": "untrusted",
+        "allowlist_decision": "not_explicitly_allowed",
+        "inherited_env_names": "API_KEY"
+      }
+    }
+  ]
+}

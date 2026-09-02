@@ -1,0 +1,432 @@
+version: 1
+technique_id: SAF-T1206
+claims:
+  - id: SAF-T1206-C001
+    statement: An unauthorized persistent MCP or agent configuration change can direct later authentication to an attacker-selected credential or credential reference.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-vscode-config
+        support: direct
+        exact_locators: ["Configuration file; Input variables for sensitive data"]
+      - source_id: SRC-t1206-copilot-cli
+        support: direct
+        exact_locators: ["MCP server loading priority; mcp add options"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Pre-registration; Authorization Server Binding"]
+      - source_id: SRC-t1206-ghsa-cursor
+        support: corroborating
+        exact_locators: ["Summary; Impact"]
+    corroboration: Product docs establish credential-bearing persistence and the Cursor advisory establishes an unauthorized MCP-config write path.
+    limitations: [The complete credential-implant sequence was not directly demonstrated.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Synthesizes documented persistent credential selection with an unauthorized configuration-write capability."}
+    status: validated
+  - id: SAF-T1206-C002
+    statement: MCP and agent configurations can contain headers, environment mappings, input references, client identifiers, or secret references that select authentication material.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-vscode-config
+        support: direct
+        exact_locators: ["Input variables for sensitive data, lines 327-349"]
+      - source_id: SRC-t1206-copilot-cli
+        support: direct
+        exact_locators: ["mcp add options, env/header fields, lines 740-770"]
+      - source_id: SRC-t1206-foundry-auth
+        support: corroborating
+        exact_locators: ["Key-based authentication, lines 78-97"]
+    corroboration: Three first-party product documents describe credential-bearing configuration or secret references.
+    limitations: [Exact fields and storage locations vary by client and hosting model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C003
+    statement: MCP supports pre-registered or persisted client credentials and requires persisted credentials to remain associated with the issuer that created them.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Pre-registration, lines 153-160; Authorization Server Binding, lines 180-184"]
+    corroboration: The current MCP client-registration specification states both static credential support and issuer binding.
+    limitations: [The specification does not prescribe every client's persistence format.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C004
+    statement: Conformant MCP HTTP authorization sends bearer tokens on protected requests and requires server-side issuer, audience, expiry, and resource validation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Token Requirements, lines 239-260; Token Handling, lines 263-267"]
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Audience Binding and Validation; Access Token Privilege Restriction"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: ["Authentication and authorization, lines 34-43"]
+    corroboration: Current MCP normative text and Microsoft implementation guidance agree on token validation and binding.
+    limitations: [Applies to authorization-capable HTTP deployments; nonconformant products may differ.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C005
+    statement: Persistent configuration or registration state can affect authentication on later client starts or reconnects until removed or invalidated.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators: ["Configuration locations; Synchronize MCP configuration; Automatically start MCP servers"]
+      - source_id: SRC-t1206-copilot-cli
+        support: direct
+        exact_locators: ["MCP server loading priority, lines 760-772"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Authorization Server Binding, lines 180-184"]
+    corroboration: Multiple clients document persistent config while the protocol documents persisted registration credentials.
+    limitations: [Some clients may require a reload, trust decision, or successful server validation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Later identity selection follows from documented config persistence and credential resolution."}
+    status: validated
+  - id: SAF-T1206-C006
+    statement: The technique requires a write path to persistent configuration; prompt injection, malicious models, configuration APIs, or compromised administration can supply such a path.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-t1206-ghsa-cursor
+        support: direct
+        exact_locators: ["Summary, lines 149-155"]
+      - source_id: SRC-ghsa-dive-66580
+        support: corroborating
+        exact_locators: ["Details, lines 152-161"]
+      - source_id: SRC-vscode-mcp-servers
+        support: context
+        exact_locators: ["Configure mcp.json; MCP server trust"]
+      - source_id: SRC-t1206-copilot-cli
+        support: context
+        exact_locators: ["mcp add options; MCP server loading priority"]
+      - source_id: SRC-t1206-ms-config-risk
+        support: context
+        exact_locators: ["Background; exploitable misconfiguration definition"]
+    corroboration: Two advisories demonstrate unauthorized configuration write paths and first-party docs identify legitimate administration paths.
+    limitations: [A write path alone does not establish credential implantation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C007
+    statement: Consequences are bounded by the selected identity's scopes, roles, server-side authorization, and exposed tool set.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-foundry-auth
+        support: direct
+        exact_locators: ["Choose an authentication method; Key-based authentication"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: ["Authentication and authorization, lines 36-43"]
+    corroboration: Microsoft agent and MCP guidance ties identity choice to roles, scopes, and reachable tools.
+    limitations: [Impact cannot be rated precisely without deployment-specific authorization data.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Impact conditions are derived from documented authorization boundaries."}
+    status: validated
+  - id: SAF-T1206-C008
+    statement: CVE-2025-64107 allowed sensitive Cursor editor files, including mcp.json examples, to be overwritten without approval on Windows after prompt injection or malicious-model control and was fixed in 2.0.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-t1206-ghsa-cursor
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Summary; Impact; Credits"]
+      - source_id: SRC-t1206-nvd-cursor
+        support: corroborating
+        exact_locators: ["CVE description; affected data; CISA ADP SSVC"]
+    corroboration: The vendor advisory and current NVD record agree on the path bypass, prerequisites, and fixed version.
+    limitations: [Neither source demonstrates inserting or later using a credential.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C009
+    statement: CVE-2025-68433 allowed malicious project MCP configuration to trigger code execution in Zed before 0.218.2-pre, which added worktree trust.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-zed-68433
+        support: direct
+        exact_locators: ["Affected versions; Description; Impact; Patches; References"]
+      - source_id: SRC-zed-secure-default
+        support: direct
+        exact_locators: ["MCP Servers; What's changing: Restricted mode by default"]
+      - source_id: SRC-t1206-nvd-zed
+        support: corroborating
+        exact_locators: ["CVE description; affected data; CISA ADP SSVC"]
+    corroboration: Advisory, release guidance, and NVD record align on behavior and remediation.
+    limitations: [This is adjacent configuration execution, not a credential implant.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C010
+    statement: CVE-2025-66580 used click-triggered stored XSS to overwrite Dive MCP configuration and reach code execution before 0.11.1.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-dive-66580
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Summary; Details; Credits"]
+      - source_id: SRC-t1206-nvd-dive
+        support: corroborating
+        exact_locators: ["CVE description; affected data; CISA ADP SSVC"]
+    corroboration: Vendor advisory and NVD record agree on configuration injection, user interaction, and fixed version.
+    limitations: [The proof pursues command execution and does not insert authentication material.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C011
+    statement: No direct production credential-implant incident was found in the authoritative corpus reviewed through 2026-09-01.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-ms-config-risk
+        support: context
+        exact_locators: ["MCP servers, lines 58-62; Mage AI, lines 63-68"]
+      - source_id: SRC-t1206-gtig-ai-threats
+        support: context
+        exact_locators: ["AI as a Target; Compromised Code Packages, lines 230-236"]
+      - source_id: SRC-t1206-nvd-cursor
+        support: context
+        exact_locators: ["CVE description and SSVC"]
+      - source_id: SRC-t1206-nvd-dive
+        support: context
+        exact_locators: ["CVE description and SSVC"]
+      - source_id: SRC-t1206-nvd-zed
+        support: context
+        exact_locators: ["CVE description and SSVC"]
+    corroboration: Separate incident, vulnerability, and threat-report searches found related behavior but no end-to-end production instance.
+    limitations: [This is a bounded corpus conclusion, not a claim that the behavior has never occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Narrow absence conclusion from recorded searches and directly reviewed sources."}
+    status: validated
+  - id: SAF-T1206-C012
+    statement: A testable analytic can match credential-bearing changes to known MCP configuration paths and correlate them with later client authentication identity changes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-vscode-config
+        support: direct
+        exact_locators: ["Configuration file; Input variables for sensitive data"]
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators: ["Configure mcp.json; Automatically start MCP servers"]
+      - source_id: SRC-t1206-copilot-cli
+        support: direct
+        exact_locators: ["MCP server loading priority; mcp add options"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Authorization Server Binding"]
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Token Requirements; Token Handling"]
+      - source_id: SRC-t1206-attack-t1098-001
+        support: corroborating
+        exact_locators: ["Detection Strategy AN1469-AN1471"]
+    corroboration: Product config paths, credential fields, identity binding, and an analogous ATT&CK analytic support the rule design.
+    limitations: [No public accuracy study validates the synthetic rule or its 15-minute correlation window.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "The analytic is an original synthesis tested only against representative synthetic telemetry."}
+    status: validated
+  - id: SAF-T1206-C013
+    statement: Approved server onboarding, credential rotation, profile migration, and settings synchronization can resemble a credential implant.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators: ["Add an MCP server; Synchronize MCP configuration across devices"]
+      - source_id: SRC-t1206-foundry-auth
+        support: direct
+        exact_locators: ["Key-based authentication; token rotation"]
+    corroboration: Legitimate documented workflows modify the same configuration and credential fields.
+    limitations: [Local change records are needed to distinguish authorized activity.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "False positives are inferred from legitimate first-party workflows."}
+    status: validated
+  - id: SAF-T1206-C014
+    statement: Detection can miss encrypted-store-only changes, unlogged configuration APIs, unknown paths, and benign-looking key replacements.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Theft, lines 91-95"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: ["Authentication and authorization; Remote protection"]
+    corroboration: Secure storage and varied deployment controls imply telemetry gaps for file-key-only analytics.
+    limitations: [Blind spots vary by client and logging architecture.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Limits follow from protected storage and heterogeneous configuration paths."}
+    status: validated
+  - id: SAF-T1206-C015
+    statement: Write restrictions, provenance review, worktree or server trust, and explicit configuration review constrain unauthorized MCP config changes.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators: ["MCP server trust, lines 373-384"]
+      - source_id: SRC-zed-secure-default
+        support: direct
+        exact_locators: ["Restricted Mode; Worktree Trust"]
+      - source_id: SRC-t1206-ms-config-risk
+        support: context
+        exact_locators: ["Exploitable misconfiguration definition"]
+    corroboration: Two client vendors document trust controls added to configuration workflows.
+    limitations: [Already trusted paths and legitimate administrators may still modify config.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C016
+    statement: Workload identity, protected secret references, rotation, issuer and audience binding, and least privilege reduce credential-implant exposure or impact.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Audience Binding and Validation; Token Theft"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Authorization Server Binding"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: ["Authentication and authorization, lines 36-43; credential context separation"]
+      - source_id: SRC-t1206-copilot-cli
+        support: context
+        exact_locators: ["MCP server trust levels and tool permissions"]
+    corroboration: Current protocol and platform guidance converge on binding, externalized identities, and least privilege.
+    limitations: [Not all servers or clients offer workload identity or vault integration.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1206-C017
+    statement: Response should remove unauthorized configuration, invalidate affected credentials, and verify the expected identity on a fresh connection.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Theft; Access Token Privilege Restriction"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: direct
+        exact_locators: ["Authorization Server Binding"]
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators: ["Enable or disable MCP servers; Reset Trust"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: ["Authentication and authorization; endpoint protection"]
+    corroboration: Protocol and client controls support invalidation, config removal, and fresh identity validation.
+    limitations: [Exact revocation and recovery steps are implementation-specific.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Response sequence is an original synthesis of documented controls."}
+    status: validated
+  - id: SAF-T1206-C018
+    statement: ATT&CK T1098.001 is analogous because it adds adversary-controlled credentials for persistence, but it modifies account-side identity state rather than agent-client configuration.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-attack-t1098-001
+        support: direct
+        exact_locators: ["Description, lines 28-36; Tactics; Detection Strategy"]
+    corroboration: The ATT&CK definition provides a close credential-addition persistence objective with a different boundary.
+    limitations: [The mapping is analogous, not direct.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Framework mapping compares objectives while preserving the boundary difference."}
+    status: validated
+  - id: SAF-T1206-C019
+    statement: Broad identity privileges, shared configuration distribution, and autonomous tool availability increase potential confidentiality, integrity, availability, and blast-radius impact.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-foundry-auth
+        support: direct
+        exact_locators: ["Choose an authentication method; Key-based authentication; Agent identity"]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: ["Authentication and authorization; local deployment hardening"]
+      - source_id: SRC-vscode-mcp-servers
+        support: context
+        exact_locators: ["Synchronize MCP configuration across devices"]
+    corroboration: Identity, scope, tool, and configuration-distribution documentation support conditional impact ratings.
+    limitations: [The high rating is conditional and not universal.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "Impact is synthesized from authority and distribution conditions."}
+    status: validated
+  - id: SAF-T1206-C020
+    statement: Credential theft and configuration-based execution are adjacent behaviors with different immediate objectives from credential implantation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-auth-security-2026-07-28
+        support: direct
+        exact_locators: ["Token Theft"]
+      - source_id: SRC-t1206-mcp-client-registration
+        support: context
+        exact_locators: ["Pre-registration; Authorization Server Binding"]
+      - source_id: SRC-ghsa-zed-68433
+        support: direct
+        exact_locators: ["Description; Impact"]
+      - source_id: SRC-ghsa-dive-66580
+        support: direct
+        exact_locators: ["Summary; Details; Impact"]
+    corroboration: Sources separately establish token theft, persistent credentials, and config-execution objectives.
+    limitations: [Synthetic SAF neighbor IDs require mechanical integration reconciliation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: "The distinctions bound one immediate objective and security boundary."}
+    status: validated
+  - id: SAF-T1206-C021
+    statement: Current official records report proof-of-concept status for CVE-2025-66580, no exploitation for CVE-2025-64107 and CVE-2025-68433, and no listing for those CVEs in CISA KEV version 2026.09.01.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-t1206-nvd-cursor
+        support: direct
+        exact_locators: ["CISA ADP SSVC exploitation:none"]
+      - source_id: SRC-t1206-nvd-dive
+        support: direct
+        exact_locators: ["CISA ADP SSVC exploitation:poc"]
+      - source_id: SRC-t1206-nvd-zed
+        support: direct
+        exact_locators: ["CISA ADP SSVC exploitation:none"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: ["catalogVersion 2026.09.01; exact identifier search returned no selected CVEs"]
+    corroboration: Current NVD CISA-ADP data and an independently downloaded CISA KEV feed were checked on 2026-09-01.
+    limitations: [Exploitation and catalog status can change after the review date.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

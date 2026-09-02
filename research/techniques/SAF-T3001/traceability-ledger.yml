@@ -1,0 +1,131 @@
+version: 1
+technique_id: SAF-T3001
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T3001/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T3001/technique-contract.yml
+  supports: Clean-room scope, supplied name, tactic, and integration constraints.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T3001/source-coverage.yml
+  supports: Research method, saturation, candidate classification, evidence label,
+    and production gap.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T3001/quality-review.yml
+  supports: Quality gates and validation results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T3001/detection-rule.yml
+  supports: Explicitly labeled candidate analytic and limitations.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T3001/test_detection.py
+  supports: Executable semantic tests for the candidate analytic.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T3001/test-logs.json
+  supports: Inert positive, negative, boundary, missing-field, and suppression fixtures.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T3001/validation/detection-tests.txt
+  supports: Captured deterministic test result.
+- id: LOCAL-isolated-validation
+  path: research/techniques/SAF-T3001/validation/strict-validator.txt
+  supports: Captured strict-validator result in the isolated clean-room bundle.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T3001/validation/canonical-validation.txt
+  supports: Captured destination detector and strict-validator result after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T3001-X001
+  candidate: A confirmed production compromise used the exact corpus-only trigger-conditioned
+    RAG backdoor.
+  origin: Required breach and incident research pass.
+  attempted_searches:
+  - RAG poisoning incident postmortem [microsoft.com, cisa.gov]
+  - RAG poisoned retrieval corpus real world case [microsoft.com, nist.gov]
+  consulted_source_ids:
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-zero-trust-memory-2026
+  reason: Reviewed production reporting concerned direct assistant-memory prompts,
+    not the exact corpus-to-retriever-to-generator mechanism.
+  prohibited_publishable_text:
+  - confirmed production RAG corpus backdoor compromise
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T3001-X002
+  candidate: CVE-2025-27135 is a RAG corpus poisoning vulnerability.
+  origin: NVD authority-restricted vulnerability search.
+  attempted_searches:
+  - RAG poisoning CVE [nvd.nist.gov]
+  - vector database poisoning CVE RAG [nvd.nist.gov]
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-27135
+  reason: The record describes SQL injection in an execution component and does not
+    establish trigger-conditioned corpus poisoning.
+  prohibited_publishable_text:
+  - CVE-2025-27135 proves RAG backdooring
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T3001-X003
+  candidate: In-the-wild AI Recommendation Poisoning is an exact observed example
+    of this technique.
+  origin: Microsoft incident search.
+  attempted_searches:
+  - retrieval augmented generation poisoned document incident [microsoft.com]
+  - RAG document poisoning case study [microsoft.com]
+  consulted_source_ids:
+  - SRC-ms-recommendation-poisoning-2026
+  reason: Observed prompts targeted assistant memory through pre-filled links and
+    bypassed the retrieval-corpus boundary.
+  prohibited_publishable_text:
+  - AI Recommendation Poisoning is an observed RAG backdoor
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T3001-X004
+  candidate: BiasRAG is clean corpus-only evidence with an unchanged retriever.
+  origin: Demonstration research pass.
+  attempted_searches:
+  - RAG backdoor [aclanthology.org]
+  - retrieval poisoning fairness backdoor [aclanthology.org]
+  consulted_source_ids:
+  - SRC-biasrag
+  reason: The reviewed method includes retriever-training poisoning and therefore
+    crosses a different security boundary.
+  prohibited_publishable_text:
+  - BiasRAG leaves the retriever unchanged
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T3001-X005
+  candidate: Retrieval-only corpus poisoning proves downstream attacker-selected generation.
+  origin: Precursor research pass.
+  attempted_searches:
+  - poisoning retrieval corpora [aclanthology.org]
+  - conditional retrieval corpus poisoning [aclanthology.org]
+  consulted_source_ids:
+  - SRC-corpus-poisoning
+  reason: The source establishes adversarial retrieval but does not evaluate a generator
+    producing the attacker's selected answer.
+  prohibited_publishable_text:
+  - retrieval-only evidence proves generated output control
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T3001-X006
+  candidate: Existing provenance and anomaly controls completely prevent RAG backdoors.
+  origin: Detection and contrary-evidence pass.
+  attempted_searches:
+  - RAG poisoning defense evaluation [usenix.org]
+  - RAG provenance integrity monitoring [owasp.org]
+  consulted_source_ids:
+  - SRC-owasp-rag-security
+  - SRC-usenix-poisonedrag-2025
+  - SRC-riprag
+  - SRC-badrag
+  reason: Guidance recommends layered controls while evaluations show residual success
+    and signal limitations.
+  prohibited_publishable_text:
+  - completely prevents every RAG backdoor
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

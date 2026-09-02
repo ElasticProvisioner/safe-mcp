@@ -1,0 +1,156 @@
+version: 1
+technique_id: SAF-T1604
+policy: source_or_omit
+review_status: passed
+reviewed_on: 2026-09-02
+publishable_artifact: techniques/SAF-T1604/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1604/technique-contract.yml
+  supports: Internal clean-room scope, neutral name, tactic, synthetic neighbor joins,
+    and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1604/quality-review.yml
+  supports: Validation commands, test results, review date, and gate status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1604/source-coverage.yml
+  supports: Five-pass research, absence claim search basis, candidate classifications,
+    conflicts, and two no-change saturation passes.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1604/clean-room-attestation.yml
+  supports: Isolation provenance and strict synthetic-mock validation record.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1604/detection-rule.yml
+  supports: The repository's experimental correlation analytic.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1604/test-logs.json
+  supports: Positive, negative, boundary, expected-false-positive, malformed, and
+    normalization fixtures.
+- id: LOCAL-test-script
+  path: techniques/SAF-T1604/test_detection_rule.py
+  supports: Deterministic detection test implementation and assertions.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1604/integration/integration-notes.yml
+  supports: Post-freeze source, neighbor, mitigation, mapping, history, and path reconciliation.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1604/validation/detection-test.txt
+  supports: Recorded isolated and canonical repository detector results.
+- id: LOCAL-strict-validator
+  path: research/techniques/SAF-T1604/validation/strict-validator.txt
+  supports: Recorded isolated and canonical strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1604-X001
+  candidate: A direct MCP production breach used server-version enumeration.
+  origin: Separate production-incident research pass.
+  attempted_searches:
+  - Reviewed the Anthropic GTG-1002 primary report and current MITRE T1046 procedure
+    examples.
+  - Filtered the current CISA KEV catalog for Model Context Protocol, MCP server,
+    server version, and version disclosure terms.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-cisa-kev-2026-09-01
+  reason: The only qualifying MCP-enabled campaign evidence describes service and
+    endpoint discovery, not MCP server-version collection.
+  prohibited_publishable_text:
+  - SAF-T1604 is observed in MCP production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1604-X002
+  candidate: A disclosed vulnerability directly enables or is caused by MCP server-version
+    enumeration.
+  origin: Separate vulnerability and advisory research pass.
+  attempted_searches:
+  - Reviewed CISA KEV 2026.09.01, Apache's first-party advisories, and direct NVD
+    detail endpoints for the selected CVEs.
+  - Rechecked the current MCP discovery and versioning specifications for security-advisory
+    references.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-versioning
+  reason: The reviewed CVEs are non-MCP historical analogies and do not make enumeration
+    their root cause or attack path.
+  prohibited_publishable_text:
+  - CVE-2021-41773 directly enables MCP server version enumeration
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1604-X003
+  candidate: MCP serverInfo is an authoritative or cryptographically verified server
+    build record.
+  origin: Challenge pass against the core claim.
+  attempted_searches:
+  - Reviewed the MCP Discovery trust statement and Implementation schema.
+  consulted_source_ids:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-schema
+  reason: The specification explicitly says serverInfo is self-reported, unverified,
+    and unsuitable for security decisions.
+  prohibited_publishable_text:
+  - serverInfo is cryptographically verified
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1604-X004
+  candidate: Suppressing a product banner prevents vulnerability exploitation.
+  origin: Defense and challenge passes.
+  attempted_searches:
+  - Reviewed RFC 9110 Sections 10.2.4 and 17.12 plus Apache ServerTokens and nginx
+    server_tokens documentation.
+  consulted_source_ids:
+  - SRC-rfc9110-server
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  reason: RFC 9110 narrows the benefit, and Apache explicitly says disabling the Server
+    field does not itself make the server secure.
+  prohibited_publishable_text:
+  - banner suppression prevents exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1604-X005
+  candidate: The Anthropic GTG-1002 report documented MCP server software version
+    collection.
+  origin: Adjacent incident classification review.
+  attempted_searches:
+  - Reviewed the full first-party report, including reconnaissance, service enumeration,
+    technical architecture, and response sections.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-mitre-attack-t1046-v3.2
+  reason: The report establishes MCP-connected service and endpoint discovery but
+    does not state that the actor collected MCP server versions.
+  prohibited_publishable_text:
+  - Anthropic reported enumeration of MCP server software versions
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1604-X006
+  candidate: Temporary local acquisition copies of reviewed external authorities.
+  origin: Publication-rights and post-freeze repository integration review.
+  attempted_searches:
+  - Reviewed publication-rights records and verified the acquisition hashes recorded
+    in the frozen integration notes.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-versioning
+  - SRC-nginx-server-tokens
+  - SRC-nmap-vscan
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-rfc9110-server
+  reason: The rights review permits citation, linking, and paraphrase but does not
+    authorize redistributing these temporary external files. Their hashes and
+    locators remain in the immutable bundle integration notes outside the repository.
+  prohibited_publishable_text:
+  - The temporary external acquisition corpus is distributed with SAF-MCP.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

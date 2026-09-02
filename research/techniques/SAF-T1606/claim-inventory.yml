@@ -1,0 +1,525 @@
+version: 1
+technique_id: SAF-T1606
+claims:
+  - id: SAF-T1606-C001
+    statement: >-
+      MCP servers can expose named tools with input schemas; clients discover
+      them with tools/list, invoke them with tools/call, and receive structured
+      or unstructured tool results.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Lines 78-85, 119-203, 234-277, and 364-438
+    corroboration: The official reference filesystem server implements multiple named tools and result forms.
+    limitations:
+      - The protocol does not define a standard directory-listing tool name or require a specific user interaction model.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C002
+    statement: >-
+      The MCP Tools specification recommends human denial capability,
+      confirmation for sensitive operations, display of tool inputs, server-side
+      input validation and access controls, result validation, and tool-usage
+      audit logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model, lines 83-90
+          - Security Considerations, lines 546-557
+    corroboration: MCP Security Best Practices separately recommends consent and filesystem sandboxing for local servers.
+    limitations:
+      - Most client-side statements are SHOULD recommendations, and the protocol does not prescribe a universal audit schema.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C003
+    statement: >-
+      MCP roots define filesystem boundaries exposed by clients, and the Roots
+      specification requires or recommends permission checks, URI and path
+      validation, access controls, monitoring, and respect for root boundaries.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-roots-2025-11-25
+        support: direct
+        exact_locators:
+          - Overview, lines 65-76
+          - Listing Roots and Root data type, lines 103-194
+          - Security Considerations, lines 222-249
+    corroboration: The official filesystem reference server documents allowed-directory enforcement and dynamic roots.
+    limitations:
+      - Roots express intended boundaries; they do not by themselves prove that each server implementation enforces them correctly.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C004
+    statement: >-
+      The official Filesystem reference server exposes list_directory,
+      list_directory_with_sizes, directory_tree, search_files, and
+      list_allowed_directories, returning entry names, types, sizes, counts,
+      paths, or directory structure while marking those tools read-only.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: direct
+        exact_locators:
+          - API / Tools, lines 318-372
+          - Tool annotations table, lines 373-397
+      - source_id: SRC-mcp-example-servers-2026-09-02
+        support: corroborating
+        exact_locators:
+          - Current reference servers, lines 75-89
+          - Filesystem configuration, lines 142-167
+    corroboration: The official non-GitHub Example Servers index identifies Filesystem as a current reference implementation and supplies its exact repository URL.
+    limitations:
+      - A documented capability is not evidence that an adversary invoked it in production.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C005
+    statement: >-
+      MITRE ATT&CK defines File and Directory Discovery as enumerating files and
+      directories or searching locations to obtain information that can shape
+      follow-on behavior; it recognizes both shell utilities and custom tools.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-attack-t1083
+        support: direct
+        exact_locators:
+          - Definition and tactic, lines 15-27
+    corroboration: ATT&CK procedure examples document many non-MCP instances of the behavior.
+    limitations:
+      - ATT&CK T1083 is platform-general and does not establish use of an MCP file tool.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C006
+    statement: >-
+      An actor able to influence a model-controlled tools/call request can use a
+      file-capable MCP server's listing tool to obtain directory metadata within
+      the filesystem namespace available to that server and invoking identity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - Model-controlled User Interaction Model, lines 83-90
+          - Calling Tools, lines 171-203
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: direct
+        exact_locators:
+          - Directory Access Control, lines 224-268
+          - Directory-listing tools, lines 318-372
+      - source_id: SRC-attack-t1083
+        support: context
+        exact_locators:
+          - Definition, lines 15-19
+    corroboration: The protocol invocation flow and the implementation capability independently support the synthesis.
+    limitations:
+      - No directly reviewed source showed this exact end-to-end adversary behavior using a filesystem MCP tool in production or a public controlled evaluation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The adversary framing joins independently verified MCP invocation semantics, a concrete listing implementation, and the established discovery objective.
+    status: validated
+
+  - id: SAF-T1606-C007
+    statement: >-
+      CVE-2025-53109 and GHSA-q66q-fx2p-7w4m document that affected versions of
+      the Model Context Protocol Filesystem reference server could access
+      unintended files through symlinks inside allowed directories; Elad Beber
+      of Cymulate reported the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-53109
+        support: direct
+        exact_locators:
+          - English description, affected data, SSVC block, and references
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: direct
+        exact_locators:
+          - Package and Description, lines 139-154
+      - source_id: SRC-mcp-fix-d00c60d
+        support: corroborating
+        exact_locators:
+          - Commit title and changed filesystem validation files, lines 133-170
+    corroboration: NVD, the project advisory, and the maintainer fix artifact agree on the symlink boundary-bypass mechanism.
+    limitations:
+      - The sources do not document production exploitation or a directory-listing call specifically.
+    conflicts:
+      - The advisory table lists 0.6.3 as patched while its narrative and NVD advise 0.6.4; the draft discloses this inconsistency.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C008
+    statement: >-
+      CVE-2025-53110 and GHSA-hc55-p739-j48w document that affected versions of
+      the Model Context Protocol Filesystem reference server could access
+      unintended files when a requested path shared a colliding prefix with an
+      allowed directory; Elad Beber of Cymulate reported the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-53110
+        support: direct
+        exact_locators:
+          - English description, affected data, SSVC block, and references
+      - source_id: SRC-ghsa-cve-2025-53110
+        support: direct
+        exact_locators:
+          - Package and Description, lines 139-154
+      - source_id: SRC-mcp-fix-cc99bda
+        support: corroborating
+        exact_locators:
+          - Exact maintainer fix commit identity and title
+    corroboration: NVD, the project advisory, and the maintainer fix artifact agree on the path-prefix boundary-bypass mechanism.
+    limitations:
+      - The sources do not document production exploitation or a directory-listing call specifically.
+    conflicts:
+      - The advisory table lists 0.6.3 as patched while its narrative and NVD advise 0.6.4; the draft discloses this inconsistency.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C009
+    statement: >-
+      For both CVE-2025-53109 and CVE-2025-53110, NVD's CISA Coordinator SSVC
+      data recorded exploitation as none, and neither identifier appeared in
+      CISA KEV catalog version 2026.09.01 when checked on 2026-09-02.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-53109
+        support: direct
+        exact_locators:
+          - metrics.ssvcV203 options, timestamp 2025-07-02
+      - source_id: SRC-nvd-cve-2025-53110
+        support: direct
+        exact_locators:
+          - metrics.ssvcV203 options, timestamp 2025-07-02
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog version and exact cveID equality checks
+    corroboration: The government catalog check and both NVD SSVC blocks independently supplied bounded exploitation-status evidence.
+    limitations:
+      - The SSVC observations are dated 2025-07-02, and absence from KEV does not prove absence of exploitation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C010
+    statement: >-
+      Anthropic Threat Intelligence documented a 2025 production espionage
+      campaign in which Claude Code and MCP tools supported largely autonomous
+      reconnaissance and discovery, but the report did not identify directory
+      listing through a filesystem tool.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive summary, pages 2-3
+          - Operational infrastructure, pages 5-6
+          - Reconnaissance and attack surface mapping, page 8
+          - Technical sophistication, pages 11-12
+    corroboration: MITRE ATT&CK maps the campaign to File and Directory Discovery, but the primary report remains controlling for the limitation.
+    limitations:
+      - This is an adjacent MCP-enabled incident, not a direct instance of SAF-T1606.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C011
+    statement: >-
+      ATT&CK DET0370 proposes detecting recursive enumeration by correlating
+      execution or file-access events with unusual user or process context,
+      sensitive locations, recursive breadth, allowlists, and time windows.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0370-v1.0
+        support: direct
+        exact_locators:
+          - AN1040 through AN1044, lines 37-117
+    corroboration: The MCP Tools specification separately recommends logging tool usage for audit purposes.
+    limitations:
+      - DET0370 addresses operating-system and device telemetry rather than MCP audit events and does not publish accuracy measurements.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C012
+    statement: >-
+      An MCP-focused analytic can adapt DET0370 by selecting tools/call events
+      for directory-listing tool names and requiring either recursive behavior
+      or a boundary-aware sensitive path, while excluding explicitly approved
+      allowlisted sessions.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - tools/call request fields, lines 171-187
+          - Audit logging recommendation, lines 546-557
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: direct
+        exact_locators:
+          - Tool names and path inputs, lines 318-372
+      - source_id: SRC-mitre-det0370-v1.0
+        support: context
+        exact_locators:
+          - Sensitive locations, user context, path depth, allowlist, and time-window mutable elements, lines 37-117
+    corroboration: Synthetic tests exercise the adaptation over representative MCP audit records.
+    limitations:
+      - The analytic is experimental, depends on normalized event fields, and produces leads rather than proof of adversary intent.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rule translates authoritative tool and detection semantics into a repository-specific audit model.
+    status: validated
+
+  - id: SAF-T1606-C013
+    statement: >-
+      Legitimate IDE indexing, project browsing, build tooling, backup, inventory,
+      and administrator activity can resemble directory enumeration, so actor,
+      approval, path, recursion, and baseline context are necessary for tuning.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0370-v1.0
+        support: direct
+        exact_locators:
+          - UserContext, FilePathDepth, TimeWindow, PredicateScope, CommandWhitelist, and SessionOrigin fields, lines 46-117
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: context
+        exact_locators:
+          - Documented legitimate directory tools, lines 318-372
+    corroboration: The reference server establishes common legitimate functionality, while ATT&CK identifies context and allowlisting as mutable elements.
+    limitations:
+      - The reviewed sources do not quantify false-positive rates for MCP environments.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Expected legitimate uses are derived from documented server functions and ATT&CK tuning dimensions.
+    status: validated
+
+  - id: SAF-T1606-C014
+    statement: >-
+      Limiting allowed roots and process privileges, validating requested paths,
+      requiring meaningful confirmation for sensitive calls, and retaining
+      tool-call audit records reduce reach or improve accountability for
+      directory-listing behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-roots-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations and Implementation Guidelines, lines 222-249
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model and Security Considerations, lines 83-90 and 546-557
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise mitigations, lines 404-424
+          - Scope Minimization mitigations, lines 560-573
+    corroboration: The first-party reference server separately documents allowed-directory controls.
+    limitations:
+      - These controls cannot distinguish malicious from authorized discovery when the invocation is within permitted roots and policy.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control set combines protocol and implementation guidance for this specific discovery behavior.
+    status: validated
+
+  - id: SAF-T1606-C015
+    statement: >-
+      Directory listings can disclose names, types, sizes, counts, and hierarchy
+      that guide follow-on selection, but listing alone does not establish file
+      content disclosure, modification, or service disruption.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: direct
+        exact_locators:
+          - list_directory through directory_tree outputs, lines 318-356
+          - Read-only annotations, lines 373-397
+      - source_id: SRC-attack-t1083
+        support: direct
+        exact_locators:
+          - Discovery objective and follow-on use, lines 15-19
+    corroboration: The implementation documents the returned metadata and ATT&CK documents its use in shaping follow-on behavior.
+    limitations:
+      - Actual confidentiality impact depends on naming sensitivity, reachable roots, identity privileges, and downstream actions.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The bounded impact is derived by joining documented outputs with the discovery purpose and excluding downstream behaviors.
+    status: validated
+
+  - id: SAF-T1606-C016
+    statement: >-
+      No qualifying direct production incident of directory listing through an
+      MCP file tool was identified in the direct-authority corpus reviewed on
+      2026-09-02; one MCP-enabled espionage incident remained adjacent because
+      its report did not name a filesystem listing tool or call.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Operational infrastructure and reconnaissance, pages 5-8
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators:
+          - Catalog version and exact candidate-CVE checks
+      - source_id: SRC-nvd-cve-2025-53109
+        support: context
+        exact_locators:
+          - Description and exploitation status
+      - source_id: SRC-nvd-cve-2025-53110
+        support: context
+        exact_locators:
+          - Description and exploitation status
+    corroboration: Source-coverage.yml records the five passes, direct-authority catalog queries, rejected candidates, and two no-change follow-ups.
+    limitations:
+      - This is a bounded search result, not a universal claim that no such incident has occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to the documented direct-authority corpus and date.
+    status: validated
+
+  - id: SAF-T1606-C017
+    statement: >-
+      The project advisories' affected/patched version tables for CVE-2025-53109
+      and CVE-2025-53110 conflict with their own remediation narrative and the
+      NVD affected range, so 0.6.3 cannot be presented as an unambiguous fixed
+      boundary from the reviewed evidence.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: direct
+        exact_locators:
+          - Affected/patched tables and Description, lines 143-154
+      - source_id: SRC-nvd-cve-2025-53109
+        support: corroborating
+        exact_locators:
+          - English description and affected data
+      - source_id: SRC-ghsa-cve-2025-53110
+        support: direct
+        exact_locators:
+          - Affected/patched tables and Description, lines 143-154
+      - source_id: SRC-nvd-cve-2025-53110
+        support: corroborating
+        exact_locators:
+          - English description and affected data
+    corroboration: Both advisory/NVD pairs exhibit the same version-text inconsistency.
+    limitations:
+      - The research did not derive an independent package-level fixed-version proof from a signed release artifact.
+    conflicts:
+      - Affected and patched version statements differ across fields in the official records.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1606-C018
+    statement: >-
+      The strongest support for the complete SAF-T1606 behavior is
+      Research-Derived because tool invocation, directory-listing capability,
+      boundaries, and discovery purpose are each directly supported, but no
+      reviewed source directly reproduces or observes the complete adversary
+      path through an MCP filesystem tool.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators:
+          - User Interaction Model and Calling Tools, lines 83-90 and 171-203
+      - source_id: SRC-mcp-filesystem-reference-2026-09-02
+        support: direct
+        exact_locators:
+          - Directory listing tools, lines 318-372
+      - source_id: SRC-attack-t1083
+        support: context
+        exact_locators:
+          - Definition, lines 15-19
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: context
+        exact_locators:
+          - MCP-enabled production activity and the absence of file-tool specificity, pages 5-12
+    corroboration: The independent component sources converge, while the incident source preserves the missing direct link.
+    limitations:
+      - Evidence status should be raised only if an end-to-end public demonstration or production incident identifies the defining file-tool listing behavior.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is the evidence-classification synthesis required by the technique contract.
+    status: validated
+
+  - id: SAF-T1606-C019
+    statement: >-
+      MITRE ATT&CK T1083 is a direct behavioral mapping for enumeration of files
+      and directories, while MCP tool invocation is a transport and control-plane
+      specialization not represented in the ATT&CK definition.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1083
+        support: direct
+        exact_locators:
+          - Definition, ID, and Discovery tactic, lines 15-27
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators:
+          - tools/list and tools/call, lines 119-203
+    corroboration: The mapping aligns on the immediate objective and distinguishes the MCP invocation mechanism.
+    limitations:
+      - ATT&CK T1083 does not imply a file tool, model control, or MCP roots.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping joins the ATT&CK behavior with the MCP-specific mechanism without broadening either definition.
+    status: validated

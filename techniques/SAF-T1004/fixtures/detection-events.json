@@ -1,0 +1,153 @@
+[
+  {
+    "case_id": "positive_alias_tuple_mismatch",
+    "expected_alert": true,
+    "expected_reasons": ["approved_alias_tuple_mismatch"],
+    "event": {
+      "timestamp": "2026-09-01T12:00:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "connect",
+      "alias": "Finance Reports",
+      "server_name": "io.github.lookalike/finance-reports",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "oci.example.test/lookalike/finance@sha256:2222",
+      "endpoint_uri": "https://reports-lookalike.example.test/mcp",
+      "publisher_namespace_verified": true,
+      "package_binding_status": "verified",
+      "tls_identity_status": "matched",
+      "approved_identity": {
+        "alias": "finance reports",
+        "server_name": "com.example/finance-reports",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "oci.example.test/official/finance@sha256:1111",
+        "endpoint_host": "reports.example.test"
+      }
+    }
+  },
+  {
+    "case_id": "positive_binding_skipped",
+    "expected_alert": true,
+    "expected_reasons": ["unverified_binding"],
+    "event": {
+      "timestamp": "2026-09-01T12:01:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "install",
+      "alias": "Inventory",
+      "server_name": "com.example/inventory",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "oci.example.test/example/inventory:1.2.3",
+      "endpoint_uri": "",
+      "publisher_namespace_verified": true,
+      "package_binding_status": "skipped",
+      "tls_identity_status": "not_applicable",
+      "approved_identity": {
+        "alias": "Inventory",
+        "server_name": "com.example/inventory",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "oci.example.test/example/inventory:1.2.3",
+        "endpoint_host": ""
+      }
+    }
+  },
+  {
+    "case_id": "positive_tls_mismatch",
+    "expected_alert": true,
+    "expected_reasons": ["tls_identity_mismatch"],
+    "event": {
+      "timestamp": "2026-09-01T12:02:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "connect",
+      "alias": "HR",
+      "server_name": "com.example/hr",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "",
+      "endpoint_uri": "https://hr.example.test/mcp",
+      "publisher_namespace_verified": true,
+      "package_binding_status": "verified",
+      "tls_identity_status": "mismatch",
+      "approved_identity": {
+        "alias": "HR",
+        "server_name": "com.example/hr",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "",
+        "endpoint_host": "hr.example.test"
+      }
+    }
+  },
+  {
+    "case_id": "negative_exact_approved_tuple",
+    "expected_alert": false,
+    "expected_reasons": [],
+    "event": {
+      "timestamp": "2026-09-01T12:03:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "connect",
+      "alias": "Finance Reports",
+      "server_name": "com.example/finance-reports",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "oci.example.test/official/finance@sha256:1111",
+      "endpoint_uri": "https://reports.example.test/mcp",
+      "publisher_namespace_verified": true,
+      "package_binding_status": "verified",
+      "tls_identity_status": "matched",
+      "approved_identity": {
+        "alias": "finance reports",
+        "server_name": "com.example/finance-reports",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "oci.example.test/official/finance@sha256:1111",
+        "endpoint_host": "reports.example.test"
+      }
+    }
+  },
+  {
+    "case_id": "boundary_inventory_action_ignored",
+    "expected_alert": false,
+    "expected_reasons": [],
+    "event": {
+      "timestamp": "2026-09-01T12:04:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "inventory",
+      "alias": "Finance Reports",
+      "server_name": "io.github.lookalike/finance-reports",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "oci.example.test/lookalike/finance@sha256:2222",
+      "endpoint_uri": "https://reports-lookalike.example.test/mcp",
+      "publisher_namespace_verified": false,
+      "package_binding_status": "unknown",
+      "tls_identity_status": "mismatch",
+      "approved_identity": {
+        "alias": "finance reports",
+        "server_name": "com.example/finance-reports",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "oci.example.test/official/finance@sha256:1111",
+        "endpoint_host": "reports.example.test"
+      }
+    }
+  },
+  {
+    "case_id": "false_positive_legitimate_migration",
+    "expected_alert": true,
+    "expected_reasons": ["approved_alias_tuple_mismatch"],
+    "expected_false_positive": true,
+    "event": {
+      "timestamp": "2026-09-01T12:05:00Z",
+      "event_type": "mcp_server_resolution",
+      "action": "configure",
+      "alias": "Finance Reports",
+      "server_name": "com.example/finance-reports",
+      "registry_url": "https://registry.example.test",
+      "package_identifier": "oci.example.test/official/finance@sha256:3333",
+      "endpoint_uri": "https://reports-v2.example.test/mcp",
+      "publisher_namespace_verified": true,
+      "package_binding_status": "verified",
+      "tls_identity_status": "matched",
+      "approved_identity": {
+        "alias": "finance reports",
+        "server_name": "com.example/finance-reports",
+        "registry_url": "https://registry.example.test",
+        "package_identifier": "oci.example.test/official/finance@sha256:1111",
+        "endpoint_host": "reports.example.test"
+      }
+    }
+  }
+]

@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T2107
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room author
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records no prohibited prior-artifact access and freeze precedes integration.
+  contract_and_scope:
+    status: passed
+    notes: Weight-update consumption is required; runtime injection, retrieval poisoning, and direct artifact tampering are excluded.
+  technical_accuracy:
+    status: passed
+    notes: MCP output, training-trajectory use, poisoning evidence, prerequisites, and uncertainty are separated.
+  claim_traceability:
+    status: passed
+    notes: Fifteen validated claims have direct locators, limitations, and named sources.
+  source_or_omit:
+    status: passed
+    notes: Publishable lines are traced and five unsupported propositions are excluded.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived reflects component composition without a direct end-to-end demonstration.
+  research_saturation:
+    status: passed
+    notes: Five passes plus two consecutive no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Four candidates were assessed; all are adjacent and none was selected as a direct example.
+  detection_quality:
+    status: passed
+    notes: Provenance-admission analytic passed two positive and four negative or boundary cases; semantic blind spots are explicit.
+  mitigation_quality:
+    status: passed
+    notes: Provenance, admission, versioning, evaluation, rollback, and response controls address the defining boundary.
+  framework_alignment:
+    status: passed
+    notes: Supplied tactic is preserved; synthetic joins and their post-freeze replacement are explicit.
+  publication_rights:
+    status: passed
+    notes: Sources are paraphrased with named credit; no quotations, code, figures, or datasets are reproduced.
+  safe_publication:
+    status: passed
+    notes: Example data use inert identifiers and contain no poison payload, credential, or destructive command.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T2107
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T2107/test_detection_rule.py
+    result: PASS - 2 positive and 4 negative/boundary cases behaved as expected
+    waiver: null
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "PASS: 2 positive and 4 negative/boundary cases behaved as expected"
+  validator: "PASS SAF-T2107"
+  notes: Synthetic neighbors and mitigations, source IDs, ATT&CK mapping, history, framework, alignment, canonical labels, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

@@ -1,0 +1,23 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2104
+    name: Fraudulent Transactions
+    documentation_status: under_review
+    evidence_status: demonstrated
+    tactics: [ATK-TA0040]
+    technique_path: techniques/SAF-T2104/README.md
+    research_packet: research/techniques/SAF-T2104
+    related_techniques: [SAF-T1102, SAF-T1309, SAF-T1915]
+    mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T2104/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T2104/test_detection_rule.py
+        - tests/SAF-T2104/fixtures.json
+        - research/techniques/SAF-T2104/validation/detection-test.txt
+        - research/techniques/SAF-T2104/validation/strict-validator.txt
+        - research/techniques/SAF-T2104/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1657
+        type: direct

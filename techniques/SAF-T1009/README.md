@@ -2,454 +2,256 @@
 
 ## Overview
 
-**Tactic**: Initial Access (ATK-TA0001)  
-**Technique ID**: SAF-T1009  
-**Severity**: Critical  
-**First Observed**: 2016 (Academic research by Mainka et al.)  
-**Last Updated**: 2025-11-23
+- **Tactic**: Initial Access (ATK-TA0001)
+- **Technique ID**: SAF-T1009
+- **Research Packet**: [research/techniques/SAF-T1009](../../research/techniques/SAF-T1009/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1009/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Research-Derived
+- **Severity**: High
+- **Severity Rationale**: A successful mix-up can disclose an authorization code or access token for an honest issuer, with confidentiality and integrity impact bounded by the credential's permissions and the downstream resource controls. [RFC 9207](https://www.rfc-editor.org/rfc/rfc9207.html) <!-- SAF-TRACE: claims=SAF-T1009-C005; sources=SRC-rfc9207 -->
+- **First Observed**: Not observed in MCP production in the reviewed corpus; the generic OAuth behavior was demonstrated on concrete clients by Fett, Küsters, and Schmitz in 2016. [Formal OAuth analysis](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C012,SAF-T1009-C017; sources=SRC-fett-oauth-analysis,SRC-nvd-oauth-mixup-query -->
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+This technique covers an attacker-controlled or compromised authorization server causing a multi-authorization-server MCP client to misattribute a browser-delivered response from an honest issuer and send the resulting code or token to the attacker-controlled server. The crossed boundary is the client's per-request binding among the validated expected issuer, callback, and token endpoint. [MCP authorization security considerations](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations) [OAuth Security BCP](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003,SAF-T1009-C004; sources=SRC-mcp-auth-security-2026-07-28,SRC-rfc9700 -->
+
+### In Scope
+
+- A client supports two or more authorization servers, at least one controlled or compromised by the attacker. [RFC 9700 §4.4](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+- The client fails to preserve and verify the honest response's issuer before selecting where to send the authorization credential. [MCP Authorization Response Validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C006; sources=SRC-mcp-authorization-2026-07-28,SRC-fett-oauth-analysis -->
+- The immediate objective is cross-issuer disclosure of an honest authorization code or access token. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C003,SAF-T1009-C005; sources=SRC-rfc9207 -->
+
+### Out of Scope
+
+- Authorization-code injection is follow-on use of an already obtained code; this technique ends at issuer misbinding and credential disclosure. [RFC 9700 §§4.4-4.5](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+- Token audience confusion occurs when a resource accepts a token intended elsewhere, while this technique occurs at the client's response-to-endpoint binding. [RFC 8707 §3](https://www.rfc-editor.org/rfc/rfc8707.html#section-3) <!-- SAF-TRACE: claims=SAF-T1009-C011; sources=SRC-rfc8707 -->
+- Malicious discovery endpoints, callback-state confusion, and client-assertion audience injection remain adjacent unless they produce the defining browser-response credential disclosure. [Malicious Endpoints research](https://arxiv.org/abs/1508.04324) <!-- SAF-TRACE: claims=SAF-T1009-C013,SAF-T1009-C014,SAF-T1009-C016; sources=SRC-mainka-oidc-endpoints,SRC-ghsa-authjs-provider-binding,SRC-oidf-private-key-jwt-disclosure -->
+- A client that interacts with only one authorization server is outside this technique's prerequisite. [RFC 9207 §4](https://www.rfc-editor.org/rfc/rfc9207.html#section-4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9207 -->
+
+### Distinguishing Characteristics
+
+The decisive observable is a disagreement between the issuer recorded for a specific authorization request and the issuer associated with its browser-delivered response or token endpoint. A valid token presented to the wrong resource is audience confusion, and a stolen code inserted into another session is code injection; neither requires this cross-issuer callback misbinding. [RFC 9700 §4.4.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.2) [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C006,SAF-T1009-C011; sources=SRC-rfc9700,SRC-mcp-authorization-2026-07-28,SRC-rfc8707 -->
 
 ## Description
 
-Authorization Server Mix-up is a sophisticated attack technique where adversaries exploit OAuth 2.0 clients by redirecting them to lookalike or attacker-controlled Authorization Server (AS) domains. The attack leverages domain confusion techniques including typosquatting, homograph attacks, and subdomain manipulation to trick users and MCP clients into authenticating with malicious authorization servers.
+In MCP authorization over HTTP, the MCP server is an OAuth resource server, the MCP client is an OAuth client, and the authorization server may be separate. Current MCP discovery permits a protected resource to identify multiple independent authorization servers, requiring the client to maintain separate registration and credential state for each. [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) [MCP Authorization Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery) <!-- SAF-TRACE: claims=SAF-T1009-C001,SAF-T1009-C002; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-discovery-2026-07-28 -->
 
-When a client follows a redirect to a lookalike AS domain (e.g., `accounts-google.com` instead of `accounts.google.com`), the authorization code or access token is leaked to the attacker-controlled server. This attack is particularly dangerous in MCP environments where multiple OAuth-protected services are integrated, as a single compromised authorization flow can grant attackers access to numerous connected services including cloud storage, code repositories, email, and AI model APIs.
+An attacker controlling one supported authorization server can redirect the authorization journey through an honest server. If the client still associates the callback with the attacker-controlled issuer, it can transmit the honest server's code or token to the attacker's endpoint. This is Research-Derived for MCP: the exact generic OAuth behavior has been demonstrated, and MCP supplies the multi-issuer boundary, but no complete MCP demonstration or production incident was found. [OAuth Security BCP](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.1) [Fett, Küsters, and Schmitz](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C003,SAF-T1009-C004,SAF-T1009-C012,SAF-T1009-C017; sources=SRC-rfc9700,SRC-fett-oauth-analysis,SRC-nvd-oauth-mixup-query,SRC-arxiv-mcp-mixup-query -->
 
 ## Attack Vectors
 
-- **Primary Vector**: Typosquatted or homograph domains mimicking legitimate Authorization Servers
-- **Secondary Vectors**:
-  - Malicious MCP server configurations redirecting to attacker-controlled AS
-  - Compromised OAuth discovery metadata pointing to rogue AS endpoints
-  - Man-in-the-middle attacks manipulating authorization redirects
-  - Social engineering to install MCP servers with pre-configured malicious AS URLs
-  - DNS hijacking or DNS cache poisoning targeting OAuth endpoints
-  - International Domain Name (IDN) homograph attacks using Unicode confusables
+- **Primary Vector**: A user or automated flow starts with an attacker-controlled authorization server supported by the client, and the browser is redirected through an honest authorization server whose response the client misattributes. [RFC 9700 §4.4.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.1) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+- **Secondary Vector**: A supported authorization server is compromised, or the client's initial issuer selection is altered, producing the same cross-issuer state error. [RFC 9700 §4.4](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+- **Affected Components**: MCP client authorization state, browser callback handler, authorization-server metadata cache, authorization endpoint, and token endpoint. [MCP authorization flow](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-flow-steps) <!-- SAF-TRACE: claims=SAF-T1009-C001,SAF-T1009-C006; sources=SRC-mcp-authorization-2026-07-28 -->
+- **Trust Boundary Crossed**: The binding between a validated issuer and the endpoints and callback assigned to one authorization request. [RFC 9700 §4.4.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.2) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C018; sources=SRC-rfc9700,SRC-rfc9207 -->
 
 ## Technical Details
 
 ### Prerequisites
 
-- User has MCP client configured with OAuth-enabled services
-- Attacker registers lookalike domain or compromises legitimate domain
-- Client does not validate Authorization Server issuer (missing RFC 9207 implementation)
-- User must initiate OAuth flow through compromised pathway
+- The MCP client can interact with at least two authorization servers. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C002,SAF-T1009-C003; sources=SRC-rfc9207,SRC-mcp-auth-discovery-2026-07-28 -->
+- One supported authorization server is attacker-controlled or compromised. [RFC 9700 §4.4](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+- The client does not reliably bind and compare the expected issuer before choosing the token endpoint. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C006,SAF-T1009-C008; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9207 -->
 
 ### Attack Flow
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant U as User
-    participant MCP as MCP Client
-    participant LAS as Legitimate AS<br/>(accounts.google.com)
-    participant MAS as Malicious AS<br/>(accounts-google.com)
-    participant RS as Resource Server<br/>(Google Drive API)
-    participant A as Attacker
-
-    Note over U,MCP: 1. User initiates OAuth flow
-    U->>MCP: Request access to Google Drive
-
-    Note over MCP,MAS: 2. MCP redirects to malicious AS (typosquatted domain)
-    MCP->>MAS: Authorization request to accounts-google.com
-
-    Note over MAS,U: 3. Malicious AS presents convincing login page
-    MAS->>U: Display fake Google login page
-    U->>MAS: Enter credentials
-
-    Note over MAS,A: 4. Attacker captures credentials and issues fake token
-    MAS->>A: Store stolen credentials
-    MAS->>MCP: Return authorization code
-
-    Note over MCP,MAS: 5. MCP exchanges code for access token
-    MCP->>MAS: Token exchange request
-    MAS->>MCP: Return malicious access token
-
-    Note over A,RS: 6. Attacker uses stolen credentials with legitimate AS
-    A->>LAS: Login with stolen credentials
-    LAS->>A: Return legitimate access token
-    A->>RS: Access victim's Google Drive
-
-    Note over MCP,RS: 7. MCP attempts to use malicious token (fails)
-    MCP->>RS: API request with malicious token
-    RS->>MCP: 401 Unauthorized (token invalid)
-
-    Note over A: 8. Attacker has full access while victim sees OAuth failure
-```
-
-#### Detailed Attack Steps
-
-1. **Reconnaissance**: Attacker identifies target OAuth Authorization Servers used by MCP deployments
-2. **Domain Registration**: Attacker registers lookalike domain using typosquatting or homograph techniques
-3. **Infrastructure Setup**: Attacker deploys OAuth authorization server on malicious domain
-4. **Compromise Vector**: Attacker distributes malicious MCP server or manipulates client configuration
-5. **OAuth Initiation**: Victim initiates OAuth flow through MCP client
-6. **Redirect Manipulation**: Client redirects to lookalike AS domain instead of legitimate one
-7. **User Authentication**: User authenticates on lookalike domain (appears legitimate)
-8. **Code/Token Capture**: Authorization code or access token sent to attacker's callback URL
-9. **Token Exchange**: Attacker exchanges authorization code for access/refresh tokens
-10. **Post-Exploitation**: Attacker uses stolen tokens to access victim's services
+1. **Setup**: The attacker operates or compromises an authorization server the multi-server client is willing to use. [RFC 9700 §4.4](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+2. **Initiation**: A flow is recorded as using the attacker-controlled issuer. [Fett, Küsters, and Schmitz §3.2](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C003,SAF-T1009-C012; sources=SRC-fett-oauth-analysis -->
+3. **Redirection**: The attacker-controlled server sends the browser to an honest authorization endpoint using the client's honest-server registration context. [RFC 9700 §4.4.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.1) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+4. **Honest Response**: The honest server authorizes and returns a code or token through the browser to the client callback. [RFC 9700 §4.4.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.1) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 -->
+5. **Misbinding**: The client treats the honest response as belonging to the attacker-controlled issuer because the per-request issuer check is absent or ineffective. [RFC 9207 §§1, 2.4](https://www.rfc-editor.org/rfc/rfc9207.html#section-2.4) <!-- SAF-TRACE: claims=SAF-T1009-C003,SAF-T1009-C008; sources=SRC-rfc9207 -->
+6. **Objective**: The client sends the honest code or token to the attacker-controlled endpoint, disclosing the credential and enabling bounded follow-on access. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C005; sources=SRC-rfc9207 -->
 
 ### Example Scenario
 
-**Legitimate OAuth Flow**:
+An MCP client has independently validated `https://honest.as.example` and `https://attacker.as.example`. For flow `flow-042`, it recorded the attacker issuer, but the browser returns an inert placeholder response identifying the honest issuer. A conforming client rejects the mismatch before any token request; an affected client would instead risk sending the honest credential to the attacker endpoint. [MCP Authorization Response Validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C006,SAF-T1009-C008; sources=SRC-mcp-authorization-2026-07-28 -->
+
+The following synthetic event contains no redeemable credential and illustrates the defensive decision point. <!-- SAF-TRACE: claims=SAF-T1009-C019,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28 -->
 
 ```json
 {
-  "authorization_endpoint": "https://accounts.google.com/o/oauth2/v2/auth",
-  "token_endpoint": "https://oauth2.googleapis.com/token",
-  "issuer": "https://accounts.google.com",
-  "client_id": "123456789.apps.googleusercontent.com",
-  "redirect_uri": "https://mcp-client.example.com/callback"
+  "flow_id": "flow-042",
+  "recorded_expected_issuer": "https://attacker.as.example",
+  "response_iss": "https://honest.as.example",
+  "authorization_response_iss_parameter_supported": true,
+  "metadata_validated": true,
+  "validation_outcome": "rejected",
+  "code": "NON-REDEEMABLE-EXAMPLE"
 }
 ```
 
-**Malicious OAuth Flow (Mix-up Attack)**:
+## Evidence and Current State
 
-```json
-{
-  "authorization_endpoint": "https://accounts-google.com/o/oauth2/v2/auth",
-  "token_endpoint": "https://accounts-google.com/token",
-  "issuer": "https://accounts-google.com",
-  "client_id": "attacker-client-id",
-  "redirect_uri": "https://attacker-controlled.com/steal-tokens"
-}
-```
+### Evidence Summary
 
-Note the subtle difference: `accounts.google.com` (legitimate) vs `accounts-google.com` (attacker's typosquatted domain).
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1009-C001 | MCP uses OAuth client, resource-server, and authorization-server roles. | Research-Derived | SRC-mcp-authorization-2026-07-28: [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Roles do not establish exploitation. |
+| SAF-T1009-C002 | MCP can advertise multiple independent authorization servers with separate client state. | Research-Derived | SRC-mcp-auth-discovery-2026-07-28: [Discovery](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery); SRC-rfc9728: [RFC 9728](https://www.rfc-editor.org/rfc/rfc9728.html) | Multiple servers are a prerequisite only. |
+| SAF-T1009-C003 | Mix-up requires multiple servers and an attacker-controlled server, and targets an honest code or token. | Research-Derived | SRC-rfc9700: [RFC 9700 §4.4](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) | General OAuth, not an MCP incident. |
+| SAF-T1009-C004 | The demonstrated OAuth mechanism applies to an MCP client that fails issuer binding. | Research-Derived | SRC-mcp-auth-security-2026-07-28: [MCP security](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations); SRC-fett-oauth-analysis: [formal analysis](https://arxiv.org/abs/1601.01229) | Explicit MCP inference; no MCP reproduction. |
+| SAF-T1009-C005 | Credential disclosure can affect confidentiality and integrity. | Demonstrated | SRC-rfc9207: [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) | Scope depends on credential and controls. |
+| SAF-T1009-C006 | MCP binds the validated expected issuer to per-request state and validates before token exchange. | Research-Derived | SRC-mcp-authorization-2026-07-28: [response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Requires authentic expected metadata. |
+| SAF-T1009-C007 | Authorization-server metadata issuer must exactly match the issuer used for discovery. | Research-Derived | SRC-rfc8414: [RFC 8414 §3.3](https://www.rfc-editor.org/rfc/rfc8414.html#section-3.3) | Does not choose the appropriate issuer. |
+| SAF-T1009-C008 | Present mismatch or advertised-but-missing iss must be rejected. | Research-Derived | SRC-mcp-authorization-2026-07-28: [decision table](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Legacy non-advertised absence can proceed. |
+| SAF-T1009-C009 | Current MCP permits non-advertised issuer absence and anticipates a stricter future revision. | Research-Derived | SRC-mcp-authorization-2026-07-28: [response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Compatibility condition is not universal exploitability. |
+| SAF-T1009-C010 | RFC 9700 requires a defense and treats distinct redirects as a limited alternative. | Research-Derived | SRC-rfc9700: [RFC 9700 §4.4.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.2) | Not MCP's primary response check. |
+| SAF-T1009-C011 | Resource indicators and audience checks constrain cross-resource token reuse. | Research-Derived | SRC-rfc8707: [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) | Does not stop disclosure for the intended resource. |
+| SAF-T1009-C012 | The attack was verified on mod_auth_openidc and pyoidc. | Demonstrated | SRC-fett-oauth-analysis: [Fett, Küsters, Schmitz](https://arxiv.org/abs/1601.01229) | OAuth/OpenID demonstration, not MCP production. |
+| SAF-T1009-C013 | Malicious OpenID discovery endpoints are a demonstrated adjacent behavior. | Demonstrated | SRC-mainka-oidc-endpoints: [Mainka, Mladenov, Schwenk](https://arxiv.org/abs/1508.04324) | Endpoint substitution, not necessarily callback mix-up. |
+| SAF-T1009-C014 | Auth.js provider-unbound callback checks enabled adjacent account-link confusion. | Demonstrated | SRC-ghsa-authjs-provider-binding: [GHSA-x445-f3h2-j279](https://github.com/nextauthjs/next-auth/security/advisories/GHSA-x445-f3h2-j279) | Adjacent; no honest code-to-malicious-AS disclosure documented. |
+| SAF-T1009-C015 | MCP Toolbox skipped configured issuer validation on issuer-less introspection. | Demonstrated | SRC-nvd-cve-2026-11718: [NVD CVE-2026-11718](https://nvd.nist.gov/vuln/detail/CVE-2026-11718); SRC-mcp-toolbox-pr3360: [patch](https://github.com/googleapis/mcp-toolbox/pull/3360) | Adjacent resource-server token validation. |
+| SAF-T1009-C016 | CVE-2025-27370 enabled adjacent cross-AS private-key assertion use. | Demonstrated | SRC-oidf-private-key-jwt-disclosure: [OpenID disclosure](https://openid.net/wp-content/uploads/2025/01/OIDF-Responsible-Disclosure-Notice-on-Security-Vulnerability-for-private_key_jwt.pdf); SRC-oidf-private-key-jwt-notice: [public notice](https://openid.net/notice-of-a-security-vulnerability/) | Adjacent client-authentication assertion, not callback credential. |
+| SAF-T1009-C017 | No qualifying MCP production incident was found as of 2026-09-01. | Research-Derived | SRC-nvd-oauth-mixup-query: [NVD API query](https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20mix-up); SRC-arxiv-mcp-mixup-query: [arXiv search](https://arxiv.org/search/?query=%22Model+Context+Protocol%22+%22mix-up%22&searchtype=all) | Bounded reviewed-corpus absence claim. |
+| SAF-T1009-C018 | Validated metadata, unique issuers, per-request binding, exact comparison, and abort are the direct controls. | Research-Derived | SRC-rfc9207: [RFC 9207](https://www.rfc-editor.org/rfc/rfc9207.html) | Forged expected metadata defeats the comparison. |
+| SAF-T1009-C019 | Issuer comparison is exact and does not apply URI normalization. | Research-Derived | SRC-mcp-authorization-2026-07-28: [response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Logs must preserve compared values. |
+| SAF-T1009-C020 | Per-flow validation fields support a high-confidence mismatch analytic. | Research-Derived | SRC-mcp-authorization-2026-07-28: [response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Requires client-side correlation telemetry. |
+| SAF-T1009-C021 | Non-advertised missing iss is an expected legitimate compatibility case. | Research-Derived | SRC-mcp-authorization-2026-07-28: [decision table](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) | Stricter local policy may reject it. |
+| SAF-T1009-C022 | ATT&CK T1528 is analogous to the token-theft objective, not the issuer-misbinding mechanism. | Research-Derived | SRC-mitre-t1528: [MITRE ATT&CK T1528](https://attack.mitre.org/techniques/T1528/) | ATT&CK places it under Credential Access. |
 
-### Advanced Attack Techniques (2016-2024 Research)
+### Current State
 
-According to research from [Mainka et al. (USENIX Security 2016)](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/mainka), OAuth 2.0 Mix-up attacks exploit fundamental weaknesses in how clients bind authorization and token requests:
+- **Affected Environments**: Multi-authorization-server MCP clients whose issuer, callback, and token-endpoint state is not reliably bound per request. [MCP Discovery](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery) <!-- SAF-TRACE: claims=SAF-T1009-C002,SAF-T1009-C004; sources=SRC-mcp-auth-discovery-2026-07-28,SRC-fett-oauth-analysis -->
+- **Known Exploitation**: No qualifying MCP production incident was identified; one generic OAuth attack was reproduced on two concrete client implementations. [Formal OAuth analysis](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C012,SAF-T1009-C017; sources=SRC-fett-oauth-analysis,SRC-nvd-oauth-mixup-query,SRC-arxiv-mcp-mixup-query -->
+- **Available Protections**: Current MCP requires validated metadata, per-request issuer recording, and response-issuer checking before code transmission. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C006,SAF-T1009-C007,SAF-T1009-C008,SAF-T1009-C018; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-discovery-2026-07-28,SRC-rfc9207 -->
+- **Residual Risk**: The expected issuer provides no protection if its metadata was not validated, and current MCP permits issuer-less responses from servers that did not advertise response-issuer support. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C007,SAF-T1009-C009; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc8414 -->
 
-1. **Classic Mix-Up Attack**: Client confuses which AS issued an authorization code, sending it to wrong token endpoint. Attacker AS returns valid-looking tokens that are actually issued by attacker.
+### Known Breaches and Vulnerabilities
 
-2. **Malicious Endpoint Attack** ([Fett et al., 2016](https://arxiv.org/abs/1601.01229)): Attacker manipulates client to send authorization code to attacker's token endpoint, directly stealing credentials.
+No direct MCP production breach was identified in the reviewed corpus; the following examples are ordered by relationship, then operational relevance. [NVD exact query](https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20mix-up) [arXiv MCP search](https://arxiv.org/search/?query=%22Model+Context+Protocol%22+%22mix-up%22&searchtype=all) <!-- SAF-TRACE: claims=SAF-T1009-C017; sources=SRC-nvd-oauth-mixup-query,SRC-arxiv-mcp-mixup-query -->
 
-3. **IDN Homograph Attacks**: Using International Domain Names with Unicode characters that visually resemble legitimate domains:
-
-   - `аccounts.google.com` (Cyrillic 'а' U+0430 instead of Latin 'a')
-   - `micrοsoft.com` (Greek omicron 'ο' U+03BF instead of Latin 'o')
-   - `gοοgle.com` (Greek omicrons)
-
-4. **Subdomain Confusion** ([OAuth Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)): Exploiting wildcard DNS or subdomain takeover:
-
-   - `auth.compromised-subdomain.example.com`
-   - `accounts.google.com.attacker.com` (valid subdomain of attacker.com)
-
-5. **TLD Substitution**: Using alternative top-level domains:
-   - `.co` instead of `.com`
-   - `.io`, `.ai`, `.com.br` for regional confusion
-   - New gTLDs like `.cloud`, `.services`
-
-### MCP-Specific Considerations
-
-In Model Context Protocol environments, this attack is particularly effective because:
-
-- **Multiple OAuth Integrations**: MCP servers commonly integrate with Google Drive, GitHub, Slack, AWS, Azure, and other OAuth-protected services
-- **Dynamic Discovery**: Some MCP clients use dynamic OAuth discovery, making configuration manipulation easier
-- **User Trust**: Users trust MCP servers they've installed, may not scrutinize OAuth URLs carefully
-- **Token Aggregation**: Single MCP server often holds tokens for multiple services, amplifying impact
-- **Long-Lived Tokens**: Refresh tokens may be valid for extended periods, providing persistent access
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| Fett-Küsters-Schmitz IdP Mix-Up demonstration | 2016; mod_auth_openidc and pyoidc | Demonstrated code/token disclosure; issuer identity binding was proposed and later standardized. | Direct demonstration of generic OAuth behavior. | Not MCP and not a production incident. [Paper](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C012; sources=SRC-fett-oauth-analysis --> |
+| CVE-2026-73419 / GHSA-x445-f3h2-j279 | 2026; multi-provider Auth.js with account linking and stated PKCE conditions | Persistent unauthorized provider-account linking; fixed in @auth/core 0.41.3, next-auth 4.24.15, and 5.0.0-beta.32. | Adjacent callback-provider state confusion. | Does not document sending an honest issuer's code to a malicious authorization server. Credit: reported by Nadav0077; published by Gustavo Valverde. [Advisory](https://github.com/nextauthjs/next-auth/security/advisories/GHSA-x445-f3h2-j279) <!-- SAF-TRACE: claims=SAF-T1009-C014; sources=SRC-ghsa-authjs-provider-binding --> |
+| CVE-2026-11718 | 2026; googleapis/mcp-toolbox generic opaque-token validation | Tokens from unintended identity providers could be accepted; issuer-presence enforcement and tests shipped in 1.4.0. | Adjacent MCP resource-server issuer validation. | Does not involve browser-response issuer misbinding. Credit: reported by HaoNH of VinCSS; patch by Wenxin Du with review/release contribution from Yuan Teoh. [NVD](https://nvd.nist.gov/vuln/detail/CVE-2026-11718) [patch](https://github.com/googleapis/mcp-toolbox/pull/3360) <!-- SAF-TRACE: claims=SAF-T1009-C015; sources=SRC-nvd-cve-2026-11718,SRC-mcp-toolbox-pr3360 --> |
+| CVE-2025-27370 | 2025; private_key_jwt with multiple authorization servers and shared client key | A malicious server could obtain an assertion usable to impersonate the client at an honest server; issuer-identifier audience binding was prescribed. | Adjacent cross-AS client-assertion vulnerability. | The OpenID Foundation reported no known compromises; the stolen object is not a browser-delivered code or access token. Credit: Pedram Hosseyni, Ralf Küsters, and Tim Würtele. [OpenID notice](https://openid.net/notice-of-a-security-vulnerability/) <!-- SAF-TRACE: claims=SAF-T1009-C016; sources=SRC-oidf-private-key-jwt-notice,SRC-oidf-private-key-jwt-disclosure --> |
 
 ## Impact Assessment
 
-- **Confidentiality**: Critical - Complete access to all OAuth-protected services (Google Workspace, GitHub repos, AWS infrastructure, etc.)
-- **Integrity**: High - Attacker can modify data, commit code, alter configurations as the victim
-- **Availability**: Medium - Account lockouts possible if attacker changes credentials or exhausts rate limits
-- **Scope**: Network-wide - Affects all services where stolen tokens are valid, potential for lateral movement across integrated platforms
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | The attacker can obtain an authorization code or token for the honest issuer; reachable data remains bounded by grant, scope, audience, and downstream checks. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C005,SAF-T1009-C011; sources=SRC-rfc9207,SRC-rfc8707 --> |
+| Integrity | High | A redeemed credential can authorize actions within its permissions or support identity/session compromise in affected client modes. [Formal OAuth analysis §3.2](https://arxiv.org/abs/1601.01229) <!-- SAF-TRACE: claims=SAF-T1009-C005; sources=SRC-fett-oauth-analysis --> |
+| Availability | None | Availability loss is not a defining outcome of the standards-described mix-up; the immediate documented consequences are credential confidentiality and resource integrity. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C005; sources=SRC-rfc9207 --> |
+| Scope | Multi-System | The flow spans an MCP client, at least two authorization servers, a browser callback, and potentially the intended MCP resource. [MCP authorization flow](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-flow-steps) <!-- SAF-TRACE: claims=SAF-T1009-C001,SAF-T1009-C002,SAF-T1009-C004; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-discovery-2026-07-28,SRC-fett-oauth-analysis --> |
 
-### Current Status (2025)
+### Severity Conditions
 
-The OAuth community has developed mitigations:
-
-- **RFC 9207** ([OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/html/rfc9207)) published March 2022 introduces mandatory "iss" parameter in authorization responses, allowing clients to validate the issuer before using authorization codes
-- **OAuth 2.0 Security Best Current Practice** ([IETF Draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)) recommends strict redirect URI validation and AS endpoint verification
-- Major OAuth providers (Google, Microsoft, GitHub) have implemented RFC 9207 support
-- However, many legacy systems and custom OAuth implementations remain vulnerable
-- According to [PortSwigger Research](https://portswigger.net/research/hidden-oauth-attack-vectors), Mix-up attacks continue to be discovered in modern OAuth deployments
+- **Severity increases when** the stolen credential reaches sensitive MCP capabilities, broad scopes, or long-lived access and the attacker can satisfy the honest server's redemption conditions. [RFC 9207 §1](https://www.rfc-editor.org/rfc/rfc9207.html#section-1) <!-- SAF-TRACE: claims=SAF-T1009-C005; sources=SRC-rfc9207 -->
+- **Severity decreases when** issuer mismatch aborts the flow before a token request and resource/audience checks confine any resulting token. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) <!-- SAF-TRACE: claims=SAF-T1009-C008,SAF-T1009-C011,SAF-T1009-C018; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc8707 -->
 
 ## Detection Methods
 
-**Note**: Pattern-based detection has limitations. Attackers continuously develop new typosquatting and homograph techniques. Organizations should implement multi-layered detection combining pattern matching, machine learning for domain similarity, behavioral analysis, and certificate validation.
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP client authorization callback validation | Expected-issuer recording, metadata-validation result, callback parsing, issuer comparison, and rejection | timestamp, flow_id, recorded_expected_issuer, response_iss, authorization_response_iss_parameter_supported, metadata_validated, comparison_mode, validation_outcome | Preserve raw decoded issuer strings and correlate before any token request. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C019,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28 --> |
+| MCP client outbound token request | Endpoint selection and whether an authorization code was forwarded | timestamp, flow_id, bound_issuer, selected_token_endpoint, prior_validation_outcome, code_forwarded | Alert if a request follows failed or absent issuer validation for the same flow. [RFC 9207 §2.4](https://www.rfc-editor.org/rfc/rfc9207.html#section-2.4) <!-- SAF-TRACE: claims=SAF-T1009-C008,SAF-T1009-C020; sources=SRC-rfc9207,SRC-mcp-authorization-2026-07-28 --> |
 
 ### Indicators of Compromise (IoCs)
 
-- Authorization requests to domains with Levenshtein distance < 3 from known legitimate AS
-- OAuth flows to domains containing hyphens in brand names (e.g., `accounts-google.com`)
-- Authorization endpoints using IDN/Punycode encoding
-- TLS certificates issued by unusual Certificate Authorities or recently issued certificates
-- Authorization responses missing "iss" parameter (RFC 9207 violation)
-- Mismatched issuer identifiers between configuration and authorization response
-- OAuth endpoints with unexpected geographic locations (based on IP geolocation)
-- Multiple AS configurations for single service (e.g., two "Google" configurations)
-- Sudden changes in AS endpoint URLs in MCP server configurations
-
-### Detection Rules
-
-**Important**: The following rules are written in Sigma format and contain example patterns only. Attackers continuously develop new typosquatting and homograph techniques. Organizations should:
-
-- Implement domain similarity algorithms (Levenshtein distance, Jaro-Winkler)
-- Use Unicode confusables detection libraries
-- Maintain dynamic allowlists of verified AS domains
-- Deploy behavioral analytics to detect anomalous OAuth patterns
-- Integrate Certificate Transparency monitoring
-- Leverage threat intelligence feeds for known malicious OAuth domains
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: OAuth Authorization Server Domain Typosquatting Detection
-id: a7f8e3d1-9c2b-4a6e-8d5f-1b7c9e4a3f2d
-status: experimental
-description: Detects potential Authorization Server Mix-up through domain typosquatting patterns
-author: Raju Kumar Yadav
-date: 2025-11-23
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1009
-  - https://datatracker.ietf.org/doc/html/rfc9207
-  - https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/mainka
-logsource:
-  product: mcp
-  service: oauth
-detection:
-  selection_typosquatting:
-    oauth.authorization_endpoint|contains:
-      - "accounts-google"
-      - "login-microsoft"
-      - "auth-github"
-      - "oauth-aws"
-      - "signin-apple"
-    oauth.authorization_endpoint|not|contains:
-      - "accounts.google.com"
-      - "login.microsoftonline.com"
-      - "github.com"
-      - "signin.aws.amazon.com"
-  condition: selection_typosquatting
-falsepositives:
-  - Legitimate subdomains with hyphens
-  - Internal development/testing environments
-level: critical
-tags:
-  - attack.initial_access
-  - attack.t1566.002 # Phishing: Spearphishing Link
-  - safe.t1009
-```
-
-```yaml
----
-title: OAuth Authorization Response Missing Issuer Identification
-id: b8e9f4c2-0d3a-5b7e-9f6a-2c8d0e5b4a3f
-status: experimental
-description: Detects OAuth authorization responses missing mandatory issuer (iss) parameter per RFC 9207
-author: Raju Kumar Yadav
-date: 2025-11-23
-references:
-  - https://datatracker.ietf.org/doc/html/rfc9207
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1009
-logsource:
-  product: mcp
-  service: oauth
-detection:
-  selection:
-    event.action: "oauth.authorization.response"
-    oauth.iss: null
-  condition: selection
-falsepositives:
-  - Legacy OAuth 2.0 servers not yet upgraded to RFC 9207
-  - Custom OAuth implementations
-level: high
-tags:
-  - attack.initial_access
-  - attack.t1566.002
-  - safe.t1009
-```
-
-```yaml
----
-title: OAuth Issuer Identifier Mismatch
-id: c9f0a5d3-1e4b-6c8f-0a7b-3d9e1f6c5b4a
-status: experimental
-description: Detects mismatch between expected and actual issuer in OAuth authorization response
-author: Raju Kumar Yadav
-date: 2025-11-23
-references:
-  - https://datatracker.ietf.org/doc/html/rfc9207
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1009
-logsource:
-  product: mcp
-  service: oauth
-detection:
-  selection:
-    event.action: "oauth.authorization.response"
-    oauth.iss|not|equals: oauth.expected_issuer
-  condition: selection
-falsepositives:
-  - Issuer URL changes during AS migration
-  - Configuration updates not yet propagated
-level: critical
-tags:
-  - attack.initial_access
-  - attack.t1566.002
-  - safe.t1009
-```
-
-```yaml
----
-title: OAuth IDN Homograph Domain Detection
-id: d0a1b6e4-2f5c-7d9a-1b8c-4e0f2a7d6c5b
-status: experimental
-description: Detects International Domain Name (IDN) homograph attacks in OAuth endpoints
-author: Raju Kumar Yadav
-date: 2025-11-23
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1009
-  - https://www.unicode.org/reports/tr39/
-logsource:
-  product: mcp
-  service: oauth
-detection:
-  selection_punycode:
-    oauth.authorization_endpoint|contains: 'xn--'
-  selection_mixed_scripts:
-    oauth.authorization_endpoint|re: '.*[\u0400-\u04FF].*'  # Cyrillic
-    oauth.authorization_endpoint|re: '.*[\u0370-\u03FF].*'  # Greek
-  condition: 1 of selection_*
-falsepositives:
-  - Legitimate internationalized domain names
-  - Regional OAuth providers
-level: high
-tags:
-  - attack.initial_access
-  - attack.t1566.002
-  - safe.t1009
-```
-
-```yaml
----
-title: Suspicious OAuth AS Certificate Characteristics
-id: e1b2c7f5-3a6d-8e0b-2c9d-5f1a3b8e7d6c
-status: experimental
-description: Detects suspicious TLS certificate characteristics for OAuth Authorization Servers
-author: Raju Kumar Yadav
-date: 2025-11-23
-references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1009
-logsource:
-  product: mcp
-  service: tls
-detection:
-  selection_recent_cert:
-    event.action: "tls.certificate.validation"
-    tls.certificate.not_before: last 7d
-    tls.server.domain|contains:
-      - "google"
-      - "microsoft"
-      - "github"
-      - "amazon"
-  selection_dv_cert:
-    tls.certificate.validation_type: "DV"
-    tls.server.domain|contains: "google|microsoft|github|amazon"
-  condition: 1 of selection_*
-falsepositives:
-  - Legitimate certificate renewals
-  - New regional OAuth endpoints
-level: medium
-tags:
-  - attack.initial_access
-  - attack.t1566.002
-  - safe.t1009
-```
+- No durable technique-specific artifact is established; issuer values and endpoints are deployment-specific and should be treated as correlated behavior rather than static IoCs. [RFC 9207 §4](https://www.rfc-editor.org/rfc/rfc9207.html#section-4) <!-- SAF-TRACE: claims=SAF-T1009-C020; sources=SRC-rfc9207 -->
 
 ### Behavioral Indicators
 
-- User receives unexpected OAuth consent prompts for already-authorized services
-- OAuth flows complete but integrated services remain inaccessible
-- Multiple authentication attempts for same service in short timeframe
-- OAuth redirects to unfamiliar domains reported by security-conscious users
-- Anomalous geographic locations for OAuth authorization endpoints (e.g., AS claiming to be Google but IP resolves to different country)
-- OAuth tokens with unexpected scopes or audiences
-- Cross-origin OAuth flows (authorization initiated from different domain than MCP client)
+- A present `response_iss` differs byte-for-byte from the recorded expected issuer after form decoding. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C008,SAF-T1009-C019; sources=SRC-mcp-authorization-2026-07-28 -->
+- The server advertised response-issuer support but a callback lacks `iss`. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C008; sources=SRC-mcp-authorization-2026-07-28 -->
+- The expected issuer came from unvalidated metadata, or a token request carrying a code follows failed or missing validation for the same flow. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C006,SAF-T1009-C007,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-discovery-2026-07-28 -->
+- A missing `iss` with no advertised support is a current compatibility case, not a high-confidence attack signal by itself. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C009,SAF-T1009-C021; sources=SRC-mcp-authorization-2026-07-28 -->
+
+### Detection Analytic
+
+The standalone experimental analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Detect issuer-binding violations before credential transmission and identify a token request that follows failed validation. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28 -->
+- **Rule Status**: Experimental, because no standardized MCP audit-event schema or accuracy study was identified in the reviewed corpus. [source-coverage.yml](../../research/techniques/SAF-T1009/source-coverage.yml)
+- **Detection Logic**: Match exact issuer disagreement, advertised-but-missing issuer, unvalidated expected metadata, or outbound code forwarding after a non-passing validation outcome. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C008,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28 -->
+- **Correlation Window**: Correlate by `flow_id` for the lifetime of the single authorization request; elapsed-time tuning is implementation-specific. [MCP per-request record](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C006,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28 -->
+- **Known False Positives**: Missing `iss` when support is false or absent is allowed by the current MCP decision table and is not selected by the rule. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C009,SAF-T1009-C021; sources=SRC-mcp-authorization-2026-07-28 -->
+- **Known Limitations**: The analytic cannot evaluate clients that do not emit per-flow issuer, metadata-validation, callback, and token-request events; a forged expected issuer can also make equal values misleading. [MCP response-validation dependency](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C007,SAF-T1009-C020; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc8414 -->
+- **Tuning Guidance**: Preserve exact decoded strings, do not URI-normalize them, and apply any stricter local policy for issuer-less responses as an explicit extension. [MCP comparison rules](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C019,SAF-T1009-C021; sources=SRC-mcp-authorization-2026-07-28 -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](test-logs.json)
+- **Validation Script**: [test_detection_rule.py](test_detection_rule.py)
+- **Expected Result**: Eight fixtures cover mismatch, advertised absence, unvalidated metadata, post-failure code forwarding, valid equality, permitted legacy absence, exact-string boundary, and malformed missing flow state. [test-logs.json](test-logs.json)
+- **Last Validated**: 2026-09-01. [quality-review.yml](../../research/techniques/SAF-T1009/quality-review.yml)
+- **Feasibility Waiver**: None. [quality-review.yml](../../research/techniques/SAF-T1009/quality-review.yml)
 
 ## Mitigation Strategies
 
 ### Preventive Controls
 
-1. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md)**: Implement RFC 9207 Authorization Server Issuer Identification by validating "iss" parameter in all authorization responses against expected issuer before processing authorization codes
-2. **[SAF-M-14: Server Allowlisting](../../mitigations/SAF-M-14/README.md)**: Maintain strict allowlist of verified Authorization Server domains; reject OAuth flows to non-allowlisted domains regardless of configuration
-3. **Static AS Configuration**: Configure OAuth endpoints statically rather than via dynamic discovery; require manual approval for AS configuration changes to prevent dynamic endpoint manipulation
-4. **Certificate Pinning**: Pin TLS certificates or public keys for critical Authorization Servers; alert on certificate changes to detect potential domain takeover or MitM attacks
-5. **PKCE Enforcement**: Mandate Proof Key for Code Exchange (PKCE, RFC 7636) for all OAuth flows to prevent authorization code interception attacks
-6. **Redirect URI Validation**: Enforce strict redirect URI matching; reject wildcards and open redirects that could be exploited for token theft
-7. **[SAF-M-15: User Warning Systems](../../mitigations/SAF-M-15/README.md)**: Display clear warnings when OAuth flows target unfamiliar domains; show full URL with visual indicators for security-critical characters
-8. **DNS Security**: Implement DNSSEC validation and DNS-based filtering to block known typosquatting domains
+1. Validate authorization-server metadata by requiring its issuer to exactly match the issuer used to construct the discovery URL; do not use mismatched metadata. [RFC 8414 §3.3](https://www.rfc-editor.org/rfc/rfc8414.html#section-3.3) <!-- SAF-TRACE: claims=SAF-T1009-C007,SAF-T1009-C018; sources=SRC-rfc8414 -->
+2. Store the validated expected issuer in the same per-request state as PKCE and state, compare a returned issuer exactly, and abort before token transmission on mismatch. [MCP Authorization Response Validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C006,SAF-T1009-C008,SAF-T1009-C018,SAF-T1009-C019; sources=SRC-mcp-authorization-2026-07-28 -->
+3. Require unique issuer identifiers for configured authorization servers; where issuer responses cannot be used, distinct per-issuer redirect URIs are a limited alternative. [RFC 9207 §4](https://www.rfc-editor.org/rfc/rfc9207.html#section-4) [RFC 9700 §4.4.2.2](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4.2.2) <!-- SAF-TRACE: claims=SAF-T1009-C010,SAF-T1009-C018; sources=SRC-rfc9207,SRC-rfc9700 -->
+4. Include MCP resource indicators and enforce token audience restrictions to constrain cross-resource use if a token is obtained. [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html) <!-- SAF-TRACE: claims=SAF-T1009-C011; sources=SRC-rfc8707,SRC-mcp-authorization-2026-07-28 -->
 
 ### Detective Controls
 
-1. **[SAF-M-18: OAuth Flow Monitoring](../../mitigations/SAF-M-18/README.md)**: Log all OAuth authorization attempts including full URLs, issuer parameters, and certificate details
-2. **Domain Similarity Detection**: Implement algorithmic detection of typosquatted and homograph domains using Levenshtein distance and Unicode confusables libraries to identify potential AS impersonation
-3. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20/README.md)**: Deploy behavioral analytics to detect unusual OAuth patterns such as first-seen domains, geographic anomalies, or multiple AS configurations
-4. **Certificate Transparency Monitoring**: Monitor Certificate Transparency logs for certificates issued for lookalike domains of trusted Authorization Servers to detect potential impersonation infrastructure
-5. **[SAF-M-19: Token Usage Tracking](../../mitigations/SAF-M-19/README.md)**: Track OAuth token usage patterns to identify potentially compromised tokens
+1. Emit and correlate the exact per-flow validation and token-request fields used by the tested analytic. [detection-rule.yml](detection-rule.yml)
+2. Measure use of issuer-less compatibility flows and adopt a stricter local rejection policy where interoperability permits. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C009,SAF-T1009-C021; sources=SRC-mcp-authorization-2026-07-28 -->
 
 ### Response Procedures
 
-1. **Immediate Actions**:
-   - Revoke all OAuth tokens issued through suspected malicious AS
-   - Block attacker domains at DNS and firewall levels
-   - Alert affected users via all available channels
-   - Preserve logs and evidence for forensic analysis
-   - Activate incident response team
-2. **Investigation Steps**:
-   - Identify all users who completed OAuth flows to suspicious domains
-   - Audit OAuth token usage logs for unauthorized access
-   - Trace attack vector (malicious MCP server, compromised config, MitM)
-   - Determine scope of data exposure across integrated services
-   - Check for lateral movement to other systems
-3. **Remediation**:
-   - Force token revocation for all affected users
-   - Require re-authentication with verified Authorization Servers
-   - Update AS allowlists to exclude attacker domains
-   - Patch MCP client configurations to enforce RFC 9207
-   - Implement additional preventive controls identified during investigation
-   - Notify third-party services of potential token compromise
-   - Reset user credentials if accounts may have been accessed
+#### Immediate Actions
+
+- Stop the affected authorization flow and prevent any code or token request after issuer mismatch or advertised issuer absence. [RFC 9207 §2.4](https://www.rfc-editor.org/rfc/rfc9207.html#section-2.4) <!-- SAF-TRACE: claims=SAF-T1009-C008,SAF-T1009-C018; sources=SRC-rfc9207 -->
+- Preserve the per-flow expected issuer, returned issuer, metadata-validation state, endpoint selection, and validation outcome for investigation. [detection-rule.yml](detection-rule.yml)
+
+#### Investigation Steps
+
+- Confirm that the expected issuer came from metadata whose issuer exactly matched the discovery issuer and that authorization-server identifiers are unique. [RFC 8414 §3.3](https://www.rfc-editor.org/rfc/rfc8414.html#section-3.3) [RFC 9207 §4](https://www.rfc-editor.org/rfc/rfc9207.html#section-4) <!-- SAF-TRACE: claims=SAF-T1009-C007,SAF-T1009-C018; sources=SRC-rfc8414,SRC-rfc9207 -->
+- Correlate callback validation to any outbound token request by `flow_id` and determine whether an authorization credential was forwarded after a failed decision. [detection-rule.yml](detection-rule.yml)
+
+#### Remediation
+
+- Implement or repair validated metadata, per-request issuer binding, exact comparison, and abort-before-token-request behavior. [MCP response validation](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#authorization-response-validation) <!-- SAF-TRACE: claims=SAF-T1009-C006,SAF-T1009-C007,SAF-T1009-C008,SAF-T1009-C018; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-discovery-2026-07-28 -->
+- If an adjacent selected product flaw is present, apply its documented fixed release or control without treating that fix as proof of direct SAF-T1009 exploitation. [Auth.js advisory](https://github.com/nextauthjs/next-auth/security/advisories/GHSA-x445-f3h2-j279) [mcp-toolbox patch](https://github.com/googleapis/mcp-toolbox/pull/3360) [OpenID notice](https://openid.net/notice-of-a-security-vulnerability/) <!-- SAF-TRACE: claims=SAF-T1009-C014,SAF-T1009-C015,SAF-T1009-C016; sources=SRC-ghsa-authjs-provider-binding,SRC-mcp-toolbox-pr3360,SRC-oidf-private-key-jwt-notice -->
+- Add regression coverage for exact mismatch, advertised absence, unvalidated metadata, and post-failure token requests. [test-logs.json](test-logs.json)
 
 ## Related Techniques
 
-- [SAF-T1007](../SAF-T1007/README.md): OAuth Authorization Phishing - Malicious MCP servers exploiting OAuth flows for token theft
-- [SAF-T1004](../SAF-T1004/README.md): Server Impersonation / Name-Collision - Related domain impersonation tactics
-- [SAF-T1006](../SAF-T1006/README.md): User-Social-Engineering Install - Social engineering to install malicious MCP servers
-- [SAF-T1306](../SAF-T1306/README.md): Rogue Authorization Server - Attacker operates malicious AS ignoring audience/PoP
-- [SAF-T1307](../SAF-T1307/README.md): Confused Deputy Attack - Token forwarding and AS confusion issues
-- [SAF-T1308](../SAF-T1308/README.md): Token Scope Substitution - Post-compromise token manipulation
-- [SAF-T1408](../SAF-T1408/README.md): OAuth Protocol Downgrade - Forcing less secure OAuth flows
-- [SAF-T1202](../SAF-T1202/README.md): OAuth Token Persistence - Post-compromise persistence via token reuse
-- [SAF-T1506](../SAF-T1506/README.md): Infrastructure Token Theft - Stealing tokens from logs/proxies
-- [SAF-T1507](../SAF-T1507/README.md): Authorization Code Interception - Man-in-the-browser code theft
-
-## References
-
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [On the Security of Modern Single Sign-On Protocols: Second-Order Vulnerabilities in OpenID Connect - Mainka, Mladenov, Schwenk, USENIX Security 2016](https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/mainka)
-- [A Comprehensive Formal Security Analysis of OAuth 2.0 - Fett, Küsters, Schmitz, ACM CCS 2016](https://arxiv.org/abs/1601.01229)
-- [RFC 6749 - The OAuth 2.0 Authorization Framework](https://datatracker.ietf.org/doc/html/rfc6749)
-- [RFC 6819 - OAuth 2.0 Threat Model and Security Considerations](https://datatracker.ietf.org/doc/html/rfc6819)
-- [RFC 8252 - OAuth 2.0 for Native Apps](https://datatracker.ietf.org/doc/html/rfc8252)
-- [RFC 9207 - OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/html/rfc9207)
-- [RFC 7636 - Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636)
-- [OAuth 2.0 Security Best Current Practice - IETF Draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [Hidden OAuth Attack Vectors - PortSwigger Research](https://portswigger.net/research/hidden-oauth-attack-vectors)
-- [Unicode Security Considerations - Unicode Technical Report #39](https://www.unicode.org/reports/tr39/)
-- [OWASP OAuth 2.0 Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/OAuth2_Cheat_Sheet.html)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1507: Authorization Code Interception](../SAF-T1507/README.md) | Follow-on or adjacent | Obtains an authorization code through interception; SAF-T1009 instead causes cross-issuer response misbinding and can then disclose the code. [RFC 9700 §§4.4-4.5](https://www.rfc-editor.org/rfc/rfc9700.html#section-4.4) <!-- SAF-TRACE: claims=SAF-T1009-C003; sources=SRC-rfc9700 --> |
+| [SAF-T1706: OAuth Token Pivot Replay](../SAF-T1706/README.md) | Alternative boundary failure | Reuses an issued token across contexts; SAF-T1009 occurs earlier at issuer and endpoint binding. [RFC 8707 §3](https://www.rfc-editor.org/rfc/rfc8707.html#section-3) <!-- SAF-TRACE: claims=SAF-T1009-C011; sources=SRC-rfc8707 --> |
+| [SAF-T1306: Rogue Authorization Server](../SAF-T1306/README.md) | Prerequisite or adjacent | Controls or advertises the malicious authorization endpoint; it becomes SAF-T1009 only when an honest issuer's browser response is misbound and its credential is disclosed across issuers. [Malicious Endpoints research](https://arxiv.org/abs/1508.04324) <!-- SAF-TRACE: claims=SAF-T1009-C004,SAF-T1009-C013; sources=SRC-mainka-oidc-endpoints,SRC-fett-oauth-analysis --> |
 
 ## MITRE ATT&CK Mapping
 
-- [T1566.002 - Phishing: Spearphishing Link](https://attack.mitre.org/techniques/T1566/002/)
-- [T1539 - Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539/) (conceptually similar for OAuth tokens)
-- [T1190 - Exploit Public-Facing Application](https://attack.mitre.org/techniques/T1190/) (if MCP server OAuth implementation is vulnerable)
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1528](https://attack.mitre.org/techniques/T1528/) | Steal Application Access Token | Analogous | Both cover acquisition of an application credential that can reach remote resources, but T1528 does not define cross-issuer response misbinding and belongs to Credential Access. <!-- SAF-TRACE: claims=SAF-T1009-C005,SAF-T1009-C022; sources=SRC-mitre-t1528,SRC-rfc9207 --> |
+
+## References
+
+1. **SRC-mcp-authorization-2026-07-28**: [Model Context Protocol Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — Model Context Protocol maintainers; roles, response validation, resource indicator, and token handling.
+2. **SRC-mcp-auth-discovery-2026-07-28**: [Authorization Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/authorization-server-discovery) — Model Context Protocol maintainers; multiple servers and metadata validation.
+3. **SRC-mcp-auth-security-2026-07-28**: [Authorization Security Considerations](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations) — Model Context Protocol maintainers; MCP mix-up threat and required mitigation.
+4. **SRC-rfc9700**: [Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/rfc/rfc9700.html) — Torsten Lodderstedt, John Bradley, Andrey Labunets, and Daniel Fett; §§2.1 and 4.4.
+5. **SRC-rfc9207**: [OAuth 2.0 Authorization Server Issuer Identification](https://www.rfc-editor.org/rfc/rfc9207.html) — Karsten Meyer zu Selhausen and Daniel Fett; §§1-4.
+6. **SRC-rfc8414**: [OAuth 2.0 Authorization Server Metadata](https://www.rfc-editor.org/rfc/rfc8414.html) — Michael B. Jones, Nat Sakimura, and John Bradley; §§3.3 and 6.2.
+7. **SRC-rfc8707**: [Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707.html) — Brian Campbell and Philippe De Ryck; §§2-3.
+8. **SRC-rfc9728**: [OAuth 2.0 Protected Resource Metadata](https://www.rfc-editor.org/rfc/rfc9728.html) — Michael B. Jones, Phil Hunt, and Aaron Parecki; §§2 and 7.6.
+9. **SRC-fett-oauth-analysis**: [A Comprehensive Formal Security Analysis of OAuth 2.0](https://arxiv.org/abs/1601.01229) — Daniel Fett, Ralf Küsters, and Guido Schmitz; §§3.2 and 3.6.
+10. **SRC-mainka-oidc-endpoints**: [On the Security of Modern Single Sign-On Protocols](https://arxiv.org/abs/1508.04324) — Christian Mainka, Vladislav Mladenov, and Jörg Schwenk; malicious endpoints and issuer binding.
+11. **SRC-ghsa-authjs-provider-binding**: [GHSA-x445-f3h2-j279](https://github.com/nextauthjs/next-auth/security/advisories/GHSA-x445-f3h2-j279) — Auth.js maintainers; published by Gustavo Valverde and reported by Nadav0077.
+12. **SRC-nvd-cve-2026-11718**: [CVE-2026-11718](https://nvd.nist.gov/vuln/detail/CVE-2026-11718) — Google CNA, NVD, and CISA assessment.
+13. **SRC-mcp-toolbox-pr3360**: [mcp-toolbox PR 3360](https://github.com/googleapis/mcp-toolbox/pull/3360) — patch by Wenxin Du; reporter HaoNH of VinCSS; review/release contribution by Yuan Teoh.
+14. **SRC-oidf-private-key-jwt-notice**: [OpenID Foundation public notice](https://openid.net/notice-of-a-security-vulnerability/) — credits Ralf Küsters, Tim Würtele, and Pedram Hosseyni.
+15. **SRC-oidf-private-key-jwt-disclosure**: [Responsible disclosure for private_key_jwt](https://openid.net/wp-content/uploads/2025/01/OIDF-Responsible-Disclosure-Notice-on-Security-Vulnerability-for-private_key_jwt.pdf) — OpenID Foundation; Pedram Hosseyni, Ralf Küsters, and Tim Würtele.
+16. **SRC-nvd-oauth-mixup-query**: [NVD OAuth mix-up query](https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=OAuth%20mix-up) — zero results on 2026-09-01.
+17. **SRC-arxiv-mcp-mixup-query**: [arXiv MCP mix-up search](https://arxiv.org/search/?query=%22Model+Context+Protocol%22+%22mix-up%22&searchtype=all) — no results on 2026-09-01.
+18. **SRC-mitre-t1528**: [MITRE ATT&CK T1528](https://attack.mitre.org/techniques/T1528/) — Version 1.5; MITRE ATT&CK team and named contributors recorded in the source manifest.
 
 ## Version History
 
-| Version | Date       | Changes                                                                                                                                                 | Author           |
-| ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| 1.0     | 2025-11-23 | Initial documentation of Authorization Server Mix-up technique with RFC 9207 mitigations, comprehensive detection rules, and real-world attack patterns | Raju Kumar Yadav |
+| Version | Date | Changes | Author |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Independent clean-room research draft and tested analytic. | OpenAI Codex clean-room agent |

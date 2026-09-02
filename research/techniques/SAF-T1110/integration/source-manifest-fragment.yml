@@ -1,0 +1,233 @@
+version: 1
+source_defaults: &reviewed_remote
+  accessed_on: "2026-09-01"
+  reviewed_on: "2026-09-01"
+  review_method: Direct full-text browser review of the authoritative page or paper.
+  review_status: opened_reviewed
+  archive: &remote_archive
+    status: remote_reviewed_not_archived
+    reason: Clean-room source caches are intentionally excluded from the frozen bundle.
+    review_evidence:
+      method: Browser full-text extraction with exact section or line locators recorded.
+      retained_in_bundle: false
+sources:
+  - <<: *reviewed_remote
+    id: SRC-mcp-tools-2025-11-25
+    title: Model Context Protocol Tools Specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    source_class: protocol_or_standard
+    locators: ["Overview", "Tool Result", "Security Considerations"]
+    review_notes: Reviewed model control, image/audio tool results, trust of annotations, confirmation, validation, and logging guidance.
+  - <<: *reviewed_remote
+    id: SRC-owasp-llm01-2025
+    title: LLM01:2025 Prompt Injection
+    publisher: OWASP GenAI Security Project
+    authors: [OWASP GenAI Security Project contributors]
+    version_or_date: "2025"
+    official_url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+    source_class: credible_practice
+    locators: ["Prompt Injection Types", "Prevention and Mitigation Strategies", "Scenario #7: Multimodal Injection"]
+    review_notes: Reviewed definitions, modality example, impact conditions, and layered controls.
+  - <<: *reviewed_remote
+    id: SRC-nist-ai-100-2e2025
+    title: Adversarial Machine Learning - A Taxonomy and Terminology of Attacks and Mitigations
+    publisher: National Institute of Standards and Technology
+    authors: [Apostol Vassilev, Alina Oprea, Alie Fordyce, Hyrum Anderson, Xander Davies, Maia Hamin]
+    version_or_date: "NIST AI 100-2e2025, March 2025; corrected April 2025"
+    official_url: https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.100-2e2025.pdf
+    source_class: protocol_or_standard
+    locators: ["Section 3.4.3, PDF pages 62-66", "Section 3.4.5, PDF pages 70-71"]
+    review_notes: Reviewed indirect prompt injection, agent hijacking, trust separation, consequences, and multimodal robustness limits.
+  - <<: *reviewed_remote
+    id: SRC-openai-gpt4v-system-card
+    title: GPT-4V System Card
+    publisher: OpenAI
+    authors: [OpenAI safety and red-team contributors named in the system card]
+    version_or_date: "2023"
+    official_url: https://cdn.openai.com/papers/GPTV_System_Card.pdf
+    source_class: implementation_artifact
+    locators: ["Section 2.1.1", "Section 2.5", "Acknowledgments"]
+    review_notes: Reviewed image jailbreak, OCR/moderation, joint image-text risk, and named contributor credits.
+  - <<: *reviewed_remote
+    id: SRC-microsoft-prompt-shields
+    title: Prompt Shields in Azure AI Content Safety
+    publisher: Microsoft Learn
+    authors: [Microsoft Azure AI Content Safety documentation team]
+    version_or_date: "reviewed 2026-09-01"
+    official_url: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection
+    source_class: implementation_artifact
+    locators: ["Prompt Shields for user prompt attacks", "Prompt Shields for document attacks"]
+    review_notes: Reviewed document attack, hidden instruction, and unauthorized-control guidance; not cited after stronger sources sufficed.
+  - <<: *reviewed_remote
+    id: SRC-openai-prompt-injections-2025
+    title: Understanding prompt injections - a frontier security challenge
+    publisher: OpenAI
+    authors: [OpenAI]
+    version_or_date: "2025-11-07"
+    official_url: https://openai.com/index/prompt-injections/
+    source_class: credible_practice
+    locators: ["What is a prompt injection?", "How we defend against prompt injection", "Tips to stay safer"]
+    review_notes: Reviewed general definition, sandboxing, confirmation, least privilege, and red-team guidance; not needed in final citations.
+  - <<: *reviewed_remote
+    id: SRC-openai-agent-pi-defense-2026
+    title: Designing AI agents to resist prompt injection
+    publisher: OpenAI
+    authors: [Thomas Shadwell, Adrian Spânu]
+    version_or_date: "2026-03-11"
+    official_url: https://openai.com/index/designing-agents-to-resist-prompt-injection/
+    source_class: credible_practice
+    locators: ["Prompt injection is evolving", "Social engineering and AI agents", "How this informs our defenses in ChatGPT"]
+    review_notes: Reviewed classifier limits, source-sink analysis, confirmations, blocking, and sandboxing.
+  - <<: *reviewed_remote
+    id: SRC-mitre-attack-t1204
+    title: User Execution
+    publisher: MITRE ATT&CK
+    authors: [Ale Houspanossian, Fernando Bacchin, Harikrishnan Muthu, Menachem Goldstein, Oleg Skulkin, ReliaQuest]
+    version_or_date: "version 1.8; modified 2025-10-24"
+    official_url: https://attack.mitre.org/techniques/T1204/
+    source_class: protocol_or_standard
+    locators: ["Technique description", "Tactic", "Version and contributors"]
+    review_notes: Reviewed for analogous Execution mapping only.
+  - <<: *reviewed_remote
+    id: SRC-mitre-attack-t1204-003
+    title: Malicious Image
+    publisher: MITRE ATT&CK
+    authors: [Center for Threat-Informed Defense, Vishwas Manral]
+    version_or_date: "reviewed 2026-09-01"
+    official_url: https://attack.mitre.org/techniques/T1204/003/
+    source_class: protocol_or_standard
+    locators: ["Technique description", "Contributors"]
+    review_notes: Reviewed and rejected as a direct mapping because image means machine/container image.
+  - <<: *reviewed_remote
+    id: SRC-bagdasaryan-multimodal-injection-2023
+    title: Abusing Images and Sounds for Indirect Instruction Injection in Multi-Modal LLMs
+    publisher: arXiv
+    authors: [Eugene Bagdasaryan, Tsung-Yin Hsieh, Ben Nassi, Vitaly Shmatikov]
+    version_or_date: "arXiv:2307.10490v4, 2023-10-03"
+    official_url: https://arxiv.org/html/2307.10490
+    source_class: research
+    locators: ["Abstract", "Threat Model", "Attack", "Experiments", "Discussion"]
+    review_notes: Reviewed image/audio perturbation method, LLaVA/PandaGPT demonstrations, failed visible-prompt attempt, and limitations.
+  - <<: *reviewed_remote
+    id: SRC-bailey-image-hijacks-2024
+    title: Image Hijacks - Adversarial Images can Control Generative Models at Runtime
+    publisher: arXiv
+    authors: [Luke Bailey, Euan Ong, Stuart Russell, Scott Emmons]
+    version_or_date: "arXiv:2309.00236v4, 2024-09-17"
+    official_url: https://arxiv.org/html/2309.00236v4
+    source_class: research
+    locators: ["Threat Model", "Results", "Transferability", "Defenses", "Impact and Limitations"]
+    review_notes: Reviewed behavior matching, context leakage, defense tests, white-box scope, and zero held-out-model transfer result.
+  - <<: *reviewed_remote
+    id: SRC-figstep-2025
+    title: FigStep - Jailbreaking Large Vision-language Models via Typographic Visual Prompts
+    publisher: arXiv
+    authors: [Yichen Gong, Delong Ran, Jinyuan Liu, Conglei Wang, Tianshuo Cong, Anyu Wang, Sisi Duan, Xiaoyun Wang]
+    version_or_date: "arXiv:2311.05608v3, 2025-01-19"
+    official_url: https://arxiv.org/html/2311.05608
+    source_class: research
+    locators: ["Abstract", "Threat Model", "Method", "Experiments"]
+    review_notes: Reviewed as a direct user jailbreak boundary rather than third-party indirect injection.
+  - <<: *reviewed_remote
+    id: SRC-liu-piggybacking-2026
+    title: Piggybacking on Perception - Stealthy Concurrent Audio Prompt Injections against Multimodal LLM Agents
+    publisher: arXiv
+    authors: [Mingxiao Liu, Yitong Li, Haoren Zhao, Yaoxiang Bian, Jianan Ma, Jian Zhang, Jialuo Chen, Xinhao Deng, Zhen Wang]
+    version_or_date: "arXiv:2607.28165, 2026-07-30"
+    official_url: https://arxiv.org/html/2607.28165
+    source_class: research
+    locators: ["Abstract", "Threat Model", "Evaluation", "CADV", "Physical and human study", "Limitations"]
+    review_notes: Reviewed eleven-agent benchmark, physical channel, device study, defense, false-positive, and scope limitations.
+  - <<: *reviewed_remote
+    id: SRC-chen-audiohijack-2026
+    title: Hijacking Large Audio-Language Models via Context-Agnostic and Imperceptible Auditory Prompt Injection
+    publisher: arXiv
+    authors: [Meng Chen, Kun Wang, Li Lu, Jiaheng Zhang, Tianwei Zhang]
+    version_or_date: "arXiv:2604.14604, 2026-04-16"
+    official_url: https://arxiv.org/html/2604.14604
+    source_class: research
+    locators: ["Threat Model", "Commercial Agent Test", "Defense Evaluation", "Limitations"]
+    review_notes: Reviewed 13-model experiments, commercial-agent tool behavior, detector metrics, adaptive test, and limitations.
+  - <<: *reviewed_remote
+    id: SRC-promptshield-home-2026
+    title: PromptShield Home - Multimodal Prompt-Injection Detection for Ambient Assistants
+    publisher: arXiv
+    authors: [He Zhang, Feilong Li, Dingning Long, Yilin Cui, Peijun Zhang, Yuewen Zhang, Qianyao Xu, Xinyi Fu]
+    version_or_date: "arXiv:2608.05495, 2026-08-06"
+    official_url: https://arxiv.org/html/2608.05495
+    source_class: research
+    locators: ["Pilot design", "Detection results", "Over-refusal and limitations"]
+    review_notes: Reviewed ambient scenario detection and false-blocking challenge; not treated as an exploit example.
+  - <<: *reviewed_remote
+    id: SRC-nagaraja-image-pi-2026
+    title: Image-based Prompt Injection Attacks and Defenses
+    publisher: arXiv
+    authors: [Neha Nagaraja, Lan Zhang, Zhilong Wang, Bo Zhang, Pawan Patil]
+    version_or_date: "arXiv:2603.03637, 2026-03-04"
+    official_url: https://arxiv.org/html/2603.03637
+    source_class: research
+    locators: ["Threat model", "Experiments", "Visibility tradeoff", "Defense directions"]
+    review_notes: Reviewed black-box natural-image prompt strategies; not selected because agent action evidence was weaker.
+  - <<: *reviewed_remote
+    id: SRC-cao-vpi-bench-2025
+    title: VPI-Bench - Visual Prompt Injection Attacks for Computer-Use Agents
+    publisher: arXiv
+    authors: [Tri Cao, Bennett Lim, Yue Liu, Yuan Sui, Yuexin Li, Shumin Deng, Lin Lu, Nay Oo, Shuicheng Yan, Bryan Hooi]
+    version_or_date: "arXiv:2506.02456, 2025-06-03"
+    official_url: https://arxiv.org/html/2506.02456
+    source_class: research
+    locators: ["Abstract", "Threat Model", "306-case benchmark", "Results", "System-prompt defense"]
+    review_notes: Reviewed controlled browser/computer agent setup, unauthorized-action/exfiltration outcomes, rates, and limitations.
+  - <<: *reviewed_remote
+    id: SRC-chameleon-2025
+    title: Chameleon - Scaling-Triggered Visual Prompt Injection
+    publisher: arXiv
+    authors: [M Zeeshan, Saud Satti]
+    version_or_date: "arXiv:2512.04895, 2025-12-04"
+    official_url: https://arxiv.org/html/2512.04895
+    source_class: research
+    locators: ["Threat model", "Simulated agent pipeline", "Evaluation", "Limitations"]
+    review_notes: Reviewed one-model scaling/downsampling study; not selected because of narrow controlled scope.
+  - <<: *reviewed_remote
+    id: SRC-yeo-multimodal-pi-2025
+    title: Multimodal Prompt Injection Risks and Defenses
+    publisher: arXiv
+    authors: [Andrew Yeo, Daeseon Choi]
+    version_or_date: "arXiv:2509.05883, 2025-09-07"
+    official_url: https://arxiv.org/html/2509.05883
+    source_class: research
+    locators: ["Method", "Commercial-model evaluation", "Limitations"]
+    review_notes: Reviewed but rejected because partial logs and limited multimodal coverage weaken traceability.
+  - <<: *reviewed_remote
+    id: SRC-webagentguard-2026
+    title: WebAgentGuard - A Reasoning-Driven Guard Model for Detecting Prompt Injection Attacks in Web Agents
+    publisher: arXiv
+    authors: [Yulin Chen, Tri Cao, Haoran Li, Yue Liu, Yibo Li, Yufei He, Le Minh Khoi, Yangqiu Song, Shuicheng Yan, Bryan Hooi]
+    version_or_date: "arXiv:2604.12284v1, 2026-04-14"
+    official_url: https://arxiv.org/html/2604.12284
+    source_class: research
+    locators: ["Abstract", "Guard framework", "In-domain evaluation", "Out-of-domain evaluation", "Action gateway"]
+    review_notes: Reviewed synthetic multimodal training, VPI-Bench transfer, guard metrics, action gateway, and user escalation.
+  - <<: *reviewed_remote
+    id: SRC-nvd-cve-2024-45989
+    title: CVE-2024-45989 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [MITRE CVE Program, CISA-ADP, NIST NVD]
+    version_or_date: "published 2024-09-26; modified 2026-06-17"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2024-45989
+    source_class: official_advisory
+    locators: ["Description", "Affected", "CISA SSVC", "Change History"]
+    review_notes: Reviewed output-image exfiltration, affected-version record, and POC status; classified adjacent.
+  - <<: *reviewed_remote
+    id: SRC-nvd-cve-2025-58357
+    title: CVE-2025-58357 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [GitHub Security Advisory record provider, CISA-ADP, NIST NVD]
+    version_or_date: "reviewed 2026-09-01"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-58357
+    source_class: official_advisory
+    locators: ["Description", "Affected and fixed versions", "CISA SSVC"]
+    review_notes: Reviewed MCP-client content injection/XSS, 0.14.0 fix, and POC status; classified adjacent.

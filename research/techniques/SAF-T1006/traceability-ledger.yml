@@ -1,0 +1,108 @@
+version: 1
+technique_id: SAF-T1006
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1006/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1006/technique-contract.yml
+  supports: Scope, name, tactic, reconciled neighboring-technique joins, and completion
+    conditions.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1006/source-coverage.yml
+  supports: Search corpus, example classifications, absence statement, conflicts,
+    and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1006/quality-review.yml
+  supports: Validation commands, review gates, and deterministic test results.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1006/clean-room-attestation.yml
+  supports: Isolation boundary, search record, strict mock validation, and freeze
+    constraints.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1006/detection-rule.yml
+  supports: Experimental detection analytic and traceability components.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1006/test_detection_rule.py
+  supports: Deterministic evaluator for positive, negative, boundary, malformed, and
+    expected-lookalike cases.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1006/test-logs.json
+  supports: Representative synthetic detection cases and expected outcomes.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1006-X001
+  candidate: Absolute claim that no MCP social-engineering installation attack has
+    ever occurred.
+  origin: Negative search-result interpretation.
+  attempted_searches:
+  - NVD MCP keyword and exact-CVE catalog passes
+  - CISA KEV full-catalog exact-ID scan
+  - Exact vendor advisories and first-party platform security pages
+  consulted_source_ids:
+  - SRC-nvd-mcp-catalog
+  - SRC-cisa-kev-2026-09-01
+  reason: The reviewed corpus supports only a date-bounded absence statement, not
+    universal nonoccurrence.
+  prohibited_publishable_text:
+  - This technique has never occurred in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1006-X002
+  candidate: Publish Cursor CVE-2025-54133 with a precise affected-to-fixed version
+    range.
+  origin: NVD follow-up query and exact vendor advisory.
+  attempted_searches:
+  - Exact NVD CVE-2025-54133 record review
+  - Exact GHSA-r22h-5wp2-2wfv review
+  - Later Cursor CVE-2025-64106 comparison
+  consulted_source_ids:
+  - SRC-nvd-mcp-catalog
+  - SRC-ghsa-cursor-54133
+  - SRC-ghsa-cursor-64106
+  reason: Published labels are internally non-monotonic, and the later case supplies
+    clearer representative evidence.
+  prohibited_publishable_text:
+  - Cursor versions 1.17 through 1.2 were fixed in 1.3
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1006-X003
+  candidate: Classify the Zed worktree-configuration flaw as a direct user-social-engineering
+    install.
+  origin: NVD malicious-configuration query.
+  attempted_searches:
+  - Zed first-party secure-by-default article
+  - Exact GHSA-cv6g-cmxc-vw8j review
+  - NVD CVE-2025-68433 record
+  consulted_source_ids:
+  - SRC-zed-secure-default
+  - SRC-ghsa-zed-68433
+  - SRC-nvd-mcp-catalog
+  reason: Opening a project automatically triggered the configuration; no deceived
+    MCP install or trust decision was required.
+  prohibited_publishable_text:
+  - The Zed worktree case is a direct instance of this technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1006-X004
+  candidate: Classify Dive CVE-2025-66580 as a direct MCP social-engineering install.
+  origin: NVD MCP keyword query.
+  attempted_searches:
+  - Exact GHSA-xv8m-365j-x6h2 review
+  - NVD CVE-2025-66580 record
+  - Comparison with Dive CVE-2026-23523 deep-link install flaw
+  consulted_source_ids:
+  - SRC-ghsa-dive-66580
+  - SRC-nvd-mcp-catalog
+  - SRC-ghsa-dive-23523
+  reason: The defining boundary is stored XSS invoking a privileged configuration
+    API, not deception at an MCP install or trust interface.
+  prohibited_publishable_text:
+  - Dive CVE-2025-66580 is a direct social-engineering install vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

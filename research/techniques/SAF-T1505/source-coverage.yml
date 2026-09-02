@@ -1,0 +1,217 @@
+version: 1
+technique_id: SAF-T1505
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of versioned MCP Authorization, Tools, and Security Best Practices pages.
+        - Direct review of MITRE ATT&CK T1003, T1555, T1055, and T1552.001 pages.
+      material_changes:
+        - Established that stdio may retrieve credentials from the environment.
+        - Bounded the live-state technique from password stores, files, process injection, and OS credential dumping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: Model Context Protocol secret"
+        - "NVD keywordSearch: MCP environment variables"
+        - "NVD keywordSearch: AI agent credential"
+        - "NVD keywordSearch: Model Context Protocol breach incident"
+        - "CISA KEV 2026-09-01 exact candidate-ID filter"
+      material_changes:
+        - Selected three direct vulnerabilities and recorded one enabling vulnerability.
+        - Found no qualifying production breach and no selected-CVE match in CISA KEV.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "arXiv: all:\"model context protocol\" AND all:security"
+        - "arXiv: all:\"model context protocol\" AND all:\"credential theft\""
+        - "arXiv: all:\"model context protocol\" AND all:\"secret extraction\""
+      material_changes:
+        - Selected the Radosevich-Halloran controlled credential-theft workflow as end-to-end demonstration evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of selected advisories' remediation sections.
+        - Direct review of MCP local-server and token-theft guidance.
+        - Direct review of the OpenTelemetry Logs Data Model for potential event structure.
+      material_changes:
+        - Defined a contextual three-branch detector with redacted variable names, recipient trust, ownership, and authorization joins.
+        - Rejected use of generic OpenTelemetry fields as proof that products emit the required schema.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: Model Context Protocol credential disclosure"
+        - "NVD keywordSearch: MCP process.env secret"
+        - "NVD keywordSearch: Model Context Protocol token environment"
+      material_changes:
+        - Added CVE-2026-47250 and CVE-2026-46555 as adjacent persistent-token or file-access exclusions.
+        - Preserved the PraisonAI affected-version discrepancy and the absence-of-exploitation limitation.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: MCP API key process environment"
+        - "NVD keywordSearch: MCP credential environment exposure"
+        - "arXiv: all:\"model context protocol\" AND all:\"environment variable\" AND all:credential"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: MCP in-memory credential extraction"
+        - "NVD keywordSearch: agent process environment secret disclosure"
+        - "arXiv: all:\"model context protocol\" AND all:\"process environment\""
+      material_changes: []
+  rationale: >-
+    Seventeen whitelist-only authority operations covered current MCP requirements,
+    NVD vulnerabilities, CISA exploitation status, primary academic demonstrations,
+    first-party remediation, contrary classifications, and two final synonymous
+    passes. The final two passes added no controlling fact, qualifying example,
+    conflict, detector constraint, or source for an unsupported proposition.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-arxiv-2504.03767v2
+    - SRC-ghsa-4pcc-j6m6-wcwx
+    - SRC-pham-minh-cve-2026-29872
+    - SRC-ghsa-pj2r-f9mw-vrcq
+  no_qualifying_examples_rationale: >-
+    Four examples qualify, but none is a direct production incident. Separate
+    breach and incident queries returned no record, NVD marked the selected CVEs
+    as PoC where SSVC data was present, and none of the selected CVEs appeared in
+    CISA KEV. This is a bounded corpus finding, not proof of non-exploitation.
+  candidates:
+    - source_id: SRC-arxiv-2504.03767v2
+      identifier: Radosevich-Halloran MCP credential-theft evaluation
+      relationship: direct_demonstration
+      exploitation_status: controlled_evaluation
+      impact: Placeholder OpenAI and Hugging Face API keys were found in environment variables and disclosed through Slack.
+      remediation: The authors recommend least privilege and avoiding storage of sensitive values in environment variables.
+      selected: true
+      rationale: Complete MCP-enabled environment-secret acquisition was reproduced and is the strongest end-to-end evidence.
+    - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+      identifier: CVE-2026-32625 / GHSA-4pcc-j6m6-wcwx
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_no_production_evidence
+      impact: Low-privilege user input could expose LibreChat signing, encryption, and database secrets from process.env.
+      remediation: Patched in 0.8.4-rc1 by separating untrusted schema paths from environment substitution.
+      selected: true
+      rationale: Direct, high-impact MCP configuration-to-live-state boundary crossing with affected and fixed versions.
+    - source_id: SRC-pham-minh-cve-2026-29872
+      identifier: CVE-2026-29872
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_no_production_evidence
+      impact: An unauthenticated session could retrieve another user's GitHub token or LLM API key from process-global state.
+      remediation: Use session-scoped storage, strict ownership binding, and clearing; no fixed release was identified.
+      selected: true
+      rationale: Direct cross-session acquisition of environment-held credentials with a controlled reproduction.
+    - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+      identifier: CVE-2026-40159 / GHSA-pj2r-f9mw-vrcq
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_no_production_evidence
+      impact: An untrusted MCP child could read the parent environment, including API keys, tokens, and database credentials.
+      remediation: Version 4.5.128 is patched; sanitize and explicitly allowlist child variables.
+      selected: true
+      rationale: Direct live environment transfer into an unauthorized MCP execution boundary; affected-range conflict is disclosed.
+    - source_id: SRC-ghsa-mp29-fxh8-92px
+      identifier: CVE-2026-67531 / GHSA-mp29-fxh8-92px
+      relationship: enabling_vulnerability
+      exploitation_status: proof_of_concept_no_secret_acquisition_shown
+      impact: Sandbox escape enabled server-process code execution and potential access to process-held secrets.
+      remediation: Patched in FrontMCP 1.5.7 by preventing live host schema objects from crossing the sandbox membrane.
+      selected: false
+      rationale: High-impact but the defining secret-acquisition step was not demonstrated.
+    - source_id: SRC-nvd-mcp-token-env-query
+      identifier: CVE-2026-47250
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: vulnerability_record_no_production_evidence
+      impact: Prompt-influenced kubectl flags could send a kubeconfig bearer token to an attacker endpoint.
+      remediation: Patched in mcp-server-kubernetes 3.7.0.
+      selected: false
+      rationale: The token source is persistent kubeconfig state and the defining behavior is tool-argument abuse and exfiltration.
+    - source_id: SRC-nvd-mcp-token-env-query
+      identifier: CVE-2026-46555
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: vulnerability_record_no_production_evidence
+      impact: A local or DNS-rebinding caller could read files and send them through WhatsApp.
+      remediation: Patched in WhatsApp MCP Server 0.2.1 with authentication, Host validation, and path confinement.
+      selected: false
+      rationale: The source is a persistent file, not process memory or live runtime state.
+
+sources_consulted:
+  - SRC-arxiv-2504.03767v2
+  - SRC-mitre-t1003
+  - SRC-attack-t1055
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-mitre-t1555
+  - SRC-cisa-kev-in-memory-secrets-2026-09-01
+  - SRC-ghsa-4pcc-j6m6-wcwx
+  - SRC-ghsa-mp29-fxh8-92px
+  - SRC-ghsa-pj2r-f9mw-vrcq
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-nvd-cve-2026-29872
+  - SRC-nvd-cve-2026-32625
+  - SRC-nvd-cve-2026-40159
+  - SRC-nvd-cve-2026-67531
+  - SRC-nvd-mcp-token-env-query
+  - SRC-otel-logs-data-model
+  - SRC-pham-minh-cve-2026-29872
+sources_cited:
+  - SRC-arxiv-2504.03767v2
+  - SRC-mitre-t1003
+  - SRC-cisa-kev-in-memory-secrets-2026-09-01
+  - SRC-ghsa-4pcc-j6m6-wcwx
+  - SRC-ghsa-mp29-fxh8-92px
+  - SRC-ghsa-pj2r-f9mw-vrcq
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nvd-cve-2026-29872
+  - SRC-nvd-cve-2026-32625
+  - SRC-nvd-cve-2026-40159
+  - SRC-nvd-cve-2026-67531
+  - SRC-pham-minh-cve-2026-29872
+sources_rejected:
+  - source_id: SRC-mcp-tools-2025-11-25
+    reason: Establishes tool invocation but not live-secret extraction.
+  - source_id: SRC-nvd-mcp-token-env-query
+    reason: Returned persistent-token and arbitrary-file weaknesses outside the live-state contract.
+  - source_id: SRC-mitre-t1555
+    reason: Password stores are persistent credential stores, not the defining live application state.
+  - source_id: SRC-attack-t1055
+    reason: Process injection is code-execution behavior and does not require secret acquisition.
+  - source_id: SRC-mitre-attack-t1552.001-v1.3
+    reason: Credentials in files are expressly outside the live-state boundary.
+  - source_id: SRC-otel-logs-data-model
+    reason: Generic log structure does not establish that MCP products emit the synthetic detection fields.
+sources_blocked: []
+
+conflicts:
+  - issue: The PraisonAI advisory lists affected versions through 4.5.117 while NVD says versions before 4.5.128.
+    resolution: Publish both statements, identify 4.5.128 as patched, and mark 4.5.118 through 4.5.127 uncertain.
+  - issue: CISA KEV absence could be mistaken for proof that exploitation never occurred.
+    resolution: Limit the conclusion to no KEV listing and no qualifying incident in the reviewed corpus.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1505-C001
+  rationale: >-
+    The controlled Radosevich-Halloran evaluation completes the defining path
+    from MCP-enabled access to live environment secrets through unauthorized
+    acquisition. Vulnerabilities corroborate mechanisms but do not establish a
+    production incident, so the status cannot be Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

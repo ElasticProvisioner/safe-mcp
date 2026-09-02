@@ -1,0 +1,79 @@
+version: 1
+technique_id: SAF-T1007
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1007/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1007/technique-contract.yml
+  supports: Internal scope, canonical tactic, reconciled neighboring-technique boundaries,
+    and completion conditions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1007/quality-review.yml
+  supports: Validation commands and gate results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1007/detection-rule.yml
+  supports: Detection analytic.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1007/test-logs.json
+  supports: Deterministic test cases.
+- id: LOCAL-test-script
+  path: techniques/SAF-T1007/test_detection_rule.py
+  supports: Deterministic detection test implementation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1007-X001
+  candidate: Widespread in-the-wild exploitation of the direct LibreChat vulnerability.
+  origin: Severity and public PoC could be misconstrued as incident evidence.
+  attempted_searches:
+  - CISA KEV exact-ID check
+  - NVD exploitation-status review
+  - Microsoft first-party incident searches
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-31944
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  reason: Only public PoC status was verified; no qualifying production incident was
+    found.
+  prohibited_publishable_text:
+  - confirmed widespread exploitation of CVE-2026-31944
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1007-X002
+  candidate: PKCE or OAuth state alone prevents cross-user token binding.
+  origin: Adjacent OAuth defenses in RFC 9700.
+  attempted_searches:
+  - MCP Elicitation phishing section
+  - RFC 9700 redirect and CSRF controls
+  - LibreChat root-cause review
+  consulted_source_ids:
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-rfc9700
+  - SRC-ghsa-vf7j-7mrx-hp7g
+  reason: The demonstrated flow had valid state; the missing control was browser-user
+    authentication and subject comparison.
+  prohibited_publishable_text:
+  - PKCE prevents cross-user token binding
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1007-X003
+  candidate: Treat every MCP OAuth open redirect or token leak as this technique.
+  origin: NVD synonym searches returned adjacent CVEs.
+  attempted_searches:
+  - NVD MCP OAuth phishing variants
+  - RFC 9700 Sections 4.9 and 4.11
+  - MCP Security Best Practices
+  consulted_source_ids:
+  - SRC-ghsa-f6x8-65q6-j9m9
+  - SRC-rfc9700
+  - SRC-mcp-security-2026-07-28
+  reason: Destination, audience, code execution, and cross-user binding are distinct
+    boundaries.
+  prohibited_publishable_text:
+  - all MCP OAuth phishing vulnerabilities are cross-user token binding
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

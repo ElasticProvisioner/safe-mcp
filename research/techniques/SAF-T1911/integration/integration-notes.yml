@@ -1,0 +1,106 @@
+version: 1
+technique_id: SAF-T1911
+generated_on: "2026-09-02"
+generation_mode: clean_room
+
+bundle_paths:
+  technique: techniques/SAF-T1911
+  research_packet: research/techniques/SAF-T1911
+  tests: tests/SAF-T1911
+  validation_proofs: validation
+
+synthetic_joins:
+  tactics: []
+  neighbors:
+    - synthetic_id: SAF-T9001
+      neutral_role: Instruction or context injection that supplies adversary influence before argument construction.
+      replace_with: Resolve the existing SAF catalog identifier after freeze; update contract, README, framework fragment, and alignment ledger mechanically.
+    - synthetic_id: SAF-T9002
+      neutral_role: Sensitive-data collection that obtains data before its transmission in a parameter.
+      replace_with: Resolve the existing SAF catalog identifier after freeze; update contract, README, framework fragment, and alignment ledger mechanically.
+  mitigations: []
+  history_sha:
+    synthetic_value: "1111111111111111111111111111111111111111"
+    replace_with: Honest repository history SHA supporting the new integrated version record.
+
+source_id_joins:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tool-poisoning-2025
+  - SRC-invariant-whatsapp-mcp-2025
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-mcp-security-best-practices-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mitre-attack-t1020-v1.3
+  - SRC-owasp-mcp-top10-v0.1
+source_join_policy: >-
+  After freeze, consult the shared manifest only to reuse an identical stable
+  source ID or add this canonical record. Do not derive a new source, claim,
+  example, wording, or omission from the shared registry.
+
+mechanical_path_joins:
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml after resolving only exact duplicate IDs or URLs.
+  - Merge framework-fragment.yml into research/framework-model.yml after replacing synthetic neighbor IDs.
+  - Merge alignment-fragment.yml into research/alignment-ledger.yml and close mechanical join records when complete.
+  - Copy techniques/SAF-T1911, research/techniques/SAF-T1911, and tests/SAF-T1911 into their canonical paths without consulting prior target contents.
+  - Replace the synthetic history SHA and rerun detection plus strict repository validation.
+
+deferred_authority_gaps:
+  - gap: NVD filtered API content was not reviewed because the retrieval layer rejected the URL.
+    action: Recheck the official authority endpoint during integration; if material direct evidence appears, stop integration and commission a new clean-room research run.
+  - gap: CISA KEV feed content was not reviewed because the endpoint returned HTTP 403.
+    action: Recheck the official authority endpoint during integration; if material exploitation evidence appears, stop integration and commission a new clean-room research run.
+  - gap: No current vendor retest or advisory established present susceptibility of clients named in April 2025 experiments.
+    action: Preserve the tested-date limitation; do not infer present susceptibility from the old experiment.
+  - gap: No public production breach or direct disclosed vulnerability qualified in the accessible reviewed corpus.
+    action: Preserve the bounded gap statement and do not convert it to a universal absence claim.
+
+validation:
+  detection:
+    command: uv run --with pyyaml python tests/SAF-T1911/test_detection_rule.py
+    result: passed_10_of_10
+  isolated_strict:
+    command: uv run --with pyyaml python scripts/validate-technique-research.py SAF-T1911
+    result: passed
+    mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1911/mock-repository
+
+prohibited_during_integration:
+  - Do not use prior target prose, research, examples, citations, tests, diffs, history, review comments, or other agents' work as evidence or revision input.
+  - Do not inspect a diff that reveals the previous technique content.
+  - Do not commit, push, or open a pull request without separate authorization.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-best-practices-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-invariant-tool-poisoning-2025: SRC-invariant-tpa-2025-04-01
+    SRC-invariant-whatsapp-mcp-2025: SRC-invariant-whatsapp-mcp-2025-04-07
+    SRC-invariant-mcp-scan-2025: SRC-invariant-mcp-scan-2025
+  new_shared_source_records:
+    - SRC-mcp-architecture-2025-11-25
+    - SRC-owasp-mcp-top10-v0.1
+    - SRC-mitre-attack-t1020-v1.3
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+    - ATK-TA0010
+  canonical_neighbors:
+    - SAF-T1102
+    - SAF-T1801
+  canonical_mitigations:
+    - SAF-M-12
+    - SAF-M-14
+    - SAF-M-16
+    - SAF-M-29
+    - SAF-M-69
+    - SAF-M-70
+    - SAF-M-72
+    - SAF-M-74
+  attack_mapping:
+    id: T1020
+    type: analogous
+  validation_proof:
+    - research/techniques/SAF-T1911/validation/canonical-validation.txt
+  authority_recheck:
+    nvd: Filtered API URL remained unavailable to the retrieval layer.
+    cisa_kev: Feed remained HTTP 403.
+    disposition: No material evidence was introduced; retain the bounded accessible-corpus gap.

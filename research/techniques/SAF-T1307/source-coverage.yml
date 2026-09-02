@@ -1,0 +1,256 @@
+version: 1
+technique_id: SAF-T1307
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT GET modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices"
+        - "DIRECT GET modelcontextprotocol.io/specification/2026-07-28/basic/authorization"
+        - "DIRECT GET rfc-editor.org/rfc/rfc8707.txt"
+        - "DIRECT GET rfc-editor.org/rfc/rfc9700.txt"
+        - "DIRECT GET cwe.mitre.org/data/definitions/441.html"
+      material_changes:
+        - >-
+          Bounded the behavior to an intermediary with authority unavailable to
+          the initiator and an invalid initiator, client, resource, audience,
+          or delegation binding.
+        - >-
+          Identified the current MCP OAuth confused-deputy flow and normative
+          per-client consent, redirect, state, resource, and token requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "EXACT CVE API GET CVE-2025-6514"
+        - "EXACT CVE API GET CVE-2025-49596"
+        - "EXACT CVE API GET CVE-2025-32711"
+        - "EXACT CVE API GET CVE-2025-53109"
+        - "EXACT CISA KEV cveID filter over the four reviewed CVE identifiers"
+        - "EXACT GitHub advisory GET GHSA-7f8r-222p-6f5g after its URL was supplied by the CVE CNA record"
+      material_changes:
+        - >-
+          Classified CVE-2025-6514 and CVE-2025-49596 as direct
+          vulnerabilities, CVE-2025-32711 as adjacent agentic evidence, and
+          CVE-2025-53109 as a rejected direct analogy.
+        - >-
+          Found no selected identifier in the 2026-09-01 CISA KEV snapshot and
+          no qualifying direct production incident in the reviewed corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT GET JFSA-2025-001290844 from the CVE-2025-6514 CNA reference"
+        - "DIRECT GET JFrog CVE-2025-6514 technical report from the CNA reference"
+        - "DIRECT GET AIM EchoLeak page from the CVE-2025-32711 record; redirected and omitted as technical evidence"
+      material_changes:
+        - >-
+          JFrog's controlled reproduction established end-to-end execution for
+          CVE-2025-6514 and set the technique evidence label to Demonstrated.
+        - >-
+          Preserved platform limitations: full shell-argument control was
+          demonstrated on Windows, while macOS and Linux behavior was narrower.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT REVIEW CWE-441 Detection Methods and Potential Mitigations"
+        - "DIRECT REVIEW MCP Confused Deputy Required Protections and URL logging guidance"
+        - "DIRECT REVIEW RFC 8707 Sections 2-3 and RFC 9700 Sections 2.1, 2.3, 4.10, 4.14"
+      material_changes:
+        - >-
+          Defined a normalized analytic over initiator authorization, deputy
+          authorization, binding validity, and approved delegation.
+        - >-
+          Added positive, negative, boundary, missing-field, and approved
+          delegation lookalike tests.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT COMPARE CVE-2025-53109 root cause against the technique contract"
+        - "DIRECT COMPARE CVE-2025-32711 disclosed mechanism against the technique contract"
+        - "DIRECT REVIEW RFC 9700 mix-up, redirect, audience, and legitimate intermediary constraints"
+        - "DIRECT GET attack.mitre.org/techniques/T1068/ for mapping challenge"
+      material_changes:
+        - >-
+          Rejected path-validation evidence as direct support and downgraded
+          EchoLeak to adjacent because the reviewed record does not establish
+          initiator-to-deputy binding loss.
+        - >-
+          Set ATT&CK T1068 to Analogous because it does not model the deputy
+          relationship.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "RECHECK exact CVE CNA affected, fixed, and exploitation fields for all four identifiers"
+        - "RECHECK CISA KEV 2026.09.01 exact cveID filter"
+        - "RECHECK current MCP 2026-07-28 security and authorization pages"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "RECHECK selected JFrog advisory, technical report, and exact Inspector GHSA"
+        - "RECHECK source authors, research credits, dates, remediation states, and evidence limitations"
+        - "RECHECK every publishable claim against exact source locators and exclusion ledger"
+      material_changes: []
+  rationale: >-
+    Direct current MCP documentation, IETF standards, CWE authority, four exact
+    CVE records, a current complete CISA KEV snapshot, two first-party JFrog
+    disclosures, one exact maintainer advisory obtained from a non-GitHub CVE
+    authority, and ATT&CK cover the contract's mechanism, requirements,
+    examples, exploitation status, detection, defenses, and mapping. The final
+    two direct-authority follow-ups added no controlling requirement, example,
+    material fact, remediation change, limitation, detection constraint, or
+    neighboring distinction. Untraceable researcher-page detail was excluded.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 4
+  selected_examples:
+    - SRC-cve-2025-6514
+    - SRC-cve-2025-49596
+    - SRC-cve-2025-32711
+  no_qualifying_examples_rationale: >-
+    Three examples qualify for publication, but none is a directly observed
+    production incident. Two are direct MCP vulnerabilities, one with a public
+    controlled reproduction; the third is retained only as a high-impact
+    adjacent agentic vulnerability. Exact KEV filtering and CVE exploitation
+    fields found no evidence of production exploitation in the reviewed corpus.
+  candidates:
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: direct_vulnerability
+      exploitation_status: >-
+        Controlled public reproduction; CISA ADP exploitation is none and the
+        identifier is absent from the 2026-09-01 KEV snapshot.
+      impact: >-
+        Critical client-side command or executable execution in the
+        mcp-remote process context; full shell-argument control was demonstrated
+        on Windows and narrower executable launch on macOS and Linux.
+      remediation: Update mcp-remote to 0.1.16 or later and connect only to trusted MCP servers over HTTPS.
+      selected: true
+      rationale: >-
+        Highest-confidence end-to-end demonstration: attacker-controlled MCP
+        authorization metadata reached a privileged client-side URL-opening
+        deputy and produced execution.
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: direct_vulnerability
+      exploitation_status: >-
+        Public maintainer advisory; CISA ADP exploitation is none and the
+        identifier is absent from the 2026-09-01 KEV snapshot.
+      impact: >-
+        Unauthenticated requests could cause the MCP Inspector proxy to launch
+        MCP commands over stdio, with critical confidentiality, integrity, and
+        availability impact scored by the advisory.
+      remediation: Update MCP Inspector to 0.14.1 or later.
+      selected: true
+      rationale: >-
+        Directly matches an untrusted initiator exercising a proxy's distinct
+        local process-launch authority.
+    - source_id: SRC-cve-2025-32711
+      identifier: CVE-2025-32711 / M365 Copilot Information Disclosure Vulnerability
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: >-
+        Disclosed vulnerability; CISA ADP exploitation is none and the
+        identifier is absent from the 2026-09-01 KEV snapshot.
+      impact: >-
+        Critical network information disclosure from AI command injection in a
+        hosted agentic product.
+      remediation: >-
+        The Microsoft CNA record links a vendor patch; no affected client
+        version or rollout detail is present in the reviewed record.
+      selected: true
+      rationale: >-
+        Retained as unusually high-impact agentic context, but labeled adjacent
+        because the reviewed record does not establish the defining
+        initiator-to-deputy authorization-binding failure.
+    - source_id: SRC-cve-2025-53109
+      identifier: CVE-2025-53109
+      relationship: rejected
+      exploitation_status: >-
+        Disclosed vulnerability; CISA ADP exploitation is none and the
+        identifier is absent from the 2026-09-01 KEV snapshot.
+      impact: >-
+        MCP filesystem access outside intended directories through symlink and
+        path validation weakness.
+      remediation: Update affected MCP filesystem server versions to 0.6.4 or 2025.7.01 or later.
+      selected: false
+      rationale: >-
+        The record establishes CWE-59 link following and path validation, not
+        loss of initiator identity or delegated authority; it is retained only
+        as challenge evidence.
+
+sources_consulted:
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-cwe-441-v4.20
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cve-2025-32711
+  - SRC-cve-2025-53109
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-attack-t1068
+sources_cited:
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc8707
+  - SRC-rfc9700
+  - SRC-cwe-441-v4.20
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cve-2025-32711
+  - SRC-cve-2025-53109
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-attack-t1068
+sources_rejected:
+  - source_id: SRC-cve-2025-53109
+    reason: >-
+      Rejected as a direct example because the official record establishes
+      symlink/path validation rather than the contract's authority-binding
+      failure; cited only to preserve the scope distinction.
+sources_blocked: []
+
+conflicts:
+  - issue: >-
+      High-severity disclosed vulnerabilities exist, but no qualifying direct
+      production breach was identified and all reviewed CISA ADP exploitation
+      fields are none.
+    resolution: >-
+      Label the technique Demonstrated from the controlled JFrog reproduction,
+      not Observed; state the dated production-evidence gap explicitly.
+  - issue: >-
+      CVE-2025-32711 is agentic and critical, but the official record maps the
+      root problem to injection and does not describe initiator/deputy binding.
+    resolution: >-
+      Retain it as an adjacent selected example that cannot raise the technique
+      evidence status.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1307-C007
+  rationale: >-
+    JFrog's first-party technical report reproduces the complete core behavior:
+    an untrusted MCP server supplies authorization metadata, the client-side
+    proxy treats it as eligible input to its separately privileged URL-opening
+    path, and execution occurs in the client system context. No directly
+    reviewed source documents this defining behavior in a production incident,
+    so Observed is not justified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,132 @@
+version: 1
+technique_id: SAF-T1803
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1803/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1803/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, generation mode, and completion
+    conditions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1803/quality-review.yml
+  supports: Quality gates, exact validation commands, results, reviewer, and review
+    date.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1803/detection-rule.yml
+  supports: The experimental normalized detection analytic and its explicit threshold.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1803/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, missing-field, and lookalike
+    test logic.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1803/test-logs.json
+  supports: Inert representative detection cases and expected outcomes.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1803/clean-room-attestation.yml
+  supports: Isolation inputs, searches, validation, and clean-room integrity statement.
+- id: LOCAL-detector-transcript
+  path: research/techniques/SAF-T1803/validation/detection.txt
+  supports: Isolated and canonical execution evidence for all ten deterministic detector cases.
+- id: LOCAL-validator-transcript
+  path: research/techniques/SAF-T1803/validation/strict-validator.txt
+  supports: Isolated and canonical strict research-validator results.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1803/integration/integration-notes.yml
+  supports: Mechanical post-freeze source, history, path, neighbor, mitigation, framework, and validation joins.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1803-X001
+  candidate: The AVideo advisory's proposition that every dumped account password
+    is a plain MD5 hash that can be cracked trivially.
+  origin: GHSA-687q-32c6-8x68 and CVE-2026-33478 candidate review.
+  attempted_searches:
+  - Exact CVE-2026-33478 CVE Program record review.
+  - Exact GHSA-687q-32c6-8x68 review.
+  - Exact maintainer patch c85d076 review.
+  consulted_source_ids:
+  - SRC-avideo-patch-c85d076
+  - SRC-cve-2026-33478
+  - SRC-ghsa-687q-32c6-8x68
+  reason: Maintainer patch commentary says current accounts use a layered password
+    scheme and only legacy accounts may retain plain MD5, contradicting the advisory's
+    broad claim.
+  prohibited_publishable_text:
+  - all AVideo passwords are trivially crackable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1803-X002
+  candidate: CVE-2026-33980 has a released package version containing the patch.
+  origin: Cross-check of CVE, GHSA, patch commit, and package registry.
+  attempted_searches:
+  - Exact CVE-2026-33980 record review.
+  - Exact GHSA-vphc-468g-8rfp review.
+  - Exact patch commit 0abe0ee review.
+  - Full PyPI adx-mcp-server release-history review.
+  consulted_source_ids:
+  - SRC-adx-patch-0abe0ee
+  - SRC-cve-2026-33980
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-pypi-adx-mcp-server
+  reason: The advisory lists no patched version and PyPI has no release later than
+    1.1.0; only a patch commit was verified.
+  prohibited_publishable_text:
+  - CVE-2026-33980 has a released fixed version
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1803-X003
+  candidate: Anthropic identified a dedicated database-dump tool and exact MCP call
+    used in the GTG-1002 campaign.
+  origin: Direct production-incident review.
+  attempted_searches:
+  - Complete 14-page Anthropic report review.
+  - MITRE ATT&CK T1213.006 procedure-example review.
+  - Two final authority-only NVD synonym passes.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-mitre-attack-t1213-006
+  - SRC-nvd-mcp-database-search
+  reason: The report documents MCP-based architecture and database extraction but
+    omits the database product, exact tool, call arguments, and byte count.
+  prohibited_publishable_text:
+  - Anthropic named the database dump tool
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1803-X004
+  candidate: The public CVE-2026-33980 PoC demonstrates a complete database dump.
+  origin: Direct vulnerability and demonstration review.
+  attempted_searches:
+  - Exact CVE-2026-33980 record review.
+  - Complete GHSA-vphc-468g-8rfp review.
+  - Exact patch commit and tests review.
+  consulted_source_ids:
+  - SRC-adx-patch-0abe0ee
+  - SRC-cve-2026-33980
+  - SRC-ghsa-vphc-468g-8rfp
+  reason: The demonstration retrieves selected fields and proves arbitrary query execution,
+    not an entire database export.
+  prohibited_publishable_text:
+  - the KQL PoC dumped the entire database
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1803-X005
+  candidate: All 89 NVD keyword results are direct Database Dump vulnerabilities relevant
+    to MCP.
+  origin: Official NVD database-dump discovery query.
+  attempted_searches:
+  - Review of all 89 returned English descriptions and identifiers.
+  - Narrow MCP database, dump, extraction, export, and KQL queries.
+  consulted_source_ids:
+  - SRC-nvd-db-dump-search
+  - SRC-nvd-mcp-database-search
+  reason: Most results are non-MCP analogies, SQL-injection variants, backup exposure,
+    memory dumps, or keyword collisions.
+  prohibited_publishable_text:
+  - every result in the NVD database dump query is relevant
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

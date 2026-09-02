@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T1305
+freeze_date: "2026-09-01"
+mechanical_only: true
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0004
+      state: seed_supplied_not_synthetic
+      action: Verify exact existing tactic identifier without reading target prose.
+  neighbors:
+    - id: SAF-T9001
+      neutral_label: Prompt-Induced Tool Invocation
+      action: Replace with the real technique ID matching the stated boundary, or create a no-research normalization issue if none exists.
+    - id: SAF-T9002
+      neutral_label: Malicious Local Server Installation
+      action: Replace with the real technique ID matching the stated boundary, or create a no-research normalization issue if none exists.
+  mitigations:
+    - id: SAF-M-9001
+      neutral_label: MCP Component Isolation
+      action: Replace with the real isolation or least-privilege mitigation ID.
+    - id: SAF-M-9002
+      neutral_label: MCP Trust and Patch Enforcement
+      action: Replace with the real trust, update, or vulnerability-management mitigation ID.
+    - id: SAF-M-9003
+      neutral_label: MCP Process-Lineage Monitoring
+      action: Replace with the real monitoring or audit mitigation ID.
+  source_ids:
+    - SRC-ghsa-cve-2025-53107
+    - SRC-jfrog-cve-2025-6514
+    - SRC-mcp-architecture-2025-06-18
+    - SRC-mcp-sep-1024
+    - SRC-mcp-spec-2025-11-25
+    - SRC-mcp-transports-2025-06-18
+    - SRC-microsoft-sysmon-events
+    - SRC-mitre-attack-t1068
+    - SRC-oligo-cve-2025-49596
+    - SRC-zdi-cve-2026-0758
+    - SRC-zdi-cve-2026-5059
+  source_id_action: Reuse an existing stable ID only for an exact canonical URL match; otherwise register the fragment ID and update joins mechanically.
+  history_sha:
+    synthetic: "1111111111111111111111111111111111111111"
+    action: Replace with the honest integration commit SHA after the target replacement is committed.
+path_joins:
+  - from: source-manifest-fragment.yml
+    to: research/source-manifest.yml
+  - from: framework-fragment.yml
+    to: research/framework-model.yml
+  - from: alignment-fragment.yml
+    to: research/alignment-ledger.yml
+  - from: techniques/SAF-T1305/
+    to: techniques/SAF-T1305/
+  - from: research/techniques/SAF-T1305/
+    to: research/techniques/SAF-T1305/
+  - from: tests/SAF-T1305/
+    to: tests/SAF-T1305/
+post_integration_checks:
+  - Re-run the detection test and strict validator.
+  - Verify every source and claim join after any stable-ID substitution.
+  - Verify no synthetic neighbor, mitigation, or history SHA remains.
+  - Do not inspect old target content or a diff that exposes it.

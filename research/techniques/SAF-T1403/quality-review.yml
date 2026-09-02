@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1403
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1403
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh agent inherited no context, accessed no prohibited target input, used provenance-qualified direct authorities, and recorded isolated strict validation.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires materially repeated requests and later user approval and excludes first-prompt deception, consent bypass, redirect flaws, and ordinary retries.
+  technical_accuracy:
+    status: passed
+    notes: MCP primitives, product approval behavior, analogy limits, and conditional prerequisites are tied to directly reviewed sources.
+  claim_traceability:
+    status: passed
+    notes: Nineteen validated claims contain full IDs, exact locators, limitations, and source relations.
+  source_or_omit:
+    status: passed
+    notes: All substantive README units use hidden SAF-TRACE joins or declared local artifact links; eight unsupported candidates are excluded.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived reflects a cross-domain inference; historical incidents and adjacent CVEs do not raise the label.
+  research_saturation:
+    status: passed
+    notes: Five independent passes and two final no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: NVD, vendor advisory, exploitation-status, primary incident, and contrary-evidence checks classify seven candidates and select four bounded examples.
+  detection_quality:
+    status: passed
+    notes: The analytic names required fields, a decision sequence, window, threshold, blind spots, tuning, and ten deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Rate limiting, denial caching, clear provenance, narrow scope, stronger confirmation, and telemetry address the defining mechanism.
+  framework_alignment:
+    status: passed
+    notes: Supplied tactic, analogous ATT&CK mapping, canonical neighbors, stable source IDs, mitigations, and framework joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All nineteen consulted sources have paraphrase-only rights records, named attribution, and no copied protected artifacts.
+  safe_publication:
+    status: passed
+    notes: The scenario and tests use inert names and contain no payload, credential, coercion instruction, or destructive operation.
+
+validation:
+  commands:
+    - command: "PYTHONPATH=/private/tmp/saf-cleanroom-pydeps python3 scripts/validate-technique-research.py SAF-T1403"
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1403/test_detection_rule.py
+      result: passed
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1403
+      result: passed
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1403/test_detection_rule.py
+    result: "PASS SAF-T1403 detector: 10/10 cases"
+    waiver: null
+
+unresolved: []

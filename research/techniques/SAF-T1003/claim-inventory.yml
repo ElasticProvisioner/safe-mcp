@@ -1,0 +1,349 @@
+version: 1
+technique_id: SAF-T1003
+claims:
+  - id: SAF-T1003-C001
+    statement: Malicious MCP-server distribution is deliberate placement or continued delivery of an attacker-controlled server artifact, endpoint, or installation configuration through a consumer acquisition path.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators: [Relationship with Package Registries; Relationship with MCP Host Applications]
+      - source_id: SRC-mcp-registry-package-types
+        support: direct
+        exact_locators: [Package Types; MCPB Packages / Verification]
+      - source_id: SRC-mcp-sep-1024
+        support: corroborating
+        exact_locators: [Motivation; Client Security Requirements]
+      - source_id: SRC-mitre-t1195-002
+        support: context
+        exact_locators: [Technique description and software distribution mechanisms]
+    corroboration: Official MCP sources establish the delivery paths; ATT&CK independently establishes malicious pre-receipt software delivery as a supply-chain behavior.
+    limitations: [This synthesized definition does not establish prevalence or downstream compromise.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The neutral target name is bounded using independently reviewed delivery authorities and incident evidence.}
+    status: validated
+  - id: SAF-T1003-C002
+    statement: The defining behavior requires exposure through a reachable delivery channel and acquisition or activation by a consumer process or person.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators: [Relationship with Package Registries; Relationship with Server Developers]
+      - source_id: SRC-mcp-registry-package-types
+        support: corroborating
+        exact_locators: [npm Packages; Docker/OCI Images; MCPB Packages]
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: [Abstract; Motivation]
+      - source_id: SRC-mitre-t1195-002
+        support: context
+        exact_locators: [Technique description]
+    corroboration: MCP registry, installation, and ATT&CK sources independently describe delivery and receipt stages.
+    limitations: [Activation semantics vary by client and package type.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The common acquisition boundary is synthesized across documented delivery types.}
+    status: validated
+  - id: SAF-T1003-C003
+    statement: An acquired local server or exposed server tool can act with authority available to its host, client, or installing identity.
+    class: implementation_fact
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Overview; User Interaction Model; tools/call]
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: [Motivation; Security Implications]
+      - source_id: SRC-checkmarx-runcommand
+        support: corroborating
+        exact_locators: [lines 122-129; lines 240-251]
+    corroboration: Protocol behavior and an observed malicious package independently support authority-dependent consequences.
+    limitations: [Available permissions, credentials, and network reach are deployment-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C004
+    statement: Malicious delivery is distinct from malicious payload state, impersonation, persuasion, update-path hijack, and post-activation effects.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: context
+        exact_locators: [Relationship with Package Registries; Verifying Server Authenticity]
+      - source_id: SRC-mcp-sep-1024
+        support: context
+        exact_locators: [Motivation / Social Engineering Vulnerabilities]
+      - source_id: SRC-mitre-t1195-002
+        support: direct
+        exact_locators: [Technique description]
+    corroboration: Independent sources separate delivery, identity, user interaction, and later execution concerns.
+    limitations: [SAF neighbor prose was not opened before freeze; name-only distinctions require post-freeze reconciliation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Neighbor boundaries are semantic synthesis from permitted names and external behavior definitions.}
+    status: validated
+  - id: SAF-T1003-C005
+    statement: The official MCP Registry stores metadata pointing to packages or remote servers and delegates code scanning to other ecosystem participants.
+    class: implementation_fact
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-registry-about
+        support: direct
+        exact_locators: [Relationship with Package Registries; Security Scanning]
+      - source_id: SRC-mcp-registry-package-types
+        support: corroborating
+        exact_locators: [Package Types]
+    corroboration: Two official registry pages describe metadata, package types, and validation boundaries.
+    limitations: [The Registry is in preview and downstream registries may implement different controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C006
+    statement: The official MCP Registry advises consumers to assume minimal-to-no moderation and does not remove servers merely for vulnerabilities.
+    class: implementation_fact
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-registry-moderation
+        support: direct
+        exact_locators: [Disclaimer; What We Remove; What We Don't Remove]
+    corroboration: A single authoritative policy is the appropriate source for the Registry's own moderation behavior.
+    limitations: [The policy is preview-era, mutable, and does not govern downstream registries.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C007
+    statement: Final SEP-1024 requires complete command transparency and explicit consent for one-click local-server configuration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: [lines 86-107; lines 112-143]
+    corroboration: The final standards-track proposal is the authoritative source for its own requirement.
+    limitations: [SEP-1024 is a preserved design record and directs readers to the current specification for later changes.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C008
+    statement: Checkmarx documented a malicious MCP-labeled npm package with install-time reverse-shell behavior, controlled detonation, public availability, and subsequent removal.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-checkmarx-runcommand
+        support: direct
+        exact_locators: [lines 100-139; lines 240-251]
+    corroboration: Public removal is reported in the same primary research report; no independent victim report was found.
+    limitations: [The vendor report establishes distribution and controlled analysis, not a named victim, install count, or prevalence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C009
+    statement: The selected incident does not establish a named production victim, executed-install count, affected-organization count, or compromise prevalence.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-checkmarx-runcommand
+        support: direct
+        exact_locators: [complete article, especially lines 100-139 and 240-251]
+    corroboration: No qualifying independent production-victim source was found in the restricted search corpus.
+    limitations: [Absence of a published victim in the selected source is not proof that no victim existed.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The statement is intentionally limited to what the selected source does not establish.}
+    status: validated
+  - id: SAF-T1003-C010
+    statement: CVE-2025-6514 allowed a malicious or hijacked server to trigger command execution in affected mcp-remote versions and was fixed in version 0.1.16.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators: [lines 139-174; lines 188-207]
+    corroboration: The advisory includes platform-specific proof and credits the maintainer fix.
+    limitations: [This is enabling vulnerability evidence, not evidence of malicious server distribution or production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C011
+    statement: Approved sources, immutable versions or digests, and signature or provenance verification reduce malicious-delivery risk.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-npm-provenance
+        support: direct
+        exact_locators: [lines 230-270]
+      - source_id: SRC-openssf-provenance
+        support: direct
+        exact_locators: [lines 55-75]
+      - source_id: SRC-mitre-det0537
+        support: corroborating
+        exact_locators: [lines 35-73]
+      - source_id: SRC-mcp-sep-1024
+        support: corroborating
+        exact_locators: [Client Security Requirements; Risk Mitigation]
+    corroboration: npm, OpenSSF, and ATT&CK independently support integrity, source, and version signals.
+    limitations: [Not every package type exposes equivalent signatures or attestations.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Controls are synthesized for MCP admission from general package and detection guidance.}
+    status: validated
+  - id: SAF-T1003-C012
+    statement: Provenance links an artifact to source and build information but does not by itself establish code safety or publisher intent.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openssf-provenance
+        support: direct
+        exact_locators: [lines 6-29; lines 65-75]
+      - source_id: SRC-npm-provenance
+        support: corroborating
+        exact_locators: [lines 236-270]
+    corroboration: OpenSSF states the trust limitation; npm documents what the attestation verifies.
+    limitations: [The sources do not measure malicious MCP-server detection effectiveness.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C013
+    statement: Li and Gao measured 67,057 servers across six registries and documented registry-level malicious-publication, hijackable-link, and naming risks.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-li-gao-dsn-2026
+        support: direct
+        exact_locators: [PDF pages 1-4 and 7-12; abstract page lines 8-23]
+    corroboration: The paper reports methods, manual validation, disclosure, and limitations; no duplicate measurement source was selected.
+    limitations: [The collection was time-bounded, inaccessible servers were excluded, and MCPInspect precision used a 41-server sample.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C014
+    statement: The MCPZoo preprint found high alert prevalence but low average precision, limited CVE recall, and low inter-scanner agreement across eight scanners.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-chen-etal-mcpzoo-2026
+        support: direct
+        exact_locators: [PDF pages 1-4 and 8-12; abstract page lines 8-29]
+    corroboration: Manual validation used two reviewers and reported inter-rater agreement.
+    limitations: [The work is a preprint; scanner versions, deployment repair, and the ten-CVE ground truth are time-bounded.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1003-C015
+    statement: A generic capability, keyword, absent optional attestation, or single scanner alert is insufficient proof of maliciousness.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-chen-etal-mcpzoo-2026
+        support: direct
+        exact_locators: [PDF pages 10-12]
+      - source_id: SRC-openssf-provenance
+        support: corroborating
+        exact_locators: [lines 6-29]
+      - source_id: SRC-mitre-det0537
+        support: context
+        exact_locators: [lines 35-73]
+    corroboration: Scanner reliability, provenance limits, and multi-signal ATT&CK detection independently support this boundary.
+    limitations: [Local products may have stronger high-confidence signals not modeled here.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The evidence supports a conservative multi-signal threshold.}
+    status: validated
+  - id: SAF-T1003-C016
+    statement: Detection should correlate admission or integrity anomalies with acquisition, activation, and first-run process or network behavior.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0537
+        support: direct
+        exact_locators: [lines 35-92]
+      - source_id: SRC-chen-etal-mcpzoo-2026
+        support: corroborating
+        exact_locators: [PDF pages 10-12]
+    corroboration: ATT&CK supplies the correlation pattern; MCPZoo supports avoiding single-scanner verdicts.
+    limitations: [The included normalized rule has no measured production precision or recall.]
+    conflicts: []
+    inference: {is_inference: true, rationale: A general supply-chain correlation is specialized to MCP admission and activation fields.}
+    status: validated
+  - id: SAF-T1003-C017
+    statement: MITRE ATT&CK T1195.002 is a direct external mapping for malicious software manipulation or replacement before consumer receipt.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1195-002
+        support: direct
+        exact_locators: [lines 16-43]
+      - source_id: SRC-mitre-det0537
+        support: context
+        exact_locators: [lines 16-38]
+    corroboration: ATT&CK's technique and detection strategy align on delivery and first-run behavior.
+    limitations: [The ATT&CK mapping is broader than MCP and does not assign a SAF tactic.]
+    conflicts: []
+    inference: {is_inference: true, rationale: SAF-T1003 is an MCP-specific narrowing of T1195.002.}
+    status: validated
+  - id: SAF-T1003-C018
+    statement: Least privilege and sandboxing constrain consequences without proving publisher intent or preventing all malicious delivery.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-1024
+        support: direct
+        exact_locators: [Security Implications / Risk Mitigation]
+      - source_id: SRC-mitre-t1195-002
+        support: corroborating
+        exact_locators: [Mitigations]
+    corroboration: MCP installation guidance and ATT&CK both support consequence reduction through constrained execution.
+    limitations: [Sandbox strength and usable least privilege are platform-specific.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The controls are applied to the distributed server's execution context.}
+    status: validated
+  - id: SAF-T1003-C019
+    statement: Response should preserve acquisition and execution evidence, block exact artifacts, search hosts and caches, and investigate downstream behavior.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-checkmarx-runcommand
+        support: direct
+        exact_locators: [lines 130-139; lines 247-251]
+      - source_id: SRC-mitre-det0537
+        support: corroborating
+        exact_locators: [lines 35-92]
+    corroboration: The incident report addresses exact artifacts and caches; ATT&CK supplies install-to-first-run telemetry.
+    limitations: [Credential rotation and recovery scope depend on evidence of exposure.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Response steps are synthesized from incident-specific and behavioral evidence.}
+    status: validated
+  - id: SAF-T1003-C020
+    statement: The included analytic is a normalized reference rule requiring local mapping, baselines, threshold tuning, and production-like validation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-det0537
+        support: direct
+        exact_locators: [Mutable Elements in AN1480 through AN1482]
+      - source_id: SRC-chen-etal-mcpzoo-2026
+        support: corroborating
+        exact_locators: [PDF pages 10-12]
+    corroboration: ATT&CK requires mutable local thresholds and MCPZoo demonstrates scanner reliability limits.
+    limitations: [Synthetic test success is not evidence of production effectiveness.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The limitation follows from normalized inputs and synthetic validation.}
+    status: validated

@@ -1,0 +1,410 @@
+version: 1
+technique_id: SAF-T1702
+claims:
+  - id: SAF-T1702-C001
+    statement: >-
+      Shared-memory poisoning manipulates persistent stored or retrievable agent
+      information so that a later session or agent consumes the hostile state and
+      its reasoning, planning, or tool use can be influenced.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - Pages 24-25, ASI06 definition and Examples 1-3, extracted lines 615-651.
+    corroboration: MINJA independently demonstrates persistent shared-memory influence across user interactions.
+    limitations:
+      - OWASP provides a synthesized risk category rather than one production incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C002
+    statement: >-
+      MCP defines resources and other context-bearing capabilities and assigns
+      consent, data-access, and trust responsibilities to implementations, but the
+      reviewed core specification does not define a persistent-memory trust model.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-spec-2025-06
+        support: direct
+        exact_locators:
+          - Feature overview, extracted lines 99-107.
+          - Security and Trust & Safety principles, extracted lines 124-164.
+    corroboration: Not applicable; the specification is the controlling protocol authority for the stated protocol boundary.
+    limitations:
+      - Individual MCP implementations may add memory controls outside the core specification.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to the directly reviewed core specification sections and is not a claim about every extension.
+    status: validated
+
+  - id: SAF-T1702-C003
+    statement: >-
+      MINJA demonstrates that query-only interactions can inject malicious records
+      into long-term memory shared across users without direct storage access and
+      can influence later agent behavior in controlled evaluations.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-minja-2026
+        support: direct
+        exact_locators:
+          - Pages 1-3, threat model and shared-memory setting, extracted lines 82-90 and 129-167.
+          - Pages 4-8, attack construction and evaluation, extracted lines 207-445.
+    corroboration: AgentPoison independently demonstrates memory and retrieval-store poisoning under a different access assumption.
+    limitations:
+      - Results are controlled experiments and do not establish production prevalence.
+      - Reported success varies by model, memory density, and system configuration.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C004
+    statement: >-
+      AgentPoison demonstrates that a small set of crafted records can poison
+      long-term-memory or retrieval-augmented agents and bias later target behavior
+      while leaving measured benign behavior largely intact.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-agentpoison-2024
+        support: direct
+        exact_locators:
+          - Abstract and introduction, extracted lines 0-26 and 129-159.
+          - Threat model and objectives, extracted lines 197-220.
+          - Experimental results, extracted lines 413-568.
+    corroboration: MINJA demonstrates a related outcome under query-only rather than partial-memory-access conditions.
+    limitations:
+      - The threat model assumes partial access to the memory or retrieval corpus.
+      - Benchmark results do not establish production compromise.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C005
+    statement: >-
+      Cisco's MemoryTrap disclosure demonstrates a Claude Code path in which an
+      untrusted repository processed with user approval reached global memory and
+      hook configuration, persisting across projects, sessions, and reboots; Cisco
+      reports remediation in version 2.1.50.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cisco-memorytrap-2026
+        support: direct
+        exact_locators:
+          - Discovery and persistence description, extracted lines 68-80.
+          - Preconditions and global overwrite path, extracted lines 85-97.
+          - Disclosure and reported remediation, extracted lines 118-121.
+    corroboration: OWASP's ASI06 category independently describes the same persistent cross-session mechanism class.
+    limitations:
+      - Cisco did not report production exploitation.
+      - The reviewed corpus did not include an independently opened Anthropic advisory confirming the patch.
+      - The path requires an untrusted repository and user-approved setup or trust action.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C006
+    statement: >-
+      The completed direct-authority searches identified controlled demonstrations
+      and one disclosed vulnerability but no qualifying production breach, no
+      mechanism-specific NVD CVE, and no CISA KEV entry for shared-memory poisoning.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisco-memorytrap-2026
+        support: direct
+        exact_locators:
+          - Disclosure scope and stated preconditions, extracted lines 118-121.
+      - source_id: SRC-agentpoison-2024
+        support: context
+        exact_locators:
+          - Abstract and experiment framing, extracted lines 0-26 and 413-568.
+      - source_id: SRC-minja-2026
+        support: context
+        exact_locators:
+          - Abstract, threat model, and evaluation framing, extracted lines 0-90 and 343-439.
+    corroboration: The domain-restricted NVD, CISA, vendor, and academic saturation passes produced no direct production incident or mechanism-specific catalog entry.
+    limitations:
+      - This is a search-bounded absence statement, not proof that no undisclosed or unindexed exploitation occurred.
+      - CISA feed endpoints returned access errors; domain-restricted catalog search still yielded no relevant entry.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is the bounded result of the recorded research protocol and source classes.
+    status: validated
+
+  - id: SAF-T1702-C007
+    statement: >-
+      The defining prerequisites are a shared persistent or retrievable store, an
+      attacker-reachable write or ingestion path, later retrieval by a different
+      session, principal, or agent, and behavioral influence from the retrieved record.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - ASI06 definition and examples, pages 24-25, extracted lines 615-651.
+      - source_id: SRC-minja-2026
+        support: corroborating
+        exact_locators:
+          - Shared-memory threat model and query-only injection, extracted lines 129-167 and 207-290.
+      - source_id: SRC-cisco-memorytrap-2026
+        support: corroborating
+        exact_locators:
+          - Product-specific preconditions, extracted lines 85-97.
+    corroboration: Three independent source classes align on the write, persistence, retrieval, and influence sequence.
+    limitations:
+      - Specific storage and trust-promotion implementations vary.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The contract synthesizes common necessary elements across direct demonstrations and a formal risk category.
+    status: validated
+
+  - id: SAF-T1702-C008
+    statement: >-
+      A behavior-focused analytic can correlate memory-write provenance with a
+      cross-principal or cross-session retrieval and a later high-risk action that
+      references the same memory identifier.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - Provenance, anomaly, quarantine, and rollback controls, pages 25-26, extracted lines 669-683.
+      - source_id: SRC-mitre-t1565.001
+        support: context
+        exact_locators:
+          - Detection guidance for unexpected stored-data modification, extracted lines 58-69.
+      - source_id: SRC-mind-2026
+        support: corroborating
+        exact_locators:
+          - Intent-behavior detector architecture, pages 3-4, extracted lines 264-368.
+      - source_id: SRC-smsr-2026
+        support: corroborating
+        exact_locators:
+          - Write-time provenance and multi-session evaluation, extracted lines 249-393.
+    corroboration: The bundle's deterministic detector tests execute the synthesized correlation against positive, negative, boundary, and incomplete-telemetry cases.
+    limitations:
+      - No reviewed source establishes field precision or recall for this exact joined analytic.
+      - Correlation requires stable identifiers across write, read, and action telemetry.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact analytic is an original synthesis from source-backed telemetry and behavioral-defense principles.
+    status: validated
+
+  - id: SAF-T1702-C009
+    statement: >-
+      Content-only or prompt-level screening is insufficient as the sole control
+      because evaluated attacks can evade rephrasing or perplexity filters and
+      intent detectors can introduce false positives or configuration-dependent gaps.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agentpoison-2024
+        support: direct
+        exact_locators:
+          - Defense evaluation, pages 15-16, extracted lines 901-965.
+      - source_id: SRC-minja-2026
+        support: direct
+        exact_locators:
+          - Defense limitations, page 9, extracted lines 463-488.
+      - source_id: SRC-injecmem-2026
+        support: corroborating
+        exact_locators:
+          - Defense evaluation and tradeoffs, page 13, extracted lines 662-689.
+      - source_id: SRC-mind-2026
+        support: corroborating
+        exact_locators:
+          - Detector ablation and error rates, pages 5-6, extracted lines 498-550.
+    corroboration: Multiple independent evaluations report evasion or utility tradeoffs for single-layer screening.
+    limitations:
+      - Results apply to evaluated systems and defenses, not every future detector.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C010
+    statement: >-
+      Memory segmentation, write-time provenance, trust-aware retrieval, quarantine,
+      rollback, and independent action gating reduce the opportunity or consequence
+      of memory poisoning, subject to each control's assumptions and coverage.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - ASI06 prevention and mitigation guidance, pages 25-26, extracted lines 669-683.
+      - source_id: SRC-smsr-2026
+        support: corroborating
+        exact_locators:
+          - Authenticated provenance and randomized retrieval design and evaluation, extracted lines 249-393.
+      - source_id: SRC-poem-2026
+        support: corroborating
+        exact_locators:
+          - Tamper-evident action-execution ledger and scope, extracted lines 223-290 and 488-557.
+    corroboration: "The sources address different layers: memory isolation, provenance, retrieval, recovery, and action authorization."
+    limitations:
+      - Provenance authenticates origin but does not prove semantic safety.
+      - Action gating protects only decisions routed through the gate.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C011
+    statement: >-
+      Shared-memory poisoning directly compromises stored-context integrity, while
+      confidentiality, availability, and external-action effects depend on the later
+      consumer's privileges and tool access.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - ASI06 impact description and examples, extracted lines 615-651.
+      - source_id: SRC-cisco-memorytrap-2026
+        support: corroborating
+        exact_locators:
+          - Persistent insecure-guidance demonstration and reported product boundary, extracted lines 100-121.
+    corroboration: The formal risk category and product disclosure both separate the persistent state change from conditional downstream actions.
+    limitations:
+      - Impact magnitude is deployment-specific and should not be inferred from technique presence alone.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The claim decomposes immediate integrity loss from conditional CIA consequences across the reviewed examples.
+    status: validated
+
+  - id: SAF-T1702-C012
+    statement: >-
+      MITRE ATT&CK Stored Data Manipulation is an analogous data-integrity mapping,
+      and Lateral Movement is appropriate for the cross-consumer pivot when clearly
+      qualified as agentic context movement rather than a conventional network logon.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0008-2025
+        support: context
+        exact_locators:
+          - Lateral Movement tactic definition, extracted lines 15-23.
+      - source_id: SRC-mitre-t1565.001
+        support: direct
+        exact_locators:
+          - Stored Data Manipulation definition, extracted lines 16-47.
+    corroboration: The user-supplied tactic assignment is reconciled with MITRE's definitions and the technique contract's cross-principal boundary.
+    limitations:
+      - MITRE ATT&CK does not define MCP or agent-memory poisoning in these entries.
+      - The tactic mapping is a framework alignment inference, not evidence of network movement.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping applies ATT&CK concepts by analogy to the independently established agent-memory boundary.
+    status: validated
+
+  - id: SAF-T1702-C013
+    statement: >-
+      Response should preserve evidence, stop further retrieval, revoke affected write
+      paths, quarantine contaminated records, restore trusted state, and monitor for
+      recurrence.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - Provenance monitoring, quarantine, rollback, and expiry guidance, extracted lines 673-683.
+    corroboration: SMSR independently emphasizes authenticated write provenance and multi-session auditability.
+    limitations:
+      - Recovery mechanics depend on storage architecture and available snapshots.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C014
+    statement: >-
+      Memory-poisoning success varies with model, memory density, pre-existing correct
+      memory, and defense configuration, so controlled attack rates do not establish
+      production prevalence or universal effectiveness.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-arxiv-memory-defense-2026
+        support: direct
+        exact_locators:
+          - Experimental results with pre-existing correct memory, pages 5-6, extracted lines 241-284.
+          - Defense tradeoffs and over-conservative behavior, pages 8-11, extracted lines 373-503.
+      - source_id: SRC-minja-2026
+        support: corroborating
+        exact_locators:
+          - Memory density and pre-existing memory sensitivity, extracted lines 417-439.
+    corroboration: Independent controlled studies show material condition-dependent differences.
+    limitations:
+      - The challenge source is a course project report rather than a production study.
+    conflicts:
+      - High aggregate success reported by MINJA coexists with sharply lower success under some pre-existing-memory conditions in the challenge study.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1702-C015
+    statement: >-
+      Durable retrieval by another consumer distinguishes shared-memory poisoning from
+      current-session prompt injection and from unpersisted inter-agent communication;
+      goal hijacking and tool misuse are possible downstream behaviors rather than the
+      defining memory mechanism.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators:
+          - ASI06 boundary and distinction from goal hijack and cascading failures, extracted lines 615-634.
+    corroboration: The contract's write-persist-retrieve sequence is independently supported by MINJA and MemoryTrap.
+    limitations:
+      - Synthetic neighbor identifiers are validation placeholders and require integration-time reconciliation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The neighbor boundaries synthesize the formal ASI06 distinction into SAF classification terms.
+    status: validated

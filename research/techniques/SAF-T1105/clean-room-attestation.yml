@@ -1,0 +1,119 @@
+version: 1
+technique_id: SAF-T1105
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1105
+  inherited_context: false
+target:
+  id: SAF-T1105
+  neutral_name: Path Traversal via File Tool
+allowed_inputs:
+- User-supplied target ID, neutral name, and tactic seed ATK-TA0002.
+- Author-SAF-technique skill and its required generic methodology references.
+- techniques/TEMPLATE.md, research/README.md, blank technique research schemas, and
+  the current research validator.
+- Independently discovered and directly reviewed external authorities on whitelisted
+  domains.
+- Minimal synthetic identifiers used only to exercise isolated joins.
+prohibited_inputs:
+- techniques/SAF-T1105/README.md, including current or historical copies.
+- research/techniques/SAF-T1105/ and all existing target-specific research artifacts.
+- techniques/SAF-T1105/detection-rule.yml and existing target-specific tests or logs.
+- Git history, diffs, blame, stashes, branches, commits, and review comments exposing
+  prior target content.
+- Any pull request, issue, cache, prior bundle, SAF or SAFE site or repository, or
+  source list derived from prior target artifacts.
+- Any previous conversation, summary, agent context, or methodology example containing
+  prior target content.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io specification tools roots security filesystem path
+    access
+  - site:modelcontextprotocol.io/specification/2026-07-28 server resources security
+    directory traversal
+  - site:nvd.nist.gov/vuln/detail MCP filesystem path traversal
+  - site:cve.org/CVERecord MCP filesystem path traversal
+  - site:cisa.gov MCP filesystem path traversal incident breach
+  - site:aws.amazon.com/security MCP path traversal incident breach file tool
+  - site:varonis.com/blog CVE-2026-4270 AWS API MCP file access
+  - site:vulncheck.com/advisories/siyuan-kernel-path-traversal-via-database-clean-mcp-tool
+  - site:cwe.mitre.org/data/definitions/22.html path traversal canonicalization
+  - site:attack.mitre.org/techniques/T1005 Data from Local System
+  - site:attack.mitre.org/techniques/T1083 File and Directory Discovery
+  - site:aws.amazon.com/security/security-bulletins/2026 MCP server path traversal
+    arbitrary file write tool
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2026-4270 OR CVE-2026-18953
+    OR CVE-2026-15415 OR CVE-2026-74798
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-release-2026-07-28
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-aws-cve-2026-4270
+  - SRC-varonis-cve-2026-4270
+  - SRC-aws-cve-2026-18953
+  - SRC-aws-cve-2026-15415
+  - SRC-vulncheck-cve-2026-74798
+  - SRC-ghsa-cve-2026-74798
+  - SRC-google-mcp-logging-2025
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-nvd-cve-2025-67364
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1105
+  result: passed
+  mock_scope: Independently generated bundle plus generic validator and minimal synthetic
+    joins only.
+integration_constraints:
+- Reconcile source IDs only after freeze without introducing new research leads.
+- Replace synthetic neighbor joins and history SHA mechanically without reading old
+  target prose or a revealing diff.
+- Run repository validation after integration without revising claims from prior target
+  content.
+attestation: I generated this technique from the allowed inputs and independently
+  opened sources, detected no prohibited prior-artifact access, and froze the draft
+  evidence set before any repository integration.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    original_SAF-T1104: SAF-T1102
+    original_SAF-T1106: SAF-T1104
+  source_id_mapping:
+    SRC-aws-cve-2026-18953: SRC-aws-cve-2026-18953
+    SRC-mcp-release-2026-07-28: SRC-mcp-release-2026-07-28
+    SRC-mcp-resources-2026-07-28: SRC-mcp-resources-2026
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+  new_shared_source_records:
+  - SRC-attack-t1005
+  - SRC-attack-t1083
+  - SRC-aws-cve-2026-15415
+  - SRC-aws-cve-2026-4270
+  - SRC-cwe-22
+  - SRC-cwe-59
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2026-74798
+  - SRC-google-mcp-logging-2025
+  - SRC-nvd-cve-2025-67364
+  - SRC-varonis-cve-2026-4270
+  - SRC-vulncheck-cve-2026-74798
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-29
+  - SAF-M-52
+  - SAF-M-69
+  - SAF-M-74
+  status: integrated_and_repository_validated

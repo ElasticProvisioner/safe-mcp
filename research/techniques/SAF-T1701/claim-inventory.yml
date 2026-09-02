@@ -1,0 +1,244 @@
+version: 1
+technique_id: SAF-T1701
+claims:
+  - id: SAF-T1701-C001
+    statement: >-
+      MCP tools are model-controlled; results can contain structured or
+      unstructured content; servers are required to validate inputs, enforce
+      access controls, rate-limit, and sanitize outputs, while clients are
+      advised to confirm sensitive operations, display inputs, validate results,
+      and log usage.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ['Tools specification: Overview; Tool Discovery; Calling Tools; Security Considerations']
+    corroboration: The MCP risk-vocabulary article applies the specification's trust model to combined sessions.
+    limitations: [The specification does not establish that every implementation follows the safeguards.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C002
+    statement: >-
+      Controlled agent evaluation demonstrates that adversary instructions in
+      one source-tool response can change planning and trigger a distinct
+      attacker-selected tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-injecagent-2024
+        support: direct
+        exact_locators: ['Abstract; Figure 1 and accompanying example; Section 3 threat model; Sections 4-5 evaluation']
+    corroboration: Independent controlled GitHub, WhatsApp, and document-to-email demonstrations exercise the same cross-tool edge.
+    limitations: [The benchmark uses controlled or simulated tool environments and does not establish production prevalence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C003
+    statement: >-
+      A controlled GitHub MCP demonstration showed public issue content causing
+      an agent to access private repository data and place it into a public pull request.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ['GitHub MCP Exploited; attack walkthrough; conclusion distinguishing architecture from server defect']
+    corroboration: InjecAgent independently establishes the source-result-to-attacker-tool mechanism.
+    limitations: [This was a controlled demonstration, not a documented production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C004
+    statement: >-
+      In a controlled WhatsApp MCP demonstration, an attacker-controlled message
+      surfaced in a listing result and induced later capability use that exposed contacts.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: ['Experiment 2: Exfiltrating Your Contacts; attack sequence; tested-client note']
+    corroboration: InjecAgent independently tests indirect source-tool instructions triggering a different tool.
+    limitations: [The authors controlled the environment; Experiment 1 on the page uses a different tool-metadata mechanism.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C005
+    statement: >-
+      A controlled MCP evaluation showed hidden instruction in external content
+      causing an agent to use an email tool with protected data.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invisible-prompts-2025
+        support: direct
+        exact_locators: ['Abstract; threat model; MCP email exfiltration demonstration; evaluation setup']
+    corroboration: The InjecAgent formalism independently models the same source-tool to target-tool transition.
+    limitations: [The example is experimental and does not establish production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C006
+    statement: >-
+      DeepTutor before 1.4.10 had a missing-authorization defect that allowed
+      low-privilege users or prompt-injected content to enumerate and invoke all
+      configured MCP tools; version 1.4.10 fixed the defect.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-vulncheck-cve-2026-58168
+        support: direct
+        exact_locators: ['Advisory description; affected versions; remediation; credit']
+      - source_id: SRC-nvd-cve-2026-58168
+        support: corroborating
+        exact_locators: ['NVD description; CVSS/SSVC enrichment; references; modified date']
+    corroboration: NVD independently republishes and enriches the disclosed vulnerability record.
+    limitations: [The defect enables broad target-tool access but does not itself prove a cross-tool production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C007
+    statement: >-
+      A behavioral detector can model the defining mechanism as a tainted
+      source-tool result followed by a distinct sensitive sink-tool call, while
+      content-only classification is insufficient as the sole control.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-toxic-flow-2025
+        support: direct
+        exact_locators: ['Toxic-flow graph model; source, sensitive, and exfiltration classifications; runtime trace analysis']
+      - source_id: SRC-adaptive-attacks-2025
+        support: corroborating
+        exact_locators: ['Abstract; Section 3 threat model; defense evaluation and adaptive bypass results']
+    corroboration: The formal-security paper models tool-result-to-tool-call dataflow constraints.
+    limitations: [The sources do not validate this packet's exact ten-minute threshold or token list.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic operationalizes published tool-flow models for the packet's contract.
+    status: validated
+  - id: SAF-T1701-C008
+    statement: >-
+      Hosts can treat a session as tainted after a tool returns untrusted data and
+      tighten approval or blocking for subsequent exfiltration-capable actions;
+      annotations inform this policy but are not enforcement and do not make the model injection-resistant.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: direct
+        exact_locators: ['Cross-tool/session risk discussion; What Annotations Can Do; What Annotations Cannot Do']
+    corroboration: MCP tool security considerations recommend confirmation, result validation, and access control.
+    limitations: [The article discusses a developing annotation vocabulary rather than a finalized enforcement standard.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C009
+    statement: >-
+      Session-level correlation needs timestamps and a session identifier plus
+      tool-call identity, name, arguments, result, trust, approval, and effect data.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-genai-2026
+        support: direct
+        exact_locators: ['Generative AI attributes: conversation ID; tool call ID, name, arguments, and result; data source ID']
+      - source_id: SRC-otel-session-2026
+        support: direct
+        exact_locators: ['Session semantic conventions: session.id, session.start, session.end']
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ['Calling Tools request/result structures; Security Considerations logging guidance']
+    corroboration: The MCP structures and OpenTelemetry attribute sets independently cover the two event sides.
+    limitations: [Trust, approval, and impact-class labels require deployment-specific enrichment and are not all standardized fields.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The minimum field set is derived by joining protocol events to an operational session schema.
+    status: validated
+  - id: SAF-T1701-C010
+    statement: >-
+      Detection based partly on instruction content can have false positives and
+      false negatives, and defenses evaluated without adaptive attackers can overstate robustness.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-adaptive-attacks-2025
+        support: direct
+        exact_locators: ['Abstract; adaptive attack method; defense bypass results above 50 percent']
+      - source_id: SRC-formal-security-2024
+        support: corroborating
+        exact_locators: ['Prompt-injection detector false-positive/false-negative discussion; tool-flow policy examples']
+    corroboration: Both sources motivate behavioral context rather than sole reliance on text classification.
+    limitations: [Neither source measures this packet's detector on production telemetry.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C011
+    statement: >-
+      Confirmation, least-privilege authorization, result validation, output
+      sanitization, isolation, and host-enforced cross-tool flow policy reduce the defining pivot.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ['Security Considerations for servers and clients']
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: corroborating
+        exact_locators: ['What Annotations Can Do; What Annotations Cannot Do; session risk discussion']
+    corroboration: The sources separately cover protocol hygiene and session-level enforcement.
+    limitations: [No single control guarantees resistance to all prompt-injection variants.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The combined control set is mapped to the contract's source-result and target-call boundary.
+    status: validated
+  - id: SAF-T1701-C012
+    statement: >-
+      Tool-description poisoning can shadow trusted tools or redirect calls but
+      acts through pre-invocation metadata and is distinct from contamination carried in a returned result.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ['Tool Poisoning Attacks; cross-origin escalation; tested-client examples; mitigations']
+    corroboration: The WhatsApp page presents metadata poisoning separately from result-borne message injection.
+    limitations: [A real attack can chain both mechanisms, so classification should follow the initial causal edge.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1701-C013
+    statement: >-
+      ATT&CK T1080 is a useful but non-exact analogy: adversary-controlled shared
+      content affects another execution context, while SAF-T1701 uses instruction-bearing tool output rather than executable content in shared storage.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1080-2025
+        support: direct
+        exact_locators: ['Technique definition; Procedure Examples; Mitigations; Detection']
+    corroboration: The ATT&CK technique is itself assigned to Lateral Movement.
+    limitations: [The analogy is not an assertion that MCP tool flows are covered by ATT&CK T1080.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares a shared-content pivot while preserving the different execution mechanism.
+    status: validated

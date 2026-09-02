@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1105
+name: Path Traversal via File Tool
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause an MCP or agent file-capable tool to read, create, overwrite,
+  copy, move, or delete a filesystem object outside the path scope intended by the
+  tool operator.
+scope:
+  security_boundary: The boundary between the tool's configured filesystem scope and
+    paths reachable by the operating-system identity that executes the tool.
+  in_scope:
+  - An attacker-controlled tool argument or referenced path resolves outside an allowed
+    root or bypasses a no-file-access mode.
+  - Relative, absolute, alternate-path, prefix-collision, and link-resolution variants
+    that culminate in a file operation by an MCP or agent tool.
+  out_of_scope:
+  - Prompt injection or social engineering that only supplies the path; these are
+    delivery mechanisms unless the file-scope boundary is crossed.
+  - Normal file operations wholly inside an authorized root, even when the selected
+    file is sensitive.
+  - Archive extraction, upload handling, or web routing that does not invoke an MCP
+    or agent file-capable tool.
+  - Follow-on collection, exfiltration, persistence, or code execution after the immediate
+    unauthorized file operation.
+  affected_components:
+  - MCP host or agent invoking a tool
+  - MCP server or agent tool accepting path-bearing arguments
+  - Filesystem and operating-system execution identity
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection can deliver a malicious path or manipulate tool
+    input; this technique begins only when path resolution crosses the configured
+    file scope and a filesystem operation is attempted.
+- technique_id: SAF-T1104
+  distinction: Over-privileged tool abuse uses intentionally broad tool authority;
+    this technique requires a pathname or alternate-path bypass of an intended restriction.
+required_evidence:
+- Current MCP requirements for tool-input validation, access control, and file-resource
+  path sanitization.
+- Directly reviewed vulnerabilities and controlled demonstrations in MCP or agent
+  file-capable tools.
+- Separate current searches for hostile production incidents and exploitation status.
+- Telemetry sufficient to compare a resolved target with the allowed root set or no-access
+  policy.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP or agent tool audit event with timestamp, actor/session, server, tool, operation,
+    requested path, resolved canonical path, allowed roots or access mode, validation
+    decision, outcome, and approved-override state.
+safe_example_constraints:
+- Use only inert placeholder paths under /srv/agent and placeholder file content.
+- Do not include secrets, executable overwrite targets, live endpoints, or destructive
+  instructions.
+completion_evidence:
+- All five research passes and two no-change saturation passes are recorded.
+- Every substantive publishable unit is linked to a validated claim and directly reviewed
+  source.
+- Four selected examples are classified and hostile production exploitation is not
+  inferred from demonstrations or advisories.
+- The deterministic analytic passes positive, negative, boundary, malformed-field,
+  normalization, and approved-override cases.
+- Publication rights, clean-room integrity, framework alignment, and strict isolated
+  validation pass.

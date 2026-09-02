@@ -1,0 +1,340 @@
+version: 1
+technique_id: SAF-T1103
+claims:
+  - id: SAF-T1103-C001
+    statement: >-
+      MCP carries tool names and arguments through tools/call, while the host
+      controls consent, policy, server isolation, and cross-server interactions;
+      names are only unique within a server and aggregators may need disambiguation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["User Interaction Model; Tools/list; Calling Tools; Tool Names and Name Collisions; Security Considerations"]
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: corroborating
+        exact_locators: ["Core Components: Host; Design Principles"]
+    corroboration: Architecture and tool-specific protocol pages assign complementary responsibilities.
+    limitations: [The specification does not prescribe one call-provenance data model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C002
+    statement: >-
+      Treating an attacker-originated call record or attacker-selected callable
+      identity as an authorized tool decision crosses the dispatch trust boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-470
+        support: direct
+        exact_locators: ["Description; Potential Mitigations"]
+      - source_id: SRC-cwe-863
+        support: corroborating
+        exact_locators: ["Description; Potential Mitigations"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators: ["Calling Tools; Security Considerations"]
+      - source_id: SRC-aegis-2603.12621
+        support: context
+        exact_locators: ["Motivating Example; Threat Model"]
+    corroboration: The weaknesses cover externally selected code and missing authorization at the protocol dispatch boundary.
+    limitations: [This synthesis defines the SAF boundary; it is not itself an incident report.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The technique contract combines unsafe callable selection and authorization evidence with MCP dispatch semantics.
+    status: validated
+  - id: SAF-T1103-C003
+    statement: >-
+      CVE-2026-65975 allowed affected Pydantic AI UI adapters to dispatch a
+      registered non-approval tool with client-supplied arguments without a model turn.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-65975
+        support: direct
+        exact_locators: ["CNA description; affected versions; references"]
+      - source_id: SRC-ghsa-pydantic-65975
+        support: corroborating
+        exact_locators: ["Summary; Impact; Affected versions; Patched versions"]
+    corroboration: CVE and maintainer advisory agree on mechanism, bounds, and fixed releases.
+    limitations: [Approval-gated tools were not auto-executed; product-specific hooks and versions constrain impact.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C004
+    statement: >-
+      CVE-2026-44339 allowed an unresolved PraisonAI tool name to fall through
+      to runtime globals, and the advisory reports controlled local invocation
+      of an undeclared application callable.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-44339
+        support: direct
+        exact_locators: ["CNA description; affected versions; references"]
+      - source_id: SRC-ghsa-praison-44339
+        support: direct
+        exact_locators: ["Summary; Impact; Empirical verification; Affected versions; Patched versions"]
+    corroboration: The CVE record and official advisory agree on name-resolution fall-through and releases.
+    limitations: [The controlled reproduction was local and does not establish production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C005
+    statement: >-
+      CVE-2026-61536 allowed untrusted Banks Tool JSON to supply an import path
+      resolved without an allowlist, enabling an arbitrary importable callable
+      when a matching model tool call occurred; version 2.4.3 fixed the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-61536
+        support: direct
+        exact_locators: ["CNA description; affected versions; CVSS; problem types"]
+      - source_id: SRC-ghsa-banks-61536
+        support: corroborating
+        exact_locators: ["Summary; Impact; Remediation; Affected versions; Patched versions"]
+    corroboration: CVE and advisory agree on the import-path resolver, prerequisites, effect, and fix.
+    limitations: [A matching model-emitted call and influence over rendered Tool JSON were still required.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C006
+    statement: >-
+      No qualifying production incident and no selected-CVE entry in CISA KEV
+      was identified in the reviewed direct NVD and CISA catalog corpus on 2026-09-01.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-t1103-corpus
+        support: direct
+        exact_locators: ["40 recorded direct catalog queries; candidate identifiers and descriptions"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: ["catalogVersion 2026.09.01; CVE ID set"]
+    corroboration: Independent vulnerability and known-exploitation catalogs were checked.
+    limitations: [Catalog absence does not prove that exploitation or undisclosed incidents never occurred.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C007
+    statement: >-
+      AG-UI defines run identifiers and a tool-call event lifecycle containing
+      call identifier, tool name, parent message, argument deltas, end, and result linkage.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agui-events
+        support: direct
+        exact_locators: ["Event Categories; RUN_STARTED; TOOL_CALL_START; TOOL_CALL_ARGS; TOOL_CALL_END; TOOL_CALL_RESULT"]
+    corroboration: The event definitions use the same call identifier across the lifecycle.
+    limitations: [AG-UI fields are not guaranteed in every MCP or proprietary adapter.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C008
+    statement: >-
+      A detection analytic can flag execution that lacks a prior trusted,
+      complete, timely and name-consistent call lifecycle or a registered binding.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agui-events
+        support: direct
+        exact_locators: ["TOOL_CALL_START through TOOL_CALL_RESULT field definitions"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Tool Names and Name Collisions; Security Considerations"]
+      - source_id: SRC-cwe-470
+        support: context
+        exact_locators: ["Potential Mitigations: strict allowlist or indirect selection"]
+      - source_id: SRC-ghsa-praison-44339
+        support: context
+        exact_locators: ["Summary; unsafe resolver fall-through"]
+      - source_id: SRC-flowguard-2607.14754
+        support: context
+        exact_locators: ["Evidence Adjudication; Section B Limitations"]
+    corroboration: Protocol lifecycle fields and allowlist guidance support the join keys and binding check.
+    limitations: [The analytic was validated on synthetic fixtures, not a labeled production corpus.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact multi-event analytic is a defensive synthesis tested by repository artifacts.
+    status: validated
+  - id: SAF-T1103-C009
+    statement: >-
+      Runtime and argument-level provenance can improve security attribution,
+      but incomplete observation, inference errors, adaptive behavior, state,
+      and cross-session activity remain material blind spots.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-pact-2605.11039
+        support: direct
+        exact_locators: ["Abstract; Section 5 evaluation; Section 7 limitations"]
+      - source_id: SRC-flowguard-2607.14754
+        support: corroborating
+        exact_locators: ["Table II; Real-World Evaluation; Section B Limitations"]
+    corroboration: Independent studies report both gains and limitations for provenance/evidence-based controls.
+    limitations: [Neither study evaluates the exact SAF-T1103 correlation rule.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C010
+    statement: >-
+      Fixed callable allowlists, per-tool authorization, explicit approval,
+      input/result validation, and trusted tool-use logging constrain fake invocation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-470
+        support: direct
+        exact_locators: ["Potential Mitigations: avoid reflection; strict allowlist"]
+      - source_id: SRC-cwe-863
+        support: direct
+        exact_locators: ["Potential Mitigations: authorization; default deny"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+      - source_id: SRC-ghsa-pydantic-65975
+        support: context
+        exact_locators: ["Impact; Workarounds"]
+      - source_id: SRC-ghsa-banks-61536
+        support: context
+        exact_locators: ["Remediation: resolve against explicit allowlist"]
+    corroboration: Generic weakness guidance, protocol guidance, and a product advisory converge on these controls.
+    limitations: [Controls fail if execution bypasses the trusted mediation point.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The controls are combined to address both provenance and binding variants.
+    status: validated
+  - id: SAF-T1103-C011
+    statement: >-
+      AEGIS demonstrates that pre-execution allow/block/approval mediation can
+      be low latency, while its curated evaluation and rule-based design leave
+      unknown variants and false positives as explicit limitations.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aegis-2603.12621
+        support: direct
+        exact_locators: ["Abstract; Threat Model; Sections 3.1-3.3; Limitations"]
+    corroboration: The paper reports attack, benign, and latency measurements with stated constraints.
+    limitations: [The curated suite addresses harmful genuine calls rather than fake-call provenance specifically.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C012
+    statement: >-
+      Fake invocation impact is conditional on callable authority and can range
+      from a bounded registered-tool action to arbitrary code execution in the hosting process.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-pydantic-65975
+        support: direct
+        exact_locators: ["Impact; affected tool constraints"]
+      - source_id: SRC-ghsa-praison-44339
+        support: direct
+        exact_locators: ["Impact; Empirical verification"]
+      - source_id: SRC-ghsa-banks-61536
+        support: direct
+        exact_locators: ["Summary; Impact; CVSS"]
+    corroboration: Three independent product advisories show different bounds from the same broad dispatch class.
+    limitations: [Impact cannot be rated without the reachable callable, credentials, network access, and approval configuration.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C013
+    statement: >-
+      CVE-2026-39419 documents forged tool-result provenance in MaxKB, which is
+      adjacent because it changes what a call reports rather than whether or which function runs.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2026-39419
+        support: direct
+        exact_locators: ["CNA description; affected versions; references"]
+      - source_id: SRC-ghsa-maxkb-39419
+        support: corroborating
+        exact_locators: ["Summary; Impact; Affected versions; Patched versions"]
+    corroboration: CVE and advisory agree on the result-forgery mechanism and fix.
+    limitations: [The evidence does not establish a fake invocation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C014
+    statement: >-
+      Execution is the primary tactic; ATT&CK T1059 is analogous only when the
+      spoofed callable actually invokes a command or scripting interpreter.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-ta0002
+        support: direct
+        exact_locators: ["Execution tactic definition"]
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: ["Command and Scripting Interpreter definition"]
+    corroboration: ATT&CK distinguishes the execution objective from the specific interpreter mechanism.
+    limitations: [ATT&CK does not define fake tool invocation as a native enterprise technique.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping is conditional on downstream interpreter execution and otherwise remains tactic-only.
+    status: validated
+  - id: SAF-T1103-C015
+    statement: >-
+      The complete technique is Demonstrated because an official advisory
+      reports controlled execution of an undeclared callable through the documented resolver path.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-praison-44339
+        support: direct
+        exact_locators: ["Empirical verification; Summary; Impact"]
+    corroboration: The associated CVE record independently identifies the same vulnerability.
+    limitations: [Demonstrated does not mean observed in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1103-C016
+    statement: >-
+      Investigation should preserve and correlate trusted model, host, registry,
+      approval, execution, and downstream tool events by stable run and call identifiers.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations: log tool usage; show inputs; confirm sensitive operations"]
+      - source_id: SRC-agui-events
+        support: corroborating
+        exact_locators: ["Event base fields; RUN_STARTED; tool-call lifecycle"]
+    corroboration: Protocol guidance and event identifiers define the evidence needed for a defensible join.
+    limitations: [Exact retention, privacy, and downstream-resource fields vary by deployment.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence is a defensive operational synthesis from required evidence fields.
+    status: validated

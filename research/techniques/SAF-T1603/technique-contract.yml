@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1603
+name: System Prompt Disclosure
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Obtain without authorization the whole or a substantial portion
+  of hidden system, developer, or agent instruction content used to govern an LLM
+  or agentic session.
+scope:
+  security_boundary: The boundary between privileged host- or builder-controlled instruction
+    context and an untrusted requester, remote peer, or tool-mediated recipient.
+  in_scope:
+  - Model-output extraction that reveals hidden instruction content.
+  - Application, configuration, or agent interface exposure that returns hidden instruction
+    content to an unauthorized party.
+  - Tool-mediated disclosure when obtaining the hidden instructions is the immediate
+    objective.
+  out_of_scope:
+  - Prompt injection or jailbreak behavior that changes execution but does not disclose
+    hidden instructions.
+  - Authorized MCP prompts/list or prompts/get discovery of server-declared, user-controlled
+    prompt templates.
+  - Exposure limited to user data, training data, credentials, operating-system memory,
+    or logs without hidden instruction content.
+  affected_components:
+  - MCP host
+  - MCP client
+  - agent application
+  - model gateway
+  - prompt and configuration store
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection supplies attacker instructions to alter behavior;
+    this technique requires unauthorized recovery of privileged instruction content.
+required_evidence:
+- Establish that privileged instructions are normally withheld from untrusted requesters.
+- Establish direct public demonstrations or vulnerabilities that return hidden instructions.
+- Establish protocol-specific boundaries and distinguish authorized MCP prompt discovery.
+- Search official incident, vulnerability, research, and framework sources and classify
+  every candidate.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Model or agent response events containing output plus conversation, actor, model,
+    and authorization context.
+  - Securely computed overlap or canary match metadata derived from the protected
+    instruction outside ordinary logs.
+safe_example_constraints:
+- Use only synthetic instructions, inert domains, and placeholder identifiers.
+- Do not publish extraction prompts, live tokens, credentials, or destructive follow-on
+  steps.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and reviewed source.
+- Unselected, adjacent, and unsupported candidates are dispositioned in the exclusion
+  ledger.
+- Two consecutive no-change saturation passes are recorded.
+- Detection tests and strict packet validation pass in an isolated synthetic framework
+  mock.
+- Rights and quality reviews pass with no unresolved issue before freeze.

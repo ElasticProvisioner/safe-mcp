@@ -1,0 +1,32 @@
+version: 1
+technique_id: SAF-T1207
+review_status: passed
+reviewed_on: 2026-09-01
+reviewer: OpenAI Codex clean-room generator
+
+gates:
+  clean_room_integrity: {status: passed, notes: Attestation records seed-only generation, prohibited inputs, and no prior-artifact access.}
+  contract_and_scope: {status: passed, notes: Requires trusted prior version, replacement through update path, and activation; first-install and runtime-only drift are excluded.}
+  technical_accuracy: {status: passed, notes: MCP Registry, host update behavior, update metadata, incident, and vulnerability statements use reviewed direct sources.}
+  claim_traceability: {status: passed, notes: Eighteen accepted claims have exact locators and same-line README trace markers.}
+  source_or_omit: {status: passed, notes: Unsupported legacy Koi leads and boundary-adjacent candidates are omitted and ledgered.}
+  evidence_classification: {status: passed, notes: Research-Derived reflects supported components without a qualifying direct production incident.}
+  research_saturation: {status: passed, notes: Two final focused passes produced no material evidence-status change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Ten candidates classified; four selected with directness, exploitation, impact, remediation, and limitations.}
+  detection_quality: {status: passed, notes: Experimental analytic has ten inert fixtures, executable tests, false positives, limits, and tuning.}
+  mitigation_quality: {status: passed, notes: Controls address release identity, trusted metadata, allowlisting, staging, isolation, and response.}
+  framework_alignment: {status: passed, notes: Canonical SAF-T1003 and SAF-T1201 boundaries, Persistence tactic, seven mitigation joins, and repository test paths were reconciled after freeze and passed strict validation.}
+  publication_rights: {status: passed, notes: Factual paraphrase and reference-only use; no quotations, copied code, imagery, or tables.}
+  safe_publication: {status: passed, notes: Scenario and fixtures are inert and contain no credentials, payloads, or operational secrets.}
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1207
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/test_saf_t1207_detection.py
+    result: 10_of_10_cases_matched_expected_classification
+    waiver: null
+
+unresolved: []

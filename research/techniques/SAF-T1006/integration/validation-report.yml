@@ -1,0 +1,25 @@
+version: 1
+technique_id: SAF-T1006
+validated_on: "2026-09-01"
+isolation_root: /private/tmp/saf-all-cleanroom/SAF-T1006-retry3/mock
+canonical_validator: scripts/validate-technique-research.py
+draft_validation:
+  command: PYTHONPATH=vendor python3 mock/scripts/validate-technique-research.py SAF-T1006 --draft
+  result: passed
+strict_validation:
+  command: PYTHONPATH=vendor python3 mock/scripts/validate-technique-research.py SAF-T1006
+  result: passed
+  final_unchanged_passes: 2
+  synthetic_join_digest_each_pass: ebea73bff7a5e18a638a69ac3b274cb761f72af4e25c64b94d6f9bb1c191fa25
+detection_validation:
+  command: PYTHONPATH=vendor python3 bundle/techniques/SAF-T1006/test_detection_rule.py
+  result: passed
+  passed_cases: 7
+  total_cases: 7
+research_saturation:
+  passes_completed: 5
+  final_no_change_passes: 2
+  late_result_reset_applied: true
+  final_pass_artifacts:
+    - sources/nvd-saturation-pass-1.json
+    - sources/nvd-saturation-pass-2.json

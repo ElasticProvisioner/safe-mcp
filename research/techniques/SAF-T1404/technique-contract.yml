@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1404
+name: Response Tampering
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an MCP host, model, or downstream workflow to consume a
+  modified, substituted, or misrouted response as though it were the authentic result
+  of the invoked tool or resource operation.
+scope:
+  security_boundary: The integrity and provenance boundary between the response emitted
+    for an MCP request and the response representation consumed by the host, model,
+    or downstream application.
+  in_scope:
+  - Modification of response content after a legitimate invocation and before consumption.
+  - Substitution or misrouting that makes a response appear to belong to a different
+    request, client, or trusted upstream service.
+  - Manipulation of structured or unstructured tool-result content, embedded resources,
+    or response framing when the immediate objective is response-integrity loss.
+  out_of_scope:
+  - Instructions planted in tool metadata before invocation; that changes discovery
+    or tool selection rather than an emitted response.
+  - Malicious arguments sent to an otherwise honest tool; that manipulates the request
+    side of the exchange.
+  - Ordinary indirect prompt injection where attacker content is faithfully returned
+    from its true source without response modification, substitution, or provenance
+    confusion.
+  - Downstream execution, credential theft, or data destruction after a corrupted
+    response has been accepted.
+  affected_components:
+  - MCP host or client
+  - MCP server or upstream service adapter
+  - Streamable HTTP or stdio transport intermediary
+  - Tool-result validation, logging, and model-context assembly layers
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection can be present in faithfully retrieved content; Response
+    Tampering changes or substitutes an emitted response after invocation.
+- technique_id: SAF-T1309
+  distinction: SAF-T1309 changes model-controlled tool selection or arguments before
+    invocation, while Response Tampering targets server-to-consumer result integrity
+    after execution.
+required_evidence:
+- Establish the MCP result fields and the client validation and logging expectations.
+- Establish a directly demonstrated end-to-end response modification across the defined
+  boundary.
+- Search production incidents separately from disclosed vulnerabilities and controlled
+  demonstrations.
+- Validate affected and fixed versions, exploitation status, limitations, and named
+  credits for selected advisories.
+- Establish detection telemetry at two integrity checkpoints and document blind spots
+  for already-corrupted receipt events.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Canonical response digest at trusted transport receipt with request ID, server
+    identity, tool name, timestamp, and session or trace ID.
+  - Canonical response digest immediately before model or downstream consumption with
+    the same correlation identifiers.
+  - Authorization metadata for expected transformations such as approved redaction
+    or schema normalization.
+safe_example_constraints:
+- Use only inert placeholder data and non-executable content.
+- Do not reproduce advisory proof-of-concept payloads, live endpoints, credentials,
+  or destructive commands.
+- Show only the minimum response-field change needed to explain the integrity failure.
+completion_evidence:
+- Every substantive publishable unit has a validated claim/source trace or declared
+  local-artifact link.
+- Unverified production-breach, exploitation, and universal-detection claims are omitted
+  and ledgered.
+- Two consecutive saturation follow-ups add no material evidence or scope change.
+- Positive, negative, canonicalization-boundary, authorized-transformation, and missing-field
+  detection cases pass.
+- Publication rights, framework alignment, safe publication, and clean-room integrity
+  gates pass.

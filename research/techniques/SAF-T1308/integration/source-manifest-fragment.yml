@@ -1,0 +1,356 @@
+version: 1
+sources:
+  - id: SRC-mcp-auth-2025-11-25
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full official HTML page opened and relevant normative sections reviewed; an acquisition copy was retained outside the bundle.
+    locators:
+      - Purpose and Scope
+      - Scope Selection Strategy
+      - Resource Parameter Implementation
+      - Token Handling
+      - Error Handling and Scope Challenge Handling
+      - Token Audience Binding and Validation
+      - Access Token Privilege Restriction
+    review_notes: Verified current MCP HTTP authorization roles, resource parameter, audience validation, scope failure, and token handling requirements.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Clean-room handoff excludes the source corpus; the external acquisition copy is identified in source-corpus.sha256 outside bundle.
+      review_evidence: {file: mcp-authorization-2025-11-25.html, sha256: 009c0d0d9b35fe53450e4c80d1decfeaaa09d34b8dfa08c1917bcdb4e9e30397}
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full official HTML page opened and the complete attacks-and-mitigations document reviewed; an acquisition copy was retained outside the bundle.
+    locators:
+      - Token Passthrough, lines 213-241
+      - Scope Minimization, lines 535-585
+      - Session Hijacking, lines 320-362
+    review_notes: Verified token-passthrough boundary, progressive scope guidance, elevation logging, and neighboring session behavior.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Clean-room handoff excludes the source corpus; the external acquisition copy is identified in source-corpus.sha256 outside bundle.
+      review_evidence: {file: mcp-security-best-practices-2025-11-25.html, sha256: 7ee5531784cc3bd30f20808b9b3095bd174c516684ece2dd7b80bcdfe76655e2}
+
+  - id: SRC-rfc8707
+    title: RFC 8707 - Resource Indicators for OAuth 2.0
+    publisher: RFC Editor / IETF
+    authors: [Brian Campbell, John Bradley, Hannes Tschofenig]
+    source_class: protocol_or_standard
+    version_or_date: February 2020
+    official_url: https://www.rfc-editor.org/rfc/rfc8707.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete RFC HTML and text opened; normative, security, authorship, and rights sections reviewed.
+    locators:
+      - Section 1, paragraphs 80-86
+      - Section 2, paragraphs 95-115
+      - Section 2.2, paragraphs 138-144
+      - Section 3, paragraphs 205-210
+      - Authors' Addresses, lines 269-287
+    review_notes: Verified that resource identifies where a token is used, scope identifies requested access, grants bind resources, and token requests may narrow.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Text acquisition retained outside the canonical bundle.
+      review_evidence: {file: rfc8707.txt, sha256: 3b89844a938b9219571931b664ed4a7b380555a4dda1df4e9445a2f72188e76b}
+
+  - id: SRC-rfc9068
+    title: RFC 9068 - JSON Web Token Profile for OAuth 2.0 Access Tokens
+    publisher: RFC Editor / IETF
+    authors: [Vittorio Bertocci]
+    source_class: protocol_or_standard
+    version_or_date: October 2021
+    official_url: https://www.rfc-editor.org/rfc/rfc9068.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete RFC HTML and text opened; data structure, validation, security, authorship, and rights sections reviewed.
+    locators:
+      - Section 2.1, paragraphs 113-116
+      - Section 2.2, paragraphs 119-127
+      - Section 2.2.3, paragraphs 161-163
+      - Section 4, paragraphs 217-225
+      - Section 5, paragraphs 228-234
+      - Author, lines 295-311
+    review_notes: Verified token typing, required audience, scope-to-audience semantics, and resource-server validation requirements.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Text acquisition retained outside the canonical bundle.
+      review_evidence: {file: rfc9068.txt, sha256: 68d3ff3910c0f2340fd7b93b430e00053da845b6eebe095ebef0c8bfda5e14c5}
+
+  - id: SRC-rfc9700
+    title: RFC 9700 - Best Current Practice for OAuth 2.0 Security
+    publisher: RFC Editor / IETF
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    source_class: protocol_or_standard
+    version_or_date: January 2025
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete RFC text opened; best practices, token restriction, threat model, authorship, and rights sections reviewed.
+    locators:
+      - Section 2.2.1, lines 334-344
+      - Section 2.3, lines 352-381
+      - Section 4.10, misuse of stolen access tokens
+      - Authors' Addresses
+    review_notes: Verified minimum privileges, audience restriction, resource/action restriction, and per-request enforcement obligations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Text acquisition retained outside the canonical bundle.
+      review_evidence: {file: rfc9700.txt, sha256: 9919d061d40a97886ca866b51c69389b6c81c65cd4b979056c14fdbebfcf622a}
+
+  - id: SRC-cve-2026-14541
+    title: CVE-2026-14541 - Authentication Bypass and Audience Confusion in MCP Toolbox OAuth Provider
+    publisher: CVE Program; Google CNA
+    authors: [Google CNA, HE WEI (ギカク)]
+    source_class: official_advisory
+    version_or_date: "2026-07-31"
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-14541
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE Record 5.2 JSON opened and reviewed, including CNA and CISA ADP containers.
+    locators:
+      - cveMetadata
+      - containers.cna.affected[0]
+      - containers.cna.descriptions[0]
+      - containers.cna.metrics[0]
+      - containers.cna.credits[0]
+      - containers.adp[0].metrics[0]
+    review_notes: Verified affected version and configuration, audience-skipping behavior, bounded impact, finder credit, and exploitation recorded as none.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: JSON acquisition retained outside the canonical bundle.
+      review_evidence: {file: cve-2026-14541.json, sha256: 5e09ae332d1c19171c6aa78cfc4d3a469fc400d5c39661be9a472c0b8bb76c74}
+
+  - id: SRC-cve-2026-67332
+    title: CVE-2026-67332 - Better Auth OAuth Provider Authorization Bypass
+    publisher: CVE Program; VulnCheck CNA
+    authors: [VulnCheck CNA, dvanmali]
+    source_class: official_advisory
+    version_or_date: "2026-08-01"
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-67332
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE Record 5.2 JSON opened and reviewed, including CNA and CISA ADP containers.
+    locators:
+      - containers.cna.descriptions[0]
+      - containers.cna.affected[0]
+      - containers.cna.credits[0]
+      - containers.adp[0].metrics[0]
+    review_notes: Verified the grant-to-resource binding failure, affected range, fixed beta, reporter credit, and exploitation recorded as none.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: JSON acquisition retained outside the canonical bundle.
+      review_evidence: {file: cve-2026-67332.json, sha256: 79806a0507c7e7f67b75e94b4fe884b20086d1fd8e37602002b1b8ec18adc0a0}
+
+  - id: SRC-ghsa-p2fr-6hmx-4528
+    title: "@better-auth/oauth-provider: access-token audience not bound to the authorization grant"
+    publisher: Better Auth project / GitHub Security Advisories
+    authors: [gustavovalverde, dvanmali]
+    source_class: official_advisory
+    version_or_date: "2026-05-31"
+    official_url: https://github.com/better-auth/better-auth/security/advisories/GHSA-p2fr-6hmx-4528
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after the non-GitHub CVE record supplied the identifier and canonical URL; full advisory reviewed.
+    locators:
+      - Affected versions and Patched versions
+      - Am I affected?
+      - Summary
+      - Details
+      - Patches
+      - Workarounds
+      - Impact
+      - Credit
+    review_notes: Provenance is SRC-cve-2026-67332. Verified affected configurations, grant-resource widening, fixes, workarounds, bounded impact, publisher, and reporter/fixer credit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public advisory was reviewed remotely; no GitHub source copy is included in the clean-room bundle.
+      review_evidence: {provenance_source_id: SRC-cve-2026-67332, opened_as_exact_advisory_url: true}
+
+  - id: SRC-cve-2026-73208
+    title: CVE-2026-73208 - OX Dovecot Audience Claim Used as Scope Fallback
+    publisher: CVE Program; Open-Xchange CNA
+    authors: [Open-Xchange GmbH Security Team]
+    source_class: official_advisory
+    version_or_date: "2026-08-28"
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-73208
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE Record 5.2 JSON opened and reviewed, including CNA and CISA ADP containers.
+    locators:
+      - containers.cna.descriptions[0]
+      - containers.cna.affected
+      - containers.cna.metrics[0]
+      - containers.cna.references[0]
+    review_notes: Verified audience-to-scope fallback, affected and fixed ranges, high confidentiality/integrity impact, and no known public exploit.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: JSON acquisition retained outside the canonical bundle.
+      review_evidence: {file: cve-2026-73208.json, sha256: 61fb95cefc6361ea4763ff409c0e8c6a8048e06e9fa84149a2e6c1fd49db3dee}
+
+  - id: SRC-oxdc-adv-2026-0003
+    title: OX Dovecot Security Advisory OXDC-ADV-2026-0003
+    publisher: Open-Xchange GmbH
+    authors: [Open-Xchange GmbH Security Team]
+    source_class: official_advisory
+    version_or_date: "Version 4; 2026-08-28"
+    official_url: https://documentation.open-xchange.com/dovecot/security/advisories/csaf/2026/oxdc-adv-2026-0003.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete vendor CSAF JSON opened in the web reader; relevant document and CVE-2026-73208 sections reviewed in full.
+    locators:
+      - document.notes Terms of Use
+      - document.tracking
+      - product_tree affected and fixed product IDs
+      - vulnerabilities entry CVE-2026-73208, lines 2152-2231
+    review_notes: Verified final advisory version, affected/fixed products, remediation, impact, exploit status, and CC BY-ND 4.0 distribution terms. Direct download retry timed out; full remote review succeeded.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Direct acquisition timed out; the complete official CSAF was reviewed through the web reader and is not redistributed.
+      review_evidence: {web_ref: turn820view0, relevant_locator_ref: turn822view0, download_error: connection_timeout}
+
+  - id: SRC-microsoft-storm-0558
+    title: Analysis of Storm-0558 techniques for unauthorized email access
+    publisher: Microsoft
+    authors: [Microsoft Threat Intelligence]
+    source_class: incident_report
+    version_or_date: "2023-07-14; updated 2024-08"
+    official_url: https://www.microsoft.com/en-us/security/blog/2023/07/14/analysis-of-storm-0558-techniques-for-unauthorized-email-access/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party incident article opened and reviewed; an acquisition copy was retained outside the bundle.
+    locators:
+      - Executive summary, lines 34-44
+      - Initial discovery and analysis, lines 58-63
+      - Token forgery, lines 65-71
+      - Identity techniques for access, lines 73-75
+      - Mitigation and hardening, lines 148-157
+    review_notes: Verified production observation, affected organization count, token-validation and renewal flaws, email access, and remediation. Classified as a non-MCP historical analogy.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: HTML acquisition retained outside the canonical bundle.
+      review_evidence: {file: microsoft-storm-0558.html, sha256: efff3dead30430626e4c79228f199207e09ea2f88820a873015872ff28b2a8e0}
+
+  - id: SRC-mitre-t1550-001
+    title: "MITRE ATT&CK T1550.001: Application Access Token"
+    publisher: The MITRE Corporation
+    authors:
+      - MITRE ATT&CK team
+      - Blake Strom
+      - Dylan Silva
+      - Ian Davila
+      - Jack Burns
+      - Jeff Sakowicz
+      - Mark Wee
+      - Pawel Partyka
+      - Saisha Agrawal
+      - Shailesh Tiwary
+    source_class: protocol_or_standard
+    version_or_date: "Version 2.0; modified 2026-05-12"
+    official_url: https://attack.mitre.org/techniques/T1550/001/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete live ATT&CK technique page opened and reviewed; an acquisition copy was retained outside the bundle.
+    locators:
+      - Technique description, lines 16-35
+      - Contributors and version, lines 47-52
+      - Detection strategy, lines 81-88
+    review_notes: Verified application-access-token behavior, contributors, current version, and detection context; mapping is analogous because the ATT&CK text emphasizes stolen tokens.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: HTML acquisition retained outside the canonical bundle.
+      review_evidence: {file: mitre-t1550-001.html, sha256: 454cfe4cdb2d394ab348daef2701abe5be0ee17f8f4a244abd297ad5625565ba}
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: CISA Catalog of Known Exploited Vulnerabilities
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Known Exploited Vulnerabilities team]
+    source_class: official_advisory
+    version_or_date: "Catalog 2026.09.01; released 2026-09-01T19:22:46.2162Z"
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official JSON catalog downloaded; metadata and exact identifier membership checks performed locally.
+    locators:
+      - catalogVersion 2026.09.01
+      - count 1687
+      - Exact membership checks for CVE-2026-14541, CVE-2026-67332, and CVE-2026-73208 returned no records
+    review_notes: Verified the three selected CVEs were absent from this KEV release; treated only as a bounded catalog fact, not proof of non-exploitation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: JSON acquisition retained outside the canonical bundle.
+      review_evidence: {file: cisa-kev.json, sha256: c4560f429889b75a2010996b95d592498c4bdb8d88f4e3307cc4316ef4db675e}
+
+  - id: SRC-nvd-token-scope-corpus
+    title: NVD OAuth Audience, Scope, and Token-Substitution Query Corpus
+    publisher: National Vulnerability Database / NIST
+    authors: [NVD team]
+    source_class: secondary
+    version_or_date: "NVD CVE API 2.0 responses acquired 2026-09-01"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Ten exact keyword-query response files downloaded from the official API and reviewed locally; result descriptions were discovery aids and selected claims were rechecked in CNA or vendor records.
+    locators:
+      - "OAuth access token audience: 3 results"
+      - "JWT audience validation: 5 results"
+      - "OAuth scope validation: 4 results"
+      - "token substitution: 12 results"
+      - "resource indicator authorization grant: 0 results"
+      - "MCP OAuth audience: 1 result"
+      - "OAuth audience confusion: 1 already selected result"
+      - "access token wrong audience: 0 results"
+      - "OAuth token unrelated service audience: 0 results"
+      - "OAuth missing scope claim authorization: 0 results"
+    review_notes: Used for direct-authority discovery, candidate classification, exclusion of lexical collisions, and two no-change saturation passes. It is not used as sole support for selected examples when a primary record was available.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Query files are retained in the out-of-bundle clean-room source corpus and covered by its checksum manifest.
+      review_evidence: {file_count: 10, checksum_manifest: /private/tmp/saf-all-cleanroom/SAF-T1308/source-corpus.sha256}
+
+  - id: SRC-mcp-auth-2025-06-18
+    title: Model Context Protocol Authorization (superseded version reviewed for change control)
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    source_class: protocol_or_standard
+    version_or_date: "2025-06-18"
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full versioned official page opened before the current 2025-11-25 version was identified and reviewed.
+    locators:
+      - Resource Parameter Implementation
+      - Token Handling
+      - Access Token Privilege Restriction
+    review_notes: Rejected from citation because the current 2025-11-25 specification supersedes it; no unique current claim depends on this version.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Superseded official page was reviewed remotely and not retained in the bundle.
+      review_evidence: {superseded_by: SRC-mcp-auth-2025-11-25}

@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T2106
+name: Context Memory Poisoning via Vector Store Contamination
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Persist attacker-controlled records in vector-backed memory so
+  later retrieval influences a model response or agent action.
+scope:
+  security_boundary: Persistent retrieval-memory write, tenancy, provenance, or collection-ownership
+    boundary.
+  in_scope:
+  - Attacker-controlled records are inserted or substituted in persistent vector memory
+    and later retrieved into model or agent context.
+  out_of_scope:
+  - Content that affects only the current prompt without a persistent memory write
+    and later retrieval.
+  - Training-data poisoning or model-weight modification.
+  - Vector-store destruction with no attacker-controlled content subsequently retrieved.
+  affected_components:
+  - agent memory
+  - RAG knowledge base
+  - vector store
+  - ingestion service
+  - retrieval telemetry
+  - MCP host resource integration
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Current-turn prompt injection does not require a persistent vector-memory
+    write followed by later retrieval.
+- technique_id: SAF-T2107
+  distinction: AI Model Poisoning via MCP Tool Training Data Contamination changes
+    learned model weights; this technique changes external persistent retrieval state
+    without retraining.
+- technique_id: SAF-T2105
+  distinction: Disinformation Output requires a false or materially misleading
+    informational result; this technique requires persistent vector-memory contamination
+    and later retrieval regardless of the downstream response or action type.
+required_evidence:
+- Establish the persistent write-to-retrieval mechanism and downstream influence.
+- Establish the prerequisite boundary violation or reachable ingestion path.
+- Classify end-to-end evidence separately from direct vulnerabilities and adjacent
+  incidents.
+- Search for production breaches and disclose the gap if none qualify.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Vector memory write events with record, collection, tenant, actor, source, approval,
+    trust, session, and timestamp fields.
+  - Retrieval events with record identifier, score, consumer, tenant, session, and
+    timestamp fields.
+safe_example_constraints:
+- Do not publish exploit requests, operational payloads, credentials, or destructive
+  commands.
+- Use only inert event fixtures with synthetic record and session identifiers.
+completion_evidence:
+- Every publishable proposition maps to a reviewed source and exact locator or a declared
+  local artifact.
+- Excluded and unsupported leads remain outside the README and are ledgered.
+- Two consecutive no-material-change passes complete saturation.
+- Detection tests and strict isolated validation pass.
+- Rights and quality gates pass without unresolved issues.

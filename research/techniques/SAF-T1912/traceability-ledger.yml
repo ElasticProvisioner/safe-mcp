@@ -1,0 +1,110 @@
+version: 1
+technique_id: SAF-T1912
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1912/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1912/technique-contract.yml
+  supports: Clean-room scope, name, tactic, boundaries, and completion criteria.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1912/claim-inventory.yml
+  supports: Validated claim statements, source relations, exact locators, limits,
+    conflicts, and inference labels.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1912/source-coverage.yml
+  supports: Five-pass research record, final saturation passes, selected examples,
+    evidence assessment, conflicts, and gaps.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1912/quality-review.yml
+  supports: Gate outcomes, validation commands, detection-test result, and review
+    metadata.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1912/detection-rule.yml
+  supports: Explicitly labeled deterministic response-egress carrier triage analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1912/test_detection_rule.py
+  supports: Positive, negative, boundary, and expected-false-positive analytic cases.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1912/validation/canonical-validation.txt
+  supports: Passing destination-repository detector and strict-validator results after integration.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1912/integration/integration-notes.yml
+  supports: Mechanical source, framework, neighbor, mitigation, history, and path reconciliation after the independent freeze.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1912-X001
+  candidate: A direct production MCP breach used a response-embedded steganographic
+    channel to exfiltrate protected context.
+  origin: Breach and vulnerability research objective.
+  attempted_searches:
+  - site:microsoft.com security copilot prompt injection exfiltration image markdown
+    CVE-2025-32711
+  - site:nvd.nist.gov/vuln/detail steganography large language model
+  - site:cve.org steganography AI agent information disclosure
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  - SRC-microsoft-ai-security-2025
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  reason: Reviewed authoritative materials establish adjacent explicit network or
+    tool-call paths, not the defining response-embedded mechanism.
+  prohibited_publishable_text:
+  - A production MCP breach used a steganographic response
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1912-X002
+  candidate: CVE-2025-32711 is a direct response-steganography vulnerability.
+  origin: Current-vulnerability search lead.
+  attempted_searches:
+  - site:microsoft.com CVE-2025-32711 EchoLeak fixed exploitation status
+  - site:msrc.microsoft.com CVE-2025-32711 Copilot information disclosure
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  - SRC-microsoft-ai-security-2025
+  reason: The reviewed descriptions support cross-prompt injection and disclosure,
+    but not a hidden recoverable payload inside an agent response.
+  prohibited_publishable_text:
+  - CVE-2025-32711 proves response steganography
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1912-X003
+  candidate: The repository analytic detects all linguistic and multimodal steganography
+    with a known production false-positive rate.
+  origin: Detection-quality challenge.
+  attempted_searches:
+  - site:aclanthology.org LLM steganography paraphrasing defense destroys covert message
+  - site:arxiv.org LLM covert channel defense limitations paraphrasing false positives
+    agent egress
+  consulted_source_ids:
+  - SRC-agent-egress-monitor-2026
+  - SRC-hidden-plain-text-2025
+  - SRC-breaking-provable-security-2026
+  reason: Carrier coverage is incomplete, fluent token-choice channels can evade signatures,
+    and local production-rate data does not exist.
+  prohibited_publishable_text:
+  - The analytic has a measured production false-positive rate
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1912-X004
+  candidate: A changed third-party URL referenced from the CVE record independently
+    confirms exploitation of the defining mechanism.
+  origin: Direct reference trail from the CVE JSON record.
+  attempted_searches:
+  - Opened the exact non-GitHub reference supplied by the CVE record and found that
+    it redirected to unrelated current content.
+  - Searched the Microsoft and CVE authorities for the identifier and exploitation
+    status.
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  - SRC-microsoft-ai-security-2025
+  reason: The current destination did not preserve the referenced report and cannot
+    support any substantive proposition.
+  prohibited_publishable_text:
+  - The changed reference independently confirms exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

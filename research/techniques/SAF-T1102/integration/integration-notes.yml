@@ -1,0 +1,82 @@
+version: 1
+technique_id: SAF-T1102
+freeze_boundary: semantic_content_frozen
+integration_authorized: false
+allowed_mechanical_actions:
+  - Copy techniques/SAF-T1102, research/techniques/SAF-T1102, and tests/SAF-T1102 into their canonical repository paths.
+  - Merge source-manifest-fragment.yml under the canonical source manifest's sources list without altering records.
+  - Merge framework-fragment.yml under the canonical framework model's techniques list.
+  - Merge alignment-fragment.yml under the canonical alignment ledger's issues list.
+  - Replace synthetic neighbor identifiers SAF-T1998 and SAF-T1999 with canonical existing technique identifiers after catalog reconciliation.
+  - Replace the synthetic nonzero repository-history marker with the actual integration commit and rerun strict validation.
+prohibited_without_research_reopen:
+  - Change scope, claims, sources, examples, evidence status, detection semantics, mitigations, or framework mapping.
+  - Compare with prior SAF-T1102 content to merge substantive wording.
+github_advisory_provenance:
+  advisory: https://github.com/cursor/cursor/security/advisories/GHSA-4cxx-hrm3-49rm
+  discovered_from: https://cveawg.mitre.org/api/cve/CVE-2025-54135
+  rule_satisfied: true
+credits:
+  clean_room_author: OpenAI Codex clean-room authoring agent
+  source_authors_and_reporters:
+    - Luca Beurer-Kellner and Marc Fischer for the Invariant MCP demonstrations.
+    - Marco Milanta and Luca Beurer-Kellner for the GitHub MCP demonstration.
+    - Kai Greshake, Sahar Abdelnabi, Shailesh Mishra, Christoph Endres, Thorsten Holz, Mario Fritz, and their coauthors for indirect-injection research.
+    - Qiusi Zhan, Zhixiang Liang, Zifan Ying, and Daniel Kang for InjecAgent.
+    - Edoardo Debenedetti, Jie Zhang, Mislav Balunovic, Luca Beurer-Kellner, Marc Fischer, and Florian Tramer for AgentDojo.
+    - Apostol Vassilev, Alina Oprea, Alie Fordyce, Hyrum Anderson, Xander Davies, and Maia Hamin for NIST AI 100-2e2025.
+    - Dave Chismon and Johann Rehberger for NCSC guidance and acknowledged discussion.
+    - hxofir-a and MaccariTA for reporting CVE-2025-54135, with the Cursor advisory published by hmwildermuth.
+synthetic_or_mechanical_joins:
+  tactics:
+    items: []
+    note: ATK-TA0002 was seed metadata and was not synthesized.
+  neighbors:
+    - SAF-T1998
+    - SAF-T1999
+  mitigations:
+    items: []
+    note: No SAF mitigation identifier was invented before registry access.
+  source_registry_ids:
+    - SRC-mcp-overview-2026
+    - SRC-mcp-prompts-2026
+    - SRC-mcp-resources-2026
+    - SRC-mcp-tools-2026
+    - SRC-invariant-tool-poisoning-2025
+    - SRC-invariant-whatsapp-mcp-2025
+    - SRC-invariant-github-mcp-2025
+    - SRC-greshake-ipi-2023
+    - SRC-injecagent-acl-2024
+    - SRC-nist-ai-100-2e2025
+    - SRC-owasp-llm01-2025
+    - SRC-cve-2025-32711
+    - SRC-cve-2025-53773
+    - SRC-rehberger-cve-2025-53773
+    - SRC-cve-2025-54135
+    - SRC-ghsa-cursor-4cxx-2025
+    - SRC-anthropic-pi-defenses-2025
+    - SRC-camel-2025
+    - SRC-adaptive-pi-defenses-2025
+    - SRC-ncsc-prompt-injection-2025
+    - SRC-mitre-attack-t1059-2026
+    - SRC-agentdojo-2024
+    - SRC-mcp-doc-index-2026
+  history_sha:
+    synthetic_value: "1111111111111111111111111111111111111111"
+    replacement: Actual integration commit SHA.
+  path_joins:
+    - from: techniques/SAF-T1102
+      to: techniques/SAF-T1102
+    - from: research/techniques/SAF-T1102
+      to: research/techniques/SAF-T1102
+    - from: tests/SAF-T1102
+      to: tests/SAF-T1102
+    - from: source-manifest-fragment.yml
+      to: research/source-manifest.yml#sources
+    - from: framework-fragment.yml
+      to: research/framework-model.yml#techniques
+    - from: alignment-fragment.yml
+      to: research/alignment-ledger.yml#issues
+open_items:
+  - Perform only the listed mechanical integration in a separately authorized task.
+  - Resolve the two medium alignment items after canonical registry access is permitted.

@@ -1,0 +1,259 @@
+version: 1
+technique_id: SAF-T1106
+claims:
+  - id: SAF-T1106-C001
+    statement: Controlled MCP experiments showed malicious tool-facing messages can sustain multi-turn tool-call chains, amplify tokens up to 658.10x, and preserve high task success.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-zhou-2026
+        support: direct
+        exact_locators: ["Abstract and threat model, lines 49-56 and 95-108", "Evaluation method and results, lines 170-200", "Limitations, lines 245-250"]
+    corroboration: Independent agent resource-amplification results appear in SRC-li-otora-2026.
+    limitations: [Controlled emulation; no real external actions; selected benchmark subsets.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C002
+    statement: Controlled agent experiments showed adversarial two-stage triggers can inflate reasoning time by up to 10.8x while often retaining answer correctness.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-li-otora-2026
+        support: direct
+        exact_locators: ["Abstract and threat model, lines 99-105 and 156-159", "Benchmark and result tables, lines 250-262 and 321-344", "Defense evaluation and sample size, lines 637-665 and 707-729"]
+    corroboration: SRC-zhou-2026 independently demonstrates preserved-outcome resource amplification through agent tool chains.
+    limitations: [Research benchmarks; defense tuning uses a small sample; no production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C003
+    statement: Unbounded agentic feedback paths can repeatedly reach model calls, tools, workflows, or handoffs; static analysis plus manual review confirmed 68 such findings across 47 projects.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-hou-ial-2026
+        support: direct
+        exact_locators: ["Definition and threat model, lines 72-84 and 118-124", "Analysis criteria, lines 271-345", "Results and limitations, lines 363-403 and 445-484"]
+    corroboration: SRC-ms-agent-responsibility independently identifies unbounded loops, cost, and resource exhaustion as an agent risk.
+    limitations: [Static and manual confirmation, not dynamic production exploitation; analyzer may miss or over-report cases.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C004
+    statement: MCP tools are model-controlled and clients invoke a named tool with tools/call, returning results to the client-side agent loop.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools and User Interaction Model, lines 82-99", "Calling Tools and Input Required, lines 181-219"]
+    corroboration: SRC-ms-agentic-rag describes the model deciding whether to call another tool or answer.
+    limitations: [The protocol does not require a particular autonomous loop implementation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C005
+    statement: MCP tool execution errors can contain actionable feedback that clients should provide to models for self-correction and retry.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Error Handling, lines 681-708"]
+    corroboration: Not required for a normative protocol statement.
+    limitations: [Self-correction is legitimate behavior and not itself evidence of attack.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C006
+    statement: MCP tool security guidance requires server rate limiting and recommends client result validation, tool-call timeouts, confirmation for sensitive operations, and audit logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations, lines 711-737"]
+    corroboration: SRC-ms-agent-responsibility independently recommends bounds and action auditing.
+    limitations: [Recommendations do not guarantee host implementation or loop termination.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C007
+    statement: MCP's 2026 release candidate documented Mcp-Method and Mcp-Name tracing fields and W3C trace-context propagation for correlating protocol activity.
+    class: protocol_normative
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-rc-20260728
+        support: direct
+        exact_locators: ["Tracing and auditability, lines 101-120"]
+    corroboration: SRC-ms-agentic-rag independently recommends per-step tool tracing.
+    limitations: [Release-candidate documentation; the detection does not depend on these exact field names.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C008
+    statement: Microsoft identifies the orchestration layer as the agent brain loop, treats tool outputs as untrusted, recommends step/iteration/budget limits, and advises logging each invocation with inputs, outputs, identity, and decision rationale.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-agent-responsibility
+        support: direct
+        exact_locators: ["Agent orchestration and tools layers, lines 70-88", "Top agent-specific risks, lines 143-154"]
+    corroboration: SRC-mcp-tools-2026-07-28 independently recommends result validation, rate limits, timeouts, and logging.
+    limitations: [Operational guidance, not evidence of a specific exploit.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C009
+    statement: Official architecture guidance recommends iteration caps, cumulative-token budgets, fallback behavior, per-tool tracing, and request-level cost and latency measurements for agentic reasoning loops.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-agentic-rag
+        support: direct
+        exact_locators: ["Control the reasoning loop, lines 118-125", "Evaluation and design considerations, lines 240-257"]
+    corroboration: SRC-ms-resource-gov lists related call, retry, elapsed-time, and spend bounds.
+    limitations: [The suggested 5-10 iteration range is workload-specific, not a universal security threshold.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C010
+    statement: Repeated tool calls with recurring arguments or unchanged progress in one run, combined with nonterminal completion and rising resource metrics, form a testable loop-detection signal.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-hou-ial-2026
+        support: context
+        exact_locators: ["Feedback-path and effective-bound criteria, lines 271-345"]
+      - source_id: SRC-ms-agentic-rag
+        support: context
+        exact_locators: ["Tool-call efficiency and observability, lines 240-257"]
+    corroboration: SRC-ms-agent-responsibility calls for loop detection and invocation auditing.
+    limitations: [Correlation is behavioral evidence, not proof of adversarial intent; thresholds require tuning.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The analytic combines independently documented feedback-path structure and telemetry into an operational detector.}
+    status: validated
+  - id: SAF-T1106-C011
+    statement: Loop detection can confuse legitimate iteration with attack, and in-band self-evaluation may mistake stagnation for progress; independently grounded progress improves discrimination.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-park-progress-2026
+        support: direct
+        exact_locators: ["Abstract and controlled results, lines 15-20"]
+      - source_id: SRC-li-otora-2026
+        support: direct
+        exact_locators: ["Defense tradeoffs, lines 448-464 and 637-665"]
+    corroboration: Both sources independently report discrimination or false-positive limits.
+    limitations: [Progress study has 54 cycles and a preregistered pilot scope; OTora defense tuning uses 50 cases.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C012
+    statement: Hard iteration, time, token, cost, retry, tool-call, and nested-depth ceilings combined with cancellation bound loop consequences even when behavioral detection is uncertain.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-resource-gov
+        support: direct
+        exact_locators: ["Resource controls and telemetry, lines 34-49"]
+      - source_id: SRC-ms-agent-responsibility
+        support: direct
+        exact_locators: ["Orchestration guardrails, lines 70-88"]
+    corroboration: SRC-mcp-tools-2026-07-28 independently requires rate limits and recommends timeouts.
+    limitations: [Bounds contain resource use but may terminate legitimate complex work.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Multiple independent bound types are combined as defense in depth.}
+    status: validated
+  - id: SAF-T1106-C013
+    statement: Unbounded agent cycles can cause cost exhaustion, availability degradation, context growth, and repeated external side effects.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-hou-ial-2026
+        support: direct
+        exact_locators: ["Abstract and impacts, lines 60-68 and 363-403"]
+      - source_id: SRC-zhou-2026
+        support: direct
+        exact_locators: ["Token and throughput results, lines 185-241"]
+    corroboration: Independent sources cover both structural impacts and measured resource amplification.
+    limitations: [Impact magnitude depends on tool privileges, costs, and enforcement controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1106-C014
+    statement: The current targeted review found no qualifying public production breach and therefore does not claim production observation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-unbounded-dos
+        support: direct
+        exact_locators: ["Real-world incidents and demonstrations, lines 33-49"]
+    corroboration: Current CISA KEV, NVD, vendor-bulletin, and incident-status searches recorded in source-coverage.yml produced no direct incident.
+    limitations: [Absence from public reviewed sources is not proof that no private incident occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Narrow negative conclusion from current searches plus an official statement that incidents are not widely publicized.}
+    status: validated
+  - id: SAF-T1106-C015
+    statement: Deterministic parser recursion, single-request resource attacks, user-authored workflow loops, and unauthorized actions without repetition fall outside the defining autonomous-continuation boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-hou-ial-2026
+        support: direct
+        exact_locators: ["Exclusions and boundary criteria, lines 271-345 and 445-450"]
+      - source_id: SRC-nvd-cve-2025-32437
+        support: context
+        exact_locators: ["Description and remediation, lines 183-199"]
+      - source_id: SRC-nvd-cve-2024-12704
+        support: context
+        exact_locators: ["Description, affected versions, and SSVC status, lines 84-126"]
+    corroboration: Contract comparison against the four adjacent advisory candidates.
+    limitations: [Classification depends on whether autonomous continuation, rather than deterministic code, controls re-entry.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Boundary reconciles research definitions with adjacent disclosures.}
+    status: validated
+  - id: SAF-T1106-C016
+    statement: An inert fixture that always returns a pending status can safely illustrate autonomous re-entry when the test harness is externally bounded and has no live side effects.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-hou-ial-2026
+        support: context
+        exact_locators: ["Motivating feedback-path example and boundary, lines 128-142"]
+    corroboration: Repository test artifacts use fixed events rather than a live loop.
+    limitations: [Illustrative inference only; not evidence of exploitation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Safe example abstracts the reviewed feedback-path mechanism without operational payload detail.}
+    status: validated
+  - id: SAF-T1106-C017
+    statement: ATT&CK T1499.003 is an analogous impact mapping because repeated invocation of resource-intensive application behavior can exhaust resources, although it does not require autonomous feedback.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1499-003
+        support: direct
+        exact_locators: ["Description, tactic, platforms, and impact, lines 16-46", "Detection strategy, lines 56-62"]
+    corroboration: SRC-hou-ial-2026 and SRC-zhou-2026 establish the agent-specific feedback distinction.
+    limitations: [Analogous availability mapping, not an exact behavioral equivalence.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Mapping preserves ATT&CK's application-exhaustion scope while recording the agentic distinction.}
+    status: validated

@@ -1,0 +1,57 @@
+version: 1
+technique_id: SAF-T1009
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    result: Prohibited prior target artifacts were not accessed; canonical post-research layout was re-read and applied before freeze.
+  contract_and_scope:
+    status: passed
+    result: The defining boundary is per-flow cross-issuer authorization-response misbinding, with adjacent cases explicitly separated.
+  technical_accuracy:
+    status: passed
+    result: Current MCP 2026-07-28 requirements and controlling OAuth RFCs were reconciled with exact locators.
+  claim_traceability:
+    status: passed
+    result: All 22 claims have source relations, locators, limitations, and visible Evidence Summary records.
+  source_or_omit:
+    status: passed
+    result: Unsupported direct-incident, direct-CVE, prevalence, and overly broad control statements are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    result: Overall status remains Research-Derived because MCP applicability is inferred despite a direct generic OAuth demonstration.
+  research_saturation:
+    status: passed
+    result: Five methodology passes and two consecutive synonymous no-change passes are complete.
+  breach_and_vulnerability_coverage:
+    status: passed
+    result: Eight candidates were classified; one direct demonstration and three carefully bounded adjacent vulnerabilities were selected.
+  detection_quality:
+    status: passed
+    result: Eight deterministic fixtures passed with five alerts and three non-alerts, including boundary, malformed, and legitimate cases.
+  mitigation_quality:
+    status: passed
+    result: Controls preserve metadata validation, exact issuer binding, fail-closed behavior, and resource audience constraints.
+  framework_alignment:
+    status: passed
+    result: The canonical framework record carries the seeded tactic and reconciled SAF-T1306, SAF-T1507, and SAF-T1706 neighbor joins.
+  publication_rights:
+    status: passed
+    result: Every cited source has a paraphrase-only rights record and attribution; no protected expression is reproduced.
+  safe_publication:
+    status: passed
+    result: Example domains and codes are inert, and the draft stops at defensive validation rather than credential transmission.
+
+validation:
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1009/test_detection_rule.py
+    result: PASS 8 fixtures (5 alerts, 3 non-alerts)
+  commands:
+    - command: uv run --with 'PyYAML>=6,<7' python scripts/validate-technique-research.py SAF-T1009
+      result: passed
+
+unresolved: []

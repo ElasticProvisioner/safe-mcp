@@ -1,240 +1,148 @@
 # SAF-T1707: CSRF Token Relay
 
+- **Tactic**: ATK-TA0008
+- **Technique ID**: SAF-T1707
+- **Documentation Status**: Stable
+- **Evidence Status**: Research-Derived
+- **Severity**: Medium
+- **Last Updated**: 2026-09-02
+- **Research Packet**: [research/techniques/SAF-T1707/](../../research/techniques/SAF-T1707/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1707/traceability-ledger.yml)
+
 ## Overview
-**Tactic**: Lateral Movement (ATK-TA0008)  
-**Technique ID**: SAF-T1707  
-**Severity**: High  
-**First Observed**: CSRF vulnerabilities in OAuth deployments documented in security research by at least 2015; SAF-T1707 adapts this pattern to MCP multi-resource scenarios  
-**Last Updated**: 2025-11-29
+
+CSRF Token Relay abuses an otherwise valid OAuth anti-CSRF value outside the browser session that initiated it, causing an authorization callback to complete or bind an attacker-controlled authorization result in a victim context. <!-- SAF-TRACE: claims=SAF-T1707-C007; sources=SRC-rfc9700-state-relay,SRC-mcp-authorization-2026-07-28 -->
+
+The defining failure is not that `state` is absent or invalid; it is that acceptance proves only token validity or equality and not continuity with the initiating user-agent session. <!-- SAF-TRACE: claims=SAF-T1707-C004,SAF-T1707-C007; sources=SRC-rfc9700-state-relay,SRC-fastapi-advisory,SRC-authlib-advisory -->
+
+## Scope
+
+- **In scope**:
+  - A valid, attacker-obtained `state` value is accepted from a different browser or session, and the callback completes an attacker-originated authorization flow or misbinds an account. <!-- SAF-TRACE: claims=SAF-T1707-C007; sources=SRC-rfc9700-state-relay,SRC-fastapi-advisory,SRC-authlib-advisory -->
+  - Weak client-side binding, including a cookie an attacker-controlled sibling origin can plant, permits the relayed state and callback context to match. <!-- SAF-TRACE: claims=SAF-T1707-C010; sources=SRC-fastify-advisory,SRC-nvd-2026-18165 -->
+- **Out of scope**:
+  - Callbacks that omit or fail to validate `state`; those are ordinary OAuth CSRF rather than relay of a valid anti-CSRF token. <!-- SAF-TRACE: claims=SAF-T1707-C012; sources=SRC-openclaw-advisory,SRC-nvd-saturation-1 -->
+  - Authorization-code interception or injection where PKCE or issuer binding is the defining failed boundary. <!-- SAF-TRACE: claims=SAF-T1707-C005; sources=SRC-rfc9700-state-relay,SRC-rfc7636-state-relay -->
+  - Bearer-token theft, token passthrough, open redirects, phishing, and downstream actions after authentication. <!-- SAF-TRACE: claims=SAF-T1707-C001; sources=SRC-mcp-authorization-2026-07-28 -->
 
 ## Description
-CSRF Token Relay is an MCP-specific attack pattern where an attacker exploits Cross-Site Request Forgery (CSRF) vulnerabilities to cause a web application or MCP portal to use a stored OAuth access token to perform unintended, state-changing operations on different resources (projects, tenants, folders) within the same resource server.
 
-Traditional CSRF relies on browsers automatically attaching credentials (like cookies) to cross-site requests. In many OAuth-backed applications, the backend stores an access token associated with the user's session and uses it to call APIs on the user's behalf (e.g., cloud APIs, SaaS APIs). SAF-T1707 focuses on cases where:
+In MCP over HTTP, the MCP client is the OAuth client and the MCP server is the resource server; the authorization server authenticates the user and issues tokens. <!-- SAF-TRACE: claims=SAF-T1707-C001; sources=SRC-mcp-authorization-2026-07-28 -->
 
-- The same resource server exposes multiple logical resources (projects, tenants, spaces, etc.) behind a single API base. For example, Google Cloud Platform uses scopes such as `https://www.googleapis.com/auth/cloud-platform` to allow applications to call any enabled Google Cloud API, with the effective permissions constrained by IAM roles rather than separate scopes for each project.
-- A web app or MCP-connected portal uses a single access token with broad scope to manage multiple resources, chosen via request parameters (e.g., `project=foo`, `project=bar`).
-- One or more sensitive endpoints (like "switch active project", "set IAM policy", "connect MCP agent to resource X") are vulnerable to CSRF (missing anti-CSRF tokens, weak `SameSite` settings, or relying solely on cookies).
+The current MCP authorization specification requires clients to associate the authorization-server issuer with the same per-request record used for PKCE and, when present, `state`; the MCP security guidance separately requires a fresh state value, storage in the callback session, exact matching, short expiry, and single use. <!-- SAF-TRACE: claims=SAF-T1707-C002,SAF-T1707-C003; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-spec-2026-07-28 -->
 
-In this situation, an attacker can use CSRF to cause the app to call the resource server with the victim's stored OAuth token, but target a different resource (for example, a project or dataset the victim has access to but did not intend to modify). This is lateral movement at the application/resource level: instead of moving between different services (as in cross-service token replay attacks), the attacker pivots between resources within the same service by relaying a token through CSRF-vulnerable endpoints and APIs.
-
-The OAuth 2.0 authorization framework explicitly calls out CSRF as a threat: the spec notes that an attacker can cause the user-agent to follow a malicious URI to a trusting server using a valid session or authorization context. CSRF risks in OAuth deployments and real-world OpenID Connect implementations have been studied in depth and shown to be common when state and related protections are not properly implemented.
+OAuth security guidance requires CSRF protection to be bound to the user agent. It also explains that an attacker who learns `state` may replay it with a forged response, while PKCE provides a stronger authorization-response binding against that attacker model. <!-- SAF-TRACE: claims=SAF-T1707-C004,SAF-T1707-C005; sources=SRC-rfc9700-state-relay,SRC-oauth21-draft13 -->
 
 ## Attack Vectors
-- **Primary Vector**: CSRF-vulnerable endpoints in web applications or MCP portals that use stored OAuth tokens to perform state-changing operations on multi-tenant resource servers
-- **Secondary Vectors**:
-  - Missing or weak CSRF protection (no per-request CSRF tokens, lax `SameSite` cookie settings)
-  - Missing Origin/Referer validation on sensitive endpoints
-  - Overly broad OAuth scopes that allow access to multiple resources
-  - Single access token reused across multiple resources without proper isolation
+
+1. The attacker initiates an OAuth authorization request and obtains a valid per-flow `state` value plus an attacker-owned authorization response. <!-- SAF-TRACE: claims=SAF-T1707-C007; sources=SRC-rfc9700-state-relay,SRC-fastapi-advisory,SRC-authlib-advisory -->
+2. The attacker causes a victim browser to reach the client callback with the attacker-controlled response and the still-valid state value. <!-- SAF-TRACE: claims=SAF-T1707-C006,SAF-T1707-C007; sources=SRC-fett-oauth-state-leak,SRC-fastapi-advisory -->
+3. The client validates signature, expiry, or a plantable cookie but does not verify that the callback session is the session that created the authorization request. <!-- SAF-TRACE: claims=SAF-T1707-C008,SAF-T1707-C009,SAF-T1707-C010; sources=SRC-fastapi-advisory,SRC-authlib-advisory,SRC-fastify-advisory -->
+4. The callback succeeds and authenticates the victim context as the attacker or links an attacker-controlled provider identity, with consequences determined by application account-linking logic. <!-- SAF-TRACE: claims=SAF-T1707-C008,SAF-T1707-C009,SAF-T1707-C017; sources=SRC-fastapi-advisory,SRC-authlib-advisory -->
 
 ## Technical Details
 
-### Prerequisites
-- Victim logged into a web application or MCP portal that stores OAuth 2.0 access tokens
-- At least one sensitive endpoint is CSRF-vulnerable (no anti-CSRF token, weak `SameSite` settings, or missing Origin/Referer validation)
-- OAuth token has broad enough scope to act on more than one resource (e.g., project-wide or platform-wide scope)
-- Multi-tenant resource server (e.g., cloud projects, tenants) accessible via the same API base
+The formal OAuth State Leak Attack demonstrates the mechanism outside MCP: a leaked state value and authorization result can be replayed through a victim browser and violate login-session integrity. <!-- SAF-TRACE: claims=SAF-T1707-C006; sources=SRC-fett-oauth-state-leak -->
 
-### Attack Flow
+FastAPI Users accepted a signed, unexpired state JWT that lacked per-request entropy and browser correlation; Authlib accepted cache-backed state that was not tied to the initiating browser; and `@fastify/oauth2` compared state and a PKCE verifier with cookies a related host could plant. <!-- SAF-TRACE: claims=SAF-T1707-C008,SAF-T1707-C009,SAF-T1707-C010; sources=SRC-fastapi-advisory,SRC-authlib-advisory,SRC-fastify-advisory -->
 
-```mermaid
-sequenceDiagram
-    participant A as Attacker
-    participant V as Victim Browser
-    participant W as Web App/MCP Portal
-    participant RS as Resource Server
-    participant IdP as Identity Provider
+These disclosures establish the relay primitive in OAuth clients, but they do not establish exploitation of an MCP deployment. Applying the primitive to the MCP client boundary is therefore an explicit inference. <!-- SAF-TRACE: claims=SAF-T1707-C007,SAF-T1707-C011; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700-state-relay,SRC-cisa-kev-2026-09-01 -->
 
-    V->>W: User logs in, OAuth token stored
-    IdP->>W: Issues access token (broad scope)
-    W->>W: Stores token in session
-    
-    A->>V: Victim visits malicious page
-    V->>W: CSRF request (auto-submitted form)
-    Note over V,W: Session cookie sent automatically
-    Note over V,W: No CSRF token or weak protection
-    
-    W->>W: Validates session, trusts request
-    W->>RS: API call with stored OAuth token
-    Note over W,RS: Targets different resource<br/>(project/tenant)
-    
-    RS->>RS: Validates token, checks IAM
-    RS->>W: Operation succeeds
-    W->>V: Response (attacker may not see)
-    
-    Note over A: Lateral movement achieved<br/>across resources
-```
+## Evidence and Current State
 
-1. **Token Presence & Configuration**: The app obtains an access token using standard OAuth flows and stores it (server-side or in a secure cookie) associated with the user's session. The app exposes features such as "Configure agent for project `<project_id>`" that send POST requests to sensitive endpoints and use the stored token to call the resource server's API.
+The evidence status is **Research-Derived** because direct standards, formal analysis, and disclosed vulnerabilities support the mechanism, while no reviewed authority documented an end-to-end production MCP or agentic incident using a relayed valid CSRF token as of 2026-09-02. <!-- SAF-TRACE: claims=SAF-T1707-C011,SAF-T1707-C019; sources=SRC-mcp-doc-index-2026,SRC-nvd-state-query,SRC-cisa-kev-2026-09-01 -->
 
-2. **CSRF Vulnerability**: The sensitive endpoint lacks proper CSRF protection (no per-request CSRF token, no strict `SameSite` cookie policies, missing Origin/Referer validation).
+The three selected vulnerability examples were chosen for directness and bounded impact: FastAPI Users and Authlib permit attacker-originated login or account-link flows to complete in a victim browser, while the Fastify case demonstrates that matching state and PKCE cookies can still fail when the cookie boundary is attacker-writable. <!-- SAF-TRACE: claims=SAF-T1707-C008,SAF-T1707-C009,SAF-T1707-C010; sources=SRC-fastapi-advisory,SRC-authlib-advisory,SRC-fastify-advisory -->
 
-3. **Attacker Prepares CSRF Payload**: Attacker hosts a malicious page with a hidden form or JavaScript that auto-submits a POST request to the victim app, targeting a different resource (project/tenant) than the user intended.
+The CISA Known Exploited Vulnerabilities catalog did not list the selected CVEs at review time; absence from that catalog is not evidence that exploitation has not occurred. <!-- SAF-TRACE: claims=SAF-T1707-C011; sources=SRC-cisa-kev-2026-09-01 -->
 
-4. **Backend Relays OAuth Token**: The app receives the CSRF request, trusts it as user-initiated, and uses the stored OAuth access token to call the resource server's API for the attacker's target resource. Because the token typically has project- or organization-wide permissions (e.g., via IAM roles and broad scopes), the request succeeds if the victim's identity has the necessary privileges.
+### Evidence Summary
 
-5. **Lateral Movement Across Resources**: The attacker has caused the victim's app to execute privileged operations against a different resource than the user intended, using the same token. This enables actions like enabling MCP access on another project, granting roles to attacker-controlled service accounts, or modifying configuration in a different tenant.
-
-6. **No Direct Response Needed**: As with classic CSRF, the attacker may not need to see the response; they only need the side effect (role change, configuration, etc.).
-
-### Example Scenario
-
-**Scenario A – MCP Console Managing Multiple GCP Projects (Hypothetical)**
-
-An MCP console uses a service account or user token with `https://www.googleapis.com/auth/cloud-platform` scope, which allows access to all Google Cloud APIs, with actual permissions controlled via IAM roles. The console lets users configure MCP agents per project by calling Google Cloud Resource Manager and other APIs for the selected project. The endpoint `POST /mcp/project/configure` is missing CSRF protections. An attacker crafts a CSRF page that submits a form to configure the agent for `PROJECT_B` (where the victim also has IAM privileges), potentially adding attacker-controlled roles or keys there. When the victim visits the malicious page, the console uses the same broad-scope token to call Google's APIs for `PROJECT_B`, giving the attacker a foothold in another project.
-
-**Scenario B – OAuth Login / SSO Portal with Multi-Tenant Admin Actions**
-
-In an MCP-like admin portal, CSRF vulnerabilities on endpoints that link external resources, promote agents to new tenants, or modify cross-tenant policies can allow an attacker to cause cross-tenant actions via the stored OAuth token.
-
-### Advanced Attack Techniques
-
-- **Chained CSRF Attacks**: Multiple CSRF requests in sequence to escalate privileges across multiple resources
-- **Blind CSRF**: Exploiting CSRF where attacker cannot see responses but relies on side effects
-- **CSRF via MCP Tool Invocation**: Using CSRF to trigger MCP tool calls that perform unintended resource operations
+| Claim | Summary | Evidence |
+|---|---|---|
+| SAF-T1707-C001 | MCP OAuth roles and token boundary | SRC-mcp-authorization-2026-07-28 |
+| SAF-T1707-C002 | MCP per-request response record | SRC-mcp-authorization-2026-07-28 |
+| SAF-T1707-C003 | MCP state-validation requirements | SRC-mcp-security-spec-2026-07-28 |
+| SAF-T1707-C004 | User-agent binding requirement | SRC-rfc9700-state-relay |
+| SAF-T1707-C005 | State replay and PKCE distinction | SRC-rfc9700-state-relay, SRC-rfc7636-state-relay |
+| SAF-T1707-C006 | Formal State Leak Attack | SRC-fett-oauth-state-leak |
+| SAF-T1707-C007 | MCP application of the relay primitive | SRC-mcp-authorization-2026-07-28, SRC-rfc9700-state-relay |
+| SAF-T1707-C008 | FastAPI Users disclosure | SRC-fastapi-advisory, SRC-nvd-2025-68481 |
+| SAF-T1707-C009 | Authlib disclosure | SRC-authlib-advisory, SRC-nvd-2025-68158 |
+| SAF-T1707-C010 | Fastify disclosure | SRC-fastify-advisory, SRC-nvd-2026-18165 |
+| SAF-T1707-C011 | Production-evidence gap | SRC-cisa-kev-2026-09-01, SRC-nvd-state-query |
+| SAF-T1707-C012 | OpenClaw adjacent-case boundary | SRC-openclaw-advisory, SRC-nvd-2026-28477 |
+| SAF-T1707-C013 | Detection telemetry design | SRC-owasp-logging-cheat-sheet |
+| SAF-T1707-C014 | Cross-session correlation analytic | SRC-owasp-logging-cheat-sheet, LOCAL-detection-rule |
+| SAF-T1707-C015 | Preventive transaction binding | SRC-mcp-security-spec-2026-07-28, SRC-rfc9700-state-relay |
+| SAF-T1707-C016 | Detection limitations | SRC-owasp-logging-cheat-sheet, LOCAL-detection-rule |
+| SAF-T1707-C017 | Conditional impact | SRC-fastapi-advisory, SRC-authlib-advisory |
+| SAF-T1707-C018 | ATT&CK delivery analogy | SRC-mitre-t1204-001 |
+| SAF-T1707-C019 | Research-derived classification | SRC-mcp-doc-index-2026, SRC-rfc9700-state-relay |
 
 ## Impact Assessment
-- **Confidentiality**: High - Unauthorized access to resources (projects, tenants) the victim has access to but did not intend to modify
-- **Integrity**: High - Ability to modify configuration, grant roles, or perform state-changing operations on unintended resources
-- **Availability**: Medium - Potential to disrupt services through unauthorized configuration changes
-- **Scope**: Application-wide - Affects all users of CSRF-vulnerable endpoints in web applications or MCP portals
+
+The immediate result is session swapping or account misbinding; account takeover is possible only when the application automatically links an attacker-controlled provider identity to a victim account or exposes an equivalent account-management transition. <!-- SAF-TRACE: claims=SAF-T1707-C017; sources=SRC-fastapi-advisory,SRC-authlib-advisory -->
+
+The technique does not by itself disclose the victim's credentials or tokens, as the Fastify advisory expressly bounds its login-CSRF outcome. <!-- SAF-TRACE: claims=SAF-T1707-C010,SAF-T1707-C017; sources=SRC-fastify-advisory -->
 
 ## Detection Methods
 
-### Indicators of Compromise (IoCs)
-- State-changing requests (POST/PUT/DELETE) to sensitive endpoints lacking valid CSRF tokens
-- Requests with suspicious or missing Origin/Referer headers from untrusted domains
-- Same session/user triggering state-changing operations on multiple resources in a short time window
-- Resource switches without corresponding UI navigation events
-- MCP tool invocations targeting unexpected resources via webhook or cross-origin requests
+Log authorization-request creation, callback validation, and successful token or account-binding completion with a stable interaction identifier, a keyed digest of `state`, client and redirect identifiers, timestamps, and a privacy-preserving session-binding identifier. Do not record raw state, access tokens, or session identifiers. <!-- SAF-TRACE: claims=SAF-T1707-C013; sources=SRC-owasp-logging-cheat-sheet -->
 
-### Detection Rules
+Correlate successful callbacks to the request that created the same state digest. Alert when the initiating and callback session bindings differ, or when one state digest is accepted more than once within its validity window. <!-- SAF-TRACE: claims=SAF-T1707-C014; sources=SRC-owasp-logging-cheat-sheet -->
 
-**Note**: Detection of CSRF Token Relay requires visibility into both application-level and token-level behaviors, including CSRF validation outcomes and resource targeting patterns.
+The repository analytic and deterministic tests are available in [detection-rule.yml](detection-rule.yml) and [test_detection.py](../../tests/SAF-T1707/test_detection.py).
 
-```yaml
-title: CSRF Token Relay Detection (SAF-T1707)
-id: b8c9d0e1-f2a3-4b5c-9d0e-1f2a3b4c5d6e
-status: experimental
-description: Detects potential CSRF Token Relay attacks on sensitive endpoints that trigger OAuth-backed multi-resource operations
-author: SAF-MCP Team
-date: 2025-11-29
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1707
-logsource:
-  product: webapp
-  service: mcp_portal
-  category: application
-detection:
-  selection_state_changing:
-    http.request.method:
-      - POST
-      - PUT
-      - PATCH
-      - DELETE
-    http.request.path|contains:
-      - "/mcp/project/"
-      - "/mcp/tenant/"
-      - "/configureAgent"
-      - "/connectResource"
-      - "/setIamPolicy"
-  selection_missing_csrf:
-    csrf.valid: false
-  selection_suspicious_origin:
-    http.request.headers.origin|startswith: "http"
-    http.request.headers.origin|endswith: ".evil.example"
-  condition: selection_state_changing and (selection_missing_csrf or selection_suspicious_origin)
-falsepositives:
-  - Legitimate bulk administrative operations via same session
-  - Environments with network segmentation compensating for missing CSRF protection
-  - Legitimate cross-origin integrations with proper CSRF protections
-level: high
-tags:
-  - attack.lateral_movement
-  - attack.t1550.001
-  - attack.t1528
-  - safe.t1707
-  - csrf
-  - oauth
-```
+Canonical validation evidence is retained in the [detector transcript](../../research/techniques/SAF-T1707/validation/detection-test.txt) and [strict-validator transcript](../../research/techniques/SAF-T1707/validation/strict-validator.txt).
 
-### Behavioral Indicators
-- Burst of state-changing requests across multiple resources from the same session within a short time window
-- Requests to sensitive endpoints without corresponding front-end UI events or navigation logs
-- Unusual multi-resource activity patterns that deviate from normal user behavior
-- MCP tool invocations that target resources not associated with the user's normal workflow
+Architectures that intentionally broker callbacks across browser processes must normalize the legitimate binding before applying this analytic; missing request-start logs and clock or identifier drift can otherwise create false positives or false negatives. <!-- SAF-TRACE: claims=SAF-T1707-C016; sources=SRC-owasp-logging-cheat-sheet -->
 
 ## Mitigation Strategies
 
-### Preventive Controls
-1. **Standard CSRF Protections**
-   - Implement per-request CSRF tokens (synchronizer tokens or double-submit cookies)
-   - Use `SameSite` cookies (`SameSite=Lax` or `Strict`) for session cookies where feasible
-   - Require re-authentication or step-up auth for highly sensitive actions
-   - Check Origin and/or Referer headers for state-changing requests to ensure they come from allowed domains
+Apply [SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md): generate a cryptographically random state value per authorization request, store it in a server-side or protected session record bound to the initiating user agent, require exact callback-session matching, expire it quickly, and consume it once. <!-- SAF-TRACE: claims=SAF-T1707-C003,SAF-T1707-C015; sources=SRC-mcp-security-spec-2026-07-28,SRC-rfc9700-state-relay -->
 
-2. **OAuth-Specific Hardening**
-   - Use the `state` parameter as a cryptographically strong, unguessable value to bind the authorization response to the initiating session and detect CSRF
-   - Avoid designs where a single broad-scope token is reused for both low-impact and high-impact resources unless absolutely necessary
-   - When broad scopes like `cloud-platform` are needed, combine them with:
-     - Fine-grained IAM roles per project/tenant
-     - App-level checks ensuring that resource IDs passed in requests are allowed for that user, independent of token scope
+Apply [SAF-M-38: PKCE Enforcement](../../mitigations/SAF-M-38/README.md) alongside SAF-M-13: use PKCE and authorization-response issuer validation as independent transaction bindings; do not treat a signed state value or query-to-cookie equality as proof that the same browser initiated the flow. <!-- SAF-TRACE: claims=SAF-T1707-C002,SAF-T1707-C005,SAF-T1707-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700-state-relay,SRC-rfc7636-state-relay -->
 
-3. **App- and MCP-Specific Controls**
-   - For web applications that drive MCP actions:
-     - Treat endpoints that cause MCP agents to be configured for a new resource (project/tenant) as CSRF-critical
-     - Require explicit user confirmation or second-factor for operations that grant new roles, connect agents to new environments, or rotate keys
-   - For MCP servers:
-     - Log the resource ID and user context for each token-backed call
-     - Consider internal "allow-list" logic so that agents can only operate on pre-approved resources, not arbitrary ones supplied in request parameters
-   - For MCP hosts:
-     - Prefer server-side token storage and avoid exposing access tokens directly to front-end JavaScript where possible
-     - Where client-side token usage is necessary, apply CSP and other defenses to reduce the chance of script injection
-
-### Detective Controls
-1. **CSRF Pattern Monitoring**: Monitor for CSRF patterns on sensitive endpoints and feed them into incident response
-2. **Multi-Resource Activity Analysis**: Track and alert on unusual patterns of multi-resource operations from single sessions
-3. **Resource Access Correlation**: Correlate resource access patterns with UI events to detect CSRF-driven actions
-
-### Response Procedures
-1. **Immediate Actions**:
-   - Revoke affected OAuth tokens when CSRF is suspected
-   - Review downstream resource changes for unauthorized modifications
-   - Temporarily disable affected endpoints if necessary
-2. **Investigation Steps**:
-   - Analyze application logs to identify all affected resources
-   - Review CSRF protection implementation on affected endpoints
-   - Trace token usage to understand scope of compromise
-3. **Remediation**:
-   - Implement proper CSRF protections on all sensitive endpoints
-   - Update OAuth token scopes to be more restrictive where possible
-   - Enhance monitoring and detection capabilities
-   - Conduct security testing including CSRF tests on admin portals and MCP configuration UIs
+Apply [SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md) and [SAF-M-18: OAuth Flow Monitoring](../../mitigations/SAF-M-18/README.md) to retain the privacy-preserving request, callback, duplicate-acceptance, and completion events required by the analytic. <!-- SAF-TRACE: claims=SAF-T1707-C013,SAF-T1707-C014; sources=SRC-owasp-logging-cheat-sheet -->
 
 ## Related Techniques
-- [SAF-T1202](../SAF-T1202/README.md): OAuth Token Persistence - Long-lived tokens and weak revocation make CSRF-driven token relay more dangerous by extending the time window for abuse
-- [SAF-T1304](../SAF-T1304/README.md): Credential Relay Chain - CSRF Token Relay can be part of a broader chain where a token is stolen via one tool and then relayed through a CSRF-vulnerable endpoint
 
-## References
-- [SAF-MCP: Secure Agentic Framework for Model Context Protocol](https://github.com/SAF-MCP/saf-mcp)
-- [OWASP – Cross-Site Request Forgery (CSRF)](https://owasp.org/www-community/attacks/csrf)
-- [OWASP Cheat Sheet – Cross-Site Request Forgery Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
-- [OWASP Web Security Testing Guide – Testing for Cross-Site Request Forgery](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/06-Session_Management_Testing/05-Testing_for_Cross_Site_Request_Forgery)
-- [MDN Web Docs – Cross-site request forgery (CSRF)](https://developer.mozilla.org/en-US/docs/Web/Security/Attacks/CSRF)
-- [CWE-352 – Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html)
-- [RFC 6749 – The OAuth 2.0 Authorization Framework (Security Considerations / CSRF)](https://datatracker.ietf.org/doc/html/rfc6749)
-- [CSRF Vulnerabilities from Noncompliant OAuth 2.0 Implementations - Shernan et al., DIMVA 2015](https://www.cise.ufl.edu/~butler/pubs/dimva15.pdf)
-- [Prevent CSRF Attacks in OAuth 2.0 Implementations - Auth0](https://auth0.com/blog/prevent-csrf-attacks-in-oauth-2-implementations/)
-- [Using OAuth 2.0 to Access Google APIs - Google](https://developers.google.com/identity/protocols/oauth2)
-- [Google Cloud – Cloud Storage OAuth 2.0 scopes](https://cloud.google.com/storage/docs/oauth-scopes)
-- [Google Cloud – Compute Engine Service Accounts](https://cloud.google.com/compute/docs/access/service-accounts)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1009: Authorization Server Mix-up](../SAF-T1009/README.md) | Neighbor | Mix-up misbinds the authorization-server issuer; SAF-T1707 accepts a valid state outside the user-agent session that created it. <!-- SAF-TRACE: claims=SAF-T1707-C002,SAF-T1707-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-spec-2026-07-28,SRC-rfc9700-state-relay,SRC-rfc7636-state-relay --> |
+| [SAF-T1507: Authorization Code Interception](../SAF-T1507/README.md) | Neighbor | Interception steals or injects an authorization code; SAF-T1707 relays valid anti-CSRF state across browser-session boundaries. <!-- SAF-TRACE: claims=SAF-T1707-C005; sources=SRC-rfc9700-state-relay,SRC-rfc7636-state-relay --> |
+| [SAF-T1706: OAuth Token Pivot Replay](../SAF-T1706/README.md) | Neighbor | Token pivot replay presents an issued access token at a protected resource; SAF-T1707 occurs while the callback transaction or account binding is being completed. <!-- SAF-TRACE: claims=SAF-T1707-C001,SAF-T1707-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700-state-relay,SRC-rfc7636-state-relay --> |
 
 ## MITRE ATT&CK Mapping
-- [T1550.001 - Use Alternate Authentication Material: Application Access Token](https://attack.mitre.org/techniques/T1550/001/) - Uses valid application access tokens as alternate authentication material to perform actions on additional resources within the same resource server
-- [CWE-352 - Cross-Site Request Forgery (CSRF)](https://cwe.mitre.org/data/definitions/352.html) - SAF-T1707 is a concrete exploitation pattern of CSRF combined with OAuth tokens in MCP contexts. CSRF enables the attacker to trigger unintended token usage across resources.
+
+**T1204.001 User Execution: Malicious Link — Analogous (delivery only).** A malicious link can deliver the relayed callback to a victim, but this ATT&CK technique does not describe the OAuth session-binding failure and is not a direct mapping. <!-- SAF-TRACE: claims=SAF-T1707-C018; sources=SRC-mitre-t1204-001 -->
+
+## References
+
+- [SRC-mcp-authorization-2026-07-28] Model Context Protocol, “Authorization,” protocol revision 2026-07-28.
+- [SRC-mcp-security-spec-2026-07-28] Model Context Protocol, “Security Best Practices,” protocol revision 2026-07-28.
+- [SRC-mcp-doc-index-2026] Model Context Protocol, official documentation index, accessed 2026-09-02.
+- [SRC-rfc9700-state-relay] Lodderstedt, Bradley, Labunets, and Fett, RFC 9700, January 2025.
+- [SRC-rfc7636-state-relay] Sakimura, Bradley, and Agarwal, RFC 7636, September 2015.
+- [SRC-oauth21-draft13] Parecki and Lodderstedt, OAuth 2.1 draft 13, May 2024.
+- [SRC-fett-oauth-state-leak] Fett, Küsters, and Schmitz, “A Comprehensive Formal Security Analysis of OAuth 2.0,” 2016.
+- [SRC-fastapi-advisory] FastAPI Users advisory GHSA-5j53-63w8-8625, 2025.
+- [SRC-nvd-2025-68481] NVD record CVE-2025-68481.
+- [SRC-authlib-advisory] Authlib advisory GHSA-fg6f-75jq-6523, 2025.
+- [SRC-nvd-2025-68158] NVD record CVE-2025-68158.
+- [SRC-fastify-advisory] `@fastify/oauth2` advisory GHSA-p8h8-rj28-m8q9, 2026.
+- [SRC-nvd-2026-18165] NVD record CVE-2026-18165.
+- [SRC-openclaw-advisory] OpenClaw advisory GHSA-7rcp-mxpq-72pj, 2026.
+- [SRC-nvd-2026-28477] NVD record CVE-2026-28477.
+- [SRC-nvd-state-query] NVD keyword-query result set, accessed 2026-09-02.
+- [SRC-nvd-saturation-1] NVD authority-only saturation query, accessed 2026-09-02.
+- [SRC-cisa-kev-2026-09-01] CISA Known Exploited Vulnerabilities catalog, accessed 2026-09-02.
+- [SRC-owasp-logging-cheat-sheet] OWASP Logging Cheat Sheet, accessed 2026-09-02.
+- [SRC-mitre-t1204-001] MITRE ATT&CK T1204.001, version 1.2.
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 0.1 | 2025-11-29 | Initial draft of SAF-T1707 – CSRF Token Relay README | Arjun Subedi (Astha.ai) |
+
+| Version | Date | Changes |
+|---|---|---|
+| 1.0 | 2026-09-02 | Independent clean-room research, tested analytic, and evidence packet completed. |

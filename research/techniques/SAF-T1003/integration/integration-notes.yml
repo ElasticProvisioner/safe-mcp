@@ -1,0 +1,50 @@
+version: 1
+technique_id: SAF-T1003
+bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1003
+date: "2026-09-01"
+status: frozen_bundle_pending_parent_integration
+
+isolated_validation:
+  result: passed
+  command: env PYTHONPATH=/private/tmp/saf-t1003-validator-deps python3 scripts/validate-technique-research.py SAF-T1003
+  mock_root: /private/tmp/saf-t1003-mock.haDFGm
+  mock_contents:
+    - Current generic canonical validator
+    - This independently generated bundle
+    - source-manifest-fragment.yml copied to research/source-manifest.yml
+    - framework-fragment.yml copied to research/framework-model.yml
+    - Minimal empty alignment ledger
+    - Minimal neighboring-technique existence stubs containing no technique prose
+    - Synthetic nonzero history SHA used only to exercise the strict history field
+  bundle_owned_fields_strictly_validated: true
+
+deliberately_deferred_real_joins:
+  - Reconcile canonical source records and any ID collisions against research/source-manifest.yml.
+  - Confirm or replace provisional tactic ATK-TA0001 against research/framework-model.yml.
+  - Reconcile framework-fragment.yml and related-technique relationships.
+  - Open only named nearest-neighbor prose after verifying the freeze and confirm semantic boundaries.
+  - Replace the zero repository-history SHA with the honest integration commit.
+
+required_integration_steps:
+  - Verify FREEZE.sha256 before any target, shared-registry, neighbor-prose, or repository-history contact.
+  - Preserve this clean-room checksum manifest as the baseline if integration modifies any file.
+  - Compare the frozen technique with the target only after freeze, without using old prose to revise unsupported claims.
+  - Run the canonical validator again after real source, framework, alignment, neighbor, and history joins.
+  - Recheck current external status and links, especially Registry preview policy and vulnerability remediation.
+  - Record only actual repository validation, commit, and pull-request identifiers.
+
+pending_fields:
+  canonical_source_id_collision_resolution: pending_parent_integration
+  confirmed_saf_tactic: pending_parent_integration
+  neighbor_prose_review: pending_parent_integration
+  honest_repository_history_sha: pending_parent_integration
+  integrated_repository_validator_result: pending_parent_integration
+  commit_id: pending_parent_action
+  pull_request: pending_parent_action
+
+integrity:
+  repository_files_modified: false
+  target_artifact_opened: false
+  shared_registry_opened: false
+  repository_history_opened: false
+  commit_or_push_performed: false

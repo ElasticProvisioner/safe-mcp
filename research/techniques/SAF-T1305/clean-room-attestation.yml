@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1305
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1305
+  inherited_context: false
+target:
+  id: SAF-T1305
+  neutral_name: Host OS Priv-Esc (RCE)
+allowed_inputs:
+- The author-saf-technique skill and all routed references except impact-classification-examples.md.
+- Canonical techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and scripts/validate-technique-research.py.
+- The user seed containing only SAF-T1305, the neutral name, tactic ATK-TA0004, clean-room
+  rules, and deliverables.
+- Independently discovered and directly reviewed authoritative external sources on
+  approved domains.
+- A synthetic isolated mock repository containing only generic validation assets,
+  this bundle, and minimal synthetic joins.
+prohibited_inputs:
+- techniques/SAF-T1305/README.md from the real repository or any historical copy.
+- research/techniques/SAF-T1305/ and all real target-specific research, tests, logs,
+  or detection assets.
+- techniques/SAF-T1305/detection-rule.yml from the real repository or any historical
+  copy.
+- Shared source, framework, and alignment registries before freeze.
+- Git history, diffs, blame, branches, commits, stashes, or review metadata exposing
+  prior target content.
+- Pull request, issue, review comment, cached SAF page, catalog prose, prior bundle,
+  or prior target artifact.
+- Previous conversation content or summaries beyond the neutral seed.
+- SAF or SAFE websites and SAF-MCP repositories, forks, catalog descriptions, and
+  any unrestricted or GitHub-scoped discovery search.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io specification architecture host client server security
+    authorization local servers stdio
+  - site:modelcontextprotocol.io specification security best practices local MCP server
+    command execution
+  - site:modelcontextprotocol.io docs security best practices MCP servers least privilege
+    consent
+  - site:nvd.nist.gov MCP remote code execution CVE
+  - site:nvd.nist.gov "Model Context Protocol" command injection
+  - site:nvd.nist.gov MCP Inspector CVE remote code execution
+  - site:cisa.gov "Model Context Protocol" vulnerability
+  - site:attack.mitre.org/techniques/T1068 Exploitation for Privilege Escalation
+  - site:learn.microsoft.com sysmon event ID 1 process creation command line parent
+    process official
+  - site:cisa.gov "MCP Inspector" incident breach exploitation
+  - site:oligo.security MCP Inspector production incident exploitation
+  - site:jfrog.com mcp-remote production incident exploitation CVE-2025-6514
+  - site:zerodayinitiative.com/advisories ZDI-26-245 aws-mcp-server command injection
+  - site:nvd.nist.gov CVE-2026-0758 affected fixed exploitation
+  - site:zerodayinitiative.com/advisories ZDI-26-024 update mitigation fixed
+  - site:cisa.gov CVE-2026-0758 known exploited
+  - site:nvd.nist.gov "mcp-server-siri-shortcuts" CVE-2026-0758
+  - site:zerodayinitiative.com/advisories "MCP server" "service account" "privilege
+    escalation"
+  opened_source_ids:
+  - SRC-ghsa-cve-2025-53107
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-sep-1024
+  - SRC-mcp-spec-2025-11-25
+  - SRC-mcp-transports-2025-06-18
+  - SRC-microsoft-sysmon
+  - SRC-mitre-attack-t1068
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-zdi-cve-2026-0758
+  - SRC-zdi-aws-26-245
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect the old target or any diff that reveals it during mechanical integration.
+- Reconcile source IDs only for collision or exact canonical-source reuse; do not
+  introduce research leads.
+- Replace synthetic neighbor and mitigation IDs with real validated joins without
+  changing independently sourced prose unless a no-research normalization pass is
+  required.
+- Replace the synthetic repository-history SHA with the honest integration commit
+  SHA.
+- Re-run detection and strict repository validators after mechanical joins.
+mock_validation:
+  command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1305/validator-deps
+    python3 scripts/validate-technique-research.py SAF-T1305
+  result: passed
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1305/mock
+  deliberately_deferred:
+  - Real shared source-ID collision resolution.
+  - Real framework neighbor and mitigation joins.
+  - Honest repository-history commit SHA.
+attestation: I generated SAF-T1305 independently from the neutral seed and directly
+  reviewed authoritative external sources. I did not access prohibited prior target
+  artifacts, shared registries, SAF sites or repositories, repository history, prior
+  bundles, or prior conversation content. The draft and evidence set were staged as
+  immutable before any integration activity.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-spec-2025-11-25: SRC-mcp-spec-2025-11-25
+    SRC-mcp-sep-1024: SRC-mcp-sep-1024
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-oligo-cve-2025-49596: SRC-oligo-inspector-cve-2025-49596
+    SRC-zdi-cve-2026-5059: SRC-zdi-aws-26-245
+    SRC-microsoft-sysmon-events: SRC-microsoft-sysmon
+  new_shared_source_records:
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-transports-2025-06-18
+  - SRC-zdi-cve-2026-0758
+  - SRC-ghsa-cve-2025-53107
+  - SRC-mitre-attack-t1068
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-10
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-52
+  - SAF-M-69
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1309
+    SAF-T9002: SAF-T1003
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-29
+    SAF-M-9002: SAF-M-14
+    SAF-M-9003: SAF-M-11
+  status: integrated_and_repository_validated

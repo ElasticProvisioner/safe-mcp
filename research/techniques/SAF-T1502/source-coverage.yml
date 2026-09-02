@@ -1,0 +1,210 @@
+version: 1
+technique_id: SAF-T1502
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+        - Direct open https://modelcontextprotocol.io/specification/2025-11-25/server/resources
+        - Direct open https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+        - Direct open https://attack.mitre.org/techniques/T1552/001/
+      material_changes:
+        - Bound the technique to model-controlled tool or resource reads and the result/context boundary.
+        - Added specification-level approval, access-control, logging, URI-validation, and sandboxing constraints.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open current MITRE ATT&CK T1552.001 procedure page, then direct open its primary Anthropic assets PDF.
+        - Exact official CVE API retrieval for CVE-2025-53109.
+        - Exact official CVE API retrieval for CVE-2025-53110.
+        - Exact official CVE API retrieval for CVE-2025-49596.
+        - Exact GitHub advisory open for GHSA-q66q-fx2p-7w4m only after CVE-2025-53109 supplied the canonical URL.
+        - Exact GitHub advisory open for GHSA-hc55-p739-j48w only after CVE-2025-53110 supplied the canonical URL.
+        - Exact GitHub advisory open for GHSA-7f8r-222p-6f5g only after CVE-2025-49596 supplied the canonical URL.
+        - Exact CISA KEV catalog lookups for CVE-2025-53109, CVE-2025-53110, and CVE-2025-49596; the catalog interface returned no reviewable record, so exploitation status was taken only from the directly reviewed CISA ADP data in each CVE record.
+      material_changes:
+        - Selected one direct production incident and two direct vulnerabilities.
+        - Classified the Inspector RCE as enabling or adjacent and excluded it from publishable examples.
+        - Recorded no-exploitation assessments and advisory version inconsistencies.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct full review of the Anthropic report's operational infrastructure, credential-harvesting, collection, response, and limitation sections.
+        - Direct review of the two filesystem-server maintainer advisories and CVE records for bounded mechanism evidence.
+        - Direct review of the Google Threat Intelligence Group AI Threat Tracker for a separate current agentic operations source.
+      material_changes:
+        - Confirmed production observation rather than a lab-only demonstration.
+        - Found no separate controlled end-to-end demonstration that materially changed the observed evidence label.
+        - Preserved Anthropic's false-credential finding as contrary evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open Microsoft Event 4663 documentation for process, object path, subject, and ReadData fields.
+        - Direct open Red Hat Enterprise Linux 9 audit documentation for read rules, event identity, success, executable, subject, and path fields.
+        - Direct open AWS shared credential-file documentation.
+        - Direct open Google Cloud ADC file and production credential guidance.
+        - Direct open NIST SP 800-61r3 final publication.
+        - Re-review MCP Tools Security Considerations and MCP local-server/scope-minimization guidance.
+      material_changes:
+        - Defined a five-minute same-host and same-process MCP-to-OS correlation analytic using a local credential-file sensitivity label.
+        - Added platform configuration, telemetry-loss, tuning, and legitimate-maintenance limitations.
+        - Added non-operational containment, credential-lifecycle, investigation, and recovery guidance.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open current ATT&CK T1005, T1555, T1003, and T1056 definitions to challenge scope and mappings.
+        - Re-review Anthropic report page 3 for invalid-credential and public-information false claims.
+        - Re-review CVE and GHSA version, remediation, and exploitation fields for contradiction.
+        - Re-review MCP Resources file-URI qualification and implementation freedom.
+      material_changes:
+        - Excluded protected stores, OS structures, input capture, generic local-data collection, initial RCE, and exfiltration.
+        - Narrowed detection to corroborated system activity rather than model output.
+        - Documented that file URIs need not map to physical files and that approval/logging guidance is not mandatory implementation behavior.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Re-open current MCP Tools, Resources, and Security Best Practices versioned pages and verify locators and dates.
+        - Re-open exact CVE-2025-53109 and CVE-2025-53110 records and their provenance-authorized advisories.
+        - Re-open Anthropic report incident, limitation, and response sections.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Re-open current MITRE ATT&CK T1552.001, T1005, T1555, T1003, and T1056 definitions.
+        - Re-open Microsoft Event 4663, RHEL 9 audit, AWS shared-file, Google ADC, and NIST SP 800-61r3 authority pages.
+        - Verify that no cited source depends on an unrestricted query, search snippet, GitHub discovery, or prior SAF material.
+      material_changes: []
+  rationale: >-
+    Direct current protocol pages establish the MCP mechanism and controls; a
+    primary incident report establishes production agentic credential extraction;
+    two CVE records plus provenance-authorized maintainer advisories establish
+    direct filesystem boundary bypasses; cloud authority pages establish file-
+    resident credential conditions; two operating-system authorities establish
+    testable read telemetry; NIST establishes response outcomes; and current
+    ATT&CK definitions delimit neighbors. Two independent follow-ups added no
+    requirement, qualifying example, remediation change, detection constraint,
+    contradiction, or unsupported-claim source.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 4
+  selected_examples:
+    - SRC-anthropic-espionage-2025-11
+    - SRC-cve-2025-53109
+    - SRC-cve-2025-53110
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: Anthropic GTG-1002 AI-orchestrated cyber espionage campaign
+      relationship: direct_production_incident
+      exploitation_status: Observed in a September 2025 production campaign with a handful of successful intrusions.
+      impact: Authentication certificates were extracted from configurations and harvested credentials were tested across internal systems; affected entities were not named.
+      remediation: Anthropic banned identified accounts, notified affected entities and authorities, and expanded detection and safeguards.
+      selected: true
+      rationale: Highest-directness production evidence because an agentic framework using MCP tools performed the defining credential-configuration extraction behavior.
+    - source_id: SRC-cve-2025-53109
+      identifier: CVE-2025-53109 / GHSA-q66q-fx2p-7w4m
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP SSVC recorded exploitation as none on 2025-07-02.
+      impact: Symlink handling could expose unintended files outside the expected filesystem boundary; credential-file access is conditional, not documented as an observed consequence.
+      remediation: Upgrade the Filesystem server to 0.6.4 or 2025.7.01; retain the advisory version-table inconsistency as a documented conflict.
+      selected: true
+      rationale: Directly affects the reference Filesystem server's file-read boundary and could expose credential-bearing files.
+    - source_id: SRC-cve-2025-53110
+      identifier: CVE-2025-53110 / GHSA-hc55-p739-j48w
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP SSVC recorded exploitation as none on 2025-07-02.
+      impact: Prefix-matching validation could expose unintended files outside the expected filesystem boundary; credential-file access is conditional, not documented as an observed consequence.
+      remediation: Upgrade the Filesystem server to 0.6.4 or 2025.7.01; retain the advisory version-table inconsistency as a documented conflict.
+      selected: true
+      rationale: Directly affects the reference Filesystem server's file-read boundary and could expose credential-bearing files.
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: enabling_vulnerability
+      exploitation_status: CISA ADP SSVC recorded exploitation as none in the reviewed CVE record.
+      impact: Unauthenticated Inspector proxy requests could launch MCP commands and achieve remote code execution before version 0.14.1.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later.
+      selected: false
+      rationale: RCE can enable later file access but is an initial-access or execution condition, not the defining credential-file read.
+
+sources_consulted:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-shared-credential-files
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-ghsa-inspector-7f8r
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-google-adc-files
+  - SRC-google-gtig-ai-threat-tracker-2026
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-event-4663
+  - SRC-mitre-t1003
+  - SRC-attack-t1005
+  - SRC-mitre-t1056
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-mitre-t1555
+  - SRC-nist-sp800-61r3
+  - SRC-rhel9-audit
+sources_cited:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-shared-credential-files
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-google-adc-files
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-event-4663
+  - SRC-mitre-t1003
+  - SRC-attack-t1005
+  - SRC-mitre-t1056
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-mitre-t1555
+  - SRC-nist-sp800-61r3
+  - SRC-rhel9-audit
+sources_rejected:
+  - source_id: SRC-cve-2025-49596
+    reason: The Inspector RCE is an enabling execution condition and does not itself establish credential-file discovery or reading.
+  - source_id: SRC-ghsa-inspector-7f8r
+    reason: The maintainer advisory corroborates the enabling RCE but does not establish the target behavior.
+  - source_id: SRC-google-gtig-ai-threat-tracker-2026
+    reason: The reviewed first-party material establishes current AI-augmented operations but not the defining file-based credential behavior.
+sources_blocked: []
+
+conflicts:
+  - issue: The two Filesystem advisories' affected and patched version tables differ from the advisory prose and CVE affected ranges.
+    resolution: Publish the conservative upgrade target 0.6.4 or 2025.7.01 named by both CVE descriptions and advisory prose, and disclose the metadata inconsistency.
+  - issue: Anthropic observed model claims of credentials that were invalid or public information.
+    resolution: Do not treat model output as sufficient detection evidence; require tool and operating-system event corroboration.
+  - issue: MCP file URIs do not necessarily represent physical files, and implementations choose their own interaction model.
+    resolution: Scope the technique and detection to deployments where filesystem access and physical file-read telemetry are established.
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1502-C003
+    - SAF-T1502-C004
+  rationale: >-
+    The Anthropic Threat Intelligence report directly documents the defining
+    agentic behavior in real intrusions using an MCP-orchestrated framework.
+    Protocol, file-residency, and vulnerability sources corroborate the mechanism
+    and conditions but do not independently raise the label.
+
+source_archive:
+  manifest: source-manifest-fragment.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

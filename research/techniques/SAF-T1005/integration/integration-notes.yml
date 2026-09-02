@@ -1,0 +1,51 @@
+version: 1
+technique_id: SAF-T1005
+generated_on: "2026-09-01"
+bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1005
+clean_room_integrity: passed
+repository_modified: false
+target_or_shared_registry_read_before_freeze: false
+integration_status: pending
+
+validated_in_isolation:
+  detection_tests: passed_9_of_9
+  yaml_and_json_syntax: passed
+  python_syntax: passed
+  canonical_research_validator_strict: passed_with_synthetic_join_records
+  hidden_html_v1_trace_check: passed_by_canonical_validator
+
+pending_integration_fields:
+  repository_history_sha:
+    current: "0000000000000000000000000000000000000000"
+    requirement: Replace only with the actual integration commit SHA after it exists.
+  source_manifest:
+    current: source-manifest-fragment.yml
+    requirement: Reconcile stable IDs and collisions into research/source-manifest.yml after freeze without using the shared manifest as a research lead.
+  framework_model:
+    current: framework-fragment.yml
+    requirement: Mechanically reconcile the generated record into research/framework-model.yml after freeze.
+  alignment_ledger:
+    current: not read
+    requirement: Reconcile any tactic, neighbor, mitigation, or relationship issue after freeze and resolve high-severity issues before a shared-repository pass.
+  mitigation_ids:
+    current: []
+    requirement: Add only verified existing mitigation joins after freeze; do not invent IDs.
+  repository_validation:
+    current: not run
+    requirement: Run the canonical validator and applicable repository workflows only after mechanical integration.
+
+required_mechanical_sequence:
+  - Verify FREEZE.sha256 before copying any artifact.
+  - Replace the repository target atomically from this bundle without opening or diffing the prior target content.
+  - Reconcile source IDs against the shared source manifest without adding new research leads.
+  - Reconcile the framework record and alignment ledger; verify tactic, neighbor, mitigation, and detection joins.
+  - Replace the zero history SHA with the actual integration commit after the commit exists.
+  - Run full repository validation and record only real passing output.
+  - Do not claim a shared-repository, commit, push, or pull-request pass until it actually occurs.
+
+prohibited_integration_shortcuts:
+  - Comparing the new bundle to prior SAF-T1005 prose or research.
+  - Copying target-specific source lists from prior artifacts.
+  - Fabricating stable source IDs, mitigation joins, commit SHAs, validator passes, commits, pushes, or pull requests.
+
+unresolved: []

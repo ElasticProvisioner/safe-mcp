@@ -1,0 +1,133 @@
+title: Suspicious Successful Active Context Snapshot Read or Export
+id: 2c211ebf-7d80-40d0-8fde-b9e62cb187d0
+status: experimental
+description: >-
+  Detects successful reads or exports of classified active agent context when
+  authorization is not allowed, tenants differ, or an unapproved actor differs
+  from the context owner. The rule evaluates metadata only.
+references:
+  - https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices
+  - https://www.ibm.com/support/pages/node/7282647
+  - https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-766v-q9x3-g744
+author: OpenAI Codex clean-room author
+date: 2026-09-02
+modified: 2026-09-02
+logsource:
+  category: application
+  product: agent_platform
+  service: context_audit
+detection:
+  selection_action:
+    event_type:
+      - context_snapshot_read
+      - context_snapshot_export
+      - checkpoint_history_read
+      - trace_export
+  selection_success:
+    result: success
+  selection_sensitive:
+    content_classes|contains:
+      - system_prompt
+      - conversation_turn
+      - tool_result
+      - resource_content
+      - checkpoint_state
+      - trace_input
+      - trace_output
+  filter_empty:
+    item_count: 0
+  selection_auth:
+    authorization_decision:
+      - deny
+      - unknown
+      - not_found
+  selection_tenant_mismatch:
+    actor_tenant_id|not_equals_field: owner_tenant_id
+  selection_owner_mismatch:
+    actor_id|not_equals_field: owner_id
+  filter_approved:
+    authorization_decision: allow
+    approval_status: approved
+  condition: >-
+    selection_action and selection_success and selection_sensitive and not
+    filter_empty and (selection_auth or selection_tenant_mismatch or
+    (selection_owner_mismatch and not filter_approved))
+fields:
+  - timestamp
+  - event_id
+  - event_type
+  - result
+  - actor_id
+  - owner_id
+  - actor_tenant_id
+  - owner_tenant_id
+  - authorization_decision
+  - approval_status
+  - snapshot_id
+  - thread_id
+  - trace_id
+  - content_classes
+  - item_count
+  - bytes
+  - destination
+falsepositives:
+  - Approved cross-tenant incident response, support, export, or migration workflows when the normalized record does not model delegation.
+  - Tenant or owner metadata that is stale, missing, or normalized inconsistently across event producers.
+level: high
+tags:
+  - saf.t1805
+  - attack.collection
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1805-C003
+    - SAF-T1805-C014
+  telemetry_claim_ids:
+    - SAF-T1805-C013
+  limitation_claim_ids:
+    - SAF-T1805-C015
+  validation_artifacts:
+    - tests/SAF-T1805/detect_context_snapshot_capture.py
+    - tests/SAF-T1805/events.jsonl
+    - tests/SAF-T1805/expected_alerts.json
+    - tests/SAF-T1805/test_detector.py
+    - research/techniques/SAF-T1805/validation/detection-tests.txt
+    - research/techniques/SAF-T1805/validation/strict-validator.txt
+    - research/techniques/SAF-T1805/validation/canonical-validation.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1805-C013]
+      rationale: Application context audit records carry the required owner, authorization, object, and result fields.
+    selection_action:
+      claim_ids: [SAF-T1805-C003, SAF-T1805-C008, SAF-T1805-C009]
+      rationale: Reads and exports of snapshots, checkpoint histories, and traces instantiate the scoped acquisition mechanism.
+    selection_success:
+      claim_ids: [SAF-T1805-C014]
+      rationale: Collection requires returned state; denied requests are relevant prevention signals but not completed capture.
+    selection_sensitive:
+      claim_ids: [SAF-T1805-C003, SAF-T1805-C009]
+      rationale: Classifications identify active execution-state content without logging the protected bodies.
+    filter_empty:
+      claim_ids: [SAF-T1805-C014]
+      rationale: A successful response with no returned item does not complete the collection objective.
+    selection_auth:
+      claim_ids: [SAF-T1805-C006, SAF-T1805-C014]
+      rationale: A successful read without an allow decision conflicts with per-call state authorization.
+    selection_tenant_mismatch:
+      claim_ids: [SAF-T1805-C002, SAF-T1805-C014]
+      rationale: Cross-tenant ownership mismatch directly models the selected Langflow authorization failure class.
+    selection_owner_mismatch:
+      claim_ids: [SAF-T1805-C001, SAF-T1805-C014]
+      rationale: Cross-owner access models shared state reached through duplicate or attacker-controlled identifiers.
+    filter_approved:
+      claim_ids: [SAF-T1805-C007, SAF-T1805-C014]
+      rationale: Explicit allow plus approval suppresses ordinary same-tenant delegated access.
+    condition:
+      claim_ids: [SAF-T1805-C014, SAF-T1805-C015]
+      rationale: The conjunction requires completed sensitive collection and at least one authorization-boundary anomaly while preserving documented limits.
+    fields:
+      claim_ids: [SAF-T1805-C013, SAF-T1805-C015]
+      rationale: The projected fields enable correlation, triage, owner validation, and environment-specific tuning.
+    falsepositives:
+      claim_ids: [SAF-T1805-C015]
+      rationale: Legitimate delegation and inconsistent identity normalization can satisfy the same metadata conditions.

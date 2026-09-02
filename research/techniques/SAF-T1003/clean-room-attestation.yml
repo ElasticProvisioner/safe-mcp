@@ -1,0 +1,139 @@
+version: 1
+technique_id: SAF-T1003
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1003
+target:
+  id: SAF-T1003
+  neutral_name: Malicious MCP-Server Distribution
+allowed_inputs:
+- Repository-local author-saf-technique skill and routed clean-room-safe references.
+- Generic technique and research templates, research documentation, and generic validator.
+- README projection limited to Technique ID and Technique Name columns.
+- Whitelist-only domain-filtered independent sources that do not expose target content.
+prohibited_inputs:
+- techniques/SAF-T1003/README.md from the repository target
+- techniques/SAF-T1003/detection-rule.yml from the repository target
+- research/techniques/SAF-T1003/ target packet
+- shared research/source-manifest.yml and research/framework-model.yml before freeze
+- git history, diff, blame, or commits containing target content
+- any pull request, issue, fork, cache, or SAF technique page containing target content
+- any previous conversation or inherited context about the target
+- impact-classification-examples.md before freeze
+independent_research:
+  searches:
+  - site:docs.npmjs.com viewing package provenance npm audit signatures limitations
+    -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - site:repos.openssf.org build provenance package registries not inherently safe
+    pin hash version -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - site:cisa.gov securing software supply chain approved ingestion provenance digital
+    signature hash integrity package sources version pinning -"SAF-T1003" -"SAFE-T1003"
+    -"SAF-MCP" -"SAFE-MCP"
+  - rogue MCP server package backdoor malicious update npm registry security 2025
+    2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - CVE MCP malicious server client remote code execution exploitation status 2025
+    2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP registry malicious server moderation security scanning provenance package
+    validation -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - official MCP registry consumer assume minimal moderation security scanning packages
+    provenance hash client install 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP server package malicious distribution install-time backdoor reverse shell
+    registry 2025 2026 remediation -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - CVE-2025-6514 exploitation known exploited remediation fixed version -"SAF-T1003"
+    -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP server distribution registry hijack package security empirical study 2026
+    -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP ecosystem registry hijacking dangling repository takeover affix squatting
+    measurement 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - software package provenance not trustworthy by itself approved repository version
+    pin hash mismatch first run detection -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - site:attack.mitre.org/techniques/T1195/002 Compromise Software Supply Chain -"SAF-T1003"
+    -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP Registry package ownership integrity hash provenance moderation consumer security
+    -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - MCP malicious server distribution ecosystem measurement registry squatting hijack
+    dangling link scanner false positive precision -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP"
+    -"SAFE-MCP"
+  - malicious MCP server package public registry reported removed install update backdoor
+    September October 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"
+  - CVE-2025-6514 CISA SSVC exploitation none affected 0.0.5 0.1.15 -"SAF-T1003" -"SAFE-T1003"
+    -"SAF-MCP" -"SAFE-MCP"
+  search_accounting:
+    exact_queries_listed: 17
+    evidence_scope: The publishable corpus and exclusion decisions rely only on these
+      retained exact queries and the independently opened sources listed below. Earlier
+      exploratory results not retained after context compaction were discarded and
+      are not used as evidence.
+  opened_source_ids:
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-moderation
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-sep-1024
+  - SRC-mcp-tools-2025-11-25
+  - SRC-checkmarx-runcommand
+  - SRC-jfrog-cve-2025-6514
+  - SRC-li-gao-dsn-2026
+  - SRC-chen-etal-mcpzoo-2026
+  - SRC-npm-provenance
+  - SRC-openssf-provenance
+  - SRC-mitre-t1195-002
+  - SRC-mitre-det0537
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Verify FREEZE.sha256 before any target, shared-registry, neighbor-prose, or repository-history
+  contact.
+- Reconcile source IDs against the real shared manifest without using prior target
+  prose.
+- Replace the provisional tactic only through the real framework join.
+- Replace the zero history SHA only with an honest integration commit.
+- Preserve the clean-room freeze baseline if integration changes any file.
+mock_validation:
+  command: env PYTHONPATH=/private/tmp/saf-t1003-validator-deps python3 scripts/validate-technique-research.py
+    SAF-T1003
+  root: isolated mock repository containing generic validator, minimal synthetic join
+    records, neighbor stubs, and this bundle
+  result: passed
+  deliberately_deferred_real_joins:
+  - shared source-manifest collision resolution
+  - local framework tactic confirmation
+  - honest repository-history commit SHA
+attestation: This fresh-agent run inherited no target context, opened no prohibited
+  target artifact, used only independently reviewed sources and permitted generic
+  materials, passed canonical strict validation in an isolated mock repository, and
+  froze the resulting bundle before any real integration contact.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-registry-about: SRC-mcp-registry-about
+    SRC-mcp-registry-moderation: SRC-mcp-registry-moderation
+    SRC-mcp-registry-packages: SRC-mcp-registry-package-types
+    SRC-mcp-sep-1024: SRC-mcp-sep-1024
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-npm-provenance: SRC-npm-provenance
+  new_shared_source_records:
+  - SRC-checkmarx-runcommand
+  - SRC-li-gao-dsn-2026
+  - SRC-chen-etal-mcpzoo-2026
+  - SRC-openssf-provenance
+  - SRC-mitre-t1195-002
+  - SRC-mitre-det0537
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-45
+  status: integrated_and_repository_validated

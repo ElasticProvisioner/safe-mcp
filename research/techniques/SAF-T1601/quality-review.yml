@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1601
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: SAF-MCP Research Team clean-room agent /root/cleanroom_saf_t1601
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records a fresh agent, no inherited target content, no prior-artifact access, direct-authority-only research, and isolated mock validation.
+  contract_and_scope:
+    status: passed
+    notes: The technique stops at identifying the server set and separates capability enumeration, invocation, authorization bypass, and generic network scanning.
+  technical_accuracy:
+    status: passed
+    notes: Current 2026-07-28 architecture, server/discover behavior, legacy initialization, and self-reported identity limitations were directly verified.
+  claim_traceability:
+    status: passed
+    notes: Seventeen validated claims contain exact locators, limitations, support relationships, and inference labels.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a hidden trace or declared local source; four unsupported or misleading propositions are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived matches the inferred adversarial core; legitimate demonstration, enabling CVEs, and an adjacent incident do not elevate it.
+  research_saturation:
+    status: passed
+    notes: Five passes completed, challenge findings were incorporated, and the final two narrow NVD authority queries returned no records or changes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Six candidates were classified; four highest-impact qualifying examples were selected with direct, enabling, or adjacent labels and explicit evidence limits.
+  detection_quality:
+    status: passed
+    notes: Ten deterministic cases pass across positive, negative, boundary, failure, malformed, and expected false-positive conditions.
+  mitigation_quality:
+    status: passed
+    notes: Controls constrain configuration access, new connections, endpoint exposure, process privilege, scope, and telemetry at the defining boundary.
+  framework_alignment:
+    status: passed
+    notes: ATK-TA0007 and analogous ATT&CK T1046 are reconciled; the capability-enumeration role maps post-freeze to SAF-T1602, while generic network discovery remains an external analogy, with seven canonical mitigation joins.
+  publication_rights:
+    status: passed
+    notes: All cited sources have factual-paraphrase records; no quotation, third-party artifact, source code, diagram, or dataset is republished.
+  safe_publication:
+    status: passed
+    notes: The example uses inert identifiers and metadata only; advisories are summarized without payloads, credentials, or destructive instructions.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1601/test_detection_rule.py
+      result: passed
+      output: PASS 10/10 cases; positive=3; negative=7; classes=boundary,false_positive,malformed,negative,positive
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1601
+      result: passed
+      output: PASS SAF-T1601
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1601/test_detection_rule.py
+    result: PASS 10/10 cases; positive=3; negative=7; boundary and expected false-positive coverage included.
+    waiver: null
+
+unresolved: []

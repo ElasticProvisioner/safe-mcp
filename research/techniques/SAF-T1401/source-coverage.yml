@@ -1,0 +1,196 @@
+version: 1
+technique_id: SAF-T1401
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct official index review https://modelcontextprotocol.io/llms.txt
+        - Direct current specification review /specification/2026-07-28/server/tools.md
+        - Direct current specification review /specification/2026-07-28/server/resources.md
+        - Direct current guidance review /docs/2026-07-28/develop/clients/client-best-practices.md
+      material_changes:
+        - >-
+          Bound Line Jumping to host/proxy resolver precedence and recorded the
+          current cross-server collision and disambiguation guidance.
+        - >-
+          Added a research-derived priority/recency variant with an explicit
+          no-direct-exploit limitation.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=model context protocol
+        - NVD API keywordSearch=MCP shadowing
+        - NVD API keywordSearch=MCP collision
+        - NVD API keywordSearch=MCP hijack
+        - NVD API keywordSearch=MCP priority
+        - NVD API keywordSearch=MCP precedence
+        - Exact NVD lookups for CVE-2026-79745, CVE-2026-30856, CVE-2026-25905, and CVE-2025-6515
+        - Exact identifier filtering over CISA KEV catalogVersion 2026.09.01
+        - Direct CISA cybersecurity-advisory index query search_api_fulltext=model context protocol
+      material_changes:
+        - Selected CVE-2026-79745 as a direct vulnerability and controlled demonstration.
+        - Selected CVE-2026-30856 as a direct vulnerability and controlled demonstration.
+        - Classified CVE-2026-25905 as enabling and CVE-2025-6515 as adjacent.
+        - Recorded that the reviewed corpus disclosed no qualifying production incident.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - arXiv API exact phrase query all:"line jumping"
+        - arXiv API query all:"model context protocol" AND all:shadowing
+        - Direct full-paper review arXiv:2512.06556v2
+        - Direct full-paper review arXiv:2506.01333v1 from the reviewed paper's references
+      material_changes:
+        - Added controlled tool-squatting and descriptor-manipulation evidence.
+        - Distinguished semantic descriptor shadowing from precedence-based Line Jumping.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - MCP Tools Security Considerations and Tool Names collision note
+        - MCP Client Best Practices implementation and broker security guidance
+        - GHSA-6cvf Recommended Fix and fix commit supplied by NVD
+        - ETDI Sections IV-VI and descriptor-manipulation Tables XX-XXIV
+      material_changes:
+        - >-
+          Defined source-aware mutation, collision, and resolver-decision telemetry
+          and an approval-aware behavioral analytic.
+        - Added authorization, disambiguation, definition integrity, and audit controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=MCP race condition
+        - NVD API keywordSearch=MCP replay
+        - NVD API keywordSearch=MCP spoof
+        - arXiv paper threat-to-validity and production-generalization sections
+        - Current MCP requirement that serverInfo.name is not a unique disambiguator
+      material_changes:
+        - Rejected session hijacking and server sandbox escape as direct Line Jumping.
+        - Limited ranking-hint abuse to research-derived status.
+        - Recorded score disagreement and detection false-positive constraints.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=model context protocol resolution order
+        - NVD API keywordSearch=model context protocol namespace collision
+        - arXiv API all:"tool name collision" AND all:MCP
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=model context protocol precedence shadow
+        - arXiv API all:"model context protocol" AND all:"resolution order"
+        - Recheck exact selected advisories, fixed versions, credits, and CISA KEV identifiers
+      material_changes: []
+  rationale: >-
+    Current protocol semantics are covered by the versioned MCP specification;
+    two independent direct vulnerabilities establish the complete precedence
+    behavior; original disclosures, NVD, CISA KEV, controlled research, and MITRE
+    cover impact, exploitation status, limitations, detection, defenses, and
+    framework analogy. Two increasingly narrow official-index passes added no
+    controlling requirement, direct incident, qualifying example, contradiction,
+    remediation change, or detection constraint. No source was blocked.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 4
+  selected_examples:
+    - SRC-ghsa-6cvf-cfch-4g7m
+    - SRC-ghsa-weknora
+  no_qualifying_examples_rationale: >-
+    Not applicable to selected vulnerabilities; no qualifying production breach
+    was identified, and that separate gap is stated in the technique.
+  candidates:
+    - source_id: SRC-ghsa-6cvf-cfch-4g7m
+      identifier: CVE-2026-79745 / GHSA-6cvf-cfch-4g7m
+      relationship: direct_vulnerability
+      exploitation_status: Controlled reproduction published; no production exploitation documented in reviewed sources.
+      impact: Non-admin global prompt/resource tampering and cross-session shadowing; CVSS integrity high and availability low.
+      remediation: Patched in MCPHub 1.0.32 with admin authorization for global mutations.
+      selected: true
+      rationale: Highest directness and impact; reproduces built-in-first resolution across sessions.
+    - source_id: SRC-ghsa-weknora
+      identifier: CVE-2026-30856 / GHSA-67q9-58vj-32qx
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept; CISA SSVC records exploitation=poc, not active exploitation.
+      impact: Malicious tool overwrite can redirect tool execution and expose context or invoke user-authorized capabilities.
+      remediation: Patched in WeKnora 0.3.0.
+      selected: true
+      rationale: Direct collision and order-dependent overwrite with an end-to-end controlled execution flow.
+    - source_id: SRC-jfrog-jfsa-2026-001653030
+      identifier: CVE-2026-25905 / JFSA-2026-001653030
+      relationship: enabling_vulnerability
+      exploitation_status: Public proof of concept; CISA SSVC records exploitation=poc.
+      impact: Python isolation escape can take over the MCP server and produce tool shadowing.
+      remediation: No mitigation supplied; project reported archived and unlikely to receive a fix.
+      selected: false
+      rationale: Root mechanism is sandbox escape; shadowing is a downstream capability rather than the defining boundary crossing.
+    - source_id: SRC-jfsa-2025-001494691
+      identifier: CVE-2025-6515 / JFSA-2025-001494691
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosure states no proof of concept; production exploitation is not documented.
+      impact: Predictable session identifiers can let a network attacker return malicious responses in a victim session.
+      remediation: No mitigation supplied in the reviewed disclosure.
+      selected: false
+      rationale: Hijacks session authenticity without a competing-object resolution or precedence decision.
+
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026-07-28
+  - SRC-mcp-client-best-practices-2026-07-28
+  - SRC-ghsa-6cvf-cfch-4g7m
+  - SRC-nvd-cve-2026-79745
+  - SRC-ghsa-weknora
+  - SRC-nvd-api-cve-2026-30856
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-jfsa-2025-001494691
+  - SRC-cisa-kev-2026-09-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2506.01333
+  - SRC-mitre-t1574-v2
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-resources-2026-07-28
+  - SRC-mcp-client-best-practices-2026-07-28
+  - SRC-ghsa-6cvf-cfch-4g7m
+  - SRC-nvd-cve-2026-79745
+  - SRC-ghsa-weknora
+  - SRC-nvd-api-cve-2026-30856
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-jfsa-2025-001494691
+  - SRC-cisa-kev-2026-09-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-etdi-2506.01333
+  - SRC-mitre-t1574-v2
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: >-
+      CVE-2026-30856 has a 5.9 CNA CVSS v3.1 score and a 7.6 NVD CVSS v3.1 score.
+    resolution: >-
+      Preserve both records and rate the technique from demonstrated conditional
+      impact rather than selecting one score as controlling.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1401-C003
+  rationale: >-
+    Two public advisories reproduce the complete behavior: an attacker-controlled
+    MCP object wins an aggregation or lookup decision ahead of a trusted competitor
+    and redirects the object later served or invoked. No reviewed source establishes
+    a production incident, so the label cannot be Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,43 @@
+version: 1
+technique_id: SAF-T1308
+bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1308-normalized/bundle
+integration_status: not_performed
+integration_authorized: false
+real_target_inspected: false
+real_repository_modified: false
+synthetic_validation_repository: /private/tmp/saf-all-cleanroom/SAF-T1308-normalized/mock-repo
+synthetic_baseline_commit: be1a9e09b10301f4b096bc07a9690966ceb41bfd
+external_research_corpus:
+  included_in_bundle: false
+  checksum_manifest: /private/tmp/saf-all-cleanroom/SAF-T1308/source-corpus.sha256
+  checksum_manifest_sha256: 50b24c51e895803b2eac76772560e7dcaee6af3b82e371da608e0836c8fa2b5b
+  file_count: 22
+  verification_status: passed
+root_fragments:
+  source_manifest: source-manifest-fragment.yml
+  framework_model: framework-fragment.yml
+  alignment_ledger: alignment-fragment.yml
+synthetic_joins:
+  related_techniques:
+    - id: SAF-T1997
+      neutral_concept: token theft and replay
+    - id: SAF-T1998
+      neutral_concept: downstream token passthrough
+    - id: SAF-T1999
+      neutral_concept: excessive scope issuance
+  mitigations:
+    - id: SAF-M-998
+      neutral_concept: strict token-context validation
+    - id: SAF-M-999
+      neutral_concept: grant-bound least privilege
+required_integration_actions:
+  - Confirm the real target path is absent or explicitly authorize conflict resolution before copying.
+  - Merge all 15 source records from source-manifest-fragment.yml by source ID without weakening locators or rights records.
+  - Reconcile synthetic joins by neutral concept against the real registries and update every affected bundle artifact consistently.
+  - Replace the synthetic repository-history entry with the actual integration commit only after integration.
+  - Merge the framework and alignment fragments, then rerun the current strict validator and detection test in the integrated repository.
+  - Preserve hidden same-line SAF-TRACE comments and the resolved exclusion ledger.
+prohibited_during_this_run:
+  - Inspecting or modifying the real target.
+  - Integrating, committing, pushing, or opening a pull request.
+blocked_issues: []

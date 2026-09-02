@@ -1,0 +1,502 @@
+version: 1
+technique_id: SAF-T1801
+claims:
+  - id: SAF-T1801-C001
+    statement: >-
+      In a production espionage campaign detected in September 2025, Anthropic
+      observed a threat actor use Claude Code and MCP tools to autonomously
+      query systems, extract large data volumes, parse results, and categorize
+      intelligence, with only limited human direction.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Executive summary, pages 2-3
+          - Operational infrastructure, pages 5-6
+          - Phase 5 Data collection and intelligence extraction, pages 10-11
+    corroboration: MITRE ATT&CK T1119 lists the Anthropic campaign as an automated-collection procedure example.
+    limitations:
+      - Anthropic had visibility into Claude usage, not every component or every target environment.
+      - The report names MCP tooling but does not enumerate protocol messages for each collection action.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C002
+    statement: >-
+      MCP resources expose application data to clients and define paginated
+      resources/list and content-returning resources/read operations; host
+      applications may automatically include resources using heuristics or
+      model selection.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2025-06-18
+        support: direct
+        exact_locators:
+          - Resources introduction and User Interaction Model
+          - Protocol Messages, Listing Resources
+          - Protocol Messages, Reading Resources
+    corroboration: MCP Tools separately documents model-controlled access to external systems.
+    limitations:
+      - The specification does not prescribe a specific host user interface or collection detector.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C003
+    statement: >-
+      MCP tools can be automatically selected by a model to query databases and
+      APIs; the specification recommends human denial capability, rate limits,
+      user confirmation for sensitive operations, and audit logging of tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators:
+          - Tools introduction and User Interaction Model
+          - Protocol Messages, Calling Tools
+          - Security Considerations
+    corroboration: The security best-practices document recommends privilege restrictions and access controls for local servers.
+    limitations:
+      - These recommendations do not guarantee correct implementation or detection effectiveness.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C004
+    statement: >-
+      MCP roots define filesystem boundaries available to servers, and the
+      specification requires clients to expose only appropriately permitted
+      roots while servers should respect and validate paths against them.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-roots-20250618
+        support: direct
+        exact_locators:
+          - Roots introduction
+          - Security Considerations
+          - Implementation Guidelines
+    corroboration: MCP Resources requires access controls and permission checks for sensitive resources.
+    limitations:
+      - Roots constrain filesystem scope but do not express a user's task-level data-minimization intent.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C005
+    statement: >-
+      The defining SAF behavior is an inference that automated breadth or
+      systematic repetition of successful MCP data reads beyond the user's
+      bounded task constitutes data harvesting, even where each read uses an
+      authorized connector.
+    class: framework_inference
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Phase 5 Data collection and intelligence extraction, pages 10-11
+      - source_id: SRC-mitre-t1119-v1.4
+        support: corroborating
+        exact_locators:
+          - Description
+          - Procedure example C0062 Anthropic AI-orchestrated Campaign
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: context
+        exact_locators:
+          - User Interaction Model
+    corroboration: MITRE's automated-collection definition and Anthropic's production case establish the automation and collection components independently.
+    limitations:
+      - Task intent is deployment-specific and must be inferred from approval, workflow, or policy context.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The SAF boundary combines observed agentic collection with protocol-level data access and task-intent context.
+    status: validated
+
+  - id: SAF-T1801-C006
+    statement: >-
+      Invariant Labs demonstrated a controlled MCP attack in which an agent
+      connected to WhatsApp tooling collected and exposed an entire chat
+      history; a second experiment collected recent contact identifiers.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - Experiment 1 Malicious MCP server takeover
+          - Experiment 2 Attacking via an Injected Message
+          - Conclusion
+    corroboration: Invariant's earlier tool-poisoning experiments establish the same cross-server steering mechanism on sensitive data.
+    limitations:
+      - This was a researcher-controlled demonstration, not a reported production breach.
+      - Downstream exfiltration is outside SAF-T1801's collection boundary.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C007
+    statement: >-
+      Invariant Labs demonstrated a controlled GitHub MCP flow in which an
+      injected public issue caused an agent to retrieve data from private
+      repositories and place it into a public pull request.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators:
+          - Attack Setup
+          - Attack Demonstration
+          - Scope and Mitigations
+    corroboration: MCP Tools documents model-controlled invocation and Invariant provides the end-to-end experimental trace.
+    limitations:
+      - This was a demonstration and required the agent to process attacker-authored issue content.
+      - The report says the issue was architectural rather than a GitHub MCP server code flaw.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C008
+    statement: >-
+      Invariant Labs demonstrated tool-description poisoning that induced an
+      MCP-enabled coding agent to read configuration and private-key files and
+      pass them to a malicious server.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - What is a Tool Poisoning Attack
+          - Experiment 1 Attacking Cursor with Tool Poisoning
+    corroboration: The WhatsApp experiment later applied a related mechanism across connected MCP servers.
+    limitations:
+      - The experiment collected a small number of specified files rather than broad record sets.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C009
+    statement: >-
+      CVE-2025-34072 documents a proof-of-concept data-exfiltration weakness in
+      the deprecated Anthropic Slack MCP server where untrusted content could
+      steer an agent to retrieve private data and automatic link unfurling sent
+      it to an attacker-controlled endpoint.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-34072
+        support: direct
+        exact_locators:
+          - CNA description and affected product record
+          - CISA ADP Vulnrichment SSVC entry
+      - source_id: SRC-cve-34072
+        support: direct
+        exact_locators:
+          - Leakage Scenario Walkthrough
+          - Responsible Disclosure
+          - Mitigating The Vulnerability
+    corroboration: The CVE record classifies exploitation as proof-of-concept, and the named researcher supplies the demonstration and disclosure timeline.
+    limitations:
+      - The affected server was deprecated, and the source does not establish production exploitation.
+      - Link-driven exfiltration is adjacent to the collection objective.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C010
+    statement: >-
+      CVE-2025-53109 and CVE-2025-53110 affected filesystem MCP server
+      versions before the disclosed fixes and could permit access to unintended
+      files through symlink handling or a colliding path prefix.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cve-2025-53109
+        support: direct
+        exact_locators:
+          - Affected versions, Patched versions, Description, and reporter credit
+      - source_id: SRC-ghsa-cve-2025-53110
+        support: direct
+        exact_locators:
+          - Affected versions, Patched versions, Description, and reporter credit
+      - source_id: SRC-cve-2025-53109
+        support: corroborating
+        exact_locators:
+          - CNA affected versions and description
+          - CISA ADP Vulnrichment SSVC entry
+      - source_id: SRC-cve-2025-53110
+        support: corroborating
+        exact_locators:
+          - CNA affected versions and description
+          - CISA ADP Vulnrichment SSVC entry
+    corroboration: The corresponding official CVE records independently identify the path-validation weaknesses and fixed release line.
+    limitations:
+      - The vulnerabilities expand reachable file scope but do not themselves automate collection.
+      - The advisory text contains inconsistent pre-fix version wording; the publishable technique uses the conservative upgrade target 0.6.4 or 2025.7.01.
+    conflicts:
+      - GitHub advisory affected-version headings list earlier boundaries while descriptions recommend 0.6.4 or 2025.7.01; the latter is retained as the safe remediation floor.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C011
+    statement: >-
+      CVE-2026-15643 affected AWS HealthLake MCP Server versions before 0.0.14;
+      an unvalidated pagination URL could expose temporary AWS credentials, and
+      AWS fixed the issue in 0.0.14 while recommending least-privilege IAM.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aws-cve-2026-15643
+        support: direct
+        exact_locators:
+          - Description
+          - Impacted versions
+          - Resolution and Workarounds
+          - Acknowledgement
+    corroboration: The CVE record repeats the affected range, root cause, and CISA exploitation-none assessment.
+    limitations:
+      - This is credential exfiltration through SSRF, not automated harvesting of datastore records.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C012
+    statement: >-
+      MITRE ATT&CK defines Automated Collection as automated internal-data
+      collection and recommends detecting repeated or automated access; its
+      information-repository analytics flag programmatic or excessive access,
+      large enumerations, and burst downloads.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1119-v1.4
+        support: direct
+        exact_locators:
+          - Description
+          - Detection Strategy DET0186
+      - source_id: SRC-mitre-t1213-v3.4
+        support: corroborating
+        exact_locators:
+          - Description
+          - Detection Strategy DET0413
+    corroboration: Both ATT&CK entries independently emphasize automated or excessive breadth and repeated access.
+    limitations:
+      - ATT&CK analytics are not MCP-specific and do not provide a universal threshold.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: MCP audit fields are substituted for platform-specific file, API, and repository telemetry.
+    status: validated
+
+  - id: SAF-T1801-C013
+    statement: >-
+      A five-minute analytic that alerts on at least 20 distinct successful MCP
+      data-object reads by one actor/session/server is a testable heuristic for
+      automated harvesting, but it requires local baselining and suppression of
+      explicitly approved bulk exports.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1119-v1.4
+        support: direct
+        exact_locators:
+          - Detection Strategy DET0186, analytic AN0531
+      - source_id: SRC-mitre-t1213-v3.4
+        support: corroborating
+        exact_locators:
+          - Detection Strategy DET0413, analytics AN1160-AN1163
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: context
+        exact_locators:
+          - Security Considerations
+    corroboration: The local detector tests establish deterministic threshold, window, malformed-input, repetition, and approved-export behavior.
+    limitations:
+      - The numeric threshold and time window are SAF test parameters, not empirically validated universal values.
+      - One-call bulk reads, low-and-slow reads, missing object identifiers, and normalized tool-call gaps can evade the analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The heuristic operationalizes the repeated/burst access patterns identified by ATT&CK using fields MCP hosts can log.
+    status: validated
+
+  - id: SAF-T1801-C014
+    statement: >-
+      Controls that narrow connector permissions, expose only appropriate roots,
+      require meaningful approval for sensitive or bulk operations, rate-limit
+      calls, and retain tool audit events reduce reach or improve detection but
+      do not make model behavior inherently trustworthy.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators:
+          - User Interaction Model
+          - Security Considerations
+      - source_id: SRC-mcp-roots-20250618
+        support: direct
+        exact_locators:
+          - Security Considerations
+          - Implementation Guidelines
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Local MCP Server Compromise - Mitigation
+      - source_id: SRC-invariant-github-mcp-2025
+        support: context
+        exact_locators:
+          - Scope and Mitigations
+    corroboration: MCP normative guidance and the demonstration's residual-risk analysis support layered controls.
+    limitations:
+      - Human approval can be ineffective when the interface hides data scope or users adopt broad standing approvals.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The control set is synthesized from protocol requirements and demonstrated failure modes.
+    status: validated
+
+  - id: SAF-T1801-C015
+    statement: >-
+      As of the 2026-09-01 CISA KEV catalog release, none of the reviewed MCP
+      CVEs in this packet appeared in the Known Exploited Vulnerabilities catalog.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog metadata version 2026.09.01 and complete vulnerabilities array
+    corroboration: Individual CVE records carried CISA SSVC states of none or proof-of-concept rather than confirmed active exploitation.
+    limitations:
+      - KEV absence is not proof that exploitation has never occurred.
+      - The catalog can change after the review date.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1801-C016
+    statement: >-
+      MITRE ATT&CK T1119 Automated Collection is a direct behavioral mapping for
+      SAF-T1801, while T1213 Data from Information Repositories is analogous
+      when MCP connectors expose repositories, messaging stores, code, or databases.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1119-v1.4
+        support: direct
+        exact_locators:
+          - Description and tactic
+      - source_id: SRC-mitre-t1213-v3.4
+        support: direct
+        exact_locators:
+          - Description and listed repository types
+    corroboration: ATT&CK lists the Anthropic AI-orchestrated campaign under T1119 and includes code, messaging, and database repository sub-techniques under T1213.
+    limitations:
+      - ATT&CK does not define MCP-specific task-intent boundaries.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the documented behaviors, not merely their shared Collection tactic.
+    status: validated
+
+  - id: SAF-T1801-C017
+    statement: >-
+      Confidentiality impact can be high when the agent can reach sensitive or
+      cross-system data; integrity and availability impact are not inherent to
+      collection and require separate follow-on behavior.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-anthropic-espionage-2025-11
+        support: direct
+        exact_locators:
+          - Phase 5 Data collection and intelligence extraction, pages 10-11
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators:
+          - Experiment 1 and Experiment 2 results
+      - source_id: SRC-invariant-github-mcp-2025
+        support: corroborating
+        exact_locators:
+          - Attack Demonstration
+    corroboration: The incident and both demonstrations document sensitive information acquisition across distinct environments.
+    limitations:
+      - Actual severity depends on permissions, data sensitivity, breadth, and successful follow-on use.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Impact ratings are conditional SAF judgments synthesized from directly documented outcomes.
+    status: validated
+
+  - id: SAF-T1801-C018
+    statement: >-
+      Prompt injection changes model behavior through untrusted input, but it is
+      a delivery mechanism rather than the data-collection objective defined by
+      SAF-T1801.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm01-2025
+        support: direct
+        exact_locators:
+          - LLM01:2025 definition
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: context
+        exact_locators:
+          - Experiment 2 Attack Setup
+    corroboration: The WhatsApp demonstration separates injected control from subsequent contact collection.
+    limitations:
+      - A real incident can contain both behaviors in one execution chain.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF-T1801 classifies the objective reached after the delivery behavior changes control.
+    status: validated

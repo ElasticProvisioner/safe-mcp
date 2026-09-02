@@ -1,0 +1,561 @@
+version: 1
+technique_id: SAF-T1914
+claims:
+  - id: SAF-T1914-C001
+    statement: >-
+      An MCP host coordinates multiple one-to-one client/server connections,
+      aggregates context, enforces security policy and consent, and is the
+      protocol component responsible for controlling cross-server interactions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026
+        support: direct
+        exact_locators:
+          - "Architecture: Host responsibilities and Client responsibilities"
+          - "Architecture: Server design principles"
+    corroboration: >-
+      The MCP tools specification independently assigns clients confirmation,
+      input-display, result-validation, and logging responsibilities.
+    limitations:
+      - The specification allocates responsibilities but does not prove that every host implements them correctly.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C002
+    statement: >-
+      MCP tools are model-controlled, may return text or structured content that
+      enters model context, and may carry returned state into later tool calls;
+      tool annotations are untrusted unless they come from a trusted server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools: User Interaction Model and model-controlled tools"
+          - "Tools: Tool definition and ToolResult content"
+          - "Tools: returned state handle example"
+    corroboration: >-
+      The current top-level MCP specification separately cautions that tool
+      descriptions and annotations should be treated as untrusted.
+    limitations:
+      - The protocol permits different host policies and user-interface behavior.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C003
+    statement: >-
+      Current MCP guidance says clients should expose proposed tool inputs,
+      obtain confirmation for sensitive operations, validate tool results,
+      display which tools are exposed, and log tool use; servers should validate
+      inputs, enforce access controls, rate-limit calls, and sanitize outputs.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools: Security Considerations"
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators:
+          - "Key Principles: Data Privacy and Human Control"
+    corroboration: >-
+      The top-level specification corroborates explicit consent before data is
+      exposed or transmitted and visibility into tool invocation.
+    limitations:
+      - Most cited requirements are SHOULD-level guidance and cannot force safe behavior in an implementation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C004
+    statement: >-
+      Controlled demonstrations show an agent can retrieve sensitive data with
+      one trusted tool and place that data into a distinct outbound-capable tool
+      call or externally visible destination under adversary-influenced instructions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - "Experiment 1: Tool Shadowing"
+          - "Experiment 2: Prompt Injections from Messages"
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators:
+          - "The Toxic Agent Flow and controlled demonstration"
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Tool Poisoning Attacks and Cross-Server Tool Shadowing"
+    corroboration: >-
+      Three distinct controlled demonstrations use different source/sink pairs:
+      chat-list to message-send, private repository to public pull request, and
+      local-file or email data to adversary-controlled tool arguments or recipients.
+    limitations:
+      - These are controlled demonstrations, not verified production compromises.
+      - Results depend on the model, host, tool set, permissions, and user approval behavior tested.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C005
+    statement: >-
+      Invariant Labs demonstrated that malicious instructions embedded in MCP
+      tool descriptions could induce Cursor to read local configuration or SSH
+      key material and pass it in another tool call, and that a malicious server
+      could shadow a trusted email tool by changing its recipient.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Tool Poisoning Attacks"
+          - "Cross-Server Tool Shadowing"
+    corroboration: >-
+      The WhatsApp follow-up independently demonstrates cross-server shadowing
+      and records the trusted send tool as the observable sink.
+    limitations:
+      - The demonstration is specific to the tested Cursor behavior in April 2025.
+      - The cited page does not establish production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C006
+    statement: >-
+      Invariant Labs demonstrated in a controlled WhatsApp MCP setup that a
+      malicious server description or an injected chat message could influence
+      the host to pass chat or contact data returned by one tool into the trusted
+      send-message tool addressed to an attacker-selected number.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators:
+          - "Experiment 1: Tool Shadowing"
+          - "Experiment 2: Prompt Injections from Messages"
+    corroboration: >-
+      The earlier tool-poisoning demonstration corroborates the same cross-server
+      shadowing mechanism using an email sink.
+    limitations:
+      - The researchers reported that result injection required more privileges and was harder than tool shadowing.
+      - The page reports a controlled setup, not an observed production breach.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C007
+    statement: >-
+      Invariant Labs demonstrated an agent reading attacker-controlled public
+      issue text, retrieving private repository information with trusted GitHub
+      tools, and disclosing that information in a public pull request.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators:
+          - "The Toxic Agent Flow"
+          - "A controlled proof-of-concept attack"
+    corroboration: >-
+      The WhatsApp and tool-poisoning experiments independently corroborate the
+      broader sensitive-source to outbound-sink behavior on different tool pairs.
+    limitations:
+      - The publication describes a controlled proof of concept rather than a production incident.
+      - The workflow may prompt for confirmation, and the publication notes users can configure persistent allow behavior.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C008
+    statement: >-
+      CVE-2025-34072 describes a critical confidentiality flaw in Anthropic's
+      deprecated Slack MCP server in which untrusted data can cause an agent to
+      post a link containing private data and Slack preview infrastructure then
+      requests the attacker-controlled URL; NVD records a 9.3 CVSS v4 score and
+      CISA SSVC exploitation status of proof of concept.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-34072
+        support: direct
+        exact_locators:
+          - "CVE-2025-34072 description, CVSS v4 metrics, and CISA SSVC record"
+      - source_id: SRC-cve-34072
+        support: corroborating
+        exact_locators:
+          - "The Data Exfiltration Issue"
+          - "Walkthrough"
+          - "Mitigation"
+    corroboration: >-
+      The originating researcher advisory provides the controlled walkthrough,
+      disclosure timeline, deprecated-server status, and mitigations.
+    limitations:
+      - The public records describe a proof of concept, not confirmed exploitation in production.
+      - The preview service is an additional outbound stage beyond the agent's Slack tool call.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C009
+    statement: >-
+      CVE-2026-46555 documents an unauthenticated local WhatsApp MCP bridge that
+      allowed local callers, including sibling MCP flows, to read and send files
+      as WhatsApp attachments through version 0.2.0; version 0.2.1 added bridge
+      authentication, Host validation, and path confinement.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-46555
+        support: direct
+        exact_locators:
+          - "CVE-2026-46555 description, affected versions, metrics, and references"
+      - source_id: SRC-ghsa-7jj9-4qqq-4xc4
+        support: corroborating
+        exact_locators:
+          - "Summary, Impact, Patches, and Workarounds"
+    corroboration: >-
+      The exact vendor advisory linked by NVD confirms affected and fixed
+      versions, the sibling-MCP caller condition, reporter, and mitigations.
+    limitations:
+      - This is enabling infrastructure evidence and does not itself establish a completed host-mediated source-tool-to-sink-tool attack.
+      - NVD recorded no exploitation as of the reviewed record.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C010
+    statement: >-
+      No verified production breach satisfying the complete Tool-to-Tool Exfil
+      contract was found in the directly reviewed official catalogs, advisories,
+      first-party research, and academic sources as of 2026-09-02.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-fsp-catalog-queries-2026-09-01
+        support: direct
+        exact_locators:
+          - "NVD CVE 2.0 API keywordSearch=Model Context Protocol; 77 records reviewed"
+      - source_id: SRC-cisa-kev-fsp-2026-09-01
+        support: corroborating
+        exact_locators:
+          - "Known Exploited Vulnerabilities catalog CSV; candidate CVE IDs checked"
+    corroboration: >-
+      The selected researcher publications consistently label their examples as
+      demonstrations, experiments, or proofs of concept, and CISA KEV did not
+      list the reviewed candidate CVEs.
+    limitations:
+      - This is a bounded search result and is not proof that no undisclosed or unindexed incident exists.
+      - NVD and KEV coverage is limited to public vulnerability records and known exploited vulnerabilities.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Absence is inferred narrowly from the recorded direct-authority corpus
+        and explicit searches; it is not generalized beyond that corpus.
+    status: validated
+
+  - id: SAF-T1914-C011
+    statement: >-
+      A defensible host analytic can correlate, within one session, a sensitive
+      source-tool result with a later outbound-capable call to a distinct server
+      or tool when the sink arguments carry the source result's stable data
+      reference or privacy-preserving fingerprint and the transfer lacks explicit authorization.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools: Security Considerations and logging"
+          - "Tools: returned state handle example"
+      - source_id: SRC-mcp-architecture-2026
+        support: corroborating
+        exact_locators:
+          - "Architecture: Host responsibilities and cross-server interactions"
+      - source_id: SRC-agentdojo-2024
+        support: corroborating
+        exact_locators:
+          - "Section 3: Benchmark Design; source and sink tools"
+    corroboration: >-
+      AgentDojo formalizes attacks across source and sink tools, while MCP assigns
+      aggregation, policy, and logging responsibilities to the host/client layer.
+    limitations:
+      - The exact normalized event schema and 120-second window are proposed SAF analytic choices, not protocol requirements.
+      - Fingerprints or data references require instrumentation before sensitive values are redacted.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The correlation design combines protocol logging duties with empirically
+        observed source/sink flows and is validated only on the included synthetic fixtures.
+    status: validated
+
+  - id: SAF-T1914-C012
+    statement: >-
+      Source-to-sink correlation can miss transformed, encoded, summarized,
+      delayed, cross-session, or unlogged transfers, and can alert on legitimate
+      workflows that intentionally copy data between tools.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-greshake-ipi-2023
+        support: direct
+        exact_locators:
+          - "Section 3: Indirect Prompt Injection; obfuscation and encoding"
+          - "Limitations"
+      - source_id: SRC-agentdojo-2024
+        support: direct
+        exact_locators:
+          - "Section 5: Attacks and Defenses"
+          - "Appendix attack-success tables"
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators:
+          - "Tools: Security Considerations"
+    corroboration: >-
+      AgentDojo reports variable attack success and defense tradeoffs; MCP makes
+      complete logging and result validation client responsibilities rather than guaranteed protocol behavior.
+    limitations:
+      - Published benchmark measurements do not evaluate the included detector implementation.
+    conflicts:
+      - issue: AgentDojo's evaluated prompt-injection detector reduced attack success but also reduced utility.
+        resolution: Detection is presented as layered, fallible telemetry rather than a complete prevention guarantee.
+    inference:
+      is_inference: true
+      rationale: >-
+        Several blind spots follow from applying fingerprint correlation to the
+        evasion techniques and incomplete-observability conditions in the sources.
+    status: validated
+
+  - id: SAF-T1914-C013
+    statement: >-
+      Controls that address the defining flow include treating descriptions and
+      results as untrusted, minimizing tool and data permissions, showing full
+      sink arguments and recipients before approval, enforcing destination and
+      cross-server data-flow policy, validating outputs, and retaining host tool-call logs.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools: Security Considerations"
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators:
+          - "Security controls and cross-server data flow"
+      - source_id: SRC-invariant-github-mcp-2025
+        support: corroborating
+        exact_locators:
+          - "Possible mitigations"
+      - source_id: SRC-cve-34072
+        support: corroborating
+        exact_locators:
+          - "Mitigation"
+    corroboration: >-
+      Independent demonstrations converge on full-argument visibility, least
+      privilege, explicit cross-server policy, and sink-specific restrictions.
+    limitations:
+      - No cited control is shown to prevent every prompt-injection or tool-poisoning variant.
+      - Domain allowlists do not stop disclosure to an allowed but unauthorized recipient.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The control set is a synthesis of protocol duties and source-specific mitigations.
+    status: validated
+
+  - id: SAF-T1914-C014
+    statement: >-
+      AgentDojo evaluates 97 realistic agent tasks and 629 security test cases;
+      in its reported results, the best agents remained vulnerable to attacks in
+      fewer than 25 percent of cases, a prompt-injection detector reduced attack
+      success to about 8 percent with utility cost, and tool filtering was limited
+      when the legitimate tool set was unknown or already sufficient for the attack.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agentdojo-2024
+        support: direct
+        exact_locators:
+          - "Abstract"
+          - "Section 5: Attacks and Defenses"
+          - "Table 3 and appendix results"
+    corroboration: >-
+      The paper reports task-level and attack-level measurements across multiple
+      suites and separately analyzes defense limitations.
+    limitations:
+      - Benchmark results are tied to the evaluated agents, models, tasks, attacks, and November 2024 paper version.
+      - The figures do not measure production breach prevalence.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1914-C015
+    statement: >-
+      Tool-to-Tool Exfil belongs under ATT&CK Exfiltration and is analogous to
+      Exfiltration Over Web Service when the sink is a web service, but the SAF
+      behavior is narrower in requiring agent-mediated source-to-distinct-sink flow
+      and broader in allowing non-web sink tools.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-ta0010
+        support: direct
+        exact_locators:
+          - "Exfiltration tactic definition"
+      - source_id: SRC-mitre-t1567
+        support: direct
+        exact_locators:
+          - "Exfiltration Over Web Service definition, mitigations, and detection"
+    corroboration: >-
+      The selected demonstrations end in unauthorized disclosure, while only
+      some use a web-service sink.
+    limitations:
+      - This is a SAF framework mapping, not an assertion that ATT&CK T1567 covers every qualifying Tool-to-Tool Exfil case.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The mapping reconciles ATT&CK's objective and service-oriented technique
+        with the clean-room SAF contract boundary.
+    status: validated
+
+  - id: SAF-T1914-C016
+    statement: >-
+      Prompt injection or tool-description poisoning is a delivery/control
+      mechanism, and an unauthorized tool call is an action primitive; neither
+      alone satisfies Tool-to-Tool Exfil unless sensitive source data is carried
+      into a distinct sink call or destination.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-greshake-ipi-2023
+        support: direct
+        exact_locators:
+          - "Threat model and Figure 3"
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: corroborating
+        exact_locators:
+          - "Tool Poisoning Attacks and Cross-Server Tool Shadowing"
+    corroboration: >-
+      Demonstrations distinguish the injected instruction from the later trusted
+      read and sink calls that produce the disclosure.
+    limitations:
+      - The neighboring SAF identifiers are synthetic clean-room joins pending integration reconciliation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The distinction is the technique contract's outcome boundary applied to
+        sourced attack stages.
+    status: validated
+
+  - id: SAF-T1914-C017
+    statement: >-
+      The core impact is confidentiality loss and can be high when a sensitive
+      source is available to an attacker-reachable sink; integrity or availability
+      impact is conditional and is not required for this technique.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-34072
+        support: direct
+        exact_locators:
+          - "CVSS v4 confidentiality, integrity, and availability metrics"
+      - source_id: SRC-invariant-github-mcp-2025
+        support: corroborating
+        exact_locators:
+          - "Controlled proof-of-concept impact"
+    corroboration: >-
+      The Slack CVE records high confidentiality impact with no vulnerable-system
+      integrity or availability impact, while the GitHub example demonstrates disclosure of private data.
+    limitations:
+      - Severity depends on data sensitivity, sink reachability, recipient, and containment controls.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The technique-level rating generalizes bounded confidentiality outcomes
+        without importing unrelated impact from enabling vulnerabilities.
+    status: validated
+
+  - id: SAF-T1914-C018
+    statement: >-
+      Investigation and response should preserve host call and approval records,
+      reconstruct source-to-sink lineage, contain the implicated session and sink,
+      rotate any disclosed credentials, remove the adversarial instruction source,
+      and narrow source and destination permissions before resuming automation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - "Tools: Security Considerations and logging"
+      - source_id: SRC-cve-34072
+        support: corroborating
+        exact_locators:
+          - "Mitigation"
+      - source_id: SRC-invariant-github-mcp-2025
+        support: corroborating
+        exact_locators:
+          - "Possible mitigations"
+    corroboration: >-
+      Protocol logging duties support reconstruction, while source-specific
+      advisories recommend constraining the sink and applying least privilege.
+    limitations:
+      - The exact incident-response sequence must be adapted to the affected host, credentials, and external service.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The response sequence is an operational synthesis rather than a verbatim source recommendation.
+    status: validated

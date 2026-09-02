@@ -1,0 +1,66 @@
+[
+  {
+    "name": "unicode_then_unapproved_sensitive_tool",
+    "expected": true,
+    "events": [
+      {"timestamp": "2026-09-01T10:00:00Z", "session_id": "s1", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["default_ignorable"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T10:02:00Z", "session_id": "s1", "event_type": "tool_call", "sensitivity": "high", "approval_state": "not_requested"}
+    ]
+  },
+  {
+    "name": "encoded_then_decode_at_window_boundary",
+    "expected": true,
+    "events": [
+      {"timestamp": "2026-09-01T11:00:00Z", "session_id": "s2", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["encoded_payload"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T11:05:00Z", "session_id": "s2", "event_type": "decode_or_interpret", "approval_state": "not_applicable"}
+    ]
+  },
+  {
+    "name": "image_then_unapproved_sensitive_tool",
+    "expected": true,
+    "events": [
+      {"timestamp": "2026-09-01T12:00:00Z", "session_id": "s3", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["image_instruction"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T12:00:20Z", "session_id": "s3", "event_type": "tool_call", "sensitivity": "high", "approval_state": "denied"}
+    ]
+  },
+  {
+    "name": "follow_on_outside_window",
+    "expected": false,
+    "events": [
+      {"timestamp": "2026-09-01T13:00:00Z", "session_id": "s4", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["bidi_control"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T13:05:01Z", "session_id": "s4", "event_type": "tool_call", "sensitivity": "high", "approval_state": "not_requested"}
+    ]
+  },
+  {
+    "name": "legitimate_persian_joiner_allowlisted",
+    "expected": false,
+    "events": [
+      {"timestamp": "2026-09-01T14:00:00Z", "session_id": "s5", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["default_ignorable"], "origin_allowlisted": true},
+      {"timestamp": "2026-09-01T14:00:10Z", "session_id": "s5", "event_type": "decode_or_interpret", "approval_state": "not_applicable"}
+    ]
+  },
+  {
+    "name": "approved_opaque_state_workflow",
+    "expected": false,
+    "events": [
+      {"timestamp": "2026-09-01T15:00:00Z", "session_id": "s6", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["opaque_state"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T15:00:15Z", "session_id": "s6", "event_type": "tool_call", "sensitivity": "high", "approval_state": "approved"}
+    ]
+  },
+  {
+    "name": "missing_session_suppressed",
+    "expected": false,
+    "events": [
+      {"timestamp": "2026-09-01T16:00:00Z", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["encoded_payload"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T16:00:10Z", "event_type": "decode_or_interpret", "approval_state": "not_applicable"}
+    ]
+  },
+  {
+    "name": "unknown_representation_finding_suppressed",
+    "expected": false,
+    "events": [
+      {"timestamp": "2026-09-01T17:00:00Z", "session_id": "s8", "event_type": "content_ingest", "trust": "untrusted", "representation_findings": ["ordinary_text"], "origin_allowlisted": false},
+      {"timestamp": "2026-09-01T17:00:10Z", "session_id": "s8", "event_type": "tool_call", "sensitivity": "high", "approval_state": "not_requested"}
+    ]
+  }
+]

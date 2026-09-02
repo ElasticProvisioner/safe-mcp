@@ -1,0 +1,16 @@
+version: 1
+issues:
+  - id: SAF-T2107-A001
+    triggered_by: SAF-T2107
+    affects: [SAF-T1002, SAF-T1102, SAF-T2107, SAF-T3001]
+    severity: high
+    status: resolved
+    issue: The isolated bundle cannot discover canonical neighbor IDs without violating the pre-freeze clean-room boundary.
+    resolution: SAF-T1102 resolves the live-inference boundary, SAF-T3001 resolves the retrieval-corpus boundary, and SAF-T1002 resolves direct artifact or supply-chain tampering; five canonical mitigations, ATT&CK T1565.001, and six detector cases complete the reconciliation.
+  - id: SAF-T2107-A002
+    triggered_by: SAF-T2107
+    affects: [SAF-T2107]
+    severity: medium
+    status: resolved
+    issue: The supplied tactic is not independently reconciled against the destination tactic registry before freeze.
+    resolution: Supplied tactic ATK-TA0042 was preserved and verified after the immutable evidence freeze.

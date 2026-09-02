@@ -1,0 +1,309 @@
+version: 1
+sources:
+  - id: SRC-mcp-auth-2026-07-28
+    title: Authorization - Model Context Protocol Specification
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete official versioned specification page.
+    review_status: opened_reviewed
+    locators: [Purpose and Scope, Roles, Resource Parameter Implementation, Access Token Usage, Refresh Tokens]
+    review_notes: Verified MCP OAuth roles, access-token presentation and validation, refresh-token handling, confidentiality, audience, and issuance discretion.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official versioned public page was reviewed remotely; no third-party snapshot is needed in the merge bundle.
+      review_evidence: {method: full_page_browser_review, total_lines: 361}
+  - id: SRC-mcp-auth-security-2026-07-28
+    title: Authorization Security Considerations - Model Context Protocol
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete official versioned security-considerations page.
+    review_status: opened_reviewed
+    locators: [Token Audience Binding and Validation, Token Theft, Authorization Code Protection, Confused Deputy Problem]
+    review_notes: Verified secure token storage, token-theft consequences, short access-token lifetime guidance, and public-client refresh-token rotation requirement.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Official versioned public page was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 186}
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    source_class: protocol_or_standard
+    publisher: RFC Editor / IETF
+    authors: [Tobias Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: RFC 9700, January 2025
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete RFC HTML, including normative refresh-token sections.
+    review_status: opened_reviewed
+    locators: [Sections 2.2.2, 2.3, 4.9.3, 4.10.2, 4.14.1, 4.14.2]
+    review_notes: Verified refresh-token replay consequences, rotation and sender-constraint requirements, grant binding, expiry, revocation, audience restriction, and rotation limitations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Stable RFC Editor canonical copy is publicly available.
+      review_evidence: {method: full_page_browser_review, total_lines: 1154}
+  - id: SRC-rfc7009
+    title: OAuth 2.0 Token Revocation
+    source_class: protocol_or_standard
+    publisher: RFC Editor / IETF
+    authors: [Torsten Lodderstedt, Stephen Dronia, Marius Scurtescu]
+    version_or_date: RFC 7009, August 2013
+    official_url: https://www.rfc-editor.org/rfc/rfc7009.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete RFC HTML.
+    review_status: opened_reviewed
+    locators: [Sections 1, 2, 2.1, 2.2]
+    review_notes: Verified token-revocation endpoint semantics and the relationship between refresh-token revocation and associated authorization grants.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Stable RFC Editor canonical copy is publicly available.
+      review_evidence: {method: full_page_browser_review, total_lines: 580}
+  - id: SRC-rfc9449
+    title: OAuth 2.0 Demonstrating Proof of Possession
+    source_class: protocol_or_standard
+    publisher: RFC Editor / IETF
+    authors: [Daniel Fett, Brian Campbell, John Bradley, Torsten Lodderstedt, Michael B. Jones, David Waite]
+    version_or_date: RFC 9449, September 2023
+    official_url: https://www.rfc-editor.org/rfc/rfc9449.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete RFC HTML with emphasis on refresh-token binding and security considerations.
+    review_status: opened_reviewed
+    locators: [Sections 1, 2, 5, 10]
+    review_notes: Verified proof-of-possession sender constraint and its applicability to refresh tokens.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Stable RFC Editor canonical copy is publicly available.
+      review_evidence: {method: full_page_browser_review, total_lines: 1196}
+  - id: SRC-google-oauth-token-mitigation
+    title: Best practices for mitigating compromised OAuth tokens for Google Cloud CLI
+    source_class: implementation_artifact
+    publisher: Google Cloud Architecture Center
+    authors: [Google Cloud Architecture Center security team]
+    version_or_date: Last updated 2025-03-10
+    official_url: https://docs.cloud.google.com/architecture/bps-for-mitigating-gcloud-oauth-tokens
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete first-party guidance page and its publication footer.
+    review_status: opened_reviewed
+    locators: [Overview, How an attacker can use compromised OAuth tokens, Best practices for remediation after a security incident]
+    review_notes: Verified copied-token persistence, refresh behavior, identity attribution in logs, endpoint-containment limitations, and explicit token invalidation guidance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party page was reviewed remotely; the page states CC BY 4.0 for content.
+      review_evidence: {method: full_page_browser_review, total_lines: 455}
+  - id: SRC-ghsa-pw9m-5jxm-xr6h
+    title: OAuth refresh-token replay via missing client authentication on oidc-provider and mcp plugins
+    source_class: official_advisory
+    publisher: Better Auth / GitHub Security Advisory
+    authors: [Gustavo Valverde, subhanUmer]
+    version_or_date: Published 2026-05-31; CVE-2026-53512
+    official_url: https://github.com/better-auth/better-auth/security/advisories/GHSA-pw9m-5jxm-xr6h
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened the exact advisory URL only after NVD supplied CVE-2026-53512 and the canonical advisory URL; reviewed affected versions, mechanism, patch, impact, and credits.
+    review_status: opened_reviewed
+    locators: [Affected versions, Summary, Details, Patches, Workarounds, Impact, Credit]
+    review_notes: Verified confidential-client authentication omission in legacy MCP/OIDC refresh paths, affected versions before 1.6.11, fixed version, bounded impact, and reporter credit.
+    discovery_provenance: NVD CVE-2026-53512 search result supplied the identifier and exact GitHub advisory URL before opening.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public maintainer advisory was reviewed remotely; exploit artifacts were not acquired.
+      review_evidence: {method: exact_url_full_page_review, total_lines: 245}
+  - id: SRC-nvd-cve-2026-9571
+    title: CVE-2026-9571 Detail
+    source_class: official_advisory
+    publisher: NIST National Vulnerability Database
+    authors: [Mattermost Security Team, NIST NVD, CISA Vulnrichment]
+    version_or_date: Published 2026-07-13; modified 2026-07-15
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-9571
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete NVD record, including CNA affected ranges and CISA SSVC enrichment.
+    review_status: opened_reviewed
+    locators: [Description, Metrics, References, Change History, Known Affected Software Configurations]
+    review_notes: Verified deactivation invalidation failure, affected and fixed Mattermost releases, CNA provenance, and CISA exploitation-none status.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Canonical public NVD record was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 169}
+  - id: SRC-gtig-drift-2025
+    title: Widespread Data Theft Targets Salesforce Instances via Salesloft Drift
+    source_class: incident_report
+    publisher: Google Threat Intelligence Group / Mandiant
+    authors: [Austin Larsen, Matt Lin, Tyler McLellan, Omar ElAhdan]
+    version_or_date: 2025-08-27, updated 2025-08-28
+    official_url: https://cloud.google.com/blog/topics/threat-intelligence/data-theft-salesforce-instances-via-salesloft-drift
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete primary threat-intelligence report and author byline.
+    review_status: opened_reviewed
+    locators: [Update August 28, Introduction, Threat Detail, Recommendations, Acknowledgments]
+    review_notes: Verified compromised OAuth tokens, observed access to Workspace and Salesforce, campaign dates, exfiltration, revocation, limitations, authors, and responding teams.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party incident report was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 224}
+  - id: SRC-salesloft-drift-2026
+    title: Summary of the Mandiant Investigation of Drift Applications and incident updates
+    source_class: incident_report
+    publisher: Salesloft / Clari Trust Center
+    authors: [Salesloft Information Security Team, Mandiant investigation team]
+    version_or_date: Investigation concluded 2025-09-30; trust-center update displayed 2026-04-17
+    official_url: https://trust.salesloft.com/?uid=Update+on+Mandiant+Drift+and+Salesloft+Application+Investigations
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the full first-party trust-center incident chronology and remediation updates.
+    review_status: opened_reviewed
+    locators: [Summary of the Mandiant Investigation, Update on Mandiant Drift and Salesloft Application Investigations, Drift/Salesforce Security Update]
+    review_notes: Verified theft and use of customer-integration OAuth tokens, access and refresh-token revocation, containment, investigation limits, and response-team attribution.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public vendor trust-center content was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 633}
+  - id: SRC-github-oauth-incident-2022
+    title: Security alert - attack campaign involving stolen OAuth user tokens issued to two third-party integrators
+    source_class: incident_report
+    publisher: GitHub
+    authors: [Mike Hanley, GitHub Security]
+    version_or_date: 2022-04-15, updated 2022-04-27
+    official_url: https://github.blog/news-insights/company-news/security-alert-stolen-oauth-user-tokens/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete first-party incident report, updates, impact, response, and author footer.
+    review_status: opened_reviewed
+    locators: [April 27 update, April 22 update, Impact to GitHub.com and npm, How GitHub responded]
+    review_notes: Verified use of stolen integrator OAuth tokens against GitHub API, affected scale, repository access, revocation response, and evidence limitations.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party incident report was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 663}
+  - id: SRC-ms-token-tactics-2022
+    title: Token tactics - how to prevent, detect, and respond to cloud token theft
+    source_class: credible_practice
+    publisher: Microsoft Security Blog
+    authors: [Microsoft Detection and Response Team]
+    version_or_date: "2022-11-16"
+    official_url: https://www.microsoft.com/en-us/security/blog/2022/11/16/token-tactics-how-to-prevent-detect-and-respond-to-cloud-token-theft/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete first-party security guidance.
+    review_status: opened_reviewed
+    locators: [Adversary-in-the-middle phishing attack, Recommendations, Response and investigation]
+    review_notes: Verified token-theft observations, refresh-token revocation guidance, residual access-token lifetime, and investigation telemetry.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party security guidance was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 159}
+  - id: SRC-ms-app-consent-playbook
+    title: App consent grant investigation
+    source_class: implementation_artifact
+    publisher: Microsoft Learn
+    authors: [Microsoft Incident Response documentation team]
+    version_or_date: Reviewed current page 2026-09-01
+    official_url: https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-app-consent
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete first-party incident-response playbook.
+    review_status: opened_reviewed
+    locators: [Details of consent grant attack, Finding signs of an attack, Determine the scope, Stop and remediate]
+    review_notes: Verified malicious-app registration/consent sequence, token issuance, audit evidence, and disablement response for behavior-boundary analysis.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party documentation was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 525}
+  - id: SRC-mitre-t1550-001
+    title: Use Alternate Authentication Material - Application Access Token
+    source_class: protocol_or_standard
+    publisher: MITRE ATT&CK
+    authors: [Blake Strom, Dylan Silva, Ian Davila, Jack Burns, Jeff Sakowicz, Mark Wee, Pawel Partyka, Saisha Agrawal, Shailesh Tiwary]
+    version_or_date: Version 2.0, modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1550/001/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete official ATT&CK technique page, contributor list, mitigations, and detection strategy.
+    review_status: opened_reviewed
+    locators: [Description, Metadata, Mitigations, Detection Strategy AN0527-AN0529]
+    review_notes: Verified application-token use, refresh-token persistence context, mapping limits, contributors, and contextual detection ideas.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Canonical ATT&CK page was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 165}
+  - id: SRC-mitre-ta0003
+    title: Persistence tactic and Cloud Application Integration entry
+    source_class: protocol_or_standard
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: TA0003 modified 2025-04-25; reviewed 2026-09-01
+    official_url: https://attack.mitre.org/tactics/TA0003/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete official tactic page and T1671 entry.
+    review_status: opened_reviewed
+    locators: [Persistence definition, Cloud Application Integration T1671 entry]
+    review_notes: Verified the persistence objective and the boundary between integration creation/co-option and token-grant reuse.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Canonical ATT&CK page was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 235}
+  - id: SRC-usenix-s3kvetter-2018
+    title: Vetting Single Sign-On SDK Implementations via Symbolic Reasoning
+    source_class: research
+    publisher: USENIX Association
+    authors: [Ronghai Yang, Wing Cheong Lau, Jiongyi Chen, Kehuan Zhang]
+    version_or_date: 27th USENIX Security Symposium, August 2018
+    official_url: https://www.usenix.org/conference/usenixsecurity18/presentation/yang
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened the official proceedings page and reviewed the complete 17-page open-access paper.
+    review_status: opened_reviewed
+    locators: [Abstract pages 1-2, System Architecture pages 3-6, Section 7.2 Refresh token Injection pages 11-12, Acknowledgements and Responsible Disclosure pages 14-15]
+    review_notes: Verified the symbolic-execution method, controlled refresh-token injection demonstration, access-token renewal after expiry, prerequisites, limits, author list, and responsible-disclosure statement.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: USENIX provides a stable open-access proceedings copy; no paper text is redistributed in the bundle.
+      review_evidence: {method: full_pdf_review, pages: 17, total_extracted_lines: 1339}
+  - id: SRC-rfc10017
+    title: OAuth 2.0 for Browser-Based Applications
+    source_class: protocol_or_standard
+    publisher: RFC Editor / IETF
+    authors: [Aaron Parecki, Philippe De Ryck, David Waite]
+    version_or_date: RFC 10017, 2026
+    official_url: https://www.rfc-editor.org/rfc/rfc10017.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete current RFC HTML, including persistent token theft, consequences, architectures, and refresh-token requirements.
+    review_status: opened_reviewed
+    locators: [Sections 5.1.2, 5.2.1, 6.1, 6.3.2.3, 6.3.4.2]
+    review_notes: Verified that rotation may not detect a thief who becomes the sole user of the latest refresh token, bounded token lifetimes, browser-client limitations, and sender-constraint tradeoffs.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Stable RFC Editor canonical copy is publicly available.
+      review_evidence: {method: full_page_browser_review, total_lines: 1102}
+  - id: SRC-ms-entra-risk-detections-2026
+    title: What are risk detections?
+    source_class: implementation_artifact
+    publisher: Microsoft Learn / Microsoft Entra ID Protection
+    authors: [Microsoft Entra ID Protection team]
+    version_or_date: Current page reviewed 2026-09-01
+    official_url: https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-risks
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Opened and reviewed the complete first-party risk-detections page.
+    review_status: opened_reviewed
+    locators: [Anomalous token sign-in, Unfamiliar sign-in properties, Anomalous token user]
+    review_notes: Verified contextual token-replay indicators and Microsoft's explicit warning that low- and medium-risk anomalous-token detections can have elevated false-positive rates.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public first-party documentation was reviewed remotely.
+      review_evidence: {method: full_page_browser_review, total_lines: 318}

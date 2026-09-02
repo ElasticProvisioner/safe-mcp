@@ -1,0 +1,120 @@
+version: 1
+technique_id: SAF-T1003
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP registry malicious server moderation security scanning provenance package validation -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'official MCP registry consumer assume minimal moderation security scanning packages provenance hash client install 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: [Added official Registry distribution, package-type, moderation, tool, and installation authorities.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP server package malicious distribution install-time backdoor reverse shell registry 2025 2026 remediation -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'CVE-2025-6514 exploitation known exploited remediation fixed version -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: [Selected one direct distribution incident and one enabling vulnerability; rejected adjacent CVEs and campaigns.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP server distribution registry hijack package security empirical study 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'MCP ecosystem registry hijacking dangling repository takeover affix squatting measurement 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: [Added one accepted empirical study and one scanner-reliability preprint with explicit limitations.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'software package provenance not trustworthy by itself approved repository version pin hash mismatch first run detection -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'site:attack.mitre.org/techniques/T1195/002 Compromise Software Supply Chain -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: [Added provenance verification and limitation sources plus a multi-stage behavioral detection strategy.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP Registry package ownership integrity hash provenance moderation consumer security -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'MCP malicious server distribution ecosystem measurement registry squatting hijack dangling link scanner false positive precision -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: [Bounded the gap between permissive moderation, provenance, scanner reliability, and behavioral correlation.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'MCP server package malicious distribution install-time backdoor reverse shell registry 2025 2026 remediation -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'MCP Registry package ownership integrity hash provenance moderation consumer security -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'malicious MCP server package public registry reported removed install update backdoor September October 2025 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+        - 'official MCP registry consumer assume minimal moderation security scanning packages provenance hash client install 2026 -"SAF-T1003" -"SAFE-T1003" -"SAF-MCP" -"SAFE-MCP"'
+      material_changes: []
+  rationale: >-
+    Five independent passes covered official protocol and registry authority,
+    malicious distribution and vulnerabilities, demonstrations and empirical
+    research, detection and defense, and the remaining control gap. After the
+    moderation policy was added, two restricted follow-ups found no
+    higher-impact qualifying example, changed remediation status, or new source
+    class that altered the definition, evidence state, or controls.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 2
+  selected_examples:
+    - SRC-checkmarx-runcommand
+    - SRC-jfrog-cve-2025-6514
+  candidates:
+    - source_id: SRC-checkmarx-runcommand
+      identifier: "@lanyer640/mcp-runcommand-server versions 1.0.6 and later"
+      relationship: direct_production_incident
+      exploitation_status: Malicious public-registry distribution observed; controlled detonation documented; named production victim not established.
+      impact: Install-time reverse shell operating with the installing user's privileges.
+      remediation: npm removed the package; block exact versions and artifacts and remove retained cache copies.
+      selected: true
+      rationale: Highest-impact directly reviewed example that satisfies the malicious MCP-server distribution contract.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: enabling_vulnerability
+      exploitation_status: Controlled exploitation demonstrated by JFrog; production exploitation not established by the selected source.
+      impact: Command or executable execution when affected mcp-remote connects to an untrusted or hijacked server.
+      remediation: Upgrade mcp-remote to 0.1.16 or later and connect only to trusted servers over HTTPS.
+      selected: true
+      rationale: High-impact enabling client vulnerability with precise affected and fixed versions; explicitly not a distribution incident.
+
+sources_consulted: &all_sources
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-moderation
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-sep-1024
+  - SRC-mcp-tools-2025-11-25
+  - SRC-checkmarx-runcommand
+  - SRC-jfrog-cve-2025-6514
+  - SRC-li-gao-dsn-2026
+  - SRC-chen-etal-mcpzoo-2026
+  - SRC-npm-provenance
+  - SRC-openssf-provenance
+  - SRC-mitre-t1195-002
+  - SRC-mitre-det0537
+sources_cited: *all_sources
+sources_rejected: []
+sources_blocked: []
+
+conflicts: []
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1003-C008
+    - SAF-T1003-C009
+  rationale: >-
+    The direct incident establishes malicious MCP-labeled package distribution
+    in a public production registry and controlled malicious behavior. The
+    evidence label applies to distribution, not to a named victim compromise,
+    installation count, or prevalence.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,80 @@
+version: 1
+technique_id: SAF-T2104
+name: Fraudulent Transactions
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Cause a tool-enabled agent to execute a value-bearing transaction
+  that the current user or organization did not authorize on the committed terms.
+scope:
+  security_boundary: Model-visible instructions, data, or state cross into a privileged
+    financial tool or API without execution-time binding to the approved transaction
+    terms.
+  in_scope:
+  - An adversary influences an agent that can initiate or commit payments, purchases,
+    sales, trades, or refunds.
+  - The accepted action, amount, currency, destination, instrument, or validity window
+    materially differs from current authorization.
+  - The transaction tool or downstream system accepts the unauthorized economic action.
+  out_of_scope:
+  - Credential theft or account compromise without an agent-initiated transaction.
+  - Prompt injection, tool poisoning, or recommendation bias that does not reach a
+    value-bearing transaction.
+  - Human-authorized scams, unauthorized data access, and non-adversarial pricing
+    mistakes.
+  affected_components:
+  - MCP host or agent orchestrator
+  - MCP client and tool-selection boundary
+  - Financial tool or connector
+  - Authorization and approval service
+  - Payment, commerce, trading, or refund system
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection ends at adversarial control of reasoning or context;
+    SAF-T2104 requires an accepted unauthorized economic action.
+- technique_id: SAF-T1309
+  distinction: Privileged Tool Invocation via Prompt Manipulation covers unapproved
+    privileged tool use generally; SAF-T2104 is limited to committed value-bearing
+    transactions that violate bound authorization.
+- technique_id: SAF-T1915
+  distinction: Cross-Chain Laundering via Bridges/DEXs covers post-acquisition layering
+    of illicit virtual assets; SAF-T2104 covers the unauthorized value-bearing transaction
+    that creates or transfers economic value.
+required_evidence:
+- Establish that an agent can invoke a value-bearing tool and that adversarial influence
+  can alter the resulting transaction.
+- Establish the authorization-to-execution boundary, material transaction fields,
+  and immediate economic outcome.
+- Classify the strongest end-to-end evidence as observed, demonstrated, research-derived,
+  or hypothesized.
+- Search production incidents, disclosed vulnerabilities, exploitation status, controlled
+  demonstrations, defenses, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Agent or workload identity, delegated user, correlation identifier, tool name,
+    action, amount, currency, destination, and event time.
+  - Approval state, issuance and expiry time, and the transaction terms bound to that
+    approval.
+safe_example_constraints:
+- Use only inert placeholder account and merchant identifiers.
+- Do not include executable prompts, credentials, endpoints, or instructions for real
+  transactions.
+- Limit demonstrations to normalized audit records and sandbox findings already reported
+  by sources.
+completion_evidence:
+- Every substantive README unit has a valid claim trace or declared local-artifact
+  link.
+- Every claim has reviewed evidence, exact locators, limitations, and a publication-rights
+  decision.
+- Five research passes and two consecutive no-material-change saturation passes are
+  recorded.
+- The deterministic detector passes positive, negative, boundary, malformed, false-positive,
+  and normalization cases.
+- Strict isolated validation passes and all excluded leads remain out of publishable
+  prose.

@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1505
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1505/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1505/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, canonical neighbors, and completion
+    metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1505/quality-review.yml
+  supports: Validation commands, test result, review date, and quality gates.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1505/detection-rule.yml
+  supports: The labeled experimental analytic and its traceability record.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1505/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, and expected false-positive
+    checks.
+- id: LOCAL-test-logs
+  path: tests/SAF-T1505/test-logs.json
+  supports: The sanitized detector fixtures and expected outcomes.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1505/validation/detection-tests.txt
+  supports: Captured isolated and integrated detector commands and results.
+- id: LOCAL-strict-validation-result
+  path: research/techniques/SAF-T1505/validation/strict-validator.txt
+  supports: Captured isolated and integrated strict-validator commands and results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1505-X001
+  candidate: Treat the FrontMCP sandbox escape as proof of completed secret extraction.
+  origin: NVD direct-authority keyword result and exact advisory supplied by NVD.
+  attempted_searches:
+  - Review the complete NVD record and first-party advisory for an acquired secret
+    value.
+  - Check the advisory's security impact, proof, remediation, and credits sections.
+  consulted_source_ids:
+  - SRC-ghsa-mp29-fxh8-92px
+  - SRC-nvd-cve-2026-67531
+  reason: The sources establish process code execution and possible secret exposure,
+    not actual secret acquisition.
+  prohibited_publishable_text:
+  - FrontMCP confirms production secret theft
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1505-X002
+  candidate: Treat CVE-2026-47250 kubeconfig token forwarding as in-memory extraction.
+  origin: NVD gap-and-challenge keyword pass.
+  attempted_searches:
+  - Review the complete NVD-returned record for the credential's source and attack
+    path.
+  - Compare the record against the live runtime-state contract.
+  consulted_source_ids:
+  - SRC-nvd-mcp-token-env-query
+  reason: The bearer token originates in kubeconfig and is sent through tool-argument
+    abuse; persistent credential access and exfiltration govern it.
+  prohibited_publishable_text:
+  - kubeconfig forwarding is a direct in-memory example
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1505-X003
+  candidate: Treat CVE-2026-46555 arbitrary-file reads as in-memory extraction.
+  origin: NVD gap-and-challenge keyword pass.
+  attempted_searches:
+  - Review the complete NVD-returned record for the data source.
+  - Compare file-path confinement failure with the live runtime-state contract.
+  consulted_source_ids:
+  - SRC-nvd-mcp-token-env-query
+  reason: The weakness reads persistent files and sends attachments; it does not access
+    a live process secret container.
+  prohibited_publishable_text:
+  - WhatsApp file reads establish runtime-memory extraction
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

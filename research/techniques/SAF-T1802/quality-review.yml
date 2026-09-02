@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1802
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1802_r2
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records the neutral target tuple, generic assets, direct-authority-only acquisition, CVE-to-exact-GHSA provenance, no inherited context, and no prior-artifact access.
+  contract_and_scope:
+    status: passed
+    notes: The immediate objective is obtaining file content; enumeration-only, transfer-only, execution-only, and at-rest exposure behaviors are excluded or relationship-classified.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP semantics, roots limitation, prerequisites, path mechanisms, demonstrations, patches, and impact conditions were reconciled to exact locators.
+  claim_traceability:
+    status: passed
+    notes: Twenty validated claims each have reviewed sources, exact locators, limitations, conflict records, and explicit inference handling.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README line is covered by a same-line hidden trace or declared local artifact; five unsupported propositions are excluded and prohibited from publishable prose.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by public controlled end-to-end evidence; Observed is rejected because no qualifying file-specific production incident was found.
+  research_saturation:
+    status: passed
+    notes: All five substantive passes completed and two final refined NVD authority queries produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Eleven candidates were relationship-classified; four highest-impact direct examples were selected, remediation and exploitation state were recorded, and the production-incident gap was retained.
+  detection_quality:
+    status: passed
+    notes: Telemetry, logic, false positives, blind spots, tuning, deterministic detector, and positive, negative, threshold, allowlist, denied, listing, and malformed fixtures are present.
+  mitigation_quality:
+    status: passed
+    notes: Controls address authorization, canonical post-resolution containment, link handling, least privilege, sandboxing, confirmation, patches, and logging.
+  framework_alignment:
+    status: passed
+    notes: Tactic, direct ATT&CK T1005 mapping, T1083 distinction, provisional neighbors, mitigations, and resolved integration proposals agree with the contract.
+  publication_rights:
+    status: passed
+    notes: Publishable text uses independent factual paraphrase and reference-only links; no quotation, third-party code, source table, figure, prompt, or image is reproduced.
+  safe_publication:
+    status: passed
+    notes: The scenario and fixtures contain synthetic identifiers, roots, paths, and placeholder content only.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1802
+      result: passed
+      evidence: research/techniques/SAF-T1802/validation/isolated-strict-validation.txt
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1802/test_detection_rule.py
+    result: PASS - 16 valid events, 1 malformed record skipped, 3 expected alerts, and 0 unexpected alerts
+    waiver: null
+
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "PASS SAF-T1802 detector: 16 valid events, 1 malformed record skipped, 3 expected alerts, 0 unexpected alerts"
+  validator: "PASS SAF-T1802"
+  proof: research/techniques/SAF-T1802/validation/canonical-validation.txt
+  notes: Independently authored SAF-T1913 now resolves the follow-on transfer boundary; the detector and strict validator pass in the destination repository.

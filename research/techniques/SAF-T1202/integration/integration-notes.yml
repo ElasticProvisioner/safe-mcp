@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1202
+generated_on: "2026-09-01"
+research_reconciliation_permitted: false
+mechanical_joins_only: true
+
+synthetic_tactics: []
+tactic_joins:
+  - id: ATK-TA0003
+    status: verify_existing_registry_join_after_freeze
+
+synthetic_neighbors:
+  - id: SAF-T9001
+    label: Token Acquisition
+    disposition: replace_with_or_map_to_canonical_neighbor_after_freeze
+  - id: SAF-T9002
+    label: Malicious OAuth Application Integration
+    disposition: replace_with_or_map_to_canonical_neighbor_after_freeze
+
+synthetic_mitigations: []
+
+source_id_joins:
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  - SRC-github-oauth-incident-2022
+  - SRC-google-oauth-token-mitigation
+  - SRC-gtig-drift-2025
+  - SRC-mcp-auth-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mitre-t1550-001
+  - SRC-mitre-ta0003
+  - SRC-ms-app-consent-playbook
+  - SRC-ms-entra-risk-detections-2026
+  - SRC-ms-token-tactics-2022
+  - SRC-nvd-cve-2026-9571
+  - SRC-rfc10017
+  - SRC-rfc7009
+  - SRC-rfc9449
+  - SRC-rfc9700
+  - SRC-salesloft-drift-2026
+  - SRC-usenix-s3kvetter-2018
+
+synthetic_history_shas:
+  - sha: "1111111111111111111111111111111111111111"
+    disposition: replace_with_real_integration_commit_only_after_freeze
+
+path_joins:
+  - path: techniques/SAF-T1202/README.md
+    status: bundle_owned
+  - path: techniques/SAF-T1202/detection-rule.yml
+    status: bundle_owned
+  - path: research/techniques/SAF-T1202
+    status: bundle_owned
+  - path: tests/SAF-T1202
+    status: bundle_owned
+  - path: research/source-manifest.yml
+    status: merge_source-manifest-fragment_after_freeze
+  - path: research/framework-model.yml
+    status: merge_framework-fragment_after_neighbor_reconciliation
+  - path: research/alignment-ledger.yml
+    status: merge_alignment-fragment_after_freeze
+  - path: techniques/SAF-T9001/README.md
+    status: synthetic_mock_only
+  - path: techniques/SAF-T9002/README.md
+    status: synthetic_mock_only
+
+deferred_checks:
+  - Reconcile source IDs without changing frozen claim meaning.
+  - Replace synthetic neighbors and update the contract, README, framework fragment, and tests mechanically.
+  - Replace the synthetic history SHA with the real integration commit.
+  - Re-run the current strict validator after all shared-registry joins.
+unresolved_research_questions: []

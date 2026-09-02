@@ -1,0 +1,96 @@
+title: SAF-T1914 Tool-to-Tool Exfil Source-to-Sink Correlation
+id: 7e7a8f5b-9b56-4cc7-bbd4-191400000001
+status: experimental
+description: >-
+  Correlates a sensitivity-labeled tool result with a later outbound-capable
+  call to a distinct tool or server in the same agent session when a stable data
+  reference or privacy-preserving content fingerprint is reused and the transfer
+  is not explicitly approved for an allowed destination.
+logsource:
+  category: agent_tool_audit
+  product: normalized_agent_host
+  service: tool_call_lineage
+detection:
+  selection_source:
+    event_type: tool_result
+    tool_role: source
+    sensitivity|contains:
+      - confidential
+      - restricted
+      - secret
+    lineage_token_present: true
+  selection_sink:
+    event_type: tool_call
+    tool_role: sink
+    outbound_capable: true
+    lineage_token_present: true
+  correlation:
+    group_by:
+      - session_id
+    source_before_sink: true
+    maxspan_seconds: 120
+    require_distinct_server_or_tool: true
+    require_shared_data_ref_or_content_fingerprint: true
+  authorized_exception:
+    authorized_transfer: true
+    approval_state: approved
+    destination_allowed: true
+  condition: selection_source followed_by selection_sink satisfying correlation and not authorized_exception
+falsepositives:
+  - Approved workflows whose authorization or destination-allowlist metadata is missing from normalized logs.
+  - Routine cross-tool copying when broad sensitivity labels or reused coarse data references overstate the content actually transferred.
+  - Retries or mirrored tool calls that reuse a lineage token without reaching an external recipient.
+level: high
+tags:
+  - saf.t1914
+  - attack.exfiltration
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1914-C011
+  telemetry_claim_ids:
+    - SAF-T1914-C001
+    - SAF-T1914-C003
+    - SAF-T1914-C011
+  limitation_claim_ids:
+    - SAF-T1914-C012
+  validation_artifacts:
+    - tests/SAF-T1914/test_detection_rule.py
+    - tests/SAF-T1914/fixtures.json
+    - research/techniques/SAF-T1914/validation/detection-test-results.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1914-C001
+        - SAF-T1914-C003
+      rationale: The host/client layer aggregates cross-server activity and is the protocol-designated point for policy and tool-use logging.
+    selection_source:
+      claim_ids:
+        - SAF-T1914-C004
+        - SAF-T1914-C011
+      rationale: Qualifying demonstrations begin with sensitive data returned from a source tool; sensitivity and lineage instrumentation bound that stage.
+    selection_sink:
+      claim_ids:
+        - SAF-T1914-C004
+        - SAF-T1914-C011
+      rationale: The defining outcome uses a later outbound-capable sink call rather than merely retrieving or transforming data.
+    correlation:
+      claim_ids:
+        - SAF-T1914-C011
+        - SAF-T1914-C012
+      rationale: Same-session ordering and shared lineage identify the proposed flow; the tested 120-second maxspan is a tunable analytic choice with stated blind spots.
+    authorized_exception:
+      claim_ids:
+        - SAF-T1914-C003
+        - SAF-T1914-C012
+        - SAF-T1914-C013
+      rationale: Explicit approval plus an allowed destination separates a documented legitimate transfer from the unauthorized pattern while preserving incomplete-log false positives.
+    condition:
+      claim_ids:
+        - SAF-T1914-C011
+        - SAF-T1914-C016
+      rationale: Requiring the complete source, distinct sink, shared lineage, and missing authorization enforces the technique boundary instead of alerting on injection or invocation alone.
+    falsepositives:
+      claim_ids:
+        - SAF-T1914-C012
+      rationale: The inventoried limitations directly support missing-authorization, broad-label, and benign-copying false-positive classes.

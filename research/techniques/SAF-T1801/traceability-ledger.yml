@@ -1,0 +1,130 @@
+version: 1
+technique_id: SAF-T1801
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1801/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1801/technique-contract.yml
+  supports: Internal scope, name, tactic, generation mode, and completion conditions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1801/quality-review.yml
+  supports: Validation commands, results, review date, reviewer, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1801/detection-rule.yml
+  supports: The repository's explicitly labeled experimental detection analytic.
+- id: LOCAL-detection-cases
+  path: techniques/SAF-T1801/test-logs.json
+  supports: Synthetic positive, negative, boundary, malformed, and expected false-positive
+    cases.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1801/test_detection_rule.py
+  supports: Deterministic implementation and detector result.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1801/source-coverage.yml
+  supports: Research passes, saturation, candidates, selected examples, and evidence
+    assessment.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1801/clean-room-attestation.yml
+  supports: Clean-room isolation and independent-search attestation.
+- id: LOCAL-detector-transcript
+  path: research/techniques/SAF-T1801/validation/detector-tests.txt
+  supports: Canonical execution and passing result for all eight deterministic detector cases.
+- id: LOCAL-validator-transcript
+  path: research/techniques/SAF-T1801/validation/research-validator.txt
+  supports: Isolated and canonical strict research-validator results.
+- id: LOCAL-provenance
+  path: research/techniques/SAF-T1801/validation/provenance.yml
+  supports: Validator identity, isolated-repository details, dependency disposition, and frozen source-corpus hash.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1801/integration/integration-notes.yml
+  supports: Mechanical post-freeze path, source, framework, history, neighbor, mitigation, and validation joins.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1801-X001
+  candidate: Every instance of automated data harvesting requires compromised credentials.
+  origin: Scope falsification pass.
+  attempted_searches:
+  - Reviewed Anthropic incident, MCP specifications, and Invariant demonstrations
+    for prerequisite access paths.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-tools-2025-06-18
+  reason: Demonstrations used authorized connectors after adversarial steering; credential
+    compromise is one possible prerequisite, not a defining requirement.
+  prohibited_publishable_text:
+  - automated data harvesting always requires stolen credentials
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1801-X002
+  candidate: The 20-distinct-object, five-minute threshold is effective in production
+    environments.
+  origin: Detection design challenge.
+  attempted_searches:
+  - Reviewed MITRE ATT&CK T1119, T1213, and DET0413 for evaluated universal thresholds.
+  - Reviewed MCP tool security guidance for normative detection thresholds.
+  consulted_source_ids:
+  - SRC-mitre-t1119-v1.4
+  - SRC-mitre-t1213-v3.4
+  - SRC-mcp-tools-2025-06-18
+  reason: Authorities describe mutable thresholds and windows; no reviewed evaluation
+    establishes universal accuracy for the synthetic SAF parameters.
+  prohibited_publishable_text:
+  - proven effective in production at 20 objects in five minutes
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1801-X003
+  candidate: CVE-2025-6514 is a direct example of Automated Data Harvesting.
+  origin: NVD/CVE vulnerability pass.
+  attempted_searches:
+  - Reviewed the CVE record and JFrog advisory for root cause, affected versions,
+    impact, and exploitation status.
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  reason: The root cause yields command execution during authorization; any later
+    data collection is a separate behavior.
+  prohibited_publishable_text:
+  - CVE-2025-6514 directly demonstrates automated data harvesting
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1801-X004
+  candidate: The WhatsApp and GitHub MCP experiments were production breaches.
+  origin: Evidence-classification challenge.
+  attempted_searches:
+  - Reviewed both original Invariant articles for environment and incident language.
+  consulted_source_ids:
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  reason: The sources describe controlled demonstrations, not third-party production
+    incidents.
+  prohibited_publishable_text:
+  - WhatsApp and GitHub MCP breaches
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1801-X005
+  candidate: All reviewed MCP vulnerabilities are actively exploited in the wild.
+  origin: Exploitation-status challenge.
+  attempted_searches:
+  - Checked CISA KEV catalog version 2026.09.01 for exact candidate identifiers.
+  - Reviewed each CVE record's CISA SSVC exploitation state.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-34072
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-cve-2025-6514
+  - SRC-cve-2026-25536
+  - SRC-cve-2026-33946
+  reason: The reviewed authorities reported none or proof-of-concept status, and none
+    of the identifiers appeared in the reviewed KEV release.
+  prohibited_publishable_text:
+  - all reviewed MCP CVEs are exploited in the wild
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

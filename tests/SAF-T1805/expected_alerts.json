@@ -1,0 +1,65 @@
+[
+  {
+    "event_id": "evt-positive-cross-tenant",
+    "event_type": "context_snapshot_export",
+    "reasons": [
+      "authorization_not_allowed",
+      "tenant_boundary_mismatch",
+      "owner_mismatch_without_approved_delegation"
+    ],
+    "sensitive_content_classes": [
+      "system_prompt",
+      "tool_result"
+    ],
+    "actor_id": "actor-red",
+    "owner_id": "owner-blue",
+    "actor_tenant_id": "tenant-red",
+    "owner_tenant_id": "tenant-blue",
+    "snapshot_id": "snapshot-example-1"
+  },
+  {
+    "event_id": "evt-positive-owner-mismatch",
+    "event_type": "trace_export",
+    "reasons": [
+      "owner_mismatch_without_approved_delegation"
+    ],
+    "sensitive_content_classes": [
+      "trace_input",
+      "trace_output"
+    ],
+    "actor_id": "analyst-7",
+    "owner_id": "user-12",
+    "actor_tenant_id": "tenant-blue",
+    "owner_tenant_id": "tenant-blue",
+    "trace_id": "trace-example-2"
+  },
+  {
+    "event_id": "evt-positive-denied-success",
+    "event_type": "checkpoint_history_read",
+    "reasons": [
+      "authorization_not_allowed"
+    ],
+    "sensitive_content_classes": [
+      "checkpoint_state"
+    ],
+    "actor_id": "user-22",
+    "owner_id": "user-22",
+    "actor_tenant_id": "tenant-green",
+    "owner_tenant_id": "tenant-green",
+    "thread_id": "thread-example-3"
+  },
+  {
+    "event_id": "evt-positive-unknown-owner",
+    "event_type": "context_snapshot_read",
+    "reasons": [
+      "authorization_not_allowed",
+      "owner_mismatch_without_approved_delegation"
+    ],
+    "sensitive_content_classes": [
+      "conversation_turn"
+    ],
+    "actor_id": "service-3",
+    "owner_id": "user-33",
+    "snapshot_id": "snapshot-example-4"
+  }
+]

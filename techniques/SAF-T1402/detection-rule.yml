@@ -1,31 +1,99 @@
-title: MCP Tool Metadata Steganography Detection
-id: 3ba9af96-ad37-409b-9b18-fbf6c1432a30
+title: Representation-Anomalous Carrier Followed by Agent Interpretation or Sensitive Action
+id: 4f9d2a57-b77d-4ce1-9eb1-7924ec08a11f
 status: experimental
-description: Detects hidden instructions in MCP tool metadata using zero-width characters or HTML comments
-author: Ryan Jennings
-date: 2025-10-25
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1402
-logsource:
-  product: mcp
-  service: tool_registry
-detection:
-  selection:
-    description|contains:
-      - '<!--'
-      - '\u200B'
-      - '\u200C'
-      - '\u200D'
-  condition: selection
-fields:
-  - tool_id
-  - tool_name
-  - metadata.description
-falsepositives:
-  - Legitimate use of formatting or markup
-  - Unicode formatting artifacts in multilingual tools
-level: high
+description: >-
+  Correlates an untrusted model-facing carrier containing a recorded
+  representation anomaly with a decode, reconstruction, interpretation, or
+  unapproved sensitive tool action in the same agent session within 300 seconds.
+author: OpenAI Codex
+date: 2026-09-01
 tags:
-  - attack.defense_evasion
-  - attack.t0005
-  - safe.t1402
+  - saf.t1402
+  - attack.defense-evasion
+logsource:
+  category: agent_application
+  product: generic
+  service: content_ingest_and_action_audit
+detection:
+  selection_ingest:
+    event_type: content_ingest
+    trust: untrusted
+    representation_findings:
+      - default_ignorable
+      - bidi_control
+      - confusable
+      - encoded_payload
+      - fragmented_instruction
+      - opaque_state
+      - image_instruction
+  selection_follow_on:
+    event_type:
+      - decode_or_interpret
+      - tool_call
+    sensitive_or_interpretive: true
+  filter_approved_or_allowlisted:
+    approval_state: approved
+    origin_allowlisted: true
+  timeframe: 300s
+  condition: >-
+    selection_ingest followed by selection_follow_on in the same session and
+    within timeframe, excluding explicitly approved or allowlisted origins
+fields:
+  - timestamp
+  - session_id
+  - event_type
+  - origin
+  - trust
+  - carrier_type
+  - content_hash
+  - representation_findings
+  - transform
+  - tool
+  - sensitivity
+  - approval_state
+  - origin_allowlisted
+falsepositives:
+  - Legitimate multilingual content using joiners, bidirectional controls, or script-specific formatting
+  - Reviewed encoded configuration, checksums, diagrams, or opaque state imported through an approved workflow
+  - Accessibility content or images intentionally interpreted by the agent
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1402-C016
+  telemetry_claim_ids:
+    - SAF-T1402-C011
+    - SAF-T1402-C016
+  limitation_claim_ids:
+    - SAF-T1402-C009
+    - SAF-T1402-C011
+  validation_artifacts:
+    - tests/SAF-T1402/cases.json
+    - tests/SAF-T1402/test_detection_rule.py
+    - research/techniques/SAF-T1402/validation/detector-test.txt
+    - research/techniques/SAF-T1402/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1402-C003, SAF-T1402-C016]
+      rationale: Model-facing ingest and action audit logs provide the carrier-to-action join.
+    selection_ingest:
+      claim_ids: [SAF-T1402-C011, SAF-T1402-C016]
+      rationale: The selection records representation hazards without treating any single character as malicious.
+    selection_follow_on:
+      claim_ids: [SAF-T1402-C016]
+      rationale: A follow-on interpretation or sensitive action distinguishes behavior from a static anomaly.
+    filter_approved_or_allowlisted:
+      claim_ids: [SAF-T1402-C011, SAF-T1402-C015]
+      rationale: Narrow approval and origin context suppress expected legitimate representations.
+    timeframe:
+      claim_ids: [SAF-T1402-C016]
+      rationale: A bounded window makes provenance correlation operationally testable.
+    condition:
+      claim_ids: [SAF-T1402-C016]
+      rationale: Same-session sequence correlation captures the defining carrier-recovery-action transition.
+    fields:
+      claim_ids: [SAF-T1402-C011, SAF-T1402-C016]
+      rationale: These fields preserve representation, origin, approval, session, and action context.
+    falsepositives:
+      claim_ids: [SAF-T1402-C011]
+      rationale: Unicode and multimodal content have legitimate uses, so anomalies alone must not establish intent.

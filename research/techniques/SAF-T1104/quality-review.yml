@@ -1,0 +1,58 @@
+version: 1
+technique_id: SAF-T1104
+review_status: passed
+reviewed_on: 2026-09-01
+reviewer: /root/cleanroom_saf_t1104
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The clean-room attestation passes with no prior-artifact access or unresolved concern.
+  contract_and_scope:
+    status: passed
+    notes: The draft satisfies the contract and separates authority abuse from malicious-input delivery and tool-definition manipulation.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior, prerequisites, flow, and conditional impacts are supported by reviewed primary sources.
+  claim_traceability:
+    status: passed
+    notes: Every external claim maps to reviewed evidence with a locator.
+  source_or_omit:
+    status: passed
+    notes: Every substantive publishable unit has a validated claim ID or declared local source.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is justified by a controlled end-to-end trusted-tool abuse experiment; no production-breach claim is made.
+  research_saturation:
+    status: passed
+    notes: Two consecutive post-discovery passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Incident, advisory, exploitation-status, impact-ranking, and remediation checks are recorded with explicit gaps and exclusions.
+  detection_quality:
+    status: passed
+    notes: Telemetry, eight fixtures, false positives, limits, and tuning guidance are present and tested.
+  mitigation_quality:
+    status: passed
+    notes: Controls constrain effective authority and require fresh intent or approval for consequential calls.
+  framework_alignment:
+    status: passed
+    notes: Execution alignment and canonical SAF-T1102 and SAF-T1001 neighboring-behavior boundaries are reconciled.
+  publication_rights:
+    status: passed
+    notes: Publication uses paraphrase only, preserves named credits, and carries no copied code, figures, or datasets.
+  safe_publication:
+    status: passed
+    notes: Examples are bounded descriptions without credentials, live endpoints, or destructive instructions.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1104
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1104/test_detection_rule.py
+    result: PASS SAF-T1104 detection tests (8 cases)
+    waiver: null
+
+unresolved: []

@@ -1,0 +1,130 @@
+version: 1
+technique_id: SAF-T1204
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1204/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1204/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, generation mode, and completion
+    conditions.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1204/quality-review.yml
+  supports: Quality-gate, test, and isolated-validator status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1204/detection-rule.yml
+  supports: Complete detection analytic and component traceability.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1204/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed-field, and false-positive
+    test logic.
+- id: LOCAL-detection-data
+  path: techniques/SAF-T1204/test-logs.json
+  supports: Synthetic telemetry cases for the detection analytic.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1204/source-coverage.yml
+  supports: Current research passes, selected examples, exclusions, conflicts, and
+    saturation.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1204/clean-room-attestation.yml
+  supports: Clean-room input boundary, independent searches, and freeze integrity.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1204/validation/detection-tests.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1204/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1204-X001
+  candidate: The Microsoft recommendation-poisoning campaign proves successful persistent
+    compromise in production.
+  origin: In-the-wild campaign report discovered during the incident pass.
+  attempted_searches:
+  - site:microsoft.com/security/blog memory poisoning AI agent incident
+  - site:security.googleblog.com agent memory poisoning incident
+  - site:openai.com/index memory prompt injection security incident
+  consulted_source_ids:
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-ms-guarding-ai-memory-2026
+  reason: The report documents attempts and explicitly says effectiveness and persistence
+    varied; it does not identify a successful end-to-end production case.
+  prohibited_publishable_text:
+  - confirmed successful production compromise
+  - proved persistent compromise in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1204-X002
+  candidate: CVE-2026-44999 is a direct memory-implant vulnerability with active exploitation.
+  origin: NVD result from the vulnerability pass.
+  attempted_searches:
+  - site:nvd.nist.gov prompt injection agent memory
+  - Direct review of the exact upstream GHSA discovered from NVD
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog AI agent memory poisoning
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-44999
+  - SRC-ghsa-openclaw-57r2
+  reason: The upstream advisory says no known CVE, describes only a transient trust-labeling
+    issue, and makes no exploitation claim or durable-memory finding.
+  prohibited_publishable_text:
+  - CVE-2026-44999 is a direct memory implant
+  - actively exploited OpenClaw memory poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1204-X003
+  candidate: Query-only memory implantation succeeds reliably in all realistic production
+    deployments.
+  origin: High controlled success rates in MINJA.
+  attempted_searches:
+  - site:arxiv.org memory poisoning realistic pre-existing memory defense
+  - site:proceedings.neurips.cc memory injection limitations shared memory
+  consulted_source_ids:
+  - SRC-neurips-minja-2025
+  - SRC-arxiv-memory-defense-2026
+  reason: The later controlled study found large reductions with pre-existing relevant
+    memory and retrieval changes; neither source establishes universal production
+    reliability.
+  prohibited_publishable_text:
+  - succeeds reliably in all realistic production deployments
+  - universally effective memory injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1204-X004
+  candidate: MCP itself defines or requires persistent long-term agent memory.
+  origin: Protocol authority pass.
+  attempted_searches:
+  - Direct review of MCP Tools and Resources specifications
+  - site:modelcontextprotocol.io/specification memory persistent cross-session
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-resources-2025-06-18
+  - SRC-langchain-long-term-memory
+  reason: MCP defines context and tool channels but not a persistent memory subsystem;
+    persistence is an implementation-level condition.
+  prohibited_publishable_text:
+  - MCP requires persistent memory
+  - MCP-defined long-term memory store
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1204-X005
+  candidate: The publicly credited MSRC cases are documented production breaches caused
+    by context memory implants.
+  origin: Researcher credits in Microsoft's Guarding AI memory article.
+  attempted_searches:
+  - site:microsoft.com/security/blog Guarding AI memory MSRC Johann Rehberger Hakon
+    Maloy Gal Zror
+  - site:microsoft.com/security/blog persistent context implant AI memory
+  consulted_source_ids:
+  - SRC-ms-guarding-ai-memory-2026
+  reason: Microsoft labels the presented scenario hypothetical and does not provide
+    enough case-level facts to classify the credited reports as production breaches.
+  prohibited_publishable_text:
+  - MSRC confirmed production breaches
+  - the credited cases were production incidents
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

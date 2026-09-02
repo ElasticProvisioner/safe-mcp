@@ -1,0 +1,15 @@
+[
+  {"name":"positive_cross_owner_cancel","event":{"method":"tasks/cancel","task_owner_mismatch":true,"outcome":"cancelled","actor_role":"user"},"expected":true},
+  {"name":"positive_transport_crash","event":{"event_type":"mcp_server_error","error_name":"ClosedResourceError","service_status":"unavailable","actor_role":"user"},"expected":true},
+  {"name":"positive_resource_pressure","event":{"event_type":"mcp_metric","service_status":"degraded","actor_request_count_60s":144,"concurrent_tasks_ratio":0.96,"actor_role":"user"},"expected":true},
+  {"name":"normalization_evasion_cancel","event":{"method":"  TaSkS/CaNcEl ","task_owner_mismatch":"TRUE","outcome":" SUCCESS ","actor_role":"User"},"expected":true},
+  {"name":"numeric_string_boundary","event":{"event_type":" MCP_METRIC ","service_status":" UNAVAILABLE ","actor_request_count_60s":"100","concurrent_tasks_ratio":"0.90","actor_role":"user"},"expected":true},
+  {"name":"negative_own_task_cancel","event":{"method":"tasks/cancel","task_owner_mismatch":false,"outcome":"cancelled","actor_role":"user"},"expected":false},
+  {"name":"negative_healthy_burst","event":{"event_type":"mcp_metric","service_status":"healthy","actor_request_count_60s":1000,"concurrent_tasks_ratio":1.0,"actor_role":"user"},"expected":false},
+  {"name":"below_count_boundary","event":{"event_type":"mcp_metric","service_status":"degraded","actor_request_count_60s":99,"concurrent_tasks_ratio":0.99,"actor_role":"user"},"expected":false},
+  {"name":"below_ratio_boundary","event":{"event_type":"mcp_metric","service_status":"degraded","actor_request_count_60s":100,"concurrent_tasks_ratio":0.8999,"actor_role":"user"},"expected":false},
+  {"name":"missing_fields","event":{"event_type":"mcp_metric","service_status":"degraded"},"expected":false},
+  {"name":"malformed_numeric","event":{"event_type":"mcp_metric","service_status":"degraded","actor_request_count_60s":"many","concurrent_tasks_ratio":"full"},"expected":false},
+  {"name":"expected_false_positive_suppressed","event":{"method":"tasks/cancel","task_owner_mismatch":true,"outcome":"success","actor_role":"approved_operator"},"expected":false},
+  {"name":"distributed_low_rate_evasion_limit","event":{"event_type":"mcp_metric","service_status":"degraded","actor_request_count_60s":60,"concurrent_tasks_ratio":0.95,"actor_role":"user","actor_id":"rotating-a"},"expected":false}
+]

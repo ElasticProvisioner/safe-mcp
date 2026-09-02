@@ -1,0 +1,233 @@
+version: 1
+_review_defaults: &review_defaults
+  accessed_on: "2026-09-01"
+  reviewed_on: "2026-09-01"
+  review_method: Direct review of the authoritative HTML page through the web retrieval interface.
+  review_status: opened_reviewed
+  archive:
+    status: remote_reviewed_not_archived
+    reason: The authoritative public page was reviewed live; no redistribution snapshot was retained in this clean-room packet.
+    review_evidence:
+      method: Direct web rendering with stable headings and line-locator notes.
+      reviewed_on: "2026-09-01"
+sources:
+  - <<: *review_defaults
+    id: SRC-mcp-auth-2026
+    title: Authorization - Model Context Protocol Specification 2026-07-28
+    authors: [Model Context Protocol Core Maintainers]
+    publisher: Model Context Protocol
+    source_class: protocol_or_standard
+    version_or_date: "2026-07-28"
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    locators: ["Overview, lines 133-147", "Token Audience Binding and Validation, lines 239-267", "Error Handling, lines 286-315"]
+    review_notes: Current protocol authority for resource indicators, bearer-token use, audience validation, and rejection behavior.
+  - <<: *review_defaults
+    id: SRC-mcp-security
+    title: Security Best Practices
+    authors: [Model Context Protocol Core Maintainers]
+    publisher: Model Context Protocol
+    source_class: protocol_or_standard
+    version_or_date: Draft reviewed 2026-09-01
+    official_url: https://modelcontextprotocol.io/docs/draft/tutorials/security/security_best_practices
+    locators: ["Token Passthrough, lines 220-250", "Scope Minimization and privilege chaining, lines 588-646"]
+    review_notes: Direct protocol security guidance defining token passthrough and its audience and control-bypass risks.
+  - <<: *review_defaults
+    id: SRC-rfc9700
+    title: RFC 9700 - Best Current Practice for OAuth 2.0 Security
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    publisher: RFC Editor / IETF
+    source_class: protocol_or_standard
+    version_or_date: January 2025
+    official_url: https://www.rfc-editor.org/info/rfc9700/
+    locators: ["Replay countermeasures, lines 127-145", "Counterfeit resource server and audience restriction, lines 518-560"]
+    review_notes: Best-current-practice authority for token replay, sender constraint, audience, and scope restriction.
+  - <<: *review_defaults
+    id: SRC-rfc8707
+    title: RFC 8707 - Resource Indicators for OAuth 2.0
+    authors: [Brian Campbell, John Bradley, Hannes Tschofenig]
+    publisher: RFC Editor / IETF
+    source_class: protocol_or_standard
+    version_or_date: February 2020
+    official_url: https://www.rfc-editor.org/rfc/rfc8707.html
+    locators: ["Section 1.1, lines 80-83", "Resource parameter and downscoping, lines 108-143"]
+    review_notes: Normative basis for binding an authorization request and access token to a protected resource.
+  - <<: *review_defaults
+    id: SRC-rfc9728
+    title: RFC 9728 - OAuth 2.0 Protected Resource Metadata
+    authors: [Michael B. Jones, Phil Hunt, Aaron Parecki]
+    publisher: RFC Editor / IETF
+    source_class: protocol_or_standard
+    version_or_date: April 2025
+    official_url: https://www.rfc-editor.org/rfc/rfc9728.html
+    locators: ["Section 7.4 Malicious Protected Resource, lines 357-361"]
+    review_notes: Defines the malicious-resource threat in which a token induced for another resource is reused there.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2025-69196
+    title: CVE-2025-69196 Detail
+    authors: [National Vulnerability Database]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: Modified 2026-03-17
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-69196
+    locators: ["Description", "References to GHSA-5h2m-4q8j-pqpj", "CISA Vulnrichment exploitation:poc"]
+    review_notes: Government vulnerability record; it supplied the exact GitHub advisory URL later opened, preserving non-GitHub provenance.
+  - <<: *review_defaults
+    id: SRC-fastmcp-ghsa
+    title: FastMCP OAuth client does not bind authorization request to protected resource
+    authors: [Jason Liu / jlowin, an7y]
+    publisher: PrefectHQ FastMCP
+    source_class: official_advisory
+    version_or_date: Published 2026-03-15
+    official_url: https://github.com/PrefectHQ/fastmcp/security/advisories/GHSA-5h2m-4q8j-pqpj
+    locators: ["Affected versions", "Vulnerability Details, lines 153-166", "Proof of Concept, lines 167-175", "Impact and Mitigation, lines 176-181"]
+    review_notes: Exact URL was opened only after the NVD record supplied it; no GitHub search or repository discovery was used.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2026-14541
+    title: CVE-2026-14541 Detail
+    authors: [National Vulnerability Database, Google Inc.]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: Published 2026-06-22
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-14541
+    locators: ["Description", "Metrics", "References to mcp-toolbox PR 3450", "CISA Vulnrichment"]
+    review_notes: Government record for omitted audience validation and the vulnerable Google MCP Toolbox configuration; supplied the exact maintainer URL.
+  - <<: *review_defaults
+    id: SRC-google-pr3450
+    title: Make audience validation mandatory
+    authors: [Duwenxin, He Wei, Averi Kitsch]
+    publisher: Google MCP Toolbox maintainers
+    source_class: implementation_artifact
+    version_or_date: Merged 2026-06-18
+    official_url: https://github.com/googleapis/mcp-toolbox/pull/3450
+    locators: ["Pull request title", "Merged status", "Release 1.5.0 linkage", "Author and reviewer metadata"]
+    review_notes: Exact URL was opened only after NVD supplied it; reviewed solely as the official correction record, without repository search.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2026-48529
+    title: CVE-2026-48529 Detail
+    authors: [National Vulnerability Database, GitHub]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: Published 2026-07-24
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-48529
+    locators: ["Description", "References to GHSA-pjp5-fpmr-3349", "CISA Vulnrichment exploitation:poc"]
+    review_notes: Government vulnerability record; supplied the exact GitHub advisory URL later opened.
+  - <<: *review_defaults
+    id: SRC-github-mcp-ghsa
+    title: Authorization bypass through global GraphQL client caching in HTTP lockdown mode
+    authors: [GitHub MCP Server Security Team, He Wei, matte1782, kerobbi, JoannaaKL]
+    publisher: GitHub
+    source_class: official_advisory
+    version_or_date: Published 2026-07-24
+    official_url: https://github.com/github/github-mcp-server/security/advisories/GHSA-pjp5-fpmr-3349
+    locators: ["Affected and patched versions", "Vulnerability Details", "Proof of Concept", "Impact", "Credits"]
+    review_notes: Exact URL was opened only after NVD supplied it; no GitHub search or repository discovery was used.
+  - <<: *review_defaults
+    id: SRC-foundry-local-gap02
+    title: Microsoft Foundry Local known issues - GAP-02
+    authors: [Microsoft Learn, Azure Arc Agentic Retrieval team]
+    publisher: Microsoft
+    source_class: official_advisory
+    version_or_date: Updated 2026-07-08
+    official_url: https://learn.microsoft.com/en-us/azure/azure-arc/agents-tools-foundry-local/known-issues
+    locators: ["GAP-02, lines 44-62"]
+    review_notes: Current vendor known issue for caller-bearer-token forwarding without revalidation in a preview feature.
+  - <<: *review_defaults
+    id: SRC-github-secure-mcp
+    title: How to build secure and scalable remote MCP servers
+    authors: [Den Delimarsky]
+    publisher: GitHub Blog
+    source_class: credible_practice
+    version_or_date: "2025-07-25"
+    official_url: https://github.blog/ai-and-ml/generative-ai/how-to-build-secure-and-scalable-remote-mcp-servers/
+    locators: ["Identity-aware remote servers, lines 429-452", "Per-operation validation, lines 479-489"]
+    review_notes: Maintainer architecture guidance for per-operation identity, permission, audience, and scope validation.
+  - <<: *review_defaults
+    id: SRC-attack-det0185
+    title: DET0185 - Detection Strategy for Application Access Token
+    authors: [MITRE ATT&CK Team]
+    publisher: MITRE ATT&CK
+    source_class: credible_practice
+    version_or_date: Reviewed 2026-09-01
+    official_url: https://attack.mitre.org/detectionstrategies/DET0185/
+    locators: ["AN0527, lines 53-68", "TokenReuseWindow mutable element", "Service-account reuse, lines 101-115"]
+    review_notes: Direct framework authority for detecting token reuse across sessions and clients with a configurable time window.
+  - <<: *review_defaults
+    id: SRC-attack-t1550-001
+    title: "T1550.001 - Use Alternate Authentication Material: Application Access Token"
+    authors: [MITRE ATT&CK Team, Blake Strom, Dylan Silva, Ian Davila, Jack Burns, Jeff Sakowicz, Mark Wee, Pawel Partyka, Saisha Agrawal, Shailesh Tiwary]
+    publisher: MITRE ATT&CK
+    source_class: credible_practice
+    version_or_date: Version 2.0, modified 2026-05-12
+    official_url: https://attack.mitre.org/techniques/T1550/001/
+    locators: ["Technique definition", "Version and modification metadata", "Contributors"]
+    review_notes: Closest conceptual framework match for use of application access tokens; mapped as analogous only.
+  - <<: *review_defaults
+    id: SRC-microsoft-ai-gateway-incident
+    title: When AI infrastructure becomes the target - Securing gateways as control points
+    authors: [Yash Gund, Sumith Maniath, Microsoft Security Research]
+    publisher: Microsoft Security Blog
+    source_class: incident_report
+    version_or_date: "2026-08-26"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/08/26/when-ai-infrastructure-becomes-target-securing-gateways-control-points/
+    locators: ["LiteLLM incident, lines 100-118", "RAGFlow model-key extraction, lines 246-248"]
+    review_notes: Reviewed and excluded as adjacent credential extraction and later use without a current-caller relay boundary.
+  - <<: *review_defaults
+    id: SRC-microsoft-mcp-misconfig
+    title: When configuration becomes vulnerability - Exploitable misconfigurations in AI apps
+    authors: [Yossi Weizman, Microsoft Defender Security Research Team]
+    publisher: Microsoft Security Blog
+    source_class: research
+    version_or_date: "2026-05-14"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/05/14/configuration-becomes-vulnerability-exploitable-misconfigurations-ai-apps/
+    locators: ["Exposed unauthenticated MCP instances"]
+    review_notes: Reviewed and excluded because unauthenticated exposure does not establish credential relay.
+  - <<: *review_defaults
+    id: SRC-microsoft-oauth-redirect
+    title: OAuth redirection abuse enables phishing and malware delivery
+    authors: [Microsoft Defender Security Research Team]
+    publisher: Microsoft Security Blog
+    source_class: incident_report
+    version_or_date: "2026-03-02"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/03/02/oauth-redirection-abuse-enables-phishing-malware-delivery/
+    locators: ["Attack description stating the attacker does not obtain the OAuth token"]
+    review_notes: Reviewed and excluded as redirect and delivery abuse without credential relay; used only to define the neighbor boundary.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2025-4143
+    title: CVE-2025-4143 Detail
+    authors: [National Vulnerability Database]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: 2025
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-4143
+    locators: ["Description and references"]
+    review_notes: Reviewed and excluded because redirect-URI weakness concerns initial token acquisition.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2026-53518
+    title: CVE-2026-53518 Detail
+    authors: [National Vulnerability Database]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: 2026
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-53518
+    locators: ["Description and references"]
+    review_notes: Reviewed and excluded because duplicate authorization-code redemption does not establish an MCP relay boundary.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2026-14539
+    title: CVE-2026-14539 Detail
+    authors: [National Vulnerability Database, Google Inc.]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: 2026
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-14539
+    locators: ["Description and CISA Vulnrichment"]
+    review_notes: Reviewed during saturation and excluded as an availability issue outside the contract.
+  - <<: *review_defaults
+    id: SRC-nvd-cve-2025-6238
+    title: CVE-2025-6238 Detail
+    authors: [National Vulnerability Database]
+    publisher: NIST National Vulnerability Database
+    source_class: official_advisory
+    version_or_date: 2025
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-6238
+    locators: ["Description and references"]
+    review_notes: Reviewed and excluded because token interception is credential acquisition rather than relay.

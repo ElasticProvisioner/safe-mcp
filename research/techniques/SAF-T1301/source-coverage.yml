@@ -1,0 +1,181 @@
+version: 1
+technique_id: SAF-T1301
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - site:modelcontextprotocol.io specification tools model-controlled description security
+        - site:developers.openai.com MCP approvals allowed_tools security
+      material_changes:
+        - Established the model-controlled tool flow, untrusted annotation boundary, and host approval guidance.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - site:microsoft.com/en-us/security/blog 2026 cross-server tool shadowing
+        - site:nvd.nist.gov/vuln/detail MCP tool trusted description
+        - site:cisa.gov MCP tool shadowing vulnerability
+        - site:research.jfrog.com MCP tool shadowing
+      material_changes:
+        - Selected one anonymized production observation and classified three CVE leads as enabling or adjacent rather than direct.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - site:invariantlabs.ai MCP tool shadowing trusted email
+        - site:arxiv.org MCP shadowing shared context descriptor manipulation
+      material_changes:
+        - Added the direct Cursor demonstration and controlled multi-model study.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - site:invariantlabs.ai MCP scan cross-origin escalation shadowing
+        - site:microsoft.com/en-us/security/blog cross-server instruction override controls logging
+      material_changes:
+        - Derived descriptor-provenance telemetry, an explicit-reference heuristic, and bounded limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - site:unit42.paloaltonetworks.com MCP tool shadowing identical similar names
+        - site:modelcontextprotocol.io specification draft server tools collision
+      material_changes:
+        - Resolved conflicting shadowing terminology by excluding same-name collision from the contract.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - site:research.jfrog.com MCP cross-server tool shadowing trusted tool
+        - site:nvd.nist.gov/vuln/detail MCP cross-server instruction override
+        - site:microsoft.com/en-us/security/blog exact cross-server instruction override
+        - site:invariantlabs.ai trusted server tool shadowing breach
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - site:arxiv.org 2026 MCP descriptor shared context trusted tool override shadowing production
+        - site:cisa.gov 2026 MCP tool shadowing CVE-2026-25905
+        - site:nvd.nist.gov/vuln/detail CVE MCP trusted tool description
+        - site:modelcontextprotocol.io 2026 tool description provenance cross server
+      material_changes: []
+  rationale: >-
+    Direct protocol, vendor incident-response, primary researcher, official advisory, government vulnerability, and controlled-research sources cover the protocol premise, defining behavior, observation, impact, detection, defense, and limitations. The final two domain-restricted passes returned known sources or material outside the contract, so further searching was unlikely to change the publishable technique.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-microsoft-tool-poisoning-2026-06-30
+    - SRC-invariant-tpa-2025-04-01
+    - SRC-jamshidi-2026-arxiv-2512-06556
+  no_qualifying_examples_rationale: ""
+  candidates:
+    - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+      identifier: Microsoft enterprise-agent cross-server tool shadowing pattern
+      relationship: direct_production_incident
+      exploitation_status: Observed in 2026; affected organizations and detailed indicators withheld under coordinated disclosure.
+      impact: Sensitive finance data collection and exfiltration through trusted business-data and messaging tools.
+      remediation: Microsoft recommends server allowlisting, metadata inspection, DLP, approvals, least privilege, and correlated logging.
+      selected: true
+      rationale: Highest-impact qualifying production observation and exact match to the contract boundary, with explicit disclosure limitations retained.
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant Cursor trusted-email shadowing demonstration
+      relationship: direct_demonstration
+      exploitation_status: Public controlled demonstration published 2025-04-01.
+      impact: A malicious descriptor redirected behavior of a separately trusted email tool.
+      remediation: Visible and pinned descriptors plus cross-server data-flow guardrails are proposed; no product patch is asserted.
+      selected: true
+      rationale: Clearest public end-to-end demonstration of the defining cross-server semantic influence.
+    - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+      identifier: Semantic Attacks on Tool-Augmented LLMs shadowing evaluation
+      relationship: direct_demonstration
+      exploitation_status: Controlled synthetic evaluation, revised 2026-05-21.
+      impact: Unsafe tool invocations bypassed baseline defenses under evaluated shared-context scenarios.
+      remediation: The study evaluates signing, semantic vetting, and runtime guardrails; production effectiveness remains unestablished.
+      selected: true
+      rationale: Highest-quality multi-model controlled evidence and independent corroboration of the defining mechanism.
+    - source_id: SRC-jfrog-jfsa-2026-001653030
+      identifier: CVE-2026-25905 / JFSA-2026-001653030
+      relationship: enabling_vulnerability
+      exploitation_status: Public proof of concept; affected project archived and no fix listed by the researcher advisory.
+      impact: Python execution without isolation can take over an MCP server and mutate its own tool metadata.
+      remediation: No upstream fix; JFrog recommends no mitigation in the archived project advisory.
+      selected: false
+      rationale: It may enable malicious metadata but demonstrates same-server takeover and renaming, not the defining cross-server descriptor override.
+    - source_id: SRC-nvd-cve-2025-58357
+      identifier: CVE-2025-58357
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public proof of concept recorded by CISA SSVC in NVD; fixed in 5ire 0.14.0.
+      impact: Compromised MCP content can trigger script execution in affected 5ire clients.
+      remediation: Upgrade to 5ire 0.14.0 or later.
+      selected: false
+      rationale: This is a client content-injection/XSS path rather than semantic influence over another server's trusted tool.
+    - source_id: SRC-clean-t1301-nvd-cve-2026-33252
+      identifier: CVE-2026-33252
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: NVD records no known exploitation; fixed in Go MCP SDK 1.4.1.
+      impact: A malicious website can trigger requests to a locally running MCP server because of missing origin validation.
+      remediation: Upgrade to Go MCP SDK 1.4.1 or later and enforce origin validation.
+      selected: false
+      rationale: The vulnerability crosses a browser-to-local-server boundary and does not use descriptor semantics to control another server's tool.
+    - source_id: SRC-clean-t1301-unit42-shadowing
+      identifier: Unit 42 MCP Tool/Agent Shadowing taxonomy entry
+      relationship: rejected
+      exploitation_status: Taxonomy description, not an incident or vulnerability record.
+      impact: Potential selection of a malicious tool registered with an identical or similar name.
+      remediation: Not selected for this packet because it addresses a different mechanism.
+      selected: false
+      rationale: It uses shadowing terminology for same-name collision, which is explicitly out of scope here.
+sources_consulted:
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-clean-t1301-attack-t1548
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-tools-2025-11-25
+  - SRC-clean-t1301-mcp-tools-draft
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-redteam-update-2026
+  - SRC-nvd-cve-2025-58357
+  - SRC-clean-t1301-nvd-cve-2026-33252
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-clean-t1301-unit42-shadowing
+sources_cited:
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-clean-t1301-attack-t1548
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-tools-2025-11-25
+  - SRC-clean-t1301-mcp-tools-draft
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-ms-redteam-update-2026
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-clean-t1301-unit42-shadowing
+sources_rejected:
+  - source_id: SRC-jfrog-jfsa-2026-001653030
+    reason: Enabling server-takeover vulnerability, but its proof mutates the compromised server's own metadata and does not establish cross-server override.
+  - source_id: SRC-nvd-cve-2025-58357
+    reason: Adjacent script-injection vulnerability with a different client rendering mechanism.
+  - source_id: SRC-clean-t1301-nvd-cve-2026-33252
+    reason: Adjacent origin-validation vulnerability with a different browser-to-local-server boundary.
+sources_blocked: []
+conflicts:
+  - issue: Some security taxonomies use tool shadowing for identical or similar tool-name registration.
+    resolution: The contract distinguishes that identity-collision mechanism as synthetic neighbor SAF-T1205 and reserves SAF-T1301 for semantic influence across server provenance.
+  - issue: The Microsoft production report is anonymized and may be read as broader prevalence evidence.
+    resolution: The README states only that a pattern was observed and retains the source's disclosure limitations.
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1301-C002
+    - SAF-T1301-C003
+    - SAF-T1301-C005
+  rationale: >-
+    Microsoft Incident Response explicitly reports observation of the complete cross-server instruction-override pattern in 2026. A prior direct demonstration and controlled study corroborate the mechanism, while the anonymization limitation prevents any claim about prevalence or named victims.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1202
+name: OAuth Token Persistence
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0003
+
+adversary_objective: >-
+  Preserve authorized-looking access to an MCP protected resource by using an
+  attacker-controlled OAuth refresh token to obtain replacement access tokens
+  after an access token expires or the originally compromised endpoint is contained.
+
+scope:
+  security_boundary: >-
+    The OAuth client and authorization-server grant boundary that separates
+    possession of a refresh token from authority to mint access tokens for an MCP resource.
+  in_scope:
+    - Reuse or replay of an attacker-controlled refresh token to obtain fresh access tokens for an MCP protected resource.
+    - Continued use of the original resource owner's client, subject, scope, and resource grant across access-token lifetimes.
+  out_of_scope:
+    - Theft, phishing, logging, or exfiltration that initially acquires the token; those are credential-access behaviors.
+    - Registering or consenting to a malicious OAuth application; that changes or creates an integration rather than reusing an existing token grant.
+    - Actions performed through the resulting access token, including tool misuse, collection, or exfiltration.
+    - Web-session-cookie replay, API keys, service-account keys, and non-OAuth bearer material.
+  affected_components:
+    - MCP client token store
+    - OAuth authorization server token endpoint and grant records
+    - MCP server acting as OAuth resource server
+
+nearest_neighbors:
+  - technique_id: SAF-T1504
+    distinction: >-
+      Token Theft via API Response ends when an adversary obtains token material,
+      while SAF-T1202 begins when a refresh token is used to renew authorized
+      access.
+
+required_evidence:
+  - Current MCP authorization and security requirements for token handling, refresh tokens, audience binding, and rotation.
+  - Current OAuth security guidance establishing refresh-token replay impact and required protections.
+  - Directly reviewed production incidents, disclosed vulnerabilities, demonstrations, remediation state, and exploitation status where available.
+  - Operational telemetry that can distinguish suspicious refresh from normal client renewal, plus documented blind spots.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Authorization-server token events with timestamp, grant_type, client_id, subject_id, token_family_id, result, account_status, and refresh_token_reuse_detected.
+    - Identity lifecycle records showing whether the subject or grant was disabled or revoked at event time.
+
+safe_example_constraints:
+  - Use only placeholder token-family identifiers and reserved example domains.
+  - Do not include live credentials, token values, exploit payloads, or product-specific bypass steps.
+  - Model only authorization events needed to exercise the defensive analytic.
+
+completion_evidence:
+  - Every substantive publishable unit has a validated claim and directly reviewed source with exact locators.
+  - All five research passes and two no-change saturation passes are recorded.
+  - Two to four selected examples are classified and limitations remain visible.
+  - Detection tests cover positive, negative, boundary, malformed, and legitimate-lookalike cases.
+  - Publication-rights, attribution, safe-publication, framework, and clean-room gates pass.

@@ -1,0 +1,31 @@
+version: 1
+technique_id: SAF-T1111
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent /root/cleanroom_saf_t1111
+gates:
+  clean_room_integrity: {status: passed, notes: Attestation records a fresh agent, no prohibited access, independent sources, isolated validation, and pre-integration freeze.}
+  contract_and_scope: {status: passed, notes: Intentional adversary operation is bounded from hostile-input hijacking, direct shell use, and downstream objectives.}
+  technical_accuracy: {status: passed, notes: Production behavior, product modes, controls, prerequisites, and limitations are directly sourced or explicit inferences.}
+  claim_traceability: {status: passed, notes: Nineteen validated claims include source relations, exact locators, limitations, and inference flags.}
+  source_or_omit: {status: passed, notes: Every substantive README line has a valid hidden trace or declared local artifact; excluded leads remain absent.}
+  evidence_classification: {status: passed, notes: Observed is supported by two direct provider investigations of live cyber operations.}
+  research_saturation: {status: passed, notes: Five passes and two consecutive no-change follow-ups are recorded.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Six candidates were classified; two incidents and two adjacent high-impact vulnerabilities were selected.}
+  detection_quality: {status: passed, notes: Ten inert deterministic cases cover positives, negatives, normalization, malformed input, boundaries, and an expected false positive.}
+  mitigation_quality: {status: passed, notes: Isolation, approvals, scoped access, patching, and monitoring address the mechanism and stated limits.}
+  framework_alignment: {status: passed, notes: Execution, ATT&CK T1059, canonical SAF-T1102 and SAF-T1101 neighbors, and repository mitigations are reconciled.}
+  publication_rights: {status: passed, notes: Sources are paraphrased with attribution; no protected code, diagrams, datasets, or quotations are reproduced.}
+  safe_publication: {status: passed, notes: Example and tests use inert marker actions and contain no payloads, targets, credentials, or destructive instructions.}
+validation:
+  commands:
+    - command: python3 techniques/SAF-T1111/test_detection_rule.py
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1111
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1111/test_detection_rule.py
+    result: 10 cases; 4 alerts; 0 failures; expected authorized-lab lookalike alerted.
+    waiver: null
+unresolved: []

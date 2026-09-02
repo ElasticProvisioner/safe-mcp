@@ -1,0 +1,135 @@
+version: 1
+technique_id: SAF-T1406
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1406/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1406/technique-contract.yml
+  supports: Frozen scope, neutral name, supplied tactic, nearest-neighbor distinctions,
+    and telemetry contract.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1406/claim-inventory.yml
+  supports: Validated claims, exact source locators, limitations, conflicts, and evidence
+    classifications.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1406/source-coverage.yml
+  supports: Search operations, candidate ranking, selections, exclusions, and saturation
+    evidence.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1406/quality-review.yml
+  supports: Validation commands, results, review date, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1406/detection-rule.yml
+  supports: The repository's explicitly labeled metadata-integrity analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1406/test_detection_rule.py
+  supports: Deterministic test harness for the detection analytic.
+- id: LOCAL-detection-events
+  path: tests/SAF-T1406/test-events.json
+  supports: Inert positive, negative, boundary, malformed, and false-positive-oriented
+    fixtures.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1406/validation/detection-tests.txt
+  supports: Isolated and integrated deterministic detection-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1406/validation/validator.txt
+  supports: Isolated and integrated strict-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1406-X001
+  candidate: A production breach used MCP metadata manipulation against a real victim.
+  origin: Required production-incident search.
+  attempted_searches:
+  - Reviewed official CVE records, linked first-party advisories, the CISA KEV feed,
+    first-party demonstrations, and selected research papers.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-54136
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-arxiv-2508.02110v2
+  reason: The direct sources establish disclosure or controlled demonstrations, not
+    a qualifying production incident.
+  prohibited_publishable_text:
+  - confirmed in-the-wild campaign abusing MCP metadata
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1406-X002
+  candidate: CVE-2025-6514 is a direct example of this technique.
+  origin: Official CVE API MCP vulnerability review.
+  attempted_searches:
+  - Reviewed the CVE record and first-party JFrog technical analysis to identify the
+    immediate mechanism.
+  consulted_source_ids:
+  - SRC-cve-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  reason: The immediate mechanism is OS command injection from a crafted OAuth endpoint,
+    not trust or policy misclassification.
+  prohibited_publishable_text:
+  - CVE-2025-6514 is Metadata Manipulation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1406-X003
+  candidate: CVE-2025-54135 is a direct post-approval metadata-rug-pull example.
+  origin: Official CVE API MCP vulnerability review.
+  attempted_searches:
+  - Reviewed the CVE record and CVE-supplied maintainer advisory for prerequisite
+    and immediate outcome.
+  consulted_source_ids:
+  - SRC-cve-2025-54135
+  - SRC-ghsa-cursor-4cxx-2025
+  reason: The flaw creates a previously absent configuration through indirect prompt
+    injection; it does not reuse a metadata-derived approval.
+  prohibited_publishable_text:
+  - CVE-2025-54135 proves a metadata rug pull
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1406-X004
+  candidate: CVE-2025-49596 belongs in the technique because it affects MCP software.
+  origin: Official CVE API MCP vulnerability review.
+  attempted_searches:
+  - Reviewed the CVE record and CVE-supplied maintainer advisory for the actual security
+    boundary.
+  consulted_source_ids:
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  reason: Missing proxy authentication is unrelated to metadata-driven object classification.
+  prohibited_publishable_text:
+  - MCP Inspector authentication failure is metadata manipulation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1406-X005
+  candidate: A single metadata-hash comparison detects every form of tool poisoning.
+  origin: Detection-design challenge pass.
+  attempted_searches:
+  - Compared the implementation report with controlled semantic-defense results and
+    study limitations.
+  consulted_source_ids:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-arxiv-2508.02110v2
+  reason: Integrity monitoring misses an initially approved malicious baseline and
+    cannot replace semantic or runtime controls.
+  prohibited_publishable_text:
+  - descriptor hashing prevents all tool poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1406-X006
+  candidate: The affected lower-bound for CVE-2025-54136 is unambiguous.
+  origin: Conflict review between the CVE record and linked maintainer advisory.
+  attempted_searches:
+  - Compared the affected-version fields and remediation text in both official records.
+  consulted_source_ids:
+  - SRC-cve-2025-54136
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  reason: The sources disagree on the affected range but agree that version 1.3 is
+    patched.
+  prohibited_publishable_text:
+  - all Cursor versions before 1.2.4 are affected
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,29 @@
+version: 1
+technique_id: SAF-T1301
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room authoring agent /root/cleanroom_saf_t1301
+gates:
+  clean_room_integrity: {status: passed, notes: Prohibited target, shared registry, history, and prior-bundle inputs were not accessed before freeze.}
+  contract_and_scope: {status: passed, notes: The contract is limited to descriptor-based semantic influence across server provenance.}
+  technical_accuracy: {status: passed, notes: Protocol flow, prerequisites, boundary, and impact conditions are supported and bounded.}
+  claim_traceability: {status: passed, notes: All claims carry exact locators to reviewed direct sources.}
+  source_or_omit: {status: passed, notes: Every substantive README unit is traced or links a declared local artifact; six unsupported leads are excluded.}
+  evidence_classification: {status: passed, notes: Observed is supported by one explicit, anonymized Microsoft production observation and not by adjacent CVEs.}
+  research_saturation: {status: passed, notes: Two consecutive domain-restricted follow-up passes produced no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Seven candidates were classified and the three highest-impact direct examples selected.}
+  detection_quality: {status: passed, notes: Eight deterministic cases test positive, negative, boundary, malformed, and name-collision-only inputs; limitations are explicit.}
+  mitigation_quality: {status: passed, notes: Controls address server trust, descriptor provenance, scoped approval, and correlated telemetry.}
+  framework_alignment: {status: passed, notes: SAF-T1001 and SAF-T1205 distinguish own-tool poisoning and post-approval mutation; collision-only behavior remains explicitly unmapped, ATT&CK is analogous, and ten mitigation joins are reconciled.}
+  publication_rights: {status: passed, notes: All publishable source use is paraphrase with attribution; no third-party code, figures, or quotations are reproduced.}
+  safe_publication: {status: passed, notes: The example is inert, uses example.invalid, and omits an operational poisoning payload.}
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1301
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1301/test_detection_rule.py
+    result: PASS 8 cases (2 positive, 6 negative)
+    waiver: null
+unresolved: []

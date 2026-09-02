@@ -1,0 +1,35 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1701
+    name: Cross-Tool Contamination
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0008
+    technique_path: techniques/SAF-T1701/README.md
+    research_packet: research/techniques/SAF-T1701
+    related_techniques:
+      - SAF-T1001
+      - SAF-T1102
+    mitigations:
+      - SAF-M-1
+      - SAF-M-5
+      - SAF-M-12
+      - SAF-M-21
+      - SAF-M-22
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1701/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1701/run_detection_tests.py
+        - tests/SAF-T1701/test-cases.yml
+        - tests/SAF-T1701/expected-results.yml
+        - research/techniques/SAF-T1701/validation/detector-test.txt
+        - research/techniques/SAF-T1701/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1080
+        type: analogous

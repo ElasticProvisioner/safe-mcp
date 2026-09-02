@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1201
+name: MCP Rug Pull Attack
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+  - ATK-TA0003
+adversary_objective: >-
+  Preserve a trusted MCP execution or influence path by changing an already
+  approved tool definition or delivered implementation without renewed approval.
+scope:
+  security_boundary: >-
+    The continuity boundary between an approved MCP tool definition or resolved
+    artifact and materially different content later accepted under the same
+    server/tool trust identity.
+  in_scope:
+    - Post-approval mutation of tool metadata under the same server/tool identity.
+    - Post-review mutation of a provider-controlled package or repository reference used to deliver an MCP server.
+    - Continued availability or invocation of the changed tool without approval for the new state.
+  out_of_scope:
+    - Malicious metadata present at first discovery, which is initial tool poisoning.
+    - Malicious instructions introduced only through tool results or external resources.
+    - Local MCP configuration overwrite through a separate prompt-injection vulnerability.
+    - Downstream credential theft, command execution, or exfiltration beyond the immediate retained trust path.
+  affected_components:
+    - MCP host and client approval state
+    - MCP server tool registry and tools/list response
+    - Package, repository, registry, or backend update path
+    - Downstream services reachable through the tool
+nearest_neighbors:
+  - technique_id: SAF-T1001
+    distinction: >-
+      Initial Tool Metadata Poisoning is malicious when first discovered; SAF-T1201
+      requires a benign approved baseline followed by a material change.
+  - technique_id: SAF-T1102
+    distinction: >-
+      Runtime Tool Output Injection supplies malicious content in a call result;
+      SAF-T1201 changes the definition or delivered implementation before later use.
+required_evidence:
+  - Establish current MCP tool discovery, definition, and list-change behavior.
+  - Establish a controlled end-to-end post-approval mutation under a stable identity.
+  - Search separately for production breaches, direct vulnerabilities and advisories, exploitation status, demonstrations, defenses, and contrary evidence.
+  - Bound package/repository substitution separately from live definition mutation.
+  - Establish testable integrity and approval-state telemetry or record a waiver.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Provenance-scoped server identity, tool name, canonical definition hash, and observation timestamp.
+    - Latest approval ID, approved definition hash, reapproval status, session ID, and invocation records.
+    - Package or repository digest and runtime action telemetry for backend-only changes.
+safe_example_constraints:
+  - Use reserved example domains, truncated placeholder hashes, and benign tool names.
+  - Do not reproduce malicious prompt text, credential paths, executable commands, or live endpoints.
+  - Demonstrate only integrity mismatch and approval state.
+completion_evidence:
+  - Every substantive publishable unit is linked to a validated claim and directly reviewed source or declared local artifact.
+  - Every unverified production-incident, direct-CVE, and product-coverage lead is omitted and recorded in the exclusion ledger.
+  - Five research passes and two consecutive no-change saturation passes are recorded.
+  - Eight-case deterministic detection validation passes.
+  - Rights, safe-publication, framework, and strict isolated-validator gates pass.

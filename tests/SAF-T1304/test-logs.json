@@ -1,0 +1,83 @@
+{
+  "technique_id": "SAF-T1304",
+  "cases": [
+    {
+      "id": "positive-audience-mismatch",
+      "classification": "positive",
+      "expected_alert": true,
+      "events": [{"timestamp": "2026-09-01T10:00:00Z", "request_id": "r1", "session_id": "s1", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://records.invalid/mcp", "token_audience": "https://other.invalid/mcp", "token_fingerprint": "sha256:a1", "token_exchange_validated": false, "action": "tools/call"}]
+    },
+    {
+      "id": "positive-principal-mismatch",
+      "classification": "positive",
+      "expected_alert": true,
+      "events": [{"timestamp": "2026-09-01T10:10:00Z", "request_id": "r2", "session_id": "s2", "principal_id": "bob", "upstream_principal_id": "alice", "expected_resource": "https://records.invalid/mcp", "token_audience": "https://records.invalid/mcp", "token_fingerprint": "sha256:b2", "token_exchange_validated": false, "action": "resources/read"}]
+    },
+    {
+      "id": "positive-cross-resource-599s",
+      "classification": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-01T11:00:00Z", "request_id": "r3a", "session_id": "s3", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:c3", "token_exchange_validated": false, "action": "tools/list"},
+        {"timestamp": "2026-09-01T11:09:59Z", "request_id": "r3b", "session_id": "s3", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://two.invalid/mcp", "token_fingerprint": "sha256:c3", "token_exchange_validated": false, "action": "tools/call"}
+      ]
+    },
+    {
+      "id": "positive-inclusive-600s-boundary",
+      "classification": "boundary_positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-01T12:00:00Z", "request_id": "r4a", "session_id": "s4", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:d4", "token_exchange_validated": false, "action": "tools/list"},
+        {"timestamp": "2026-09-01T12:10:00Z", "request_id": "r4b", "session_id": "s4", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://two.invalid/mcp", "token_fingerprint": "sha256:d4", "token_exchange_validated": false, "action": "tools/call"}
+      ]
+    },
+    {
+      "id": "positive-combined-mismatch",
+      "classification": "positive",
+      "expected_alert": true,
+      "events": [{"timestamp": "2026-09-01T12:20:00Z", "request_id": "r5", "session_id": "s5", "principal_id": "bob", "upstream_principal_id": "alice", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:e5", "token_exchange_validated": false, "action": "tools/call"}]
+    },
+    {
+      "id": "expected-false-positive-shared-gateway",
+      "classification": "expected_false_positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-01T13:00:00Z", "request_id": "r6a", "session_id": "svc", "principal_id": "approved-gateway", "upstream_principal_id": "approved-gateway", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:service", "token_exchange_validated": false, "action": "health/read"},
+        {"timestamp": "2026-09-01T13:01:00Z", "request_id": "r6b", "session_id": "svc", "principal_id": "approved-gateway", "upstream_principal_id": "approved-gateway", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://two.invalid/mcp", "token_fingerprint": "sha256:service", "token_exchange_validated": false, "action": "health/read"}
+      ]
+    },
+    {
+      "id": "negative-same-resource-reuse",
+      "classification": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T14:00:00Z", "request_id": "r7a", "session_id": "s7", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:g7", "token_exchange_validated": false, "action": "tools/list"},
+        {"timestamp": "2026-09-01T14:02:00Z", "request_id": "r7b", "session_id": "s7", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:g7", "token_exchange_validated": false, "action": "tools/call"}
+      ]
+    },
+    {
+      "id": "negative-outside-window-601s",
+      "classification": "boundary_negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T15:00:00Z", "request_id": "r8a", "session_id": "s8", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:h8", "token_exchange_validated": false, "action": "tools/list"},
+        {"timestamp": "2026-09-01T15:10:01Z", "request_id": "r8b", "session_id": "s8", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://two.invalid/mcp", "token_fingerprint": "sha256:h8", "token_exchange_validated": false, "action": "tools/call"}
+      ]
+    },
+    {
+      "id": "negative-validated-exchange",
+      "classification": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T16:00:00Z", "request_id": "r9a", "session_id": "s9", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://one.invalid/mcp", "token_audience": "https://one.invalid/mcp", "token_fingerprint": "sha256:i9", "token_exchange_validated": false, "action": "tools/list"},
+        {"timestamp": "2026-09-01T16:01:00Z", "request_id": "r9b", "session_id": "s9", "principal_id": "alice", "upstream_principal_id": "alice", "expected_resource": "https://two.invalid/mcp", "token_audience": "https://two.invalid/mcp", "token_fingerprint": "sha256:i9", "token_exchange_validated": true, "action": "tools/call"}
+      ]
+    },
+    {
+      "id": "negative-malformed-missing-fields",
+      "classification": "malformed_negative",
+      "expected_alert": false,
+      "events": [{"timestamp": "2026-09-01T17:00:00Z", "request_id": "r10", "session_id": "s10", "principal_id": null, "upstream_principal_id": null, "expected_resource": null, "token_audience": null, "token_fingerprint": null, "token_exchange_validated": false, "action": "unknown"}]
+    }
+  ]
+}

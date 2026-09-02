@@ -1,0 +1,517 @@
+version: 1
+technique_id: SAF-T1401
+claims:
+  - id: SAF-T1401-C001
+    statement: >-
+      MCP tool names are unique only within a server; aggregating clients and
+      proxies can encounter cross-server collisions and should disambiguate
+      them with a server identifier that is itself not merely serverInfo.name.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Data Types > Tool > Tool Names, paragraphs 1-2 and collision note
+    corroboration: Current MCP client guidance recommends grouping tools by source server.
+    limitations:
+      - The specification does not mandate one cross-server disambiguation algorithm.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C002
+    statement: >-
+      MCP resources use URIs as identifiers and may carry priority and
+      lastModified annotations that clients can use to prioritize inclusion or
+      sort by recency.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026-07-28
+        support: direct
+        exact_locators:
+          - Opening paragraph and Data Types > Annotations
+    corroboration: The current Tools specification applies the same annotations to tool-result content.
+    limitations:
+      - The specification leaves application ranking policy to the host.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C003
+    statement: >-
+      Controlled public demonstrations show malicious MCP tools, prompts, or
+      resources winning resolution ahead of legitimate alternatives through
+      name collisions, order-dependent overwrite, or a higher-precedence
+      built-in store.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Summary
+          - Details > Tool Name Collision
+          - PoC > Execution Flow
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Summary and Details
+          - Reproduction Evidence
+    corroboration: Two independently maintained products exhibit distinct precedence failures.
+    limitations:
+      - Both records are controlled vulnerability demonstrations, not production incident reports.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C004
+    statement: >-
+      CVE-2026-79745 affected MCPHub through 1.0.31; a non-admin could create or
+      overwrite globally served prompts and resources that the resolver checked
+      before connected servers, and version 1.0.32 added the fix.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Details, Reproduction Evidence, Impact, Recommended Fix
+      - source_id: SRC-nvd-cve-2026-79745
+        support: corroborating
+        exact_locators:
+          - CVE description, references, and CVSS v3.1 record
+    corroboration: NVD records the same affected mechanism and patched version.
+    limitations:
+      - Neither source documents exploitation in a production intrusion.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C005
+    statement: >-
+      CVE-2026-30856 affected WeKnora through 0.2.14; ambiguous normalized tool
+      names and order-dependent registration allowed a malicious MCP tool to
+      overwrite a legitimate one, and 0.3.0 is the patched version.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Details and PoC > Execution Flow
+      - source_id: SRC-nvd-api-cve-2026-30856
+        support: corroborating
+        exact_locators:
+          - CVE description, CVSS v3.1, and CISA SSVC exploitation=poc
+    corroboration: NVD and the maintainer advisory agree on the collision and fix.
+    limitations:
+      - The demonstration required a malicious server and user-mediated configuration conditions.
+    conflicts:
+      - NVD and the advisory supply different CVSS v3.1 scores; no severity claim relies on one score alone.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C006
+    statement: >-
+      No qualifying production Line Jumping incident was identified in the
+      reviewed authoritative corpus as of 2026-09-01; selected evidence is
+      vulnerability and controlled-demonstration evidence.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog version 2026.09.01; exact CVE lookups returned no matches
+      - source_id: SRC-nvd-api-cve-2026-30856
+        support: corroborating
+        exact_locators:
+          - CISA SSVC exploitation=poc
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: context
+        exact_locators:
+          - PoC and Reproduction Evidence
+    corroboration: Vendor and researcher records describe demonstrations rather than deployed compromise.
+    limitations:
+      - This is a bounded corpus finding, not a claim that no incident has ever occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The absence statement is derived only from the documented searches and
+        directly reviewed authoritative sources.
+    status: validated
+
+  - id: SAF-T1401-C007
+    statement: >-
+      CVE-2026-25905 demonstrates a Python-isolation failure that can enable MCP
+      server takeover and tool shadowing, but the isolation failure is the root
+      mechanism and the project is archived without a supplied fix.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-jfsa-2026-001653030
+        support: direct
+        exact_locators:
+          - Summary, Description, PoC steps 8-11, Vulnerability Mitigations
+      - source_id: SRC-nvd-cve-2026-25905
+        support: corroborating
+        exact_locators:
+          - CVE description and CISA SSVC exploitation=poc
+    corroboration: NVD repeats the takeover and tool-shadowing relationship.
+    limitations:
+      - Tool shadowing is a consequence of a prior sandbox escape, so this is enabling evidence only.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C008
+    statement: >-
+      CVE-2025-6515 concerns predictable MCP session identifiers that permit
+      session and response hijacking; it does not depend on a resolver collision
+      or precedence rule.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfsa-2025-001494691
+        support: direct
+        exact_locators:
+          - Summary, Description, PoC, Vulnerability Mitigations
+    corroboration: No independent technical record was required for this rejected boundary example.
+    limitations:
+      - The source supplies no proof of concept and no mitigation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C009
+    statement: >-
+      Line Jumping requires attacker influence over registration, mutation, or
+      rank metadata and a resolver that accepts the competing identity or
+      precedence without an adequate provenance or authorization decision.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Details and Impact
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Details and PoC prerequisites
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tool Names collision note
+    corroboration: The two direct vulnerabilities use different inputs but share the same resolver boundary.
+    limitations:
+      - Exact attacker prerequisites remain product- and deployment-specific.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This contract-level prerequisite is synthesized from both direct demonstrations.
+    status: validated
+
+  - id: SAF-T1401-C010
+    statement: >-
+      Successful Line Jumping can produce high integrity impact and, when the
+      selected object reaches sensitive context or privileged tools, high
+      confidentiality impact; availability impact is bounded and conditional.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-79745
+        support: direct
+        exact_locators:
+          - CVSS v3.1 integrity=high and availability=low
+      - source_id: SRC-nvd-api-cve-2026-30856
+        support: direct
+        exact_locators:
+          - CVSS v3.1 confidentiality=high and impact descriptions
+      - source_id: SRC-ghsa-weknora
+        support: corroborating
+        exact_locators:
+          - Impact
+    corroboration: The two direct candidates establish complementary integrity and confidentiality consequences.
+    limitations:
+      - Consequences depend on the selected object's permissions and reachable data.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Technique-level severity is synthesized across the selected cases.
+    status: validated
+
+  - id: SAF-T1401-C011
+    statement: >-
+      Detection requires source-aware resolver and mutation telemetry because
+      current MCP guidance recommends grouping tools by source server, refreshing
+      catalogs on list-changed notifications, and logging tool use for audit.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-client-best-practices-2026-07-28
+        support: direct
+        exact_locators:
+          - Progressive Tool Discovery > Implementation Guidelines
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - List Changed Notification and Security Considerations
+    corroboration: Direct vulnerability records identify the mutation and registration fields to preserve.
+    limitations:
+      - The protocol does not define a universal resolver audit schema.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Required field-level telemetry is an analytic design derived from documented events.
+    status: validated
+
+  - id: SAF-T1401-C012
+    statement: >-
+      A defensible behavioral analytic can alert on successful unresolved
+      collisions, unauthorized global object mutations, or an untrusted winner
+      displacing a trusted competitor, while excluding explicitly approved changes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Details, Reproduction Evidence, Recommended Fix
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Details > registry overwrite and PoC > Execution Flow
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Tool Names collision note and Security Considerations
+    corroboration: The bundled deterministic tests exercise each branch and the approval filter.
+    limitations:
+      - Hosts without provenance and resolver-decision logs cannot evaluate all branches.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic generalizes the directly observed resolver failure patterns.
+    status: validated
+
+  - id: SAF-T1401-C013
+    statement: >-
+      Planned migrations, authorized aliases, and test registrations can resemble
+      precedence manipulation, so deployments must tune on approval, actor role,
+      scope, and source provenance rather than object name alone.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: direct
+        exact_locators:
+          - Table VIII and Threats to Validity
+      - source_id: SRC-etdi-2506.01333
+        support: corroborating
+        exact_locators:
+          - Section IV ETDI verification workflow and Section VI Discussion
+    corroboration: Both studies describe usability, reapproval, or false-positive tradeoffs.
+    limitations:
+      - Neither study evaluates this bundle's exact event schema.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: False-positive classes are operational extrapolations tested with synthetic fixtures.
+    status: validated
+
+  - id: SAF-T1401-C014
+    statement: >-
+      Aggregators should preserve server provenance and use collision-resistant
+      disambiguation rather than relying on a possibly duplicated server name or
+      silent last-write-wins registration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Data Types > Tool > Tool Names collision note
+      - source_id: SRC-ghsa-weknora
+        support: corroborating
+        exact_locators:
+          - Details > Tool Name Collision
+    corroboration: The WeKnora demonstration shows the consequence of ambiguous normalization and overwrite.
+    limitations:
+      - The specification's disambiguation language is SHOULD, not MUST.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C015
+    statement: >-
+      Global registry mutation should require appropriate authorization, and
+      sensitive tool calls should retain per-call approval, input review, and
+      audit logging.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Recommended Fix
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - User Interaction Model and Security Considerations
+      - source_id: SRC-mcp-client-best-practices-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Programmatic Tool Calling > Security Considerations
+    corroboration: MCPHub's patch added an admin gate to global mutations.
+    limitations:
+      - Exact approval policy remains application-specific.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C016
+    statement: >-
+      Definition integrity, version binding, and pre-context validation add
+      protection against impersonation and descriptor manipulation, but stronger
+      controls introduce false-positive, latency, and key-management tradeoffs.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-etdi-2506.01333
+        support: direct
+        exact_locators:
+          - Section IV ETDI
+          - Section V Security Analysis
+          - Section VI Discussion
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: corroborating
+        exact_locators:
+          - Tables XX-XXIV and Threats to Validity
+    corroboration: Independent controlled work reports similar layered-integrity controls and tradeoffs.
+    limitations:
+      - ETDI is a proposal, and neither paper establishes universal production effectiveness.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1401-C017
+    statement: >-
+      Treating server-supplied priority or recency as authoritative can create a
+      research-derived Line Jumping path because the protocol permits those
+      hints to influence inclusion and sorting while tool annotations from
+      untrusted servers must be treated as untrusted.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026-07-28
+        support: direct
+        exact_locators:
+          - Data Types > Annotations
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Data Types > Tool warning on untrusted annotations
+    corroboration: The current specification supplies both the ranking behavior and trust warning.
+    limitations:
+      - No directly qualifying public exploit of the annotation path was found.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This variant combines normative semantics; it is not a demonstrated vulnerability claim.
+    status: validated
+
+  - id: SAF-T1401-C018
+    statement: >-
+      MITRE ATT&CK T1574 Hijack Execution Flow is an analogous mapping because it
+      covers poisoning lookup locations or search order to redirect execution,
+      while its defined platforms and mechanisms are operating-system focused.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1574-v2
+        support: direct
+        exact_locators:
+          - Technique description, version 2.0, and sub-technique T1574.008
+    corroboration: The selected MCP vulnerabilities also redirect a resolver to an attacker-controlled object.
+    limitations:
+      - ATT&CK does not define MCP object resolution, so the mapping is analogous only.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares resolver semantics across different technology layers.
+    status: validated
+
+  - id: SAF-T1401-C019
+    statement: >-
+      Response should preserve resolver and registry evidence, disable the
+      attacker-controlled source, restore a verified trusted mapping, review
+      affected invocations, and rotate credentials only when follow-on access
+      or exposure is established.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: context
+        exact_locators:
+          - Security Considerations > log tool usage for audit
+      - source_id: SRC-ghsa-6cvf-cfch-4g7m
+        support: direct
+        exact_locators:
+          - Impact and Recommended Fix
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators:
+          - Execution Flow and Impact
+    corroboration: The direct cases identify the displaced mapping and downstream calls that require scoping.
+    limitations:
+      - Credential rotation is conditional; the resolver event alone does not prove disclosure.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: These are bounded incident-response actions derived from the demonstrated attack chain.
+    status: validated

@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "technique_id": "SAF-T1407",
+  "cases": [
+    {
+      "id": "positive-resource-association",
+      "classification": "positive",
+      "description": "A different endpoint claims the protected-resource association of an approved server.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": true,
+        "approved_gateway": false
+      },
+      "expected_alert": true
+    },
+    {
+      "id": "positive-authority-confusion",
+      "classification": "positive",
+      "description": "A trusted-looking path resolves to another authority and preserves an upstream authorization association.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": true,
+        "approved_gateway": false
+      },
+      "expected_alert": true
+    },
+    {
+      "id": "positive-catalog-relay",
+      "classification": "positive",
+      "description": "An unapproved endpoint presents an association signal consistent with an approved upstream catalog.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": true,
+        "approved_gateway": false
+      },
+      "expected_alert": true
+    },
+    {
+      "id": "negative-approved-direct-server",
+      "classification": "negative",
+      "description": "The direct server matches its approved identity and has no relay signal.",
+      "event": {
+        "approved_identity_mismatch": false,
+        "relay_association_signal": false,
+        "approved_gateway": false
+      },
+      "expected_alert": false
+    },
+    {
+      "id": "negative-unapproved-development-server",
+      "classification": "negative",
+      "description": "An identity mismatch without a relay association remains below the analytic threshold.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": false,
+        "approved_gateway": false
+      },
+      "expected_alert": false
+    },
+    {
+      "id": "negative-shared-authorization-only",
+      "classification": "negative",
+      "description": "A relay-like association without any approved identity mismatch does not alert.",
+      "event": {
+        "approved_identity_mismatch": false,
+        "relay_association_signal": true,
+        "approved_gateway": false
+      },
+      "expected_alert": false
+    },
+    {
+      "id": "boundary-approved-gateway",
+      "classification": "boundary",
+      "description": "An explicitly approved gateway has both raw signals but is suppressed.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": true,
+        "approved_gateway": true
+      },
+      "expected_alert": false
+    },
+    {
+      "id": "expected-false-positive-unrecorded-migration",
+      "classification": "expected_false_positive",
+      "description": "A legitimate migration not yet approved satisfies both correlation signals and is expected to alert.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "relay_association_signal": true,
+        "approved_gateway": false
+      },
+      "expected_alert": true
+    },
+    {
+      "id": "malformed-missing-relay-field",
+      "classification": "malformed",
+      "description": "A record missing a required boolean signal is rejected without alerting.",
+      "event": {
+        "approved_identity_mismatch": true,
+        "approved_gateway": false
+      },
+      "expected_alert": false
+    }
+  ]
+}

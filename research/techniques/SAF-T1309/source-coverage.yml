@@ -1,0 +1,200 @@
+version: 1
+technique_id: SAF-T1309
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct open: https://modelcontextprotocol.io/llms.txt"
+        - "Direct open from official index: https://modelcontextprotocol.io/specification/2026-07-28/server/tools"
+        - "Direct open from official index: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices"
+        - "Direct open: https://attack.mitre.org/techniques/T1548/"
+      material_changes:
+        - Confirmed 2026-07-28 as the current MCP version from the official documentation index and replaced provisional 2025 locators.
+        - Bounded the MCP mechanism to model-controlled tools, tools/call, confirmation, access control, logging, and scope minimization.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "Exact direct CVE API opens: CVE-2025-54135, CVE-2025-54136, CVE-2025-53773, CVE-2025-6514, CVE-2025-32711"
+        - "Exact GitHub advisory open after CVE authority supplied URL: GHSA-4cxx-hrm3-49rm"
+        - "Exact GitHub advisory open after CVE authority supplied URL: GHSA-24mc-g4xr-4395"
+        - "Direct JFrog advisory open from CVE record: JFSA-2025-001290844"
+        - "Exact-ID membership check against CISA KEV catalog version 2026.09.01"
+      material_changes:
+        - Selected CVE-2025-54135 and CVE-2025-53773 as direct vulnerabilities.
+        - Classified CVE-2025-54136, CVE-2025-6514, and CVE-2025-32711 as adjacent to the contract.
+        - Recorded that no qualifying direct production incident was established by the bounded direct-authority corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "Exact arXiv open: https://arxiv.org/abs/2406.13352 and full HTML v3"
+        - "Exact arXiv open: https://arxiv.org/abs/2503.18813 and full HTML v2"
+        - "Direct researcher disclosure open from Microsoft CNA record: CVE-2025-53773 Embrace The Red article"
+      material_changes:
+        - Selected AgentDojo as the strongest direct controlled end-to-end demonstration.
+        - Added CaMeL as defense evidence with explicit policy, integration, user-fatigue, and side-channel limits.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct Microsoft Learn open: Prompt Shields in Microsoft Foundry"
+        - "Direct MCP 2026-07-28 Tools Security Considerations open"
+        - "Direct MCP 2026-07-28 Security Best Practices scope-minimization and stdio mitigation sections open"
+        - "AgentDojo defense evaluation and false-positive section review"
+      material_changes:
+        - Defined a conservative sequence analytic joining attack annotations to unapproved high-risk tool calls.
+        - Added false-positive, false-negative, causality, and telemetry-normalization limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "Challenge directness with GHSA-24mc-g4xr-4395 configuration substitution"
+        - "Challenge directness with CVE-2025-6514 authorization-URL command injection"
+        - "Challenge incident label with CISA KEV and CVE exploitation fields"
+        - "Challenge defenses with AgentDojo tool-filter limits and CaMeL limitations"
+      material_changes:
+        - Kept configuration substitution, direct URL command injection, and disclosure-only prompt injection outside the defining boundary.
+        - Preserved Demonstrated rather than Observed because no production incident qualified.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "Re-open official MCP llms.txt and current 2026-07-28 Tools and Security pages; compare required claim locators"
+        - "Re-open exact selected CVE and advisory records; verify affected and fixed versions and exploitation fields"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "Re-check exact selected and adjacent CVE identifiers against CISA KEV version 2026.09.01"
+        - "Re-open AgentDojo and CaMeL limitations and Microsoft Prompt Shields false-positive guidance"
+      material_changes: []
+  rationale: >-
+    The direct-authority corpus covers current MCP semantics, two direct product
+    vulnerabilities, one end-to-end controlled agent demonstration, a
+    capability-based defense, product telemetry, ATT&CK mapping, three adjacent
+    candidates, exploitation status, and contrary or limiting evidence. Two
+    final exact-source rechecks produced no new controlling requirement,
+    qualifying example, remediation change, material claim, or limitation.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-agentdojo-2406.13352v3
+    - SRC-ghsa-cursor-4cxx-2025
+    - SRC-cve-2025-53773
+  no_qualifying_examples_rationale: >-
+    Three high-impact non-production examples qualify and are selected. No
+    direct production incident qualifies; the remaining candidates lack the
+    prompt-manipulation-to-privileged-tool boundary or establish disclosure
+    without the defining privileged invocation.
+  candidates:
+    - source_id: SRC-ghsa-cursor-4cxx-2025
+      identifier: CVE-2025-54135 / GHSA-4cxx-hrm3-49rm
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP records exploitation as none; no production exploitation established.
+      impact: Indirect prompt injection could create an MCP-sensitive settings file and trigger code execution without approval.
+      remediation: Cursor 1.3.9 blocks unapproved writes to MCP-sensitive files.
+      selected: true
+      rationale: Directly crosses the defined prompt-to-privileged-action boundary and can affect confidentiality, integrity, and availability.
+    - source_id: SRC-cve-2025-53773
+      identifier: CVE-2025-53773
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP records exploitation as none; the public evidence is a controlled demonstration.
+      impact: Prompt injection changed an auto-approval setting and led to local command execution.
+      remediation: Visual Studio 2022 17.14.12 closes the CNA affected range; researcher reports the August 2025 fix.
+      selected: true
+      rationale: Direct prompt manipulation bypasses approval and reaches a command-capable tool with host impact.
+    - source_id: SRC-agentdojo-2406.13352v3
+      identifier: arXiv:2406.13352v3 AgentDojo
+      relationship: direct_demonstration
+      exploitation_status: Controlled evaluation only; not production exploitation.
+      impact: Attacker instructions in untrusted tool data caused selected malicious actions in stateful agent environments.
+      remediation: Benchmark evaluates several defenses; no product patch applies.
+      selected: true
+      rationale: Strongest directly reviewed end-to-end demonstration of prompt-driven attacker-goal tool actions.
+    - source_id: SRC-cve-2025-54136
+      identifier: CVE-2025-54136 / GHSA-24mc-g4xr-4395
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP records exploitation as none.
+      impact: A collaborator could replace a previously approved MCP definition and obtain persistent code execution.
+      remediation: Cursor 1.3 requires approval whenever an MCP server entry changes.
+      selected: false
+      rationale: The initiating mechanism is direct configuration substitution, not model-mediated prompt manipulation.
+    - source_id: SRC-jfsa-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP records exploitation as none.
+      impact: A crafted authorization endpoint from an untrusted MCP server could cause OS command injection in mcp-remote.
+      remediation: A patch commit is linked by the CNA; JFrog lists affected versions 0.0.5 through 0.1.15.
+      selected: false
+      rationale: The mechanism is URL-to-shell command injection without natural-language prompt manipulation.
+    - source_id: SRC-cve-2025-32711
+      identifier: CVE-2025-32711 EchoLeak
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP records exploitation as none; Microsoft describes an exclusively hosted service issue.
+      impact: AI command injection in Microsoft 365 Copilot could disclose information over a network.
+      remediation: The Microsoft CNA record links a vendor patch advisory.
+      selected: false
+      rationale: The reviewed CNA record establishes information disclosure but not the defining privileged tool invocation.
+
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-camel-2503.18813v2
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-2025-54135
+  - SRC-cve-2025-53773
+  - SRC-rehberger-cve-2025-53773
+  - SRC-cisa-kev-2026-09-01
+  - SRC-clean-t1301-attack-t1548
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-54136
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-32711
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-camel-2503.18813v2
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-2025-54135
+  - SRC-cve-2025-53773
+  - SRC-rehberger-cve-2025-53773
+  - SRC-cisa-kev-2026-09-01
+  - SRC-clean-t1301-attack-t1548
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-jfsa-2025-6514
+sources_rejected: []
+sources_blocked: []
+
+conflicts:
+  - issue: Cursor GHSA-4cxx-hrm3-49rm lists affected versions through 1.2.1 while the GitHub CNA record states versions before 1.3.9.
+    resolution: Publish both statements, use 1.3.9 only as the agreed fixed version, and do not infer status for intermediate versions.
+  - issue: Prompt-attack classifiers can flag benign inputs or miss attacks, so their alerts cannot establish causation.
+    resolution: Correlate with tool risk and approval telemetry and label the analytic experimental.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1309-C004
+    - SAF-T1309-C006
+    - SAF-T1309-C007
+  rationale: >-
+    AgentDojo directly reproduces the end-to-end agentic behavior, and two
+    product advisories document prompt-injection chains to code execution. No
+    qualifying production incident was established, so Observed is not
+    justified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

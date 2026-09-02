@@ -1,0 +1,244 @@
+version: 1
+technique_id: SAF-T1308
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization"
+        - "DIRECT https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+        - "DIRECT https://www.rfc-editor.org/rfc/rfc8707.html"
+        - "DIRECT https://www.rfc-editor.org/rfc/rfc9068.html"
+        - "DIRECT https://www.rfc-editor.org/rfc/rfc9700.txt"
+      material_changes:
+        - Bound the technique to the grant-resource and token-audience/scope authorization context, not token acquisition or downstream passthrough.
+        - Established current MCP resource-parameter, audience-validation, scope-error, and step-up requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: OAuth access token audience"
+        - "NVD keywordSearch: JWT audience validation"
+        - "NVD keywordSearch: OAuth scope validation"
+        - "NVD keywordSearch: token substitution"
+        - "NVD keywordSearch: resource indicator authorization grant"
+        - "NVD keywordSearch: MCP OAuth audience"
+        - "DIRECT https://www.microsoft.com/en-us/security/blog/2023/07/14/analysis-of-storm-0558-techniques-for-unauthorized-email-access/"
+        - "CISA KEV exact membership checks: CVE-2026-14541, CVE-2026-67332, CVE-2026-73208"
+      material_changes:
+        - Selected CVE-2026-14541 as the highest-relevance direct MCP vulnerability.
+        - Selected GHSA-p2fr-6hmx-4528 as an enabling grant-to-resource widening vulnerability.
+        - Selected CVE-2026-73208 as the strongest audience-to-scope historical analogy.
+        - Retained Storm-0558 only as a high-impact production historical analogy and recorded that it does not establish the MCP technique.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "Review public proof or reproduction fields in CVE-2026-14541 and CISA ADP exploitation status"
+        - "Review complete GHSA-p2fr-6hmx-4528 technical Details, Impact, and Credit"
+        - "Review OXDC-ADV-2026-0003 exploit_status for CVE-2026-73208"
+      material_changes:
+        - Confirmed the direct public evidence is vulnerability disclosure and maintainer analysis, not a controlled end-to-end MCP reproduction.
+        - Set the technique evidence status to Research-Derived.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "MCP Authorization: Token Handling, Scope Challenge Handling, Access Token Privilege Restriction"
+        - "MCP Security Best Practices: Token Passthrough and Scope Minimization"
+        - "RFC 9068 Section 4 validation fields"
+        - "RFC 9700 Section 2.3 access token privilege restriction"
+        - "MITRE ATT&CK T1550.001 live version and detection strategy"
+      material_changes:
+        - Defined atomic mismatch detection for grant-resource, audience, and scope decisions.
+        - Required normalized validator output and documented opaque-token and alias blind spots.
+        - Mapped T1550.001 as analogous rather than direct.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "Check single-audience and default-audience non-exploitable configuration in GHSA-p2fr-6hmx-4528"
+        - "Check affected, fixed, and exploitation fields in CVE and vendor records"
+        - "Check whether Storm-0558 used valid token substitution rather than forgery"
+        - "Check CISA KEV version 2026.09.01 for selected CVEs"
+      material_changes:
+        - Limited Better Auth impact to multi-audience deployments and independently granted scopes.
+        - Excluded claims of active exploitation or a documented fixed version for CVE-2026-14541.
+        - Preserved the absence of a qualifying production MCP incident as a bounded corpus finding.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: OAuth audience confusion (1 result, CVE-2026-14541 already selected)"
+        - "NVD keywordSearch: access token wrong audience (0 results)"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD keywordSearch: OAuth token unrelated service audience (0 results)"
+        - "NVD keywordSearch: OAuth missing scope claim authorization (0 results)"
+        - "Recheck current MCP 2025-11-25 token audience and scope sections"
+        - "Recheck selected CNA/vendor records and CISA KEV 2026.09.01"
+      material_changes: []
+  rationale: >-
+    The corpus covers current MCP and OAuth authority, an MCP-specific audience
+    vulnerability, a grant-resource widening advisory, an audience-to-scope vendor
+    advisory, a production token-validation analogy, KEV status, framework mapping,
+    detection, controls, and falsification constraints. The final two independent
+    NVD follow-ups returned only an already selected candidate or zero results, and
+    the authoritative rechecks added no controlling requirement, higher-impact direct
+    example, remediation change, conflict, or unsupported-claim source.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 10
+  selected_examples:
+    - SRC-cve-2026-14541
+    - SRC-ghsa-p2fr-6hmx-4528
+    - SRC-oxdc-adv-2026-0003
+    - SRC-microsoft-storm-0558
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-cve-2026-14541
+      identifier: CVE-2026-14541
+      relationship: direct_vulnerability
+      exploitation_status: CISA ADP records exploitation as none; absent from CISA KEV 2026.09.01.
+      impact: Unrelated valid Google OAuth tokens could reach protected MCP tools and data backends; Google scored high confidentiality and integrity impact.
+      remediation: The CVE references a patch location but does not identify a fixed release; no fixed version is asserted.
+      selected: true
+      rationale: Highest relevance and high impact because the affected component is explicitly an MCP OAuth provider and the failure is audience nonvalidation.
+    - source_id: SRC-ghsa-p2fr-6hmx-4528
+      identifier: CVE-2026-67332 / GHSA-p2fr-6hmx-4528
+      relationship: enabling_vulnerability
+      exploitation_status: CISA ADP records exploitation as none; no production exploitation is documented in the advisory.
+      impact: A registered client could mint a token for an allow-listed resource outside the original grant; operations remained bounded by separately granted scopes.
+      remediation: Fixed in 1.7.0-beta.4 and 1.7.0; 1.6.x was not patched in the reviewed advisory; single-audience configuration is a workaround.
+      selected: true
+      rationale: Directly establishes grant-to-resource substitution at the authorization server and materially explains the token-minting branch.
+    - source_id: SRC-oxdc-adv-2026-0003
+      identifier: CVE-2026-73208 / OXDC-ADV-2026-0003
+      relationship: historical_analogy
+      exploitation_status: Vendor states no publicly available exploits are known; absent from CISA KEV 2026.09.01.
+      impact: A token with no relevant permissions could authenticate when aud matched a configured scope name; vendor scored high confidentiality and integrity impact.
+      remediation: Update to Pro 2.3.22.2, 3.0.7, or 3.1.6, or CE 2.4.5; ensure scope is issued and scope names do not equal audience values.
+      selected: true
+      rationale: Strongest direct example of audience-to-scope semantic substitution, clearly labeled non-MCP.
+    - source_id: SRC-microsoft-storm-0558
+      identifier: Storm-0558 Exchange Online intrusion
+      relationship: historical_analogy
+      exploitation_status: Observed production exploitation beginning 2023-05-15 and blocked by Microsoft in 2023.
+      impact: Forged authentication tokens enabled targeted email access and exfiltration at about 25 organizations.
+      remediation: Microsoft corrected token validation and renewal defects, blocked and replaced the acquired signing key, and hardened key systems.
+      selected: true
+      rationale: Highest-impact reviewed production token-validation incident, retained only to calibrate consequence; forgery and non-MCP scope prevent direct classification.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-30863 (Parse Server)
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Unknown in the reviewed NVD query result.
+      impact: Tokens for another application under the same provider could authenticate to vulnerable Parse Server versions.
+      remediation: NVD description identifies fixes in 8.6.10 and 9.5.0-alpha.11.
+      selected: false
+      rationale: Audience-validation analogue is non-MCP and redundant with the more direct Google MCP example.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-55689 (OpenFGA)
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Unknown in the reviewed NVD query result.
+      impact: A token minted for an unrelated service by the same issuer could authenticate to OpenFGA.
+      remediation: NVD description identifies version 1.18.0 as fixed.
+      selected: false
+      rationale: Relevant authorization-engine analogue, but non-MCP and lower explanatory value than the selected direct MCP vulnerability.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-66908 (Apache Camel)
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Unknown in the reviewed NVD query result.
+      impact: Shared-key trust could allow tokens for another issuer or audience to reach embedded HTTP endpoints.
+      remediation: NVD description recommends 4.22.0 or maintenance-line configuration with explicit issuer or audience.
+      selected: false
+      rationale: Non-MCP audience-validation analogue is redundant and has configuration/version complexity not needed for the bounded technique.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-40205 (OX Dovecot partial-scope validation)
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: NVD description states no publicly available exploit is known.
+      impact: Remote validation could accept one of multiple required scopes.
+      remediation: Use local validation or update to a non-vulnerable version per the NVD description.
+      selected: false
+      rationale: Partial-scope OR semantics is adjacent enforcement failure, not resource/audience/scope substitution.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2025-59934 (Formbricks)
+      relationship: rejected
+      exploitation_status: Unknown in the reviewed NVD query result.
+      impact: Missing JWT signature and claim verification could permit account takeover.
+      remediation: NVD description identifies version 4.0.1 as fixed.
+      selected: false
+      rationale: Signature-verification failure dominates; this is not a valid-token authorization-context substitution.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2016-5431 (PHP JOSE)
+      relationship: rejected
+      exploitation_status: Unknown in the reviewed NVD query result.
+      impact: Algorithm substitution could bypass signature verification.
+      remediation: NVD description identifies versions before 2.2.1 as affected.
+      selected: false
+      rationale: Cryptographic algorithm substitution is a lexical collision and outside the OAuth resource/scope contract.
+
+sources_consulted:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc8707
+  - SRC-rfc9068
+  - SRC-rfc9700
+  - SRC-cve-2026-14541
+  - SRC-cve-2026-67332
+  - SRC-ghsa-p2fr-6hmx-4528
+  - SRC-cve-2026-73208
+  - SRC-oxdc-adv-2026-0003
+  - SRC-microsoft-storm-0558
+  - SRC-mitre-t1550-001
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-token-scope-corpus
+  - SRC-mcp-auth-2025-06-18
+sources_cited:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc8707
+  - SRC-rfc9068
+  - SRC-rfc9700
+  - SRC-cve-2026-14541
+  - SRC-ghsa-p2fr-6hmx-4528
+  - SRC-oxdc-adv-2026-0003
+  - SRC-microsoft-storm-0558
+  - SRC-mitre-t1550-001
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-token-scope-corpus
+sources_rejected:
+  - source_id: SRC-mcp-auth-2025-06-18
+    reason: Superseded by the current 2025-11-25 MCP authorization version; retained only as a consulted change-control record.
+sources_blocked:
+  - lead: CISA Cyber Safety Review Board report concerning Storm-0558
+    attempted_access: Exact first-party report URL
+    result: Returned an HTML error document instead of the report.
+    reason: The primary report content could not be reviewed from the returned document.
+    disposition: Not cited and ledgered as SAF-T1308-X008.
+
+conflicts:
+  - issue: CVE-2026-14541 points to a patch location but its official CVE record does not name a fixed release.
+    resolution: The technique states that remediation exists by reference but does not invent or infer a fixed version.
+  - issue: Direct vulnerability disclosures establish the failure modes, while no reviewed source documents a production MCP incident or public end-to-end controlled reproduction.
+    resolution: The overall evidence status remains Research-Derived and production analogies are prominently separated.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1308-C006
+    - SAF-T1308-C016
+  rationale: >-
+    Normative MCP and OAuth sources establish the required bindings, and direct
+    vulnerability records establish each principal failure mode. The complete technique
+    is an explicit synthesis because no qualifying production MCP incident or controlled
+    end-to-end public reproduction was found.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

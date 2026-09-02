@@ -1,0 +1,83 @@
+version: 1
+technique_id: SAF-T1002
+name: Supply Chain Compromise
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Cause a trusted acquisition or update path to deliver and execute an
+  adversary-altered software artifact in an MCP or agentic deployment.
+
+scope:
+  security_boundary: >-
+    The authenticity and integrity boundary between an expected producer,
+    build/release workflow, publisher identity, registry or update path and the
+    consuming MCP or agentic runtime.
+  in_scope:
+    - Compromise of upstream source, build, release, publisher, registry, cache, or update identity that alters an authentic artifact.
+    - Acquisition through an expected channel followed by install-time, import-time, update-time, or first-run execution.
+    - MCP servers, clients, SDKs, agent tools, agent dependencies, IDE extensions, and CI/CD components when they enter an agentic deployment.
+  out_of_scope:
+    - A brand-new malicious or typosquatted package when no trusted producer or channel is compromised.
+    - A crafted one-click MCP configuration that supplies an attacker-selected command but does not alter a trusted artifact.
+    - Prompt or tool-metadata poisoning after an honestly produced artifact is installed.
+    - Exploitation of an ordinary software vulnerability without compromise of the distribution path.
+    - Credential theft, persistence, collection, or command and control after the altered artifact executes; those are downstream behaviors.
+  affected_components:
+    - MCP client and local server installation path
+    - MCP Registry metadata and referenced package registries
+    - MCP server, MCP client, SDK, agent framework, and agent-tool artifacts
+    - Developer workstation, IDE, CI/CD runner, and production agent host
+
+nearest_neighbors:
+  - technique_id: SAF-T1003
+    distinction: >-
+      Malicious MCP-Server Distribution can deliver an attacker-controlled
+      server under a new identity; this technique alters a producer or channel
+      the consumer already trusts.
+  - technique_id: SAF-T1004
+    distinction: >-
+      Server Impersonation or Name-Collision transfers trust to a deceptive
+      identity; this technique preserves expected identity while changing its
+      artifact or path.
+  - technique_id: SAF-T1006
+    distinction: >-
+      User-Social-Engineering Install obtains consent for attacker-selected
+      software; this technique abuses an already trusted distribution path.
+  - technique_id: SAF-T1203
+    distinction: >-
+      Backdoored Server Binary describes the altered artifact outcome; this
+      technique classifies compromise of the trusted acquisition or update path.
+
+required_evidence:
+  - Establish the trusted producer or acquisition path and how it was altered.
+  - Establish acquisition and execution of the altered artifact in an MCP or agentic boundary.
+  - Separate direct production evidence from demonstrations, adjacent vulnerabilities, analogies, and rejected leads.
+  - Establish exploitation and remediation status for selected incidents and current advisories.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Artifact name, version, source, digest, signature, provenance subject and builder, and verification result.
+    - Package-manager, registry, lockfile, import, update, process, file, credential-access, and network events.
+    - Host and workload identity sufficient to join acquisition to execution by artifact and version.
+
+safe_example_constraints:
+  - Use only inert fixture names, timestamps, and non-routable conceptual values.
+  - Do not reproduce exploit payloads, live indicators, credentials, or destructive commands in tests.
+  - Describe incidents only to the level required to establish mechanism, impact, and remediation.
+
+completion_evidence:
+  - Every substantive README unit has a hidden_html_v1 trace or declared local research source.
+  - Every cited source was directly opened and reviewed with exact locators.
+  - Excluded and unverified leads are ledgered and omitted from publishable claims.
+  - Two consecutive saturation passes produced no material change.
+  - Deterministic positive, negative, boundary, and false-positive detection tests pass.
+  - The complete isolated bundle is hashed before any repository integration contact.

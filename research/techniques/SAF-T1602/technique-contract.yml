@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1602
+name: Tool Enumeration
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Obtain the names and machine-readable interfaces of tools that
+  an MCP server makes available to the requesting principal so the actor can select
+  a later action.
+scope:
+  security_boundary: The authorization- and policy-filtered boundary between an MCP
+    client principal and a server's tool catalog.
+  in_scope:
+  - Sending tools/list, including pagination, and receiving the tool definitions available
+    to the requesting principal.
+  - Using returned names, descriptions, schemas, annotations, and related metadata
+    to inventory possible follow-on operations.
+  out_of_scope:
+  - Discovering only server identity, protocol versions, or capability categories
+    through server/discover.
+  - Listing or reading resources, listing or retrieving prompts, invoking tools, changing
+    tool definitions, and exploiting a discovered tool.
+  affected_components:
+  - MCP client or actor-controlled JSON-RPC requester
+  - MCP server tool catalog and authorization filter
+  - Host, proxy, or observability layer that records JSON-RPC activity
+nearest_neighbors:
+- technique_id: SAF-T1601
+  distinction: MCP Server Enumeration identifies configured or reachable servers and
+    their protocol identity or capability metadata; Tool Enumeration retrieves the
+    individual tool definitions exposed by one selected server.
+required_evidence:
+- Current MCP requirements for tools/list, authorization-dependent results, pagination,
+  and returned tool-definition fields.
+- A first-party controlled method that performs an end-to-end tools/list operation.
+- Separate current searches for production incidents, vulnerabilities, advisories,
+  exploitation status, and contrary evidence.
+- Telemetry semantics for JSON-RPC method, request correlation, server identity, and
+  authorization context.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - JSON-RPC request method, request ID, timestamp, actor or client identity, target
+    server, authorization decision, cursor, and returned tool count.
+  - A maintained allowlist or baseline of principals permitted to inventory each server
+    and the expected pagination rate.
+safe_example_constraints:
+- Use an inert example.com server, synthetic tool names, and no live credentials.
+- Show only tools/list metadata; do not invoke a tool or reproduce an exploit payload.
+completion_evidence:
+- Every substantive README unit has a validated hidden claim/source trace or a declared
+  local-artifact link.
+- All five research passes and two identical-hash no-change follow-ups are recorded.
+- Adjacent CVEs and advisories are classified and excluded from the evidence label.
+- Positive, negative, boundary, malformed, and expected-lookalike detection cases
+  pass.
+- Rights, alignment, safety, and isolated strict-validation gates pass.

@@ -1,0 +1,49 @@
+{
+  "schema": "SAF-T1801 synthetic detector cases v1",
+  "threshold": 20,
+  "window_seconds": 300,
+  "cases": [
+    {
+      "name": "positive_rapid_distinct_reads",
+      "expected_alert": true,
+      "generator": {"count": 25, "distinct_objects": 25, "interval_seconds": 5, "action": "resources/read", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "negative_below_threshold",
+      "expected_alert": false,
+      "generator": {"count": 19, "distinct_objects": 19, "interval_seconds": 5, "action": "resources/read", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "boundary_exact_threshold",
+      "expected_alert": true,
+      "generator": {"count": 20, "distinct_objects": 20, "interval_seconds": 15, "action": "tools/call", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "negative_outside_window",
+      "expected_alert": false,
+      "generator": {"count": 20, "distinct_objects": 20, "interval_seconds": 16, "action": "resources/read", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "expected_false_positive_approved_bulk_export",
+      "expected_alert": false,
+      "generator": {"count": 25, "distinct_objects": 25, "interval_seconds": 5, "action": "resources/read", "outcome": "success", "access_mode": "read", "approval_state": "approved", "approval_scope": "bulk_export"}
+    },
+    {
+      "name": "negative_repeated_single_object",
+      "expected_alert": false,
+      "generator": {"count": 30, "distinct_objects": 1, "interval_seconds": 5, "action": "resources/read", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "negative_list_only_activity",
+      "expected_alert": false,
+      "generator": {"count": 30, "distinct_objects": 30, "interval_seconds": 5, "action": "resources/list", "outcome": "success", "access_mode": "read", "approval_state": "not_requested", "approval_scope": "none"}
+    },
+    {
+      "name": "negative_malformed_missing_object_id",
+      "expected_alert": false,
+      "events": [
+        {"event.timestamp": "2026-09-02T00:00:00Z", "event.action": "resources/read", "event.outcome": "success", "session.id": "session-test", "actor.id": "actor-test", "server.id": "server-test", "data.access_mode": "read", "approval.state": "not_requested", "approval.scope": "none"}
+      ]
+    }
+  ]
+}

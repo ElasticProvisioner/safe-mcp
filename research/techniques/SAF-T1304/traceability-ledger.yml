@@ -1,0 +1,146 @@
+version: 1
+technique_id: SAF-T1304
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1304/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1304/technique-contract.yml
+  supports: Internal scope, name, tactic, neighbors, and completion requirements.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1304/quality-review.yml
+  supports: Review gates and validation results.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1304/source-coverage.yml
+  supports: Search coverage, exclusion decisions, saturation, and no-direct-breach
+    finding.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1304/detection-rule.yml
+  supports: The repository detection analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1304/test_detection_rule.py
+  supports: Executable synthetic detection validation.
+- id: LOCAL-detection-data
+  path: tests/SAF-T1304/test-logs.json
+  supports: Synthetic positive, negative, boundary, malformed, and false-positive
+    cases.
+- id: LOCAL-detection-results
+  path: tests/SAF-T1304/validation-results.json
+  supports: Recorded detection test outcome.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1304/validation/detection-test.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1304/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1304-X001
+  candidate: The August 2026 LiteLLM gateway incident was a direct Credential Relay
+    Chain breach.
+  origin: Current production-incident pass.
+  attempted_searches:
+  - site:microsoft.com/security/blog 2026 MCP token incident credential relay
+  - Microsoft Security LiteLLM incident MCP credentials
+  consulted_source_ids:
+  - SRC-microsoft-ai-gateway-incident
+  reason: The incident documents database-secret use and model-key extraction, not
+    a caller credential crossing resource or principal boundaries.
+  prohibited_publishable_text:
+  - LiteLLM was breached through credential relay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X002
+  candidate: Exposed unauthenticated MCP instances were evidence of credential relay.
+  origin: Current breach research pass.
+  attempted_searches:
+  - site:microsoft.com/security/blog MCP incident token forwarding
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  reason: The research concerns exploitable configuration and unauthenticated exposure,
+    with no defining credential propagation.
+  prohibited_publishable_text:
+  - exposed MCP instances relayed credentials
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X003
+  candidate: OAuth redirect-based phishing was a credential relay demonstration.
+  origin: Current empirical research pass.
+  attempted_searches:
+  - site:microsoft.com/security/blog OAuth token relay incident 2026
+  consulted_source_ids:
+  - SRC-ms-oauth-redirection-2026
+  reason: The source explicitly states that the attacker does not obtain the OAuth
+    token; it is adjacent delivery abuse.
+  prohibited_publishable_text:
+  - OAuth redirect abuse relayed the victim token
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X004
+  candidate: CVE-2025-4143 was a direct MCP credential relay vulnerability.
+  origin: NVD vulnerability pass.
+  attempted_searches:
+  - site:nvd.nist.gov MCP OAuth token audience relay CVE
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-4143
+  reason: The issue is redirect-URI validation and initial token theft, not cross-boundary
+    authorization with an existing credential.
+  prohibited_publishable_text:
+  - CVE-2025-4143 is Credential Relay Chain
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X005
+  candidate: CVE-2026-53518 demonstrated MCP credential relay.
+  origin: NVD vulnerability pass.
+  attempted_searches:
+  - site:nvd.nist.gov OAuth token replay CVE 2026 MCP
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-53518
+  reason: The issue duplicates authorization-code redemption and token minting but
+    does not establish an MCP resource, principal, or hop relay.
+  prohibited_publishable_text:
+  - CVE-2026-53518 is an MCP relay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X006
+  candidate: CVE-2026-14539 qualified as a credential relay example.
+  origin: Saturation follow-up.
+  attempted_searches:
+  - site:nvd.nist.gov CVE Google MCP Toolbox 2026 authorization
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-14539
+  reason: The issue is availability impact rather than credential authorization across
+    a boundary.
+  prohibited_publishable_text:
+  - CVE-2026-14539 relays credentials
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X007
+  candidate: CVE-2025-6238 was direct evidence for this contract.
+  origin: NVD vulnerability pass.
+  attempted_searches:
+  - site:nvd.nist.gov MCP OAuth token interception CVE
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-6238
+  reason: Open redirect and token interception concern initial credential acquisition,
+    not its authorization across a target boundary.
+  prohibited_publishable_text:
+  - CVE-2025-6238 demonstrates Credential Relay Chain
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1304-X008
+  candidate: Frank Kautz as the original technique author.
+  origin: Frozen clean-room version-history attribution.
+  attempted_searches:
+  - Repository-root metadata search for Fred Kautz or Frank Kautz after freeze.
+  consulted_source_ids: []
+  reason: The attribution was not supplied in the clean-room seed and was not supported by repository-root metadata or an allowed external authority.
+  prohibited_publishable_text:
+  - Frank Kautz authored SAF-T1304
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

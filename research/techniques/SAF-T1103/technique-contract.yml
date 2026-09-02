@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1103
+name: Fake Tool Invocation (Function Spoofing)
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause a host or dispatcher to execute a callable without the
+  trusted workflow decision or explicit callable registration that should authorize
+  it.
+scope:
+  security_boundary: The host-controlled boundary that binds structured call provenance
+    and a registered tool identity to executable application code.
+  in_scope:
+  - Client-supplied call history dispatched as if a trusted model emitted it.
+  - Untrusted tool names or import paths resolving to unintended or undeclared callables.
+  out_of_scope:
+  - Genuine model-emitted calls induced by prompt injection.
+  - Tool-description poisoning, server impersonation, and registry rug pulls.
+  - Post-dispatch argument injection or forged tool results.
+  - Direct API, authentication, or session takeover that issues a real authorized-protocol
+    request.
+  affected_components:
+  - MCP or agent host
+  - UI adapter and client event stream
+  - tool dispatcher and registry
+  - function resolver and application runtime
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection and tool-use hijacking produces a genuine model-emitted
+    call; this technique invalidates call provenance or callable binding.
+- technique_id: SAF-T1001
+  distinction: Tool definition poisoning changes description or selection semantics;
+    this technique executes a forged call representation or function identity.
+required_evidence:
+- Establish the host, call-provenance, registry, and resolver boundary from primary
+  protocol and standards material.
+- Establish both call-history and callable-binding variants with official vulnerability
+  evidence.
+- Establish the end-to-end evidence classification using controlled reproduction rather
+  than analogy.
+- Search current vulnerability, exploitation, incident, and research catalogs and
+  record direct, adjacent, and rejected candidates.
+- Validate a correlation analytic on positive, negative, scope-boundary, and time-boundary
+  fixtures.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Trusted model or agent call-lifecycle events with run ID, call ID, name, origin,
+    and timestamps.
+  - Dispatcher execution events with registry, provenance, approval, function name,
+    and argument-hash fields.
+safe_example_constraints:
+- Use only inert tool names, example.invalid, and non-destructive placeholder arguments.
+- Do not reproduce advisory exploit payloads, live imports, credentials, or callable
+  names that create side effects.
+completion_evidence:
+- Every substantive README unit has a validated claim trace or a declared local-artifact
+  link.
+- Every claim uses reviewed sources with exact locators and limitations.
+- Two consecutive final saturation passes record no material changes.
+- Detection tests and the strict isolated validator pass.
+- Rights, safety, scope, evidence, and traceability gates pass with no unresolved
+  blocking issue.

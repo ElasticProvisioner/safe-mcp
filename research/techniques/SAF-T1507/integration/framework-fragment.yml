@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1507
+    name: Authorization Code Interception
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics: [ATK-TA0006]
+    technique_path: techniques/SAF-T1507/README.md
+    research_packet: research/techniques/SAF-T1507
+    related_techniques: [SAF-T1009, SAF-T1504]
+    mitigations: [SAF-M-12, SAF-M-13, SAF-M-16, SAF-M-17, SAF-M-18, SAF-M-19, SAF-M-37, SAF-M-38]
+    attack_mappings:
+      - id: T1528
+        type: analogous
+    detection:
+      rule: techniques/SAF-T1507/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1507/test_detection_rule.py
+        - tests/SAF-T1507/test-cases.json
+        - research/techniques/SAF-T1507/validation/detection-test-results.txt
+        - research/techniques/SAF-T1507/validation/strict-validator-results.txt

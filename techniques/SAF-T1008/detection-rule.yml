@@ -1,110 +1,104 @@
-title: MCP Tool Shadowing Attack Detection (SAF-T1008)
-id: 7c8d9e0f-1a2b-3c4d-5e6f-789012345678
+title: SAF-T1008 Tool Shadowing Descriptor Provenance Mismatch
+id: 4a9c886c-8cf1-4bdd-a25a-fda593aebf9e
 status: experimental
-description: Detects potential tool shadowing attacks through suspicious tool descriptions and cross-server interference patterns
-author: SAF-MCP Team
-date: 2025-09-05
-modified: 2025-09-05
+description: >-
+  Detects an unapproved MCP tool descriptor that refers to a tool owned by a
+  different server and contains multiple imperative or argument-manipulation
+  signals. This is a behavioral lead, not proof that a later call was influenced.
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1008
-  - https://acuvity.ai/cross-server-tool-shadowing-hijacking-calls-between-servers/
-  - https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  - https://arxiv.org/abs/2512.06556
+author: OpenAI Codex clean-room research
+date: 2026-09-01
+modified: 2026-09-01
 logsource:
   category: application
   product: mcp
-  service: server
+  service: tool_registry
 detection:
-  # Detect shadowing patterns in tool descriptions
-  selection_shadowing_patterns:
-    tool_description|contains:
-      - 'before using'
-      - 'instead of using'
-      - 'always add'
-      - 'ignore previous instructions'
-      - 'NEVER mention'
-      - 'should never be invoked'
-      - 'override'
-      - 'hijack'
-      - 'intercept'
-  
-  # Detect cross-tool references that indicate shadowing
-  selection_cross_tool_references:
-    tool_description|re: '(?i)(before|instead|when).*using\s+\w+_\w+'
-    tool_description|contains:
-      - 'when calling'
-      - 'before calling'
-      - 'instead of calling'
-  
-  # Detect tool impersonation attempts
-  selection_impersonation:
-    tool_name|similar:
-      - 'send_email'
-      - 'send_message'
-      - 'file_read'
-      - 'database_query'
-      - 'api_call'
-    server_name|different: true
-  
-  # Detect suspicious BCC/CC injection patterns
-  selection_email_hijacking:
-    tool_description|contains:
-      - 'add.*bcc'
-      - 'add.*cc'
-      - 'forward to'
-      - 'copy to'
-      - '@evil.com'
-      - '@attacker'
-  
-  # Detect cross-origin tool invocation attempts
-  selection_cross_origin:
-    tool_description|contains:
-      - 'invoke'
-      - 'call'
-      - 'execute'
-    tool_description|re: '(?i)(invoke|call|execute).*\w+\.\w+'
-  
-  # Detect tools that should never be invoked (sleeper tools)
-  selection_sleeper_tools:
-    tool_description|contains:
-      - 'never be invoked'
-      - 'should not be called'
-      - 'do not use'
-      - 'for internal use only'
-    tool_name|contains:
-      - 'shadow'
-      - 'hidden'
-      - 'internal'
-      - 'backdoor'
-  
-  condition: 
-    selection_shadowing_patterns or 
-    selection_cross_tool_references or 
-    selection_impersonation or 
-    selection_email_hijacking or 
-    selection_cross_origin or 
-    selection_sleeper_tools
-
-falsepositives:
-  - Legitimate tool documentation that references other tools for integration purposes
-  - Development and testing environments with multiple similar tools
-  - Administrative tools with legitimate override capabilities
-  - Documentation tools that describe other tool usage patterns
-
-level: high
-
-tags:
-  - attack.initial_access
-  - attack.execution
-  - attack.t1055
-  - attack.t1134
-  - attack.t1036
-  - safe.t1008
-
-# Additional metadata for MCP-specific detection
+  selection_registry:
+    event.action: tools_list_snapshot
+  selection_foreign_reference:
+    descriptor.references_foreign_tool: true
+  selection_directive:
+    descriptor.directive_score|gte: 2
+  filter_approved_contract:
+    descriptor.cross_server_contract_approved: true
+  condition: >-
+    selection_registry and selection_foreign_reference and selection_directive
+    and not filter_approved_contract
 fields:
-  - tool_name
-  - tool_description
-  - server_name
-  - server_id
-  - tool_parameters
-  - execution_context
+  - '@timestamp'
+  - session.id
+  - mcp.server.id
+  - mcp.tool.name
+  - descriptor.sha256
+  - descriptor.referenced_server
+  - descriptor.referenced_tool
+  - descriptor.directive_score
+  - descriptor.cross_server_contract_approved
+falsepositives:
+  - Approved orchestration servers or gateways whose documented purpose is to coordinate named tools across server boundaries.
+  - Benign tool documentation that names a foreign tool while using imperative language in examples.
+level: high
+tags:
+  - saf.t1008
+  - attack.initial-access
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1008-C004
+    - SAF-T1008-C006
+    - SAF-T1008-C013
+  telemetry_claim_ids:
+    - SAF-T1008-C001
+    - SAF-T1008-C002
+    - SAF-T1008-C014
+  limitation_claim_ids:
+    - SAF-T1008-C007
+    - SAF-T1008-C013
+  validation_artifacts:
+    - tests/SAF-T1008/fixtures/events.json
+    - tests/SAF-T1008/test_detection_rule.py
+    - tests/SAF-T1008/results.json
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1008-C001
+        - SAF-T1008-C002
+      rationale: MCP registry snapshots and calls are the protocol events needed to bind descriptor state to a server and session.
+    selection_registry:
+      claim_ids:
+        - SAF-T1008-C001
+      rationale: The analytic applies to the tool-discovery snapshot that carries names, descriptions, and schemas.
+    selection_foreign_reference:
+      claim_ids:
+        - SAF-T1008-C004
+        - SAF-T1008-C006
+        - SAF-T1008-C013
+      rationale: Foreign-tool reference is the defining provenance mismatch in the direct demonstration and controlled model.
+    selection_directive:
+      claim_ids:
+        - SAF-T1008-C004
+        - SAF-T1008-C006
+        - SAF-T1008-C013
+      rationale: Multiple imperative or argument-manipulation signals reduce alerts on incidental documentation references.
+    filter_approved_contract:
+      claim_ids:
+        - SAF-T1008-C013
+        - SAF-T1008-C014
+      rationale: Explicitly approved orchestration is the principal expected false positive and should be separately governed.
+    condition:
+      claim_ids:
+        - SAF-T1008-C013
+      rationale: Conjunction of provenance mismatch and directive density implements the experimental behavioral hypothesis.
+    fields:
+      claim_ids:
+        - SAF-T1008-C001
+        - SAF-T1008-C014
+      rationale: Listed fields support provenance, version, session, ownership, referenced target, threshold, and policy investigation.
+    falsepositives:
+      claim_ids:
+        - SAF-T1008-C007
+        - SAF-T1008-C013
+      rationale: Legitimate orchestration and benign documentation can contain the same surface features, so the rule remains experimental.

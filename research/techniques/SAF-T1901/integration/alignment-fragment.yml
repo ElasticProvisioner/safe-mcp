@@ -1,0 +1,34 @@
+version: 1
+issues:
+  - id: SAF-T1901-A001
+    title: Synthetic nearest-neighbor identifiers require canonical reconciliation
+    triggered_by: SAF-T1901
+    affects:
+      - SAF-T1901
+      - SAF-T1913
+      - SAF-T1309
+    severity: medium
+    status: resolved
+    rationale: >-
+      Canonical SAF technique registries were prohibited clean-room inputs, so
+      the two neighbor identifiers are synthetic validator joins rather than
+      destination-repository assertions.
+    resolution: SAF-T1309 resolves the invocation-only boundary; independently authored SAF-T1913 resolves the data-only HTTP POST exfiltration boundary.
+  - id: SAF-T1901-A002
+    title: Independently assigned source identifiers require registry collision review
+    triggered_by: SAF-T1901
+    affects:
+      - SAF-T1901
+    severity: low
+    status: resolved
+    rationale: Source IDs were assigned independently before integration.
+    resolution: Source-ID collisions were reconciled after freeze while preserving URLs, authorship, locators, and claim relations.
+  - id: SAF-T1901-A003
+    title: Synthetic repository-history join requires post-freeze replacement
+    triggered_by: SAF-T1901
+    affects:
+      - SAF-T1901
+    severity: medium
+    status: resolved
+    rationale: Reading repository history was prohibited before freeze, while the strict validator requires a nonzero 40-character history reference.
+    resolution: The synthetic join was replaced with destination baseline 26c39823e0b55144bc7891f6345e6030646c16a0 after freeze.

@@ -1,0 +1,33 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2107
+    name: AI Model Poisoning via MCP Tool Training Data Contamination
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0042
+    technique_path: techniques/SAF-T2107/README.md
+    research_packet: research/techniques/SAF-T2107
+    related_techniques:
+      - SAF-T1102
+      - SAF-T3001
+      - SAF-T1002
+    mitigations:
+      - SAF-M-12
+      - SAF-M-33
+      - SAF-M-34
+      - SAF-M-35
+      - SAF-M-36
+    detection:
+      rule: techniques/SAF-T2107/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T2107/test-logs.json
+        - tests/SAF-T2107/expected-results.json
+        - tests/SAF-T2107/test_detection_rule.py
+        - research/techniques/SAF-T2107/validation/detection-test.txt
+        - research/techniques/SAF-T2107/validation/strict-validator.txt
+        - research/techniques/SAF-T2107/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1565.001
+        type: analogous

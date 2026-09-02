@@ -1,0 +1,80 @@
+version: 1
+technique_id: SAF-T1309
+name: Privileged Tool Invocation via Prompt Manipulation
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Cause a tool-using model to perform a sensitive action with authority
+  delegated to the victim or agent by manipulating natural-language control input.
+scope:
+  security_boundary: Untrusted prompt or retrieved language crosses into model-controlled
+    tool selection or approval-changing action executed under delegated authority.
+  in_scope:
+  - Direct prompt manipulation that causes a sensitive tool invocation.
+  - Indirect instructions in files, messages, web content, or tool results that cause
+    a sensitive tool invocation.
+  - Prompt-induced configuration changes that immediately remove approval for a later
+    privileged tool action.
+  out_of_scope:
+  - Direct API, transport, state-handle, session, or token abuse without model-mediated
+    prompt manipulation.
+  - Direct MCP definition or configuration substitution without a prompt-manipulation
+    step.
+  - Prompt manipulation that changes text output but does not reach a privileged tool
+    action.
+  - Vulnerable tool implementation that executes unsafe input without a model-control-flow
+    manipulation step.
+  affected_components:
+  - Agent model and context assembly.
+  - MCP host or client and tool-call broker.
+  - Prompt, retrieved resource, or tool-result ingestion path.
+  - Approval, authorization, and external service boundary.
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt manipulation that affects text or planning but never reaches
+    a privileged tool or approval-changing action remains SAF-T1102.
+- technique_id: SAF-T1302
+  distinction: Unauthorized or direct privileged tool use caused by an authority or
+    policy failure without prompt-derived model control remains SAF-T1302.
+required_evidence:
+- Establish current MCP tool-control, invocation, confirmation, access-control, and
+  audit semantics.
+- Establish direct and indirect prompt manipulation in tool-using agent systems.
+- Establish at least one end-to-end controlled demonstration of attacker-selected
+  tool actions.
+- Search separately for production incidents, disclosed vulnerabilities, exploitation
+  status, and controlled demonstrations.
+- Classify and rank every consulted incident or vulnerability candidate against the
+  defining boundary.
+- Establish testable telemetry and preserve detection uncertainty and false-positive
+  conditions.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Prompt or content guardrail events with timestamp, session, actor, intervention
+    point, trust label, detected, and filtered fields.
+  - MCP host or agent tool audit with timestamp, session, actor, server, tool, argument
+    digest, risk tier, approval state, and outcome.
+safe_example_constraints:
+- Use only synthetic non-deployable tool names, inert example.invalid locations, and
+  placeholder digests.
+- Omit exploit payloads, live commands, credentials, destructive instructions, and
+  operational secrets.
+- Describe disclosed chains at the minimum detail needed for classification and defense.
+completion_evidence:
+- Every substantive publishable unit is joined to validated claims and directly reviewed
+  sources or a declared repository artifact.
+- Every unverified or out-of-scope lead is omitted from publishable prose and closed
+  in traceability-ledger.yml.
+- All five research passes and two consecutive no-change follow-ups are recorded.
+- Detection tests cover positive, negative, boundary, malformed, and expected false-positive
+  cases.
+- Publication-rights, framework-alignment, safe-publication, and clean-room-integrity
+  gates pass.
+- The strict canonical validator passes in an isolated synthetic mock repository before
+  freeze.

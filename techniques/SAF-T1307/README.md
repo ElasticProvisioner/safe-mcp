@@ -1,398 +1,227 @@
 # SAF-T1307: Confused Deputy Attack
 
 ## Overview
-**Tactic**: Privilege Escalation (ATK-TA0004)  
-**Technique ID**: SAF-T1307  
-**Severity**: High  
-**First Observed**: Observed in the MCP ecosystem — a confused-deputy-style vulnerability was publicly disclosed for **FastMCP** (GHSA-c2jp-c369-7pvx, Oct 28, 2025); patched in **v2.13.0**. (No public claims of in-the-wild exploitation at disclosure time.) ([GitHub Advisory](https://github.com/advisories/GHSA-c2jp-c369-7pvx))  
-**Last Updated**: 2025-11-08
+
+- **Tactic**: Privilege Escalation (ATK-TA0004)
+- **Technique ID**: SAF-T1307
+- **Research Packet**: [research/techniques/SAF-T1307](../../research/techniques/SAF-T1307/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1307/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Demonstrated
+- **Severity**: High
+- **Severity Rationale**: A successful deputy-confusion path can expose the deputy's identity, network reach, or process-launch authority, with impact bounded by the deputy's privileges and the attacker's ability to supply an unbound directive. [CWE-441](https://cwe.mitre.org/data/definitions/441.html) <!-- SAF-TRACE: claims=SAF-T1307-C002,SAF-T1307-C017; sources=SRC-cwe-441-v4.20,SRC-ghsa-inspector-7f8r,SRC-jfrog-cve-2025-6514 -->
+- **First Observed**: Not observed in a qualifying production incident; publicly demonstrated against `mcp-remote` on 2025-07-09. [JFrog analysis](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/) <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C010; sources=SRC-jfrog-cve-2025-6514,SRC-cisa-kev-2026-09-01 -->
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+This technique covers an attacker causing an MCP or agentic intermediary to use authority, identity, network reach, or execution capability unavailable to the attacker because the intermediary fails to preserve or enforce the initiating principal's identity, resource, authorization intent, or approved delegation. [CWE-441 definition](https://cwe.mitre.org/data/definitions/441.html) <!-- SAF-TRACE: claims=SAF-T1307-C001; sources=SRC-cwe-441-v4.20 -->
+
+### In Scope
+
+- An MCP proxy, client, host, or agent receives attacker-controlled intent and performs a protected downstream action under a different, more privileged security context without a valid initiating-principal binding. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- OAuth proxy confusion, token-audience confusion, unauthenticated proxy-to-process launch, and equivalent agent-to-tool delegation are in scope when the deputy's distinct authority is the boundary-crossing mechanism. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C007,SAF-T1307-C008; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+
+### Out of Scope
+
+- Prompt or instruction injection is delivery behavior, not this technique, unless the injected instruction causes a separately authorized deputy to cross the defined privilege boundary. <!-- SAF-TRACE: claims=SAF-T1307-C009,SAF-T1307-C012; sources=SRC-cve-2025-32711,SRC-cwe-441-v4.20 -->
+- SSRF, path traversal, token theft, and command injection remain separate mechanisms when they do not rely on an intermediary's distinct authority or loss of initiator binding. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C016; sources=SRC-cwe-441-v4.20,SRC-cve-2025-53109 -->
+
+### Distinguishing Characteristics
+
+The decisive observable is an authorization asymmetry: the initiator is not permitted to perform the action, the deputy is permitted, and the deputy acts without a valid binding among initiator, approved delegation, target resource, and action. A mere malicious input or vulnerable sink is insufficient without that asymmetric authority. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
 
 ## Description
-A Confused Deputy Attack occurs when an MCP server with legitimate authority is tricked into misusing its privileges by forwarding authentication tokens or credentials from one user (Alice) to another user's (Bob) MCP instance. The server acts as a "confused deputy"—an intermediary with trusted privileges that performs actions on behalf of an attacker without proper authorization checks.
 
-In MCP environments, this attack exploits the trusted position of MCP servers that handle authentication tokens for multiple users or instances. When a server receives a token scoped for one user but fails to validate the intended recipient before forwarding it, an attacker can leverage the server's authority to impersonate the original token owner and access resources or perform actions beyond their privilege level. The [MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices) explicitly call out Confused Deputy risks for proxy servers and require per-client consent and audience separation to prevent token passthrough and consent bypass.
+A confused deputy attack turns a legitimate intermediary into the apparent source of an attacker's request. The weakness matters when the intermediary has access the attacker lacks and forwards or executes a request outside the authority actually granted to the initiator. [CWE-441](https://cwe.mitre.org/data/definitions/441.html) <!-- SAF-TRACE: claims=SAF-T1307-C001; sources=SRC-cwe-441-v4.20 -->
+
+MCP documents a direct OAuth form of the problem: an MCP proxy using a static third-party client ID can combine dynamic MCP client registration, an existing consent cookie, and missing per-client consent so that an attacker receives an authorization code and accesses a third-party API as the user. This is an authoritative attack model, not evidence of a production incident. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#confused-deputy-problem) <!-- SAF-TRACE: claims=SAF-T1307-C003; sources=SRC-mcp-security-2026-07-28 -->
+
+The same boundary failure can appear below OAuth. JFrog demonstrated that an untrusted MCP server could supply an authorization endpoint that `mcp-remote` passed to a privileged URL-opening path, producing process execution on the client system; the MCP Inspector advisory separately records unauthenticated proxy requests launching MCP commands over `stdio`. [JFrog analysis](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/) [Inspector advisory](https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g) <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C008; sources=SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
 
 ## Attack Vectors
-- **Primary Vector**: Token forwarding between MCP instances without proper audience validation
-- **Secondary Vectors**: 
-  - Exploitation of shared MCP servers handling multiple user contexts
-  - Cross-instance token relay through compromised middleware
-  - OAuth token forwarding without audience claim verification
-  - Session token reuse across different user contexts in multi-tenant MCP deployments
+
+- **Primary Vector**: Attacker-controlled authorization metadata, proxy requests, or agent instructions reach a deputy that has stronger downstream authority than the initiator. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C007,SAF-T1307-C008; sources=SRC-mcp-security-2026-07-28,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+- **Secondary Vectors**: Cross-resource token reuse and dynamically registered redirect targets can detach downstream authority from the intended client or resource. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C006; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
+- **Affected Components**: MCP proxies, clients, hosts, authorization servers, agent runtimes, tool gateways, and downstream APIs that perform delegated actions. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C003; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- **Trust Boundary Crossed**: The boundary between attacker-controlled intent and the deputy's separately authorized identity, network position, token audience, or process privileges. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C005; sources=SRC-cwe-441-v4.20,SRC-rfc8707 -->
 
 ## Technical Details
 
 ### Prerequisites
-- Access to an MCP server that handles tokens for multiple users or instances
-- MCP server that forwards authentication credentials without proper validation
-- Lack of audience or recipient validation in token handling logic
-- Ability to intercept or influence token routing decisions
+
+- The intermediary has authority, reach, or execution capability the initiating attacker does not possess. <!-- SAF-TRACE: claims=SAF-T1307-C001; sources=SRC-cwe-441-v4.20 -->
+- The attacker can cause the intermediary to receive a request, directive, authorization value, or target that the intermediary may forward or execute. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C003; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- The system lacks or fails an enforceable binding among initiating principal, approved client or delegation, target resource, and requested action. <!-- SAF-TRACE: claims=SAF-T1307-C004,SAF-T1307-C005,SAF-T1307-C013; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
 
 ### Attack Flow
 
-```mermaid
-graph TD
-    A[Alice: Legitimate User] -->|1. Authenticates| B[Authorization Server]
-    B -->|2. Issues Token for Alice| C[MCP Server]
-    
-    D[Bob: Attacker] -->|3. Manipulates Request| C
-    
-    C -->|4. Forwards Alice's Token| E{Victim Check}
-    E -->|No Validation| F[Bob's MCP Instance]
-    E -->|With Validation| G[Request Rejected]
-    
-    F -->|5. Uses Alice's Token| H[Protected Resources]
-    H -->|6. Grants Access| I[Alice's Data Exposed]
-    
-    style D fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style C fill:#fee090,stroke:#000,stroke-width:2px,color:#000
-    style F fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style I fill:#d73027,stroke:#000,stroke-width:2px,color:#fff
-    style G fill:#91bfdb,stroke:#000,stroke-width:2px,color:#000
-```
-
-1. **Initial Stage**: Alice authenticates to an authorization server and receives a token
-2. **Token Reception**: MCP server receives Alice's token for processing
-3. **Manipulation Stage**: Attacker Bob manipulates routing or intercepts the token flow
-4. **Confused Deputy Action**: MCP server forwards Alice's token to Bob's instance without proper validation
-5. **Exploitation Stage**: Bob's MCP instance uses Alice's token to access protected resources
-6. **Post-Exploitation**: Bob successfully accesses Alice's data or performs actions as Alice
+1. **Setup**: The attacker identifies a deputy whose downstream authority exceeds the attacker's own. <!-- SAF-TRACE: claims=SAF-T1307-C001; sources=SRC-cwe-441-v4.20 -->
+2. **Delivery**: The attacker supplies metadata, a request, or instructions that encode an attacker-chosen client, redirect, resource, or operation. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C007,SAF-T1307-C008; sources=SRC-mcp-security-2026-07-28,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+3. **Trigger**: The intermediary treats the input as eligible for delegated processing and initiates the protected action. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C007; sources=SRC-cwe-441-v4.20,SRC-jfrog-cve-2025-6514 -->
+4. **Boundary Crossing**: Initiator identity, per-client consent, audience, target, or delegation binding is absent, stale, or not enforced. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C006; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
+5. **Objective**: The deputy performs or enables an action that the initiating attacker could not perform directly. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C002; sources=SRC-cwe-441-v4.20 -->
+6. **Follow-On Activity**: Consequences can include assumed identity, unauthorized command execution, hidden attribution, or access to data within the deputy's reachable scope. <!-- SAF-TRACE: claims=SAF-T1307-C002,SAF-T1307-C017; sources=SRC-cwe-441-v4.20,SRC-ghsa-inspector-7f8r,SRC-jfrog-cve-2025-6514 -->
 
 ### Example Scenario
 
-**Configuration with Vulnerability:**
-```json
-{
-  "mcp_server": {
-    "name": "shared-oauth-proxy",
-    "token_handling": {
-      "validate_audience": false,
-      "validate_recipient": false,
-      "forward_tokens": true
-    },
-    "clients": [
-      {
-        "user_id": "alice",
-        "instance_id": "alice-mcp-instance"
-      },
-      {
-        "user_id": "bob", 
-        "instance_id": "bob-mcp-instance"
-      }
-    ]
-  }
-}
-```
+An untrusted client asks `proxy.example` to invoke `records.read` for `tenant-b`; the proxy's service identity is authorized, but the initiating client is not, and the proxy emits the call without a valid delegation binding. The inert audit shape is `{"initiator":"client-untrusted","deputy":"proxy.example","resource":"tenant-b/records","binding_valid":false}`. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
 
-**Attack Request:**
-```http
-POST /mcp/forward-request HTTP/1.1
-Host: shared-mcp-server.example.com
-Authorization: Bearer eyJhbGc...AliceToken
-X-Forward-To: bob-mcp-instance
-Content-Type: application/json
+## Evidence and Current State
 
-{
-  "method": "resources/read",
-  "params": {
-    "uri": "file:///alice/secrets.json"
-  }
-}
-```
+### Evidence Summary
 
-**Result**: The MCP server forwards Alice's token to Bob's instance, allowing Bob to read Alice's files.
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1307-C001 | A confused deputy fails to preserve the upstream requester's identity and uses different access to forward an unintended request. | Research-Derived | SRC-cwe-441-v4.20: [CWE-441](https://cwe.mitre.org/data/definitions/441.html) | A class-level weakness; each product mapping requires review. |
+| SAF-T1307-C002 | Consequences include gained privilege or identity, hidden activity, and unauthorized code or commands. | Research-Derived | SRC-cwe-441-v4.20: [CWE-441 consequences](https://cwe.mitre.org/data/definitions/441.html) | Consequence, not likelihood for any one system. |
+| SAF-T1307-C003 | MCP documents a complete OAuth proxy confused-deputy flow and its exact prerequisites. | Research-Derived | SRC-mcp-security-2026-07-28: [MCP security guidance](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#confused-deputy-problem) | Authoritative model, not a reported breach or controlled product test. |
+| SAF-T1307-C004 | MCP requires per-client consent controls for the documented proxy pattern. | Research-Derived | SRC-mcp-security-2026-07-28: [MCP required protections](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#required-protections) | Applies to the documented OAuth proxy conditions. |
+| SAF-T1307-C005 | MCP and RFC 8707 require or recommend resource and audience binding that limits token use across resources. | Research-Derived | SRC-mcp-authorization-2026-07-28 and SRC-rfc8707: [MCP authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization#resource-parameter-implementation), [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html#section-3) | Token binding does not validate arbitrary non-OAuth deputy actions. |
+| SAF-T1307-C006 | OAuth BCP requires exact redirect matching and recommends least-privilege, audience-restricted tokens. | Research-Derived | SRC-rfc9700: [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) | General OAuth guidance, not MCP-specific incident evidence. |
+| SAF-T1307-C007 | JFrog demonstrated CVE-2025-6514 causing client-side execution from an untrusted MCP server; version 0.1.16 fixes the issue. | Demonstrated | SRC-jfrog-cve-2025-6514, SRC-jfsa-2025-6514, SRC-cve-2025-6514: [research report](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/), [advisory](https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/) | Full shell-argument control was proven on Windows; other platforms had narrower demonstrated control. |
+| SAF-T1307-C008 | CVE-2025-49596 allowed unauthenticated Inspector proxy requests to launch MCP commands over stdio before 0.14.1. | Research-Derived | SRC-ghsa-inspector-7f8r, SRC-cve-2025-49596: [maintainer advisory](https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g) | The reviewed advisory establishes vulnerability, not production exploitation. |
+| SAF-T1307-C009 | CVE-2025-32711 is a critical M365 Copilot command-injection information-disclosure vulnerability, but the reviewed record does not establish the deputy-binding mechanism. | Research-Derived | SRC-cve-2025-32711: [CVE record](https://cveawg.mitre.org/api/cve/CVE-2025-32711) | Adjacent agentic evidence only. |
+| SAF-T1307-C010 | No selected candidate appeared in the 2026-09-01 KEV snapshot, and no qualifying production incident was found in this corpus. | Research-Derived | SRC-cisa-kev-2026-09-01: [CISA KEV catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) | A dated, bounded search result; not a claim that exploitation has never occurred. |
+| SAF-T1307-C011 | A runtime analytic can correlate initiator authorization, deputy authorization, and binding validity to identify suspicious asymmetric delegation. | Research-Derived | SRC-cwe-441-v4.20, SRC-mcp-security-2026-07-28 | Inferred analytic requiring normalized fields not guaranteed by MCP. |
+| SAF-T1307-C012 | Legitimate proxying and absent identity context limit behavioral detection and can create false positives. | Research-Derived | SRC-cwe-441-v4.20: [CWE-441](https://cwe.mitre.org/data/definitions/441.html) | Environment-specific delegation policy is still required. |
+| SAF-T1307-C013 | Initiator preservation, per-client consent, exact redirects, audience binding, and least privilege constrain the defining mechanism. | Research-Derived | SRC-cwe-441-v4.20, SRC-mcp-security-2026-07-28, SRC-rfc8707, SRC-rfc9700 | Controls must be enforced at every deputy hop. |
+| SAF-T1307-C014 | Containment should stop the deputy path, revoke affected authorization material, and reconstruct the initiator-to-target chain. | Research-Derived | SRC-mcp-security-2026-07-28, SRC-rfc9700 | Response synthesis; exact revocation actions depend on the implementation. |
+| SAF-T1307-C015 | ATT&CK T1068 is analogous where a deputy vulnerability is exploited to gain higher access, but it does not model delegation confusion. | Research-Derived | SRC-mitre-attack-t1068: [MITRE ATT&CK T1068](https://attack.mitre.org/techniques/T1068/) | Analogous, not direct. |
+| SAF-T1307-C016 | CVE-2025-53109 concerns MCP filesystem symlink/path validation and is not evidence for this authority-binding mechanism. | Research-Derived | SRC-cve-2025-53109: [CVE record](https://cveawg.mitre.org/api/cve/CVE-2025-53109) | Excluded adjacent vulnerability. |
+| SAF-T1307-C017 | Realized impact is bounded by the deputy's reachable resources and privileges. | Research-Derived | SRC-cwe-441-v4.20, SRC-ghsa-inspector-7f8r, SRC-jfrog-cve-2025-6514 | Does not predict exploit probability. |
 
-### Advanced Attack Techniques
+### Current State
 
-#### Multi-Hop Token Relay (well-studied in OAuth/OpenID Connect)
+- **Affected Environments**: Systems with an MCP or agentic intermediary that accepts less-trusted requests while holding stronger OAuth, network, tool, or process authority. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C003,SAF-T1307-C007,SAF-T1307-C008; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+- **Known Exploitation**: No qualifying production incident was identified in the reviewed corpus as of 2026-09-01; two direct MCP vulnerabilities and one adjacent agentic vulnerability were selected. <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C008,SAF-T1307-C009,SAF-T1307-C010; sources=SRC-cve-2025-6514,SRC-cve-2025-49596,SRC-cve-2025-32711,SRC-cisa-kev-2026-09-01 -->
+- **Available Protections**: `mcp-remote` 0.1.16 and MCP Inspector 0.14.1 address the selected product flaws; current MCP guidance also requires per-client consent and token-resource binding. <!-- SAF-TRACE: claims=SAF-T1307-C004,SAF-T1307-C005,SAF-T1307-C007,SAF-T1307-C008; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+- **Residual Risk**: Patches for named products do not eliminate deputy confusion in custom proxies, agents, or multi-hop delegations that still fail to bind initiator, resource, and approval. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C013; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
 
-According to formal security analyses and real-world deployments, attackers can chain multiple confused deputy vulnerabilities:
+### Known Breaches and Vulnerabilities
 
-1. **IdP Mix-Up / Confused Deputy in OAuth & OIDC**: Formal analyses show clients can be tricked into using an authorization code from one IdP with another IdP's token endpoint, enabling token theft or login confusion. These "mix-up"/"malicious endpoint" attacks were found viable against deployed RPs, prompting IETF mix-up mitigations (binding responses to the expected issuer) and updates to best practices ([A Comprehensive Formal Security Analysis of OAuth 2.0 - Fett, Küsters, Schmitz](https://publ.sec.uni-stuttgart.de/fettkuestersschmitz-ccs-2016.pdf))
-
-2. **Cross-Service Token Pivoting**: Misconfigured trust (e.g., OIDC WebIdentity trust for CI/CD) lets a deputy accept tokens from unintended principals; real-world hunts have shown misconfigured AWS IAM roles assumable by untrusted GitHub Actions ([Datadog Security Labs - GitHub to AWS Keyless Authentication Flaws](https://securitylabs.datadoghq.com/articles/exploring-github-to-aws-keyless-authentication-flaws/))
-
-3. **Token Substitution via Middleware**: Proxy layers that pass through or rewrite tokens without audience checks enable confused-deputy flows (explicitly prohibited by the MCP authorization guidance) ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
-
-4. **Context Confusion in Multi-Tenant Systems**: Mixing user contexts on shared deputies (gateways, job runners, build systems) leads to token reuse across tenants; cloud incidents (documented below) illustrate this pattern ([Tenable - ConfusedFunction GCP Vulnerability](https://www.tenable.com/blog/confusedfunction-a-privilege-escalation-vulnerability-impacting-gcp-cloud-functions))
-
-#### MCP-Specific Attack Variations
-
-##### Cross-Instance Identity Confusion
-In MCP environments with multiple connected instances:
-- **Shared Server Exploitation**: A centralized MCP server handles requests for many user instances but doesn't enforce per-client consent before third-party OAuth flows; consent cookies for a static client can be abused to skip consent and deliver codes to attacker-controlled redirects ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
-- **Token Passthrough Anti-Pattern**: Server forwards upstream tokens not issued for the MCP server; forbidden in spec due to control-bypass and audit issues ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
-- **Tool Chain Abuse**: Attacker manipulates tool invocation chains to cause token forwarding between instances
-- **Session Hijacking via Deputy**: Using the MCP server's trusted position to hijack active sessions
-
-##### OAuth Audience Claim Bypass
-Modern OAuth implementations use audience claims to prevent confused deputy attacks, but vulnerabilities emerge when:
-- **Missing `aud` Validation**: Servers must reject JWTs whose `aud` does not identify the server; this is a core RFC 7519 requirement ([RFC 7519 - JSON Web Token](https://datatracker.ietf.org/doc/html/rfc7519))
-- **Wildcard/Broad Audience**: Accepting overly broad audiences or failing to enforce issuer/`aud` pairing invites confused-deputy acceptance ([OAuth 2.0 Mix-Up Mitigation](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-mix-up-mitigation-00))
-- **Lack of Proof-of-Possession**: Without mTLS-bound or DPoP-bound tokens, stolen/forwarded bearer tokens can be replayed by the wrong recipient ([RFC 8705 - OAuth 2.0 Mutual-TLS](https://datatracker.ietf.org/doc/html/rfc8705))
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| CVE-2025-6514 | Published 2025-07-09; `mcp-remote` 0.0.5 through 0.1.15 when connecting to an untrusted MCP server. | Client-side command or executable execution; update to 0.1.16. | Direct vulnerability and direct public demonstration: attacker-supplied authorization metadata reached a more privileged URL-opening deputy. <!-- SAF-TRACE: claims=SAF-T1307-C007; sources=SRC-cve-2025-6514,SRC-jfsa-2025-6514,SRC-jfrog-cve-2025-6514 --> | No reviewed evidence of production exploitation; non-Windows control was more limited. |
+| CVE-2025-49596 / GHSA-7f8r-222p-6f5g | Published 2025-06-13; MCP Inspector before 0.14.1. | Unauthenticated proxy requests could launch MCP commands over stdio; update to 0.14.1. | Direct vulnerability: an unauthenticated initiator could exercise the proxy's process-launch authority. <!-- SAF-TRACE: claims=SAF-T1307-C008; sources=SRC-cve-2025-49596,SRC-ghsa-inspector-7f8r --> | Advisory evidence, not a production incident. |
+| CVE-2025-32711 | Published 2025-06-11; Microsoft 365 Copilot hosted service. | Network information disclosure from AI command injection; the CNA record links a vendor patch and reports a critical score. | Adjacent agentic vulnerability retained for impact context; the reviewed record does not establish initiator/deputy binding loss. <!-- SAF-TRACE: claims=SAF-T1307-C009; sources=SRC-cve-2025-32711 --> | CISA enrichment reports exploitation as none; affected version and rollout detail are not exposed in the CNA record. |
 
 ## Impact Assessment
-- **Confidentiality**: High - Unauthorized access to another user's data and resources
-- **Integrity**: High - Ability to perform actions as another user, potentially modifying their data
-- **Availability**: Medium - Could enable denial of service by consuming another user's quotas or resources
-- **Scope**: Network-wide - Affects all users connected to the vulnerable MCP server
 
-### Current Status (2025)
-The Confused Deputy problem dates to Norm Hardy (1988) and remains current in identity/federation and cloud services. Modern mitigations include audience validation, issuer binding, and sender-constrained tokens (mTLS/DPoP):
-- OAuth 2.0 includes audience claims (`aud`) to prevent token misuse across different services ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519))
-- Token binding mechanisms like mTLS and DPoP provide cryptographic proof of possession ([RFC 8705](https://datatracker.ietf.org/doc/html/rfc8705), [RFC 9449](https://www.rfc-editor.org/rfc/rfc9449.html))
-- Modern authorization frameworks recommend explicit recipient validation ([OAuth 2.0 Security Best Current Practice](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics))
-- MCP's spec adds per-client consent and bans token passthrough ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | A deputy can expose resources reachable under its identity, as illustrated by agentic information disclosure and CWE-441 identity abuse. <!-- SAF-TRACE: claims=SAF-T1307-C002,SAF-T1307-C009,SAF-T1307-C017; sources=SRC-cwe-441-v4.20,SRC-cve-2025-32711 --> |
+| Integrity | High | A deputy with process or tool authority can execute attacker-chosen actions under the deputy's privilege. <!-- SAF-TRACE: claims=SAF-T1307-C002,SAF-T1307-C007,SAF-T1307-C008,SAF-T1307-C017; sources=SRC-cwe-441-v4.20,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r --> |
+| Availability | High | Demonstrated or advisory-described process execution can affect availability when the deputy can modify or terminate reachable resources. <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C008,SAF-T1307-C017; sources=SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r --> |
+| Scope | Multi-System | OAuth proxy and tool-gateway deputies can bridge clients, authorization systems, downstream APIs, and local processes; actual spread is limited to the deputy's reachable scope. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C017; sources=SRC-mcp-security-2026-07-28,SRC-rfc8707,SRC-cwe-441-v4.20 --> |
 
-**MCP implementations:** Beyond general OAuth/cloud examples, the risk has been **observed in an MCP server**: the FastMCP project published an advisory describing a **confused-deputy account-takeover vector** in its auth integration and issued a fix (**v2.13.0**). (At disclosure, there were no public claims of in-the-wild exploitation.) ([GitHub Advisory](https://github.com/advisories/GHSA-c2jp-c369-7pvx))
+### Severity Conditions
 
-However, MCP implementations may not enforce these controls, particularly in rapid prototyping or development environments where security configurations are relaxed.
+- **Severity increases when**: The deputy has broad tokens, cross-tenant reach, local process-launch capability, or no per-client approval boundary. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C006,SAF-T1307-C007,SAF-T1307-C008,SAF-T1307-C017; sources=SRC-mcp-security-2026-07-28,SRC-rfc9700,SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
+- **Severity decreases when**: Tokens are resource- and audience-bound, scopes are minimal, every delegation is bound to the initiator, and high-risk actions require fresh approval. <!-- SAF-TRACE: claims=SAF-T1307-C004,SAF-T1307-C005,SAF-T1307-C006,SAF-T1307-C013; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP host, proxy, or agent audit log | Authorization initiation, downstream call, tool execution, or process launch | Timestamp, session, initiator ID, deputy ID, action, resource, initiator authorization, deputy authorization, approval or delegation ID, binding result, outcome | Preserve a correlation identifier across every deputy hop. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C012; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 --> |
+| OAuth authorization and resource logs | Client registration, consent, code issuance, token issuance, and resource access | Client ID, resource owner, redirect URI, approved redirect, scopes, resource, audience, state result, token ID, result | Compare client, resource, and audience at issuance and use. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C004,SAF-T1307-C005,SAF-T1307-C006; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 --> |
+
 ### Indicators of Compromise (IoCs)
-- Token forwarding events where source and destination user contexts differ
-- Authorization headers present in inter-instance communication logs
-- Token validation failures with mismatched audience claims
-- Unusual cross-instance resource access patterns
-- Multiple instances using tokens with identical JTI (JWT ID) values
-- Token usage outside expected geographic or network boundaries
 
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. Adapt it to your MCP architecture and logging. Enable comprehensive logging around token handling and instance identity.
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: MCP Confused Deputy Token Forwarding Detection
-id: 124759fd-0346-4c13-96bd-92a3aff237e8
-status: experimental
-description: Detects potential confused deputy attacks where tokens are forwarded between different user instances in MCP environments
-author: Arjun Subedi
-date: 2025-11-08
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1307
-  - https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
-  - https://datatracker.ietf.org/doc/html/rfc7519
-logsource:
-  product: mcp
-  service: authentication
-detection:
-  selection_token_forward:
-    event_type: 'token_forward'
-    action: 'forward_authorization'
-  selection_mismatch:
-    - source_user: '*'
-      destination_user: '*'
-      match_users: false
-    - token_audience: '*'
-      destination_instance: '*'
-      match_audience: false
-  selection_cross_instance:
-    event_type: 'resource_access'
-    original_token_owner: '*'
-    accessing_instance_owner: '*'
-    owners_match: false
-  condition: selection_token_forward and (selection_mismatch or selection_cross_instance)
-falsepositives:
-  - Legitimate delegation scenarios with explicit user consent
-  - Service accounts operating on behalf of multiple users
-  - Administrative operations with proper authorization
-  - Shared resource access in collaborative environments
-level: high
-tags:
-  - attack.privilege_escalation
-  - attack.t1134  # Access Token Manipulation
-  - attack.t1550  # Use Alternate Authentication Material
-  - safe.t1307
-```
+- No universal durable IoC exists; this is an authorization relationship and must be evaluated from event context. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C012; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- Product-specific signals can include an untrusted authorization endpoint preceding a process launch or an unauthenticated Inspector proxy request preceding `stdio` command launch. <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C008; sources=SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r -->
 
 ### Behavioral Indicators
-- User accounts showing activity from multiple MCP instances simultaneously
-- Resource access patterns inconsistent with user's normal behavior
-- Token usage with mismatched issuer/audience context
-- Sudden spike in cross-instance API calls
-- Authorization logs showing tokens used by unintended recipients
-- Sessions persisting unusually long when short-lived tokens are expected
-- Token usage from unexpected issuer or network/geolocation
+
+- Alert when a deputy-authorized action succeeds or is attempted while the initiator is unauthorized and the authorization or delegation binding is invalid. <!-- SAF-TRACE: claims=SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- Increase confidence when the same correlation chain contains redirect mismatch, missing per-client consent, resource/audience mismatch, or process launch from remotely supplied metadata. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C007,SAF-T1307-C011; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-jfrog-cve-2025-6514 -->
+- Suppress only when a validated, current delegation explicitly binds the same initiator, action, and target resource. <!-- SAF-TRACE: claims=SAF-T1307-C012,SAF-T1307-C013; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+
+### Detection Analytic
+
+The standalone experimental analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Detect asymmetric deputy actions in which the deputy is authorized, the initiator is not, and no valid delegation binding is present. <!-- SAF-TRACE: claims=SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- **Rule Status**: [Experimental rule](detection-rule.yml)
+- **Detection Logic**: Select normalized deputy-action events with `deputy.allowed=true`, `initiator.allowed=false`, and `binding.valid=false`; exclude an explicitly validated delegation. <!-- SAF-TRACE: claims=SAF-T1307-C011; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- **Correlation Window**: Correlate the initiating event and downstream action within ten minutes when they are emitted as separate events. <!-- SAF-TRACE: claims=SAF-T1307-C011; sources=SRC-mcp-security-2026-07-28,SRC-cwe-441-v4.20 -->
+- **Known False Positives**: Approved service-to-service delegation can look asymmetric if delegation validation is omitted from the normalized event. <!-- SAF-TRACE: claims=SAF-T1307-C012; sources=SRC-cwe-441-v4.20 -->
+- **Known Limitations**: Missing initiator or binding fields create a blind spot; the rule does not infer authorization from free-form prompt text. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C012; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+- **Tuning Guidance**: Normalize explicit policy decisions and approved delegation IDs before applying service-account allowlists. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C012; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](../../tests/SAF-T1307/test-logs.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1307/test_detection_rule.py)
+- **Expected Result**: [Three positive and five non-alerting cases pass](../../tests/SAF-T1307/test-logs.json)
+- **Last Validated**: [2026-09-01](../../tests/SAF-T1307/test-logs.json)
+- **Feasibility Waiver**: [None; deterministic normalized-event tests are present](../../tests/SAF-T1307/test_detection_rule.py)
 
 ## Mitigation Strategies
 
 ### Preventive Controls
 
-1. **Strict Audience Validation**: Enforce RFC 7519—only accept JWTs whose `aud` includes this server; reject missing/over-broad audiences
-   - Verify `aud` claim matches the intended MCP instance identifier
-   - Reject tokens with missing or overly broad audience claims
-   - According to [RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519), audience validation is a core requirement for preventing confused deputy attacks
-
-2. **Sender-Constrained Tokens**: Bind tokens to the client using OAuth mTLS (RFC 8705) or DPoP (RFC 9449) to prevent replay/forwarding
-   - Implement mTLS token binding ([RFC 8705](https://datatracker.ietf.org/doc/html/rfc8705))
-   - Deploy DPoP (Demonstrating Proof-of-Possession) for bearer tokens ([RFC 9449](https://www.rfc-editor.org/rfc/rfc9449.html))
-   - Ensure tokens cannot be replayed by different instances
-
-3. **Instance Identity Verification**: Validate the identity of requesting MCP instances
-   - Implement mutual TLS authentication between MCP components
-   - Use instance certificates for cryptographic identity proof
-   - Maintain allowlists of authorized instance-to-instance communications
-
-4. **Context Isolation**: Enforce strict separation between user contexts
-   - Use separate token storage per user instance
-   - Implement namespace isolation for multi-tenant deployments
-   - Avoid sharing authentication state across user boundaries
-
-5. **Token Scope Restriction**: Implement principle of least privilege for token scopes
-   - Issue tokens with minimal required permissions
-   - Use short-lived tokens with frequent rotation
-   - Implement fine-grained resource-level authorization
-
-6. **Explicit Recipient Declaration**: For token exchange, require audience/`resource` targeting and validate recipient consistency (RFC 8693)
-   - Use token exchange flows that declare the target audience ([RFC 8693](https://www.rfc-editor.org/rfc/rfc8693.html))
-   - Implement request signing to prevent token forwarding manipulation
-   - Validate that token recipient matches request context
-
-7. **MCP-Specific Controls**: Implement per-client consent at the MCP layer; forbid token passthrough; bind consent to the requesting `client_id` and exact `redirect_uri`
-   - Follow [MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices) for OAuth integration
-   - Enforce per-client consent rather than static consent cookies
-   - Never forward tokens not issued for the MCP server itself
+1. **[SAF-M-74: Per-Invocation Capability Brokering](../../mitigations/SAF-M-74/README.md)**: Preserve an immutable initiator identity and bind each delegation to the approved action and target. <!-- SAF-TRACE: claims=SAF-T1307-C002,SAF-T1307-C013; sources=SRC-cwe-441-v4.20 -->
+2. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Restrict deputy tokens and runtime privileges to the smallest resource and action set. <!-- SAF-TRACE: claims=SAF-T1307-C005,SAF-T1307-C006,SAF-T1307-C013; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
+3. **Per-client consent and redirect validation**: Bind consent to the requesting client, show scopes and redirect target, match redirects exactly, and validate single-use state. <!-- SAF-TRACE: claims=SAF-T1307-C004,SAF-T1307-C006,SAF-T1307-C013; sources=SRC-mcp-security-2026-07-28,SRC-rfc9700 -->
 
 ### Detective Controls
 
-1. **Token Usage Monitoring**: Implement comprehensive logging and monitoring
-   - Log all token issuance, forwarding, and usage events
-   - Monitor for tokens used by multiple instances
-   - Alert on audience claim mismatches
-
-2. **Anomaly Detection**: Deploy behavioral analysis for token usage patterns
-   - Model typical issuer/audience pairs per instance; flag deviations
-   - Detect unusual cross-instance communication patterns
-   - Monitor for tokens used outside expected network or geographic boundaries (impossible travel)
-   - Identify tokens with suspicious usage timing or frequency
-
-3. **Audit Trail Analysis**: Maintain detailed audit trails
-   - Maintain lineage of tokens through any forwarding; correlate with user actions
-   - Track token lineage through forwarding chains
-   - Regular review of cross-instance access patterns
+1. Preserve initiator, deputy, resource, authorization decision, delegation, and outcome in one correlation chain. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C013; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
+2. Monitor redirect, consent, resource, audience, and process-launch mismatches rather than treating the deputy's authenticated identity as sufficient. <!-- SAF-TRACE: claims=SAF-T1307-C003,SAF-T1307-C005,SAF-T1307-C007,SAF-T1307-C011; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-jfrog-cve-2025-6514 -->
 
 ### Response Procedures
 
-1. **Immediate Actions**:
-   - Revoke suspected compromised tokens immediately
-   - Isolate affected MCP instances from network
-   - Lock accounts showing suspicious cross-instance activity
-   - Preserve logs for forensic analysis
+#### Immediate Actions
 
-2. **Investigation Steps**:
-   - Enumerate all instances using the token
-   - Trace any forwarding chain to identify initial compromise point
-   - Review audit logs for unauthorized resource access
-   - Determine scope of data exposure or unauthorized actions
-   - Confirm whether consent existed for observed token usage
+- Stop or isolate the deputy path, disable the affected client or proxy, and block further downstream actions under the implicated authorization context. <!-- SAF-TRACE: claims=SAF-T1307-C014; sources=SRC-mcp-security-2026-07-28,SRC-rfc9700 -->
+- Revoke affected authorization codes, access or refresh tokens, proxy credentials, and delegations when the reviewed event chain shows possible exposure. <!-- SAF-TRACE: claims=SAF-T1307-C014; sources=SRC-mcp-security-2026-07-28,SRC-rfc9700 -->
 
-3. **Remediation**:
-   - Force password/credential reset for affected accounts
-   - Reissue correctly audience-scoped tokens with proper validation
-   - Enable mTLS/DPoP token binding mechanisms
-   - Enforce recipient validation and MCP per-client consent
-   - Harden token-handling code; conduct security review
-   - Expand monitoring for similar attack patterns
+#### Investigation Steps
 
-## Real-World Context
+- Reconstruct the initiator-to-deputy-to-target chain and compare registered client, redirect, consent, resource, audience, requested action, and actual outcome. <!-- SAF-TRACE: claims=SAF-T1307-C005,SAF-T1307-C011,SAF-T1307-C014; sources=SRC-mcp-security-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-rfc8707,SRC-rfc9700 -->
+- Determine whether the issue is deputy confusion or an adjacent injection, SSRF, path-validation, or token-theft mechanism before scoping follow-on activity. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C014,SAF-T1307-C016; sources=SRC-cwe-441-v4.20,SRC-cve-2025-53109,SRC-rfc9700 -->
 
-### Historical Background
+#### Remediation
 
-The Confused Deputy problem was formalized by Norm Hardy (1988) with the compiler/billing-file example—an intermediary with ambient authority is tricked into misusing it ([The Confused Deputy - ACM Digital Library](https://dl.acm.org/doi/10.1145/54289.871709)). Hardy described a scenario where a compiler program with write access to billing files could be tricked into overwriting arbitrary files by manipulating which file it wrote to while performing its legitimate function.
-
-### Modern Manifestations (Documented Cases)
-
-#### MCP-Native Example (2025): FastMCP Advisory & Patch
-
-A security advisory for **FastMCP** detailed how its OAuth integration could be abused to create a **confused-deputy account takeover** when fronting Entra ID without DCR, leveraging consent for a static client to deliver an authorization code to an attacker-controlled redirect URI. **Patched in v2.13.0.** ([GitHub Advisory GHSA-c2jp-c369-7pvx](https://github.com/advisories/GHSA-c2jp-c369-7pvx))
-
-#### OAuth/OpenID Connect Mix-Up (IdP Confusion)
-
-Rigorous formal analyses show RP clients can be confused about which IdP issued a code, enabling token theft or login confusion. Mitigations bind responses to the expected issuer and reinforce `state`/`nonce` handling. Empirical studies found exploitable implementations in the wild ([A Comprehensive Formal Security Analysis of OAuth 2.0 - Fett, Küsters, Schmitz, 2016](https://publ.sec.uni-stuttgart.de/fettkuestersschmitz-ccs-2016.pdf)).
-
-#### AWS AppSync Cross-Tenant Confused Deputy (2022)
-
-Datadog disclosed a cross-tenant vulnerability where AppSync could be induced to assume IAM roles in other accounts (bypassing cross-account checks via mixed-case JSON), letting attackers access victim resources. AWS remediated quickly and reported no evidence of customer exploitation; the case remains a canonical confused-deputy pattern ([Datadog Security Labs - AppSync Vulnerability](https://securitylabs.datadoghq.com/articles/appsync-vulnerability-disclosure/)).
-
-#### GitHub → AWS OIDC Misconfiguration (2023–2025)
-
-Datadog demonstrated that improper trust policies allowed untrusted GitHub Actions to assume AWS IAM roles; their case study included a UK government role with CodeCommit permissions. This is a practical token-recipient confusion/trust misbinding problem; later AWS added guardrails (2025) blocking creation of such vulnerable roles ([Datadog Security Labs - GitHub to AWS Keyless Authentication Flaws](https://securitylabs.datadoghq.com/articles/exploring-github-to-aws-keyless-authentication-flaws/)).
-
-#### GCP "ConfusedFunction" (2024)
-
-Tenable documented a privilege-escalation path in GCP where Cloud Functions' deployment pipeline could be abused to exfiltrate Cloud Build service-account tokens and operate with higher privileges—again a deputy (build system) acting with broader authority than the caller. Google mitigated for new deployments; legacy instances required customer action ([Tenable - ConfusedFunction GCP Vulnerability](https://www.tenable.com/blog/confusedfunction-a-privilege-escalation-vulnerability-impacting-gcp-cloud-functions)).
-
-#### AWS STS External ID (Ongoing)
-
-AWS treats the confused deputy as a first-class risk; the `ExternalId` in `AssumeRole` trust policies exists specifically to prevent a deputy (a third-party integrator) from being tricked into using its authority on behalf of an unintended principal ([AWS IAM Documentation - The Confused Deputy Problem](https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html)).
-
-#### Additional Related Patterns
-
-- **CSRF (Cross-Site Request Forgery)**: Web browsers acting as confused deputies by forwarding cookies to unintended sites ([OWASP CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html))
-- **SSRF (Server-Side Request Forgery)**: Web servers acting as deputies to make requests to internal resources ([OWASP SSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html))
-
-### Relevance to MCP
-
-The MCP spec's security best practices directly incorporate these lessons: forbid token passthrough, enforce per-client consent and exact `redirect_uri` matching, and require issuer/audience verification to avoid deputy confusion across clients and third-party APIs ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)). The MCP architecture, with its pattern of servers acting as intermediaries between users and resources, creates similar confused deputy risks that require careful attention to token validation and context isolation.
-
-## Sub-Techniques
-
-### SAF-T1307.001: OAuth Audience Bypass
-Exploiting missing or insufficient audience validation in OAuth token flows:
-- Tokens accepted without `aud` claim verification ([RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519))
-- Wildcard or overly permissive audience patterns
-- Resource servers accepting tokens not intended for them
-
-### SAF-T1307.002: Cross-Tenant Token Leakage
-In multi-tenant MCP deployments, exploiting insufficient tenant isolation:
-- Shared caches or misbound trust (e.g., OIDC WebIdentity) allow unexpected principals to receive/assume tokens across tenants
-- Tenant identifiers not properly validated
-- Token forwarding between different tenant contexts ([Datadog Security Labs - GitHub to AWS Keyless Authentication Flaws](https://securitylabs.datadoghq.com/articles/exploring-github-to-aws-keyless-authentication-flaws/))
-
-### SAF-T1307.003: Tool Chain Identity Confusion
-Exploiting MCP tool invocation chains with multiple authentication contexts:
-- A tool running under User A's token invokes another tool in User B's context; original auth context is lost; deputy executes with wrong identity
-- Nested tool calls losing original authentication context
-- Permission inheritance across tool boundaries
-- Prevent with MCP per-client consent and no token passthrough ([MCP Security Best Practices](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices))
+- Patch affected products, restore per-client and per-resource authorization binding, and reduce deputy privileges before re-enabling the path. <!-- SAF-TRACE: claims=SAF-T1307-C007,SAF-T1307-C008,SAF-T1307-C013,SAF-T1307-C014; sources=SRC-jfrog-cve-2025-6514,SRC-ghsa-inspector-7f8r,SRC-mcp-security-2026-07-28,SRC-rfc9700 -->
+- Add regression cases for unauthorized initiators, target mismatches, stale approvals, missing binding fields, and valid delegated lookalikes. <!-- SAF-TRACE: claims=SAF-T1307-C011,SAF-T1307-C012,SAF-T1307-C014; sources=SRC-cwe-441-v4.20,SRC-mcp-security-2026-07-28 -->
 
 ## Related Techniques
-- [SAF-T1304](../SAF-T1304/README.md): Credential Relay Chain - Uses stolen credentials rather than confused deputy pattern
-- [SAF-T1306](../SAF-T1306/README.md): Rogue Authorization Server - Creates malicious tokens rather than misusing legitimate ones
-- [SAF-T1308](../SAF-T1308/README.md): Token Scope Substitution - Replaces token scopes rather than forwarding to wrong recipient
-- [SAF-T1506](../SAF-T1506/README.md): Infrastructure Token Theft - Steals tokens from infrastructure rather than exploiting forwarding logic
-- [SAF-T1706](../SAF-T1706/README.md): OAuth Token Pivot Replay - Broader token replay attack pattern
 
-## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [MCP Security Best Practices - Confused Deputy, Token Passthrough prohibitions, per-client consent requirements](https://modelcontextprotocol.io/specification/draft/basic/security_best_practices)
-- **[FastMCP Security Advisory (GHSA-c2jp-c369-7pvx) - FastMCP Auth Integration Allows for Confused Deputy Account Takeover (Oct 28, 2025)](https://github.com/advisories/GHSA-c2jp-c369-7pvx)**
-- [The Confused Deputy (or why capabilities might have been invented) - Hardy, N. (1988), ACM SIGOPS](https://dl.acm.org/doi/10.1145/54289.871709)
-- [A Comprehensive Formal Security Analysis of OAuth 2.0 - Fett, Küsters, Schmitz (2016)](https://publ.sec.uni-stuttgart.de/fettkuestersschmitz-ccs-2016.pdf)
-- [RFC 7519 - JSON Web Token (JWT) - audience claim requirements](https://datatracker.ietf.org/doc/html/rfc7519)
-- [RFC 6819 - OAuth 2.0 Threat Model and Security Considerations](https://datatracker.ietf.org/doc/html/rfc6819)
-- [OAuth 2.0 Security Best Current Practice - IETF Draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [OAuth 2.0 Mix-Up Mitigation - IETF Draft](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-mix-up-mitigation-00)
-- [RFC 8693 - OAuth 2.0 Token Exchange - audience/resource targeting](https://www.rfc-editor.org/rfc/rfc8693.html)
-- [RFC 8705 - OAuth 2.0 Mutual-TLS Client Authentication and Certificate-Bound Access Tokens](https://datatracker.ietf.org/doc/html/rfc8705)
-- [RFC 9449 - OAuth 2.0 Demonstrating Proof-of-Possession (DPoP) - sender-constraining tokens](https://www.rfc-editor.org/rfc/rfc9449.html)
-- [Datadog Security Labs (2022) - AWS AppSync cross-tenant confused-deputy disclosure](https://securitylabs.datadoghq.com/articles/appsync-vulnerability-disclosure/)
-- [Datadog Security Labs (2023-2025) - GitHub→AWS OIDC misconfiguration; UK Government case; AWS guardrails](https://securitylabs.datadoghq.com/articles/exploring-github-to-aws-keyless-authentication-flaws/)
-- [Tenable (2024) - ConfusedFunction in GCP Cloud Functions/Cloud Build - privilege escalation](https://www.tenable.com/blog/confusedfunction-a-privilege-escalation-vulnerability-impacting-gcp-cloud-functions)
-- [AWS IAM Documentation - External ID to prevent confused deputy in STS AssumeRole](https://docs.aws.amazon.com/IAM/latest/UserGuide/confused-deputy.html)
-- [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)
-- [OWASP Cross-Site Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
-- [OWASP Server-Side Request Forgery Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Possible prerequisite | Injection changes interpreted instructions; confused deputy requires a separate authority asymmetry and invalid delegation binding. <!-- SAF-TRACE: claims=SAF-T1307-C001,SAF-T1307-C009,SAF-T1307-C012; sources=SRC-cwe-441-v4.20,SRC-cve-2025-32711 --> |
+| [SAF-T1707: CSRF Token Relay](../SAF-T1707/README.md) | Overlapping deputy behavior | CSRF token relay causes a browser or portal to exercise stored authority, while confused deputy is bounded more generally by an intermediary's distinct authority and loss of initiator context. <!-- SAF-TRACE: claims=SAF-T1307-C001; sources=SRC-cwe-441-v4.20 --> |
 
 ## MITRE ATT&CK Mapping
-- [T1134 - Access Token Manipulation](https://attack.mitre.org/techniques/T1134/)
-- [T1550 - Use Alternate Authentication Material](https://attack.mitre.org/techniques/T1550/)
-- [T1078 - Valid Accounts](https://attack.mitre.org/techniques/T1078/)
+
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1068](https://attack.mitre.org/techniques/T1068/) | Exploitation for Privilege Escalation | Analogous | Both use a software weakness to obtain higher access, but T1068 does not encode the initiator/deputy/target delegation relationship. <!-- SAF-TRACE: claims=SAF-T1307-C015; sources=SRC-mitre-attack-t1068 --> |
+
+## References
+
+1. **SRC-cwe-441-v4.20**: [CWE-441: Unintended Proxy or Intermediary](https://cwe.mitre.org/data/definitions/441.html) — MITRE CWE Content Team; definition, conditions, consequences, mitigation, and detection.
+2. **SRC-mcp-security-2026-07-28**: [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices) — Model Context Protocol maintainers; confused deputy, token passthrough, URL validation, and logging guidance.
+3. **SRC-mcp-authorization-2026-07-28**: [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — Model Context Protocol maintainers; resource parameters and token handling.
+4. **SRC-rfc8707**: [RFC 8707: Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707.html) — Brian Campbell, John Bradley, and Hannes Tschofenig; resource and audience restriction.
+5. **SRC-rfc9700**: [RFC 9700: Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/rfc/rfc9700.html) — Torsten Lodderstedt, John Bradley, Andrey Labunets, and Daniel Fett; redirect, privilege, audience, and token controls.
+6. **SRC-cve-2025-6514**: [CVE-2025-6514 CNA record](https://cveawg.mitre.org/api/cve/CVE-2025-6514) — JFrog CNA and CISA Vulnerability Enrichment Team; affected range, impact, references, and exploitation assessment.
+7. **SRC-jfsa-2025-6514**: [JFSA-2025-001290844](https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/) — Or Peles and the JFrog Security Research Team; discovery credit and affected versions.
+8. **SRC-jfrog-cve-2025-6514**: [Critical RCE Vulnerability in mcp-remote](https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/) — Or Peles and the JFrog Security Research Team; reproduction, platform limits, and fixed version.
+9. **SRC-cve-2025-49596**: [CVE-2025-49596 CNA record](https://cveawg.mitre.org/api/cve/CVE-2025-49596) — GitHub CNA and CISA Vulnerability Enrichment Team; affected range and exploitation assessment.
+10. **SRC-ghsa-inspector-7f8r**: [Inspector proxy server vulnerabilities](https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g) — publisher handle `petery-ant` and the Model Context Protocol maintainers; credit to Rémy Marot of Tenable; affected and fixed versions.
+11. **SRC-cve-2025-32711**: [CVE-2025-32711 CNA record](https://cveawg.mitre.org/api/cve/CVE-2025-32711) — Microsoft Security Response Center, CVE Program, and CISA Vulnerability Enrichment Team; M365 Copilot vulnerability and exploitation assessment.
+12. **SRC-cve-2025-53109**: [CVE-2025-53109 CNA record](https://cveawg.mitre.org/api/cve/CVE-2025-53109) — GitHub CNA and CISA Vulnerability Enrichment Team; adjacent filesystem weakness.
+13. **SRC-cisa-kev-2026-09-01**: [CISA Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — Cybersecurity and Infrastructure Security Agency; exact-ID absence check.
+14. **SRC-mitre-attack-t1068**: [ATT&CK T1068: Exploitation for Privilege Escalation](https://attack.mitre.org/techniques/T1068/) — MITRE ATT&CK Team and named page contributors; analogous mapping.
 
 ## Version History
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-11-08 | Initial documentation of confused deputy attack pattern in MCP context with comprehensive OAuth security references, **MCP-native case (FastMCP GHSA-c2jp-c369-7pvx)**, real-world cases (AWS AppSync, GitHub→AWS OIDC, GCP ConfusedFunction), and MCP-specific mitigations | Arjun Subedi |
 
+| Version | Date | Changes | Author |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Independent clean-room draft, evidence packet, and tested detection | OpenAI Codex clean-room agent |

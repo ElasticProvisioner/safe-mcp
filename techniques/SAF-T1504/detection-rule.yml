@@ -1,98 +1,119 @@
-title: "SAF-T1504 - Token Theft via API Response"
-id: "72591379-34f3-4e48-94fc-4206e0f128b8"
+title: Unauthorized MCP Response Contains Classified Token Material
+id: 7d729d6b-d8c0-4db0-a082-012898a2d1a1
 status: experimental
-description: >
-  Detects suspicious use of MCP tools that return access or session tokens
-  (e.g. debug `session.token` tools) to the LLM, based on tool names and
-  token-like values in tool results. Field names are examples and MUST be
-  adapted to the local MCP logging schema.
-
-author: "SAF-MCP Team"
-date: 2025/11/15
+description: >-
+  Detects MCP tool-result or tool-error audit events in which an upstream
+  classifier identified reusable token material, the result was not redacted,
+  and the response recipient failed the authorization decision. The event must
+  contain metadata and a non-reversible finding classification, never the raw
+  token value.
+author:
+  - SAF-MCP clean-room research agent /root/cleanroom_saf_t1504
+date: "2026-09-01"
 references:
-  - "https://github.com/saf-mcp/techniques/SAF-T1504"
-  - "https://modelcontextprotocol-security.io/ttps/data-exfiltration/token-theft/"
-  - "https://arxiv.org/abs/2504.03767"
-  - "https://docs.basehub.com/ai/mcp"
-  - "https://www.pillar.security/blog/the-security-risks-of-model-context-protocol-mcp"
-  - "https://www.legitsecurity.com/aspm-knowledge-base/model-context-protocol-security"
-  - "https://attack.mitre.org/techniques/T1528/"
-tags:
-  - "attack.credential-access"
-  - "attack.T1528"
-  - "attack.T1550.001"
-  - "safemcp.SAF-T1504"
-  - "mcp"
-  - "oauth"
-
+  - https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - https://www.rfc-editor.org/rfc/rfc6750.html
+  - https://github.com/pipeboard-co/meta-ads-mcp/security/advisories/GHSA-9gw6-46qc-99vr
 logsource:
-  # Adjust these to match your environment (e.g., product: application, service: mcp-server)
-  product: mcp
-  service: tool_calls
   category: application
-
+  product: mcp_audit
+  service: response_security
 detection:
-  # 1) Tools that are likely to expose tokens
-  selection_sensitive_tool_name:
-    # Example field names; replace with your schema (e.g. mcp.tool.name)
-    tool_name|contains:
-      - "token"
-      - "access_token"
-      - "session.token"
-      - "session_token"
-      - "auth_token"
-      - "debug_token"
-      - "get_token"
-
-  selection_sensitive_tool_description:
-    # If descriptions are logged, they can also indicate risk
-    tool_description|contains:
-      - "access token"
-      - "session token"
-      - "oauth"
-      - "debug"
-      - "introspect"
-
-  # 2) Token-like values in tool results
-  selection_token_like_result:
-    # Example field; replace with whatever holds the serialized result
-    tool_result|re:
-      # Common patterns:
-      # - JWT-like strings (eyJ...header.payload.signature)
-      # - Long base64-style blobs (e.g. Google-style ya29.* tokens)
-      - "(?i)eyJ[a-zA-Z0-9_-]{10,}\\.[a-zA-Z0-9._-]{10,}\\.[a-zA-Z0-9._-]{10,}"
-      - "(?i)ya29\\.[0-9A-Za-z_-]{20,}"
-      - "[A-Za-z0-9_\\-]{32,}"
-
-  condition: (selection_sensitive_tool_name or selection_sensitive_tool_description) and selection_token_like_result
-
+  selection_result:
+    event.action:
+      - tool_result
+      - tool_error
+    mcp.response.channel:
+      - content
+      - structuredContent
+      - embedded_resource
+      - error_detail
+  selection_secret:
+    mcp.response.secret_count|gte: 1
+    mcp.response.secret_types|contains:
+      - access_token
+      - bearer_token
+      - refresh_token
+      - session_token
+  selection_recipient:
+    mcp.response.recipient_authorized: false
+  filter_redacted:
+    mcp.response.redacted: true
+  condition: selection_result and selection_secret and selection_recipient and not filter_redacted
 fields:
-  # Recommended fields for triage (adapt to your schema)
-  - timestamp
-  - server_name
-  - client_id
-  - user_id
-  - tool_name
-  - tool_description
-  - tool_arguments
-  - tool_result
-  - session_id
-  - source_ip
-  - environment
-
+  - '@timestamp'
+  - event.action
+  - mcp.session.id
+  - mcp.request.id
+  - mcp.server.id
+  - mcp.tool.name
+  - mcp.response.channel
+  - mcp.response.secret_count
+  - mcp.response.secret_types
+  - mcp.response.recipient_authorized
+  - mcp.response.redacted
+  - source.user.id
+  - source.tenant.id
 falsepositives:
-  - "Non-production environments where developers intentionally inspect tokens."
-  - "Security testing exercises where tokens are deliberately surfaced for validation."
-  - "Synthetic monitoring or integration tests that validate token handling logic."
-
+  - Synthetic security tests that intentionally return inert tokens and are not tagged or authorized as test traffic.
+  - Classifier matches on token-shaped documentation or examples when the recipient authorization decision is incorrect.
 level: high
-
-# Implementation notes:
-# - This rule assumes you log MCP tool invocations with a clear tool name and some
-#   representation of the tool result. If your logs only include structured fields
-#   (e.g. result.access_token), consider adapting the rule to match on those fields
-#   directly rather than regex over serialized JSON.
-# - Consider pairing this rule with downstream analytics that look for:
-#   (a) Outbound HTTP tool calls to unknown domains shortly after a token-exposing tool call.
-#   (b) Upstream API activity using the suspected token from unusual clients or IPs.
-
+tags:
+  - saf.t1504
+  - attack.credential-access
+  - attack.t1528
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1504-C014
+  telemetry_claim_ids:
+    - SAF-T1504-C001
+    - SAF-T1504-C002
+    - SAF-T1504-C014
+  limitation_claim_ids:
+    - SAF-T1504-C015
+  validation_artifacts:
+    - tests/SAF-T1504/cases.json
+    - tests/SAF-T1504/test_detection_rule.py
+    - research/techniques/SAF-T1504/validation/detection-test-output.txt
+    - research/techniques/SAF-T1504/validation/strict-validator-output.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1504-C001
+        - SAF-T1504-C002
+      rationale: MCP response audit telemetry is required because the disclosure occurs as server-produced result data crosses the client boundary.
+    selection_result:
+      claim_ids:
+        - SAF-T1504-C001
+      rationale: Restricts evaluation to tool results and errors in protocol-defined response channels.
+    selection_secret:
+      claim_ids:
+        - SAF-T1504-C003
+        - SAF-T1504-C014
+        - SAF-T1504-C015
+      rationale: Requires at least one upstream token classification while acknowledging that no universal token syntax exists.
+    selection_recipient:
+      claim_ids:
+        - SAF-T1504-C004
+        - SAF-T1504-C014
+      rationale: The defining boundary requires a recipient that is not authorized to possess the token.
+    filter_redacted:
+      claim_ids:
+        - SAF-T1504-C002
+        - SAF-T1504-C014
+      rationale: A response already redacted before release does not deliver the classified token.
+    condition:
+      claim_ids:
+        - SAF-T1504-C014
+      rationale: Conjoins result channel, token finding, authorization failure, and absent redaction.
+    fields:
+      claim_ids:
+        - SAF-T1504-C002
+        - SAF-T1504-C014
+      rationale: Supplies correlation and triage context without retaining raw credential material.
+    falsepositives:
+      claim_ids:
+        - SAF-T1504-C014
+        - SAF-T1504-C015
+      rationale: Captures inert test values and token-shaped documentation plus possible authorization-classification errors.

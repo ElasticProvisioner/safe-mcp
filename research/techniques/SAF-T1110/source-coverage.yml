@@ -1,0 +1,236 @@
+version: 1
+technique_id: SAF-T1110
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "Direct review: MCP Tools specification 2025-11-25"
+        - "Direct review: NIST AI 100-2e2025 PDF"
+        - "Direct review: OWASP LLM01:2025"
+        - "Direct review: MITRE ATT&CK T1204 and T1204.003"
+      material_changes:
+        - Established MCP modality/tool capability, trust boundary, safety guidance, and analogous ATT&CK mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov multimodal prompt injection"
+        - "site:nvd.nist.gov image prompt injection"
+        - "site:nvd.nist.gov audio prompt injection"
+        - "site:nvd.nist.gov/vuln/detail prompt injection image"
+        - "site:nvd.nist.gov/vuln/detail prompt injection audio"
+        - "site:cisa.gov prompt injection"
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog prompt injection"
+        - "site:cisa.gov multimodal prompt injection incident breach"
+      material_changes:
+        - Classified CVE-2024-45989 and CVE-2025-58357 as adjacent rather than direct.
+        - Found no qualifying direct multimodal production breach, direct modality-specific advisory, or authoritative exploitation listing.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org multimodal prompt injection images audio 2025"
+        - "site:arxiv.org audio prompt injection multimodal LLM"
+        - "site:arxiv.org auditory prompt injection commercial voice agents"
+        - "site:arxiv.org visual prompt injection agent tool invocation black-box 2026"
+      material_changes:
+        - Selected four direct demonstrations spanning image, audio, browser/computer agents, and voice agents.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org defense detection multimodal prompt injection images"
+        - "site:openai.com image prompt injection multimodal safety"
+        - "Direct review: Microsoft Azure Prompt Shields"
+        - "Direct review: OpenAI GPT-4V System Card and agent prompt-injection defense"
+      material_changes:
+        - Supported media-aware screening, source-sink correlation, action gateways, and classifier limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org failed reproduction multimodal prompt injection image audio"
+        - "site:arxiv.org multimodal prompt injection image audio agent 2026"
+        - "site:nvd.nist.gov/vuln/detail multimodal agent image audio prompt injection CVE"
+        - "site:cisa.gov multimodal agent image audio prompt injection incident"
+      material_changes:
+        - Added transfer, adaptive-defense, false-positive, and evaluation-scope limitations.
+        - Confirmed that ATT&CK T1204.003 uses image in the virtual-machine/container sense.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org exact AudioHijack title"
+        - "site:arxiv.org exact Images and Sounds title"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2024-45989 CVE-2024-45989"
+        - "site:owasp.org exact LLM01:2025 Prompt Injection multimodal"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:arxiv.org exact VPI-Bench title"
+        - "site:arxiv.org exact WebAgentGuard title"
+        - "site:arxiv.org exact Piggybacking on Perception title"
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog multimodal prompt injection"
+      material_changes: []
+  rationale: >-
+    Primary protocol, government, practitioner, advisory, and research sources
+    support every publishable proposition. Separate current incident, advisory,
+    exploitation, demonstration, defense, challenge, and neighbor searches were
+    completed. Two consecutive narrow synonym/title passes added no new evidence
+    or changed a claim, selection, boundary, control, or classification.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 9
+  selected_examples:
+    - SRC-cao-vpi-bench-2025
+    - SRC-chen-audiohijack-2026
+    - SRC-liu-piggybacking-2026
+    - SRC-bagdasaryan-multimodal-injection-2023
+  no_qualifying_examples_rationale: >-
+    Four direct controlled demonstrations qualify, but no direct production
+    breach or modality-specific disclosed vulnerability was identified. The two
+    reviewed CVEs use adjacent output-rendering or content-injection mechanisms.
+  candidates:
+    - source_id: SRC-cao-vpi-bench-2025
+      identifier: VPI-Bench
+      relationship: direct_demonstration
+      exploitation_status: controlled
+      impact: Unauthorized actions and data-exfiltration scenarios in controlled browser/computer agents.
+      remediation: System-prompt defense was limited; contextual guards and action controls remain needed.
+      selected: true
+      rationale: Highest-impact visual agent benchmark with an end-to-end action path.
+    - source_id: SRC-chen-audiohijack-2026
+      identifier: AudioHijack
+      relationship: direct_demonstration
+      exploitation_status: controlled
+      impact: Unauthorized actions in controlled open and commercial audio-agent experiments.
+      remediation: Evaluated self-reflection, logit, and attention detectors; adaptive risk remains.
+      selected: true
+      rationale: Direct audio-to-tool behavior with commercial endpoints under bounded conditions.
+    - source_id: SRC-liu-piggybacking-2026
+      identifier: Piggybacking on Perception
+      relationship: direct_demonstration
+      exploitation_status: controlled_physical_study
+      impact: Concurrent audio altered agent behavior across eleven systems and a bounded device study.
+      remediation: CADV source separation and cross-modal consistency were evaluated.
+      selected: true
+      rationale: Strongest reviewed physical-channel audio evaluation.
+    - source_id: SRC-bagdasaryan-multimodal-injection-2023
+      identifier: Images and Sounds Indirect Instruction Injection
+      relationship: direct_demonstration
+      exploitation_status: proof_of_concept
+      impact: Attacker-chosen output and dialogue steering from image and audio perturbations.
+      remediation: Paper frames initial proof of concept; no product remediation established.
+      selected: true
+      rationale: Foundational direct demonstration covers both modalities.
+    - source_id: SRC-bailey-image-hijacks-2024
+      identifier: Image Hijacks
+      relationship: direct_demonstration
+      exploitation_status: proof_of_concept
+      impact: Behavior matching, context leakage, and other image-triggered outcomes.
+      remediation: Simple compression/noise defenses were limited.
+      selected: false
+      rationale: Overlaps selected visual evidence and had zero held-out-model transfer in a reported test.
+    - source_id: SRC-chameleon-2025
+      identifier: Chameleon
+      relationship: direct_demonstration
+      exploitation_status: proof_of_concept
+      impact: Scaling-triggered hidden visual instruction in a simulated agent pipeline.
+      remediation: No general product remediation established.
+      selected: false
+      rationale: One-model simulated study is lower impact than selected visual-agent evidence.
+    - source_id: SRC-nagaraja-image-pi-2026
+      identifier: Image-based Prompt Injection Attacks and Defenses
+      relationship: direct_demonstration
+      exploitation_status: controlled
+      impact: Black-box image strategies changed model outputs under measured visibility tradeoffs.
+      remediation: Proposes OCR and sanitization directions.
+      selected: false
+      rationale: Does not establish as strong an agent action path as VPI-Bench.
+    - source_id: SRC-nvd-cve-2024-45989
+      identifier: CVE-2024-45989
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: poc
+      impact: Chat content exfiltration through an image rendered in model output.
+      remediation: Affected versions are recorded as before 2.3.0; NVD gives no verified patch narrative.
+      selected: false
+      rationale: Image is an output/rendering sink, not the attacker-controlled multimodal input.
+    - source_id: SRC-nvd-cve-2025-58357
+      identifier: CVE-2025-58357
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: poc
+      impact: MCP client content injection and cross-site scripting from malicious content/integrations.
+      remediation: Fixed in 0.14.0 according to the reviewed NVD record.
+      selected: false
+      rationale: Content-injection path is not specific to image/audio model interpretation.
+sources_consulted:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-owasp-llm01-2025
+  - SRC-nist-ai-100-2e2025
+  - SRC-openai-gpt4v-system-card
+  - SRC-microsoft-prompt-shields
+  - SRC-openai-prompt-injections-2025
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-attack-t1204-003
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-bailey-image-hijacks-2024
+  - SRC-figstep-2025
+  - SRC-liu-piggybacking-2026
+  - SRC-chen-audiohijack-2026
+  - SRC-promptshield-home-2026
+  - SRC-nagaraja-image-pi-2026
+  - SRC-cao-vpi-bench-2025
+  - SRC-chameleon-2025
+  - SRC-yeo-multimodal-pi-2025
+  - SRC-webagentguard-2026
+  - SRC-nvd-cve-2024-45989
+  - SRC-nvd-cve-2025-58357
+sources_cited:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-owasp-llm01-2025
+  - SRC-nist-ai-100-2e2025
+  - SRC-openai-gpt4v-system-card
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-attack-t1204-003
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-bailey-image-hijacks-2024
+  - SRC-figstep-2025
+  - SRC-liu-piggybacking-2026
+  - SRC-chen-audiohijack-2026
+  - SRC-promptshield-home-2026
+  - SRC-cao-vpi-bench-2025
+  - SRC-webagentguard-2026
+  - SRC-nvd-cve-2024-45989
+  - SRC-nvd-cve-2025-58357
+sources_rejected:
+  - source_id: SRC-microsoft-prompt-shields
+    reason: Useful corroborating product guidance but unnecessary after stronger protocol and research support.
+  - source_id: SRC-openai-prompt-injections-2025
+    reason: General practitioner guidance was superseded for cited claims by the more specific 2026 source-sink article.
+  - source_id: SRC-nagaraja-image-pi-2026
+    reason: Valid direct study but lower-impact for agent execution than VPI-Bench.
+  - source_id: SRC-chameleon-2025
+    reason: Narrow one-model simulated pipeline did not improve the selected example set.
+  - source_id: SRC-yeo-multimodal-pi-2025
+    reason: Partial logging and limited multimodal coverage made it weaker than selected empirical studies.
+sources_blocked: []
+conflicts:
+  - issue: Some papers describe real-world or commercial-system experiments in language that could be mistaken for production incidents.
+    resolution: Classified all researcher-run evaluations as demonstrations and explicitly denied breach status.
+  - issue: Reported attack and defense rates vary sharply across models, environments, and adaptive settings.
+    resolution: Omitted universal rates from normative prose and preserved study-specific limitations.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1110-C002, SAF-T1110-C003, SAF-T1110-C004, SAF-T1110-C005]
+  rationale: >-
+    Multiple independent controlled evaluations reproduce the full carrier-to-model
+    behavior chain for both image and audio, including downstream agent actions.
+    No direct production incident was found, so Observed is not supported.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

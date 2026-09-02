@@ -1,0 +1,28 @@
+version: 1
+technique_id: SAF-T1201
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Research clean-room reviewer
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation passes and no prohibited repository content was reviewed.}
+  contract_and_scope: {status: passed, notes: Draft requires a benign approved baseline followed by an unapproved same-identity change.}
+  technical_accuracy: {status: passed, notes: Protocol behavior prerequisites state transition impact and limits are source-bounded.}
+  claim_traceability: {status: passed, notes: External claims map to directly reviewed sources with exact locators.}
+  source_or_omit: {status: passed, notes: Substantive units carry hidden SAF-TRACE or declared local-source linkage; unsupported leads are excluded.}
+  evidence_classification: {status: passed, notes: Two controlled direct tests warrant Demonstrated but not Observed.}
+  research_saturation: {status: passed, notes: All five passes and two consecutive no-change passes completed.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Incident vulnerability advisory exploitation and demonstration candidates were separately reviewed and classified.}
+  detection_quality: {status: passed, notes: Deterministic eight-case test passes with false positives limits and tuning disclosed.}
+  mitigation_quality: {status: passed, notes: Pinning reapproval least privilege isolation and monitoring directly constrain the mechanism and impact.}
+  framework_alignment: {status: passed, notes: Persistence tactic, bounded ATT&CK analogy, canonical SAF-T1001 and SAF-T1102 neighbors, and nine mitigation joins are reconciled.}
+  publication_rights: {status: passed, notes: Factual paraphrase and reference use only; no third-party artifact or protected expression reproduced.}
+  safe_publication: {status: passed, notes: Inert reserved-domain example uses placeholder hashes and contains no attacker instruction.}
+validation:
+  commands:
+    - {command: python3 scripts/validate-technique-research.py SAF-T1201, result: passed}
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1201/test_detection_rule.py
+    result: 'PASS SAF-T1201 detection: 8 cases {"boundary": 1, "expected_false_positive": 1, "malformed": 1, "negative": 3, "positive": 2}'
+    waiver: null
+unresolved: []

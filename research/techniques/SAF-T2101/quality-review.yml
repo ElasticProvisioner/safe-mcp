@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T2101
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex fresh clean-room author with isolated-validator review
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records neutral inputs, prohibited artifacts, independent opened sources, no prior access, and freeze-before-integration constraints.
+  contract_and_scope:
+    status: passed
+    notes: Immediate destruction is separated from delivery, exhaustion, encryption, disk wiping, cleanup, and accidents.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, first-party implementation, authority, advisory, and research claims use exact locators and bounded language.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims map to consulted sources; publishable units use same-line hidden trace comments or declared local artifacts.
+  source_or_omit:
+    status: passed
+    notes: Unsupported incident, vulnerability, demonstration, annotation, and universal-detection propositions are omitted and excluded.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived reflects a supported component chain and explicit absence of direct end-to-end evidence.
+  research_saturation:
+    status: passed
+    notes: Five core and five separate role passes were followed by two consecutive no-material-change exact-source passes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production, advisory, exploitation-status, and demonstration searches retain zero direct examples and three clearly enabling advisories.
+  detection_quality:
+    status: passed
+    notes: Six deterministic tests cover required positive, negative, boundary, malformed, false-positive, and normalization behavior.
+  mitigation_quality:
+    status: passed
+    notes: Tool removal, least privilege, independent approval, rate limits, auditing, and protected recovery address mechanism and impact.
+  framework_alignment:
+    status: passed
+    notes: Impact tactic, two canonical neighbors, six canonical mitigations, and analogous ATT&CK T1485 mapping are reconciled after freeze; encryption-for-impact remains a noncatalog boundary.
+  publication_rights:
+    status: passed
+    notes: Publishable use is paraphrase and reference only; named authors and teams are credited; no quotations or third-party artifacts are used.
+  safe_publication:
+    status: passed
+    notes: Examples and fixtures use fictional identifiers and inert structured events without payloads, credentials, or destructive commands.
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python scripts/validate-technique-research.py SAF-T2101
+      result: passed
+    - command: sha256 verification against sorted FREEZE.sha256
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T2101/test_detection_rule.py
+    result: 6 tests passed with 0 failures
+    waiver: null
+  canonical_repository:
+    status: passed
+    commands:
+      - /Users/fkautz/anaconda3/bin/python3 tests/SAF-T2101/test_detection_rule.py
+      - /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T2101
+    result: Six detector tests and strict validation passed after all mechanical joins.
+    proof: research/techniques/SAF-T2101/validation/canonical-validation.txt
+unresolved: []

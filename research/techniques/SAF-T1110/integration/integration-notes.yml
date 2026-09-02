@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1110
+frozen_on: "2026-09-01"
+status: ready_for_mechanical_integration
+constraints:
+  - Do not use preexisting SAF prose to rewrite or backfill this clean-room bundle.
+  - Resolve SAF-T9001, SAF-T9002, SAF-T9003 and SAF-M-9001 through SAF-M-9003 against canonical registries only after freeze.
+  - Replace the synthetic repository-history SHA with the actual integration commit and revalidate.
+  - Merge source, framework, and alignment fragments mechanically; flag conflicts rather than silently changing evidence.
+  - Re-run the detection test and current strict validator after integration.
+joins:
+  source_manifest_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+  technique_readme: techniques/SAF-T1110/README.md
+  research_packet: research/techniques/SAF-T1110
+  validation_proofs: validation
+synthetic_tactic_joins:
+  - ATK-TA0002
+synthetic_neighbor_joins:
+  - SAF-T9001
+  - SAF-T9002
+  - SAF-T9003
+synthetic_mitigation_joins:
+  - SAF-M-9001
+  - SAF-M-9002
+  - SAF-M-9003
+source_id_joins:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-owasp-llm01-2025
+  - SRC-nist-ai-100-2e2025
+  - SRC-openai-gpt4v-system-card
+  - SRC-microsoft-prompt-shields
+  - SRC-openai-prompt-injections-2025
+  - SRC-openai-agent-pi-defense-2026
+  - SRC-mitre-attack-t1204
+  - SRC-mitre-attack-t1204-003
+  - SRC-bagdasaryan-multimodal-injection-2023
+  - SRC-bailey-image-hijacks-2024
+  - SRC-figstep-2025
+  - SRC-liu-piggybacking-2026
+  - SRC-chen-audiohijack-2026
+  - SRC-promptshield-home-2026
+  - SRC-nagaraja-image-pi-2026
+  - SRC-cao-vpi-bench-2025
+  - SRC-chameleon-2025
+  - SRC-yeo-multimodal-pi-2025
+  - SRC-webagentguard-2026
+  - SRC-nvd-cve-2024-45989
+  - SRC-nvd-cve-2025-58357
+history_sha_joins:
+  - synthetic_sha: "1111111111111111111111111111111111111111"
+    replacement: Actual integration commit SHA after authorized integration.
+authors:
+  technique_research_and_drafting:
+    - OpenAI Codex clean-room research agent
+  external_research_teams:
+    - Eugene Bagdasaryan, Tsung-Yin Hsieh, Ben Nassi, and Vitaly Shmatikov
+    - Mingxiao Liu, Yitong Li, Haoren Zhao, Yaoxiang Bian, Jianan Ma, Jian Zhang, Jialuo Chen, Xinhao Deng, and Zhen Wang
+    - Meng Chen, Kun Wang, Li Lu, Jiaheng Zhang, and Tianwei Zhang
+    - Tri Cao, Bennett Lim, Yue Liu, Yuan Sui, Yuexin Li, Shumin Deng, Lin Lu, Nay Oo, Shuicheng Yan, and Bryan Hooi
+    - Yulin Chen, Tri Cao, Haoran Li, Yue Liu, Yibo Li, Yufei He, Le Minh Khoi, Yangqiu Song, Shuicheng Yan, and Bryan Hooi
+publication_rights: passed
+contamination_detected: false

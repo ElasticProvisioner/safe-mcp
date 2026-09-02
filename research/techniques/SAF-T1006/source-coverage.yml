@@ -1,0 +1,221 @@
+version: 1
+technique_id: SAF-T1006
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+        - Direct review of https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers
+        - Direct review of https://code.visualstudio.com/docs/agent-customization/mcp-servers
+      material_changes:
+        - Bound the technique to a user-mediated local server install or trust decision that causes configuration and process execution.
+        - Identified exact-command disclosure, explicit consent, source review, and sandboxing as controlling safeguards.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=model context protocol"
+        - "NVD API keywordSearch=malicious MCP configuration"
+        - "NVD API keywordSearch=MCP server install"
+        - CISA KEV full-catalog exact-ID scan for all reviewed candidates
+        - Exact NVD CVE-record review for selected and adjacent candidates
+        - Exact vendor advisory URLs obtained from NVD, with no GitHub search or discovery
+      material_changes:
+        - Selected CVE-2025-64106, CVE-2025-61929, and CVE-2026-23523 as direct vulnerabilities with demonstrated user-interaction-to-command paths.
+        - Classified Zed CVE-2025-68433 and Dive CVE-2025-66580 as adjacent because they bypass the defining informed install or trust decision.
+        - Found no qualifying MCP production incident and no reviewed candidate in the CISA KEV catalog.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Complete review of exact Cursor GHSA-4575-fh42-7848 obtained from NVD
+        - Complete review of exact Cherry Studio GHSA-hh6w-rmjc-26f6 obtained from NVD
+        - Complete review of exact Dive GHSA-pjj5-f3wm-f9m8 obtained from NVD
+        - Complete review of exact Zed and Dive adjacent advisories obtained from NVD
+      material_changes:
+        - Raised the end-to-end status to Demonstrated based on three controlled advisory attack paths.
+        - Preserved reporter, coordinator, maintainer, and remediation credits.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of Microsoft Sysmon v15.21 documentation
+        - Direct review of CWE-494 detection methods and mitigations
+        - Re-review of MCP consent, stdio logging, sandbox, and VS Code trust controls
+      material_changes:
+        - Defined an experimental cross-source sequence analytic using normalized MCP install events plus endpoint process creation.
+        - Added unknown or untrusted source state, user initiation, a 15-minute boundary, and verified-development-server tuning.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of MITRE ATT&CK T1204.002 and Contagious Interview procedure references
+        - Direct review of Unit 42 Contagious Interview research
+        - Direct review of Zed worktree-trust remediation and the Cursor GHSA-r22h-5wp2-2wfv version labels
+      material_changes:
+        - Kept non-MCP recruiter malware installation as a historical analogy only.
+        - Excluded the ambiguous Cursor CVE-2025-54133 affected and patched version wording from selected examples.
+        - Confirmed that automatic workspace configuration execution is adjacent, not the defining user-mediated install behavior.
+    - pass: saturation_follow_up_0_reset
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=MCP deeplink user confirmation"
+        - "NVD API keywordSearch=MCP install social engineering"
+      material_changes:
+        - The second query added CVE-2025-54133, so the no-change counter was reset and the exact advisory was reviewed.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=MCP install deeplink arguments"
+        - Recheck selected exact NVD records and vendor advisory remediation labels
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API keywordSearch=MCP one-click install command execution"
+        - Recheck CISA KEV exact IDs and source-credit footers
+      material_changes: []
+  rationale: >-
+    Current protocol and platform guidance establish the local execution and
+    consent boundary; three exact vendor advisories plus NVD records establish
+    the demonstrated user-interaction path; government catalogs, adjacent
+    advisories, telemetry documentation, and a production historical analogy
+    cover exploitation, counterexample, detection, and impact questions. After
+    a late result reset the count, two narrower official-catalog passes added no
+    new requirement, direct example, remediation change, constraint, or source.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-ghsa-cursor-64106
+    - SRC-ghsa-cherry-61929
+    - SRC-ghsa-dive-23523
+  no_qualifying_examples_rationale: >-
+    Three direct vulnerabilities qualified, but no direct production incident
+    was identified. NVD and exact vendor advisories describe demonstrations or
+    disclosed flaws, while CISA KEV did not list the reviewed CVEs. The absence
+    statement is limited to this reviewed corpus and date.
+  candidates:
+    - source_id: SRC-ghsa-cursor-64106
+      identifier: CVE-2025-64106 / GHSA-4575-fh42-7848
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory demonstration; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: Attacker-selected commands execute with the accepting user's access after deceptive branding and concealed command presentation.
+      remediation: Cursor 2.0 is listed as patched; advisory says trusted-server parsing was fixed.
+      selected: true
+      rationale: The path includes attacker deception, user click and acceptance, MCP installation, and local command execution.
+    - source_id: SRC-ghsa-cherry-61929
+      identifier: CVE-2025-61929 / GHSA-hh6w-rmjc-26f6
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: A click on deceptive web content invokes an MCP installation URL and directly executes its command.
+      remediation: Cherry Studio 1.6.4 is listed as patched.
+      selected: true
+      rationale: The user-triggered MCP installation URL is the immediate execution mechanism, though informed consent is weak.
+    - source_id: SRC-ghsa-dive-23523
+      identifier: CVE-2026-23523 / GHSA-pjj5-f3wm-f9m8
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: A crafted MCP install deep link bypasses confirmation and reaches local subprocess execution.
+      remediation: Dive 0.13.0 is listed as patched.
+      selected: true
+      rationale: The demonstrated deep-link path requires victim interaction and crosses the MCP installation-to-process boundary.
+    - source_id: SRC-ghsa-cursor-54133
+      identifier: CVE-2025-54133 / GHSA-r22h-5wp2-2wfv
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory attack description; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: Hidden install arguments could execute after two user clicks.
+      remediation: The advisory says arguments were added to the dialog, but labels affected 1.17 and patched 1.3.
+      selected: false
+      rationale: Direct but redundant with the later Cursor case; the published version labels are internally non-monotonic, so it is excluded from the selected set.
+    - source_id: SRC-zed-secure-default
+      identifier: CVE-2025-68433 / GHSA-cv6g-cmxc-vw8j
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public tested vulnerability report; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: Opening a project could automatically execute an MCP command with user privileges.
+      remediation: Zed 0.218.2-pre introduced worktree trust and Restricted Mode.
+      selected: false
+      rationale: Opening a project triggers automatic configuration execution without a deceived MCP install or trust decision.
+    - source_id: SRC-ghsa-dive-66580
+      identifier: CVE-2025-66580 / GHSA-xv8m-365j-x6h2
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public proof of concept; production exploitation not stated; not in CISA KEV on 2026-09-01.
+      impact: A client-side XSS path can overwrite MCP configuration and execute a local command after a rendered-node click.
+      remediation: Dive 0.11.1 is listed as patched.
+      selected: false
+      rationale: The defining boundary is an XSS-to-privileged-API exploit, not deception at an MCP install or trust interface.
+    - source_id: SRC-unit42-contagious-interview
+      identifier: CL-STA-0240 Contagious Interview campaign
+      relationship: historical_analogy
+      exploitation_status: Observed production malware campaign outside MCP.
+      impact: Disguised applications collected and exfiltrated data and installed a backdoor.
+      remediation: Unit 42 documents prevention and awareness measures; no MCP product patch applies.
+      selected: false
+      rationale: It demonstrates social-engineering installation impact but does not involve an MCP integration.
+
+sources_consulted:
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-connect-local
+  - SRC-vscode-mcp-servers
+  - SRC-ghsa-cursor-64106
+  - SRC-ghsa-cherry-61929
+  - SRC-ghsa-dive-23523
+  - SRC-nvd-mcp-catalog
+  - SRC-zed-secure-default
+  - SRC-ghsa-zed-68433
+  - SRC-ghsa-dive-66580
+  - SRC-ghsa-cursor-54133
+  - SRC-mitre-attack-t1204-002
+  - SRC-unit42-contagious-interview
+  - SRC-cwe-494
+  - SRC-sysmon-15-21
+  - SRC-cisa-kev-2026-09-01
+sources_cited:
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-connect-local
+  - SRC-vscode-mcp-servers
+  - SRC-ghsa-cursor-64106
+  - SRC-ghsa-cherry-61929
+  - SRC-ghsa-dive-23523
+  - SRC-nvd-mcp-catalog
+  - SRC-zed-secure-default
+  - SRC-mitre-attack-t1204-002
+  - SRC-unit42-contagious-interview
+  - SRC-cwe-494
+  - SRC-sysmon-15-21
+sources_rejected:
+  - source_id: SRC-ghsa-zed-68433
+    reason: Corroborates the cited Zed article but is unnecessary as a second body citation and contains proof-of-concept code.
+  - source_id: SRC-ghsa-dive-66580
+    reason: Adjacent XSS-to-configuration exploit does not satisfy the user-mediated MCP install decision contract.
+  - source_id: SRC-ghsa-cursor-54133
+    reason: Direct but redundant, with internally non-monotonic affected and patched version labels.
+sources_blocked: []
+
+conflicts:
+  - issue: Cursor GHSA-r22h-5wp2-2wfv labels affected version 1.17 and patched version 1.3, while NVD repeats a non-monotonic range.
+    resolution: Preserve as an excluded direct lead; do not publish its affected range or select it as a representative example.
+  - issue: Some deep-link flaws trigger execution with only a click and no informed install approval.
+    resolution: Include only when the user action initiates the MCP installation mechanism, and state that weak or bypassed consent is an edge case.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1006-C001
+    - SAF-T1006-C002
+    - SAF-T1006-C003
+  rationale: >-
+    Exact vendor advisories document and reproduce complete user-interaction to
+    MCP installation to local-command paths in three clients. They are disclosed
+    vulnerabilities and controlled demonstrations, not production incidents;
+    therefore Demonstrated is the strongest supported end-to-end label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

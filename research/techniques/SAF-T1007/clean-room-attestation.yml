@@ -1,0 +1,114 @@
+version: 1
+technique_id: SAF-T1007
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1007_retry2
+  inherited_context: false
+target:
+  id: SAF-T1007
+  neutral_name: OAuth Authorization Phishing
+allowed_inputs:
+- Target ID and neutral name supplied by the coordinator.
+- Authoring skill, routed clean-room methodology, breach research, and readable-trace
+  references.
+- Generic repository template, blank packet schemas, research protocol, and canonical
+  validator.
+- Independently opened direct official standards, government catalogs, vendor advisories,
+  and first-party research.
+prohibited_inputs:
+- techniques/SAF-T1007/README.md
+- techniques/SAF-T1007/detection-rule.yml
+- research/techniques/SAF-T1007/
+- git history, diffs, blame, commits, branches, stashes, or target review artifacts
+- any pull request or issue exposing previous target content
+- any previous conversation, summary, cache, source list, or agent conclusion containing
+  target content
+- shared source and framework registries before freeze
+- SAF or SAFE pages and impact-classification examples before freeze
+- GitHub search or discovery
+independent_research:
+  searches:
+  - Direct current MCP specification resolver and first-party documentation catalog.
+  - Direct RFC 9700 URL.
+  - NVD API keyword searches for MCP OAuth, authorization phishing, callback binding,
+    and account takeover.
+  - CISA KEV exact-identifier checks.
+  - Microsoft Security and Microsoft Learn first-party site-search endpoints.
+  - Direct MITRE ATT&CK technique URLs.
+  - Exact GitHub advisory URLs only after NVD and CVE records independently supplied
+    the identifiers and canonical URLs.
+  opened_source_ids:
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-rfc9700
+  - SRC-nvd-cve-2026-31944
+  - SRC-ghsa-vf7j-7mrx-hp7g
+  - SRC-nvd-cve-2026-42230
+  - SRC-ghsa-f6x8-65q6-j9m9
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ms-oauth-redirection-2026
+  - SRC-ms-shinyhunters-oauth-2026
+  - SRC-ms-consent-phishing-2021
+  - SRC-mslearn-protect-consent-phishing
+  - SRC-mitre-t1566-002
+  - SRC-mitre-t1528
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Replace mock-only tactic and nearest-neighbor IDs through real framework reconciliation
+  after freeze; do not use existing target prose as a research lead.
+- Reconcile stable source IDs only after freeze and only for collision avoidance.
+- Replace the synthetic mock history SHA with an honest repository-history SHA mechanically.
+- Review new files and validator output directly; do not inspect a diff that exposes
+  prior target content.
+mock_validation:
+  command: python3 scripts/validate-technique-research.py SAF-T1007
+  result: passed
+  repository: isolated synthetic-join mock containing only generic validator, generated
+    bundle, and minimal join fixtures
+attestation: The independently sourced technique and evidence packet were generated
+  without prohibited prior-target access, validated strictly in isolation, and frozen
+  before any integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-authorization-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-catalog-page-2026-09-01
+  new_shared_source_records:
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-rfc9700
+  - SRC-nvd-cve-2026-31944
+  - SRC-ghsa-vf7j-7mrx-hp7g
+  - SRC-nvd-cve-2026-42230
+  - SRC-ghsa-f6x8-65q6-j9m9
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ms-oauth-redirection-2026
+  - SRC-ms-shinyhunters-oauth-2026
+  - SRC-ms-consent-phishing-2021
+  - SRC-mslearn-protect-consent-phishing
+  - SRC-mitre-t1566-002
+  - SRC-mitre-t1528
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-15
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-37
+  - SAF-M-38
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1009
+    SAF-T9997: SAF-T1706
+  status: integrated_and_repository_validated

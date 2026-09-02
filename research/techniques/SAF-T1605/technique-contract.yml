@@ -1,0 +1,84 @@
+version: 1
+technique_id: SAF-T1605
+name: Capability Mapping
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Enumerate the MCP capabilities and callable or readable surface
+  exposed to the adversary's current identity so follow-on activity can be selected
+  and scoped.
+scope:
+  security_boundary: The discovery boundary between an MCP requester and capability
+    metadata that a server or client exposes for the requester's current authorization
+    context.
+  in_scope:
+  - Querying server/discover to inventory supported versions, capability classes,
+    and self-reported server identity.
+  - Listing advertised tools, resources, resource templates, prompts, or legacy roots
+    to map what the current authorization context can reach.
+  - Correlating enumeration responses into a capability map without invoking the mapped
+    operation or reading resource contents.
+  out_of_scope:
+  - Invoking a mapped tool, reading a listed resource, or using a discovered prompt
+    for an operational objective.
+  - Manipulating capability descriptions, tool schemas, list-change notifications,
+    or server identity.
+  - Discovering credentials, bypassing authorization, enumerating task contents, or
+    probing network services outside MCP capability-discovery RPCs.
+  affected_components:
+  - MCP host and client
+  - MCP server discovery and listing handlers
+  - MCP gateway or proxy audit layer
+  - Authorization context attached to MCP requests
+nearest_neighbors:
+- technique_id: SAF-T1104
+  distinction: Over-Privileged Tool Abuse begins when a mapped operation is invoked
+    with excessive authority; Capability Mapping ends with enumeration and correlation
+    of metadata.
+- technique_id: SAF-T1001
+  distinction: Tool Poisoning Attack changes or poisons tool metadata; Capability
+    Mapping consumes returned metadata without altering it.
+- technique_id: SAF-T1601
+  distinction: MCP Server Enumeration inventories configured or reachable servers
+    and protocol identity; Capability Mapping aggregates the advertised functional
+    surfaces of a selected server.
+- technique_id: SAF-T1602
+  distinction: Tool Enumeration is limited to tools/list and returned tool definitions;
+    Capability Mapping correlates multiple discovery and listing surfaces.
+required_evidence:
+- Current MCP protocol requirements for server discovery and capability-listing methods.
+- Direct evidence that a standards-conforming client can enumerate the exposed tool
+  surface.
+- Current production-incident, vulnerability, advisory, and exploitation-status searches,
+  with relationship classification and an explicit gap if no direct case qualifies.
+- Telemetry requirements and a tested analytic for a concentrated multi-surface enumeration
+  sequence.
+- Contrary evidence and protocol limits, including authorization-scoped results, caching,
+  pagination, normal client behavior, and deprecated features.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP request audit events with timestamp, requester identity, session or correlation
+    key, server identifier, method, result status, and authorization context.
+  - MCP response summaries with result type, item count, cursor presence, and cache
+    metadata where available.
+safe_example_constraints:
+- Use only inert server names and enumeration method names; do not include credentials,
+  destructive commands, or operational payloads.
+- Stop the scenario at inventory construction and do not demonstrate invocation, content
+  retrieval, bypass, or exploitation.
+completion_evidence:
+- Every substantive publishable unit is traced to a validated claim and directly reviewed
+  source or to a declared local artifact.
+- Unverified incident and vulnerability leads are omitted from publishable prose and
+  retained in the exclusion ledger.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Positive, negative, boundary, malformed, and expected-false-positive detection cases
+  pass deterministically.
+- Rights, framework, clean-room, safe-publication, and quality gates pass in an isolated
+  synthetic mock repository.

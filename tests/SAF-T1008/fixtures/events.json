@@ -1,0 +1,79 @@
+[
+  {
+    "case": "positive_recipient_override",
+    "expected": true,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": 3,
+      "descriptor.cross_server_contract_approved": false
+    }
+  },
+  {
+    "case": "positive_threshold_boundary",
+    "expected": true,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": 2,
+      "descriptor.cross_server_contract_approved": false
+    }
+  },
+  {
+    "case": "negative_same_server_instruction",
+    "expected": false,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": false,
+      "descriptor.directive_score": 4,
+      "descriptor.cross_server_contract_approved": false
+    }
+  },
+  {
+    "case": "negative_weak_reference",
+    "expected": false,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": 1,
+      "descriptor.cross_server_contract_approved": false
+    }
+  },
+  {
+    "case": "negative_approved_orchestrator",
+    "expected": false,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": 5,
+      "descriptor.cross_server_contract_approved": true
+    }
+  },
+  {
+    "case": "negative_wrong_event_type",
+    "expected": false,
+    "event": {
+      "event.action": "tools_call",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": 5,
+      "descriptor.cross_server_contract_approved": false
+    }
+  },
+  {
+    "case": "negative_missing_enrichment",
+    "expected": false,
+    "event": {
+      "event.action": "tools_list_snapshot"
+    }
+  },
+  {
+    "case": "negative_null_score",
+    "expected": false,
+    "event": {
+      "event.action": "tools_list_snapshot",
+      "descriptor.references_foreign_tool": true,
+      "descriptor.directive_score": null,
+      "descriptor.cross_server_contract_approved": false
+    }
+  }
+]

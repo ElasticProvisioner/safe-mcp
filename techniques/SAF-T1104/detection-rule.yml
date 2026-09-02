@@ -1,113 +1,95 @@
-title: MCP Over-Privileged Tool Abuse Detection
-id: f8a3b2c1-9e7d-4f5a-8b6c-3d2e1a9f7b8c
-status: experimental
-description: Detects potential abuse of over-privileged MCP tools performing unauthorized operations beyond their intended scope
-author: SAF-MCP Team
-date: 2025-01-15
-modified: 2025-01-15
+title: Executed High-Risk MCP Tool Call with Excess Authority and Intent or Approval Gap
+id: 6dc8eb0b-6e03-4883-8d64-9d996a54c8d7
+status: test
+description: >-
+  Detects an executed high- or critical-risk MCP or agent tool call whose
+  effective scope set contains permissions beyond the operation's required set
+  and whose task intent mismatches or approval is absent, denied, or stale.
+author: OpenAI Codex (/root/cleanroom_saf_t1104)
+date: 2026-09-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1104
-  - https://attack.mitre.org/techniques/T1059/
-  - https://attack.mitre.org/techniques/T1068/
-  - https://csrc.nist.gov/projects/cprt/catalog#/cprt/framework/version/SP_800_53_5_1_0/home?element=AC-6
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+  - https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+  - https://invariantlabs.ai/blog/whatsapp-mcp-exploited
 logsource:
-  category: process_creation
-  product: linux
+  category: application
+  product: mcp_or_agent_gateway
+  service: tool_call_audit
 detection:
-  selection_mcp_process:
-    ParentImage|contains:
-      - 'node'
-      - 'python'
-      - 'mcp'
-    ParentCommandLine|contains:
-      - 'mcp-server'
-      - 'model-context-protocol'
-      - 'mcp_server'
-  selection_privilege_abuse:
-    Image|endswith:
-      - '/cat'
-      - '/curl'
-      - '/wget'
-      - '/ssh'
-      - '/sudo'
-      - '/chmod'
-      - '/chown'
-      - '/mount'
-      - '/umount'
-      - '/docker'
-      - '/systemctl'
-      - '/nc'
-      - '/netcat'
-    CommandLine|contains:
-      - '/etc/passwd'
-      - '/etc/shadow'
-      - '/etc/sudoers'
-      - '/root/'
-      - '/.ssh/'
-      - '/var/log/'
-      - 'id_rsa'
-      - 'authorized_keys'
-      - '.env'
-      - 'docker.sock'
-      - '/proc/self/environ'
-      - 'AWS_ACCESS_KEY'
-      - 'SECRET_KEY'
-      - 'API_KEY'
-      - '/dev/tcp/'
-  selection_file_access:
-    Image|endswith:
-      - '/cat'
-      - '/less'
-      - '/more'
-      - '/head'
-      - '/tail'
-    CommandLine|contains:
-      - '/etc/passwd'
-      - '/etc/shadow'
-      - '/etc/hosts'
-      - '/etc/crontab'
-      - '/var/log/auth.log'
-      - '/var/log/secure'
-      - '/.bash_history'
-      - '/.zsh_history'
-  selection_network_tools:
-    Image|endswith:
-      - '/curl'
-      - '/wget'
-      - '/nc'
-      - '/netcat'
-      - '/socat'
-    CommandLine|contains:
-      - 'http://'
-      - 'https://'
-      - 'ftp://'
-      - '--data'
-      - '--upload-file'
-      - '-e /bin/'
-      - 'reverse'
-      - 'shell'
-  condition: selection_mcp_process and (selection_privilege_abuse or selection_file_access or selection_network_tools)
+  selection_tool_call:
+    event_type: mcp_tool_call
+    decision: executed
+    tool_risk:
+      - high
+      - critical
+  selection_excess_privilege:
+    scope_excess_count|gt: 0
+  selection_intent_mismatch:
+    intent_match: false
+  selection_approval_gap:
+    approval_state:
+      - absent
+      - denied
+      - stale
+  condition: selection_tool_call and selection_excess_privilege and (selection_intent_mismatch or selection_approval_gap)
+fields:
+  - timestamp
+  - session_id
+  - task_id
+  - actor_id
+  - server_id
+  - tool_name
+  - action
+  - resource
+  - tool_risk
+  - required_scopes
+  - effective_scopes
+  - scope_excess_count
+  - approval_state
+  - approval_id
+  - intent_match
+  - outcome
 falsepositives:
-  - Legitimate system administration tools with proper authorization
-  - Development environments with intentionally broad tool permissions for testing
-  - Debugging activities by authorized personnel using MCP-based development tools
-  - Monitoring tools that legitimately access system files for health checks
-  - Backup tools that need broad file system access
-  - CI/CD pipelines using MCP tools for deployment automation
+  - Emergency or privileged administration performed with intentionally broad credentials when approval or task-context records are incomplete.
+  - Migration and testing workflows whose local policy has not yet assigned operation-specific required scopes.
 level: high
 tags:
+  - saf.t1104
   - attack.execution
-  - attack.privilege_escalation
-  - attack.t1059
-  - attack.t1068
-  - attack.t1548
-  - safe.t1104
-  - mcp.privilege_abuse
-fields:
-  - Image
-  - CommandLine
-  - ParentImage
-  - ParentCommandLine
-  - ProcessId
-  - User
-  - CurrentDirectory 
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1104-C015
+  telemetry_claim_ids:
+    - SAF-T1104-C014
+  limitation_claim_ids:
+    - SAF-T1104-C016
+  validation_artifacts:
+    - techniques/SAF-T1104/test-logs.json
+    - techniques/SAF-T1104/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids: [SAF-T1104-C014]
+      rationale: MCP and practice guidance require tool-usage and elevation logging; the analytic uses normalized gateway audit events.
+    selection_tool_call:
+      claim_ids: [SAF-T1104-C015]
+      rationale: Execution, high tool risk, and completed decision bound the analytic to the immediate behavior.
+    selection_excess_privilege:
+      claim_ids: [SAF-T1104-C003, SAF-T1104-C004, SAF-T1104-C015]
+      rationale: Excess authority is the defining distinction and is calculated as effective scopes minus operation-required scopes.
+    selection_intent_mismatch:
+      claim_ids: [SAF-T1104-C005, SAF-T1104-C015]
+      rationale: A task-intent mismatch distinguishes attacker-aligned execution from the recorded user objective.
+    selection_approval_gap:
+      claim_ids: [SAF-T1104-C005, SAF-T1104-C015]
+      rationale: Absent, denied, or stale approval identifies high-risk execution outside a current approval boundary.
+    condition:
+      claim_ids: [SAF-T1104-C015]
+      rationale: All three conditions are required to reduce alerts on merely broad but unused credentials.
+    fields:
+      claim_ids: [SAF-T1104-C014, SAF-T1104-C015]
+      rationale: These fields allow investigators to join task, authorization, approval, tool, and outcome context.
+    falsepositives:
+      claim_ids: [SAF-T1104-C016]
+      rationale: Administrative lookalikes and incomplete task records require local tuning.

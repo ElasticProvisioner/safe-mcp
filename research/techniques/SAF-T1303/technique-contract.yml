@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T1303
+name: Sandbox Escape via Server Exec
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Execute attacker-controlled commands with the MCP server, manager,
+  gateway, or host process's privileges when those privileges exceed the caller's
+  intended sandbox or authorization boundary.
+scope:
+  security_boundary: The boundary between caller-controlled MCP configuration or tool
+    arguments and operating-system process creation by a more-privileged server-side
+    component.
+  in_scope:
+  - An MCP-facing server, manager, or gateway accepts attacker-controlled command
+    material and starts a process outside the caller's intended sandbox.
+  - The immediate outcome is execution with the server-side process's host, service-account,
+    container-root, or equivalent privileges.
+  out_of_scope:
+  - Installation of a malicious local MCP server through a crafted configuration or
+    package, which is a delivery and supply-chain behavior.
+  - Prompt injection that only persuades an agent to call an otherwise correctly constrained
+    tool.
+  - Command execution that remains within the explicitly authorized sandbox and privilege
+    context.
+  - Persistence, credential theft, discovery, or lateral movement performed after
+    the boundary crossing.
+  affected_components:
+  - MCP server and tool handler
+  - MCP host, manager, or gateway that launches stdio servers
+  - Operating-system process creation boundary
+nearest_neighbors:
+- technique_id: SAF-T1203
+  distinction: Backdoored Server Binary executes malicious code during delivery or
+    startup rather than through an unsafe server-side exec path reached by a request.
+- technique_id: SAF-T1104
+  distinction: Over-Privileged Tool Abuse uses a legitimate tool whose authority is
+    too broad, while SAF-T1303 requires a process-execution boundary failure that yields
+    the server-side context.
+required_evidence:
+- Establish the MCP request or configuration fields that reach server-side process
+  creation.
+- Establish that attacker-controlled material can cause execution beyond the caller's
+  intended sandbox or authorization context.
+- Establish the privilege context obtained and distinguish disclosure from production
+  exploitation.
+- Search production incidents, advisories, CVE records, exploitation status, demonstrations,
+  detection, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP request or management audit events with timestamp, request ID, actor, method,
+    tool or endpoint, arguments classification, approval, and expected sandbox context.
+  - Endpoint process-creation events with timestamp, parent identity, executable,
+    arguments or command line, effective security context, and request correlation
+    ID.
+safe_example_constraints:
+- Use only inert placeholder commands and reserved example identifiers.
+- Do not reproduce exploit strings, shell metacharacter payloads, live network endpoints,
+  or destructive follow-on actions.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE comments to
+  validated claims and directly reviewed sources.
+- Unverified candidates and adjacent behaviors are omitted from publishable prose
+  and retained in the exclusion ledger.
+- Current breach and vulnerability research reaches two consecutive no-change follow-up
+  passes.
+- Deterministic positive, negative, boundary, missing-field, and expected-false-positive
+  detection tests pass.
+- Rights, framework, safety, and strict isolated-validator gates pass without unresolved
+  items.

@@ -1,0 +1,133 @@
+version: 1
+technique_id: SAF-T1101
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1101/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1101/technique-contract.yml
+  supports: Scope, boundary, required evidence, safe-example rules, and completion
+    criteria.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1101/claim-inventory.yml
+  supports: Validated proposition, source, locator, limitation, and inference records.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1101/source-coverage.yml
+  supports: Saturation, candidate selection, evidence classification, conflicts, and
+    exclusions.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1101/publication-rights.yml
+  supports: Rights, attribution, quotation, artifact, and trademark review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1101/quality-review.yml
+  supports: Quality gates, validation commands, detection result, and review date.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1101/clean-room-attestation.yml
+  supports: Permitted seed, prohibited inputs, independent search trail, and freeze
+    constraints.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1101/detection-rule.yml
+  supports: The correlation analytic, required fields, limitations, and trace components.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1101/test-logs.json
+  supports: Ten inert synthetic positive, negative, boundary, and expected-false-positive
+    fixtures.
+- id: LOCAL-test-harness
+  path: techniques/SAF-T1101/test_detection_rule.py
+  supports: Standalone non-executing fixture evaluator.
+- id: LOCAL-test-results
+  path: techniques/SAF-T1101/test-results.json
+  supports: Recorded ten-of-ten passing result and test limitations.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1101-X001
+  candidate: A named organization suffered a confirmed breach through CVE-2026-42271.
+  origin: Inference risk from CISA KEV inclusion.
+  attempted_searches:
+  - Reviewed the complete current KEV record and direct project
+  - NVD
+  - release
+  - and downstream vendor records.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-litellm-v4p8
+  - SRC-nvd-2026-42271
+  - SRC-redhat-2026-27784
+  reason: KEV establishes exploitation but the reviewed public records name no victim,
+    campaign, incident date, or exploit telemetry.
+  prohibited_publishable_text:
+  - confirmed breach at a named organization
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1101-X002
+  candidate: Reproduce operational exploit payloads from public demonstrations.
+  origin: JFrog and Oligo demonstration pages.
+  attempted_searches:
+  - Reviewed mechanism
+  - impact
+  - prerequisites
+  - and remediation while intentionally not retaining payload text.
+  consulted_source_ids:
+  - SRC-jfrog-cve-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  reason: Payloads are unnecessary to establish the technique and would reduce publication
+    safety.
+  prohibited_publishable_text:
+  - copy-and-run exploit payload
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1101-X003
+  candidate: Attribute command execution risk to MCP or stdio as inherently vulnerable.
+  origin: Overbroad interpretation of ecosystem research.
+  attempted_searches:
+  - Compared current protocol security guidance
+  - architecture
+  - vendor advisories
+  - and OX research.
+  consulted_source_ids:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-ox-mcp-2026
+  reason: Evidence locates the weakness in unsafe shell, proxy, configuration, environment,
+    or process-launch implementations.
+  prohibited_publishable_text:
+  - MCP stdio is inherently vulnerable
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1101-X004
+  candidate: Treat every reported MCP configuration execution path as command injection.
+  origin: Broad NVD and ecosystem research candidate sets.
+  attempted_searches:
+  - Classified each candidate as direct
+  - enabling
+  - adjacent
+  - duplicate
+  - disputed
+  - or rejected against the contract.
+  consulted_source_ids:
+  - SRC-nvd-keyword-baseline-2026
+  - SRC-ox-mcp-2026
+  reason: Prompt manipulation, browser access, intended command execution, and downstream
+    code execution use different defining mechanisms.
+  prohibited_publishable_text:
+  - every MCP configuration execution path is command injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1101-X005
+  candidate: Infer that candidates absent from KEV have never been exploited.
+  origin: Negative catalog lookup.
+  attempted_searches:
+  - Reviewed current KEV and exact advisory records.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  reason: Catalog absence is not evidence of non-exploitation; the technique states
+    only that production exploitation was not established in reviewed sources.
+  prohibited_publishable_text:
+  - absence from KEV proves no exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T1112
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: /root/cleanroom_saf_t1112
+
+gates:
+  clean_room_integrity:
+    status: passed
+    evidence: Allowed-input audit and negative prior-access attestation are complete.
+  contract_and_scope:
+    status: passed
+    evidence: Neutral identity, tactic, boundary, preconditions, outcomes, and exclusions agree across artifacts.
+  technical_accuracy:
+    status: passed
+    evidence: Current 2026-07-28 MCP sampling, schema, and deprecation authorities control protocol propositions.
+  claim_traceability:
+    status: passed
+    evidence: Eighteen validated claims support every substantive publishable unit through readable hidden SAF-TRACE comments.
+  source_or_omit:
+    status: passed
+    evidence: Twelve unsupported, adjacent, blocked, conflicting, or out-of-scope items are excluded in the ledger.
+  evidence_classification:
+    status: passed
+    evidence: Research-Derived reflects inferred abuse with no qualifying direct incident, vulnerability, or complete demonstration.
+  research_saturation:
+    status: passed
+    evidence: All five passes and two consecutive authority-only no-change follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    evidence: Six candidates were classified; zero were selected and the evidence gap is explicit.
+  detection_quality:
+    status: passed
+    evidence: Experimental analytic has explicit telemetry, limitations, false positives, and deterministic controlled cases.
+  mitigation_quality:
+    status: passed
+    evidence: Controls follow current approval, validation, budget, capability, and deprecation guidance.
+  framework_alignment:
+    status: passed
+    evidence: Post-freeze reconciliation joins three canonical neighbors, four mitigations, conditional ATT&CK T1204, repository paths, and canonical proof transcripts.
+  publication_rights:
+    status: passed
+    evidence: Every cited source has a use record; authors, teams, editors, contributors, licenses, and trademarks are credited.
+  safe_publication:
+    status: passed
+    evidence: No exploit payload, secret, real prompt, destructive action, or operational evasion instruction is included.
+
+validation:
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1112/test_detection_rule.py
+    result: PASS SAF-T1112 detection tests; 13 controlled cases, 4 alerting and 9 non-alerting, cover all required categories.
+    artifact: research/techniques/SAF-T1112/validation/detection-test.txt
+  commands:
+    - command: python3 techniques/SAF-T1112/test_detection_rule.py
+      result: passed
+      artifact: research/techniques/SAF-T1112/validation/detection-test.txt
+    - command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1112/python-deps python3 scripts/validate-technique-research.py SAF-T1112
+      result: passed
+      artifact: research/techniques/SAF-T1112/validation/strict-validator.txt
+
+unresolved: []
+
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1112/validation/detection-test.txt
+  strict_validator_transcript: research/techniques/SAF-T1112/validation/strict-validator.txt
+  status: passed

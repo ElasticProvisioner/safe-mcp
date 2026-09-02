@@ -1,0 +1,129 @@
+version: 1
+technique_id: SAF-T1915
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1915/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1915/technique-contract.yml
+  supports: Internal scope, name, tactic, provisional neighbor joins, and completion
+    metadata.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1915/source-coverage.yml
+  supports: Search corpus, saturation, absence claim, candidate classification, and
+    evidence status.
+- id: LOCAL-attestation
+  path: research/techniques/SAF-T1915/clean-room-attestation.yml
+  supports: Clean-room isolation, generator identity, source set, and freeze constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1915/quality-review.yml
+  supports: Validation commands, gate results, review date, and detection-test result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1915/detection-rule.yml
+  supports: The repository's explicitly labeled deterministic correlation analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1915/test_detection_rule.py
+  supports: Deterministic executable validation logic.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1915/test-cases.json
+  supports: Positive, negative, boundary, malformed, false-positive, normalization,
+    and evasion fixtures.
+- id: LOCAL-detection-log
+  path: tests/SAF-T1915/test-logs.json
+  supports: Recorded detection command, case counts, and passing result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1915/validation/canonical-validation.txt
+  supports: Destination detector result and the one explicit catalog-neighbor dependency blocking strict completion.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1915/integration/integration-notes.yml
+  supports: Mechanical source, framework, neighbor, mitigation, history, and path reconciliation after freeze.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1915-X001
+  candidate: A directly observed production MCP or agentic-system laundering incident.
+  origin: Required evidence-status falsification search.
+  attempted_searches:
+  - site:fatf-gafi.org "cross-chain" "AI agent" money laundering
+  - site:ic3.gov "cross-chain" "money laundering" "AI"
+  - site:arxiv.org "agent" "chain hopping" laundering DeFi
+  consulted_source_ids:
+  - SRC-fatf-defi-2026
+  - SRC-pace-defi-agents-2026
+  - SRC-autonomous-agents-chain-2026
+  reason: Sources separately establish laundering and agentic DeFi execution but do
+    not document the complete behavior in production.
+  prohibited_publishable_text:
+  - The technique has been observed in a production MCP laundering incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1915-X002
+  candidate: A claim that crossing chains defeats tracing completely.
+  origin: Common threat-report shorthand tested against detection research.
+  attempted_searches:
+  - site:arxiv.org cross-chain matching missing counterpart false positive pooled
+    settlement
+  - site:fatf-gafi.org blockchain analytics bridges cross-chain swaps layering detection
+    2026
+  consulted_source_ids:
+  - SRC-sok-cross-chain-2026
+  - SRC-fatf-defi-2026
+  - SRC-chainalysis-ronin-2022
+  reason: Public transactions can often be reconstructed; the evidence supports increased
+    difficulty and partial-data limits, not impossibility.
+  prohibited_publishable_text:
+  - Cross-chain laundering makes funds impossible to trace
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1915-X003
+  candidate: A product vulnerability or KEV entry whose vulnerable behavior is cross-chain
+    laundering.
+  origin: Mandatory vulnerability, advisory, and exploitation-status pass.
+  attempted_searches:
+  - site:nvd.nist.gov cross-chain bridge vulnerability CVE blockchain bridge
+  - site:cisa.gov known exploited vulnerabilities cross-chain bridge blockchain DeFi
+  - site:cve.org cross-chain bridge blockchain vulnerability
+  consulted_source_ids:
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-fbi-defi-2022
+  reason: Bridge vulnerabilities enable theft; laundering is a post-theft behavior
+    sequence rather than a disclosed software flaw.
+  prohibited_publishable_text:
+  - CISA KEV lists a cross-chain laundering vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1915-X004
+  candidate: Treating rapid bridge or DEX activity by itself as conclusive malicious
+    activity.
+  origin: Detector design challenge and false-positive review.
+  attempted_searches:
+  - site:chainalysis.com/blog bridge usage legitimate cross chain tracing limitations
+  - site:arxiv.org cross-chain transaction identification matching deterministic identifier
+    amount time address
+  consulted_source_ids:
+  - SRC-chainalysis-ronin-2022
+  - SRC-sok-cross-chain-2026
+  reason: Legitimate cross-chain use and ambiguous heuristic matches require provenance
+    and sequence context.
+  prohibited_publishable_text:
+  - Every rapid bridge transfer is money laundering
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1915-X005
+  candidate: A precise global total for illegal cross-chain laundering.
+  origin: Elliptic 2025 public research summary discovered during the gap pass.
+  attempted_searches:
+  - site:elliptic.co 2025 cross-chain crime methodology high-risk illicit distinction
+  - site:elliptic.co/insights 2026 cross-chain crime laundering bridges DEX AI agent
+  consulted_source_ids:
+  - SRC-elliptic-cross-chain-2025
+  reason: The public total combines illicit and high-risk flows and depends on proprietary
+    analytics; it is unnecessary to the bounded technique.
+  prohibited_publishable_text:
+  - Exactly $21.8 billion of illegal funds was laundered cross-chain
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

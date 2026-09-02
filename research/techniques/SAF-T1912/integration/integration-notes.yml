@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1912
+generated_on: "2026-09-02"
+generation_mode: clean_room
+frozen_bundle: true
+
+mechanical_integration_only:
+  - Verify FREEZE.sha256 and its reported manifest hash before inspecting any target-specific repository artifact.
+  - Copy the technique, research packet, detection rule, and test into their canonical repository paths.
+  - Merge source-manifest-fragment.yml by source ID without changing reviewed records or silently resolving collisions.
+  - Merge framework-fragment.yml and alignment-fragment.yml only after local joins are reconciled.
+  - Run the repository's generic strict validator and detection test after integration.
+
+deferred_joins:
+  - field: nearest_neighbors
+    current_value: [SAF-T9998, SAF-T9999]
+    reason: Synthetic clean-room identifiers and names avoided reading the shared technique catalog before freeze.
+    integration_action: Replace identifiers, link labels, contract joins, and framework related_techniques with exact existing catalog records using a mechanical equivalence review.
+  - field: mitigations
+    current_value: []
+    reason: Shared mitigation registries were prohibited before freeze.
+    integration_action: Join only existing controls that materially implement the stated mitigation strategies; do not invent identifiers.
+  - field: repository_history
+    current_value: "1111111111111111111111111111111111111111"
+    reason: Git history was prohibited before freeze; the nonzero SHA exists only to exercise the isolated strict validator.
+    integration_action: Replace with the honest repository commit supporting the integrated artifact before publication.
+  - field: source_manifest
+    current_value: source-manifest-fragment.yml
+    reason: The shared source manifest was prohibited before freeze.
+    integration_action: Resolve source-ID or record collisions visibly; preserve provenance and do not overwrite a materially different record.
+  - field: framework_and_alignment
+    current_value: [framework-fragment.yml, alignment-fragment.yml]
+    reason: Shared framework and alignment ledgers were prohibited before freeze.
+    integration_action: Reconcile identifiers and local joins without changing the technique's semantic contract, evidence label, examples, or detection logic.
+
+semantic_changes_require_new_review:
+  - Technique title, tactic, scope, defining mechanism, or out-of-scope distinctions.
+  - Claim statements, evidence label, severity rationale, selected examples, gaps, or source interpretation.
+  - Detection condition, thresholds, features, blind spots, or test expectations.
+  - Rights findings or author, researcher, reporter, and responsible-team credits.
+
+unresolved_before_publication:
+  - Replace synthetic neighbor joins and history SHA after verified freeze.
+  - Re-run strict validation against the real repository joins.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-resources-2026-07-28: SRC-mcp-resources-2026
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+    SRC-microsoft-securing-agents-2026: SRC-microsoft-tool-poisoning-2026-06-30
+    SRC-nist-sp800-53r5-1: SRC-nist-sp800-53r5.1
+  canonical_tactic: ATK-TA0010
+  canonical_neighbors: [SAF-T1911, SAF-T1102]
+  canonical_mitigations: [SAF-M-4, SAF-M-7, SAF-M-12, SAF-M-16, SAF-M-21, SAF-M-22, SAF-M-34, SAF-M-49, SAF-M-54, SAF-M-72]
+  attack_mappings:
+    - {id: T1027.003, type: direct}
+    - {id: T1567, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1912/validation/detection-tests.txt
+    - research/techniques/SAF-T1912/validation/strict-validation.txt
+    - research/techniques/SAF-T1912/validation/canonical-validation.txt

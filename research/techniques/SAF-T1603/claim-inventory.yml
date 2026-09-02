@@ -1,0 +1,242 @@
+version: 1
+technique_id: SAF-T1603
+claims:
+  - id: SAF-T1603-C001
+    statement: MCP hosts retain the full conversation and enforce the security boundary while servers should not see the whole conversation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture
+        support: direct
+        exact_locators: ["Architecture layers: Hosts and Servers"]
+    corroboration: The protocol architecture separately assigns permission and context-aggregation responsibilities to the host.
+    limitations: [The architecture does not define a system-prompt leakage detector.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C002
+    statement: MCP prompts/list and prompts/get intentionally expose server-declared, user-controlled prompt templates to clients.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-prompts
+        support: direct
+        exact_locators: ["Overview", "Listing Prompts", "Getting a Prompt"]
+    corroboration: The capability declaration and request/response schemas establish the intended protocol path.
+    limitations: [This intended path is not evidence that hidden host instructions may be disclosed.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C003
+    statement: OpenAI's published behavior specification treats system and developer messages as privileged information that should not be revealed by default.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-model-spec
+        support: direct
+        exact_locators: ["Do not reveal privileged information"]
+    corroboration: OWASP independently treats unintended system-prompt exposure as a defined LLM application risk.
+    limitations: [The Model Spec states that production behavior may not yet fully match the specification.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C004
+    statement: OWASP warns that leaked system prompts can reveal application logic or controls, but prompts should not contain secrets or serve as the sole security control.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm07
+        support: direct
+        exact_locators: ["Description", "Common Examples of Risk", "How to Prevent"]
+    corroboration: The selected vulnerability advisories show concrete instruction exposure while also bounding impact by deployment content and permissions.
+    limitations: [Leakage impact is conditional; prompt disclosure alone does not prove compromise of secrets or protected actions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C005
+    statement: MITRE ATLAS defines discovery of an LLM system prompt as learning hidden instructions to understand capabilities or circumvent guardrails, and separately catalogs extraction of the prompt.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-atlas-2026-08
+        support: direct
+        exact_locators: ["AML.T0069.002 System Prompt", "AML.T0056 Extract LLM System Prompt"]
+    corroboration: OWASP LLM07 independently defines unintended system-prompt leakage.
+    limitations: [ATLAS uses its own tactics and does not establish the SAF taxonomy placement.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C006
+    statement: MITRE ATLAS records a 2026 ClawdBot exercise in which an exposed control interface returned its SOUL.md system prompt after a researcher requested it.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-atlas-2026-08
+        support: direct
+        exact_locators: ["AML.CS0048", "relationship description for AML.CS0048 and AML.T0069.002"]
+    corroboration: The ATLAS record explicitly classifies the event as an exercise and connects it to system-prompt discovery.
+    limitations: [This is not a confirmed production breach; the source summarizes a research exercise.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C007
+    statement: JustAsk reports controlled extraction across 41 black-box commercial models and evaluates five production assistants, while noting that black-box ground truth and defenses remain limited.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-justask
+        support: direct
+        exact_locators: ["Abstract", "Threat Model", "Evaluations on Production LLM-based Assistants", "Limitations"]
+    corroboration: ATLAS independently records a system-prompt discovery exercise.
+    limitations: [Research measurements are not production-incident counts and some black-box prompt ground truth relies on an oracle or consistency measure.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C008
+    statement: WeKnora through version 0.2.14 allowed a malicious remote MCP server to cause tool-name collision and indirect prompt injection that could exfiltrate system prompt and context; version 0.3.0 patched the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators: ["Impact", "Proof of Concept", "Patches"]
+    corroboration: The advisory is linked from the corresponding NVD record and includes a controlled proof of concept.
+    limitations: [The advisory does not establish malicious exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C009
+    statement: Open WebUI through version 0.8.8 allowed a regular authenticated user to retrieve administrator-configured system prompts through a models API; version 0.8.9 patched the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-open-webui
+        support: direct
+        exact_locators: ["Summary", "Details", "Impact", "Patches"]
+    corroboration: The advisory maps the issue to CVE-2026-45351 and provides affected and patched version ranges.
+    limitations: [The advisory documents a proof of concept, not confirmed production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C010
+    statement: PraisonAI before version 1.7.3 exposed agent instructions and system prompts to unauthenticated network peers under insecure defaults; version 1.7.3 patched the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-praisonai
+        support: direct
+        exact_locators: ["Summary", "Attack Scenario", "Impact", "Patches"]
+    corroboration: The advisory maps the issue to CVE-2026-61426 and says the finding was runtime-confirmed.
+    limitations: [The advisory does not establish malicious exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C011
+    statement: SPE-LLM evaluates response filtering based on exact, substring, and chunk matches against a protected prompt, but reports residual extraction and limits associated with prompting-only tests.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-spe-llm
+        support: direct
+        exact_locators: ["Defenses", "Results", "Limitations"]
+    corroboration: OWASP recommends output monitoring and filtering as one layer rather than a complete control.
+    limitations: [Match-based detection requires protected reference material and can miss paraphrase or transformed output.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C012
+    statement: OpenTelemetry's developing GenAI event conventions define opt-in input, output, and system-instruction fields and warn that captured content may be sensitive.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-genai-events
+        support: direct
+        exact_locators: ["Recording user messages and model responses", "gen_ai.output.messages", "gen_ai.system_instructions"]
+    corroboration: The convention defines conversation and operation metadata used for correlation.
+    limitations: [The conventions are in Development status and content capture is opt-in.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C013
+    statement: ATT&CK T1082 is an analogy because it collects system information for follow-on activity under Discovery, but it concerns operating-system and hardware information rather than LLM instructions.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1082-current
+        support: direct
+        exact_locators: ["Description", "Technique ID T1082"]
+    corroboration: ATLAS supplies the direct AI-specific mapping absent from Enterprise ATT&CK.
+    limitations: [The mapping is analogous, not direct.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The shared discovery purpose supports analogy while the object and environment differ.}
+    status: validated
+  - id: SAF-T1603-C014
+    statement: The direct-authority review found qualifying demonstrations and vulnerabilities but no source establishing a malicious production breach of system-prompt disclosure.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-audit
+        support: context
+        exact_locators: ["Exact keyword query series and returned CVE records"]
+      - source_id: SRC-atlas-2026-08
+        support: context
+        exact_locators: ["AML.CS0048 classified as Exercise"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: ["catalogVersion 2026.09.01 and vulnerabilities array"]
+    corroboration: The CISA KEV direct feed check produced no system-prompt match and the final two direct-authority saturation passes produced no qualifying breach source.
+    limitations: [Absence from the reviewed authorities does not prove that no private or unreported breach has occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a bounded result of the documented search, not a universal absence claim.}
+    status: validated
+  - id: SAF-T1603-C015
+    statement: Effective risk reduction keeps secrets and authorization logic outside prompts, restricts access to stored prompts and configuration interfaces, and monitors or filters potentially revealing outputs.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm07
+        support: direct
+        exact_locators: ["How to Prevent"]
+      - source_id: SRC-atlas-2026-08
+        support: direct
+        exact_locators: ["Access controls for stored system prompts", "authentication and monitoring for configuration interfaces", "guardrails for system-prompt outputs"]
+    corroboration: SPE-LLM supplies an empirical evaluation of output-match filtering and its residual limitations.
+    limitations: [No single listed control guarantees prompt secrecy against every model behavior or access-control failure.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1603-C016
+    statement: Impact is primarily conditional confidentiality loss; follow-on integrity risk depends on whether disclosed instructions materially reveal controls, capabilities, or privileged logic.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm07
+        support: direct
+        exact_locators: ["Description", "Common Examples of Risk"]
+      - source_id: SRC-ghsa-weknora
+        support: direct
+        exact_locators: ["Impact"]
+      - source_id: SRC-ghsa-praisonai
+        support: direct
+        exact_locators: ["Impact"]
+    corroboration: The selected advisories bound direct consequences by exposed content and surrounding agent privileges.
+    limitations: [Availability impact is not inherent and downstream abuse requires separate classification.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The rating synthesizes direct source consequences under the contract boundary.}
+    status: validated

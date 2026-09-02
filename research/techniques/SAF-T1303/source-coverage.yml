@@ -1,0 +1,248 @@
+version: 1
+technique_id: SAF-T1303
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io specification tools security command execution server local process"
+        - "site:modelcontextprotocol.io/specification/2026-07-28 server tools call security tool annotations untrusted"
+      material_changes:
+        - Established tools/call name and arguments, untrusted annotation semantics, and current 2026-07-28 protocol release context.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov MCP command injection server CVE remote code execution"
+        - "site:zerodayinitiative.com/advisories MCP server command injection"
+        - "site:cve.org/CVERecord MCP stdio subprocess host privileges command execution 2026"
+        - "site:cisa.gov MCP server command injection CVE"
+      material_changes:
+        - Classified twelve direct, adjacent, and overlapping candidates and selected four high-impact examples.
+        - Found no qualifying direct production incident in the reviewed authoritative corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail CVE-2026-22252 exploitation fixed version LibreChat MCP stdio"
+        - "site:jfrog.com security research MCP command injection remote code execution"
+      material_changes:
+        - CISA-ADP proof-of-concept status for LibreChat supported a demonstrated example, without raising the cross-product technique above Research-Derived.
+        - JFrog's malicious-PyPI campaign was classified as adjacent startup-time supply-chain behavior.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:learn.microsoft.com sysmon event ID 1 process creation command line parent process"
+        - "site:elastic.co/guide/en/ecs/current process fields command_line parent process"
+        - "site:cheatsheetseries.owasp.org OS Command Injection Defense Cheat Sheet"
+        - "site:docs.docker.com security rootless mode containers least privilege host"
+      material_changes:
+        - Defined a request-to-process correlation analytic and mechanism-level defenses.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail CVE-2026-22252 withdrawn disputed exploitation"
+        - "site:nvd.nist.gov/vuln/detail CVE-2026-42271 withdrawn disputed exploitation"
+        - "site:zerodayinitiative.com/advisories MCP server August 2026 command injection"
+      material_changes:
+        - Recorded the LibreChat CVSS privilege disagreement, container-root limitation, missing fixes, and user-interaction prerequisites.
+    - pass: candidate_expansion
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cve.org/CVERecord MCP Stdio root fixed"
+        - "site:nvd.nist.gov/vuln/detail MCP STDIO command execution handling"
+        - "site:cisa.gov/news-events/bulletins MCP command execution"
+      material_changes:
+        - Added Jaaz, adb-mcp, and overlapping aws-mcp-server candidates without changing the four-example selection.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-22252 Last Modified exploitation"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-42271 Last Modified Red Hat OpenShift AI"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-30617 Last Modified"
+        - "site:nvd.nist.gov/vuln/detail/CVE-2026-55887 Last Modified"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cve.org/CVERecord?id=CVE-2026-22252 Updated PUBLISHED"
+        - "site:cve.org/CVERecord?id=CVE-2026-42271 Updated PUBLISHED"
+        - "site:cve.org/CVERecord?id=CVE-2026-30617 Updated PUBLISHED"
+        - "site:zerodayinitiative.com/advisories/ZDI-26-363 Advisory Updated"
+      material_changes: []
+  rationale: >-
+    Direct protocol, CVE/CNA, NVD/CISA-ADP, ZDI, researcher, telemetry,
+    defensive-control, and framework authorities cover every publishable
+    proposition. Candidate expansion did not displace the four examples, and
+    the final two exact-status passes found no new controlling requirement,
+    incident, fix, exploitation state, conflict, or higher-impact example.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 12
+  selected_examples:
+    - SRC-nvd-librechat-22252
+    - SRC-zdi-docker-26-363
+    - SRC-cve-litellm-42271
+    - SRC-cve-langchain-30617
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-nvd-librechat-22252
+      identifier: CVE-2026-22252
+      relationship: direct_demonstration
+      exploitation_status: Proof of concept per CISA-ADP; no production exploitation identified.
+      impact: Authenticated command execution as root inside the LibreChat container.
+      remediation: Fixed in v0.8.2-rc2.
+      selected: true
+      rationale: Highest evidence maturity and critical privilege context; container-to-host escape is not claimed.
+    - source_id: SRC-zdi-docker-26-363
+      identifier: CVE-2026-55887 / ZDI-26-363
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory; production exploitation not documented.
+      impact: Host-root code execution after a target references a malicious image.
+      remediation: Docker issued an update; version numbers absent from reviewed advisory.
+      selected: true
+      rationale: Highest privilege context and explicit host boundary, with required user interaction stated.
+    - source_id: SRC-cve-litellm-42271
+      identifier: CVE-2026-42271
+      relationship: direct_vulnerability
+      exploitation_status: Public maintainer-CNA record; production exploitation not documented.
+      impact: Low-privilege internal-user key holder can spawn commands with proxy-process privileges.
+      remediation: Fixed in LiteLLM 1.83.7; affected 1.74.2 through 1.83.6.
+      selected: true
+      rationale: Clear authorization-to-process privilege boundary and precise affected range.
+    - source_id: SRC-cve-langchain-30617
+      identifier: CVE-2026-30617
+      relationship: direct_vulnerability
+      exploitation_status: Public CVE record; production exploitation not documented.
+      impact: Remote management access can stage stdio commands later executed in the LangChain-ChatChat service context.
+      remediation: No fixed version stated in the reviewed CVE record.
+      selected: true
+      rationale: Demonstrates exposed management-to-agent execution sequencing not represented by the other examples.
+    - source_id: SRC-zdi-aws-26-245
+      identifier: CVE-2026-5059 / ZDI-26-245
+      relationship: direct_vulnerability
+      exploitation_status: CISA-ADP reported exploitation none in the reviewed NVD record.
+      impact: Unauthenticated execution in the aws-mcp-server context through allowed-command handling.
+      remediation: ZDI advised restricting interaction; vendor rejection and no patch were stated.
+      selected: false
+      rationale: Strong direct case, but the selected set provides greater privilege-context and trigger diversity.
+    - source_id: SRC-zdi-mcp-manager-26-023
+      identifier: CVE-2026-0757 / ZDI-26-023
+      relationship: direct_vulnerability
+      exploitation_status: Public zero-day advisory; production exploitation not documented.
+      impact: User-assisted sandbox escape to current-process medium-integrity execution.
+      remediation: Restrict interaction; no affected or fixed versions stated.
+      selected: false
+      rationale: Directly named sandbox escape, but incomplete version and remediation data reduced selection value.
+    - source_id: SRC-zdi-github-kanban-26-022
+      identifier: CVE-2026-0756 / ZDI-26-022
+      relationship: direct_vulnerability
+      exploitation_status: Public zero-day advisory; production exploitation not documented.
+      impact: Unauthenticated execution in the github-kanban-mcp-server service account.
+      remediation: Restrict interaction; no patch stated in reviewed advisory.
+      selected: false
+      rationale: Duplicates the service-account command-injection mechanism with fewer remediation details.
+    - source_id: SRC-zdi-win-cli-25-930
+      identifier: CVE-2025-11202 / ZDI-25-930
+      relationship: direct_vulnerability
+      exploitation_status: Public advisory; production exploitation not documented.
+      impact: Unauthenticated execution in the win-cli-mcp-server service account.
+      remediation: Vendor issued an update; version number not stated in reviewed advisory.
+      selected: false
+      rationale: Direct but less distinctive than the four selected boundary patterns.
+    - source_id: SRC-nvd-jaaz-30616
+      identifier: CVE-2026-30616
+      relationship: direct_vulnerability
+      exploitation_status: CISA-ADP reported exploitation none.
+      impact: Network requests cause command execution in the Jaaz service context.
+      remediation: No fix stated in the reviewed NVD record.
+      selected: false
+      rationale: Lower documented impact and no remediation detail.
+    - source_id: SRC-cisa-week-2025-272
+      identifier: CVE-2025-59834
+      relationship: direct_vulnerability
+      exploitation_status: Public bulletin summarizing external reports; production exploitation not established.
+      impact: Command injection in adb-mcp 0.1.0 and earlier.
+      remediation: Bulletin states patch commit 041729c.
+      selected: false
+      rationale: Secondary bulletin explicitly disclaims direct CISA analysis, so higher-authority examples were preferred.
+    - source_id: SRC-nvd-aws-5277
+      identifier: CVE-2025-5277
+      relationship: direct_vulnerability
+      exploitation_status: CISA-ADP reported exploitation none.
+      impact: Prompt-reached command injection in aws-mcp-server versions before 1.3.0.
+      remediation: Affected range ends before 1.3.0.
+      selected: false
+      rationale: Overlaps the same product and mechanism as the newer aws-mcp-server advisory.
+    - source_id: SRC-jfrog-malicious-mcp
+      identifier: XRAY-734538 / XRAY-734539 / XRAY-734540
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Malicious packages and downloads documented; victim compromise was not established.
+      impact: Packages ran a reverse shell during server startup.
+      remediation: JFrog Xray detection updated; use trusted, reviewed packages.
+      selected: false
+      rationale: Startup-time malicious code is supply-chain or installation behavior, not the request-to-server-exec boundary.
+
+sources_consulted:
+  - SRC-cisa-week-2025-272
+  - SRC-cve-langchain-30617
+  - SRC-cve-litellm-42271
+  - SRC-docker-rootless
+  - SRC-elastic-ecs-process
+  - SRC-jfrog-malicious-mcp
+  - SRC-mcp-release-2026-07-28
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-sysmon
+  - SRC-mitre-t1059-current
+  - SRC-nvd-aws-5277
+  - SRC-nvd-jaaz-30616
+  - SRC-nvd-librechat-22252
+  - SRC-owasp-command-injection
+  - SRC-zdi-aws-26-245
+  - SRC-zdi-docker-26-363
+  - SRC-zdi-github-kanban-26-022
+  - SRC-zdi-mcp-manager-26-023
+  - SRC-zdi-win-cli-25-930
+sources_cited:
+  - SRC-cve-langchain-30617
+  - SRC-cve-litellm-42271
+  - SRC-docker-rootless
+  - SRC-elastic-ecs-process
+  - SRC-jfrog-malicious-mcp
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-sysmon
+  - SRC-mitre-t1059-current
+  - SRC-nvd-librechat-22252
+  - SRC-owasp-command-injection
+  - SRC-zdi-docker-26-363
+sources_rejected:
+  - source_id: SRC-cisa-week-2025-272
+    reason: Useful candidate discovery, but the bulletin explicitly states that some entries compile external reports and is not direct CISA analysis.
+sources_blocked: []
+
+conflicts:
+  - issue: LibreChat CNA and NVD assessments differ on the attacker's required privilege level.
+    resolution: Publish the shared factual prerequisite of an authenticated user and do not rely on the disputed vector component or a single score.
+  - issue: Several ZDI advisories describe zero-day status but do not document production exploitation.
+    resolution: Classify them as disclosed vulnerabilities and state exploitation as not documented.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1303-C001
+  rationale: >-
+    Product advisories and a proof-of-concept record establish each component
+    of unsafe MCP-facing server execution, but the cross-product technique is
+    an explicit inference and no qualifying production incident for the
+    complete behavior was identified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

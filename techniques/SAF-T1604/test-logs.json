@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "technique_id": "SAF-T1604",
+  "rule_id": "4ad469fa-98c4-5ee7-bc40-85d4bb4307af",
+  "cases": [
+    {
+      "name": "positive_distinct_server_burst",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T10:00:00Z", "actor_id": "client-a", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"},
+        {"timestamp": "2026-09-02T10:01:00Z", "actor_id": "client-a", "actor_class": "interactive", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.1.0"},
+        {"timestamp": "2026-09-02T10:02:00Z", "actor_id": "client-a", "actor_class": "interactive", "server_id": "srv-3", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "2.0.0"},
+        {"timestamp": "2026-09-02T10:03:00Z", "actor_id": "client-a", "actor_class": "interactive", "server_id": "srv-4", "event_type": "mcp_unsupported_protocol_version_error", "success": false, "supported_versions": ["2026-07-28"]},
+        {"timestamp": "2026-09-02T10:04:00Z", "actor_id": "client-a", "actor_class": "interactive", "server_id": "srv-5", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "3.0.0"}
+      ]
+    },
+    {
+      "name": "negative_repeated_single_server",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T11:00:00Z", "actor_id": "client-b", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"},
+        {"timestamp": "2026-09-02T11:01:00Z", "actor_id": "client-b", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"},
+        {"timestamp": "2026-09-02T11:02:00Z", "actor_id": "client-b", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"},
+        {"timestamp": "2026-09-02T11:03:00Z", "actor_id": "client-b", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"},
+        {"timestamp": "2026-09-02T11:04:00Z", "actor_id": "client-b", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1.0.0"}
+      ]
+    },
+    {
+      "name": "boundary_exact_five_servers_at_five_minutes",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "actor_id": "client-c", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T12:01:15Z", "actor_id": "client-c", "actor_class": "interactive", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T12:02:30Z", "actor_id": "client-c", "actor_class": "interactive", "server_id": "srv-3", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T12:03:45Z", "actor_id": "client-c", "actor_class": "interactive", "server_id": "srv-4", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T12:05:00Z", "actor_id": "client-c", "actor_class": "interactive", "server_id": "srv-5", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"}
+      ]
+    },
+    {
+      "name": "boundary_outside_five_minute_window",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T13:00:00Z", "actor_id": "client-d", "actor_class": "interactive", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T13:01:16Z", "actor_id": "client-d", "actor_class": "interactive", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T13:02:31Z", "actor_id": "client-d", "actor_class": "interactive", "server_id": "srv-3", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T13:03:46Z", "actor_id": "client-d", "actor_class": "interactive", "server_id": "srv-4", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T13:05:01Z", "actor_id": "client-d", "actor_class": "interactive", "server_id": "srv-5", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"}
+      ]
+    },
+    {
+      "name": "expected_false_positive_approved_inventory",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T14:00:00Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T14:00:30Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T14:01:00Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-3", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T14:01:30Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-4", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T14:02:00Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-5", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"},
+        {"timestamp": "2026-09-02T14:02:30Z", "actor_id": "scanner-1", "actor_class": "approved_inventory", "server_id": "srv-6", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "1"}
+      ]
+    },
+    {
+      "name": "malformed_and_missing_required_fields",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "not-a-time", "actor_id": "client-e", "server_id": "srv-1", "event_type": "mcp_server_discover_response", "server_info_version": "1"},
+        {"timestamp": "2026-09-02T15:01:00Z", "actor_id": "", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "server_info_version": "1"},
+        {"timestamp": "2026-09-02T15:02:00Z", "actor_id": "client-e", "server_id": "", "event_type": "mcp_server_discover_response", "server_info_version": "1"},
+        {"timestamp": "2026-09-02T15:03:00Z", "actor_id": "client-e", "server_id": "srv-4", "event_type": "mcp_server_discover_response", "server_info_version": "   "},
+        {"timestamp": "2026-09-02T15:04:00Z", "actor_id": "client-e", "server_id": "srv-5", "event_type": "unrelated_event", "server_info_version": "1"}
+      ]
+    },
+    {
+      "name": "normalization_case_and_whitespace",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T16:00:00Z", "actor_id": " Client-F ", "actor_class": "interactive", "server_id": " SRV-1 ", "event_type": " MCP_SERVER_DISCOVER_RESPONSE ", "success": true, "server_info_version": " 1.0.0 "},
+        {"timestamp": "2026-09-02T16:00:30Z", "actor_id": "client-f", "actor_class": "interactive", "server_id": "srv-2", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "2"},
+        {"timestamp": "2026-09-02T16:01:00Z", "actor_id": "CLIENT-F", "actor_class": "interactive", "server_id": "srv-3", "event_type": "mcp_unsupported_protocol_version_error", "success": false, "supported_versions": [" 2026-07-28 "]},
+        {"timestamp": "2026-09-02T16:01:30Z", "actor_id": "client-f", "actor_class": "interactive", "server_id": "srv-4", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "3"},
+        {"timestamp": "2026-09-02T16:02:00Z", "actor_id": "client-f", "actor_class": "interactive", "server_id": "srv-5", "event_type": "mcp_server_discover_response", "success": true, "server_info_version": "4"}
+      ]
+    }
+  ]
+}

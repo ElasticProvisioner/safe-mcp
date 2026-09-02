@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T1911
+name: Parameter Exfiltration
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0010
+adversary_objective: Transmit sensitive data to an attacker-controlled or unauthorized
+  destination by placing that data in an MCP tool call's argument values.
+scope:
+  security_boundary: The host-side boundary between sensitive data available to an
+    agent and the argument object sent by an MCP client to a server or external tool
+    destination.
+  in_scope:
+  - Sensitive data is placed in a tools/call arguments object and crosses from the
+    host or a trusted data source to an unauthorized recipient.
+  - The exfiltration channel is an MCP tool parameter or an external-service field
+    populated through an MCP tool invocation.
+  out_of_scope:
+  - Instructions or poisoned context that influence the model but do not cause sensitive
+    data to enter an outbound parameter.
+  - Collection or reading of sensitive data without its transmission in a tool argument.
+  - Server-side theft that occurs after a benign, authorized parameter reaches its
+    intended service.
+  affected_components:
+  - MCP host and model orchestration layer
+  - MCP client tool-call router
+  - MCP server or external service receiving tool arguments
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt or context injection may supply the instruction, but Parameter
+    Exfiltration begins only when sensitive content is materialized in an outbound
+    tool argument.
+- technique_id: SAF-T1801
+  distinction: Automated Data Harvesting ends with data acquisition; Parameter
+    Exfiltration covers its transmission in a tool parameter to an unauthorized
+    destination.
+required_evidence:
+- Establish the current MCP tools/call argument structure and host-client-server boundary
+  from the versioned specification.
+- Establish an end-to-end controlled demonstration in which sensitive data is transmitted
+  through a tool parameter.
+- Search separately for production incidents, disclosed vulnerabilities, advisories,
+  exploitation status, and contrary or fixed behavior.
+- Establish telemetry and limitations for a deterministic data-flow analytic over
+  MCP tool-call events.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP host tool-call audit events with timestamp, session, server identity and trust,
+    method, tool name, normalized arguments, approval visibility, and policy-exception
+    state.
+  - Host data-lineage or DLP classification indicating whether sensitive source content
+    flowed into tool arguments.
+safe_example_constraints:
+- Use only inert example domains and placeholder data labels; never include live secrets
+  or harmful payloads.
+- Represent sensitive content with classification metadata rather than reproducing
+  the content.
+- Keep demonstrations descriptive and do not reproduce operational prompt-injection
+  text.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and reviewed source,
+  or to a declared local artifact.
+- Unverified incident, vulnerability, current-client, and detector-effectiveness leads
+  are omitted and recorded in the exclusion ledger.
+- All five research passes and two final authority-only no-material-change passes
+  are recorded.
+- Positive, negative, boundary, malformed, and expected false-positive detection cases
+  pass deterministically.
+- Rights, safety, traceability, clean-room integrity, and isolated strict validation
+  pass with no unresolved bundle-owned issue.

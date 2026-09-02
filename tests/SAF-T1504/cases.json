@@ -1,0 +1,52 @@
+[
+  {
+    "name": "positive_unredacted_access_token_in_content",
+    "expected": true,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "content", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["access_token"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  },
+  {
+    "name": "positive_unredacted_bearer_in_error",
+    "expected": true,
+    "event": {"event.action": "tool_error", "mcp.response.channel": "error_detail", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["bearer_token"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  },
+  {
+    "name": "positive_refresh_token_in_structured_content",
+    "expected": true,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "structuredContent", "mcp.response.secret_count": 2, "mcp.response.secret_types": ["refresh_token", "api_key"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  },
+  {
+    "name": "negative_no_secret_finding",
+    "expected": false,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "content", "mcp.response.secret_count": 0, "mcp.response.secret_types": [], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  },
+  {
+    "name": "negative_secret_was_redacted",
+    "expected": false,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "content", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["access_token"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": true}
+  },
+  {
+    "name": "expected_legitimate_authorized_secret_delivery",
+    "expected": false,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "structuredContent", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["session_token"], "mcp.response.recipient_authorized": true, "mcp.response.redacted": false}
+  },
+  {
+    "name": "boundary_zero_count_with_secret_type",
+    "expected": false,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "content", "mcp.response.secret_count": 0, "mcp.response.secret_types": ["access_token"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  },
+  {
+    "name": "positive_missing_redaction_field_fails_open_to_alert",
+    "expected": true,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "embedded_resource", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["session_token"], "mcp.response.recipient_authorized": false}
+  },
+  {
+    "name": "malformed_missing_recipient_decision_does_not_alert",
+    "expected": false,
+    "event": {"event.action": "tool_result", "mcp.response.channel": "content", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["access_token"], "mcp.response.redacted": false}
+  },
+  {
+    "name": "negative_wrong_event_action",
+    "expected": false,
+    "event": {"event.action": "tool_call", "mcp.response.channel": "content", "mcp.response.secret_count": 1, "mcp.response.secret_types": ["access_token"], "mcp.response.recipient_authorized": false, "mcp.response.redacted": false}
+  }
+]

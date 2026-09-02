@@ -1,0 +1,97 @@
+version: 1
+technique_id: SAF-T2107
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T2107
+  neutral_name: AI Model Poisoning via MCP Tool Training Data Contamination
+allowed_inputs:
+- Neutral target ID and name supplied by the coordinator.
+- Supplied tactic ATK-TA0042.
+- Generic SAF technique template, blank research schemas, validator, and clean-room
+  skill instructions.
+- Independently discovered direct authorities from restricted standards, government,
+  academic-publisher, and first-party domains.
+prohibited_inputs:
+- techniques/SAF-T2107/README.md
+- research/techniques/SAF-T2107/
+- techniques/SAF-T2107/detection-rule.yml
+- Shared framework registries and impact-classification examples before freeze.
+- Git history, diffs, blame, repository issues, or prior SAF content.
+- Any pull request or review discussion about this target.
+- Previous conversation or inherited technique-specific context.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification tools tool result security considerations
+    authorization 2025
+  - site:nist.gov AI training data poisoning detection dataset provenance
+  - site:nvd.nist.gov/vuln/detail "Model Context Protocol" tool
+  - site:cisa.gov "Model Context Protocol" vulnerability advisory
+  - site:proceedings.mlr.press "Poisoning Language Models During Instruction Tuning"
+  - site:arxiv.org real-world MCP training data tool responses
+  - site:owasp.org training data poisoning provenance detection model
+  - site:anthropic.com/research training data poisoning backdoor samples
+  - site:microsoft.com/security/blog MCP tool poisoning incident
+  - site:arxiv.org "MCP tool result" "training corpus" backdoor
+  opened_source_ids:
+  - SRC-anthropic-small-samples
+  - SRC-mitre-t1565.001
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-mitre-atlas-safeai
+  - SRC-nist-aml
+  - SRC-nist-ai-600-1
+  - SRC-nist-airc-characteristics
+  - SRC-nvd-cve-2025-52573
+  - SRC-nvd-cve-2025-61591
+  - SRC-openai-function-calling
+  - SRC-owasp-llm04
+  - SRC-toucan
+  - SRC-wan23b
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Verify frozen hashes before opening destination artifacts or shared registries.
+- Replace synthetic neighbor and mitigation identifiers only as a mechanical post-freeze
+  join.
+- Preserve the Research-Derived label unless new direct end-to-end evidence is independently
+  reviewed.
+attestation: The fresh agent received only the neutral target contract, used restricted
+  direct-authority discovery, did not inspect prohibited prior target material, authored
+  in fresh temporary paths, and froze the bundle before any integration access.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools: SRC-mcp-tools-2025-06-18
+    SRC-nist-ai-600-1: SRC-nist-ai-600-1
+    SRC-microsoft-mcp-tool-poisoning: SRC-microsoft-tool-poisoning-2026-06-30
+    SRC-attack-t1565-001: SRC-mitre-t1565.001
+    SRC-cisa-kev: SRC-cisa-kev-2026-09-01
+    SRC-nist-ai-100-2: SRC-nist-aml
+  new_shared_source_records:
+  - SRC-toucan
+  - SRC-wan23b
+  - SRC-anthropic-small-samples
+  - SRC-owasp-llm04
+  - SRC-nvd-cve-2025-61591
+  - SRC-nvd-cve-2025-52573
+  - SRC-nist-airc-characteristics
+  - SRC-openai-function-calling
+  - SRC-mitre-atlas-safeai
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0042
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-33
+  - SAF-M-34
+  - SAF-M-35
+  - SAF-M-36
+  status: integrated_and_validated

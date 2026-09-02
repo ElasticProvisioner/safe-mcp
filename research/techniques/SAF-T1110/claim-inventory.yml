@@ -1,0 +1,277 @@
+version: 1
+technique_id: SAF-T1110
+claims:
+  - id: SAF-T1110-C001
+    statement: Images and audio can carry prompt-injection instructions across an untrusted-content boundary.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm01-2025
+        support: direct
+        exact_locators: ["Prompt Injection Types: Indirect and Multimodal Injection; Scenario #7"]
+      - source_id: SRC-nist-ai-100-2e2025
+        support: corroborating
+        exact_locators: ["Sections 3.4.3 and 3.4.5, PDF pages 62-71"]
+    corroboration: OWASP explicitly addresses multimodal injection; NIST independently describes untrusted instruction channels and multimodal attack limits.
+    limitations: [Does not establish that every model or media item is exploitable.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C002
+    statement: Adversarially modified images and audio steered open multimodal systems in a controlled proof of concept.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-bagdasaryan-multimodal-injection-2023
+        support: direct
+        exact_locators: ["Abstract; Sections 2-5"]
+    corroboration: Later independent visual and audio studies validate the carrier-to-behavior mechanism in different systems.
+    limitations: [White-box proof of concept on early open systems; no production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C003
+    statement: Concurrent environmental audio induced agent actions in an eleven-agent controlled evaluation and a bounded device study.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-liu-piggybacking-2026
+        support: direct
+        exact_locators: ["Abstract; Sections 3-5; real-world evaluation and limitations"]
+    corroboration: AudioHijack independently demonstrates audio-carried behavior manipulation under a different threat model.
+    limitations: [Selected devices and scenarios; small human study; not a production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C004
+    statement: AudioHijack induced unauthorized actions in controlled commercial-agent experiments.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-chen-audiohijack-2026
+        support: direct
+        exact_locators: ["Sections 3.1, 5.5-5.7, and Limitations"]
+    corroboration: Piggybacking independently evaluates physical audio injection against a separate agent set.
+    limitations: [White-box generation, preselected successful inputs, simple agents, and mutable APIs.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C005
+    statement: VPI-Bench demonstrated visually embedded instructions causing unauthorized agent behavior in controlled browser and computer environments.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cao-vpi-bench-2025
+        support: direct
+        exact_locators: ["Abstract; threat model; experimental setup and results"]
+    corroboration: Image Hijacks independently demonstrates attacker-selected behavior from image inputs.
+    limitations: [Simulated websites and identities; not a production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C006
+    statement: MCP tools are model-controlled and tool results can contain image or audio content.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Overview; Tool Result; Security Considerations"]
+    corroboration: Not required for a normative protocol capability; demonstrations establish why the combination matters.
+    limitations: [The specification does not define this attack or guarantee implementation controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C007
+    statement: Risk requires an influence source and consequential sink; separating trust and constraining actions limits impact.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-100-2e2025
+        support: direct
+        exact_locators: ["Section 3.4.3, PDF pages 62-66"]
+      - source_id: SRC-openai-agent-pi-defense-2026
+        support: direct
+        exact_locators: ["Prompt injection is evolving; How this informs our defenses in ChatGPT"]
+    corroboration: NIST trust-separation guidance and OpenAI source-sink framing independently support the architectural boundary.
+    limitations: [Architectural controls do not guarantee perfect prevention.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C008
+    statement: Media-aware screening can inspect OCR, visual context, source separation, or cross-modal consistency.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-gpt4v-system-card
+        support: direct
+        exact_locators: ["Sections 2.1.1 and 2.5"]
+      - source_id: SRC-liu-piggybacking-2026
+        support: direct
+        exact_locators: ["CADV method and evaluation"]
+    corroboration: Sources cover independent image and audio pipelines.
+    limitations: [No method is established as universally robust.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C009
+    statement: Prompt-only and generic guard approaches can miss developed or distribution-shifted attacks.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-agent-pi-defense-2026
+        support: direct
+        exact_locators: ["Prompt injection is evolving"]
+      - source_id: SRC-webagentguard-2026
+        support: direct
+        exact_locators: ["Sections 1 and 4.2"]
+    corroboration: Practitioner and research sources independently report classifier/guard limitations.
+    limitations: [Does not compare every deployed guard or model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C010
+    statement: Dedicated multimodal guards and action gateways can improve evaluated detection while retaining false-positive and adaptive-evasion risk.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-webagentguard-2026
+        support: direct
+        exact_locators: ["Sections 3.1 and 4.2-4.4"]
+      - source_id: SRC-chen-audiohijack-2026
+        support: direct
+        exact_locators: ["Defense evaluation"]
+      - source_id: SRC-promptshield-home-2026
+        support: direct
+        exact_locators: ["Pilot results and limitations"]
+    corroboration: Visual/web, audio, and ambient-home studies expose complementary performance and failure modes.
+    limitations: [Evaluations are predominantly synthetic or controlled.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C011
+    statement: Correlating an untrusted multimodal instruction signal with an unapproved sensitive action is a defensible behavioral analytic.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-agent-pi-defense-2026
+        support: context
+        exact_locators: ["Source-sink analysis and confirmation controls"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: ["Human in the loop and Security Considerations"]
+    corroboration: Independent sources support source-to-sink correlation and approval telemetry; the repository test validates deterministic implementation.
+    limitations: [This analytic is a repository inference and can alert on benign overlap.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The exact 120-second same-session analytic is designed here from supported source/sink and approval concepts.}
+    status: validated
+  - id: SAF-T1110-C012
+    statement: Consequence grows with data access, tool privileges, connectivity, and absent human approval.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-100-2e2025
+        support: direct
+        exact_locators: ["Section 3.4.3 indirect prompt injection consequences"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: corroborating
+        exact_locators: ["Human in the loop; Security Considerations"]
+    corroboration: Taxonomy consequences and protocol safety guidance support the same severity conditions.
+    limitations: [Severity is deployment-specific and is not implied by carrier presence alone.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C013
+    statement: Demonstrated attacks do not establish universal cross-model transfer or imperceptibility.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-bailey-image-hijacks-2024
+        support: direct
+        exact_locators: ["Transferability and limitations"]
+      - source_id: SRC-chen-audiohijack-2026
+        support: direct
+        exact_locators: ["Cross-model evaluation and limitations"]
+    corroboration: Independent image and audio studies both bound generalization claims.
+    limitations: [Future models or attacks may transfer differently.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C014
+    statement: Text-only injection, direct jailbreak, poisoning, and non-media tool-output attacks are neighboring but distinct.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm01-2025
+        support: direct
+        exact_locators: ["Direct, indirect, jailbreak, and multimodal distinctions"]
+      - source_id: SRC-figstep-2025
+        support: direct
+        exact_locators: ["Threat model and typographic visual jailbreak method"]
+      - source_id: SRC-nist-ai-100-2e2025
+        support: corroborating
+        exact_locators: ["AML taxonomy distinctions"]
+    corroboration: Definitions and distinct threat models support the boundary.
+    limitations: [Neighboring mechanisms can co-occur.]
+    conflicts: []
+    inference: {is_inference: true, rationale: SAF boundaries synthesize the cited definitions and threat models.}
+    status: validated
+  - id: SAF-T1110-C015
+    statement: ATT&CK User Execution is analogous because victim activity can enable execution, but it does not describe model instruction parsing.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1204
+        support: direct
+        exact_locators: ["Technique description and tactic"]
+    corroboration: The selected demonstrations establish victim/agent processing absent from ATT&CK.
+    limitations: [No direct enterprise ATT&CK equivalent was identified.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping compares behavior but preserves the model-specific difference.}
+    status: validated
+  - id: SAF-T1110-C016
+    statement: ATT&CK Malicious Image concerns virtual machine or container images, not visual-media pixels.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1204-003
+        support: direct
+        exact_locators: ["Technique description"]
+    corroboration: Not required; this records an authoritative definitional boundary.
+    limitations: [Name similarity can still create reviewer confusion.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1110-C017
+    statement: Reviewed CVEs described adjacent prompt-injection or content-injection paths, not direct image/audio input injection.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2024-45989
+        support: direct
+        exact_locators: ["Description; CISA SSVC; affected versions"]
+      - source_id: SRC-nvd-cve-2025-58357
+        support: direct
+        exact_locators: ["Description; affected and fixed versions; CISA SSVC"]
+    corroboration: Two independently cataloged CVEs expose different adjacent boundaries.
+    limitations: [Neither establishes image/audio as attacker-controlled model input.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

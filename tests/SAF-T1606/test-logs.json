@@ -1,0 +1,141 @@
+[
+  {
+    "name": "positive_sensitive_etc",
+    "case_type": "positive",
+    "expected": true,
+    "event": {
+      "timestamp": "2026-09-02T10:00:00Z",
+      "session": {"id": "s-001", "allowlisted": false},
+      "actor": {"id": "agent-a"},
+      "server": {"id": "fs-a"},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory", "arguments": {"path": "/etc"}},
+      "approval": {"state": "not_requested"},
+      "result": {"status": "success"}
+    }
+  },
+  {
+    "name": "positive_sensitive_component",
+    "case_type": "positive",
+    "expected": true,
+    "event": {
+      "timestamp": "2026-09-02T10:00:01Z",
+      "session": {"id": "s-002", "allowlisted": false},
+      "actor": {"id": "agent-b"},
+      "server": {"id": "fs-a"},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory_with_sizes", "arguments": {"path": "/home/example/.ssh"}},
+      "approval": {"state": "denied"},
+      "result": {"status": "blocked"}
+    }
+  },
+  {
+    "name": "positive_recursive_tree",
+    "case_type": "positive",
+    "expected": true,
+    "event": {
+      "timestamp": "2026-09-02T10:00:02Z",
+      "session": {"id": "s-003", "allowlisted": false},
+      "actor": {"id": "agent-c"},
+      "server": {"id": "fs-a"},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "directory_tree", "arguments": {"path": "/workspace/example"}},
+      "approval": {"state": "not_requested"},
+      "result": {"status": "success"}
+    }
+  },
+  {
+    "name": "positive_recursive_search",
+    "case_type": "positive",
+    "expected": true,
+    "event": {
+      "timestamp": "2026-09-02T10:00:03Z",
+      "session": {"id": "s-004", "allowlisted": false},
+      "actor": {"id": "agent-d"},
+      "server": {"id": "fs-a"},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "search_files", "arguments": {"path": "/workspace/example", "pattern": "*.pem"}},
+      "approval": {"state": "pending"},
+      "result": {"status": "success"}
+    }
+  },
+  {
+    "name": "negative_other_rpc_method",
+    "case_type": "negative",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-005", "allowlisted": false},
+      "rpc": {"method": "tools/list"},
+      "tool": {"name": "list_directory", "arguments": {"path": "/etc"}},
+      "approval": {"state": "not_requested"}
+    }
+  },
+  {
+    "name": "negative_file_content_tool",
+    "case_type": "negative",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-006", "allowlisted": false},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "read_text_file", "arguments": {"path": "/etc/hosts"}},
+      "approval": {"state": "not_requested"}
+    }
+  },
+  {
+    "name": "boundary_prefix_collision_not_sensitive",
+    "case_type": "boundary",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-007", "allowlisted": false},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory", "arguments": {"path": "/etcetera/example"}},
+      "approval": {"state": "not_requested"}
+    }
+  },
+  {
+    "name": "boundary_sensitive_descendant",
+    "case_type": "boundary",
+    "expected": true,
+    "event": {
+      "session": {"id": "s-008", "allowlisted": false},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory", "arguments": {"path": "/etc/example"}},
+      "approval": {"state": "not_requested"}
+    }
+  },
+  {
+    "name": "malformed_missing_path",
+    "case_type": "malformed",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-009", "allowlisted": false},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory", "arguments": {}},
+      "approval": {"state": "not_requested"}
+    }
+  },
+  {
+    "name": "expected_legitimate_approved_allowlist",
+    "case_type": "expected_false_positive",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-010", "allowlisted": true},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "directory_tree", "arguments": {"path": "/workspace/example"}},
+      "approval": {"state": "approved"},
+      "result": {"status": "success"}
+    }
+  },
+  {
+    "name": "negative_single_workspace_listing",
+    "case_type": "negative",
+    "expected": false,
+    "event": {
+      "session": {"id": "s-011", "allowlisted": false},
+      "rpc": {"method": "tools/call"},
+      "tool": {"name": "list_directory", "arguments": {"path": "/workspace/example"}},
+      "approval": {"state": "not_requested"},
+      "result": {"status": "success"}
+    }
+  }
+]

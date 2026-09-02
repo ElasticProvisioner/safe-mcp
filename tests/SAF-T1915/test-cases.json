@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "positive_standard_bridge_then_swap",
+      "category": "positive",
+      "expected_alert": true,
+      "events": [
+        {"subject_id": "wallet-alpha", "event_time": "2026-09-02T00:00:00Z", "chain": "ethereum", "transaction_hash": "tx-a1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 5.0, "usd_value": 15000, "service_id": "bridge-one", "destination": "wallet-alpha", "bridge_join_id": "join-a", "provenance_risk": "stolen_funds"},
+        {"subject_id": "wallet-alpha", "event_time": "2026-09-02T00:12:00Z", "chain": "base", "transaction_hash": "tx-a2", "event_type": "dex_swap", "asset": "USDC", "amount": 14500, "usd_value": 14500, "service_id": "dex-one", "destination": "wallet-alpha", "bridge_join_id": "join-a", "provenance_risk": "stolen_funds"}
+      ]
+    },
+    {
+      "id": "positive_swap_then_bridge",
+      "category": "positive",
+      "expected_alert": true,
+      "events": [
+        {"subject_id": "wallet-beta", "event_time": "2026-09-02T01:00:00Z", "chain": "arbitrum", "transaction_hash": "tx-b1", "event_type": "dex_swap", "asset": "USDC", "amount": 22000, "usd_value": 22000, "service_id": "dex-two", "destination": "wallet-beta", "bridge_join_id": "join-b", "provenance_risk": "fraud"},
+        {"subject_id": "wallet-beta", "event_time": "2026-09-02T01:20:00Z", "chain": "optimism", "transaction_hash": "tx-b2", "event_type": "bridge_withdrawal", "asset": "USDC", "amount": 21500, "usd_value": 21500, "service_id": "bridge-two", "destination": "wallet-beta", "bridge_join_id": "join-b", "provenance_risk": "fraud"}
+      ]
+    },
+    {
+      "id": "negative_legitimate_treasury_rebalance",
+      "category": "negative",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "treasury-one", "event_time": "2026-09-02T02:00:00Z", "chain": "ethereum", "transaction_hash": "tx-c1", "event_type": "bridge_deposit", "asset": "USDC", "amount": 500000, "usd_value": 500000, "service_id": "bridge-three", "destination": "treasury-one", "bridge_join_id": "join-c", "provenance_risk": "known_counterparty"},
+        {"subject_id": "treasury-one", "event_time": "2026-09-02T02:10:00Z", "chain": "polygon", "transaction_hash": "tx-c2", "event_type": "dex_swap", "asset": "USDT", "amount": 499000, "usd_value": 499000, "service_id": "dex-three", "destination": "treasury-one", "bridge_join_id": "join-c", "provenance_risk": "known_counterparty"}
+      ]
+    },
+    {
+      "id": "negative_single_chain_only",
+      "category": "negative",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-delta", "event_time": "2026-09-02T03:00:00Z", "chain": "ethereum", "transaction_hash": "tx-d1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 10, "usd_value": 30000, "service_id": "bridge-four", "destination": "wallet-delta", "bridge_join_id": "join-d", "provenance_risk": "ransomware"},
+        {"subject_id": "wallet-delta", "event_time": "2026-09-02T03:05:00Z", "chain": "ethereum", "transaction_hash": "tx-d2", "event_type": "dex_swap", "asset": "USDC", "amount": 29500, "usd_value": 29500, "service_id": "dex-four", "destination": "wallet-delta", "bridge_join_id": "join-d", "provenance_risk": "ransomware"}
+      ]
+    },
+    {
+      "id": "boundary_exactly_30_minutes",
+      "category": "boundary",
+      "expected_alert": true,
+      "events": [
+        {"subject_id": "wallet-echo", "event_time": "2026-09-02T04:00:00Z", "chain": "ethereum", "transaction_hash": "tx-e1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 4, "usd_value": 12000, "service_id": "bridge-five", "destination": "wallet-echo", "bridge_join_id": "join-e", "provenance_risk": "sanctions"},
+        {"subject_id": "wallet-echo", "event_time": "2026-09-02T04:30:00Z", "chain": "bnb", "transaction_hash": "tx-e2", "event_type": "dex_swap", "asset": "USDT", "amount": 11900, "usd_value": 11900, "service_id": "dex-five", "destination": "wallet-echo", "bridge_join_id": "join-e", "provenance_risk": "sanctions"}
+      ]
+    },
+    {
+      "id": "boundary_over_30_minutes",
+      "category": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-foxtrot", "event_time": "2026-09-02T05:00:00Z", "chain": "ethereum", "transaction_hash": "tx-f1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 4, "usd_value": 12000, "service_id": "bridge-six", "destination": "wallet-foxtrot", "bridge_join_id": "join-f", "provenance_risk": "sanctions"},
+        {"subject_id": "wallet-foxtrot", "event_time": "2026-09-02T05:30:01Z", "chain": "bnb", "transaction_hash": "tx-f2", "event_type": "dex_swap", "asset": "USDT", "amount": 11900, "usd_value": 11900, "service_id": "dex-six", "destination": "wallet-foxtrot", "bridge_join_id": "join-f", "provenance_risk": "sanctions"}
+      ]
+    },
+    {
+      "id": "malformed_missing_timestamp",
+      "category": "malformed",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-golf", "chain": "ethereum", "transaction_hash": "tx-g1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 4, "usd_value": 12000, "service_id": "bridge-seven", "destination": "wallet-golf", "bridge_join_id": "join-g", "provenance_risk": "stolen_funds"},
+        {"subject_id": "wallet-golf", "event_time": "2026-09-02T06:05:00Z", "chain": "base", "transaction_hash": "tx-g2", "event_type": "dex_swap", "asset": "USDC", "amount": 11800, "usd_value": 11800, "service_id": "dex-seven", "destination": "wallet-golf", "bridge_join_id": "join-g", "provenance_risk": "stolen_funds"}
+      ]
+    },
+    {
+      "id": "malformed_missing_chain",
+      "category": "malformed",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-hotel", "event_time": "2026-09-02T07:00:00Z", "transaction_hash": "tx-h1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 4, "usd_value": 12000, "service_id": "bridge-eight", "destination": "wallet-hotel", "bridge_join_id": "join-h", "provenance_risk": "stolen_funds"},
+        {"subject_id": "wallet-hotel", "event_time": "2026-09-02T07:05:00Z", "chain": "base", "transaction_hash": "tx-h2", "event_type": "dex_swap", "asset": "USDC", "amount": 11800, "usd_value": 11800, "service_id": "dex-eight", "destination": "wallet-hotel", "bridge_join_id": "join-h", "provenance_risk": "stolen_funds"}
+      ]
+    },
+    {
+      "id": "expected_false_positive_stale_risk_label",
+      "category": "expected_false_positive",
+      "expected_alert": true,
+      "expected_false_positive": true,
+      "events": [
+        {"subject_id": "recovery-team", "event_time": "2026-09-02T08:00:00Z", "chain": "ethereum", "transaction_hash": "tx-i1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 7, "usd_value": 21000, "service_id": "approved-bridge", "destination": "recovery-team", "bridge_join_id": "join-i", "provenance_risk": "stolen_funds"},
+        {"subject_id": "recovery-team", "event_time": "2026-09-02T08:10:00Z", "chain": "arbitrum", "transaction_hash": "tx-i2", "event_type": "dex_swap", "asset": "USDC", "amount": 20500, "usd_value": 20500, "service_id": "approved-dex", "destination": "recovery-team", "bridge_join_id": "join-i", "provenance_risk": "stolen_funds"}
+      ]
+    },
+    {
+      "id": "normalization_aliases_and_case",
+      "category": "normalization",
+      "expected_alert": true,
+      "events": [
+        {"subject_id": " WALLET-JULIET ", "event_time": "2026-09-02T09:00:00+00:00", "chain": " Ethereum ", "transaction_hash": "tx-j1", "event_type": "Bridge-Out", "asset": "eth", "amount": 6, "usd_value": "18000", "service_id": "bridge-nine", "destination": "wallet-juliet", "bridge_join_id": "join-j", "provenance_risk": "Stolen Funds"},
+        {"subject_id": "wallet-juliet", "event_time": "2026-09-02T09:08:00Z", "chain": "BASE", "transaction_hash": "tx-j2", "event_type": "DEX SWAP", "asset": "usdc", "amount": 17600, "usd_value": 17600, "service_id": "dex-nine", "destination": "wallet-juliet", "bridge_join_id": "join-j", "provenance_risk": "stolen-funds"}
+      ]
+    },
+    {
+      "id": "evasion_split_subject_identifiers",
+      "category": "evasion",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-kilo-a", "event_time": "2026-09-02T10:00:00Z", "chain": "ethereum", "transaction_hash": "tx-k1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 6, "usd_value": 18000, "service_id": "bridge-ten", "destination": "wallet-kilo-b", "bridge_join_id": "join-k", "provenance_risk": "stolen_funds"},
+        {"subject_id": "wallet-kilo-b", "event_time": "2026-09-02T10:08:00Z", "chain": "base", "transaction_hash": "tx-k2", "event_type": "dex_swap", "asset": "USDC", "amount": 17600, "usd_value": 17600, "service_id": "dex-ten", "destination": "wallet-kilo-c", "bridge_join_id": "join-k", "provenance_risk": "stolen_funds"}
+      ]
+    },
+    {
+      "id": "negative_below_value_floor",
+      "category": "negative",
+      "expected_alert": false,
+      "events": [
+        {"subject_id": "wallet-lima", "event_time": "2026-09-02T11:00:00Z", "chain": "ethereum", "transaction_hash": "tx-l1", "event_type": "bridge_deposit", "asset": "ETH", "amount": 0.2, "usd_value": 600, "service_id": "bridge-eleven", "destination": "wallet-lima", "bridge_join_id": "join-l", "provenance_risk": "fraud"},
+        {"subject_id": "wallet-lima", "event_time": "2026-09-02T11:05:00Z", "chain": "base", "transaction_hash": "tx-l2", "event_type": "dex_swap", "asset": "USDC", "amount": 580, "usd_value": 580, "service_id": "dex-eleven", "destination": "wallet-lima", "bridge_join_id": "join-l", "provenance_risk": "fraud"}
+      ]
+    }
+  ]
+}

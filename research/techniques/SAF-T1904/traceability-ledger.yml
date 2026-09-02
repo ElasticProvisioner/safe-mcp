@@ -1,0 +1,216 @@
+version: 1
+technique_id: SAF-T1904
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1904/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1904/technique-contract.yml
+  supports: Scope, name, tactic, boundaries, neighbors, and completion criteria.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1904/claim-inventory.yml
+  supports: Validated claim statements, evidence relationships, conflicts, and limitations.
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1904/source-coverage.yml
+  supports: Five research passes, candidate selection, evidence status, gaps, and
+    two-pass saturation.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1904/publication-rights.yml
+  supports: Publication-rights and attribution review.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1904/quality-review.yml
+  supports: Quality gates, validation commands, detector results, and waiver status.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1904/clean-room-attestation.yml
+  supports: Clean-room inputs, prohibited-source controls, independent source opening,
+    and freeze boundary.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1904/detection-rule.yml
+  supports: The tested multi-event detection analytic, telemetry fields, false positives,
+    and tuning limits.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1904/test_detection_rule.py
+  supports: Executable detector test harness.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1904/test-cases.json
+  supports: Positive, negative, boundary, missing-field, malformed-field, and correlation
+    test fixtures.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1904/validation/detection-tests.txt
+  supports: Captured passing detector output.
+- id: LOCAL-validator-results
+  path: research/techniques/SAF-T1904/validation/strict-validator.txt
+  supports: Captured isolated strict-validator output.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1904/validation/canonical-validation.txt
+  supports: Destination detector result and the one explicit catalog-neighbor dependency blocking strict completion.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1904/integration/integration-notes.yml
+  supports: Mechanical source, framework, neighbor, mitigation, history, archive, and path reconciliation after freeze.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1904-X001
+  candidate: A confirmed production breach using the complete chat-to-tool-to-chat
+    loop.
+  origin: Required breach research and authority-site incident queries.
+  attempted_searches:
+  - CISA advisory-site queries for OpenClaw, Slack AI agent, and Telegram bot agent
+  - UK NCSC authority-site query for AI agent chat
+  - Complete NVD OpenClaw corpus and CISA KEV exact-CVE review
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-openclaw-corpus-20260902
+  reason: No qualifying direct-authority incident was found; disclosed vulnerabilities
+    are not breach reports.
+  prohibited_publishable_text:
+  - The technique was used in a confirmed production breach.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X002
+  candidate: Treat every chat prompt-injection condition as this technique.
+  origin: Scope challenge and CVE-2026-24764.
+  attempted_searches:
+  - NVD and NVD-linked vendor advisory review for CVE-2026-24764
+  - One-way and bidirectional ATT&CK boundary review
+  consulted_source_ids:
+  - SRC-ghsa-782p-5fr5-7fj8
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  reason: Prompt injection may enable input control but does not establish a repeatable
+    returned operator channel.
+  prohibited_publishable_text:
+  - Every chat prompt injection creates a command-and-control channel.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X003
+  candidate: Detect the complete sequence from Slack Audit Logs without connector
+    telemetry.
+  origin: Detection-pass telemetry challenge.
+  attempted_searches:
+  - Slack Audit Logs API limitations
+  - Slack Events API and message-event field review
+  consulted_source_ids:
+  - SRC-slack-audit-logs-20260902
+  - SRC-slack-events-api-20260902
+  - SRC-slack-message-event-20260902
+  reason: Slack documents actor and administrative context but not message content
+    in the Audit Logs API.
+  prohibited_publishable_text:
+  - Audit Logs alone reveal the full command text.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X004
+  candidate: Present CVE-2026-24764 as proof of the complete bidirectional technique.
+  origin: Vulnerability candidate ranking.
+  attempted_searches:
+  - NVD CVE-2026-24764 record
+  - GHSA-782p-5fr5-7fj8 full advisory
+  consulted_source_ids:
+  - SRC-ghsa-782p-5fr5-7fj8
+  - SRC-nvd-openclaw-corpus-20260902
+  reason: The advisory documents prompt-placement hardening and explicitly lacks a
+    complete backchannel demonstration.
+  prohibited_publishable_text:
+  - CVE-2026-24764 proves a bidirectional backchannel.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X005
+  candidate: Include chat input with no response or feedback path.
+  origin: Gap-and-challenge pass.
+  attempted_searches:
+  - MITRE ATT&CK T1102.002 bidirectional description
+  - MITRE ATT&CK T1102.003 one-way description
+  consulted_source_ids:
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  reason: The technique contract requires a repeatable bidirectional path; one-way
+    input belongs outside this boundary.
+  prohibited_publishable_text:
+  - One-way chat receipt is sufficient for this technique.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X006
+  candidate: Assign unconditional high impact to any chat-connected agent.
+  origin: Impact-assessment challenge.
+  attempted_searches:
+  - MCP Tools security considerations
+  - Selected advisory impact sections
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-06-18
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  reason: Consequence depends on reachable tools, permissions, approvals, secrets,
+    and data.
+  prohibited_publishable_text:
+  - All chat-based agent integrations are high severity.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X007
+  candidate: Select CVE-2026-35674 as an unauthenticated external-chat ingress example.
+  origin: Highest-impact comparator review.
+  attempted_searches:
+  - NVD CVE-2026-35674 record
+  - GHSA-hw9r-h9mr-4jff full advisory
+  consulted_source_ids:
+  - SRC-ghsa-hw9r-h9mr-4jff
+  - SRC-nvd-openclaw-corpus-20260902
+  reason: The advisory starts with an authenticated operator.write Gateway client
+    and an inherited external route, making it less direct than selected external-sender
+    examples.
+  prohibited_publishable_text:
+  - CVE-2026-35674 begins with an unauthenticated external chat sender.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X008
+  candidate: Claim current known exploitation for selected vulnerabilities.
+  origin: Exploitation-status review.
+  attempted_searches:
+  - NVD CISA SSVC exploitation fields for selected CVEs
+  - CISA KEV catalogVersion 2026.09.01 exact selected-CVE lookup
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-openclaw-corpus-20260902
+  reason: The reviewed SSVC entries say exploitation none and the selected CVEs do
+    not appear in the reviewed KEV snapshot; neither supports known exploitation.
+  prohibited_publishable_text:
+  - The selected CVEs are known exploited.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X009
+  candidate: Assign a first-observed year from vulnerability publication dates.
+  origin: Metadata completion review.
+  attempted_searches:
+  - NVD selected-CVE publication records
+  - CISA and NCSC incident authority queries
+  consulted_source_ids:
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-cisa-kev-2026-09-01
+  reason: Disclosure dates are not occurrence dates for the complete technique.
+  prohibited_publishable_text:
+  - First observed in 2026.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1904-X010
+  candidate: Assert that a current product version is universally safe.
+  origin: Remediation and publication-safety review.
+  attempted_searches:
+  - Selected advisory patched-version fields
+  - Current NVD corpus review
+  consulted_source_ids:
+  - SRC-nvd-openclaw-corpus-20260902
+  - SRC-ghsa-xh72-v6v9-mwhc
+  - SRC-ghsa-fhvm-j76f-qmjv
+  - SRC-ghsa-98hh-7ghg-x6rq
+  - SRC-ghsa-xr4f-mjxj-w6w5
+  reason: Advisories resolve specific defects only; deployment configuration and later
+    vulnerabilities remain independent risks.
+  prohibited_publishable_text:
+  - The latest OpenClaw release is safe.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

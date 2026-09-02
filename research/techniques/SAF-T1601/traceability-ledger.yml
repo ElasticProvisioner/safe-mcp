@@ -1,0 +1,111 @@
+version: 1
+technique_id: SAF-T1601
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1601/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1601/technique-contract.yml
+  supports: Internal scope, neutral name, assigned tactic, evidence requirements,
+    and completion conditions.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1601/source-coverage.yml
+  supports: Five research passes, candidate classifications, selected examples, conflicts,
+    evidence status, and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1601/quality-review.yml
+  supports: Quality-gate status, validation commands, results, and review date.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1601/clean-room-attestation.yml
+  supports: Clean-room isolation, independent searches, source-opening record, mock
+    validation, and freeze constraints.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1601/detection-rule.yml
+  supports: The experimental detection analytic and component-level claim joins.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1601/test_detection_rule.py
+  supports: Deterministic implementation of the example analytic and assertion coverage.
+- id: LOCAL-detection-corpus
+  path: tests/SAF-T1601/test-logs.json
+  supports: Positive, negative, boundary, false-positive, failure, and malformed detection
+    cases.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1601/validation/detection-test.txt
+  supports: Frozen and integrated detector commands and passing results.
+- id: LOCAL-strict-validation-result
+  path: research/techniques/SAF-T1601/validation/strict-validator.txt
+  supports: Frozen and integrated strict-validator commands and passing results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1601-X001
+  candidate: A production incident directly enumerated MCP servers.
+  origin: Required production-breach search pass.
+  attempted_searches:
+  - Direct NVD API keyword corpus for Model Context Protocol and MCP server terms.
+  - Direct CISA KEV catalog review and exact-CVE membership checks.
+  - Direct review of the Anthropic GTG-1002 incident report and MITRE ATT&CK T1046
+    procedure mapping.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-server-enumeration-2026-09-01
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-nvd-mcp-corpus-20260901
+  reason: The only reviewed production case enumerated target network services using
+    MCP-connected tools, not MCP servers.
+  prohibited_publishable_text:
+  - MCP server enumeration has been observed in production
+  - GTG-1002 enumerated MCP servers
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1601-X002
+  candidate: CVE-2025-66454 is a direct MCP server enumeration vulnerability.
+  origin: Narrow NVD query for MCP server enumeration.
+  attempted_searches:
+  - Direct NVD individual record review for CVE-2025-66454.
+  - Contract comparison against the server-set objective.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-66454
+  reason: The record concerns unauthorized tool enumeration within one known server,
+    which is outside the immediate objective.
+  prohibited_publishable_text:
+  - CVE-2025-66454 directly enables MCP server enumeration
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1601-X003
+  candidate: A hidden item from tools/list cannot be invoked and discovery output
+    proves authorization.
+  origin: Gap-and-challenge pass on the reliability of advertised capability metadata.
+  attempted_searches:
+  - Direct NVD individual record review for CVE-2026-46519.
+  - Direct MCP discovery-specification review for security-identity limitations.
+  consulted_source_ids:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-nvd-cve-2026-46519
+  reason: CVE-2026-46519 documents a product where discovery filtering did not enforce
+    call authorization; enumeration output is not an authorization oracle.
+  prohibited_publishable_text:
+  - discovery output proves which operations are authorized
+  - tools hidden from discovery cannot be called
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1601-X004
+  candidate: Absence from CISA KEV proves that a vulnerability is not exploited.
+  origin: Exploitation-status review.
+  attempted_searches:
+  - Direct CISA KEV exact-CVE membership check.
+  - Direct NVD CISA SSVC exploitation-field review for selected CVEs.
+  consulted_source_ids:
+  - SRC-cisa-kev-server-enumeration-2026-09-01
+  - SRC-nvd-cve-2025-66416
+  - SRC-nvd-cve-2026-49257
+  reason: KEV is a bounded catalog; nonmembership cannot prove absence of exploitation.
+  prohibited_publishable_text:
+  - not exploited because it is absent from KEV
+  - KEV confirms no exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

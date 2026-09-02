@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T1206
+name: Credential Implant in Config
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+  - ATK-TA0003
+adversary_objective: >-
+  Persist an attacker-selected authentication identity for future MCP or agent
+  connections by adding or replacing credential-bearing persistent configuration.
+scope:
+  security_boundary: >-
+    Authorized administration of persistent MCP/agent configuration versus the
+    client trust decision that selects authentication material on later connections.
+  in_scope:
+    - Adding or replacing a literal credential, secret reference, client credential, or credential-provider reference in persistent MCP or agent configuration.
+    - Causing a later client or agent session to authenticate using the attacker-selected identity.
+  out_of_scope:
+    - Credential theft without persistent configuration modification.
+    - Configuration-based command or server execution whose immediate objective is code execution.
+    - Endpoint substitution without a credential or credential-reference implant.
+    - Account-side credential addition governed by ATT&CK T1098.001 or a future SAF neighbor.
+  affected_components:
+    - MCP client
+    - Agent host
+    - Persistent user, workspace, repository, profile, or managed configuration
+    - Credential reference or OAuth client-registration state
+nearest_neighbors:
+  - technique_id: SAF-T1502
+    distinction: >-
+      File-Based Credential Harvest copies an existing credential; SAF-T1206
+      writes an attacker-selected credential or reference for later authentication.
+  - technique_id: SAF-T1006
+    distinction: >-
+      Malicious MCP Server Distribution uses configuration to deliver or execute
+      a server; SAF-T1206's immediate objective is persistent authentication
+      identity selection.
+  - technique_id: SAF-T1407
+    distinction: >-
+      Server Proxy Masquerade substitutes the apparent connection identity;
+      SAF-T1206 requires a credential or credential-reference implant even if
+      the endpoint also changes.
+required_evidence:
+  - Establish current MCP authorization behavior for static, persisted, issuer-bound, and audience-bound credentials.
+  - Establish first-party client configuration fields and persistence locations that can select authentication material.
+  - Establish a reviewed unauthorized configuration-write path and distinguish it from command execution.
+  - Search current production incidents, disclosed vulnerabilities, exploitation status, demonstrations, defenses, and contrary evidence.
+  - Select two to four highest-impact qualifying examples or preserve an explicit gap.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - File or configuration audit events with actor, path, change type, changed key names, process, and approval context.
+    - MCP client or identity events with server, issuer, client or credential-reference fingerprint, result, and scope.
+safe_example_constraints:
+  - Use only `.invalid` endpoints and placeholder environment references.
+  - Do not publish live credentials, operational exploit payloads, destructive commands, or third-party proof-of-concept code.
+completion_evidence:
+  - Every substantive README unit has a validated hidden SAF-TRACE join or a declared local artifact link.
+  - All unverified leads are absent from publishable prose and recorded as excluded.
+  - Five research passes and two consecutive no-change follow-ups are recorded.
+  - Representative positive, negative, boundary, and expected false-positive detection tests pass.
+  - Rights, framework, safety, and clean-room integrity gates pass in an isolated mock repository.

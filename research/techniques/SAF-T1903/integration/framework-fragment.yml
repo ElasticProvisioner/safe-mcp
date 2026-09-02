@@ -1,0 +1,35 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1903
+    name: Malicious Server Control Channel
+    documentation_status: draft
+    evidence_status: observed
+    tactics:
+      - ATK-TA0011
+    technique_path: techniques/SAF-T1903/README.md
+    research_packet: research/techniques/SAF-T1903
+    related_techniques:
+      - SAF-T1003
+      - SAF-T1001
+    mitigations:
+      - SAF-M-6
+      - SAF-M-9
+      - SAF-M-12
+      - SAF-M-14
+      - SAF-M-16
+      - SAF-M-24
+      - SAF-M-29
+      - SAF-M-45
+      - SAF-M-69
+      - SAF-M-70
+    detection:
+      rule: techniques/SAF-T1903/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1903/cases.json
+        - tests/SAF-T1903/test_detection_rule.py
+        - tests/SAF-T1903/test-results.json
+        - research/techniques/SAF-T1903/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1071
+        type: analogous

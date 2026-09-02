@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T2107
+name: AI Model Poisoning via MCP Tool Training Data Contamination
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0042
+adversary_objective: Cause a model-training pipeline to learn attacker-influenced
+  behavior by admitting adversary-controlled MCP tool results into weight-update data.
+scope:
+  security_boundary: The boundary between runtime MCP tool execution and trusted model-development
+    data.
+  in_scope:
+  - An adversary controls or alters an MCP tool result recorded for model development.
+  - The MCP-derived record is admitted to a corpus and consumed by a model weight-update
+    job.
+  - The immediate outcome is attacker-influenced learned behavior in the derived model.
+  out_of_scope:
+  - Runtime-only MCP tool-output prompt injection with no weight update.
+  - Retrieval corpus poisoning with no model-weight update.
+  - Direct checkpoint, weight-file, or model-registry artifact tampering.
+  - Generic training-data poisoning with no MCP-derived source path.
+  affected_components:
+  - MCP server and tool
+  - MCP host-side trajectory collector
+  - Dataset admission and registry pipeline
+  - Training orchestrator and derived model
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Runtime tool-output prompt injection changes a live inference path
+    and does not require training consumption.
+- technique_id: SAF-T3001
+  distinction: Retrieval corpus poisoning changes retrieved context rather than learned
+    weights.
+- technique_id: SAF-T1002
+  distinction: Direct model artifact tampering changes an artifact without MCP-derived
+    training-data admission.
+required_evidence:
+- Establish MCP tool-result content and real MCP-response use in training trajectories.
+- Establish empirically that attacker-influenced training records can alter learned
+  model behavior.
+- State the end-to-end MCP technique as inference unless directly demonstrated or
+  observed.
+- Search current incidents and vulnerabilities and preserve adjacent candidates without
+  upgrading the evidence label.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Dataset-admission events with MCP origin, provenance status, digest, disposition,
+    server, tool, and dataset version.
+  - Training-orchestrator events linking dataset versions to jobs and model versions.
+safe_example_constraints:
+- Use inert example.invalid identifiers and omit malicious payload content.
+- Test only admission metadata and non-destructive event matching.
+completion_evidence:
+- Every substantive README unit has an inventoried claim trace or declared local artifact.
+- Unsupported direct-incident, vulnerability, efficacy, and detection claims are excluded.
+- Five research passes and two final no-change passes are recorded.
+- Representative detection tests pass with positive, negative, and boundary cases.
+- Rights, quality, isolated strict validation, and freeze verification pass.

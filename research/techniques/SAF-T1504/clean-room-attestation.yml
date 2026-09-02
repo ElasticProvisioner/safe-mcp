@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1504
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1504
+  inherited_context: false
+target:
+  id: SAF-T1504
+  neutral_name: Token Theft via API Response
+allowed_inputs:
+- The author-saf-technique skill and all references it routed except impact-classification-examples.md.
+- Repository-wide instructions, techniques/TEMPLATE.md, research/README.md, blank
+  research/templates/technique schemas, and scripts/validate-technique-research.py.
+- The user-supplied ID, neutral name, and tactic ATK-TA0006.
+- Directly opened standards-body, government, first-party vendor, CVE, and researcher
+  sources independently discovered under the whitelist-only procedure.
+- Exact GitHub advisory URLs only after a directly reviewed CVE record supplied each
+  URL.
+prohibited_inputs:
+- techniques/SAF-T1504/README.md and every historical or cached copy.
+- techniques/SAF-T1504/detection-rule.yml and target-specific tests or logs.
+- research/techniques/SAF-T1504/ and every existing target research artifact.
+- Git history, diffs, blame, stashes, commits, branches, and review comments that
+  expose prior target content.
+- Pull request, issue, cached page, SAF site, shared registry description, catalog
+  description, or prior target source list.
+- Previous conversation, summary, or agent context containing prior technique content.
+- impact-classification-examples.md before freeze.
+independent_research:
+  search_operation_count: 13
+  searches:
+  - NVD API keywordSearch=Model Context Protocol token
+  - NVD API keywordSearch=Model Context Protocol credential
+  - NVD API keywordSearch=AI agent token disclosure
+  - NVD API keywordSearch=API response access token disclosure
+  - CISA KEV full-catalog exact-ID and MCP/token filter
+  - CISA site search=MCP token response
+  - CISA site search=AI agent token theft
+  - NVD API keywordSearch=MCP JSON-RPC response token disclosure
+  - NVD API keywordSearch=MCP tool result credential leak
+  - NVD API keywordSearch=MCP error response access token
+  - NVD API keywordSearch=agent API response token leak fixed version
+  - NVD API keywordSearch=MCP incident breach token
+  - NVD API keywordSearch=AI agent breach API response token
+  opened_source_ids:
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-token-response-2026-09-01
+  - SRC-cve-2026-25650
+  - SRC-cve-2026-27826
+  - SRC-cve-2026-33461
+  - SRC-cve-2026-39974
+  - SRC-cve-2026-48039
+  - SRC-elastic-esa-2026-24
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-mcp-salesforce
+  - SRC-ghsa-meta-ads
+  - SRC-ghsa-n8n-mcp
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rfc6750
+  github_advisory_provenance:
+  - advisory: SRC-ghsa-meta-ads
+    supplied_by: SRC-cve-2026-48039
+  - advisory: SRC-ghsa-n8n-mcp
+    supplied_by: SRC-cve-2026-39974
+  - advisory: SRC-ghsa-mcp-atlassian-7r34
+    supplied_by: SRC-cve-2026-27826
+  - advisory: SRC-ghsa-mcp-salesforce
+    supplied_by: SRC-cve-2026-25650
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect or diff the prior target during replacement; mechanically install
+  this frozen bundle after hash verification.
+- Reconcile stable shared source IDs only after freeze and do not add a new research
+  lead from the shared manifest.
+- Replace synthetic SAF-T1307 and SAF-T1304 neighbors with valid repository joins
+  without changing the evidence-derived scope or prose.
+- Replace the synthetic mock-history commit with an honest repository-history SHA
+  after integration.
+- Run repository-wide joins and validators only after installation; any substantive
+  revision requires a new clean-room research and freeze cycle.
+mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1504
+  repository_class: strict isolated synthetic mock containing only the validator,
+    generic support files, bundle, and minimal synthetic joins
+  result: passed
+  deliberately_deferred:
+  - real shared source-ID collision resolution
+  - real tactic and nearest-neighbor collision resolution
+  - real mitigation joins
+  - honest integrated-repository history SHA
+attestation: I generated SAF-T1504 from the user-supplied neutral contract and independently
+  reviewed direct-authority evidence without opening prior target content. The draft
+  and evidence set were frozen before any integration or shared-registry reconciliation,
+  no prohibited access was detected, and only the mechanical joins listed above remain.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-ghsa-mcp-atlassian: SRC-ghsa-mcp-atlassian-7r34
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-token-response-2026-09-01
+    SRC-attack-t1528: SRC-mitre-t1528
+  new_shared_source_records:
+  - SRC-rfc6750
+  - SRC-cve-2026-48039
+  - SRC-ghsa-meta-ads
+  - SRC-cve-2026-39974
+  - SRC-ghsa-n8n-mcp
+  - SRC-cve-2026-27826
+  - SRC-cve-2026-33461
+  - SRC-elastic-esa-2026-24
+  - SRC-cve-2026-25650
+  - SRC-ghsa-mcp-salesforce
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-72
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1307
+  - SAF-T1304

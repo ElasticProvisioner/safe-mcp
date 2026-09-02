@@ -1,349 +1,105 @@
 # SAF-T1106: Autonomous Loop Exploit
 
 ## Overview
-**Tactic**: Execution (ATK-TA0002)  
-**Technique ID**: SAF-T1106  
-**Severity**: High  
-**First Observed**: Not observed in production  
-**Last Updated**: 2025-08-10
+
+Autonomous Loop Exploit is adversarial influence over an agent's input, retrieved content, tool result, or tool-facing message that causes a model/tool/workflow feedback path to repeat without an effective external bound. The immediate objective is to keep autonomous execution running beyond task-normal work, multiplying model, tool, context, time, or budget consumption and sometimes repeating external effects. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C002,SAF-T1106-C003; sources=SRC-zhou-2026 -->
+
+- **Technique ID**: SAF-T1106
+- **Tactic**: Execution (ATK-TA0002)
+- **Research Packet**: [research/techniques/SAF-T1106/](../../research/techniques/SAF-T1106/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1106/traceability-ledger.yml)
+- **Documentation Status**: Stable
+- **Evidence Status**: Demonstrated
+- **Severity**: High
+- **Last Updated**: 2026-09-01
+
+**Evidence status:** Demonstrated. Controlled studies produced end-to-end resource amplification in tool-using agents; repository analysis separately confirmed structurally unbounded agentic feedback paths, but no qualifying production breach was found in the reviewed current sources. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C002,SAF-T1106-C003,SAF-T1106-C014; sources=SRC-zhou-2026 -->
+
+## Scope
+
+The security boundary is the handoff from untrusted or attacker-influenced content into an autonomous orchestrator's continuation decision. In scope, that influence repeatedly reaches model calls, tools, agent handoffs, or workflow transitions while termination, time, token, cost, or iteration controls are absent or ineffective. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C003,SAF-T1106-C004; sources=SRC-zhou-2026 -->
+
+This technique excludes a single expensive inference with no autonomous re-entry, direct high-volume request flooding, ordinary bounded iteration, deterministic parser recursion, and unauthorized tool use whose objective is the action itself rather than continued repetition. <!-- SAF-TRACE: claims=SAF-T1106-C015; sources=SRC-hou-ial-2026 -->
 
 ## Description
-An adversary induces an MCP-enabled agent or workflow into a self-reinforcing loop of tool invocations (for example, “re-check,” “try again,” or delegation cycles) to exhaust local compute, hit external service rate limits, or drive quota/cost blowups. The loop can be triggered by attacker-controlled prompts, poisoned intermediate tool outputs, or cyclic multi-agent handoffs. Without convergence checks, iteration caps, or budget guardrails, the system repeatedly invokes tools with little or no progress—resulting in availability impact similar to Endpoint DoS.
 
-This is conceptually related to application/protocol loop DoS, where two components continuously respond to each other (see References), but here the loop is induced via agent planning and MCP tool I/O patterns.
+Tool-using agents commonly alternate between model decisions and tool results. MCP describes tools as model-controlled, lets clients invoke them with `tools/call`, and permits actionable tool errors to be returned to the model for correction; those legitimate feedback paths become the execution surface when hostile content biases the next-step decision toward continued calls. [SRC-mcp-tools-2026-07-28] <!-- SAF-TRACE: claims=SAF-T1106-C004,SAF-T1106-C005; sources=SRC-mcp-tools-2026-07-28 -->
+
+The exploit is not defined by any particular prompt string. It is defined by attacker influence reaching an autonomous continuation gate and producing repeated costly or state-changing execution without an effective independent bound. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C002,SAF-T1106-C003; sources=SRC-zhou-2026 -->
 
 ## Attack Vectors
-- **Primary Vector**: Prompt or tool-output patterns that suggest non-terminal progress and encourage retries
-- **Secondary Vectors**:
-  - Cyclic tool chains (A→B→A) caused by orchestration/hand-offs
-  - “Transient failure” responses engineered to keep the planner in retry mode
+
+- A malicious tool or MCP server returns plausible follow-up instructions that induce another tool call, then continues the chain after each result. <!-- SAF-TRACE: claims=SAF-T1106-C001; sources=SRC-zhou-2026 -->
+- Untrusted task, document, webpage, or environment content causes repeated planning or tool activity while the agent continues to judge the task incomplete. <!-- SAF-TRACE: claims=SAF-T1106-C002,SAF-T1106-C003; sources=SRC-li-otora-2026 -->
+- A completion signal is withheld, reset, or made to appear just out of reach so completed work or a workflow transition is repeatedly revisited. <!-- SAF-TRACE: claims=SAF-T1106-C003,SAF-T1106-C013; sources=SRC-hou-ial-2026 -->
 
 ## Technical Details
 
-### Prerequisites
-- Agent or workflow capable of autonomous planning/execution
-- Tool adapters that allow repeated calls/retries without strict caps
+The minimal attack path is: attacker-controlled content enters a permitted observation channel; the agent treats it as relevant to its next decision; the agent invokes a model, tool, subagent, or workflow step; the resulting observation re-enters the decision context; and the cycle remains reachable after each iteration. Exploitation requires the cycle to lack an effective independent stop condition or for the attacker to keep the apparent completion condition unsatisfied. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C002,SAF-T1106-C003; sources=SRC-zhou-2026 -->
 
-### Attack Flow
-1. Seed: adversary injects instructions or output that frames work as “almost done; retry.”
-2. Planning: agent selects the same tool(s) again with similar parameters.
-3. Response shaping: tool returns partial/inconclusive state (for example, "warming_up," "retry_later").
-4. Non-convergence: planner repeats steps 2–3; possibly delegates to another agent that routes back.
-5. Exhaustion: CPU/time budget consumed; external APIs emit 429/5xx; user session becomes unresponsive.
+A safe inert illustration is a test agent repeatedly calling a local `status.example.invalid` lookup whose fixture returns “verification pending” while the orchestrator lacks a call cap. The example contains no live endpoint or destructive action; it demonstrates re-entry, not a deployable payload. <!-- SAF-TRACE: claims=SAF-T1106-C016; sources=SRC-hou-ial-2026 -->
 
-### Example Scenario
-```json
-{
-  "session_goal": "Ensure service is healthy; keep checking until it's green.",
-  "policy": "If status != 'healthy', try again after delay.",
-  "tool_calls": [
-    {"tool": "http.get", "args": {"url": "https://api.example.com/health"}},
-    {"tool": "wait", "args": {"ms": 5000}}
-  ],
-  "engineered_responses": ["warming_up", "almost_ready", "warming_up"]
-}
-```
+## Evidence and Current State
 
-### Beginner-Friendly Examples
+| Example | Relationship | Result | Limitation |
+|---|---|---|---|
+| Zhou et al., *Beyond Max Tokens* [SRC-zhou-2026] | Direct demonstration | A controlled MCP simulator produced multi-turn tool-call chains with up to 658.10× token amplification and reduced throughput while preserving task success. <!-- SAF-TRACE: claims=SAF-T1106-C001; sources=SRC-zhou-2026 --> | The work used controlled emulation, selected single-tool/single-turn benchmark subsets, and no real external actions. <!-- SAF-TRACE: claims=SAF-T1106-C001; sources=SRC-zhou-2026 --> |
+| Li et al., *OTora* [SRC-li-otora-2026] | Direct demonstration | Two-stage triggers increased reasoning time by as much as 10.8× across agent benchmarks while often retaining answer correctness. <!-- SAF-TRACE: claims=SAF-T1106-C002; sources=SRC-li-otora-2026 --> | The study used research benchmarks and reports a small evaluation set for defense tuning; it does not establish production compromise. <!-- SAF-TRACE: claims=SAF-T1106-C002,SAF-T1106-C011; sources=SRC-li-otora-2026 --> |
+| Hou et al., *When Agents Do Not Stop* [SRC-hou-ial-2026] | Direct vulnerability research | Static analysis plus manual review confirmed 68 unbounded agentic-loop findings across 47 projects. <!-- SAF-TRACE: claims=SAF-T1106-C003; sources=SRC-hou-ial-2026 --> | Findings were structurally confirmed, not dynamically exploited in production, and the analyzer can produce false positives and false negatives. <!-- SAF-TRACE: claims=SAF-T1106-C003; sources=SRC-hou-ial-2026 --> |
 
-The following examples help beginners understand how autonomous loops work and how to detect them in practice.
-
-#### Example 1: Simple Loop Detection
-
-This Python example demonstrates how to detect when an agent is stuck in a loop by tracking repeated identical tool calls:
-
-```python
-from collections import defaultdict
-from typing import Dict, List, Tuple
-import hashlib
-import json
-
-class LoopDetector:
-    """Simple detector for autonomous loops in MCP tool invocations"""
-    
-    def __init__(self, max_repeats: int = 10, time_window_seconds: int = 300):
-        self.max_repeats = max_repeats
-        self.time_window = time_window_seconds
-        self.call_history: Dict[str, List[Tuple[int, str]]] = defaultdict(list)
-    
-    def _generate_call_hash(self, tool_name: str, args: dict) -> str:
-        """Create a unique hash for a tool call based on name and arguments
-        
-        Note: MD5 is used here for non-cryptographic purposes (content identification).
-        For security-sensitive applications, use SHA-256 or another secure hash function.
-        """
-        call_signature = json.dumps({"tool": tool_name, "args": args}, sort_keys=True)
-        return hashlib.md5(call_signature.encode()).hexdigest()
-    
-    def record_call(self, session_id: str, tool_name: str, args: dict, timestamp: int):
-        """Record a tool call and check if it indicates a loop"""
-        call_hash = self._generate_call_hash(tool_name, args)
-        key = f"{session_id}:{call_hash}"
-        
-        # Add timestamp to history
-        self.call_history[key].append(timestamp)
-        
-        # Remove old entries outside time window
-        cutoff = timestamp - self.time_window
-        self.call_history[key] = [t for t in self.call_history[key] if t > cutoff]
-        
-        # Check if we've exceeded the repeat threshold
-        if len(self.call_history[key]) >= self.max_repeats:
-            return {
-                "is_loop": True,
-                "session_id": session_id,
-                "tool_name": tool_name,
-                "repeat_count": len(self.call_history[key]),
-                "call_hash": call_hash
-            }
-        
-        return {"is_loop": False}
-
-# Example usage
-detector = LoopDetector(max_repeats=5, time_window_seconds=60)
-
-# Simulate repeated identical calls (potential loop)
-for i in range(6):
-    result = detector.record_call(
-        session_id="session_123",
-        tool_name="http.get",
-        args={"url": "https://api.example.com/health"},
-        timestamp=1000 + i * 10
-    )
-    if result["is_loop"]:
-        print(f"⚠️  Loop detected! Tool '{result['tool_name']}' called {result['repeat_count']} times")
-        break
-```
-
-#### Example 2: Basic Loop Prevention
-
-This example shows a simple way to prevent loops by adding iteration limits and convergence checks:
-
-```python
-class SafeAgentExecutor:
-    """Agent executor with basic loop prevention"""
-    
-    def __init__(self, max_iterations: int = 50, convergence_threshold: float = 0.01):
-        self.max_iterations = max_iterations
-        self.convergence_threshold = convergence_threshold
-        self.iteration_count = 0
-        self.previous_results = []
-    
-    def execute_with_guardrails(self, tool_call_func, *args, **kwargs):
-        """Execute a tool call with loop prevention guardrails"""
-        if self.iteration_count >= self.max_iterations:
-            raise RuntimeError(f"Maximum iterations ({self.max_iterations}) exceeded. Possible loop detected.")
-        
-        result = tool_call_func(*args, **kwargs)
-        self.iteration_count += 1
-        
-        # Simple convergence check: stop if result hasn't changed significantly
-        if len(self.previous_results) > 0:
-            if self._is_converged(result, self.previous_results[-1]):
-                return result
-        
-        self.previous_results.append(result)
-        return result
-    
-    def _is_converged(self, current: dict, previous: dict) -> bool:
-        """Check if the result has converged (stopped changing)"""
-        # Simple check: compare result values
-        if current.get("status") == previous.get("status"):
-            return True
-        return False
-    
-    def reset(self):
-        """Reset the executor state"""
-        self.iteration_count = 0
-        self.previous_results = []
-
-# Example usage
-def check_service_health():
-    """Simulated service health check"""
-    return {"status": "warming_up", "message": "Service is starting..."}
-
-executor = SafeAgentExecutor(max_iterations=10)
-
-try:
-    for i in range(15):  # Try more than max_iterations
-        result = executor.execute_with_guardrails(check_service_health)
-        print(f"Iteration {i+1}: {result}")
-except RuntimeError as e:
-    print(f"🛑 Guardrail triggered: {e}")
-```
-
-#### Example 3: Recognizing Loop Patterns in Logs
-
-This example shows how to identify loop patterns from log entries:
-
-```python
-import re
-from collections import Counter
-from typing import List
-
-def analyze_logs_for_loops(log_entries: List[str]) -> dict:
-    """Analyze log entries to detect potential autonomous loops"""
-    
-    # Patterns that suggest non-convergence
-    loop_indicators = [
-        r"retry",
-        r"try again",
-        r"almost ready",
-        r"warming up",
-        r"in progress",
-        r"checking\.\.\."
-    ]
-    
-    # Count tool call patterns
-    tool_call_pattern = r'tool["\']?\s*:\s*["\']([^"\']+)["\']'
-    tool_calls = []
-    
-    for entry in log_entries:
-        # Check for loop indicator phrases
-        for pattern in loop_indicators:
-            if re.search(pattern, entry, re.IGNORECASE):
-                # Extract tool name if present
-                match = re.search(tool_call_pattern, entry)
-                if match:
-                    tool_calls.append(match.group(1))
-    
-    # Analyze frequency
-    tool_counter = Counter(tool_calls)
-    suspicious_tools = {tool: count for tool, count in tool_counter.items() if count >= 5}
-    
-    return {
-        "total_loop_indicators": len(tool_calls),
-        "suspicious_tools": suspicious_tools,
-        "is_likely_loop": len(suspicious_tools) > 0
-    }
-
-# Example log entries
-sample_logs = [
-    '{"tool": "http.get", "status": "warming_up", "message": "retry in 5s"}',
-    '{"tool": "http.get", "status": "warming_up", "message": "almost ready"}',
-    '{"tool": "http.get", "status": "warming_up", "message": "try again"}',
-    '{"tool": "http.get", "status": "warming_up", "message": "retry in 5s"}',
-    '{"tool": "http.get", "status": "warming_up", "message": "checking..."}',
-]
-
-analysis = analyze_logs_for_loops(sample_logs)
-if analysis["is_likely_loop"]:
-    print("⚠️  Potential loop detected!")
-    print(f"   Suspicious tool calls: {analysis['suspicious_tools']}")
-```
-
-These examples demonstrate:
-- **Detection**: How to identify when an agent is stuck in a loop
-- **Prevention**: Basic guardrails to stop loops before they cause damage
-- **Analysis**: How to recognize loop patterns in system logs
-
-For production systems, combine these approaches with the more sophisticated mitigations listed in the [Mitigation Strategies](#mitigation-strategies) section.
-
-### Advanced Attack Techniques
-- Loop amplification via parallel subtasks re-queuing on partial failure
-- Cross-agent cycles where delegation returns to originator after minor mutation
+Current searches of CISA KEV, NVD, vendor bulletins, and incident-status sources found no qualifying public production breach. Several disclosed infinite-loop or resource-exhaustion defects were excluded because they were deterministic parser, recursion, or user-composed workflow failures rather than attacker-driven autonomous continuation. <!-- SAF-TRACE: claims=SAF-T1106-C014,SAF-T1106-C015; sources=SRC-ms-unbounded-dos -->
 
 ## Impact Assessment
-- **Confidentiality**: Low — no direct data exposure
-- **Integrity**: Low — no direct tampering
-- **Availability**: High — local CPU exhaustion, API rate-limit storms, quota/cost burn
-- **Scope**: Local to host; can propagate to external services via repeated API calls
 
-### Current Status (2025)
-Many agent stacks rely on simple retry caps or token budgets; robust convergence checks and semantic loop detectors are not universal.
+**Severity:** High. A single accepted input can multiply token, model, tool, latency, and downstream-service consumption, degrading availability and increasing cost; cycles that revisit state-changing tools can also repeat external effects. Severity depends on reachable autonomy, tool expense and privilege, and the absence or weakness of hard bounds. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C002,SAF-T1106-C003,SAF-T1106-C013; sources=SRC-zhou-2026 -->
+
+**First observed:** Not observed in a qualifying production incident as of 2026-09-01; the evidence base is controlled demonstration and vulnerability research. <!-- SAF-TRACE: claims=SAF-T1106-C014; sources=SRC-ms-unbounded-dos -->
 
 ## Detection Methods
 
-### Indicators of Compromise (IoCs)
-- High-frequency identical tool invocations per session (same name/args)
-- Alternating call pairs or cycles in traces (A,B,A,B,…)
-- Bursts of 429 (Too Many Requests) or repeating 5xx from dependencies
-- Log strings suggesting non-convergence: "retry", "try again", "almost ready"
+Correlate orchestrator events by run or session and alert on a bounded window containing repeated tool invocations with recurring normalized arguments or unchanged progress fingerprints while completion remains nonterminal. Enrich the signal with cumulative tokens, elapsed time, cost, retries, and downstream latency; keep tool identity, parameters, results, agent identity, and decision context for investigation. [SRC-ms-agent-responsibility] [SRC-ms-agentic-rag] <!-- SAF-TRACE: claims=SAF-T1106-C008,SAF-T1106-C009,SAF-T1106-C010; sources=SRC-ms-agent-responsibility -->
 
-### Detection Rules
+Where available, MCP deployments can also retain the documented `Mcp-Method`, `Mcp-Name`, and W3C trace-context fields as correlation aids; the analytic does not depend on those exact names. [SRC-mcp-rc-20260728] <!-- SAF-TRACE: claims=SAF-T1106-C007; sources=SRC-mcp-rc-20260728 -->
 
-**Important**: The following rule is written in Sigma format and contains example patterns only. Organizations should:
-- Use AI-based anomaly detection to identify novel loop patterns
-- Regularly update detection logic based on operational telemetry
-- Implement multiple layers of detection beyond pattern matching
-- Consider semantic analysis of agent traces to confirm non-convergence
-```yaml
-title: Repeated Identical MCP Tool Invocations (Possible Loop)
-id: REPLACE-WITH-UUID
-status: experimental
-description: Detects repeated identical tool calls by the same session over a short interval
-author: SAF-MCP Authors
-date: 2025-08-10
-logsource:
-  product: mcp
-  service: host
-detection:
-  selection:
-    tool_name|same: ['*']
-    session_id|same: true
-    args_hash|same: true
-  timeframe: 5m
-  condition: selection | count() by session_id, tool_name, args_hash >= 10
-falsepositives:
-  - Legitimate batch/retry jobs with identical parameters
-level: high
-tags:
-  - attack.execution
-  - attack.t1499.003
-  - safe.t1106
-```
+The repository analytic [detection-rule.yml](detection-rule.yml) implements a deterministic threshold: within 300 seconds, at least six calls in one session, at least four to one tool, and at least three matching normalized-argument or progress fingerprints, with no terminal completion and no approved-long-running marker. [tests/test_detection_rule.py](tests/test_detection_rule.py) verifies positive, negative, boundary, normalization, malformed-event, and approved-work cases. <!-- SAF-TRACE: claims=SAF-T1106-C010,SAF-T1106-C011; sources=SRC-ms-agentic-rag -->
 
-### Behavioral Indicators
-- Monotonic retry counters without success transitions
-- Flatlined “progress” metrics while invocation count grows
-- API cost/usage spikes tied to the same session or tool/args hash
+Repeated calls can be legitimate for long-running polling, iterative search, or recovery. Tune by tool class and task contract, require independent progress evidence where available, and route ambiguous high-value work to review rather than treating a threshold alone as proof of attack. A controlled progress study found that in-band self-judgment could misclassify stagnation, supporting external or world-state progress signals. [SRC-park-progress-2026] <!-- SAF-TRACE: claims=SAF-T1106-C011; sources=SRC-park-progress-2026 -->
 
 ## Mitigation Strategies
 
-### Preventive Controls
-1. **[SAF-M-21: Output Context Isolation](../../mitigations/SAF-M-21/README.md)**: Separate planning and tool-output contexts to reduce self-reinforcement loops.
-2. **[SAF-M-22: Semantic Output Validation](../../mitigations/SAF-M-22/README.md)**: Gate follow-ups unless outputs show material progress; add convergence criteria.
-3. **[SAF-M-23: Tool Output Truncation](../../mitigations/SAF-M-23/README.md)**: Limit repetitive cues (“retry”, “in progress”) in model-visible outputs.
-4. **[SAF-M-3: AI-Powered Content Analysis](../../mitigations/SAF-M-3/README.md)**: Flag loop-inducing language before execution.
-5. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Cap downstream blast radius for repeated API calls.
-
-### Detective Controls
-1. **[SAF-M-11: Behavioral Monitoring](../../mitigations/SAF-M-11/README.md)**: Track per-session identical-call rates and cyclic graphs.
-2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20/README.md)**: Detect non-convergent sequences and abnormal call densities.
-3. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Ensure fine-grained logs for reconstructing and auto-stopping loops.
-
-### Response Procedures
-1. **Immediate Actions**:
-   - Terminate or pause agent sessions exceeding iteration/time thresholds
-   - Apply global backoff and cooldown across tool adapters
-   - Isolate the affected workspace/session to prevent further API floods
-2. **Investigation Steps**:
-   - Analyze execution traces for cyclic call graphs and identical-arg repeats
-   - Correlate with external API logs (429/5xx bursts) and cost/usage spikes
-   - Identify trigger prompts/tool outputs that seeded non-convergence
-3. **Remediation**:
-   - Enforce max-iterations, budget caps, and convergence checks in planners
-   - Introduce per-session quotas and progressive throttling
-   - Harden tool adapters with retry jitter, exponential backoff, and idempotency
+- Enforce independent ceilings for iterations, wall-clock time, cumulative tokens, cost, retries, tool calls, and nested-agent depth; cancel work when any hard ceiling is crossed. <!-- SAF-TRACE: claims=SAF-T1106-C006,SAF-T1106-C009,SAF-T1106-C012; sources=SRC-mcp-tools-2026-07-28 -->
+- Treat retrieved content, tool output, and agent messages as untrusted data; validate results before model re-entry and require per-action authorization or human approval for sensitive effects. <!-- SAF-TRACE: claims=SAF-T1106-C006,SAF-T1106-C008,SAF-T1106-C012; sources=SRC-mcp-tools-2026-07-28 -->
+- Define externally grounded completion and progress contracts, persist loop counters across retries or restarts, and halt or escalate after repeated nonprogress. <!-- SAF-TRACE: claims=SAF-T1106-C003,SAF-T1106-C012,SAF-T1106-C013; sources=SRC-hou-ial-2026 -->
+- Log every invocation and retain cancellation, completion, arguments, outputs, identity, token, cost, and timing fields so containment does not destroy the evidence needed to distinguish attack from failure. <!-- SAF-TRACE: claims=SAF-T1106-C006,SAF-T1106-C008,SAF-T1106-C010; sources=SRC-mcp-tools-2026-07-28 -->
 
 ## Related Techniques
-- [SAF-T1102](../SAF-T1102/README.md) – Prompt Injection (can induce autonomous loops)
-- SAF-T1703 – Tool-Chaining Pivot (loop-like chaining patterns)
 
-## References
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- CISPA Helmholtz Center: Loop DoS (application-layer loops as a DDoS vector), CVE-2024-2169 — https://cispa.de/en/loop-dos
-- MITRE ATT&CK: Endpoint DoS (T1499) — https://attack.mitre.org/techniques/T1499/
-- MITRE ATT&CK: Application Exhaustion Flood (T1499.003) — https://attack.mitre.org/techniques/T1499/003/
+| Technique | Relationship |
+|---|---|
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Adjacent: the objective is an unauthorized change in model or tool behavior; repetition is incidental rather than the defining execution mechanism. <!-- SAF-TRACE: claims=SAF-T1106-C015; sources=SRC-hou-ial-2026 --> |
+| [SAF-T2102: Service Disruption](../SAF-T2102/README.md) | Adjacent: load is submitted directly or through a pathological single request, without an autonomous model/tool feedback path deciding to re-enter. <!-- SAF-TRACE: claims=SAF-T1106-C015; sources=SRC-hou-ial-2026 --> |
 
 ## MITRE ATT&CK Mapping
-- [T1499 - Endpoint Denial of Service](https://attack.mitre.org/techniques/T1499/)
-- [T1499.003 - Application Exhaustion Flood](https://attack.mitre.org/techniques/T1499/003/)
+
+| ATT&CK technique | Mapping |
+|---|---|
+| [T1499.003 – Application Exhaustion Flood](https://attack.mitre.org/techniques/T1499/003/) | Analogous impact mapping: repeated invocation of resource-intensive application behavior can exhaust resources and deny availability, but ATT&CK does not require autonomous agent feedback. [SRC-mitre-t1499-003] <!-- SAF-TRACE: claims=SAF-T1106-C017; sources=SRC-mitre-t1499-003 --> |
+
+## References
+
+- [SRC-mcp-tools-2026-07-28] Model Context Protocol Working Group, “Tools,” specification revision 2026-07-28, reviewed 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1106-C004,SAF-T1106-C005,SAF-T1106-C006; sources=SRC-mcp-tools-2026-07-28 -->
+- [SRC-mcp-rc-20260728] David Soria Parra and Den Delimarsky, “The 2026-07-28 MCP Release Candidate,” reviewed 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1106-C007; sources=SRC-mcp-rc-20260728 -->
+- [SRC-zhou-2026] Kaiyu Zhou et al., “Beyond Max Tokens: Stealthy Resource Amplification via Tool Calling Chains in LLM Agents,” arXiv:2601.10955v2, 2026. <!-- SAF-TRACE: claims=SAF-T1106-C001,SAF-T1106-C013; sources=SRC-zhou-2026 -->
+- [SRC-li-otora-2026] Xinyu Li et al., “OTora: A Unified Red Teaming Framework for Reasoning-Level Denial-of-Service in LLM Agents,” arXiv:2605.08876v3, 2026. <!-- SAF-TRACE: claims=SAF-T1106-C002,SAF-T1106-C011; sources=SRC-li-otora-2026 -->
+- [SRC-hou-ial-2026] Xinyi Hou et al., “When Agents Do Not Stop: Uncovering Infinite Agentic Loops in LLM Agents,” arXiv:2607.01641v1, 2026. <!-- SAF-TRACE: claims=SAF-T1106-C003,SAF-T1106-C013; sources=SRC-hou-ial-2026 -->
+- [SRC-ms-agent-responsibility] Microsoft Security, “AI agent shared responsibility model,” reviewed 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1106-C008,SAF-T1106-C012; sources=SRC-ms-agent-responsibility -->
+- [SRC-ms-unbounded-dos] Microsoft Security, “Unbounded AI Consumption and Agentic DoS,” reviewed 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1106-C014; sources=SRC-ms-unbounded-dos -->
+- [SRC-ms-agentic-rag] Microsoft Azure Architecture Center, “Develop an Agentic RAG Solution on Azure,” reviewed 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1106-C009,SAF-T1106-C010; sources=SRC-ms-agentic-rag -->
+- [SRC-park-progress-2026] Hyundoo Park and Byungho Choi, “When Do Agent Loops Mistake Stagnation for Progress?,” arXiv:2607.25152v1, 2026. <!-- SAF-TRACE: claims=SAF-T1106-C011; sources=SRC-park-progress-2026 -->
+- [SRC-mitre-t1499-003] MITRE ATT&CK, “Application Exhaustion Flood,” T1499.003 version 1.3, 2025. <!-- SAF-TRACE: claims=SAF-T1106-C017; sources=SRC-mitre-t1499-003 -->
 
 ## Version History
-| Version | Date       | Changes               | Author           |
-|---------|------------|-----------------------|------------------|
-| 1.0     | 2025-08-10 | Initial documentation | Sunil Dhakal |
-| 1.1     | 2025-11-16 | Added beginner-friendly examples section with practical code demonstrations for loop detection, prevention, and log analysis | Satbir Singh |
 
-
+| Version | Date | Changes |
+|---|---|---|
+| 1.0 | 2026-09-01 | Initial clean-room draft. |

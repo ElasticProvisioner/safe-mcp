@@ -1,100 +1,75 @@
-title: SAF-T1105 Path Traversal via File Tool
-id: saf-t1105-path-traversal
+title: File Tool Operation Outside Canonical Allowed Scope
+id: 8c7dc66f-e3b2-4f2c-a763-1b8b3fb84d3d
 status: experimental
-description: Detects path traversal attempts through MCP file tools using various encoding and bypass techniques
-author: SAF-MCP Team
-date: 2025-07-24
-tags:
-  - attack.execution
-  - saf-mcp
-  - saf-t1105
-  - path-traversal
-  - file-access
+description: >-
+  Detects MCP or agent file-tool operations whose resolved target is outside
+  every canonical allowed root or whose use violates no-access mode, excluding
+  an explicitly approved override.
 logsource:
-  category: mcp_tool_execution
-  product: mcp
+  category: application
+  product: mcp_or_agent_tool_gateway
 detection:
-  selection_mcp_file_tools:
-    tool_name:
-      - file_reader
-      - file_writer
-      - directory_browser
-      - file_manager
+  selection_file_operation:
+    event_type: mcp_tool_call
+    operation:
       - read_file
       - write_file
-      - list_directory
-  selection_path_traversal:
-    path:
-      # Basic path traversal sequences
-      - "*/../*"
-      - "*\\..\\*"
-      - "*..%2f*"
-      - "*%2e%2e%2f*"
-      # Double encoding
-      - "*%252e%252e%252f*"
-      - "*%252e%252e%5c*"
-      # Unicode normalization bypass
-      - "*%c0%ae%c0%ae*"
-      - "*%c0%ae%c0%ae%2f*"
-      - "*%c0%ae%c0%ae%5c*"
-      # Mixed encoding
-      - "*..%2f..%2f*"
-      - "*%2e%2e%2f%2e%2e%2f*"
-      # Null byte injection
-      - "*%00*"
-      - "*../*%00*"
-      # Case manipulation
-      - "*..%2F*"
-      - "*%2E%2E%2F*"
-      - "*%2e%2E%2f*"
-  selection_sensitive_paths:
-    path:
-      # System configuration files
-      - "*/etc/passwd*"
-      - "*/etc/shadow*"
-      - "*/etc/hosts*"
-      - "*/etc/ssh*"
-      - "*/proc/*"
-      - "*/sys/*"
-      # SSH keys and credentials
-      - "*/.ssh/id_rsa*"
-      - "*/.ssh/id_rsa.pub*"
-      - "*/.ssh/known_hosts*"
-      - "*/.ssh/config*"
-      # Application secrets
-      - "*/.env*"
-      - "*/config.json*"
-      - "*/secrets.yaml*"
-      - "*/database.yml*"
-      - "*/credentials*"
-      # User home directories
-      - "*/home/*/.bash_history*"
-      - "*/home/*/.profile*"
-      - "*/root/.bash_history*"
-      - "*/root/.profile*"
-  selection_behavioral_indicators:
-    # Multiple traversal attempts
-    path:
-      - "*../*../*../*"
-      - "*..%2f*..%2f*..%2f*"
-    # Access outside application scope
-    result: "success"
-    file_size:
-      - "> 0"
-  filter_legitimate_paths:
-    path:
-      # Legitimate relative paths within application scope
-      - "*/src/*"
-      - "*/docs/*"
-      - "*/tests/*"
-      - "*/config/app/*"
-      - "*/data/legitimate/*"
-      - "*/uploads/approved/*"
-      - "*/logs/application/*"
-  condition: selection_mcp_file_tools and (selection_path_traversal or selection_sensitive_paths) and not filter_legitimate_paths
+      - copy_file
+      - move_file
+      - delete_file
+  selection_boundary_violation:
+    path_scope:
+      - outside_allowed_root
+      - no_access_violation
+  filter_approved_override:
+    approved_override: true
+  condition: selection_file_operation and selection_boundary_violation and not filter_approved_override
+fields:
+  - timestamp
+  - agent_id
+  - session_id
+  - server
+  - tool
+  - operation
+  - requested_path
+  - resolved_path
+  - allowed_roots
+  - access_mode
+  - validation_decision
+  - outcome
+  - approved_override
 falsepositives:
-  - Legitimate relative path usage within application scope
-  - Development and testing activities with controlled path traversal
-  - File system backup and maintenance operations
-  - Debugging and troubleshooting activities
-level: high 
+  - Approved break-glass maintenance recorded without the approved_override field.
+level: high
+tags:
+  - saf.t1105
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1105-C003, SAF-T1105-C004, SAF-T1105-C012]
+  telemetry_claim_ids: [SAF-T1105-C011, SAF-T1105-C012]
+  limitation_claim_ids: [SAF-T1105-C012, SAF-T1105-C013]
+  validation_artifacts:
+    - tests/SAF-T1105/test_detection_rule.py
+    - tests/SAF-T1105/test-logs.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1105-C011]
+      rationale: MCP tool audit records are the event family needed for the analytic.
+    selection_file_operation:
+      claim_ids: [SAF-T1105-C003, SAF-T1105-C004]
+      rationale: The behavior culminates in a read, write, copy, move, or delete by a file-capable tool.
+    selection_boundary_violation:
+      claim_ids: [SAF-T1105-C004, SAF-T1105-C012]
+      rationale: Resolved target containment or a no-access violation defines the security-boundary crossing.
+    filter_approved_override:
+      claim_ids: [SAF-T1105-C012]
+      rationale: A recorded authorized exception is outside the non-overridden alert condition.
+    condition:
+      claim_ids: [SAF-T1105-C012]
+      rationale: The conjunction requires both a file operation and a boundary violation without an approved override.
+    fields:
+      claim_ids: [SAF-T1105-C011, SAF-T1105-C012]
+      rationale: These fields support attribution, containment comparison, validation review, and outcome scoping.
+    falsepositives:
+      claim_ids: [SAF-T1105-C012]
+      rationale: Missing exception metadata can make an authorized boundary crossing look unauthorized.

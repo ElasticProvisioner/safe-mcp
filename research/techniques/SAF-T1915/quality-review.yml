@@ -1,0 +1,63 @@
+version: 1
+technique_id: SAF-T1915
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1915
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Clean-room attestation records neutral inputs, prohibited inputs, independent sources, no prior target access, and pre-integration freeze.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires agent-mediated bridge and DEX activity across chains and excludes theft, mixer-only behavior, ordinary finance, and off-ramping alone.
+  technical_accuracy:
+    status: passed
+    notes: Claims distinguish contract bridges from cross-ledger exchanges, deterministic joins from heuristics, and observed behavior from inference.
+  claim_traceability:
+    status: passed
+    notes: Twenty validated claims map to reviewed manifest records and exact locators.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or a declared local-artifact link; five unsupported or misleading candidates are excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is required because laundering and agent execution are separately supported but not joined in an observed or end-to-end demonstrated agentic event.
+  research_saturation:
+    status: passed
+    notes: Two consecutive whitelist-only follow-up passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nine candidates were classified; three high-impact production examples were selected, while vulnerability and exploitation-status gaps are explicit.
+  detection_quality:
+    status: passed
+    notes: The experimental rule has required telemetry, explicit thresholds, false positives, blind spots, tuning, and 12 passing deterministic cases.
+  mitigation_quality:
+    status: passed
+    notes: Nine canonical controls address delegated signing, deterministic policy, multi-step composition, multi-chain tracing, audit, and authorization.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0010, independently authored neighbor SAF-T2104, nine mitigations, and analogous ATT&CK T1657 mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: Factual paraphrase only; no quotations, copied code, images, or acquired datasets; all materially used sources have named credits.
+  safe_publication:
+    status: passed
+    notes: The JSON example is inert, contains no endpoints, credentials, addresses, transaction payloads, or executable instructions.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1915
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1915/test_detection_rule.py
+    result: 'PASS: 12/12 cases matched expected outcomes'
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: 12 of 12 cases passed.
+    validator_result: PASS SAF-T1915
+    proof: research/techniques/SAF-T1915/validation/canonical-validation.txt
+
+unresolved: []

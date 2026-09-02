@@ -1,0 +1,332 @@
+version: 1
+technique_id: SAF-T1605
+claims:
+  - id: SAF-T1605-C001
+    statement: The 2026-07-28 MCP architecture lets a client query supported protocol versions, capabilities, and self-reported server identity through server/discover before other requests.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators: ["Discovery: opening paragraph; Request; Response; When to Call; DiscoverResult"]
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: corroborating
+        exact_locators: ["Core Components; Capability Negotiation"]
+    corroboration: The architecture page independently summarizes per-request capability declaration and server/discover.
+    limitations: [The response is scoped to one server and the server identity is self-reported, not protocol-verified.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C002
+    statement: A server that declares the tools capability must answer tools/list with the tool set available to the requesting authorization context, including names, descriptions, and input schemas.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Capabilities; Listing Tools; Tool"]
+    corroboration: The official Inspector documentation provides a CLI example that issues tools/list.
+    limitations: [The set may be empty, change over time, and vary with authorization; the protocol does not prove server metadata truthful.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C003
+    statement: MCP defines authorization-scoped listing methods for resources, resource templates, and prompts; legacy roots can also disclose filesystem guidance but are deprecated in the 2026-07-28 revision.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Capabilities; Listing Resources; Resource Templates"]
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["Capabilities; Listing Prompts"]
+      - source_id: SRC-mcp-2026-roots
+        support: direct
+        exact_locators: ["deprecation notice; Capabilities; Listing Roots"]
+    corroboration: Each feature page specifies both advertised capability state and its listing request.
+    limitations: [Roots are client-exposed, informational, deprecated, and only applicable to implementations that still support the feature.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C004
+    statement: The official MCP Inspector can connect to a server and issue tools/list from a scriptable client, demonstrating that exposed tool metadata can be enumerated without invoking a tool.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-inspector-2026
+        support: direct
+        exact_locators: ["client modes table; Quickstart CLI example lines 105-112; Inspecting published servers"]
+    corroboration: The MCP tools specification defines the same tools/list request and response.
+    limitations: [Inspector use is legitimate administration, not evidence of adversarial activity or authorization bypass.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C005
+    statement: An adversary who can make MCP requests under an identity can use server/discover and supported list methods to correlate the capability metadata that identity is allowed to see into a map for selecting follow-on behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators: ["When to Call: single-request capability inventory and separate-list comparison"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Listing Tools; Tool metadata fields"]
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Listing Resources; Resource Templates"]
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["Listing Prompts"]
+      - source_id: SRC-attack-t1518
+        support: corroborating
+        exact_locators: ["Technique description; tactic; detection strategy"]
+    corroboration: MITRE ATT&CK documents the general discovery pattern of enumerating available software to shape follow-on behavior, but not MCP capability mapping specifically.
+    limitations: [No directly reviewed source documented this complete behavior as a malicious MCP production incident or controlled adversarial demonstration.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The protocol establishes the enumerable surfaces, Inspector establishes practical enumeration, and ATT&CK establishes the adversary discovery purpose; their combination supports an explicit MCP-specific inference.
+    status: validated
+  - id: SAF-T1605-C006
+    statement: Capability metadata can include server name and version, supported capability classes, tool names and schemas, resource URIs and templates, and prompt names and arguments.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators: ["Response; DiscoverResult"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Listing Tools response; Tool"]
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Listing Resources response; Resource Templates"]
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["Listing Prompts response; Prompt"]
+    corroboration: The source fields independently cover distinct parts of the map.
+    limitations: [Metadata describes advertised surface, not whether an operation will succeed or what downstream data it contains.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C007
+    statement: Large aggregated MCP deployments can expose enough tool metadata that dedicated retrieval and authorization filtering are needed; PayPal researchers report a production catalog of more than 2,000 tools and structured discovery telemetry.
+    class: research_finding
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-arxiv-scout-2608.23992
+        support: direct
+        exact_locators: ["Abstract; Sections 3.1, 4.1, 5.4, 6.6, 7.1, 7.4, and 8.2"]
+    corroboration: The MCP specification independently permits large paginated list responses.
+    limitations: [The paper describes legitimate production discovery and observability, not an attack or breach; the corpus and logs are internal to PayPal.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C008
+    statement: No qualifying direct production incident or direct capability-mapping vulnerability was identified in the reviewed NVD MCP keyword corpus, CISA KEV catalog, or selected originating advisories as of 2026-09-02.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-mcp-keyword-20260902
+        support: direct
+        exact_locators: ["API query keywordSearch=Model Context Protocol; totalResults=77; records reviewed and classified on 2026-09-02"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators: ["catalogVersion 2026.09.01; exact identifier checks for three selected candidates returned no matches"]
+    corroboration: Three closest originating advisories were reviewed and each crossed a different boundary.
+    limitations: [This is a bounded corpus-and-date absence statement, not proof the behavior has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence conclusion is limited to the recorded direct-authority searches and classifications.
+    status: validated
+  - id: SAF-T1605-C009
+    statement: CVE-2026-49257 exposed all mcp-pinot tools to unauthenticated network-adjacent callers through insecure defaults and was fixed in 3.1.0; it enables access to a capability surface but its documented consequence is direct invocation, not capability mapping.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators: ["Affected versions; Resolution; Summary; Root cause; Exposed tools; Severity; Reporter"]
+      - source_id: SRC-nvd-cve-2026-49257
+        support: corroborating
+        exact_locators: ["CVE record description; CVSS; CISA SSVC exploitation=poc"]
+    corroboration: NVD records the same affected and fixed versions and a CISA Coordinator PoC exploitation state.
+    limitations: [No production exploitation is documented; this is an enabling vulnerability and must not raise the technique evidence status.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C010
+    statement: CVE-2025-66414 allowed a malicious website to reach tools and resources on certain unauthenticated localhost TypeScript SDK servers by DNS rebinding before 1.24.0; the advisory credits JLLeitschuh and documents no capability-mapping act.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-typescript-w48q
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Description; Credits"]
+      - source_id: SRC-nvd-cve-2025-66414
+        support: corroborating
+        exact_locators: ["CVE record description; CISA SSVC exploitation=none"]
+    corroboration: NVD corroborates the affected configuration, fix, and absence of known exploitation in its CISA SSVC record.
+    limitations: [The weakness creates reachability and possible invocation; it does not establish that capability enumeration occurred.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C011
+    statement: CVE-2026-52870 allowed one connected client to enumerate other clients' experimental tasks in MCP Python SDK 1.23.0 through 1.27.1 and was fixed in 1.27.2; it is adjacent task-state discovery rather than advertised capability mapping.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-python-hvrp
+        support: direct
+        exact_locators: ["Affected versions; Summary; Details; Impact; Mitigation; Credits"]
+      - source_id: SRC-nvd-cve-2026-52870
+        support: corroborating
+        exact_locators: ["CVE record description; CISA SSVC exploitation=none"]
+    corroboration: NVD corroborates versions, impacts, fix, and the no-known-exploitation SSVC state.
+    limitations: [The enumerated objects are active task records and results, not capability metadata.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C012
+    statement: A concentrated sequence of server/discover and three or more distinct capability-list methods for the same requester and server is detectable when MCP request audit events preserve method, actor, server, time, and authorization context.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators: ["Request; When to Call"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Listing Tools"]
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Listing Resources; Resource Templates"]
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["Listing Prompts"]
+      - source_id: SRC-arxiv-scout-2608.23992
+        support: corroborating
+        exact_locators: ["Section 6.6 Observability; Sections 7.1 and 7.4"]
+    corroboration: The PayPal paper documents structured tools-list, search, result-count, server, latency, scope, and execution events in production.
+    limitations: [The analytic is behavioral and cannot establish malicious intent; clients may use different method mixes or cached responses.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The protocol supplies stable method names and the production paper supplies an observability pattern; the threshold and window are a tested SAF analytic choice.
+    status: validated
+  - id: SAF-T1605-C013
+    statement: Legitimate Inspector use, client bootstrap, inventory, troubleshooting, and catalog refresh can produce the same listing sequence, so purpose-based allowlisting and requester baselines are necessary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-inspector-2026
+        support: direct
+        exact_locators: ["client modes; Quickstart; Inspecting published servers"]
+      - source_id: SRC-arxiv-scout-2608.23992
+        support: direct
+        exact_locators: ["Sections 3.2, 5.3, 6.6, and 7.4"]
+    corroboration: Both a developer tool and a production gateway generate legitimate discovery traffic.
+    limitations: [Client-purpose labels can be missing or falsified, and allowlists need independent governance.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: False-positive classification follows from legitimate mechanisms that emit the same observable requests.
+    status: validated
+  - id: SAF-T1605-C014
+    statement: Limiting discovery exposure depends on authenticating every protected HTTP request, enforcing audience and scope, returning only authorization-permitted items, and minimizing initially granted scopes.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Scope Selection Strategy; Token Requirements; Token Handling; Runtime Insufficient Scope Errors"]
+      - source_id: SRC-mcp-security-2026-07-28
+        support: direct
+        exact_locators: ["Scope Minimization: Attack Description, Risks, Mitigation"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Capabilities: list may vary by authorization"]
+      - source_id: SRC-mcp-resources-2026
+        support: corroborating
+        exact_locators: ["Capabilities: list may vary by authorization"]
+      - source_id: SRC-mcp-prompts-2026
+        support: corroborating
+        exact_locators: ["Capabilities: list may vary by authorization"]
+    corroboration: Feature pages confirm that listed sets may be constrained by authorization.
+    limitations: [These controls reduce exposure but cannot distinguish malicious mapping performed with legitimately granted access.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C015
+    statement: Capability Mapping is analogous to MITRE ATT&CK Software Discovery because both inventory available technical functionality to shape follow-on behavior, but MCP capabilities are advertised remote primitives rather than installed software.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1518
+        support: direct
+        exact_locators: ["Technique description; Tactic; Detection Strategy"]
+      - source_id: SRC-mcp-discovery-2026-07-28
+        support: direct
+        exact_locators: ["When to Call; DiscoverResult"]
+    corroboration: The common element is inventory for follow-on selection; the object and collection mechanism differ.
+    limitations: [This is an analogous mapping, not a direct ATT&CK equivalence.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Framework mapping requires synthesis across the two technique definitions.
+    status: validated
+  - id: SAF-T1605-C016
+    statement: Enumeration results may be paginated, cached, empty, authorization-dependent, and change over time, so a single request may understate the complete surface and repeated requests may be benign.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Capabilities; Listing Tools"]
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Capabilities; Listing Resources; Resource Templates"]
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["Capabilities; Listing Prompts"]
+    corroboration: All three current feature specifications document the same constraints.
+    limitations: [Individual server implementations may add further constraints not represented here.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1605-C017
+    statement: CVE-2026-46519 showed that tools/list filtering can understate the callable surface when tools/call lacks equivalent authorization; the issue affected mcp-server-kubernetes before 3.6.0, had a public proof of concept, and was credited to Francisco Rosales with coordination by Ax Sharma.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cr22-wjx7-2w6m
+        support: direct
+        exact_locators: ["Affected versions; Summary; Impact; Root Cause; Proof of Concept; Remediation; Credit"]
+      - source_id: SRC-nvd-cve-2026-46519
+        support: corroborating
+        exact_locators: ["CVE description; CVSS; CISA SSVC exploitation=poc"]
+    corroboration: NVD corroborates the affected version, fix, severity, and public proof-of-concept state.
+    limitations: [The advisory demonstrates an execution-layer authorization bypass, not adversarial capability mapping; it instead proves that discovery output may be incomplete as an authorization control.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

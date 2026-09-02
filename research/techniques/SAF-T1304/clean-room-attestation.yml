@@ -1,0 +1,123 @@
+version: 1
+technique_id: SAF-T1304
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1304_retry
+  inherited_context: false
+target:
+  id: SAF-T1304
+  neutral_name: Credential Relay Chain
+allowed_inputs:
+- User seed containing only identifier, neutral name, tactic, constraints, and required
+  output location.
+- Generic technique and research templates.
+- Current validator and clean-room skill instructions.
+- Direct authoritative protocol, government, maintainer, vendor, and framework sources
+  discovered independently.
+prohibited_inputs:
+- Existing techniques/SAF-T1304/README.md or any prior SAF-T1304 draft.
+- Existing research/techniques/SAF-T1304/ content or techniques/SAF-T1304/detection-rule.yml.
+- Shared source, framework, and alignment registries.
+- SAF or SAFE sites, repositories, catalog descriptions, or prior bundles.
+- Git history, diffs, blame, pull request content, commits, or branches.
+- Previous conversation or discarded-run content beyond the clean-room seed.
+- General unrestricted web search or GitHub repository search.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io/specification 2026 authorization resource audience
+    token passthrough
+  - site:rfc-editor.org OAuth malicious protected resource audience replay
+  - site:nvd.nist.gov MCP audience validation CVE
+  - site:nvd.nist.gov MCP credential cache token CVE 2026
+  - site:learn.microsoft.com MCP bearer token forwarded revalidation known issue
+  - site:microsoft.com/security/blog MCP incident credential token 2026
+  - site:attack.mitre.org application access token reuse detection
+  - site:github.blog secure remote MCP token audience scope
+  opened_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security
+  - SRC-rfc9700
+  - SRC-rfc8707
+  - SRC-rfc9728
+  - SRC-nvd-cve-2025-69196
+  - SRC-fastmcp-ghsa
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-48529
+  - SRC-github-mcp-ghsa
+  - SRC-foundry-local-gap02
+  - SRC-github-secure-mcp
+  - SRC-attack-det0185
+  - SRC-mitre-t1550-001
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-t1206-ms-config-risk
+  - SRC-ms-oauth-redirection-2026
+  - SRC-nvd-cve-2025-4143
+  - SRC-nvd-cve-2026-53518
+  - SRC-nvd-cve-2026-14539
+  - SRC-nvd-cve-2025-6238
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Freeze only the canonical bundle before any target-tree inspection or integration.
+- Use synthetic neighbor and mitigation identifiers until post-freeze reconciliation.
+- Validate only in an isolated synthetic repository.
+attestation: The agent generated this packet independently from the permitted seed,
+  templates, validator, skill guidance, and directly reviewed authoritative sources.
+  It did not access a prohibited target or repository artifact.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2026: SRC-mcp-authorization-2026-07-28
+    SRC-rfc9700: SRC-rfc9700
+    SRC-rfc8707: SRC-rfc8707
+    SRC-rfc9728: SRC-rfc9728
+    SRC-attack-t1550-001: SRC-mitre-t1550-001
+    SRC-microsoft-mcp-misconfig: SRC-t1206-ms-config-risk
+    SRC-microsoft-oauth-redirect: SRC-ms-oauth-redirection-2026
+  new_shared_source_records:
+  - SRC-mcp-security
+  - SRC-nvd-cve-2025-69196
+  - SRC-fastmcp-ghsa
+  - SRC-nvd-cve-2026-14541
+  - SRC-google-pr3450
+  - SRC-nvd-cve-2026-48529
+  - SRC-github-mcp-ghsa
+  - SRC-foundry-local-gap02
+  - SRC-github-secure-mcp
+  - SRC-attack-det0185
+  - SRC-microsoft-ai-gateway-incident
+  - SRC-nvd-cve-2025-4143
+  - SRC-nvd-cve-2026-53518
+  - SRC-nvd-cve-2026-14539
+  - SRC-nvd-cve-2025-6238
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-20
+  - SAF-M-31
+  - SAF-M-37
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9901: SAF-T1504
+    SAF-T9902: SAF-T1308
+  synthetic_mitigation_mapping:
+    SAF-M-9901: SAF-M-16
+    SAF-M-9902: SAF-M-74
+    SAF-M-9903: SAF-M-19
+  attribution_reconciliation:
+    frozen_value: Frank Kautz
+    disposition: omitted_unverified
+    ledger_item: SAF-T1304-X008
+  status: integrated_and_repository_validated

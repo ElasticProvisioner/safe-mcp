@@ -1,0 +1,120 @@
+version: 1
+technique_id: SAF-T1305
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1305/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1305/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1305/source-coverage.yml
+  supports: Dated searches, bounded incident-absence statement, candidate ranking,
+    and saturation state.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1305/quality-review.yml
+  supports: Validation commands, results, review date, and detection-test status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1305/detection-rule.yml
+  supports: The repository's experimental detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1305/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, and expected-lookalike
+    test logic.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1305/test-logs.json
+  supports: Synthetic normalized event fixtures and validation date.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1305/validation/detection-test.txt
+  supports: Captured passing output for the deterministic detection fixtures.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1305/validation/strict-validator.txt
+  supports: Captured passing output for the isolated strict validator.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1305-X001
+  candidate: A qualifying production breach has occurred through the defining MCP-to-host
+    execution boundary.
+  origin: Required current production-incident search pass.
+  attempted_searches:
+  - site:cisa.gov "MCP Inspector" incident breach exploitation
+  - site:jfrog.com mcp-remote production incident exploitation CVE-2025-6514
+  - site:oligo.security MCP Inspector production incident exploitation
+  - site:modelcontextprotocol.io MCP remote code execution incident
+  consulted_source_ids:
+  - SRC-jfrog-cve-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-zdi-aws-26-245
+  - SRC-zdi-cve-2026-0758
+  reason: Reviewed sources document demonstrations, disclosures, or exposed instances,
+    not exploitation against an identified production victim.
+  prohibited_publishable_text:
+  - a confirmed production breach exploited SAF-T1305
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1305-X002
+  candidate: CVE-2025-53107 should be one of the four published selected examples.
+  origin: NVD discovery supplied the exact GHSA URL; the advisory was directly reviewed.
+  attempted_searches:
+  - site:nvd.nist.gov CVE-2025-53107
+  - Direct review of the exact NVD-provenanced GHSA URL.
+  consulted_source_ids:
+  - SRC-ghsa-cve-2025-53107
+  reason: It qualifies but ranks below the four selected examples by CVSS and incremental
+    boundary coverage; it remains contextual evidence for the neighbor distinction.
+  prohibited_publishable_text:
+  - CVE-2025-53107 is a selected example
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1305-X003
+  candidate: CVE-2026-5059 has a vendor patch or a verified affected-version range
+    beyond the advisory metadata.
+  origin: Vulnerability remediation-status review.
+  attempted_searches:
+  - site:nvd.nist.gov CVE-2026-5059 exploitation status
+  - site:zerodayinitiative.com/advisories ZDI-26-245 aws-mcp-server command injection
+  consulted_source_ids:
+  - SRC-zdi-aws-26-245
+  reason: The reviewed ZDI advisory documents vendor rejection, restriction as mitigation,
+    and no fixed version.
+  prohibited_publishable_text:
+  - CVE-2026-5059 is fixed
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1305-X004
+  candidate: A quantified population of MCP Inspector instances was compromised or
+    exploited in production.
+  origin: Oligo's statement that internet-facing instances were identified.
+  attempted_searches:
+  - site:oligo.security MCP Inspector production incident exploitation
+  - site:cisa.gov "MCP Inspector" incident breach exploitation
+  consulted_source_ids:
+  - SRC-oligo-inspector-cve-2025-49596
+  reason: The source does not provide a reproducible count or identify a victim compromise;
+    exposure is not exploitation.
+  prohibited_publishable_text:
+  - MCP Inspector instances were compromised in the wild
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1305-X005
+  candidate: Every successful MCP RCE grants root or SYSTEM privileges.
+  origin: Generic RCE impact shorthand encountered during scope calibration.
+  attempted_searches:
+  - site:attack.mitre.org/techniques/T1068 Exploitation for Privilege Escalation
+  - site:zerodayinitiative.com/advisories "MCP server" "service account" "privilege
+    escalation"
+  consulted_source_ids:
+  - SRC-mitre-attack-t1068
+  - SRC-zdi-cve-2026-0758
+  - SRC-jfrog-cve-2025-6514
+  reason: Sources bound execution to the vulnerable process or service account; root
+    or SYSTEM depends on that account and environment.
+  prohibited_publishable_text:
+  - always grants root or SYSTEM
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

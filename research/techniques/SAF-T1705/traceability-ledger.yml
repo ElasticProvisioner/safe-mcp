@@ -1,0 +1,241 @@
+version: 1
+technique_id: SAF-T1705
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1705/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1705/technique-contract.yml
+  supports: Scope contract and clean-room generation mode.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1705/claim-inventory.yml
+  supports: Claim IDs
+  evidence classes: null
+  locators: null
+  limitations: null
+  and inference records.: null
+- id: LOCAL-coverage
+  path: research/techniques/SAF-T1705/source-coverage.yml
+  supports: Research passes
+  candidate classification: null
+  evidence status: null
+  conflicts: null
+  and gaps.: null
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1705/publication-rights.yml
+  supports: Publication-rights decisions and author credits.
+- id: LOCAL-quality
+  path: research/techniques/SAF-T1705/quality-review.yml
+  supports: Quality gates and validator and detector results.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T1705/clean-room-attestation.yml
+  supports: Clean-room integrity and contamination attestation.
+- id: LOCAL-detection
+  path: techniques/SAF-T1705/detection-rule.yml
+  supports: Experimental detection analytic
+  fields: null
+  limits: null
+  and tuning.: null
+- id: LOCAL-tests
+  path: tests/SAF-T1705/test_detection_rule.py
+  supports: Executable detector tests.
+- id: LOCAL-fixtures
+  path: tests/SAF-T1705/fixtures.yml
+  supports: Inert positive
+  negative: null
+  boundary: null
+  malformed: null
+  and lookalike fixtures.: null
+- id: LOCAL-detector-validation
+  path: research/techniques/SAF-T1705/validation/detection-tests.txt
+  supports: Isolated and canonical detector commands and seven passing cases.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1705/validation/strict-validator.txt
+  supports: Isolated and canonical strict-validator commands and passing results.
+- id: LOCAL-source-corpus-hashes
+  path: research/techniques/SAF-T1705/validation/source-corpus.sha256
+  supports: Hash identities for the external acquisition corpus retained outside the repository.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1705/integration/integration-notes.yml
+  supports: Clean-room constraints and completed post-freeze canonical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1705-X001
+  candidate: A public production breach has been confirmed for the technique.
+  origin: Production-incident research pass.
+  attempted_searches:
+  - AI Incident Database snapshot and NVD exact-term queries
+  consulted_source_ids:
+  - SRC-aiid-snapshot-20260831
+  - SRC-nvd-token-scope-corpus
+  reason: No qualifying production record was identified; only controlled demonstrations
+    support the end-to-end behavior.
+  prohibited_publishable_text:
+  - confirmed production breach in 2026
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X002
+  candidate: CVE-2025-32711 establishes cross-agent propagation.
+  origin: CVE and vendor advisory pass.
+  attempted_searches:
+  - Official CVE record review and MSRC page access
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  - SRC-msrc-cve-2025-32711-shell
+  reason: The record describes Microsoft 365 Copilot information disclosure but no
+    distinct sender-agent and receiver-agent hop.
+  prohibited_publishable_text:
+  - CVE-2025-32711 proves cross-agent propagation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X003
+  candidate: GHSA-v7px is itself a direct instance of this technique.
+  origin: Exact advisory URL supplied by the reviewed NVD record.
+  attempted_searches:
+  - Official NVD record and exact maintainer advisory review
+  consulted_source_ids:
+  - SRC-nvd-token-scope-corpus
+  - SRC-ghsa-v7px
+  reason: The advisory establishes prompt-influenced lifecycle-hook command execution,
+    not a second-agent instruction transfer.
+  prohibited_publishable_text:
+  - GHSA-v7px is Cross-Agent Instruction Injection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X004
+  candidate: Agent Smith directly demonstrates text instruction relay.
+  origin: Academic demonstration pass.
+  attempted_searches:
+  - Direct review of Agent Smith abstract
+  - experiments
+  - and scaling appendix
+  consulted_source_ids:
+  - SRC-gu-agent-smith
+  reason: The defining mechanism is an adversarial image and infectious jailbreak
+    in a simulated multimodal population.
+  prohibited_publishable_text:
+  - Agent Smith directly demonstrates text instruction relay
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X005
+  candidate: PlanFlip is the same behavior as peer-agent instruction injection.
+  origin: Current multi-agent injection literature pass.
+  attempted_searches:
+  - Direct review of PlanFlip's abstract
+  - threat model
+  - and experiments
+  consulted_source_ids:
+  - SRC-wang-planflip
+  reason: PlanFlip injects tool output into the planner context before downstream
+    plan creation; a peer-agent relay is not its defining delivery mechanism.
+  prohibited_publishable_text:
+  - PlanFlip is the same technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X006
+  candidate: Subagent memory inheritance is interchangeable with an inter-agent message
+    instruction.
+  origin: Current multi-agent trust-boundary research pass.
+  attempted_searches:
+  - Direct review of When Child Inherits
+  consulted_source_ids:
+  - SRC-cai-zhang-hei-child-inherits
+  reason: Spawn-time inherited state is a distinct mechanism even when malicious instructions
+    are present in memory.
+  prohibited_publishable_text:
+  - memory inheritance and message injection are identical
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X007
+  candidate: Agent-origin tagging alone prevents prompt infection.
+  origin: Detection and defense research pass.
+  attempted_searches:
+  - Prompt Infection defense and limitation review; ChannelGuard challenge review
+  consulted_source_ids:
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-hossain-et-al-channelguard
+  reason: The Prompt Infection experiments found tagging weak in isolation, and adaptive
+    paraphrasing remains a classifier evasion path.
+  prohibited_publishable_text:
+  - tagging alone prevents prompt infection
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X008
+  candidate: A model family that resisted one benchmark is immune to the technique.
+  origin: Contrary-results challenge pass.
+  attempted_searches:
+  - Cross-study comparison of Prompt Infection
+  - MAS Hijacking
+  - OMNI-LEAK
+  - and PlanFlip
+  consulted_source_ids:
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-triedman-jha-shmatikov-mas-hijacking
+  - SRC-naik-et-al-omni-leak
+  - SRC-wang-planflip
+  reason: Results are model-, objective-, architecture-, and configuration-dependent.
+  prohibited_publishable_text:
+  - Claude Sonnet 4 is immune to the technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X009
+  candidate: MITRE ATLAS AML.T0051 is a validated direct framework mapping.
+  origin: Framework reconciliation pass.
+  attempted_searches:
+  - Direct access to the exact official ATLAS page
+  consulted_source_ids:
+  - SRC-mitre-atlas-aml-t0051-shell
+  reason: The official page returned no reviewable content during this run, so its
+    name, current status, and mapping could not be verified.
+  prohibited_publishable_text:
+  - ATLAS AML.T0051 is a validated direct mapping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X010
+  candidate: The current catalog gap proves no cross-agent incident has occurred.
+  origin: Gap-analysis pass.
+  attempted_searches:
+  - AI Incident Database and NVD review plus two final saturation passes
+  consulted_source_ids:
+  - SRC-aiid-snapshot-20260831
+  - SRC-nvd-token-scope-corpus
+  reason: Catalog absence is bounded by time, indexing, publication, and terminology.
+  prohibited_publishable_text:
+  - No cross-agent incident has ever occurred
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X011
+  candidate: CVE-2025-6514 and CVE-2025-49596 are cross-agent vulnerabilities.
+  origin: MCP advisory pass.
+  attempted_searches:
+  - Direct first-party JFrog and Oligo researcher advisory review
+  consulted_source_ids:
+  - SRC-jfrog-cve-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  reason: Both establish important MCP trust failures, but neither documents instructions
+    carried by one agent into a distinct receiver-agent context.
+  prohibited_publishable_text:
+  - CVE-2025-6514 is a cross-agent vulnerability
+  - CVE-2025-49596 is a cross-agent vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1705-X012
+  candidate: The blocked dynamic MSRC page supports extra affected-version or exploitation
+    details.
+  origin: Official advisory follow-up.
+  attempted_searches:
+  - Direct page access and CVE Program record review
+  consulted_source_ids:
+  - SRC-msrc-cve-2025-32711-shell
+  - SRC-cve-2025-32711
+  reason: The dynamic page did not expose reviewable content; details beyond the CVE
+    record were omitted.
+  prohibited_publishable_text:
+  - MSRC confirms active cross-agent exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

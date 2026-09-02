@@ -1,0 +1,27 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1503
+    name: Env-Var Scraping
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0006
+    technique_path: techniques/SAF-T1503/README.md
+    research_packet: research/techniques/SAF-T1503
+    related_techniques:
+      - SAF-T1502
+    mitigations: [SAF-M-9, SAF-M-11, SAF-M-12, SAF-M-20, SAF-M-29, SAF-M-63, SAF-M-72, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T1503/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1503/test_detection.py
+        - tests/SAF-T1503/test-cases.json
+        - tests/SAF-T1503/test-result.txt
+        - research/techniques/SAF-T1503/validation/detection-test-result.txt
+        - research/techniques/SAF-T1503/validation/strict-validator-result.txt
+    external_mappings:
+      - framework: MITRE ATT&CK
+        id: T1552.001
+        mapping_type: analogous
+        claim_id: SAF-T1503-C023

@@ -1,0 +1,77 @@
+version: 1
+technique_id: SAF-T1006
+name: User-Social-Engineering Install
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0001
+adversary_objective: Obtain execution of attacker-controlled MCP integration software
+  by deceiving a user into initiating or approving its installation, configuration,
+  trust, or first launch.
+scope:
+  security_boundary: The user-to-local-runtime trust boundary at which an MCP client
+    turns a user-mediated install or trust decision into a persisted server configuration
+    and local process execution.
+  in_scope:
+  - Attacker-supplied MCP installation links, configuration records, package identities,
+    or startup commands presented deceptively to a user.
+  - User interaction that initiates or approves adding, trusting, or starting the
+    supplied MCP integration.
+  - The immediate outcome that the attacker-controlled local server command is registered
+    or executed with the MCP client or user account's access.
+  out_of_scope:
+  - Phishing or lure delivery that does not culminate in an MCP integration install
+    or trust action.
+  - Automatic execution of project-supplied MCP configuration without a user install
+    or trust decision; this is an adjacent configuration-loading behavior.
+  - Compromise or substitution of a server package after a legitimate install; this
+    is a supply-chain or update-integrity behavior.
+  - Prompt injection, malicious tool behavior, credential theft, persistence, and
+    other follow-on activity after the initial MCP integration executes.
+  affected_components:
+  - MCP host or client installation and trust interface
+  - Local MCP server configuration
+  - Local process runtime and package launcher
+nearest_neighbors:
+- technique_id: SAF-T1003
+  distinction: Distribution of an attacker-controlled server artifact can overlap,
+    but SAF-T1006 specifically requires deception at the user's MCP install or trust
+    decision.
+- technique_id: SAF-T1002
+  distinction: Supply-chain compromise changes a producer or distribution path the
+    consumer already trusts rather than deceiving the user at the installation boundary.
+required_evidence:
+- Establish that local MCP server configuration can cause code or package execution
+  with the user's or client's access.
+- Establish that an adversary can present deceptive MCP installation content and that
+  user interaction can complete the execution path.
+- Distinguish controlled demonstrations and disclosed vulnerabilities from production
+  incidents and historical analogies.
+- Search separately for production breaches, vulnerabilities, public advisories, controlled
+  demonstrations, exploitation status, and fixes.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP client or host events for configuration addition or change, source URI, server
+    identity, initiating user, approval or trust state, and server ID.
+  - Endpoint process-creation events with timestamp, host, user, parent image, child
+    image, command line, signer or publisher state, and hashes when available.
+safe_example_constraints:
+- Use inert example identities and omit deployable installation links or encoded payloads.
+- Do not reproduce advisory proof-of-concept commands, live indicators, or destructive
+  actions.
+- Describe downstream impact as bounded consequences rather than operational steps.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE joins or a
+  declared local artifact.
+- All five research passes and two consecutive no-change passes are recorded.
+- Three selected direct vulnerabilities are classified separately from incidents and
+  analogies.
+- The deterministic analytic passes positive, negative, boundary, malformed, and expected-lookalike
+  tests.
+- Publication rights, clean-room integrity, framework joins, and integration constraints
+  are recorded.

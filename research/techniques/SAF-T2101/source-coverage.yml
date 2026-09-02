@@ -1,0 +1,256 @@
+version: 1
+technique_id: SAF-T2101
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+        - Direct review of https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation
+        - Direct review of https://blog.modelcontextprotocol.io/posts/2026-03-16-tool-annotations/
+      material_changes: [Established model-controlled tool semantics, untrusted annotations, and confirmation mechanisms.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Direct NVD review of CVE-2025-53098, CVE-2025-64443, CVE-2025-54377, and CVE-2025-49596
+        - Direct CISA KEV CSV cveID search for the reviewed MCP and agent advisories
+      material_changes: [Classified three strongest advisories as enabling only and preserved the direct-incident gap.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org Model Context Protocol tool poisoning controlled evaluation
+        - site:arxiv.org AgentTrust agent tool action data destruction
+      material_changes: [Added controlled tool-poisoning, normalization, and temporal server-defection evidence without treating it as destruction.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of AWS agent access and Agentic AI Lens guidance
+        - Direct review of Microsoft SQL MCP Server and Azure DocumentDB MCP Toolkit controls
+        - Direct review of MITRE ATT&CK T1485 and DET0146
+      material_changes: [Defined structured telemetry, protected-target logic, destructive-verb normalization, and burst correlation.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of contrary client blocking results in arXiv:2603.22489
+        - Direct review of deterministic semantic limits in arXiv:2606.08539
+        - Direct review of direct-path limits in AWS MCP access guidance
+      material_changes: [Bounded the evidence label, documented direct-path and semantic blind spots, and rejected annotation trust as a control.]
+    - pass: production_breach
+      completed_on: "2026-09-02"
+      queries:
+        - site:cisa.gov "Model Context Protocol" breach delete data
+        - site:aws.amazon.com MCP incident production data deletion agent
+        - site:microsoft.com MCP incident data destruction agent
+      material_changes: [No qualifying direct production incident was identified; negative result retained as a bounded gap.]
+    - pass: vulnerability_advisory_and_exploitation_status
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov MCP agent command execution tool manipulation CVE
+        - CISA KEV CSV snapshot acquired 2026-09-02 and searched by exact cveID
+      material_changes: [Added CVE-2025-54377 proof-of-concept status; all reviewed CVEs remained enabling rather than direct.]
+    - pass: controlled_demonstration
+      completed_on: "2026-09-02"
+      queries:
+        - Direct full-text review of arXiv:2603.22489
+        - Direct full-text review of arXiv:2608.23763
+      material_changes: [Recorded empirical delivery and server-defection results plus contrary defense outcomes; no destruction objective was demonstrated.]
+    - pass: detection_and_defense_follow_up
+      completed_on: "2026-09-02"
+      queries:
+        - Direct full-text review of arXiv:2605.04785 and arXiv:2606.08539
+        - Direct review of AWS Agentic AI Lens AGENTSEC02
+      material_changes: [Added Unicode normalization test and explicit semantic-intent limitation.]
+    - pass: contrary_and_gap_follow_up
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org "Model Context Protocol" "data destruction"
+        - site:nvd.nist.gov MCP agent "data deletion" vulnerability
+        - site:cisa.gov "Model Context Protocol" "data deletion"
+      material_changes: [No direct qualifying example surfaced; unrelated platform CVEs and non-MCP destruction were excluded.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov "CVE-2025-54377" RooCode command allow-list
+        - site:nvd.nist.gov "CVE-2025-64443" Docker MCP Gateway
+        - site:arxiv.org exact title "AgentTrust: A Self-Improving Trust Layer for AI-Agent Actions"
+        - site:arxiv.org exact title "TrustShiftProbe: Characterizing, Benchmarking, and Defending Staged Trust Attacks on MCP Servers"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - site:aws.amazon.com exact title "Secure AI agent access patterns to AWS resources using Model Context Protocol"
+        - site:learn.microsoft.com exact title "Data manipulation language tools" "SQL MCP Server"
+        - site:learn.microsoft.com "MCP Toolkit" "Azure DocumentDB" "Safety guardrails"
+        - site:attack.mitre.org "Data Destruction" "T1485" "Detection Strategy"
+      material_changes: []
+  rationale: >-
+    Five core passes and separate production, advisory, demonstration, defense,
+    and contrary passes covered current protocol text, first-party product
+    behavior, government vulnerability and exploitation catalogs, academic
+    evaluations, platform analogies, and counterevidence. After the last
+    material source was incorporated, two consecutive exact authoritative-
+    source passes changed no claim, source selection, example classification,
+    exclusion, or detector design.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 9
+  selected_examples: []
+  no_qualifying_examples_rationale: >-
+    No reviewed source documented a production MCP or agent incident, a direct
+    vulnerability, or an end-to-end controlled demonstration whose immediate
+    adversary objective was deletion or irreversible corruption of stored
+    state. The three strongest current advisories establish enabling control
+    paths only. Selecting them as direct examples would overstate the evidence.
+  candidates:
+    - source_id: SRC-nvd-cve-2025-53098
+      identifier: CVE-2025-53098
+      relationship: enabling_vulnerability
+      exploitation_status: CISA SSVC none as recorded by NVD
+      impact: Prompt-influenced MCP configuration write could lead to arbitrary command execution under multiple prerequisites.
+      remediation: Upgrade Roo Code to 3.20.3 or later and keep configuration writes outside auto-approval.
+      selected: false
+      rationale: No destruction objective or outcome is documented.
+    - source_id: SRC-nvd-cve-2025-64443
+      identifier: CVE-2025-64443
+      relationship: enabling_vulnerability
+      exploitation_status: CISA SSVC none as recorded by NVD
+      impact: Browser-based DNS rebinding could manipulate tools behind non-stdio Docker MCP Gateway transports.
+      remediation: Upgrade to 0.28.0 or later; default stdio was not affected.
+      selected: false
+      rationale: The affected access path could enable a later action, but no destruction is documented.
+    - source_id: SRC-nvd-cve-54377
+      identifier: CVE-2025-54377
+      relationship: enabling_vulnerability
+      exploitation_status: CISA SSVC proof-of-concept as recorded by NVD
+      impact: Multiline command input could bypass Roo Code allow-list checking and execute additional commands.
+      remediation: Upgrade to 3.23.19 or later.
+      selected: false
+      rationale: Proof-of-concept status concerns command execution, not a destruction objective.
+    - source_id: SRC-nvd-cve-49596
+      identifier: CVE-2025-49596
+      relationship: enabling_vulnerability
+      exploitation_status: not present in acquired CISA KEV snapshot on 2026-09-02
+      impact: Unauthenticated remote command execution affected MCP Inspector before 0.14.1.
+      remediation: Upgrade to 0.14.1 or later.
+      selected: false
+      rationale: Generic command execution with no destruction evidence is less direct than selected publishable enabling advisories.
+    - source_id: SRC-arxiv-mcp-threat
+      identifier: arXiv:2603.22489 controlled tool-poisoning evaluation
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled evaluation
+      impact: Two of seven evaluated clients executed the remote-script test path; four blocked it and one was partial.
+      remediation: Validate tools, require confirmation, restrict execution, and treat server metadata as untrusted.
+      selected: false
+      rationale: Demonstrates delivery and execution, not data destruction.
+    - source_id: SRC-arxiv-trustshift
+      identifier: arXiv:2608.23763 TrustShiftProbe
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: controlled evaluation
+      impact: Temporally defecting MCP server tests achieved a reported 69.5 percent mean success, reduced to 42.7 percent with SHIELD.
+      remediation: Monitor server behavior over time and enforce runtime response policy.
+      selected: false
+      rationale: Objectives were disruption and exfiltration; no scoped data destruction was established.
+    - source_id: SRC-arxiv-agenttrust-v1
+      identifier: arXiv:2605.04785 AgentTrust v1
+      relationship: rejected
+      exploitation_status: controlled benchmark
+      impact: Evaluates normalization and pre-execution safety verdicts for agent actions.
+      remediation: Intercept actions before execution and normalize superficial obfuscation.
+      selected: false
+      rationale: Defense evaluation includes unsafe-action categories but not a direct destruction incident.
+    - source_id: SRC-arxiv-agenttrust-v2
+      identifier: arXiv:2606.08539 AgentTrust v2
+      relationship: rejected
+      exploitation_status: replay simulation and held-out evaluation
+      impact: Deterministic rules did not improve reported semantic data/database accuracy in the held-out study.
+      remediation: Escalate semantically ambiguous actions for contextual or human review.
+      selected: false
+      rationale: Establishes a detector limit rather than an attack example.
+    - source_id: SRC-aws-agent-access
+      identifier: AWS prompt-injection deletion scenario
+      relationship: rejected
+      exploitation_status: hypothetical guidance scenario
+      impact: Granted delete permissions could be used at agent speed against production resources.
+      remediation: Least privilege, organizational guardrails, identity differentiation, and logging.
+      selected: false
+      rationale: AWS expressly presents an architectural risk scenario, not a reported incident.
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-release-2026-07-28
+  - SRC-aws-agent-access
+  - SRC-aws-agentic-lens
+  - SRC-ms-sql-mcp
+  - SRC-ms-documentdb-mcp
+  - SRC-nvd-cve-2025-53098
+  - SRC-nvd-cve-2025-64443
+  - SRC-nvd-cve-54377
+  - SRC-arxiv-mcp-threat
+  - SRC-arxiv-agenttrust-v1
+  - SRC-arxiv-agenttrust-v2
+  - SRC-arxiv-trustshift
+  - SRC-mitre-t1485
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-auth-2025-06-18
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-owasp-llm-top10-v1
+  - SRC-azure-mcp-tools
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-arxiv-mcpsec
+  - SRC-mcp-security-bench-2510.15994
+  - SRC-nvd-cve-49596
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-release-2026-07-28
+  - SRC-aws-agent-access
+  - SRC-aws-agentic-lens
+  - SRC-ms-sql-mcp
+  - SRC-ms-documentdb-mcp
+  - SRC-nvd-cve-2025-53098
+  - SRC-nvd-cve-2025-64443
+  - SRC-nvd-cve-54377
+  - SRC-arxiv-mcp-threat
+  - SRC-arxiv-agenttrust-v1
+  - SRC-arxiv-agenttrust-v2
+  - SRC-arxiv-trustshift
+  - SRC-mitre-t1485
+  - SRC-cisa-kev-fsp-2026-09-01
+sources_rejected:
+  - {source_id: SRC-mcp-tools-2025-06-18, reason: Superseded by the 2026-07-28 specification.}
+  - {source_id: SRC-mcp-auth-2025-06-18, reason: Superseded authorization text and not specific to destruction.}
+  - {source_id: SRC-mcp-security-spec-2025-11-25, reason: General security guidance redundant with current protocol and first-party controls.}
+  - {source_id: SRC-owasp-llm-top10-v1, reason: Historical high-level taxonomy lacks direct MCP destruction evidence.}
+  - {source_id: SRC-azure-mcp-tools, reason: General tool catalog adds no material fact beyond the selected SQL and DocumentDB sources.}
+  - {source_id: SRC-microsoft-tool-poisoning-2026-06-30, reason: A hypothetical tool-poisoning pattern, not a reported incident or destruction demonstration.}
+  - {source_id: SRC-arxiv-mcpsec, reason: Protocol experiment is adjacent and adds no scoped destruction result.}
+  - {source_id: SRC-mcp-security-bench-2510.15994, reason: Benchmark attacks are adjacent and add no scoped destruction result.}
+  - {source_id: SRC-nvd-cve-49596, reason: Command execution only; less direct than the retained enabling advisories and no destruction evidence.}
+sources_blocked: []
+conflicts:
+  - issue: Some controlled clients blocked tool-poisoning execution, and runtime defenses reduced TrustShift success.
+    resolution: The technique requires a successful authorized destructive call; defenses are presented as conditions and not assumed absent.
+  - issue: Deterministic lexical rules cannot reliably resolve intent-dependent benign and malicious actions with the same surface.
+    resolution: The rule is limited to explicit verbs, protected-target approval failures, and review-oriented bursts; semantic ambiguity is a stated limitation.
+  - issue: MCP-specific context and policy may not cover direct shell or service API paths.
+    resolution: Required telemetry and response guidance include target-service and non-MCP paths.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T2101-C001, SAF-T2101-C006, SAF-T2101-C014, SAF-T2101-C016]
+  rationale: >-
+    Protocol semantics, first-party destructive tool surfaces, and delegated-
+    authority guidance jointly support feasibility, prerequisites, and impact.
+    No qualifying direct production or end-to-end controlled example was found,
+    so the complete technique is not labeled Observed or Demonstrated.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

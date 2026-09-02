@@ -1,0 +1,543 @@
+version: 1
+x-remote-review: &remote_review
+  status: remote_reviewed_not_archived
+  reason: Directly reviewed authoritative remote content; no local source archive was required for this frozen evidence packet.
+  review_evidence:
+    reviewed_on: 2026-09-01
+    method: Exact-URL rendered-content or authoritative structured-record review
+sources:
+  - id: SRC-aqua-trivy-2026
+    title: Trivy Supply Chain Attack - What You Need to Know
+    publisher: Aqua Security
+    authors: [Aqua Team]
+    version_or_date: 2026-04-01 updated
+    source_class: incident_report
+    official_url: https://www.aquasec.com/blog/trivy-supply-chain-attack-what-you-need-to-know/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Timeline, Malicious payload, Affected window, What users should do]
+    review_notes: Victim-maintainer account of release-token compromise, malicious artifacts, targeted credentials, unaffected products, and remediation.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-aqua-trivy-product
+    title: Trivy product page
+    publisher: Aqua Security
+    authors: [Aqua Security]
+    version_or_date: Current on 2026-09-01
+    source_class: credible_practice
+    official_url: https://www.aquasec.com/products/trivy/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Product overview]
+    review_notes: Reviewed but rejected because it added no incident evidence.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-aws-imds
+    title: Use the Instance Metadata Service to access instance metadata
+    publisher: Amazon Web Services
+    authors: [Amazon Web Services]
+    version_or_date: Current on 2026-09-01
+    source_class: official_advisory
+    official_url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [IMDSv2 endpoint, IPv4 link-local address, Metadata paths]
+    review_notes: Established the AWS instance-metadata endpoint and access method.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-aws-imds-credentials
+    title: Retrieve security credentials from instance metadata
+    publisher: Amazon Web Services
+    authors: [Amazon Web Services]
+    version_or_date: Current on 2026-09-01
+    source_class: official_advisory
+    official_url: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-metadata-security-credentials.html
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Role credential path, AccessKeyId, SecretAccessKey, Token]
+    review_notes: Established temporary role credential fields returned by instance metadata and SDK retrieval behavior.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-azure-imds
+    title: Azure Instance Metadata Service
+    publisher: Microsoft Learn
+    authors: [Microsoft]
+    version_or_date: Current on 2026-09-01
+    source_class: official_advisory
+    official_url: https://learn.microsoft.com/en-us/azure/virtual-machines/instance-metadata-service
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Service endpoint, Security guidance]
+    review_notes: Reviewed for provider breadth but rejected from published claims in favor of clearer scoped token authorities.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-circleci-2023
+    title: CircleCI security incident report
+    publisher: CircleCI
+    authors: [Rob Zuber]
+    version_or_date: 2023-01-12
+    source_class: incident_report
+    official_url: https://circleci.com/blog/january-4-2023-security-alert/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Incident timeline, Environment-variable exfiltration, Customer remediation]
+    review_notes: Credible historical token-exfiltration analogy, not selected because newer direct evidence qualified.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: Retrieved 2026-09-01
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-feed retrieval and deterministic CVE filtering
+    locators: [CVE-2025-30066 catalog record]
+    review_notes: Final saturation check confirmed CVE-2025-30066 was listed; the other three reviewed CVEs were absent.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cve-2025-1974
+    title: CVE-2025-1974 record
+    publisher: CVE Program
+    authors: [Kubernetes CNA, CISA ADP]
+    version_or_date: Published 2025-03-24
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-1974
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact CVE API record retrieval and review
+    locators: [CNA description, Affected versions, CISA ADP exploitation assessment, Researcher credits]
+    review_notes: Established ingress-nginx code execution and secret-disclosure exposure; not selected as direct token-theft evidence.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cve-2025-30066
+    title: CVE-2025-30066 record
+    publisher: CVE Program
+    authors: [CVE record contributors, CISA ADP]
+    version_or_date: Published 2025-03-15
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-30066
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact CVE API record retrieval and review
+    locators: [CNA description, CISA ADP exploitation assessment, References]
+    review_notes: Established a known-exploited malicious GitHub Action secret-disclosure incident; not selected over newer examples.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cve-2025-49596
+    title: CVE-2025-49596 record
+    publisher: CVE Program
+    authors: [GitHub CNA, CISA ADP]
+    version_or_date: Published 2025-06-13
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-49596
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact CVE API record retrieval and review
+    locators: [CNA description, Affected and fixed versions, CISA ADP exploitation assessment, References]
+    review_notes: Established affected MCP Inspector versions, the enabling RCE condition, fixed version, and no known exploitation status.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-cve-2025-6514
+    title: CVE-2025-6514 record
+    publisher: CVE Program
+    authors: [JFrog CNA, CISA ADP]
+    version_or_date: Published 2025-07-09
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-6514
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact CVE API record retrieval and review
+    locators: [CNA description, Affected and fixed versions, CISA ADP exploitation assessment, References]
+    review_notes: Established affected mcp-remote versions, command-injection condition, fixed version, and no known exploitation status.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-doj-capital-one-2019
+    title: Capital One data theft criminal complaint announcement
+    publisher: United States Department of Justice
+    authors: [United States Department of Justice]
+    version_or_date: 2019-07-29
+    source_class: official_advisory
+    official_url: https://www.justice.gov/usao-wdwa/pr/seattle-tech-worker-arrested-data-theft-involving-large-financial-services-company
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Allegations, Misconfigured web application firewall]
+    review_notes: Established historical cloud data theft but not the scoped token mechanics; rejected from claims.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-fbi-teampcp-2026
+    title: TeamPCP Software Supply Chain Compromise
+    publisher: Federal Bureau of Investigation Internet Crime Complaint Center
+    authors: [Federal Bureau of Investigation, Department of Homeland Security, CISA]
+    version_or_date: FLASH-20260702-01
+    source_class: official_advisory
+    official_url: https://www.ic3.gov/CSA/2026/260702.pdf
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct PDF open and complete six-page text review
+    locators: [Pages 1-3 Technical Details, SANDCLOCK behavior, Pages 4-5 Mitigations]
+    review_notes: Established current campaign targeting and extraction of AWS and Kubernetes workload credentials plus response guidance.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-gcp-metadata
+    title: View and query VM metadata
+    publisher: Google Cloud
+    authors: [Google Cloud]
+    version_or_date: Current on 2026-09-01
+    source_class: official_advisory
+    official_url: https://docs.cloud.google.com/compute/docs/metadata/querying-metadata
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review after canonical redirect
+    locators: [Metadata-Flavor header, OAuth 2.0 access token endpoint, Scope and downscoping guidance]
+    review_notes: Established GCE metadata token retrieval, response semantics, and scope controls.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-ghsa-7f8r-222p-6f5g
+    title: MCP Inspector unauthenticated proxy remote code execution advisory
+    publisher: GitHub Security Advisories
+    authors: [Model Context Protocol Inspector maintainers, Remy Marot]
+    version_or_date: Published 2025-06-13
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Exact GitHub URL opened only after the non-GitHub CVE record supplied it
+    locators: [Affected versions, Patched version, Credits]
+    review_notes: Corroborated CVE-2025-49596 and credited the reporter; not needed as a cited claim source.
+    review_status: opened_reviewed
+    discovery_provenance: SRC-cve-2025-49596
+    archive: *remote_review
+  - id: SRC-git-50df0e1
+    title: MCP Inspector authentication and origin-validation fix commit
+    publisher: GitHub
+    authors: [Model Context Protocol Inspector maintainers]
+    version_or_date: Commit 50df0e1
+    source_class: implementation_artifact
+    official_url: https://github.com/modelcontextprotocol/inspector/commit/50df0e1ecf57fffe1040f66a5f116fa36ae7a731
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Exact GitHub URL opened only after the non-GitHub CVE record and original research supplied it
+    locators: [Authentication token changes, Localhost binding, Origin checks]
+    review_notes: Corroborating implementation fix; excluded from published claims because higher-level direct authorities sufficed.
+    review_status: opened_reviewed
+    discovery_provenance: [SRC-cve-2025-49596, SRC-oligo-cve-2025-49596]
+    archive: *remote_review
+  - id: SRC-git-607b226
+    title: mcp-remote command-injection fix commit
+    publisher: GitHub
+    authors: [mcp-remote maintainers]
+    version_or_date: Commit 607b226
+    source_class: implementation_artifact
+    official_url: https://github.com/geelen/mcp-remote/commit/607b226b9dd36d9f7c2f0c63218fd77c4d5c9a20
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Exact GitHub URL opened only after the non-GitHub CVE record supplied it
+    locators: [Command construction and validation changes]
+    review_notes: Corroborating patch review; canonical repository redirected but the exact authority-provided commit was preserved.
+    review_status: opened_reviewed
+    discovery_provenance: SRC-cve-2025-6514
+    archive: *remote_review
+  - id: SRC-google-ai-threats-2026
+    title: Threat actors misuse AI and AI infrastructure
+    publisher: Google Threat Intelligence Group
+    authors: [Google Threat Intelligence Group]
+    version_or_date: 2026-05-11
+    source_class: research
+    official_url: https://cloud.google.com/blog/topics/threat-intelligence/threat-actors-misuse-ai
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Report overview]
+    review_notes: Reviewed current threat context but found no direct support for the scoped workload-token theft technique.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-jfrog-advisory-2025-6514
+    title: mcp-remote Command Injection RCE JFSA-2025-001290844
+    publisher: JFrog Security Research
+    authors: [JFrog Security Research]
+    version_or_date: 2025
+    source_class: official_advisory
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Affected versions, Vulnerability summary, Remediation]
+    review_notes: Corroborated the selected JFrog article and CVE record; rejected as duplicative.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-jfrog-cve-2025-6514
+    title: Critical mcp-remote RCE vulnerability CVE-2025-6514
+    publisher: JFrog Security Research
+    authors: [Or Peles]
+    version_or_date: 2025-07-09
+    source_class: research
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Technical analysis, Proof of concept, Affected versions, Remediation]
+    review_notes: Original researcher account of the malicious authorization-endpoint command-injection demonstration and fix.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-k8s-cve-2025-1974
+    title: ingress-nginx CVE-2025-1974 and related vulnerabilities
+    publisher: Kubernetes
+    authors: [Tabitha Sable]
+    version_or_date: 2025-03-24
+    source_class: official_advisory
+    official_url: https://kubernetes.io/blog/2025/03/24/ingress-nginx-cve-2025-1974/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Affected versions, Secret exposure impact, Fixed versions, Researcher credits]
+    review_notes: Maintainer advisory corroborating CVE-2025-1974; not selected because the relationship was adjacent.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-k8s-service-account-admin
+    title: Service Accounts Administration
+    publisher: Kubernetes
+    authors: [The Kubernetes Authors]
+    version_or_date: Current for Kubernetes v1.37
+    source_class: official_advisory
+    official_url: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Bound service account tokens, Projected volume, TokenRequest, Legacy token caveat]
+    review_notes: Established short-lived Pod-bound token projection, typical lifetime, and legacy-token caveat.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-k8s-service-accounts
+    title: Service Accounts
+    publisher: Kubernetes
+    authors: [The Kubernetes Authors]
+    version_or_date: Current on 2026-09-01
+    source_class: official_advisory
+    official_url: https://kubernetes.io/docs/concepts/security/service-accounts/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Service account credentials, Short-lived projected token volume, TokenRequest API]
+    review_notes: Established automatic Pod credential projection and short-lived rotating service-account token behavior.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-litellm-incident-2026
+    title: Security Update - March 2026
+    publisher: LiteLLM
+    authors: [Krrish Dholakia, Ishaan Jaffer]
+    version_or_date: Published 2026-03-24; updated through 2026-03-30
+    source_class: incident_report
+    official_url: https://docs.litellm.ai/blog/security-update-march-2026
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Incident Overview, What the Payload Did, Affected Versions and Distribution Channels, Recommended Actions, Verified Safe Versions]
+    review_notes: Direct victim report of malicious PyPI releases, credential-harvesting targets, exposure window, unaffected official images, and remediation.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-auth-2025-11-25
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: 2025-11-25 superseded
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-version rendered-content review
+    locators: [Protocol Requirements, Access Token Usage]
+    review_notes: Reviewed for version reconciliation; rejected because the 2026-07-28 version was current.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-auth-2026-07-28
+    title: Model Context Protocol Authorization
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: 2026-07-28
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-version rendered-content review
+    locators: [Protocol Requirements, Scope Selection Strategy, Resource Parameter Implementation, Access Token Usage, Token Handling, Security Considerations]
+    review_notes: Established environment credential retrieval for STDIO, bearer handling, audience binding, least privilege, and token security requirements.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-security-2025-11-25
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: 2025-11-25 superseded
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-version rendered-content review
+    locators: [Server-Side Request Forgery, Local MCP Server Compromise]
+    review_notes: Reviewed for version reconciliation; rejected because the 2026-07-28 guidance was current.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-security-2026-07-28
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: 2026-07-28
+    source_class: credible_practice
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-version rendered-content review
+    locators: [Server-Side Request Forgery, SSRF Against Authorization Servers, Local MCP Server Compromise, stdio Transport Security in Proxy Scenarios, Scope Minimization]
+    review_notes: Direct current authority for metadata-service SSRF, redirects, IP validation, egress, sandboxing, and credential-boundary controls.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mcp-spec-2026-07-28
+    title: Model Context Protocol Specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: 2026-07-28
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct current-specification rendered-content review
+    locators: [Architecture, Clients, Servers, Security principles]
+    review_notes: General protocol architecture was reviewed but not needed for a distinct published claim.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mitre-t1528
+    title: Steal Application Access Token T1528
+    publisher: MITRE ATT&CK
+    authors: [The MITRE Corporation, ATT&CK contributors]
+    version_or_date: Version 1.5 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1528/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Technique description, Detection]
+    review_notes: Established ATT&CK overlap for stolen cloud and Kubernetes access tokens.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-mitre-t1552.005
+    title: Unsecured Credentials - Cloud Instance Metadata API T1552.005
+    publisher: MITRE ATT&CK
+    authors: [The MITRE Corporation, Praetorian, ATT&CK contributors]
+    version_or_date: Version 1.4 modified 2026-05-12
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1552/005/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Technique description, Mitigations, Detection]
+    review_notes: Established ATT&CK mapping for credential retrieval from cloud instance metadata APIs.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-occ-capital-one-2020
+    title: OCC assesses civil money penalty against Capital One
+    publisher: Office of the Comptroller of the Currency
+    authors: [Office of the Comptroller of the Currency]
+    version_or_date: 2020-08-06
+    source_class: official_advisory
+    official_url: https://www.occ.gov/news-issuances/news-releases/2020/nr-occ-2020-101.html
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Enforcement summary, Risk-management findings]
+    review_notes: Established governance failures but not the scoped token mechanics; rejected from claims.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-oligo-cve-2025-49596
+    title: Critical RCE Vulnerability in Anthropic MCP Inspector CVE-2025-49596
+    publisher: Oligo Security
+    authors: [Avi Lumelsky, Oligo Security Research]
+    version_or_date: 2025-06-13
+    source_class: research
+    official_url: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Technical Details, Exploitation, Fix, Affected versions]
+    review_notes: Original researcher account of the unauthenticated proxy RCE demonstration and fixed release.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-otel-general
+    title: General semantic convention attributes
+    publisher: OpenTelemetry
+    authors: [OpenTelemetry Authors]
+    version_or_date: Semantic conventions 1.44.0
+    source_class: protocol_or_standard
+    official_url: https://opentelemetry.io/docs/specs/semconv/general/attributes/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [General attributes]
+    review_notes: Reviewed but rejected because the specific HTTP span convention supplied the required telemetry fields.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-otel-http-semconv
+    title: Semantic conventions for HTTP spans
+    publisher: OpenTelemetry
+    authors: [OpenTelemetry Authors]
+    version_or_date: Semantic conventions 1.44.0
+    source_class: protocol_or_standard
+    official_url: https://opentelemetry.io/docs/specs/semconv/http/http-spans/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [HTTP client span, HTTP client attributes, Error recording]
+    review_notes: Established method, URL, server, peer, status, response-size, and retry telemetry available to a normalized analytic.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-rfc6750
+    title: The OAuth 2.0 Authorization Framework - Bearer Token Usage
+    publisher: RFC Editor
+    authors: [Michael B. Jones, Dick Hardt]
+    version_or_date: RFC 6750 October 2012
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc6750.html
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL complete relevant-section review
+    locators: [Abstract, Section 1.2, Section 2.1, Section 5]
+    review_notes: Direct authority for bearer-possession semantics, header use, disclosure and replay threats, and transport protection.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    publisher: RFC Editor
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: RFC 9700 January 2025
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL complete relevant-section review
+    locators: [Section 2.2, Access token privilege restriction, Audience restriction, Sender-constrained tokens]
+    review_notes: Direct authority for narrow privileges, audience restriction, short validity, and sender constraints.
+    review_status: opened_reviewed
+    archive: *remote_review
+  - id: SRC-unit42-teampcp-2026
+    title: TeamPCP Software Supply Chain Attacks
+    publisher: Palo Alto Networks Unit 42
+    authors: [Unit 42]
+    version_or_date: 2026-03
+    source_class: research
+    official_url: https://unit42.paloaltonetworks.com/teampcp-supply-chain-attacks/
+    accessed_on: 2026-09-01
+    reviewed_on: 2026-09-01
+    review_method: Direct exact-URL rendered-content review
+    locators: [Campaign overview, Trivy behavior, LiteLLM behavior, Detection query, Conclusion]
+    review_notes: Corroborated campaign relationships and behavior but externally attributed scale figures were omitted.
+    review_status: opened_reviewed
+    archive: *remote_review

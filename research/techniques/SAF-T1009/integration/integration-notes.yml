@@ -1,0 +1,90 @@
+version: 1
+technique_id: SAF-T1009
+frozen_on: "2026-09-01"
+layout: canonical_clean_room_handoff
+
+seeded_tactic:
+  tactic_id: ATK-TA0001
+  name: Initial Access
+  synthetic: false
+
+synthetic_tactics: []
+
+synthetic_neighbors:
+  - technique_id: SAF-T9998
+    role: authorization-code-injection boundary placeholder
+    required_action: Replace with the canonical repository technique ID after freeze without revising target prose from old content.
+  - technique_id: SAF-T9999
+    role: token-audience-confusion boundary placeholder
+    required_action: Replace with the canonical repository technique ID after freeze without revising target prose from old content.
+
+synthetic_mitigations: []
+
+source_id_joins:
+  mode: post_freeze_mechanical_reconciliation
+  source_ids:
+    - SRC-mcp-auth-2026-07-28
+    - SRC-mcp-auth-discovery-2026-07-28
+    - SRC-mcp-auth-security-2026-07-28
+    - SRC-rfc9700
+    - SRC-rfc9207
+    - SRC-rfc8414
+    - SRC-rfc8707
+    - SRC-rfc9728
+    - SRC-fett-oauth-analysis
+    - SRC-mainka-oidc-endpoints
+    - SRC-fett-oidc-analysis
+    - SRC-nvd-oauth-mixup-query
+    - SRC-nvd-issuer-validation-query
+    - SRC-nvd-authserver-mixup-query
+    - SRC-nvd-cve-2026-11718
+    - SRC-mcp-toolbox-pr3360
+    - SRC-nvd-cve-2026-73419
+    - SRC-ghsa-authjs-provider-binding
+    - SRC-nvd-cve-2025-27370
+    - SRC-oidf-private-key-jwt-notice
+    - SRC-oidf-private-key-jwt-disclosure
+    - SRC-cisa-kev-2026-09-01
+    - SRC-arxiv-mcp-mixup-query
+    - SRC-arxiv-mcp-oauth-issuer-query
+    - SRC-mitre-attack-t1528
+  required_action: Reconcile stable IDs against the shared manifest after freeze; preserve every claim-to-source relationship.
+
+history_sha_joins:
+  - synthetic_sha: "1111111111111111111111111111111111111111"
+    location: research/techniques/SAF-T1009/traceability-ledger.yml
+    required_action: Replace with an honest 40-character repository commit SHA during authorized integration.
+
+path_joins:
+  - bundle_path: source-manifest-fragment.yml
+    repository_path: research/source-manifest.yml
+    action: Merge using the canonical shared-manifest schema; source archive files remain outside this bundle.
+  - bundle_path: framework-fragment.yml
+    repository_path: research/framework-model.yml
+    action: Merge the SAF-T1009 record and reconcile synthetic neighbor identifiers.
+  - bundle_path: alignment-fragment.yml
+    repository_path: research/alignment-ledger.yml
+    action: Merge using the canonical alignment-ledger schema.
+  - bundle_path: techniques/SAF-T1009/
+    repository_path: techniques/SAF-T1009/
+    action: Replace target-owned technique files with the frozen files after authorized integration begins.
+  - bundle_path: research/techniques/SAF-T1009/
+    repository_path: research/techniques/SAF-T1009/
+    action: Replace target-owned research packet files with the frozen files after authorized integration begins.
+  - bundle_path: validation/
+    repository_path: null
+    action: Review as handoff proof; do not merge unless repository policy requests it.
+
+excluded_from_bundle:
+  - path: ../sources/
+    reason: Source-acquisition corpus is retained outside the canonical handoff and represented by the source manifest fragment and hashes.
+  - path: ../scripts/validate-technique-research.py
+    reason: Generic validator dependency is not bundle-owned.
+  - path: ../validation-mock/
+    reason: Isolated mock repository is validator scaffolding, not a merge artifact.
+
+integration_constraints:
+  - Verify FREEZE.sha256 from the bundle root before reviewing or integrating files.
+  - Review new files and validation proof directly; do not inspect a diff that reveals old target content.
+  - Mechanical joins must not use old target prose, old PR text, catalog descriptions, or history to revise the frozen draft.
+  - Rerun strict validation after all repository joins are reconciled.

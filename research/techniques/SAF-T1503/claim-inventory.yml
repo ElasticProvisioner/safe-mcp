@@ -1,0 +1,487 @@
+version: 1
+technique_id: SAF-T1503
+claims:
+  - id: SAF-T1503-C001
+    statement: MCP's stdio transport requires the client to launch the server as a subprocess and exchange JSON-RPC over standard input and output.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-transports-2025-11-25
+        support: direct
+        exact_locators:
+          - stdio, lines 68-87
+    corroboration: MCP security guidance separately describes local servers as binaries executed on the client machine.
+    limitations:
+      - The transport specification does not define environment inheritance.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C002
+    statement: Node.js exposes the current process environment through process.env and defaults a spawned child's env option to process.env.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-node-process-26.8.1
+        support: direct
+        exact_locators:
+          - process.env, lines 1259-1332
+      - source_id: SRC-node-child-process-26.8.1
+        support: direct
+        exact_locators:
+          - child_process.spawn options, lines 553-569
+    corroboration: Python's os.environ independently exposes a process-environment mapping in another common server runtime.
+    limitations:
+      - A particular MCP client may pass an explicit restricted environment instead of the runtime default.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C003
+    statement: Python exposes the current process environment as the os.environ mapping and permits querying its values.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-python-os-3.14.7
+        support: direct
+        exact_locators:
+          - os.environ and os.getenv, lines 89-105 and 177-181
+    corroboration: Node.js provides an equivalent process.env object.
+    limitations:
+      - This establishes runtime access, not which values any MCP client supplies.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C004
+    statement: A malicious or compromised local stdio MCP server can enumerate environment variables supplied or inherited at launch, crossing the host-to-server process boundary and collecting any secret-bearing values present there.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-transports-2025-11-25
+        support: direct
+        exact_locators:
+          - stdio, lines 79-87
+      - source_id: SRC-node-process-26.8.1
+        support: direct
+        exact_locators:
+          - process.env, lines 1259-1332
+      - source_id: SRC-node-child-process-26.8.1
+        support: direct
+        exact_locators:
+          - child_process.spawn env default, lines 556-569
+      - source_id: SRC-claude-code-mcp-2026-09-01
+        support: direct
+        exact_locators:
+          - stdio --env handling, lines 251-254
+          - Environment variable expansion in .mcp.json, lines 682-708
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Local MCP Server Compromise, lines 367-425
+    corroboration: MCP security guidance states local servers may have direct system access and run with client privileges.
+    limitations:
+      - No qualifying direct MCP or agentic incident or public end-to-end demonstration was found in the reviewed corpus.
+      - Values absent from the launched process environment cannot be collected by this mechanism.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The complete behavior follows from independently documented subprocess launch, runtime environment access, client env configuration, and local-server privilege facts.
+    status: validated
+
+  - id: SAF-T1503-C005
+    statement: Claude Code supports passing KEY=value entries to local stdio MCP servers and expanding environment variables, including values described as sensitive API keys, in MCP configuration fields.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-claude-code-mcp-2026-09-01
+        support: direct
+        exact_locators:
+          - stdio --env handling, lines 251-254
+          - Environment variable expansion in .mcp.json, lines 682-708
+    corroboration: The documented plugin example passes DB_URL through the env object at lines 542-554.
+    limitations:
+      - The documentation does not state that arbitrary parent variables are inherited by every server scope.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C006
+    statement: Current Claude Code removes credential-named environment variables from project- or plugin-supplied headersHelper commands but explicitly does not apply that removal to every configuration scope.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-claude-code-mcp-2026-09-01
+        support: direct
+        exact_locators:
+          - Which variables a helper can read, lines 991-997
+    corroboration: The documentation lists removed and not-removed scopes separately.
+    limitations:
+      - The control is documented for headersHelper commands, not as a universal environment policy for all local MCP servers.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C007
+    statement: MCP security guidance says local servers may have direct system access, warns that they run with client privileges, and recommends sandboxing plus restricted filesystem, network, and resource access.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise, lines 367-425
+    corroboration: VS Code separately warns that local MCP servers can run arbitrary code and documents optional sandbox restrictions.
+    limitations:
+      - The guidance does not prescribe an environment-variable allowlist.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C008
+    statement: VS Code warns that local MCP servers can run arbitrary code and offers a sandbox that restricts filesystem and network access on macOS and Linux.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators:
+          - local server warning, lines 236-248
+          - Sandbox MCP servers, lines 315-346
+    corroboration: MCP security guidance recommends sandboxing local servers with minimal privileges.
+    limitations:
+      - The documented sandbox is unavailable on Windows and does not state that environment values are filtered.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C009
+    statement: In 2021, a compromised Codecov Bash Uploader enumerated CI environment variables and transmitted them to attacker infrastructure.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-codecov-bash-uploader-2021
+        support: direct
+        exact_locators:
+          - Indicators of Compromise, lines 41-45
+          - About the Event, lines 72-80
+    corroboration: Codecov stated that it obtained evidence of compromised environment variables and how some may have been used.
+    limitations:
+      - This was a CI supply-chain incident, not an MCP or agentic-system incident.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C010
+    statement: In the 2025 Shai-Hulud npm supply-chain attack, researchers reported malware scanning process.env and publishing dumps containing environment variables and collected secrets.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-aikido-shai-hulud-2025
+        support: direct
+        exact_locators:
+          - What the worm does, lines 27-32
+          - Leaking of secrets, lines 34-60
+    corroboration: MITRE ATT&CK v1.3 lists Shai-Hulud gathering credentials and API keys from process.env.
+    limitations:
+      - This was an npm supply-chain attack, not an MCP or agentic-system incident.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C011
+    statement: CVE-2025-6514 enabled attacker-controlled command execution through mcp-remote 0.0.5 through 0.1.15 and was fixed in 0.1.16.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-jfrog-cve-2025-6514
+        support: direct
+        exact_locators:
+          - Who is affected, lines 155-161
+          - mitigation, lines 169-174
+          - demonstrated attack, lines 188-211
+    corroboration: JFrog Security Research disclosed the issue and credited the maintainer's fix.
+    limitations:
+      - The report demonstrates code execution but does not demonstrate environment-variable collection or production exploitation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C012
+    statement: CVE-2025-49596 allowed unauthenticated command launch through MCP Inspector versions below 0.14.1 and was fixed in 0.14.1.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators:
+          - Executive Summary, lines 23-33
+          - Demo and Fix, lines 110-167
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators:
+          - affected and patched versions, lines 133-154
+    corroboration: The maintainer advisory confirms the affected range, fixed version, and Rémy Marot credit.
+    limitations:
+      - The reports demonstrate code execution but do not demonstrate environment-variable collection or production exploitation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C013
+    statement: Environment-variable scraping is primarily a confidentiality behavior; integrity and availability effects require later use of collected credentials or separate follow-on actions.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-codecov-bash-uploader-2021
+        support: direct
+        exact_locators:
+          - potentially exposed credentials and reachable services, lines 76-85
+      - source_id: SRC-circleci-incident-2023
+        support: corroborating
+        exact_locators:
+          - exfiltrated customer environment variables, keys, and tokens, lines 50-57 and 93-100
+    corroboration: Both incidents separate secret exposure from possible or later unauthorized access.
+    limitations:
+      - The sensitivity of any specific environment depends on the variables present and their privilege.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The immediate behavior collects values; downstream credential use is a separate step.
+    status: validated
+
+  - id: SAF-T1503-C014
+    statement: Environment variables can carry credentials, tokens, keys, and API keys whose exposure may grant access to external services.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-codecov-bash-uploader-2021
+        support: direct
+        exact_locators:
+          - affected credentials, tokens, and keys, lines 76-85
+      - source_id: SRC-circleci-incident-2023
+        support: corroborating
+        exact_locators:
+          - exfiltrated customer environment variables, keys, and tokens, lines 50-57 and 93-100
+      - source_id: SRC-claude-code-mcp-2026-09-01
+        support: corroborating
+        exact_locators:
+          - sensitive values such as API keys, lines 682-693
+    corroboration: Independent incident reports and current product documentation identify secret-bearing environment values.
+    limitations:
+      - Not every environment variable is sensitive or reusable as a credential.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C015
+    statement: Sysmon Event ID 1 records process creation with current and parent command lines and identifiers that support lineage correlation; Event ID 3 optionally links network connections to a process.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators:
+          - capabilities, lines 39-56
+          - Event IDs 1 and 3, lines 120-134
+    corroboration: Windows process auditing separately records process creation and optionally command lines.
+    limitations:
+      - Network connection logging is disabled by default, and process events do not expose in-process reads of process.env or os.environ.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C016
+    statement: RHEL Audit records can expose executable path, parent process ID, process ID, and full command line through SYSCALL, EXECVE, and PROCTITLE records.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rhel9-audit
+        support: direct
+        exact_locators:
+          - audit record fields, lines 394-529
+          - executable execve rules and EXECVE example, lines 558-575 and 719-726
+    corroboration: Sysmon provides corresponding Windows process-lineage fields.
+    limitations:
+      - Audit rules must be configured; these records do not expose direct language-runtime reads of the process environment.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C017
+    statement: A child process named env, printenv, or set that descends from a known local MCP server is a testable but low-specificity indicator of command-based environment enumeration.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-codecov-bash-uploader-2021
+        support: direct
+        exact_locators:
+          - malicious env invocation, lines 41-45 and 81-90
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators:
+          - process creation and parent command line, lines 39-53 and 125-133
+      - source_id: SRC-rhel9-audit
+        support: direct
+        exact_locators:
+          - executable, PPID, and command-line fields, lines 416-471 and 525-529
+    corroboration: The Codecov incident establishes env execution as one real collection method, while OS telemetry establishes observability.
+    limitations:
+      - Legitimate diagnostics can match, and direct runtime API access does not create the child process this analytic requires.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The indicator combines a documented collection method with documented process-lineage telemetry.
+    status: validated
+
+  - id: SAF-T1503-C018
+    statement: A process-creation analytic cannot detect direct in-process reads of process.env or os.environ because those reads do not require a child process.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-node-process-26.8.1
+        support: direct
+        exact_locators:
+          - process.env access, lines 1259-1332
+      - source_id: SRC-python-os-3.14.7
+        support: direct
+        exact_locators:
+          - os.environ and os.getenv, lines 89-105 and 177-181
+      - source_id: SRC-sysmon-15-21
+        support: context
+        exact_locators:
+          - Event ID 1 process creation, lines 125-128
+    corroboration: Two runtimes expose in-process environment mappings without an external utility.
+    limitations:
+      - Runtime instrumentation or egress-content controls may provide other signals, but their effectiveness was not established here.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The runtime access paths do not invoke the process-creation event the analytic evaluates.
+    status: validated
+
+  - id: SAF-T1503-C019
+    statement: Command-line collection can expose sensitive arguments in audit logs, so collection and access to that telemetry require privacy controls.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-windows-command-line-audit
+        support: direct
+        exact_locators:
+          - Include command line in process creation events, lines 73-84
+    corroboration: Microsoft explicitly warns that command-line arguments may contain passwords or private data.
+    limitations:
+      - The source applies to Windows event 4688; equivalent privacy handling must be evaluated separately on other platforms.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C020
+    statement: Launching a local MCP server with a minimal explicit environment and removing credential-like names reduces the values available to that server.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-node-child-process-26.8.1
+        support: direct
+        exact_locators:
+          - explicit env option and default, lines 556-569
+      - source_id: SRC-claude-code-mcp-2026-09-01
+        support: direct
+        exact_locators:
+          - credential-variable removal, lines 991-997
+    corroboration: Node documents explicit environment control and Claude Code documents a deployed name-based removal policy.
+    limitations:
+      - Name-based filtering can miss sensitive values with unexpected names and can remove legitimate variables.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: A value omitted from the child environment is unavailable through the child process's environment mapping.
+    status: validated
+
+  - id: SAF-T1503-C021
+    statement: Restricting a local MCP server's network access and other system privileges reduces direct exfiltration opportunities and follow-on reach but does not prevent the server from reading environment values already supplied to it.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - sandbox and resource restrictions, lines 404-425
+      - source_id: SRC-vscode-mcp-servers
+        support: corroborating
+        exact_locators:
+          - Sandbox MCP servers, lines 315-346
+    corroboration: Both sources recommend or implement network and filesystem isolation for local servers.
+    limitations:
+      - The inference concerns reduced follow-on reach, not guaranteed containment or environment-value filtering.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Resource isolation constrains what a server can do after collection while leaving its supplied environment unchanged.
+    status: validated
+
+  - id: SAF-T1503-C022
+    statement: Following confirmed or suspected exposure, affected credentials should be invalidated or rotated and their use audited.
+    class: historical_analogy
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-codecov-bash-uploader-2021
+        support: direct
+        exact_locators:
+          - recommended actions, lines 81-96 and 146-172
+      - source_id: SRC-circleci-incident-2023
+        support: corroborating
+        exact_locators:
+          - customer remediation, lines 79-100
+    corroboration: Two first-party incident reports prescribe secret rotation after environment-related exposure.
+    limitations:
+      - Rotation must occur at the credential issuer and does not repair the collection path by itself.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1503-C023
+    statement: ATT&CK T1552.001 is an analogous mapping because its current procedure examples include Shai-Hulud collecting credentials and API keys from process.env, although the technique definition itself centers on credential files.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1552.001-v1.3
+        support: direct
+        exact_locators:
+          - definition and metadata, lines 16-50
+          - Shai-Hulud procedure, lines 88-89
+      - source_id: SRC-aikido-shai-hulud-2025
+        support: corroborating
+        exact_locators:
+          - What the worm does, lines 27-32
+    corroboration: The original research source directly reports process.env collection.
+    limitations:
+      - Environment mappings are not credential files, so the mapping is analogous rather than direct.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The procedure overlap is explicit, while the formal ATT&CK mechanism is broader and file-centered.
+    status: validated

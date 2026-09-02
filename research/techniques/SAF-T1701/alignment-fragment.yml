@@ -1,0 +1,21 @@
+version: 1
+issues:
+  - id: SAF-T1701-A001
+    triggered_by: SAF-T1701
+    affects:
+      - SAF-T1001
+      - SAF-T1102
+      - SAF-T1701
+    severity: medium
+    status: resolved
+    change: >-
+      Register a causal same-session pivot from adversary-influenced source-tool
+      output into a distinct target tool or server as the SAF-T1701 boundary.
+    reason: >-
+      The frozen contract excludes pre-invocation tool-definition poisoning and
+      prompt injection without the required cross-tool transition.
+    resolution: >-
+      Tool-definition poisoning maps to SAF-T1001, prompt-injection influence maps
+      to SAF-T1102, nine canonical mitigations cover isolation, validation,
+      authorization, audit, and monitoring, ATT&CK T1080 remains analogous, and
+      ten detector cases validate the boundary.

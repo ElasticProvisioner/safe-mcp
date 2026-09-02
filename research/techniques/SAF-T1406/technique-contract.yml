@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1406
+name: Metadata Manipulation
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an MCP or agentic-system object to be treated as safer,
+  more trusted, or more appropriate than it is by changing security-relevant descriptive
+  or provenance metadata while leaving the object structurally usable.
+scope:
+  security_boundary: The boundary between an object producer or updater and the client,
+    host, reviewer, policy engine, or monitor that consumes metadata to select, approve,
+    inventory, or assess that object.
+  in_scope:
+  - Changing tool or server names, titles, descriptions, schemas, icons, annotations,
+    or comparable descriptors so a consumer misclassifies the same or substituted
+    object.
+  - Post-approval descriptor changes, including rug-pull behavior, that do not trigger
+    equivalent re-review before the object is offered or invoked.
+  - Metadata-only deception demonstrated in MCP or closely matching agentic tool-selection
+    boundaries.
+  out_of_scope:
+  - Prompt injection whose defining mechanism is hostile instructions in ordinary
+    retrieved content rather than object metadata.
+  - Command injection, missing authentication, payload execution, or transport compromise
+    where metadata does not drive the trust or classification error.
+  - File timestamp changes, binary renaming, or filesystem masquerading that does
+    not cross an MCP or agentic object-metadata boundary.
+  - Benign, approved descriptor updates that receive equivalent re-review.
+  affected_components:
+  - MCP host
+  - MCP client
+  - MCP server
+  - tool registry or discovery service
+  - policy and approval service
+  - telemetry and monitoring pipeline
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: SAF-T1102 covers hostile instructions delivered through runtime content;
+    this technique instead requires manipulation of object metadata used before or
+    during selection, approval, or assessment.
+- technique_id: SAF-T1205
+  distinction: SAF-T1205 requires a persistent post-trust redefinition; this technique
+    requires misleading metadata or an unreviewed metadata change to produce a
+    classification or trust error.
+required_evidence:
+- Establish current MCP metadata fields and their stated trust limitations.
+- Establish an end-to-end metadata-only selection, approval, or policy error.
+- Establish the prerequisites and immediate outcome without relying on payload execution.
+- Classify each example as disclosed vulnerability, controlled demonstration, research
+  finding, or observed incident.
+- Search current authoritative incident and vulnerability sources and record exclusions.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Canonical object identity, object type, metadata hash, approved metadata hash,
+    changed fields, approval state, server identity, and event time at discovery or
+    invocation.
+safe_example_constraints:
+- Use an isolated synthetic event stream and inert identifiers only.
+- Do not launch an MCP server, invoke a tool, access credentials, or include executable
+  payloads.
+- Exercise only deterministic metadata-comparison logic.
+completion_evidence:
+- Every substantive publishable unit maps to a reviewed source or declared local artifact.
+- Unsupported candidates are omitted and recorded in traceability-ledger.yml.
+- Two consecutive saturation passes make no material change.
+- Detection tests and the strict canonical validator pass in the synthetic mock.
+- Rights, framework, and safe-publication reviews pass without unresolved issues.

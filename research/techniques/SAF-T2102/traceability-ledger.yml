@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T2102
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2102/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2102/technique-contract.yml
+  supports: Scope, tactic, neutral name, neighbor distinctions, telemetry, and completion
+    criteria.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2102/quality-review.yml
+  supports: Review gates, validator result, and detector-test result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2102/detection-rule.yml
+  supports: Deterministic detection analytic and component-level traceability.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T2102/test_detection_rule.py
+  supports: Executable deterministic detector test harness.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T2102/test-logs.json
+  supports: Positive, negative, boundary, malformed, false-positive, and normalization
+    cases.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T2102/validation/detection-tests.txt
+  supports: Captured successful detector-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T2102/validation/strict-validator.txt
+  supports: Captured successful strict isolated-validator result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2102/validation/canonical-validation.txt
+  supports: Destination detector and strict-validator results after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2102-X001
+  candidate: Claim that adversarial Service Disruption has been observed in production.
+  origin: Required production-breach research pass.
+  attempted_searches:
+  - Domain-restricted first-party MCP project, GitHub, Microsoft, and Anthropic incident
+    searches.
+  - NVD and CISA vulnerability and exploitation-status searches for selected identifiers.
+  consulted_source_ids:
+  - SRC-github-availability-2026-07
+  - SRC-nvd-cve-2025-53365
+  - SRC-nvd-cve-2026-52870
+  reason: The corpus contained vulnerabilities, controlled demonstrations, and a non-adversarial
+    outage but no attributable adversarial production event.
+  prohibited_publishable_text:
+  - Service Disruption is observed in adversarial production incidents
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X002
+  candidate: Treat the July 2026 GitHub MCP web_search outage as an attack.
+  origin: First-party production-incident search.
+  attempted_searches:
+  - Reviewed the complete July 16 incident section and stated root cause.
+  consulted_source_ids:
+  - SRC-github-availability-2026-07
+  reason: GitHub attributes the outage to upstream provider degradation and does not
+    report adversarial activity.
+  prohibited_publishable_text:
+  - attackers caused the GitHub MCP web_search outage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X003
+  candidate: Select AgentDoS as an MCP-specific breach example.
+  origin: Academic demonstration pass.
+  attempted_searches:
+  - Reviewed the paper scope, threat model, results, limitations, and ethics sections.
+  consulted_source_ids:
+  - SRC-usenix-agentdos-2026
+  reason: The study is controlled and agent-wide, not specifically dependent on MCP,
+    and a more direct MCP-compatible example was available.
+  prohibited_publishable_text:
+  - AgentDoS is an MCP production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X004
+  candidate: Present AEGIS as evidence of a production incident.
+  origin: Saturation discovery pass.
+  attempted_searches:
+  - Reviewed the arXiv abstract, version, authors, and stated prototype role.
+  consulted_source_ids:
+  - SRC-arxiv-aegis-2026
+  reason: AEGIS is a policy-enforcement research component and scenario study, not
+    an incident report.
+  prohibited_publishable_text:
+  - AEGIS reported an exploited production outage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X005
+  candidate: Select Overthinking Loops as a fourth example.
+  origin: Saturation discovery pass.
+  attempted_searches:
+  - Compared its abstracted mechanism and 142.4-fold token result to the selected
+    658-fold MCP-compatible result.
+  consulted_source_ids:
+  - SRC-arxiv-overthinking-loops-2026
+  - SRC-arxiv-resource-amplification-2026
+  reason: Direct but materially redundant and lower-impact than the selected demonstration.
+  prohibited_publishable_text:
+  - four highest-impact examples were selected
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X006
+  candidate: Map Service Disruption directly to ATT&CK T1489 Service Stop.
+  origin: Framework-reconciliation pass.
+  attempted_searches:
+  - Compared ATT&CK T1489 and T1499 descriptions and detection guidance.
+  consulted_source_ids:
+  - SRC-mitre-attack-t1489
+  - SRC-mitre-attack-t1499
+  reason: T1499 directly describes resource exhaustion and persistent crash, while
+    T1489 centers on inhibiting services by stopping them.
+  prohibited_publishable_text:
+  - T1489 is the primary ATT&CK mapping
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2102-X007
+  candidate: Include CVE-2025-59333 as a direct selected MCP availability vulnerability.
+  origin: Government vulnerability search lead.
+  attempted_searches:
+  - Direct NVD CVE page fetch and identifier-focused review.
+  consulted_source_ids: []
+  reason: The direct record fetch timed out and the available lead described an enabling
+    database access-control weakness rather than a bounded MCP service-disruption
+    mechanism.
+  prohibited_publishable_text:
+  - CVE-2025-59333 is a selected Service Disruption example
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

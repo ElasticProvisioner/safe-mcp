@@ -1,0 +1,32 @@
+version: 1
+technique_id: SAF-T1506
+reviewed_on: 2026-09-01
+reviewer: OpenAI Codex, independent clean-room author
+gates:
+  clean_room_integrity: {status: passed, note: Target artifacts registries catalogs SAF sites and repository history remained unopened before freeze.}
+  contract_and_scope: {status: passed, note: Acquisition boundary and adjacent lifecycle stages are explicit.}
+  technical_accuracy: {status: passed, note: Every technical proposition is tied to a directly reviewed authority.}
+  claim_traceability: {status: passed, note: Twenty-one claims use same-line hidden traces and exact source locators.}
+  source_or_omit: {status: passed, note: Unsupported candidates were excluded and recorded.}
+  evidence_classification: {status: passed, note: Observed incident evidence is separated from demonstrations and enabling vulnerabilities.}
+  research_saturation: {status: passed, note: Five passes and two final no-change passes are recorded.}
+  breach_and_vulnerability_coverage: {status: passed, note: Eight candidates were ranked and four qualifying examples selected.}
+  detection_quality: {status: passed, note: Network predicate has positive negative and edge-case fixtures plus limitations.}
+  mitigation_quality: {status: passed, note: Preventive and response controls follow direct protocol platform and incident authorities.}
+  framework_alignment: {status: passed, note: ATK-TA0006 and ATT&CK T1552.005 and T1528 reconcile; synthetic roles map post-freeze to SAF-T1502 and SAF-T1507 with eight canonical mitigations.}
+  publication_rights: {status: passed, note: Factual paraphrase attribution and no protected payloads or figures.}
+  safe_publication: {status: passed, note: No live token reusable exploit payload or sensitive victim indicator is published.}
+validation:
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1506/test_detection.py
+    result: PASS SAF-T1506 detection fixtures=8 positive=4 negative=4
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1506/test_detection.py
+      result: passed
+      output: PASS SAF-T1506 detection fixtures=8 positive=4 negative=4
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1506
+      result: passed
+      output: PASS SAF-T1506
+review_status: passed
+unresolved: []

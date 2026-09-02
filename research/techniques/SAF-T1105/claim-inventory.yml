@@ -1,0 +1,296 @@
+version: 1
+technique_id: SAF-T1105
+claims:
+  - id: SAF-T1105-C001
+    statement: MCP tools are model-invocable, tools/call carries a tool name and arguments, and servers must validate tool inputs and implement access controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["User Interaction Model, lines 86-99; Calling Tools, lines 181-195; Security Considerations, lines 725-737"]
+    corroboration: The same specification requires resource URI and path validation for file resources.
+    limitations: [The protocol does not define application-specific file-tool parameters or a universal audit schema.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C002
+    statement: MCP servers must validate resource URIs and sanitize file paths to prevent directory traversal when serving file resources.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["file://, lines 397-399; Security Considerations, lines 439-445"]
+    corroboration: CWE-22 independently defines the same restricted-directory failure mode.
+    limitations: [This requirement is written for MCP resources; file-capable tools additionally depend on the general tool-input and access-control requirements.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C003
+    statement: Path traversal occurs when external input helps construct a pathname intended to remain under a restricted parent but resolves outside it; consequences can include unauthorized reads, writes, deletes, and code execution.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Description and Extended Description, lines 51-55; Common Consequences, lines 58-64"]
+    corroboration: Direct MCP advisories document read, write, and delete outcomes from this failure mode.
+    limitations: [CWE-22 is technology-neutral and does not by itself establish MCP exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C004
+    statement: In an MCP or agent file-capable tool, attacker-influenced path data that resolves outside the configured file scope and causes a filesystem operation constitutes the complete Path Traversal via File Tool behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Calling Tools, lines 181-195; Security Considerations, lines 725-737"]
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Description and Extended Description, lines 51-55"]
+    corroboration: Four selected MCP advisories instantiate the inferred boundary crossing.
+    limitations: [Delivery by prompt injection and downstream use of the file are separate behaviors.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The SAF behavior joins the MCP tool invocation boundary to CWE-22 pathname resolution.
+    status: validated
+  - id: SAF-T1105-C005
+    statement: Varonis Threat Labs reproduced CVE-2026-4270 against AWS's public MCP endpoint, where an authenticated tool call bypassed no-access/workdir restrictions and returned local file content; AWS fixed versions 0.2.14 through 1.3.8 in 1.3.9.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-varonis-cve-2026-4270
+        support: direct
+        exact_locators: ["How we discovered the LFI vulnerability, lines 96-101; How does the vulnerability work, lines 112-136"]
+      - source_id: SRC-aws-cve-2026-4270
+        support: corroborating
+        exact_locators: ["Description and impacted versions, lines 224-239; Resolution and acknowledgement, lines 241-255"]
+    corroboration: AWS's bulletin confirms the affected range, restriction bypass, and fixed version.
+    limitations: [This is a controlled public-endpoint demonstration, not evidence of hostile production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C006
+    statement: CVE-2026-18953 allowed the AWS Transform MCP Server get_resource tool through 0.1.4 to write outside the intended working directory via savePath, with bounded potential local code execution; version 0.1.5 fixes it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aws-cve-2026-18953
+        support: direct
+        exact_locators: ["Description, lines 224-234; Resolution and workarounds, lines 236-250"]
+    corroboration: AWS's bulletin supplies the affected range, consequence, and fixed version.
+    limitations: [The advisory says a context-dependent actor and does not document hostile exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C007
+    statement: CVE-2026-15415 allowed AWS HealthOmics MCP Server workflow linting tools through 0.0.35 to write attacker-controlled content outside the intended workflow bundle via traversal sequences; version 0.0.36 fixes it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aws-cve-2026-15415
+        support: direct
+        exact_locators: ["Description, lines 224-234; Resolution, workarounds, and acknowledgement, lines 236-250"]
+    corroboration: AWS's bulletin supplies the write primitive, affected range, and fixed version.
+    limitations: [The bulletin does not report hostile exploitation or a production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C008
+    statement: CVE-2026-74798 affected SiYuan before 3.7.4 because database_clean accepted an unvalidated ID that could resolve outside its storage directory, copy a readable file into history, and delete the original.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-vulncheck-cve-2026-74798
+        support: direct
+        exact_locators: ["Affected version, CVSS, credit, and Description, lines 14-44"]
+      - source_id: SRC-ghsa-cve-2026-74798
+        support: corroborating
+        exact_locators: ["Affected and patched versions, lines 136-152; Summary, lines 160-179; test limitation, lines 278-294; Credits, lines 415-417"]
+    corroboration: VulnCheck's CNA advisory and the maintainer GHSA agree on the path, impact, credit, and fixed version.
+    limitations: [The GHSA explicitly says the reporter did not run the path against a live compiled kernel; the CVE establishes a disclosed vulnerability, not hostile exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C009
+    statement: None of the reviewed selected-example sources documents hostile production exploitation of this behavior as of 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-cve-2026-4270
+        support: context
+        exact_locators: ["Bulletin content type and description, lines 224-246"]
+      - source_id: SRC-aws-cve-2026-18953
+        support: context
+        exact_locators: ["Bulletin description and remediation, lines 224-242"]
+      - source_id: SRC-aws-cve-2026-15415
+        support: context
+        exact_locators: ["Bulletin description and remediation, lines 224-242"]
+      - source_id: SRC-vulncheck-cve-2026-74798
+        support: context
+        exact_locators: ["Advisory description, lines 42-44"]
+    corroboration: Separate government and vendor-domain production-incident and exploitation-status searches produced no qualifying hostile incident.
+    limitations: [This is a bounded absence statement about the reviewed corpus, not a claim that exploitation has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is limited to what the named current sources and recorded searches report.
+    status: validated
+  - id: SAF-T1105-C010
+    statement: Effective prevention canonicalizes and decodes before validation, uses allowlists rather than denylist-only checks, applies least privilege, and may add an OS-enforced sandbox; link targets must be resolved within the boundary.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Potential Mitigations, lines 65-89"]
+      - source_id: SRC-cwe-59
+        support: corroborating
+        exact_locators: ["Description, Common Consequences, and Potential Mitigations on CWE-59 page"]
+    corroboration: The MCP resources specification separately requires path sanitization and permission checks.
+    limitations: [Sandboxing limits impact but does not correct the validation defect; lexical canonicalization alone may not eliminate races.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C011
+    statement: MCP tool audit telemetry can include timestamp, agent and session identifiers, payload, and input/output fingerprints, while the MCP specification recommends logging tool usage.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-mcp-logging-2025
+        support: direct
+        exact_locators: ["Logging and auditing, lines 181-184"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations, lines 725-737"]
+    corroboration: Google documents a concrete MCP proxy logging design and the protocol recommends audit logging.
+    limitations: [Resolved path, allowed roots, access mode, and validation decision require server-side enrichment; they are not standard MCP wire fields.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C012
+    statement: Comparing a file operation's resolved target with canonical allowed roots, and alerting when a non-overridden operation is outside scope or violates no-access mode, is a deterministic analytic for this behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Description, lines 51-55; canonicalization guidance, lines 67-80"]
+      - source_id: SRC-google-mcp-logging-2025
+        support: corroborating
+        exact_locators: ["Logging and auditing, lines 181-184"]
+    corroboration: Direct advisories show successful operations outside named working or bundle directories.
+    limitations: [The analytic is blind when canonical targets, roots, implicit nested file references, or outcome fields are absent or falsified.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources establish the boundary and available audit context; the comparison logic is an SAF detection synthesis tested on synthetic records.
+    status: validated
+  - id: SAF-T1105-C013
+    statement: Traversal-token matching alone is incomplete because alternate separators, encoding, absolute paths, symbolic links, alternate access paths, and prefix collisions can bypass lexical checks.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Extended Description, lines 53-54; Potential Mitigations, lines 67-80"]
+      - source_id: SRC-cwe-59
+        support: corroborating
+        exact_locators: ["Description and related path-resolution consequences"]
+      - source_id: SRC-aws-cve-2026-4270
+        support: corroborating
+        exact_locators: ["Alternate-path restriction bypass, lines 232-246"]
+    corroboration: The reference-server advisories reviewed but not selected separately document prefix and symlink variants.
+    limitations: [A canonical containment comparison can still race if the filesystem object changes between validation and use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1105-C014
+    statement: Severity rises with write or delete capability, sensitive readable files, powerful service identities, automated invocation, or executable configuration targets, and falls with least privilege, isolation, approval, and read-only operation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-22
+        support: direct
+        exact_locators: ["Common Consequences, lines 58-64; Environment Hardening, lines 84-89"]
+      - source_id: SRC-aws-cve-2026-18953
+        support: corroborating
+        exact_locators: ["Potential local code execution, lines 231-242"]
+      - source_id: SRC-vulncheck-cve-2026-74798
+        support: corroborating
+        exact_locators: ["CVSS and read/delete impact, lines 30-44"]
+    corroboration: Selected advisories span read-only, arbitrary-write, and read/delete impacts.
+    limitations: [Impact remains bounded by the tool process's effective permissions and deployment configuration.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating combines supported consequence and privilege conditions across the selected evidence.
+    status: validated
+  - id: SAF-T1105-C015
+    statement: Response should stop the affected tool path, preserve and correlate its audit records, determine files touched under the process identity, upgrade affected software, and rotate secrets only when investigation shows they were exposed.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-mcp-logging-2025
+        support: direct
+        exact_locators: ["Logging and auditing, lines 181-184"]
+      - source_id: SRC-aws-cve-2026-4270
+        support: direct
+        exact_locators: ["Resolution and no-workaround statement, lines 241-255"]
+      - source_id: SRC-aws-cve-2026-18953
+        support: corroborating
+        exact_locators: ["Resolution and no configuration-only workaround, lines 236-250"]
+    corroboration: All selected vendor advisories direct users to fixed versions.
+    limitations: [Credential rotation is conditional; the sources do not establish exposure in every case.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence joins vendor remediation with the telemetry required for scoping.
+    status: validated
+  - id: SAF-T1105-C016
+    statement: ATT&CK T1005 is an analogous mapping for the read variant because it covers adversary collection of data from local system sources.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1005
+        support: direct
+        exact_locators: ["Technique definition, lines 15-26; version and contributors, lines 30-37"]
+    corroboration: The selected AWS and SiYuan examples include unauthorized local-file reads.
+    limitations: [T1005 describes collection after access and does not encode the MCP path-boundary bypass.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is conceptual rather than exact.}
+    status: validated
+  - id: SAF-T1105-C017
+    statement: ATT&CK T1083 is an analogous mapping only when the tool is used to enumerate files or directories; it does not cover the defining path-boundary bypass.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1083
+        support: direct
+        exact_locators: ["Technique definition, lines 15-27; version and contributors, lines 31-39"]
+    corroboration: T1083 explicitly covers file and directory enumeration by custom tools.
+    limitations: [A single targeted read, write, or delete need not perform discovery.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping applies to a subset of variants and is therefore analogous.}
+    status: validated

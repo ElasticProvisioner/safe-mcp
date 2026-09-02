@@ -1,0 +1,28 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1501
+    name: Full-Schema Poisoning (FSP)
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0006
+    technique_path: techniques/SAF-T1501/README.md
+    research_packet: research/techniques/SAF-T1501
+    related_techniques:
+      - SAF-T1001
+      - SAF-T1205
+      - SAF-T1102
+    mitigations:
+      - SAF-M-15
+      - SAF-M-2
+    attack_mappings:
+      - id: T1195.002
+        type: analogous
+    detection:
+      rule: techniques/SAF-T1501/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1501/cases.json
+        - tests/SAF-T1501/test_detection_rule.py
+        - research/techniques/SAF-T1501/validation/detection-test.txt
+        - research/techniques/SAF-T1501/validation/strict-validator.txt

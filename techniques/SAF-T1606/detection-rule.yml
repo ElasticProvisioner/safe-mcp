@@ -1,44 +1,107 @@
-title: Suspicious Directory Listing
-id: 9e5b2d7a-8c1f-4b5e-9a3d-1f2c3e4d5b6a
+title: Suspicious Directory Enumeration Through an MCP File Tool
+id: 2ed3132d-2d4e-45ce-a7fd-7018bc5f6b90
 status: experimental
-description: Detects attempts to list contents of sensitive system directories via MCP tools.
-author: Vikranth Kumar Shivaa
-date: 2025-11-26
+description: >-
+  Identifies MCP tools/call audit events for documented directory-listing tools
+  when the request targets a boundary-aware sensitive path or requests recursive
+  enumeration, excluding sessions that are both explicitly approved and
+  allowlisted. The result is an investigative lead, not proof of malicious intent.
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1606
+  - https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+  - https://attack.mitre.org/detectionstrategies/DET0370/
+author: SAF-MCP Research Team; clean-room agent /root/cleanroom_saf_t1606
+date: 2026-09-02
+modified: 2026-09-02
 logsource:
+  category: application
   product: mcp
-  service: tool_execution
+  service: tool_audit
 detection:
-  selection:
-    tool_name:
-      - 'list_directory'
-      - 'ls'
-      - 'dir'
-      - 'filesystem_list_directory'
-    parameters.path|contains:
-      - '/etc'
-      - '/root'
-      - 'C:\\Windows'
-      - 'C:\\Users\\Administrator'
-      - '.ssh'
-      - '.aws'
-      - '.env'
-  condition: selection
+  selection_call:
+    rpc.method: tools/call
+  selection_tool:
+    tool.name:
+      - list_directory
+      - list_directory_with_sizes
+      - directory_tree
+      - search_files
+      - list_allowed_directories
+  selection_sensitive_path:
+    tool.arguments.path|path_boundary:
+      - /etc
+      - /root
+      - .ssh
+      - .config
+      - /var/lib
+  selection_recursive_tool:
+    tool.name:
+      - directory_tree
+      - search_files
+  filter_approved_allowlisted:
+    approval.state: approved
+    session.allowlisted: true
+  condition: selection_call and selection_tool and (selection_sensitive_path or selection_recursive_tool) and not filter_approved_allowlisted
+fields:
+  - timestamp
+  - session.id
+  - actor.id
+  - server.id
+  - rpc.method
+  - tool.name
+  - tool.arguments.path
+  - approval.state
+  - session.allowlisted
+  - result.status
+falsepositives:
+  - Approved IDE indexing, repository browsing, build, backup, or inventory activity that recursively enumerates project trees.
+  - Authorized administrators or support workflows inspecting sensitive directories.
 level: medium
 tags:
   - attack.discovery
   - attack.t1083
-  - safe.t1606
-falsepositives:
-  - Legitimate listings within project workspace or temp directories
-  - CI/CD jobs enumerating build artifacts or dependencies
-  - IDE extensions scanning project folders for indexing
-  - OS/security tools performing routine system scans
-fields:
-  - timestamp
-  - service
-  - tool_name
-  - parameters.path
-  - user_id
-
+  - saf.t1606
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1606-C012
+    - SAF-T1606-C013
+  telemetry_claim_ids:
+    - SAF-T1606-C001
+    - SAF-T1606-C002
+    - SAF-T1606-C011
+  limitation_claim_ids:
+    - SAF-T1606-C013
+  validation_artifacts:
+    - tests/SAF-T1606/test_detection_rule.py
+    - tests/SAF-T1606/test-logs.json
+    - research/techniques/SAF-T1606/validation/detection-test.txt
+    - research/techniques/SAF-T1606/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1606-C002, SAF-T1606-C011]
+      rationale: MCP tool-audit records are recommended by the protocol; ATT&CK uses execution and access telemetry for enumeration analytics.
+    selection_call:
+      claim_ids: [SAF-T1606-C001, SAF-T1606-C012]
+      rationale: tools/call is the protocol request that carries the selected tool name and arguments.
+    selection_tool:
+      claim_ids: [SAF-T1606-C004, SAF-T1606-C012]
+      rationale: These names are documented by the official Filesystem reference server as directory-enumeration functions.
+    selection_sensitive_path:
+      claim_ids: [SAF-T1606-C011, SAF-T1606-C012]
+      rationale: Boundary-aware sensitive-location selection adapts DET0370 without publishing traversal payloads.
+    selection_recursive_tool:
+      claim_ids: [SAF-T1606-C004, SAF-T1606-C011, SAF-T1606-C012]
+      rationale: directory_tree and search_files request broader or recursive filesystem discovery and merit contextual review.
+    filter_approved_allowlisted:
+      claim_ids: [SAF-T1606-C002, SAF-T1606-C013]
+      rationale: Explicit approval and an environment-owned allowlist reduce expected legitimate automation noise.
+    condition:
+      claim_ids: [SAF-T1606-C012, SAF-T1606-C013]
+      rationale: The Boolean join requires a real MCP call, a documented listing tool, risk context, and no approved allowlist exception.
+    fields:
+      claim_ids: [SAF-T1606-C001, SAF-T1606-C002, SAF-T1606-C011]
+      rationale: The fields support request reconstruction, identity and session correlation, path review, approval context, and result confirmation.
+    falsepositives:
+      claim_ids: [SAF-T1606-C013]
+      rationale: Legitimate filesystem browsing and automation share the same tool operations, requiring contextual tuning.

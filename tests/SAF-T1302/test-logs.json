@@ -1,0 +1,66 @@
+{
+  "technique_id": "SAF-T1302",
+  "validated_on": "2026-09-01",
+  "expected_summary": {
+    "status": "PASS",
+    "cases": 9,
+    "alerts": 3
+  },
+  "cases": [
+    {
+      "id": "positive-missing-approval",
+      "category": "positive",
+      "expected_alert": true,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "external", "tool_effective_privilege": "admin", "approval_status": "missing", "breakglass_authorized": false}
+    },
+    {
+      "id": "positive-bypassed-root",
+      "category": "positive",
+      "expected_alert": true,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "untrusted", "tool_effective_privilege": "root", "approval_status": "bypassed", "breakglass_authorized": false}
+    },
+    {
+      "id": "positive-not-required-cross-tenant",
+      "category": "positive",
+      "expected_alert": true,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "low", "tool_effective_privilege": "cross_tenant", "approval_status": "not_required", "breakglass_authorized": false}
+    },
+    {
+      "id": "negative-valid-approval",
+      "category": "negative",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "low", "tool_effective_privilege": "admin", "approval_status": "approved", "breakglass_authorized": false}
+    },
+    {
+      "id": "negative-equal-authority",
+      "category": "negative",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "admin", "tool_effective_privilege": "admin", "approval_status": "not_required", "breakglass_authorized": false}
+    },
+    {
+      "id": "boundary-failed-call",
+      "category": "boundary",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "failure", "requestor_privilege": "external", "tool_effective_privilege": "admin", "approval_status": "missing", "breakglass_authorized": false}
+    },
+    {
+      "id": "boundary-medium-risk",
+      "category": "boundary",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "medium", "outcome": "success", "requestor_privilege": "external", "tool_effective_privilege": "admin", "approval_status": "missing", "breakglass_authorized": false}
+    },
+    {
+      "id": "malformed-missing-approval-field",
+      "category": "malformed",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "external", "tool_effective_privilege": "admin", "breakglass_authorized": false}
+    },
+    {
+      "id": "expected-legitimate-breakglass",
+      "category": "expected_false_positive",
+      "expected_alert": false,
+      "event": {"event_type": "tool_call", "tool_risk": "high", "outcome": "success", "requestor_privilege": "external", "tool_effective_privilege": "admin", "approval_status": "missing", "breakglass_authorized": true}
+    }
+  ],
+  "observed_result": "PASS: 9 cases, 3 alerts; positive=3, negative=2, boundary=2, malformed=1, expected_false_positive=1"
+}

@@ -1,0 +1,256 @@
+version: 1
+technique_id: SAF-T1302
+claims:
+  - id: SAF-T1302-C001
+    statement: MCP tools are model-controlled and may be discovered and invoked automatically from context and user prompts.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["User Interaction Model, paragraphs 1-2"]
+    corroboration: The protocol's tools/call message defines the invocation mechanism.
+    limitations: [The specification does not define a universal client interaction model.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C002
+    statement: MCP tool servers must validate inputs and implement access controls, while clients should confirm sensitive calls, expose inputs, validate results, and log tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: ["Security Considerations, items 1-2"]
+    corroboration: OWASP independently recommends explicit authorization and structured monitoring for sensitive agent actions.
+    limitations: [Several client safeguards are SHOULD-level guidance and implementation-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C003
+    statement: Current MCP authorization guidance directs clients to request only scopes necessary for intended operations.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: ["Scope Selection Strategy, first paragraph and ordered list"]
+    corroboration: OWASP recommends minimum tools, per-tool scoping, and separate tool sets by trust level.
+    limitations: [Scope selection alone does not bind an individual tool call to requestor intent.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C004
+    statement: High-Privilege Tool Abuse occurs when low-trust influence causes an agent to exercise a legitimate tool authority unavailable to the influencing principal because requestor authorization, scope binding, or action-bound approval is absent or ineffective.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ["Attack Setup", "Attack Demonstration", "Detecting Toxic Agent Flows"]
+      - source_id: SRC-ghsa-codewhale-g29h
+        support: corroborating
+        exact_locators: ["Summary", "Details", "Impact"]
+      - source_id: SRC-elastic-esa-2026-83
+        support: corroborating
+        exact_locators: ["Missing Authorization in Kibana Leading to Privilege Escalation and Information Disclosure"]
+    corroboration: Independent researcher and vendor disclosures show the same authority mismatch through different tools and products.
+    limitations: [The public examples are demonstrations or vulnerability disclosures, not verified production intrusions.]
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+  - id: SAF-T1302-C005
+    statement: Invariant Labs demonstrated a malicious public GitHub issue steering an MCP-connected agent to read private repositories and publish their data into a public pull request using trusted GitHub tools.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ["Attack Setup, paragraphs 1-4", "Attack Demonstration, Attack Rollout", "Detecting Toxic Agent Flows, first paragraph"]
+    corroboration: The disclosure includes a demonstration trace and explicitly distinguishes trusted tools from tool poisoning.
+    limitations: [The experiment used demo repositories and Claude Desktop; it does not establish production exploitation or universal client susceptibility.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C006
+    statement: OWASP recommends logging agent decisions, tool calls, outcomes, requestor and session identifiers, authorization outcomes, approval identifiers, execution results, and policy versions, and monitoring elevated-privilege use and approval bypass attempts.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agent-security
+        support: direct
+        exact_locators: ["Monitoring & Observability, bullets 1-7", "Agent Monitoring example"]
+    corroboration: MCP Tools separately recommends logging tool use for audit.
+    limitations: [The OWASP fields are guidance, not a mandatory interoperable event schema.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C007
+    statement: CodeWhale before 0.8.64 allowed model-controlled input to an already-approved interactive shell without a new approval, executing at that process's privilege level; 0.8.64 fixed the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-codewhale-g29h
+        support: direct
+        exact_locators: ["Affected versions", "Patched versions", "Maintainer resolution", "Summary", "Impact"]
+      - source_id: SRC-nvd-cve-2026-75857
+        support: corroborating
+        exact_locators: ["CVE-2026-75857 description", "CVSS v4.0", "CISA SSVC data"]
+    corroboration: NVD records the same affected range, fixed version, high impact, and proof-of-concept exploitation status.
+    limitations: [A user must first approve a long-running interactive process; the advisory does not establish malicious production use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C008
+    statement: OpenClaw through 2026.3.28 allowed a paired role=node client to dispatch agent requests with broader gateway tool access and reach gateway code execution; version 2026.3.31 fixed it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-openclaw-gjm7
+        support: direct
+        exact_locators: ["Current Maintainer Triage", "Affected Packages / Versions", "Fix Commit(s)"]
+      - source_id: SRC-nvd-cve-2026-41378
+        support: corroborating
+        exact_locators: ["CVE-2026-41378 description", "Configurations", "CISA SSVC data"]
+    corroboration: NVD records the same unrestricted gateway-side tool path, affected bound, and high confidentiality, integrity, and availability impact.
+    limitations: [A trusted paired-node foothold is required; the maintainer describes the issue as narrow and high rather than critical.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C009
+    statement: Kibana Agent Builder 9.4.0 through 9.4.3 failed to verify a requestor's separate-feature privilege before creating and running a tool, allowing privilege escalation and possible unauthorized disclosure; 9.4.4 fixed it with no workaround.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-elastic-esa-2026-83
+        support: direct
+        exact_locators: ["Missing Authorization in Kibana Leading to Privilege Escalation and Information Disclosure", "Affected Versions", "Solutions and Mitigations"]
+      - source_id: SRC-nvd-cve-2026-72681
+        support: corroborating
+        exact_locators: ["CVE-2026-72681 description", "CVSS v3.1", "CISA SSVC data"]
+    corroboration: NVD reproduces the Elastic CNA description and records no exploitation in CISA's SSVC assessment.
+    limitations: [The advisory does not identify the separate feature, data set, or any observed exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C010
+    statement: A practical behavioral analytic can correlate a successful high-risk tool call, low-trust requestor, elevated effective privilege, and absent or bypassed action approval, while suppressing explicitly authorized break-glass activity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agent-security
+        support: direct
+        exact_locators: ["Monitoring & Observability", "Abuse-Case Test Matrix"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+    corroboration: OWASP names elevated-privilege usage and approval bypass attempts as monitoring targets and MCP recommends confirmation plus audit logging.
+    limitations: [The field combination is an SAF analytic synthesis and requires deployment-specific risk labeling and allowlists.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources identify telemetry and behaviors; SAF combines them into a deterministic correlation.
+    status: validated
+  - id: SAF-T1302-C011
+    statement: Detection is blind when tool privilege, requestor trust, approval, policy, or result fields are missing, and legitimate automation or emergency access can resemble abuse.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agent-security
+        support: direct
+        exact_locators: ["Monitoring & Observability", "Agent Monitoring", "Abuse-Case Test Matrix"]
+      - source_id: SRC-elastic-esa-2026-83
+        support: context
+        exact_locators: ["Indicators of Compromise"]
+    corroboration: Elastic reports no specific IoC for its tool-authorization vulnerability, supporting behavior-focused rather than artifact-only detection.
+    limitations: [False-positive rates and field availability are environment-specific and not measured by the cited sources.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Blind spots follow from the fields required to evaluate the supported behavioral condition.
+    status: validated
+  - id: SAF-T1302-C012
+    statement: Preventive controls should minimize tool functionality and permissions, separate tools by trust level, enforce requestor authorization, and require parameter-bound approval for high-impact actions.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agent-security
+        support: direct
+        exact_locators: ["Tool Security & Least Privilege", "High-Impact Action Integrity Controls", "Do's and Don'ts"]
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: corroborating
+        exact_locators: ["Scope Selection Strategy"]
+    corroboration: Current MCP authorization guidance independently requires least-privilege scope selection.
+    limitations: [These controls reduce opportunity and blast radius but do not prove a model will resist all adversarial influence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C013
+    statement: The demonstrated consequences include disclosure of private data and command execution with the confidentiality, integrity, and availability reach of the abused tool or process.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ["Attack Demonstration, Attack Rollout"]
+      - source_id: SRC-ghsa-codewhale-g29h
+        support: direct
+        exact_locators: ["Impact"]
+      - source_id: SRC-nvd-cve-2026-41378
+        support: corroborating
+        exact_locators: ["CVSS v4.0 impacts"]
+    corroboration: The selected cases span data disclosure and code execution with high CIA impact.
+    limitations: [Actual impact is bounded by the tool, identity, process, resources, and downstream controls present in a deployment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1302-C014
+    statement: MITRE ATT&CK T1078.004 is an analogous mapping because it covers adversary use of high-privilege cloud or service accounts, while this technique may act through an agent-held identity without credential acquisition.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1078-004
+        support: direct
+        exact_locators: ["Valid Accounts: Cloud Accounts, description and tactic list"]
+    corroboration: Selected examples involve service or cloud authority but preserve the agent-as-deputy distinction.
+    limitations: [ATT&CK T1078.004 centers on valid account use and does not model agent tool-selection or approval semantics.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is a framework reconciliation judgment rather than an ATT&CK assertion about MCP.
+    status: validated
+  - id: SAF-T1302-C015
+    statement: Response should contain the agent session and privileged identity, preserve tool and approval telemetry, determine affected resources, rotate exposed credentials when evidence indicates exposure, repair authorization policy, and test recurrence.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agent-security
+        support: direct
+        exact_locators: ["Monitoring & Observability", "Secure Agent Testing & Adversarial Validation"]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+    corroboration: The sources call for audit trails, alerts, least privilege, confirmation, and regression abuse-case testing.
+    limitations: [Credential rotation is conditional on evidence of credential exposure and is not required for every tool-abuse event.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence is SAF operational synthesis from supported telemetry and control requirements.
+    status: validated

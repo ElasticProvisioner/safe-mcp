@@ -1,0 +1,49 @@
+version: 1
+technique_id: SAF-T1106
+freeze_root: /private/tmp/saf-all-cleanroom/SAF-T1106/bundle
+synthetic_tactics: []
+synthetic_neighbors:
+  - technique_id: SAF-T1001
+    action: Reconcile to the current shared-framework neighbor for instruction-driven unauthorized tool action while preserving the contract distinction.
+  - technique_id: SAF-T1002
+    action: Reconcile to the current shared-framework neighbor for direct resource exhaustion while preserving the contract distinction.
+synthetic_mitigations: []
+source_id_joins:
+  - SRC-mcp-tools-20260728
+  - SRC-mcp-release-20260728
+  - SRC-mcp-rc-20260728
+  - SRC-zhou-2026
+  - SRC-li-otora-2026
+  - SRC-hou-ial-2026
+  - SRC-wu-loopharness-2026
+  - SRC-park-progress-2026
+  - SRC-ms-agent-responsibility
+  - SRC-ms-unbounded-dos
+  - SRC-ms-resource-gov
+  - SRC-ms-agentic-rag
+  - SRC-ms-agent-looping
+  - SRC-mitre-t1496
+  - SRC-mitre-t1499-003
+  - SRC-nvd-cve-2025-32437
+  - SRC-nvd-cve-2024-12704
+  - SRC-nvd-cve-2024-58340
+  - SRC-nvd-cve-2024-2965
+history_sha_joins:
+  - placeholder: "1111111111111111111111111111111111111111"
+    action: Replace with the integration commit after the initial integrated commit exists.
+path_joins:
+  - fragment: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+  - fragment: framework-fragment.yml
+    destination: research/framework-model.yml
+  - fragment: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+  - fragment: techniques/SAF-T1106
+    destination: techniques/SAF-T1106
+  - fragment: research/techniques/SAF-T1106
+    destination: research/techniques/SAF-T1106
+post_integration_validation:
+  - Verify FREEZE.sha256 before copying files.
+  - Re-run python3 techniques/SAF-T1106/tests/test_detection_rule.py.
+  - Re-run python3 scripts/validate-technique-research.py SAF-T1106 without --draft.
+  - Do not revise frozen prose from prior target content; start a new review cycle for substantive changes.

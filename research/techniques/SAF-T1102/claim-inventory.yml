@@ -1,0 +1,340 @@
+version: 1
+technique_id: SAF-T1102
+claims:
+  - id: SAF-T1102-C001
+    statement: Controlled MCP demonstrations establish that injected natural-language instructions delivered through tool descriptions, tool results, and external content returned by tools can redirect an agent and cause unauthorized model-selected actions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["What is a Tool Poisoning Attack; Experiments 1 and 2"]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: ["Experiment 1; Experiment 2: Attacking via an Injected Message"]
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ["Attack Setup; Attack Demonstration; Scope and Mitigations"]
+    corroboration: Three independently described controlled flows cover tool metadata, tool output, and third-party platform content.
+    limitations:
+      - These are researcher-controlled demonstrations, not verified production compromises.
+      - Model and client behavior can differ by version, configuration, and approval policy.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C002
+    statement: MCP prompts are server-authored structured messages selected by users, and the current specification requires implementations to validate prompt inputs and outputs against injection and unauthorized resource access.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-prompts-2026
+        support: direct
+        exact_locators: ["User Interaction Model", "PromptMessage", "Security"]
+    corroboration: The MCP overview separately identifies prompts as server-provided messages and workflows.
+    limitations:
+      - The protocol does not prescribe one concrete injection detector or user interface.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C003
+    statement: MCP resources can contain text or binary data that hosts may include automatically in model context, creating an application-controlled path from server-managed content to the model.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["User Interaction Model", "Reading Resources", "Resource Contents"]
+    corroboration: The MCP overview identifies resources as context and data for users or models.
+    limitations:
+      - Automatic inclusion is an implementation option rather than a protocol mandate.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C004
+    statement: MCP tools are model-controlled, expose descriptive metadata, and return model-visible content; the current specification calls for confirmation, validation of results before model use, output sanitization, and audit logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["User Interaction Model", "Listing Tools", "Calling Tools", "Tool Result", "Security Considerations"]
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators: ["Security and Trust & Safety", "Key Principles"]
+    corroboration: The overview says tool descriptions and annotations should be treated as untrusted unless obtained from a trusted server.
+    limitations:
+      - These controls reduce exposure but do not prove that a client detects semantic prompt injection.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C005
+    statement: Direct prompt injection arrives through the user's prompt channel, while indirect prompt injection is planted in external data such as websites, files, messages, or retrieved resources that a model processes.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm01-2025
+        support: direct
+        exact_locators: ["Types of Prompt Injection Vulnerabilities"]
+      - source_id: SRC-nist-ai-100-2e2025
+        support: corroborating
+        exact_locators: ["Section 3.4, pages 50-53"]
+      - source_id: SRC-greshake-ipi-2023
+        support: corroborating
+        exact_locators: ["Abstract", "Section 3.1 Injection Methods"]
+    corroboration: OWASP, NIST, and Greshake et al. use compatible direct/indirect distinctions.
+    limitations:
+      - Product terminology and channel labeling are not uniform.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C006
+    statement: Tool-description poisoning was demonstrated in Cursor with a malicious MCP server, including cross-server shadowing that altered use of a trusted tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Experiment 1: Attacking Cursor with Tool Poisoning", "Experiment 2: Shadowing Tool Descriptions with Cursor"]
+    corroboration: The later WhatsApp MCP experiment reproduced description-based shadowing across two servers.
+    limitations:
+      - The test used controlled servers and a specific client configuration.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C007
+    statement: An injected WhatsApp message returned in a trusted MCP tool result was demonstrated to redirect an agent and disclose synthetic test contacts without requiring a malicious MCP server.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: ["Experiment 2: Attacking via an Injected Message", "Attack Setup", "Conclusion"]
+    corroboration: NIST describes tool-returned external data as an agent prompt-injection path.
+    limitations:
+      - This was a lab demonstration against test data, not a reported user incident.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C008
+    statement: A malicious public issue was demonstrated to inject an agent using the GitHub MCP integration, cause retrieval of private-repository data, and publish test data through a public pull request.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-github-mcp-2025
+        support: direct
+        exact_locators: ["Attack Setup", "Attack Demonstration", "Scope and Mitigations"]
+    corroboration: The generic indirect-injection mechanism is independently established by NIST and Greshake et al.
+    limitations:
+      - The researchers used demonstration repositories and did not report a production victim.
+      - The authors state the issue is an agent-architecture problem rather than a defect in the GitHub MCP server code.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C009
+    statement: CVE-2025-54135 chained indirect prompt injection with creation of an MCP-sensitive configuration file to enable code execution in affected Cursor versions, and the advisory reports remediation in version 1.3.9 with no known exploitation in the reviewed CISA enrichment.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-2025-54135
+        support: direct
+        exact_locators: ["CNA title, affected versions, description, CVSS", "CISA ADP exploitation status"]
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: direct
+        exact_locators: ["Affected versions", "Patched versions", "Summary", "Impact", "Remediation", "Credits"]
+    corroboration: The CVE record and maintainer advisory agree on the injection-to-MCP-configuration chain and fixed version.
+    limitations:
+      - The advisory describes a chain requiring a separate injection opportunity and reports no observed exploitation.
+      - The CVE record and advisory express the vulnerable range differently; the conservative affected statement is versions before 1.3.9.
+    conflicts:
+      - CVE affected range is less than 1.3.9 while the advisory lists affected versions through 1.2.1 and patched 1.3.9.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C010
+    statement: InjecAgent evaluated 1,054 cases across 17 user tools, 62 attacker tools, and 30 agents; its ReAct-prompted GPT-4 configuration was vulnerable in 24 percent of evaluated cases.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-injecagent-acl-2024
+        support: direct
+        exact_locators: ["Abstract", "ACL Anthology pages 10471-10506"]
+    corroboration: The arXiv record and ACL Anthology metadata report the same benchmark and result.
+    limitations:
+      - Benchmark rates are configuration-specific and are not production incidence rates.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C011
+    statement: NIST classifies indirect prompt injection as third-party resource control over a combined data-and-instruction channel and documents possible availability, integrity, and privacy violations, including agent hijacking and data exfiltration.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-100-2e2025
+        support: direct
+        exact_locators: ["Sections 3.4-3.5, pages 50-54"]
+    corroboration: OWASP describes compatible impacts and emphasizes the role of agent authority.
+    limitations:
+      - NIST's taxonomy includes both demonstrated and theorized examples; each concrete example still requires its own source.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C012
+    statement: Monitoring should retain source-labeled model inputs and outputs, tool and API calls, approval decisions, and failed or denied actions so analysts can correlate untrusted content with a later privileged action.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ncsc-prompt-injection-2025
+        support: direct
+        exact_locators: ["Monitor"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+    corroboration: NCSC recommends logging full model input/output, tool/API calls, and failed calls; MCP recommends tool-usage audit logging.
+    limitations:
+      - Full-content logging can create privacy and data-retention risk and must be minimized or protected.
+      - No telemetry field alone proves that the model followed an injected instruction.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact cross-event field set and correlation are an SAF analytic design derived from the cited monitoring requirements.
+    status: validated
+
+  - id: SAF-T1102-C013
+    statement: A practical analytic can raise confidence when untrusted model-facing content has a detector verdict or instruction-like indicator and is followed in the same session by an unapproved high-risk or cross-boundary tool call within a bounded time window.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ncsc-prompt-injection-2025
+        support: direct
+        exact_locators: ["Make it harder", "Monitor"]
+      - source_id: SRC-invariant-github-mcp-2025
+        support: corroborating
+        exact_locators: ["Attack Setup", "Attack Demonstration"]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators: ["Experiment 2"]
+    corroboration: Both MCP demonstrations show a source event followed by an unauthorized cross-resource action.
+    limitations:
+      - Keyword-only matching is bypassable and produces legitimate lookalikes.
+      - The analytic misses successful injections that generate only text or use approved actions without trustworthy provenance labels.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rule is a conservative behavioral correlation synthesized from documented event sequences rather than a published detector evaluation.
+    status: validated
+
+  - id: SAF-T1102-C014
+    statement: Least privilege, explicit approval for consequential actions, isolation of sensitive data and tools, identification of untrusted content, and deterministic data-flow or capability enforcement constrain prompt-injection impact.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-llm01-2025
+        support: direct
+        exact_locators: ["Prevention and Mitigation Strategies"]
+      - source_id: SRC-anthropic-pi-defenses-2025
+        support: corroborating
+        exact_locators: ["Why browser use creates unique prompt injection risks", "Claude's progress on browser use robustness"]
+      - source_id: SRC-camel-2025
+        support: corroborating
+        exact_locators: ["Abstract"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["User Interaction Model", "Security Considerations"]
+    corroboration: Multiple independent authorities emphasize authority reduction and deterministic enforcement rather than model prompting alone.
+    limitations:
+      - These controls can reduce capability or usability and do not remove every semantic injection path.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C015
+    statement: Prompt-injection detection and model-level defenses remain incomplete; adaptive evaluation has bypassed recent defenses, and a low measured attack-success rate still leaves material residual risk for high-authority agents.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-ai-100-2e2025
+        support: direct
+        exact_locators: ["Section 3.4.4, pages 53-54"]
+      - source_id: SRC-anthropic-pi-defenses-2025
+        support: direct
+        exact_locators: ["Claude's progress on browser use robustness"]
+      - source_id: SRC-adaptive-pi-defenses-2025
+        support: direct
+        exact_locators: ["Abstract"]
+      - source_id: SRC-ncsc-prompt-injection-2025
+        support: corroborating
+        exact_locators: ["Make it harder", "Summary"]
+    corroboration: Government, vendor, and academic sources all state material residual risk.
+    limitations:
+      - Results differ by threat model, model, defense, and attacker budget.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C016
+    statement: Prompt injections may be visible, hidden, encoded, multilingual, or multimodal, so absence of a literal suspicious phrase is not evidence that model-facing content is benign.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-greshake-ipi-2023
+        support: direct
+        exact_locators: ["Section 3.1 Injection Methods"]
+      - source_id: SRC-owasp-llm01-2025
+        support: corroborating
+        exact_locators: ["Types of Prompt Injection Vulnerabilities", "Example Attack Scenarios"]
+      - source_id: SRC-nist-ai-100-2e2025
+        support: corroborating
+        exact_locators: ["Section 3.4.2, Injection hiding, page 52"]
+    corroboration: Three independent sources enumerate more than one representation and delivery method.
+    limitations:
+      - The presence of obfuscation is not by itself proof of malicious intent.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1102-C017
+    statement: MITRE ATT&CK T1059 is only an analogous follow-on mapping when a successful prompt injection causes a command or script interpreter to execute; natural-language prompt interpretation alone does not satisfy T1059's command-interpreter definition.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: ["Description", "Tactic", "Version 2.7"]
+      - source_id: SRC-nist-ai-100-2e2025
+        support: context
+        exact_locators: ["Section 3.5 Security of Agents, page 54"]
+    corroboration: NIST distinguishes agent prompt injection from its downstream arbitrary-code consequence.
+    limitations:
+      - ATT&CK does not define natural-language prompt injection in T1059.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analogous mapping is an SAF reconciliation of distinct framework scopes.
+    status: validated

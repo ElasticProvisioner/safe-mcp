@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T1501
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation names every prohibited input category; no target artifact, history, registry, catalog description, site, diff, or prior conversation was accessed.
+  contract_and_scope:
+    status: passed
+    notes: FSP requires coordinated semantics across at least two definition paths including a schema path; description-only, mutation-only, output, and implementation flaws are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP 2026-07-28 definition fields and client ingestion patterns were reviewed from first-party sources; the end-to-end step is explicitly inferred.
+  claim_traceability:
+    status: passed
+    notes: Eleven validated claims carry exact locators, limitations, conflicts, and source joins.
+  source_or_omit:
+    status: passed
+    notes: Publishable units use hidden SAF-TRACE comments or declared repository artifacts; six unsupported propositions are excluded and prohibited.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is the strongest warranted status because no direct FSP incident, vulnerability, or coordinated schema-wide demonstration qualified.
+  research_saturation:
+    status: passed
+    notes: Five substantive passes and two consecutive no-change authority-corpus follow-ups are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: NVD, CISA KEV, incident terminology, direct demonstrations, impact, remediation, exploitation status, and evidence gaps were assessed; three adjacent examples selected.
+  detection_quality:
+    status: passed
+    notes: Complete-definition telemetry, change and distributed-path selections, false positives, blind spots, tuning, and nine deterministic fixtures are present.
+  mitigation_quality:
+    status: passed
+    notes: Controls address complete-definition approval, integrity, confirmation, least privilege, review, and logging while preserving initial-baseline limitations.
+  framework_alignment:
+    status: passed
+    notes: The isolated fragment used three synthetic neighbor and two synthetic mitigation roles; post-freeze reconciliation maps them to SAF-T1001, SAF-T1205, SAF-T1102, SAF-M-15, and SAF-M-2 while retaining the analogous ATT&CK mapping and detector artifacts.
+  publication_rights:
+    status: passed
+    notes: Fourteen cited-source uses are paraphrase or factual-reference only; no quotation, code, figure, table, payload, or dataset is reproduced.
+  safe_publication:
+    status: passed
+    notes: The only example uses example.invalid and a harmless review-record fixture with no credential, destructive action, or operational payload.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1501
+      result: passed
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1501
+      result: passed
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1501/test_detection_rule.py
+    result: "PASS: 9/9 cases; 3 alerts and 6 non-alerts; see validation/detection-test.txt"
+    waiver: null
+
+unresolved: []

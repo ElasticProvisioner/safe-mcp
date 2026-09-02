@@ -1,0 +1,34 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1706
+    name: OAuth Token Pivot Replay
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0008
+    technique_path: techniques/SAF-T1706/README.md
+    research_packet: research/techniques/SAF-T1706
+    related_techniques:
+      - SAF-T1504
+      - SAF-T1506
+      - SAF-T1304
+      - SAF-T1308
+    mitigations:
+      - SAF-M-16
+      - SAF-M-19
+      - SAF-M-31
+      - SAF-M-37
+    detection:
+      rule: techniques/SAF-T1706/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1706/test_detection_rule.py
+        - tests/SAF-T1706/test-cases.json
+        - tests/SAF-T1706/test-logs.json
+        - research/techniques/SAF-T1706/validation/detection-tests.txt
+        - research/techniques/SAF-T1706/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1550.001
+        type: direct
+      - id: T1528
+        type: adjacent_prerequisite

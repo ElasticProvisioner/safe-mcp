@@ -1,0 +1,121 @@
+[
+  {
+    "case": "positive_rotated_family_reuse",
+    "expected_alert": true,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:00:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-001",
+      "oauth.refresh_token_reuse_detected": true,
+      "subject.id": "subject-example-001",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "positive_deactivated_subject",
+    "expected_alert": true,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:01:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-002",
+      "oauth.refresh_token_reuse_detected": false,
+      "subject.id": "subject-example-002",
+      "user.account_status": "deactivated"
+    }
+  },
+  {
+    "case": "negative_normal_refresh",
+    "expected_alert": false,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:02:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-003",
+      "oauth.refresh_token_reuse_detected": false,
+      "subject.id": "subject-example-003",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "negative_failed_reuse",
+    "expected_alert": false,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "failure",
+      "event.timestamp": "2026-09-01T12:03:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-004",
+      "oauth.refresh_token_reuse_detected": true,
+      "subject.id": "subject-example-004",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "negative_access_token_grant",
+    "expected_alert": false,
+    "event": {
+      "event.action": "oauth.token.issue",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:04:00Z",
+      "oauth.grant_type": "authorization_code",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-005",
+      "oauth.refresh_token_reuse_detected": true,
+      "subject.id": "subject-example-005",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "boundary_active_without_reuse",
+    "expected_alert": false,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:05:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-006",
+      "oauth.refresh_token_reuse_detected": false,
+      "subject.id": "subject-example-006",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "malformed_missing_grant_type",
+    "expected_alert": false,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:06:00Z",
+      "oauth.client_id": "mcp-client.example",
+      "oauth.token_family_id": "family-example-007",
+      "oauth.refresh_token_reuse_detected": true,
+      "subject.id": "subject-example-007",
+      "user.account_status": "active"
+    }
+  },
+  {
+    "case": "legitimate_lookalike_recovery_test",
+    "expected_alert": true,
+    "event": {
+      "event.action": "oauth.token.refresh",
+      "event.outcome": "success",
+      "event.timestamp": "2026-09-01T12:07:00Z",
+      "oauth.grant_type": "refresh_token",
+      "oauth.client_id": "identity-lifecycle-test.example",
+      "oauth.token_family_id": "family-example-008",
+      "oauth.refresh_token_reuse_detected": false,
+      "subject.id": "subject-example-008",
+      "user.account_status": "disabled"
+    }
+  }
+]

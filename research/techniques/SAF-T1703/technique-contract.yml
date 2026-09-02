@@ -1,0 +1,85 @@
+version: 1
+technique_id: SAF-T1703
+name: Tool-Chaining Pivot
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Use attacker-influenced content or metadata from one tool boundary
+  to cause an agent to invoke a distinct already-authorized tool or service outside
+  the user's supported intent, thereby reaching different data or action authority.
+scope:
+  security_boundary: The host-controlled transition from an upstream tool, server,
+    or connected system into a different tool, server, service, application, or security
+    domain.
+  in_scope:
+  - Attacker-influenced tool descriptions, results, retrieved content, or server instructions
+    that causally induce a later distinct-boundary tool call.
+  - The later call is unsupported by user intent and uses authority already delegated
+    to the agent or host.
+  - The immediate outcome is access to or action in a different connected system.
+  out_of_scope:
+  - Injection delivery that does not cause a call across a second tool boundary.
+  - Unauthorized behavior confined to one tool, even if that tool accesses multiple
+    records.
+  - Direct exploitation or compromise of a tool server without agent-mediated cross-tool
+    influence.
+  - Ordinary user-authorized multi-tool workflows and attacker-directed conventional
+    infrastructure exploit chains.
+  - Downstream exfiltration, execution, or impact after the boundary pivot when separately
+    classifiable.
+  affected_components:
+  - Agent or MCP host and model context
+  - Upstream tool client, server, description, result, and retrieved content
+  - Target tool client, server, connector, application, or external service
+  - Approval, authorization, provenance, audit, and policy-enforcement layers
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: SAF-T1102 covers how hostile instructions enter agent context, while
+    SAF-T1703 begins only when that influence causes a call across a distinct tool
+    boundary.
+- technique_id: SAF-T1104
+  distinction: SAF-T1104 remains within one tool boundary, while SAF-T1703 requires
+    a causally linked second tool, server, service, application, or security domain.
+- technique_id: SAF-T1701
+  distinction: SAF-T1701 is the result-borne cross-tool subset; SAF-T1703 also admits
+    tool metadata or server-supplied instruction as the upstream influence.
+required_evidence:
+- Establish protocol or architecture support for a host composing multiple tool boundaries
+  and returning tool results into agent context.
+- Establish direct demonstrations, disclosed vulnerabilities, or deployed-system red-team
+  evidence of attacker-influenced content inducing consequential follow-on action.
+- Establish prerequisites, immediate cross-tool outcome, detection telemetry, false
+  positives, and limits.
+- Search current production breaches and disclosed vulnerabilities, classify direct,
+  adjacent, analogous, and rejected candidates, and select no more than four highest-impact
+  examples.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized tool-result events with trace ID, event ID, timestamp, trust label,
+    and source server identity.
+  - Normalized tool-call events with trace ID, caused-by event ID, timestamp, target
+    server identity, user-intent support, approval state, and action class.
+  - Stable identifiers that permit correlation across the host's tool clients and
+    connected services.
+safe_example_constraints:
+- Use only summarized, inert examples and placeholder event data.
+- Do not reproduce exploit payloads, credentials, customer identifiers, destructive
+  commands, or operational targeting detail.
+- Preserve uncertainty about exploitation status, production impact, and affected
+  parties.
+completion_evidence:
+- Every substantive README unit has a same-line hidden SAF-TRACE link to validated
+  claims and reviewed sources or a declared local artifact.
+- All consulted sources, selected examples, rejected candidates, blocked leads, and
+  omitted propositions are recorded.
+- All five research passes and two consecutive no-change saturation passes are complete.
+- Behavioral detection fixtures pass at both the 300-second inclusive boundary and
+  negative-control cases.
+- Rights, attribution, safe-publication, and isolated strict validation gates pass
+  before freeze.

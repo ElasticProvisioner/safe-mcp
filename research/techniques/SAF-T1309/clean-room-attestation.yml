@@ -1,0 +1,133 @@
+version: 1
+technique_id: SAF-T1309
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1309_retry
+target:
+  id: SAF-T1309
+  neutral_name: Privileged Tool Invocation via Prompt Manipulation
+allowed_inputs:
+- The supplied target ID, neutral name, and tactic only.
+- The author-saf-technique skill and routed references except impact-classification-examples.md
+  before freeze.
+- Generic techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and the canonical validator.
+- Directly opened standards-body, government, academic, first-party vendor, and named-researcher
+  authorities.
+- A synthetic mock repository containing only the generated bundle, generic validator,
+  and minimal synthetic joins.
+prohibited_inputs:
+- Existing techniques/SAF-T1309/README.md content.
+- Existing techniques/SAF-T1309/detection-rule.yml content.
+- Existing research/techniques/SAF-T1309/ files or source lists.
+- Git history, diffs, blame, stashes, branches, commits, or review comments exposing
+  prior target content.
+- Any pull request, issue, SAF page, catalog description, shared registry, or previous
+  conversation containing prior target content.
+- The discarded attempt and impact-classification-examples.md before freeze.
+independent_research:
+  searches:
+  - 'Direct official index open: https://modelcontextprotocol.io/llms.txt'
+  - 'Direct authority open: current MCP 2026-07-28 Tools and Security Best Practices'
+  - 'Direct exact-record opens: CVE-2025-54135, CVE-2025-54136, CVE-2025-53773, CVE-2025-6514,
+    CVE-2025-32711'
+  - 'Exact GitHub advisories opened only after their URLs were supplied by CVE records:
+    GHSA-4cxx-hrm3-49rm and GHSA-24mc-g4xr-4395'
+  - 'Direct exact-paper opens: arXiv:2406.13352v3 and arXiv:2503.18813v2'
+  - 'Direct vendor documentation open: Microsoft Prompt Shields in Foundry'
+  - Direct current CISA KEV exact-identifier membership check
+  - Direct MITRE ATT&CK T1548 open
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-camel-2503.18813v2
+  - SRC-ghsa-cursor-4cxx-2025
+  - SRC-cve-2025-54135
+  - SRC-cve-2025-53773
+  - SRC-rehberger-cve-2025-53773
+  - SRC-cisa-kev-2026-09-01
+  - SRC-clean-t1301-attack-t1548
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-54136
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-32711
+  prohibited_search_methods_used: false
+  notes:
+  - No search_query call, unrestricted web search, GitHub discovery search, repository
+    search, or search-engine snippet was used.
+  - Failed direct URL fetches were recorded as operations but did not support claims
+    until the complete source was directly reviewed.
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect the old target or a diff exposing it; replace the target mechanically
+  from this frozen bundle.
+- Reconcile stable source IDs and real repository joins only after freeze and do not
+  introduce new research leads.
+- Replace synthetic neighbor IDs SAF-T1102 and SAF-T1302 using catalog metadata without
+  revising the frozen evidence boundary.
+- Replace the synthetic mock history SHA with an honest integration-supporting repository
+  SHA.
+- Keep canonical tests under tests/SAF-T1309/.
+- Run the real-repository validator after mechanical integration.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1309-retry/mock
+  command: env PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1309-retry/deps python3
+    scripts/validate-technique-research.py SAF-T1309
+  result: passed
+  deliberately_deferred_joins:
+  - Stable shared source-ID collision resolution.
+  - Real SAF neighbor and framework registry reconciliation.
+  - Honest real-repository history SHA.
+attestation: I attest that this independent clean-room draft and evidence set were
+  produced without accessing prior SAF-T1309 artifacts, target conversation content,
+  catalog descriptions, shared registries, or the discarded run, and were strictly
+  validated in a synthetic mock repository before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-cursor-ghsa-4cxx-hrm3-49rm: SRC-ghsa-cursor-4cxx-2025
+    SRC-cve-2025-54135: SRC-cve-2025-54135
+    SRC-cve-2025-53773: SRC-cve-2025-53773
+    SRC-embrace-red-cve-2025-53773: SRC-rehberger-cve-2025-53773
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-attack-t1548-v2: SRC-clean-t1301-attack-t1548
+    SRC-jfrog-cve-2025-6514: SRC-jfsa-2025-6514
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+  new_shared_source_records:
+  - SRC-ms-prompt-shields-2026-07-31
+  - SRC-agentdojo-2406.13352v3
+  - SRC-camel-2503.18813v2
+  - SRC-cursor-ghsa-24mc-g4xr-4395
+  - SRC-cve-2025-54136
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-3
+  - SAF-M-5
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9997: SAF-T1102
+    SAF-T9998: SAF-T1302
+  status: integrated_and_repository_validated

@@ -1,0 +1,317 @@
+version: 1
+technique_id: SAF-T1304
+claims:
+  - id: SAF-T1304-C001
+    statement: A credential relayed across a resource or principal boundary can be accepted as authority belonging to the originating security context.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-fastmcp-ghsa
+        support: direct
+        exact_locators: ["Impact; Proof of Concept; lines 153-181 in reviewed rendering"]
+      - source_id: SRC-github-mcp-ghsa
+        support: corroborating
+        exact_locators: ["Summary; Vulnerability Details; Proof of Concept"]
+    corroboration: Two independent maintainer advisories demonstrate resource-boundary and principal-boundary variants.
+    limitations: [Neither advisory establishes production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C002
+    statement: MCP protected resources must validate token audience and accept only tokens intended for themselves.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Access Token Usage; Token Audience Binding and Validation; lines 239-267"]
+    corroboration: RFC 8707 defines resource indicators and resource-bound access.
+    limitations: [Normative requirements do not prove implementation compliance.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C003
+    statement: MCP token passthrough bypasses audience and other controls and is prohibited by protocol security guidance.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security
+        support: direct
+        exact_locators: ["Token Passthrough; lines 220-250"]
+    corroboration: The current MCP authorization specification separately requires resource-bound acceptance.
+    limitations: [Guidance does not measure deployment prevalence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C004
+    statement: OAuth bearer-token replay defenses include sender constraint together with audience and scope restriction.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Section 4.10; lines 127-145 and 518-560 in reviewed rendering"]
+    corroboration: RFC 8707 specifies the resource parameter used to constrain audience.
+    limitations: [General OAuth guidance is not MCP incident evidence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C005
+    statement: A malicious resource server can induce authorization for a different resource and replay the token at that resource.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Section 7.4 Malicious Protected Resource; lines 357-361"]
+    corroboration: The FastMCP advisory demonstrates the same chain in an MCP client.
+    limitations: [The RFC presents a threat model rather than an incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C006
+    statement: FastMCP before 2.14.2 failed to bind an authorization token to the requested resource and has a successful cross-resource proof of concept.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-fastmcp-ghsa
+        support: direct
+        exact_locators: ["Affected versions; Proof of Concept; Impact; Mitigation"]
+      - source_id: SRC-nvd-cve-2025-69196
+        support: corroborating
+        exact_locators: ["Description; References; CISA Vulnrichment exploitation:poc"]
+    corroboration: NVD independently records the CVE, fixed version trail, and proof-of-concept status.
+    limitations: [No production exploitation is established.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C007
+    statement: Google MCP Toolbox 1.4.0 could accept a valid Google token minted for an unrelated application when audience configuration was omitted.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2026-14541
+        support: direct
+        exact_locators: ["Description; Metrics; CISA Vulnrichment"]
+    corroboration: The maintainer correction makes audience validation mandatory.
+    limitations: [NVD reports no known exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C008
+    statement: Google made MCP Toolbox audience validation mandatory and released the correction in version 1.5.0.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-pr3450
+        support: direct
+        exact_locators: ["Title; merged status; release 1.5.0 linkage"]
+    corroboration: NVD identifies the vulnerable 1.4.0 configuration.
+    limitations: [Patch adoption is unknown.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C009
+    statement: GitHub MCP Server's process-global GraphQL client cache could reuse the first HTTP caller's credential for later callers.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-github-mcp-ghsa
+        support: direct
+        exact_locators: ["Summary; Vulnerability Details; Proof of Concept"]
+    corroboration: NVD assigns CVE-2026-48529 and records proof-of-concept exploitation status.
+    limitations: [The demonstration is controlled.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C010
+    statement: GitHub MCP Server fixed the cross-user credential-cache flaw in 1.1.2 and NVD records public proof-of-concept exploitation.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-github-mcp-ghsa
+        support: direct
+        exact_locators: ["Affected versions; Patched versions; Credits"]
+      - source_id: SRC-nvd-cve-2026-48529
+        support: corroborating
+        exact_locators: ["Description; CISA Vulnrichment exploitation:poc"]
+    corroboration: Government and maintainer records agree on the vulnerability and corrected version.
+    limitations: [No production compromise is reported.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C011
+    statement: Microsoft Foundry Local preview can forward a caller bearer token to an external MCP server without revalidation, enabling capture and replay by a malicious server.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-foundry-local-gap02
+        support: direct
+        exact_locators: ["GAP-02; lines 44-62 in reviewed rendering"]
+    corroboration: MCP security guidance independently describes token-passthrough risk.
+    limitations: [The source is a known issue, not exploitation evidence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C012
+    statement: Multi-user remote MCP implementations should validate identity, permissions, audience, and scope on every operation.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-github-secure-mcp
+        support: direct
+        exact_locators: ["Identity-aware remote server guidance; lines 429-452 and 479-489"]
+    corroboration: MCP authorization requires per-resource token validation.
+    limitations: [Architecture guidance is not a product guarantee.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1304-C013
+    statement: Audience mismatch, principal mismatch, and short-window cross-resource token-fingerprint reuse form a feasible relay detection analytic.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: ["Token Audience Binding and Validation"]
+      - source_id: SRC-attack-det0185
+        support: direct
+        exact_locators: ["AN0527 token reused across sessions/clients; TokenReuseWindow"]
+      - source_id: SRC-github-mcp-ghsa
+        support: direct
+        exact_locators: ["Cross-user Proof of Concept"]
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators: ["Resource parameter and resource-bound access tokens"]
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: ["Section 7.4 audience-restriction recommendation"]
+      - source_id: SRC-github-secure-mcp
+        support: corroborating
+        exact_locators: ["Per-operation identity, permissions, audience, and scope validation"]
+    corroboration: The repository test suite exercises positive, negative, boundary, malformed, and expected-false-positive cases.
+    limitations: [Validation uses synthetic telemetry only.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The three supported signals are composed into one SAF-specific analytic.}
+    status: validated
+  - id: SAF-T1304-C014
+    statement: Shared service credentials, opaque tokens, absent fingerprints, and missing identity fields create false positives or blind spots for relay detection.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-det0185
+        support: direct
+        exact_locators: ["AN0527 mutable elements and analytic description"]
+      - source_id: SRC-mcp-security
+        support: corroborating
+        exact_locators: ["Token Passthrough; access token handling"]
+    corroboration: Synthetic cases exercise a shared gateway, missing fields, and window boundaries.
+    limitations: [Environment-specific error rates are unavailable.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Limitations follow from the analytic's required fields and identity model.}
+    status: validated
+  - id: SAF-T1304-C015
+    statement: Resource-bound tokens, validated downstream exchange, and per-request credential isolation constrain credential relay paths.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators: ["Sections 1.1 and 2; lines 80-143"]
+      - source_id: SRC-mcp-security
+        support: direct
+        exact_locators: ["Token Passthrough; Scope Minimization"]
+      - source_id: SRC-github-secure-mcp
+        support: corroborating
+        exact_locators: ["Validate on every operation"]
+    corroboration: Each source addresses a different defining boundary.
+    limitations: [Controls depend on correct implementation and configuration.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Control set is synthesized from protocol and implementation guidance.}
+    status: validated
+  - id: SAF-T1304-C016
+    statement: ATT&CK T1550.001 is analogous because it covers use of application access tokens as alternate authentication material.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1550-001
+        support: direct
+        exact_locators: ["Technique definition; Version 2.0; modified 2026-05-12"]
+    corroboration: No closer ATT&CK technique was identified in the direct authority review.
+    limitations: [ATT&CK omits MCP-specific boundaries and assigns Lateral Movement.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a conceptual mapping rather than identity of definitions.}
+    status: validated
+  - id: SAF-T1304-C017
+    statement: Impact is bounded by the relayed credential's privileges and the receiving resource's capabilities.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-fastmcp-ghsa
+        support: direct
+        exact_locators: ["Impact"]
+      - source_id: SRC-github-mcp-ghsa
+        support: direct
+        exact_locators: ["Impact"]
+    corroboration: Both advisories tie consequences to operations available to the reused credential.
+    limitations: [Deployment-specific blast radius requires local assessment.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Severity dimensions are derived from bounded advisory impacts.}
+    status: validated
+  - id: SAF-T1304-C018
+    statement: Response should revoke exposed tokens, correct audience or cache isolation, and preserve identity-resource correlation telemetry.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: ["Replay prevention and token security recommendations"]
+      - source_id: SRC-github-mcp-ghsa
+        support: direct
+        exact_locators: ["Patched versions; vulnerability mechanics"]
+    corroboration: Detection authority supplies the correlation elements needed for investigation.
+    limitations: [Issuer-specific operational steps vary.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Response sequence is synthesized from cause, fix, and replay guidance.}
+    status: validated
+  - id: SAF-T1304-C019
+    statement: Token acquisition and legitimate scope escalation are neighboring but distinct mechanisms from cross-boundary credential relay.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security
+        support: direct
+        exact_locators: ["Scope Minimization; Token Passthrough"]
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators: ["Resource-specific authorization"]
+      - source_id: SRC-ms-oauth-redirection-2026
+        support: direct
+        exact_locators: ["OAuth redirect abuse explicitly does not expose a token"]
+      - source_id: SRC-microsoft-ai-gateway-incident
+        support: direct
+        exact_locators: ["Credential extraction and later key use; lines 100-118 and 246-248"]
+    corroboration: The excluded candidates instantiate adjacent acquisition mechanisms without the defining relay boundary.
+    limitations: [Synthetic SAF neighbor identifiers require catalog reconciliation after freeze.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Neighbor boundaries are an analytical classification.}
+    status: validated

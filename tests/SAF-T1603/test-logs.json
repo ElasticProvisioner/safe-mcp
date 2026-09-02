@@ -1,0 +1,73 @@
+[
+  {
+    "name": "two_protected_chunks",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "synthetic output"}],
+    "saf.system_prompt.overlap_count": 2,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": true
+  },
+  {
+    "name": "synthetic_canary",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "synthetic output"}],
+    "saf.system_prompt.overlap_count": 0,
+    "saf.system_prompt.canary_match": true,
+    "saf.disclosure.authorized": false,
+    "expected_alert": true
+  },
+  {
+    "name": "single_chunk_boundary",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "ordinary partial phrase"}],
+    "saf.system_prompt.overlap_count": 1,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": false
+  },
+  {
+    "name": "authorized_diagnostic",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "approved synthetic output"}],
+    "saf.system_prompt.overlap_count": 3,
+    "saf.system_prompt.canary_match": true,
+    "saf.disclosure.authorized": true,
+    "expected_alert": false
+  },
+  {
+    "name": "normal_response",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "normal answer"}],
+    "saf.system_prompt.overlap_count": 0,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": false
+  },
+  {
+    "name": "missing_output",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "saf.system_prompt.overlap_count": 4,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": false
+  },
+  {
+    "name": "wrong_event_type",
+    "event.name": "mcp.tools.call",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "synthetic output"}],
+    "saf.system_prompt.overlap_count": 4,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": false
+  },
+  {
+    "name": "encoded_blind_spot",
+    "event.name": "gen_ai.client.inference.operation.details",
+    "gen_ai.output.messages": [{"role": "assistant", "content": "ZW5jb2RlZCBzeW50aGV0aWMgdGV4dA=="}],
+    "saf.system_prompt.overlap_count": 0,
+    "saf.system_prompt.canary_match": false,
+    "saf.disclosure.authorized": false,
+    "expected_alert": false
+  }
+]

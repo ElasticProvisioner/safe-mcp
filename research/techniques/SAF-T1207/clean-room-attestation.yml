@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T1207
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: cleanroom_saf_t1207_retry
+  inherited_context: false
+target:
+  id: SAF-T1207
+  neutral_name: Hijack Update Mechanism
+allowed_inputs:
+- Seed metadata only: SAF-T1207, neutral title Hijack Update Mechanism, tactic ATK-TA0003
+    Persistence.
+- Author-saf-technique skill and directly required methodology, clean-room, research,
+  trace, generic schema, and validator contracts.
+- Fresh whitelist-only authoritative web discovery and complete reviewed sources.
+- Blank technique and research-packet templates.
+prohibited_inputs:
+- techniques/SAF-T1207/README.md
+- research/techniques/SAF-T1207/
+- techniques/SAF-T1207/detection-rule.yml
+- Existing or prior SAF-T1207 README content.
+- Existing or prior SAF-T1207 research packet or detection artifacts.
+- Technique catalog descriptions or real neighboring technique prose.
+- Git history, log, diff, blame, pull requests, old PR content, or prior agent artifacts.
+- Previous conversation drafts or inherited target-technique context.
+independent_research:
+  search_query_count: 70
+  direct_open_operation_count: 58
+  searches:
+  - site:modelcontextprotocol.io registry package version server installation metadata
+    official registry
+  - site:code.visualstudio.com MCP server install update extensions auto update signature
+    verification
+  - site:theupdateframework.io specification updater repository compromise freeze
+    rollback mix-and-match attacks
+  - site:cisa.gov SolarWinds Orion compromised software updates backdoor advisory
+    December 2020
+  - site:cloud.google.com/blog/topics/threat-intelligence 3CX software supply chain
+    compromise March 2023 Mandiant
+  - site:nvd.nist.gov Electron autoUpdater signature verification vulnerability CVE
+  - site:nvd.nist.gov Sparkle updater signature validation CVE arbitrary code
+  - site:socket.dev/blog MCP package update compromise production incident
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP update compromise malicious
+    version
+  - site:attack.mitre.org/techniques/T1195/002 software supply chain compromise updates
+    signed code
+  - site:learn.microsoft.com malicious MCP plugin update supply chain
+  - site:cisa.gov malicious MCP server update trusted package incident
+  opened_source_ids:
+  - SRC-mcp-registry-about
+  - SRC-mcp-registry-package-types
+  - SRC-mcp-versioning
+  - SRC-mcp-registry-faq
+  - SRC-vscode-agent-plugins
+  - SRC-vscode-extension-marketplace
+  - SRC-vscode-extension-security
+  - SRC-vscode-enterprise-extensions
+  - SRC-vscode-ai-governance
+  - SRC-tuf-security
+  - SRC-tuf-metadata
+  - SRC-google-ai-blueprint
+  - SRC-google-supply-chain
+  - SRC-mandiant-solarwinds
+  - SRC-mandiant-3cx
+  - SRC-socket-axios
+  - SRC-nvd-cve-2022-29257
+  - SRC-electron-ghsa
+  - SRC-nvd-cve-2025-0509
+  - SRC-sparkle-security
+  - SRC-mitre-t1195-002
+  - SRC-mitre-t1554
+  - SRC-mitre-ta0003
+  - SRC-paloalto-koi-redirect
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect the real target README, packet, detection, history, pull requests,
+  or prior artifacts before freeze.
+- Do not merge this bundle automatically; reconcile real neighbors, mitigation IDs,
+  source-registry collisions, and repository history only after freeze.
+- Exact GitHub advisory SRC-electron-ghsa was opened only after its ID and URL were
+  discovered in reviewed SRC-nvd-cve-2022-29257.
+attestation: The technique was generated from seed metadata and independently reviewed
+  sources without access to prohibited target artifacts. The draft was frozen as an
+  external bundle before any repository integration or real-catalog reconciliation.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-registry-about: SRC-mcp-registry-about
+    SRC-mcp-package-types: SRC-mcp-registry-package-types
+    SRC-mitre-t1195-002: SRC-mitre-t1195-002
+  new_shared_source_records:
+  - SRC-mcp-versioning
+  - SRC-mcp-registry-faq
+  - SRC-vscode-agent-plugins
+  - SRC-vscode-extension-marketplace
+  - SRC-vscode-extension-security
+  - SRC-vscode-enterprise-extensions
+  - SRC-vscode-ai-governance
+  - SRC-tuf-security
+  - SRC-tuf-metadata
+  - SRC-google-ai-blueprint
+  - SRC-google-supply-chain
+  - SRC-mandiant-solarwinds
+  - SRC-mandiant-3cx
+  - SRC-socket-axios
+  - SRC-nvd-cve-2022-29257
+  - SRC-electron-ghsa
+  - SRC-nvd-cve-2025-0509
+  - SRC-sparkle-security
+  - SRC-mitre-t1554
+  - SRC-mitre-ta0003
+  - SRC-paloalto-koi-redirect
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-45
+  synthetic_neighbor_mapping:
+    SAF-T9998: SAF-T1003
+    SAF-T9999: SAF-T1201
+  synthetic_mitigation_mapping:
+    SAF-M-998: SAF-M-45
+    SAF-M-999: SAF-M-29
+  status: integrated_and_repository_validated

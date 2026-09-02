@@ -1,0 +1,135 @@
+version: 1
+technique_id: SAF-T1505
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1505
+  inherited_context: false
+target:
+  id: SAF-T1505
+  neutral_name: In-Memory Secret Extraction
+allowed_inputs:
+- The author-saf-technique skill and all required non-example references.
+- Generic techniques/TEMPLATE.md, research/README.md, blank research schemas, and
+  the current validator.
+- Neutral target ID, name, tactic, and clean-room delivery instructions supplied by
+  the parent task.
+- Directly opened standards-body, government, academic-author, vendor, and researcher
+  authorities.
+- A strict synthetic repository containing only generic validation dependencies and
+  synthetic joins.
+prohibited_inputs:
+- techniques/SAF-T1505/README.md in the repository or its historical versions.
+- techniques/SAF-T1505/detection-rule.yml or any target-specific tests and logs.
+- research/techniques/SAF-T1505/ and all prior target research artifacts.
+- Shared registries, catalog descriptions, SAF sites, source lists, or prior target
+  content.
+- Git history, diffs, blame, branches, stashes, or commits exposing prior target artifacts.
+- Any pull request, issue, review comment, cache, or derivative source containing
+  prior target content.
+- Any previous conversation, summary, or inherited agent context containing prior
+  technique content.
+- GitHub search or GitHub discovery; exact GitHub pages were opened only after NVD
+  supplied their URLs.
+independent_research:
+  searches:
+  - 'NVD keywordSearch: Model Context Protocol secret'
+  - 'NVD keywordSearch: MCP environment variables'
+  - 'NVD keywordSearch: AI agent credential'
+  - CISA KEV 2026-09-01 exact candidate-ID filter
+  - 'arXiv: all:"model context protocol" AND all:security'
+  - 'NVD keywordSearch: Model Context Protocol credential disclosure'
+  - 'NVD keywordSearch: MCP process.env secret'
+  - 'NVD keywordSearch: Model Context Protocol breach incident'
+  - 'NVD keywordSearch: Model Context Protocol token environment'
+  - 'arXiv: all:"model context protocol" AND all:"credential theft"'
+  - 'arXiv: all:"model context protocol" AND all:"secret extraction"'
+  - 'NVD keywordSearch: MCP API key process environment'
+  - 'NVD keywordSearch: MCP credential environment exposure'
+  - 'arXiv: all:"model context protocol" AND all:"environment variable" AND all:credential'
+  - 'NVD keywordSearch: MCP in-memory credential extraction'
+  - 'NVD keywordSearch: agent process environment secret disclosure'
+  - 'arXiv: all:"model context protocol" AND all:"process environment"'
+  opened_source_ids:
+  - SRC-arxiv-2504.03767v2
+  - SRC-mitre-t1003
+  - SRC-attack-t1055
+  - SRC-mitre-attack-t1552.001-v1.3
+  - SRC-mitre-t1555
+  - SRC-cisa-kev-in-memory-secrets-2026-09-01
+  - SRC-ghsa-4pcc-j6m6-wcwx
+  - SRC-ghsa-mp29-fxh8-92px
+  - SRC-ghsa-pj2r-f9mw-vrcq
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-nvd-cve-2026-29872
+  - SRC-nvd-cve-2026-32625
+  - SRC-nvd-cve-2026-40159
+  - SRC-nvd-cve-2026-67531
+  - SRC-nvd-mcp-token-env-query
+  - SRC-otel-logs-data-model
+  - SRC-pham-minh-cve-2026-29872
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+strict_mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1505
+  result: passed
+  proof: validation/strict-validator.txt
+integration_constraints:
+- Reconcile source IDs against the shared manifest without using it as a research
+  lead.
+- Replace the three synthetic neighbor IDs with canonical repository IDs after freeze.
+- Replace the synthetic nonzero history sentinel with an honest integration repository
+  SHA.
+- Verify the supplied tactic ID and related mitigation joins mechanically against
+  shared registries.
+- Do not revise prose from any comparison with prior SAF-T1505 content.
+attestation: This independently sourced draft and evidence set were frozen before
+  any integration. No prior SAF-T1505 artifact, shared registry, SAF site, repository
+  history, pull request, or previous technique conversation was accessed.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-in-memory-secrets-2026-09-01
+    SRC-attack-t1003: SRC-mitre-t1003
+    SRC-attack-t1555: SRC-mitre-t1555
+    SRC-attack-t1552.001: SRC-mitre-attack-t1552.001-v1.3
+  new_shared_source_records:
+  - SRC-nvd-cve-2026-32625
+  - SRC-ghsa-4pcc-j6m6-wcwx
+  - SRC-nvd-cve-2026-29872
+  - SRC-pham-minh-cve-2026-29872
+  - SRC-nvd-cve-2026-40159
+  - SRC-ghsa-pj2r-f9mw-vrcq
+  - SRC-nvd-cve-2026-67531
+  - SRC-ghsa-mp29-fxh8-92px
+  - SRC-nvd-mcp-token-env-query
+  - SRC-arxiv-2504.03767v2
+  - SRC-attack-t1055
+  - SRC-otel-logs-data-model
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-52
+  - SAF-M-74
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1502
+  - SAF-T1305
+  - SAF-T1911

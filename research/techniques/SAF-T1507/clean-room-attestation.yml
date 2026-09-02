@@ -1,0 +1,136 @@
+version: 1
+technique_id: SAF-T1507
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1507
+  inherited_context: false
+target:
+  id: SAF-T1507
+  neutral_name: Authorization Code Interception
+allowed_inputs:
+- Target ID SAF-T1507, neutral name Authorization Code Interception, and assigned
+  tactic ATK-TA0006 supplied by the parent task.
+- The author-saf-technique skill and all routed references except the prohibited pre-freeze
+  impact examples.
+- Canonical generic techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and scripts/validate-technique-research.py.
+- Directly opened standards-body, government, first-party vendor, first-party researcher,
+  CVE/CNA, and MITRE ATT&CK authorities independently identified in this run.
+- Exact GitHub URLs only after a directly reviewed non-GitHub authority supplied them,
+  with provenance recorded.
+prohibited_inputs:
+- techniques/SAF-T1507/README.md and all current or historical target prose.
+- research/techniques/SAF-T1507/ and all target research, tests, ledgers, logs, or
+  evidence packets.
+- techniques/SAF-T1507/detection-rule.yml and any target detection asset.
+- Git history, diffs, blame, logs, branches, stashes, commits, or review data exposing
+  target artifacts.
+- Any pull request or issue that exposes prior SAF-T1507 content.
+- Any previous conversation, summary, agent context, cache, site, catalog description,
+  SAF registry, or source list containing prior SAF-T1507 content.
+- Shared source manifest, framework model, alignment ledger, and target-specific registries
+  before freeze.
+- impact-classification-examples.md and other methodology examples that could supply
+  target-specific leads before freeze.
+independent_research:
+  searches:
+  - Direct open of the MCP 2025-11-25 Authorization specification.
+  - Direct open and full-text review of RFC 6749, RFC 7636, RFC 8252, and RFC 9700
+    at rfc-editor.org.
+  - Official NVD API keywordSearch=authorization code interception.
+  - Official NVD API keywordSearch=PKCE.
+  - Official NVD API keywordSearch=OAuth redirect URI.
+  - Direct official CVE API opens for CVE-2025-4143, CVE-2025-4144, and CVE-2026-67336.
+  - Direct CISA KEV 2026.09.01 exact-ID review.
+  - Exact Cloudflare pull request URLs 26 and 27 supplied by their official CVE records.
+  - Exact Better Auth GHSA-9h47-pqcx-hjr4 URL supplied by NVD/CVE authority.
+  - Direct MITRE ATT&CK T1528 review.
+  - Official NVD saturation query MCP PKCE and workers-oauth-provider, which added
+    CVE-2026-67336 and reset saturation.
+  - Official NVD saturation query Model Context Protocol authorization code and OAuth
+    code leak MCP, which added only excluded adjacent candidates.
+  - Final no-change NVD queries MCP code_challenge_method plain and MCP redirect_uri
+    PKCE.
+  - Final no-change NVD queries Model Context Protocol code verifier and MCP authorization
+    redirect URI interception.
+  opened_source_ids:
+  - SRC-mitre-t1528
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cisa-kev-authorization-code-2026-09-01
+  - SRC-cloudflare-pr26
+  - SRC-cloudflare-pr27
+  - SRC-cve-2025-4143
+  - SRC-cve-2025-4144
+  - SRC-cve-2026-67336
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-nvd-cleanroom-queries
+  - SRC-rfc6749
+  - SRC-rfc7636
+  - SRC-rfc8252
+  - SRC-rfc9700
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not compare the frozen draft with prior SAF-T1507 content or use old prose, omissions,
+  sources, or examples to revise it.
+- Reconcile shared source IDs only for stable-ID reuse and collision avoidance; shared
+  registries must not create research leads.
+- Mechanically resolve synthetic neighbor IDs, tactic join, fragment paths, and the
+  honest repository-history SHA after freeze.
+- Run full repository validators only after authorized integration; do not integrate,
+  commit, push, or open a pull request in this task.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1507/mock
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1507
+  mode: strict
+  result: passed
+  deliberately_deferred:
+  - Real shared source-ID collision reconciliation
+  - Real framework neighbor and tactic joins
+  - Honest post-integration repository-history SHA
+  - Full repository workflow regression tests
+attestation: I generated SAF-T1507 independently from the supplied neutral identifiers,
+  generic methodology and schemas, the canonical validator, and directly reviewed
+  external authorities. I did not open any prohibited prior target artifact or target-specific
+  repository record. The independently sourced draft and evidence set were locked
+  before synthetic mock validation and remain frozen before any repository integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-rfc7636: SRC-rfc7636
+    SRC-rfc8252: SRC-rfc8252
+    SRC-rfc9700: SRC-rfc9700
+    SRC-cve-2025-4143: SRC-cve-2025-4143
+    SRC-cve-2026-67336: SRC-cve-2026-67336
+    SRC-better-auth-ghsa-9h47: SRC-ghsa-9h47-pqcx-hjr4
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-authorization-code-2026-09-01
+    SRC-attack-t1528: SRC-mitre-t1528
+  new_shared_source_records:
+  - SRC-rfc6749
+  - SRC-cloudflare-pr26
+  - SRC-cve-2025-4144
+  - SRC-cloudflare-pr27
+  - SRC-nvd-cleanroom-queries
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-37
+  - SAF-M-38
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1009
+  - SAF-T1504

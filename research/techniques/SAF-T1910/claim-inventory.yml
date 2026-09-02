@@ -1,0 +1,371 @@
+version: 1
+technique_id: SAF-T1910
+claims:
+  - id: SAF-T1910-C001
+    statement: MCP assigns the host responsibility for authorization, consent, context aggregation, and isolation between one-to-one client-server connections.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2025-06-18
+        support: direct
+        exact_locators: ["Core Components: Host and Clients; Design Principles item 3"]
+    corroboration: The current MCP Tools security considerations separately assign confirmation and audit duties to clients.
+    limitations: [The architecture document states design responsibilities, not that every implementation enforces them correctly.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C002
+    statement: MCP tool definitions expose descriptions and input schemas, tools/call requests carry a tool name and arguments, and clients should show tool inputs and log tool use to reduce accidental or malicious exfiltration.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["Listing Tools and Calling Tools examples", "Tool data type", "Security Considerations items 1-2"]
+    corroboration: Invariant's experiments report that incomplete argument presentation weakened user confirmation.
+    limitations: [The specification does not prescribe a universal audit-event schema or guarantee that clients retain full arguments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C003
+    statement: End-to-end MCP demonstrations show that an agent can place sensitive data into legitimate-looking tool arguments or messages that reach an unintended recipient while the disclosure is obscured from the user.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Experiment 1: Attacking Cursor with Tool Poisoning", "Experiment 2: Shadowing Tool Descriptions with Cursor"]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators: ["Experiment 1: Malicious MCP server takeover", "Experiment 2: Attacking via an Injected Message"]
+      - source_id: SRC-radosevich-halloran-mcp-audit-2025
+        support: corroborating
+        exact_locators: ["Section 4 Retrieval-Agent Deception Attacks; Figure 4 description"]
+    corroboration: Three independently described controlled setups used different carriers and trigger paths.
+    limitations: [The reviewed sources are controlled demonstrations, not documented production compromises.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C004
+    statement: Invariant Labs demonstrated a poisoned MCP tool description causing Cursor to read sensitive files and send their contents in a hidden sidenote argument; the confirmation interface did not show the full argument.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["How the Attack Works", "Experiment 1: Attacking Cursor with Tool Poisoning", "paragraphs describing confirmation UI"]
+    corroboration: The MCP Tools specification identifies complete input display as a control against data exfiltration.
+    limitations: [The experiment used a prepared malicious server and required tool-call confirmation in the tested client.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C005
+    statement: Invariant Labs demonstrated that a malicious MCP server description could influence a trusted WhatsApp MCP send action to carry chat history to an attacker-selected recipient without calling the malicious server.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: ["Experiment 1: Malicious MCP server takeover", "Attack Visibility", "Tool Descriptions"]
+    corroboration: The MCP architecture defines the host as the component responsible for cross-server isolation.
+    limitations: [The experiment was controlled and depended on the tested host processing both servers' context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C006
+    statement: Invariant Labs also demonstrated an injected WhatsApp message, returned as tool output, causing the tested agent to send the user's recent contacts through the trusted WhatsApp tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: ["Experiment 2: Attacking via an Injected Message", "Attack Setup", "Injection Prompt", "Conclusion"]
+    corroboration: AgentDojo independently evaluates the broader pattern in which untrusted tool-returned data induces attacker-goal tool actions.
+    limitations: [The source reports one adapted prompt and does not establish a universal success rate.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C007
+    statement: Radosevich and Halloran demonstrated a Claude Desktop retrieval-agent attack that retrieved injected instructions, found synthetic API-key environment variables through MCP tools, and posted them through a Slack MCP tool.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-radosevich-halloran-mcp-audit-2025
+        support: direct
+        exact_locators: ["Section 4 Retrieval-Agent Deception Attacks", "Figure 4 description", "Section 7 Experimental Setup"]
+    corroboration: Invariant's WhatsApp experiment independently demonstrated tool-output injection followed by a trusted messaging action.
+    limitations: [The environment and credentials were controlled test fixtures; no production exploitation was claimed.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C008
+    statement: CVE-2025-34072 records a data-exfiltration weakness in the deprecated Anthropic Slack MCP Server in which attacker-influenced links containing private data are automatically fetched by Slack preview services.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2025-34072
+        support: direct
+        exact_locators: ["CVE JSON: descriptions[lang=en], affected, metrics.ssvcV203, references"]
+      - source_id: SRC-cve-34072
+        support: direct
+        exact_locators: ["One Picture Explanation", "Breaking The Security Boundary", "Leakage Scenario Walkthrough", "Responsible Disclosure"]
+      - source_id: SRC-vulncheck-cve-2025-34072
+        support: corroborating
+        exact_locators: ["Affecting", "CVE", "Credit", "Disclosure & PoC"]
+    corroboration: NVD preserves the CNA record and VulnCheck credits wunderwuzzi's disclosure and proof of concept.
+    limitations: [The affected server was deprecated and unmaintained; the records do not document a real victim incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C009
+    statement: As of 2026-09-02, the reviewed NVD record classified CVE-2025-34072 exploitation as proof-of-concept, and the 2026-09-01 CISA KEV feed did not list it.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-34072
+        support: direct
+        exact_locators: ["metrics.ssvcV203[0].ssvcData.options exploitation=poc"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: ["Catalog version 2026.09.01; exhaustive cveID equality check returned zero records for CVE-2025-34072"]
+    corroboration: The original disclosure labels its material as a demonstration and responsible disclosure, not an incident report.
+    limitations: [Absence from KEV does not prove absence of exploitation outside CISA's catalog.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C010
+    statement: Slack documents that message links are unfurled by default and that setting unfurl_links and unfurl_media to false suppresses those automatic fetches.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-chat-postmessage
+        support: direct
+        exact_locators: ["chat.postMessage parameters: unfurl_links and unfurl_media", "Usage info: Unfurling content"]
+    corroboration: The CVE disclosure reports successful retesting after both settings were disabled.
+    limitations: [The control addresses Slack unfurling; it does not prevent other egress-capable tools or services.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C011
+    statement: A practical analytic can correlate a sensitive-data access with a later unapproved MCP tool call or downstream network event in the same session when the outbound payload contains a normalized fingerprint of the accessed data.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["Calling Tools request fields", "Security Considerations: show inputs and log tool usage"]
+      - source_id: SRC-cve-34072
+        support: context
+        exact_locators: ["Leakage Scenario Walkthrough: data encoded in a link and received by a link-expanding request"]
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: corroborating
+        exact_locators: ["Detection Strategy DET0131 and analytics AN0367-AN0371"]
+    corroboration: The selected demonstrations expose the required sequence of access, carrier construction, and outbound action.
+    limitations: [The fingerprint correlation is an SAF experimental design and requires telemetry not mandated as a standardized MCP schema.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources support the event sequence and relevant fields; the joined analytic is a new deterministic defensive synthesis.
+    status: validated
+
+  - id: SAF-T1910-C012
+    statement: URL decoding and Unicode normalization are necessary analytic preprocessing for the tested carrier because the selected advisory demonstrates sensitive values placed in URL parameters and notes space replacement.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-34072
+        support: direct
+        exact_locators: ["Leakage Scenario Walkthrough, encoded hyperlink and query-parameter receipt"]
+    corroboration: The test corpus includes both literal and percent-encoded inert values.
+    limitations: [Normalization cannot recover encryption, hashing, lossy encodings, or transformations unknown to the detector.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The disclosure supplies the encoded-carrier behavior; the normalization pipeline is an explicit detection design choice.
+    status: validated
+
+  - id: SAF-T1910-C013
+    statement: Content correlation can miss encrypted, obfuscated, fragmented, or unlogged transfers and secondary fetches that cannot be attributed to the originating agent session.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Experiment 1 discussion of encoding and side channels"]
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: corroborating
+        exact_locators: ["Description: encrypted or obfuscated alternate channels", "Detection Strategy"]
+      - source_id: SRC-cve-34072
+        support: context
+        exact_locators: ["One Picture Explanation: multiple link-preview requests"]
+    corroboration: The selected evidence contains both a direct tool-call carrier and a secondary service fetch.
+    limitations: [The listed blind spots are not an exhaustive evasion catalog.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The limitation follows from the observable requirements of the analytic and the documented carrier variants.
+    status: validated
+
+  - id: SAF-T1910-C014
+    statement: Legitimate approved workflows may move sensitive data through messaging or external APIs, so destination approval, allowlists, data classification, and environment baselines are needed to reduce false positives.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-slack-chat-postmessage
+        support: context
+        exact_locators: ["Usage info: posts to public, private, or direct-message conversations"]
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: corroborating
+        exact_locators: ["Detection Strategy analytics: activity outside baseline behavior", "Mitigations M1057 and M1037"]
+    corroboration: The deterministic tests include an approved external transfer and an expected unapproved-but-legitimate lookalike.
+    limitations: [Approval metadata can itself be incomplete or misleading and does not prove business authorization.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The tuning fields combine documented legitimate service behavior with ATT&CK baseline guidance.
+    status: validated
+
+  - id: SAF-T1910-C015
+    statement: MCP guidance calls for showing complete sensitive tool inputs, confirming sensitive operations, validating tool results, and logging tool use.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: ["Security Considerations items 1 and 2"]
+    corroboration: Invariant reports that hidden inputs undermined the confirmation control in its experiment.
+    limitations: [These controls reduce risk but do not guarantee that a user recognizes encoded data or a downstream side effect.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C016
+    statement: Least privilege, sandboxed file and network access, restricted egress, DLP, network filtering, and segmentation constrain the data and channels available for exfiltration.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators: ["Local MCP Server Compromise: Mitigation", "Scope Minimization: Mitigation"]
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: corroborating
+        exact_locators: ["Mitigations M1057, M1037, M1030, M1022, and M1018"]
+    corroboration: The selected attacks depend on combined access to sensitive context and an egress-capable action.
+    limitations: [The controls require deployment-specific policy and do not make model-mediated flows intrinsically trustworthy.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The controls are directly documented; their combined application to the technique is SAF synthesis.
+    status: validated
+
+  - id: SAF-T1910-C017
+    statement: No qualifying production incident was identified in the authoritative and primary corpus reviewed through 2026-09-02; the strongest end-to-end evidence is controlled demonstration.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-mcp-keyword-20260902
+        support: direct
+        exact_locators: ["NVD API keywordSearch=Model Context Protocol; 77 records reviewed by identifier and description for incident claims"]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: ["Complete KEV catalog version 2026.09.01; mechanism and selected-CVE equality checks"]
+      - source_id: SRC-radosevich-halloran-mcp-audit-2025
+        support: context
+        exact_locators: ["Sections 3-4 and Experimental Setup, described as demonstrations"]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: context
+        exact_locators: ["Experiment 1", "Experiment 2", "Conclusion"]
+    corroboration: The vulnerability records and papers use PoC, experiment, or demonstration language rather than documenting victims or incident response.
+    limitations: [This is a bounded corpus result, not a claim that production exploitation has never occurred; inaccessible private incidents would not appear.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1910-C018
+    statement: MITRE ATT&CK T1048 is an analogous mapping because it covers exfiltration to an alternate network location or over an alternate protocol, while this SAF technique additionally requires concealment in an agent-authorized carrier or secondary service action.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1048-v1.6
+        support: direct
+        exact_locators: ["Description", "ID and Tactic", "Version 1.6"]
+    corroboration: The Slack MCP vulnerability uses an ordinary message followed by an alternate outbound preview request.
+    limitations: [T1048 is not MCP-specific and does not require model mediation or a covert application-level carrier.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the reviewed ATT&CK definition with the technique contract.
+    status: validated
+
+  - id: SAF-T1910-C019
+    statement: The demonstrated technique can have high confidentiality impact when credentials, chat history, contacts, or private messages are reachable; integrity impact is conditional and availability is not the immediate objective.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: ["Experiment 1", "Experiment 2"]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: corroborating
+        exact_locators: ["Experiment 1", "Experiment 2"]
+      - source_id: SRC-radosevich-halloran-mcp-audit-2025
+        support: corroborating
+        exact_locators: ["Section 4, credential-theft RADE demonstration"]
+      - source_id: SRC-nvd-cve-2025-34072
+        support: corroborating
+        exact_locators: ["CVSS v4 confidentiality impact and description"]
+    corroboration: Multiple controlled examples disclose different classes of sensitive data.
+    limitations: [Impact depends on the data present, permissions, destination, and whether the covert action is completed.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rating synthesizes bounded demonstrated consequences under the technique contract.
+    status: validated
+
+  - id: SAF-T1910-C020
+    statement: Model-side refusal or prompt-injection detection alone is insufficient because controlled evaluations report variable attack success and inconsistent refusal behavior; deterministic data-flow controls remain necessary.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-radosevich-halloran-mcp-audit-2025
+        support: direct
+        exact_locators: ["Section 3 refusal comparisons", "Section 6 Discussion"]
+      - source_id: SRC-agentdojo-2406.13352v3
+        support: corroborating
+        exact_locators: ["Abstract", "Section 1: reported task, attack, and defense rates", "Section 4.3 Prompt Injection Defenses"]
+    corroboration: Both evaluations distinguish successful and failed attacks rather than claiming universal exploitability.
+    limitations: [Results apply to tested models, prompts, agents, and dates; model behavior may change.]
+    conflicts:
+      - Some tested prompts were refused and AgentDojo attacks succeeded in fewer than 25 percent of cases against the best-performing agents; the technique therefore states preconditions and does not claim deterministic model compromise.
+    inference: {is_inference: false, rationale: null}
+    status: validated

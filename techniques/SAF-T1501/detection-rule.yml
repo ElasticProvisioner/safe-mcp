@@ -1,126 +1,104 @@
-# SIGMA RULE: MCP Full-Schema Poisoning Detection
-# WARNING: This rule contains example patterns only. Organizations should:
-# - Regularly update patterns based on threat intelligence
-# - Implement behavioral analysis beyond pattern matching
-# - Use AI-based anomaly detection for novel attack vectors
-# - Consider semantic analysis of entire schema structures
-
-title: MCP Full-Schema Poisoning Detection
-id: e9f8a1b5-67d4-48e2-9cd3-345678901fed
+title: Unapproved or Distributed MCP Full-Schema Instruction Surface
+id: 15011501-1501-4501-8501-150115011501
 status: experimental
-description: Detects potential Full-Schema Poisoning attacks in MCP tool definitions
-author: SAF-MCP Team
-date: 2025-09-14
-modified: 2025-09-14
+description: >-
+  Flags an untrusted MCP tool-definition observation when the complete
+  definition differs from its approved fingerprint without explicit reapproval,
+  or instruction-like language appears across at least two definition paths
+  including a schema-resident path. This is a review signal, not proof of FSP.
+author: OpenAI Codex clean-room research agent
+date: 2026-09-01
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1501
-  - https://www.cyberark.com/resources/threat-research-blog/poison-everywhere-no-output-from-your-mcp-server-is-safe
-  - https://attack.mitre.org/techniques/T1552/
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://www.rfc-editor.org/rfc/rfc8785
+  - https://arxiv.org/abs/2604.17125v1
 logsource:
-  product: mcp
-  service: tool_registry
+  category: application
+  product: mcp_host
+  service: tool_definition_audit
 detection:
-  # Parameter injection patterns
-  selection_parameter_injection:
-    tool_schema|contains:
-      - '<!-- SYSTEM:'
-      - '<!-- INSTRUCTION:'
-      - '<!-- Hidden:'
-      - '<|system|>'
-      - '[INST]'
-      - '### Instruction:'
-      - '${PASSWORD}'
-      - '${SECRET}'
-      - '${API_KEY}'
-      - '${DB_PASSWORD}'
-      - '${OPENAI_API_KEY}'
-
-  # Default value poisoning
-  selection_default_poisoning:
-    tool_schema_defaults|contains:
-      - 'environment variable'
-      - '.env'
-      - 'credentials'
-      - 'password'
-      - 'secret'
-      - 'api_key'
-      - 'Include'
-      - 'Extract'
-      - 'Expose'
-      - 'DATABASE_PASSWORD'
-      - 'real password'
-
-  # Enum value injection
-  selection_enum_injection:
-    tool_schema_enum|contains:
-      - '<!-- '
-      - 'Include actual'
-      - 'credentials'
-      - 'password'
-      - 'secret'
-      - 'API key'
-      - 'Expose'
-
-  # Output schema manipulation
-  selection_output_manipulation:
-    tool_output_schema|contains:
-      - 'debug_info'
-      - 'metadata'
-      - '<!-- Hidden'
-      - 'Include credentials'
-      - 'DATABASE_PASSWORD'
-      - 'API_KEYS'
-      - 'credential files'
-      - 'sensitive data'
-
-  # Suspicious file path patterns
-  selection_suspicious_patterns:
-    tool_schema|contains:
-      - '.ssh/id_rsa'
-      - '.ssh/id_dsa'
-      - '.aws/credentials'
-      - '/etc/passwd'
-      - '/etc/shadow'
-      - '~/.env'
-      - '.env file'
-      - 'OPENAI_API_KEY'
-      - 'ANTHROPIC_API_KEY'
-      - 'HUGGINGFACE_TOKEN'
-
-  # Schema complexity indicators for credential harvesting
-  selection_credential_harvesting:
-    tool_schema|contains:
-      - 'scan for:'
-      - '*.key'
-      - '*.pem'
-      - '*.env files'
-      - 'credential files'
-      - 'Prioritize credential'
-      - 'containing PASSWORD'
-      - 'containing SECRET'
-      - 'containing TOKEN'
-
-  # Pattern properties with suspicious descriptions
-  selection_pattern_properties:
-    tool_schema|contains:
-      - 'patternProperties'
-      - '^security_.*'
-      - 'Extract and include'
-      - 'API keys or passwords'
-
-  condition: selection_parameter_injection or selection_default_poisoning or selection_enum_injection or selection_output_manipulation or selection_suspicious_patterns or selection_credential_harvesting or selection_pattern_properties
-
+  selection_context:
+    event_type: mcp_tool_definition_observed
+    source_trust: untrusted
+  selection_schema_change:
+    approved_schema_sha256|exists: true
+    observed_schema_sha256|neq_field: approved_schema_sha256
+  selection_distributed_directives:
+    suspicious_definition_path_count|gte: 2
+    suspicious_schema_path_count|gte: 1
+  filter_explicit_reapproval:
+    lifecycle_event: explicit_reapproval
+  condition: >-
+    selection_context and not filter_explicit_reapproval and
+    (selection_schema_change or selection_distributed_directives)
+fields:
+  - timestamp
+  - host_id
+  - server_id
+  - tool_name
+  - definition
+  - observed_schema_sha256
+  - approved_schema_sha256
+  - source_trust
+  - lifecycle_event
 falsepositives:
-  - Legitimate tools with credential management functionality
-  - Development tools that legitimately access configuration files
-  - Administrative tools with system-level access requirements
-  - Debugging tools that expose metadata for troubleshooting
-  - Documentation examples that reference credential patterns
-
-level: critical
+  - Legitimate schema changes observed before the approval record is updated.
+  - Security-training or policy tools with imperative terms across schema paths.
+  - Benign schemas whose documentation describes secondary review workflows.
+level: high
 tags:
-  - attack.credential_access
-  - attack.t1552
-  - attack.t1555
-  - attack.t1003
-  - safe.t1501
+  - saf.t1501
+  - attack.initial-access
+notes:
+  canonicalization_profile: >-
+    The executable fixture profile uses parsed JSON, recursively sorted object
+    keys, compact separators, and UTF-8 bytes. Production deployments should use
+    a reviewed JCS implementation when RFC 8785 conformance is required.
+  string_normalization: Unicode NFKC plus case-folding for the static phrase profile.
+  correlation_window: One lifecycle observation against the most recent explicit approval for the same server_id and tool_name.
+  limitations:
+    - Semantic paraphrases and single-path poisoning may evade the phrase profile.
+    - A malicious definition approved as the initial baseline may not create hash drift.
+    - Trusted-source compromise is outside selection_context and requires separate monitoring.
+    - Complete definitions and explicit reapproval state must be logged before model use.
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1501-C006
+    - SAF-T1501-C008
+  telemetry_claim_ids:
+    - SAF-T1501-C001
+    - SAF-T1501-C002
+  limitation_claim_ids:
+    - SAF-T1501-C007
+    - SAF-T1501-C008
+  validation_artifacts:
+    - tests/SAF-T1501/cases.json
+    - tests/SAF-T1501/test_detection_rule.py
+    - research/techniques/SAF-T1501/validation/detection-test.txt
+    - research/techniques/SAF-T1501/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1501-C002]
+      rationale: Definition-discovery telemetry is required at the point a host receives model-visible metadata.
+    selection_context:
+      claim_ids: [SAF-T1501-C002, SAF-T1501-C003]
+      rationale: FSP crosses the untrusted-server-to-model planning boundary.
+    selection_schema_change:
+      claim_ids: [SAF-T1501-C006, SAF-T1501-C008]
+      rationale: A complete-definition digest permits deterministic comparison with an explicitly approved baseline.
+    selection_distributed_directives:
+      claim_ids: [SAF-T1501-C003, SAF-T1501-C006]
+      rationale: The technique contract requires distributed semantics with at least one schema-resident path.
+    filter_explicit_reapproval:
+      claim_ids: [SAF-T1501-C008]
+      rationale: An explicit complete-definition reapproval distinguishes reviewed administrative change from unapproved drift.
+    condition:
+      claim_ids: [SAF-T1501-C006, SAF-T1501-C007]
+      rationale: The combined selections are a bounded review signal and retain known content-scanning limitations.
+    fields:
+      claim_ids: [SAF-T1501-C001, SAF-T1501-C002, SAF-T1501-C006]
+      rationale: Investigation requires identity, lifecycle, complete definition, and both observed and approved digest fields.
+    falsepositives:
+      claim_ids: [SAF-T1501-C007]
+      rationale: Reviewed research records false positives from benign content that resembles attack language.

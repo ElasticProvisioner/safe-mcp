@@ -1,0 +1,348 @@
+version: 1
+technique_id: SAF-T1706
+claims:
+  - id: SAF-T1706-C001
+    statement: Any party possessing an OAuth bearer token can use it to access the associated resources without proving possession of a cryptographic key.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators: [Abstract; Section 1.2 Bearer Token]
+    corroboration: RFC 9449 contrasts bearer tokens with sender-constrained tokens.
+    limitations: [Possession alone does not expand the token's audience, scope, validity period, or subject privileges.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C002
+    statement: OAuth standards identify token redirect and token replay as threats and recommend audience restriction and sender constraint to limit replay of captured access tokens.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators: [Sections 5.1 Token redirect and Token replay; Section 5.2]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Sections 4.9.3, 4.10.1, and 4.10.2]
+    corroboration: RFC 8707 explains resource indicators and single-audience security properties.
+    limitations: [The standards describe threat models and controls, not an MCP production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C003
+    statement: The MCP authorization specification requires clients to request resource-bound tokens, servers to validate that tokens were issued for them, and servers not to pass inbound client tokens through to upstream APIs.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Token Audience Binding and Validation; Access Token Privilege Restriction]
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators: [Token Passthrough; Risks; Mitigation]
+    corroboration: RFC 8707 establishes the resource parameter and audience restriction model used by MCP.
+    limitations: [Conformance requirements do not establish that every implementation enforces them.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C004
+    statement: In an MCP or agent-connected environment, replaying a captured OAuth bearer access token from a different presenter can move the adversary into any protected resource that accepts that token for its subject and scopes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators: [Abstract; Sections 1.2, 1.3, and 5.1]
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Sections 4.9.1 through 4.10.2]
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: corroborating
+        exact_locators: [Token Theft; Access Token Privilege Restriction]
+    corroboration: CVE-2026-14541 documents an MCP implementation accepting Google OAuth tokens minted for unrelated applications.
+    limitations: [No directly reviewed source documented this complete OAuth behavior in an MCP production incident.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The end-to-end SAF behavior joins standardized bearer semantics, MCP trust-boundary requirements, and a direct MCP audience-confusion vulnerability.
+    status: validated
+
+  - id: SAF-T1706-C005
+    statement: GHSA-6mx4-4h42-r8vh publicly demonstrated an agent-mediated MCP flow that exposed a Kubernetes bearer token and replayed it against the real Kubernetes API, but the credential was not established as an OAuth access token.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-6mx4-4h42-r8vh
+        support: direct
+        exact_locators: [Summary; PoC; Impact; Credits]
+      - source_id: SRC-nvd-cve-2026-47250
+        support: corroborating
+        exact_locators: [CVE description; affected versions; SSVC exploitation field]
+    corroboration: The first-party v3.7.0 release records the flag restriction used for remediation.
+    limitations: [This is adjacent bearer-token evidence and does not elevate the OAuth-specific technique above Research-Derived.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C006
+    statement: CVE-2026-14541 documents that Google mcp-toolbox 1.4.0 could accept valid Google OAuth access tokens minted for unrelated applications when MCP audience or client configuration was absent, granting unauthorized access to protected tools and data backends.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-14541
+        support: direct
+        exact_locators: [CVE description; affected version; CVSS and SSVC records]
+      - source_id: SRC-google-pr3450
+        support: corroborating
+        exact_locators: [PR summary; code review; merged commit; release 1.5.0 notes; reporter credit]
+    corroboration: The MCP authorization specification independently requires audience validation.
+    limitations: [The reviewed sources did not report production exploitation or publish an end-to-end replay transcript.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C007
+    statement: In August 2025, UNC6395 used OAuth tokens stolen from Salesloft Drift integrations to access and exfiltrate data from Salesforce customer instances and to access a small number of connected Google Workspace accounts.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-google-gtig-drift
+        support: direct
+        exact_locators: [Update August 28; Introduction; Threat Detail; Recommendations]
+      - source_id: SRC-salesloft-drift-update
+        support: corroborating
+        exact_locators: [Summary of Mandiant Investigation; Update as of September 6, 2025; Drift/Salesforce Security Update]
+    corroboration: Google Threat Intelligence Group and Salesloft independently describe token theft, use, containment, and revocation.
+    limitations: [The incident involved SaaS integrations; the reviewed sources did not establish an MCP authorization flow or impact to Salesloft AI Agents.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C008
+    statement: In April 2022, an attacker authenticated to GitHub using stolen OAuth tokens issued to Heroku and Travis CI, listed organizations and private repositories, cloned selected repositories, and obtained an AWS key later used against npm infrastructure.
+    class: historical_analogy
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-github-oauth-incident-2022
+        support: direct
+        exact_locators: [April 27 update; Impact to GitHub.com and npm; response section; author footer]
+    corroboration: RFC 9449 cites this GitHub report as a high-profile OAuth token theft example.
+    limitations: [The incident predates MCP and does not establish an agentic-system occurrence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C009
+    statement: No qualifying direct production incident of OAuth token pivot replay in an MCP system was identified in the authoritative corpus reviewed through 2026-09-02.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-search-corpus
+        support: direct
+        exact_locators: [Recorded NVD keyword queries and returned identifiers]
+      - source_id: SRC-cisa-kev-catalog-page-2026-09-01
+        support: corroborating
+        exact_locators: [Catalog version 2026.09.01; checked selected CVE identifiers]
+    corroboration: Direct incident review found production OAuth analogies, while the direct MCP record was a disclosed vulnerability and the MCP replay demonstration used a non-OAuth Kubernetes bearer token.
+    limitations: [This is a bounded corpus result, not a claim that such an incident has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to named authoritative searches and directly reviewed sources as of the review date.
+    status: validated
+
+  - id: SAF-T1706-C010
+    statement: DPoP can sender-constrain an access token to a public key and bind each proof to the request method, target URI, token hash, creation time, and unique identifier, reducing use of an exfiltrated token without the key.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9449
+        support: direct
+        exact_locators: [Sections 2, 3, 4.2, 4.3, and 11.1]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Sections 4.10.1 and 4.10.2]
+    corroboration: OAuth Security BCP recommends sender-constrained and audience-restricted access tokens.
+    limitations: [DPoP is weakened when the attacker obtains both token and key or can execute within the legitimate client context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C011
+    statement: Resource indicators let clients request audience-restricted tokens, while multi-audience bearer tokens require high trust because one intended recipient can use the token at another intended recipient.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators: [Section 2 Resource Parameter; Section 3 Security Considerations]
+      - source_id: SRC-rfc9068
+        support: corroborating
+        exact_locators: [Sections 2.2.1, 3, and 4]
+    corroboration: RFC 9700 explains how audience checks reject a token at a different resource server.
+    limitations: [Audience restriction does not prevent replay to the same intended resource by another bearer.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C012
+    statement: Correlating a non-reversible token fingerprint with accepted audience, resource, presenter, and time fields can identify audience mismatch or the same token appearing from distinct presenters, but the analytic is behavior-based and requires tuning.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc7662
+        support: direct
+        exact_locators: [Section 2.2 response fields client_id, sub, aud, exp, iat, and jti]
+      - source_id: SRC-mitre-t1550-001
+        support: corroborating
+        exact_locators: [Detection Strategy AN0527; technique description]
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: context
+        exact_locators: [Token Audience Binding and Validation; Token Theft]
+    corroboration: MITRE explicitly describes token reuse across sessions or clients as a detection strategy for application access tokens.
+    limitations: [Opaque tokens, missing presenter identity, approved multi-instance clients, and incomplete logs can produce blind spots or false positives.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The exact normalized analytic is an SAF design derived from standardized fields and ATT&CK's behavioral strategy, then tested on synthetic telemetry.
+    status: validated
+
+  - id: SAF-T1706-C013
+    statement: OAuth token revocation can invalidate an access token immediately, but distributed enforcement can have a propagation delay; revoking a token may also revoke related tokens depending on server policy.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc7009
+        support: direct
+        exact_locators: [Sections 2, 2.1, and 3]
+    corroboration: GitHub and Salesloft incident responses included revocation of affected access and refresh tokens.
+    limitations: [Support for access-token revocation and cascading behavior is deployment-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C014
+    statement: SAF-T1706 maps directly to ATT&CK T1550.001 Application Access Token for token use and only adjacently to T1528 Steal Application Access Token for the preceding acquisition step.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1550-001
+        support: direct
+        exact_locators: [Description; Tactic; Detection Strategy]
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators: [Description; Tactic]
+    corroboration: The contract explicitly begins at replay and excludes acquisition.
+    limitations: [ATT&CK is broader than MCP and does not encode this technique's audience-validation boundary.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping compares objective and behavior, not merely shared vocabulary.
+    status: validated
+
+  - id: SAF-T1706-C015
+    statement: The impact of replay is bounded by the token's validity, audience, scopes, subject privileges, resource sensitivity, and any sender constraint.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6750
+        support: direct
+        exact_locators: [Section 1.3; Section 3.1; Section 5.3]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Sections 4.9 and 4.10]
+      - source_id: SRC-ghsa-6mx4-4h42-r8vh
+        support: context
+        exact_locators: [Impact]
+    corroboration: Selected incidents show consequences tied to the permissions and data reachable by the replayed token.
+    limitations: [No universal severity follows from token replay without deployment-specific privilege and scope context.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Severity conditions synthesize protocol constraints and directly observed consequences.
+    status: validated
+
+  - id: SAF-T1706-C016
+    statement: Effective response includes containing the presenting workload, revoking affected tokens and grants, preserving authentication and API logs, investigating connected resources, and rotating secrets exposed through accessed data.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-gtig-drift
+        support: direct
+        exact_locators: [Recommendations; Revoke and Rotate Credentials]
+      - source_id: SRC-github-oauth-incident-2022
+        support: corroborating
+        exact_locators: [How GitHub responded; customer guidance]
+      - source_id: SRC-rfc7009
+        support: context
+        exact_locators: [Section 2 Token Revocation]
+    corroboration: Both production incident reports used token revocation and log review as containment and investigation measures.
+    limitations: [Exact containment and rotation steps depend on the authorization server and connected resources.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C017
+    statement: CVE-2026-14541 was bounded to Google mcp-toolbox 1.4.0 with the audience/client guard merged for 1.5.0, while CVE-2026-47250 affected mcp-server-kubernetes before 3.7.0 and was patched in 3.7.0.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2026-14541
+        support: direct
+        exact_locators: [Affected version]
+      - source_id: SRC-google-pr3450
+        support: corroborating
+        exact_locators: [Merged date and commit; release 1.5.0 notes]
+      - source_id: SRC-ghsa-6mx4-4h42-r8vh
+        support: direct
+        exact_locators: [Affected versions; Patched versions]
+      - source_id: SRC-release-mcp-k8s-3.7.0
+        support: corroborating
+        exact_locators: [Release v3.7.0 description]
+    corroboration: NVD and first-party project artifacts agree on the affected and remediated states reviewed.
+    limitations: [The sources do not establish whether downstream forks or untracked deployments applied the fixes.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1706-C018
+    statement: The selected CVE records were not listed in CISA's KEV catalog version 2026.09.01, and their NVD SSVC records reported no exploitation for CVE-2026-14541 and proof-of-concept exploitation for CVE-2026-47250.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-catalog-page-2026-09-01
+        support: direct
+        exact_locators: [Catalog version 2026.09.01 and absence check for selected CVEs]
+      - source_id: SRC-nvd-cve-2026-14541
+        support: direct
+        exact_locators: [SSVC exploitation none]
+      - source_id: SRC-nvd-cve-2026-47250
+        support: direct
+        exact_locators: [SSVC exploitation poc]
+    corroboration: The first-party GHSA supplies the controlled proof of concept for CVE-2026-47250.
+    limitations: [KEV absence is not evidence that exploitation has never occurred, and exploitation status can change.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

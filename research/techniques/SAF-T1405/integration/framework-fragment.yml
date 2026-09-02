@@ -1,0 +1,21 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1405
+    name: Tool Obfuscation/Renaming
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics: [ATK-TA0005]
+    technique_path: techniques/SAF-T1405/README.md
+    research_packet: research/techniques/SAF-T1405
+    related_techniques: [SAF-T1001, SAF-T1201]
+    mitigations: [SAF-M-2, SAF-M-6, SAF-M-11, SAF-M-12, SAF-M-14, SAF-M-20, SAF-M-29, SAF-M-45, SAF-M-69, SAF-M-70, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T1405/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1405/test-logs.json
+        - tests/SAF-T1405/expected-results.json
+        - tests/SAF-T1405/test_detection_rule.py
+        - tests/SAF-T1405/validation-output.txt
+        - research/techniques/SAF-T1405/validation/detection-output.txt
+        - research/techniques/SAF-T1405/validation/isolated-validator-output.txt

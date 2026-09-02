@@ -1,0 +1,35 @@
+version: 1
+technique_id: SAF-T1401
+date: "2026-09-01"
+operation_summary:
+  direct_authority_research_passes: 7
+  saturation_no_change_passes: 2
+  candidate_examples: 4
+  selected_examples: 2
+  consulted_sources: 14
+  cited_sources: 14
+  validated_claims: 19
+  excluded_candidates: 5
+  detection_cases: 9
+  production_incidents_selected: 0
+  direct_vulnerabilities_selected: 2
+evidence_status: demonstrated
+selected_examples:
+  - CVE-2026-79745 / GHSA-6cvf-cfch-4g7m
+  - CVE-2026-30856 / GHSA-67q9-58vj-32qx
+candidate_dispositions:
+  - identifier: CVE-2026-79745 / GHSA-6cvf-cfch-4g7m
+    disposition: selected_direct_vulnerability
+  - identifier: CVE-2026-30856 / GHSA-67q9-58vj-32qx
+    disposition: selected_direct_vulnerability
+  - identifier: CVE-2026-25905 / JFSA-2026-001653030
+    disposition: excluded_from_examples_enabling_only
+  - identifier: CVE-2025-6515 / JFSA-2025-001494691
+    disposition: excluded_from_examples_adjacent_only
+validation:
+  detection_test: passed
+  strict_mock_validator: passed
+blockers:
+  - Synthetic neighbor IDs require independent integration reconciliation.
+  - Placeholder history SHA requires replacement with the actual integration commit.
+  - Source IDs require de-duplication while preserving claim joins during shared-manifest merge.

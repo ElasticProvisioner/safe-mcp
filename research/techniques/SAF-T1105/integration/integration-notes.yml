@@ -1,0 +1,22 @@
+version: 1
+technique_id: SAF-T1105
+frozen_on: "2026-09-01"
+integration_status: not_integrated
+normalization_provenance:
+  mode: no_research_no_semantic_change
+  source_bundle: /private/tmp/saf-all-cleanroom/SAF-T1105/bundle
+  source_freeze_sha256: b848387eb17bce8cd9d1396c981ae92928e442dc4b532186214580737cb8f7c2
+  source_freeze_verified: true
+  layout_change: The three registry fragments moved from research/ to the canonical bundle root; no technique semantics changed.
+mechanical_actions:
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml by source ID without overwriting conflicting records.
+  - Merge the SAF-T1105 record from framework-fragment.yml into research/framework-model.yml.
+  - Merge alignment-fragment.yml issues into research/alignment-ledger.yml by issue ID.
+  - Copy the technique, packet, and test paths without changing their bytes before verifying FREEZE.sha256.
+  - Replace the synthetic repository-history SHA only after an honest integration commit exists.
+reconciliation_required:
+  - SAF-T1104 and SAF-T1106 are synthetic minimal neighbor IDs chosen without catalog access; reconcile them against the real framework after freeze.
+  - Re-run the current strict validator in the destination repository after all mechanical joins.
+prohibited_actions:
+  - Do not silently weaken, broaden, or rewrite claims during integration.
+  - Do not elevate Demonstrated to Observed without a directly reviewed hostile production incident.

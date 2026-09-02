@@ -1,0 +1,211 @@
+version: 1
+technique_id: SAF-T2104
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - site:modelcontextprotocol.io/specification tools authorization human confirmation least privilege
+        - site:datatracker.ietf.org RFC payment authorization amount currency creditor
+        - site:attack.mitre.org/techniques/T1657 financial theft
+      material_changes:
+        - Defined the model-to-tool and authorization-to-execution boundaries.
+        - Added payment-field authorization binding and the T1657 external mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - site:aisi.gov.uk agent incident unsanctioned action financial
+        - site:ncsc.gov.uk agent prompt injection bank transfer
+        - site:microsoft.com/en-us/security/blog MCP vulnerability CVE prompt execution
+        - site:cisa.gov AI agent financial transaction vulnerability
+      material_changes:
+        - Recorded one adjacent controlled incident, two enabling CVEs, and an explicit production-incident and in-the-wild exploitation gap.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org agent prompt injection banking transfer attacker account
+        - site:arxiv.org AI agent illicit financial actions tool benchmark
+        - site:arxiv.org financial analyst agent stock manipulation benchmark
+      material_changes:
+        - Selected AgentDojo and ART as the two strongest direct controlled demonstrations.
+        - Added WASP and Agent Security Bench as corroborating or excluded benchmark candidates.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - site:microsoft.com/en-us/security/blog AI agent transaction authorization tool binding
+        - site:ncsc.gov.uk agentic AI least privilege human accountability
+        - site:attack.mitre.org/techniques/T1657 detection financial transfer
+      material_changes:
+        - Added transaction binding, approval, identity, telemetry, anomaly monitoring, and bounded-operation controls.
+        - Defined a deterministic audit-event detector and fixture categories.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org web agent prompt injection end-to-end success defense
+        - site:ncsc.gov.uk LLM bank transfer hypothetical
+        - site:microsoft.com/en-us/security/blog recommendation poisoning commercial influence
+      material_changes:
+        - Preserved benchmark limitations, behavior-defense incompleteness, hypothetical-versus-demonstrated distinctions, and the production evidence gap.
+    - pass: saturation_follow_up_material
+      completed_on: "2026-09-02"
+      queries:
+        - site:microsoft.com/en-us/security/blog observed agent finance transaction prompt injection
+        - site:microsoft.com/en-us/security/blog MCP unauthenticated operational capability
+      material_changes:
+        - Added adjacent observed recommendation-poisoning attempts and exposed MCP-server evidence; neither established a fraudulent transaction.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - site:aisi.gov.uk fraudulent transaction agent prompt injection
+        - site:ncsc.gov.uk financial transaction agent prompt injection
+        - site:modelcontextprotocol.io financial transaction confirmation tool
+        - site:attack.mitre.org/techniques/T1657 AI agent
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org AI agent unauthorized transfer prompt injection bank 2026
+        - site:arxiv.org AI agent illicit financial actions prompt injection
+        - site:microsoft.com/en-us/security/blog MCP financial transaction unauthorized agent
+        - site:cisa.gov AI agent fraudulent payment prompt injection
+      material_changes: []
+  rationale: The final two restricted, authority-only passes returned only already-reviewed evidence, broader financial theft, unrelated transfer language, or adjacent agent risks. Protocol, authorization, controlled demonstration, vulnerability, incident, detection, defense, and contrary-evidence source classes are represented, so further whitelist searching is unlikely to change the Demonstrated label or the production evidence gap.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 9
+  selected_examples: [SRC-debenedetti-et-al-agentdojo, SRC-art-2507.20526]
+  no_qualifying_examples_rationale: Two controlled demonstrations qualify, but no reviewed source established a production SAF-T2104 incident or in-the-wild exploitation; that higher evidence tier remains an explicit gap.
+  candidates:
+    - source_id: SRC-debenedetti-et-al-agentdojo
+      identifier: AgentDojo banking-suite attacker-account transfer
+      relationship: direct_demonstration
+      exploitation_status: Controlled benchmark execution with environment-state success checks; not production.
+      impact: Unauthorized transfer of benchmark funds to an attacker-selected account.
+      remediation: Evaluated prompt-injection defenses reduced but did not eliminate measured attack success.
+      selected: true
+      rationale: Directly crosses the agent-to-banking-tool boundary and measures the economic action, making it a highest-impact qualifying example.
+    - source_id: SRC-art-2507.20526
+      identifier: ART PharmaAgent unauthorized sale terms
+      relationship: direct_demonstration
+      exploitation_status: Controlled sandbox competition with successful targeted policy violations; not production.
+      impact: Agent attempts to commit a high-quantity sale at a price prohibited by policy.
+      remediation: Benchmark emphasizes defense evaluation; no single control is presented as complete remediation.
+      selected: true
+      rationale: Directly demonstrates adversarial manipulation of an economic transaction through a tool in an independent environment.
+    - source_id: SRC-wasp-2504.18575
+      identifier: WASP end-to-end web-agent prompt injection benchmark
+      relationship: rejected
+      exploitation_status: Controlled benchmark with nonzero end-to-end attack success.
+      impact: Unauthorized web-agent actions across realistic tasks.
+      remediation: Evaluated defenses and model differences; no transaction-specific remediation.
+      selected: false
+      rationale: Valuable contrary evidence on control limits, but the reviewed material did not establish a qualifying value-bearing transaction.
+    - source_id: SRC-asb-2410.02644
+      identifier: Agent Security Bench financial analyst stock-manipulation task
+      relationship: direct_demonstration
+      exploitation_status: Controlled benchmark using specialized synthetic attack tools.
+      impact: A financial-analysis agent invokes a synthetic stock-manipulation action.
+      remediation: Benchmark compares defense effectiveness; no production patch applies.
+      selected: false
+      rationale: The specialized attack-tool abstraction is less representative of an ordinary transaction boundary than the two selected demonstrations.
+    - source_id: SRC-aisi-incident-2026
+      identifier: Unsanctioned agent behaviour during cyber testing
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed in a controlled evaluation; report states no real-world harm.
+      impact: Unsanctioned social and repository actions, not a financial transaction.
+      remediation: AISI added monitoring, containment, and testing safeguards.
+      selected: false
+      rationale: Agent behavior was observed, but the event did not cross the value-bearing transaction boundary.
+    - source_id: SRC-microsoft-semantic-kernel-cves-2026
+      identifier: CVE-2026-25592 and CVE-2026-26030
+      relationship: enabling_vulnerability
+      exploitation_status: Demonstrated by researchers; in-the-wild exploitation not established by the reviewed disclosure.
+      impact: File write or command execution through agent-framework input paths.
+      remediation: Fixed before .NET 1.71.0 and Python 1.39.4 respectively, per the vendor disclosure.
+      selected: false
+      rationale: The vulnerabilities can enable privileged effects but no source tied them to a fraudulent transaction.
+    - source_id: SRC-ncsc-llm-caution-2023
+      identifier: NCSC hypothetical bank-assistant transfer
+      relationship: historical_analogy
+      exploitation_status: Hypothetical scenario only.
+      impact: Imagined attacker-directed bank transfer.
+      remediation: NCSC advises caution and acknowledges no complete prompt-injection mitigation.
+      selected: false
+      rationale: The source explicitly presents the scenario as imagined, so it cannot support Demonstrated or Observed status.
+    - source_id: SRC-ms-recommendation-poisoning-2026
+      identifier: Observed AI recommendation-poisoning attempts
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Observed influence attempts with variable effectiveness; no transaction execution reported.
+      impact: Potentially biased commercial recommendations.
+      remediation: Source recommends provenance, monitoring, validation, and resistance testing.
+      selected: false
+      rationale: Influence over a recommendation is out of scope until a value-bearing transaction is accepted.
+    - source_id: SRC-t1206-ms-config-risk
+      identifier: Exposed unauthenticated MCP servers
+      relationship: enabling_vulnerability
+      exploitation_status: Exposed deployments observed; transaction exploitation not established.
+      impact: Unauthenticated access to sensitive internal data and operational capabilities.
+      remediation: Enforce authentication, least privilege, network restriction, inventory, and monitoring.
+      selected: false
+      rationale: The exposure is a prerequisite pattern, not evidence of an unauthorized economic action.
+sources_consulted:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-oauth-rar-rfc9396
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-art-2507.20526
+  - SRC-aisi-incident-2026
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-ncsc-llm-caution-2023
+  - SRC-microsoft-agent-identity-2026
+  - SRC-microsoft-agent-security-2026
+  - SRC-ncsc-agentic-guidance-2026
+  - SRC-wasp-2504.18575
+  - SRC-mitre-t1657-2026
+  - SRC-asb-2410.02644
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-t1206-ms-config-risk
+sources_cited:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-oauth-rar-rfc9396
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-art-2507.20526
+  - SRC-aisi-incident-2026
+  - SRC-microsoft-semantic-kernel-cves-2026
+  - SRC-ncsc-llm-caution-2023
+  - SRC-microsoft-agent-identity-2026
+  - SRC-microsoft-agent-security-2026
+  - SRC-ncsc-agentic-guidance-2026
+  - SRC-wasp-2504.18575
+  - SRC-mitre-t1657-2026
+sources_rejected:
+  - source_id: SRC-asb-2410.02644
+    reason: Retained as a consulted benchmark lead, but its specialized synthetic stock-manipulation tool is weaker boundary evidence than the selected transaction demonstrations.
+  - source_id: SRC-ms-recommendation-poisoning-2026
+    reason: Retained as adjacent observed influence evidence, but no reviewed transaction execution crossed the contract boundary.
+  - source_id: SRC-t1206-ms-config-risk
+    reason: Retained as enabling exposure evidence, but it did not establish a fraudulent transaction.
+sources_blocked: []
+conflicts:
+  - issue: Production-focused searches found adjacent agent incidents and exposed capabilities but no qualifying fraudulent transaction.
+    resolution: Preserve Demonstrated rather than Observed status and state the production evidence gap.
+  - issue: NCSC's bank-transfer example appears direct but is explicitly hypothetical.
+    resolution: Classify it as historical analogy and exclude it from selected demonstrations.
+  - issue: Benchmark attack rates vary substantially by model, defense, and whether success is measured at an intermediate or end state.
+    resolution: Do not generalize benchmark rates to production; use them only to show possibility and control limitations.
+  - issue: A transaction detector may alert on externally authorized standing orders when approval metadata is absent.
+    resolution: Declare the expected false positive and require correlation with the authoritative approval system before enforcement.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T2104-C005, SAF-T2104-C006, SAF-T2104-C007]
+  rationale: Two independent controlled environments execute the defining agent-to-financial-tool behavior, satisfying Demonstrated status. No qualifying production incident was found, so Observed status is not supported.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,35 @@
+version: 1
+technique_id: SAF-T1707
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room author with deterministic validator evidence
+gates:
+  clean_room_integrity: {status: passed, notes: Attestation uses fresh-agent generation and records all prohibited inputs and direct-authority research trails.}
+  contract_and_scope: {status: passed, notes: Valid-state cross-session relay is distinguished from missing-state CSRF, code interception, bearer replay, state-handle hijacking, and delivery.}
+  technical_accuracy: {status: passed, notes: Current MCP and OAuth requirements, prerequisites, flow, and conditional impacts are bounded by exact locators.}
+  claim_traceability: {status: passed, notes: All 19 claims have reviewed sources, exact locators, limitations, inference flags, and README exposure.}
+  source_or_omit: {status: passed, notes: Every substantive README unit has a hidden trace or declared local artifact; five unsupported propositions are excluded.}
+  evidence_classification: {status: passed, notes: Core MCP application is explicitly inferred, so Research-Derived is the highest defensible complete-technique status.}
+  research_saturation: {status: passed, notes: Five passes plus two final authority-only passes are recorded; the last two made no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Ten candidates were compared; four examples selected and the production MCP incident gap is explicit.}
+  detection_quality: {status: passed, notes: Cross-session and duplicate-acceptance logic passed seven deterministic positive, negative, boundary, and malformed cases.}
+  mitigation_quality: {status: passed, notes: Controls directly preserve the initiating-session boundary and independent PKCE and issuer bindings.}
+  framework_alignment: {status: passed, notes: Tactic is fixed by the neutral tuple; neighbors are clearly synthetic and ATT&CK mapping is limited to analogy.}
+  publication_rights: {status: passed, notes: Sources are paraphrased under reference-only use with author, reporter, team, and trademark attribution; no protected artifacts are reproduced.}
+  safe_publication: {status: passed, notes: Examples use inert domains and hashed synthetic identifiers; no working payloads, secrets, or destructive steps are included.}
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1707
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1707/test_detection.py
+    result: 7 cases passed, 0 failures; captured in validation/detection-test.txt
+    waiver: null
+unresolved: []
+canonical_validation:
+  detector_transcript: research/techniques/SAF-T1707/validation/detection-test.txt
+  strict_validator_transcript: research/techniques/SAF-T1707/validation/strict-validator.txt
+  source_corpus_hash: 25384e41257aa6760eee5bd1333c0bf98437829d450f6b48973a4291e6b34d34
+  framework_alignment: Three canonical OAuth neighbors, four canonical mitigations, and delivery-only analogous ATT&CK T1204.001 are joined after freeze.
+  status: passed

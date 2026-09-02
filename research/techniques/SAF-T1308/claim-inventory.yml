@@ -1,0 +1,587 @@
+version: 1
+technique_id: SAF-T1308
+claims:
+  - id: SAF-T1308-C001
+    statement: >-
+      MCP HTTP authorization uses an OAuth resource-server model, requires the resource
+      parameter in authorization and token requests, and requires that it identify the
+      intended MCP server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Roles
+          - Resource Parameter Implementation
+          - Token Requirements
+    corroboration: RFC 8707 defines the resource parameter used by the MCP profile.
+    limitations:
+      - Authorization is optional for MCP implementations and this claim applies to the HTTP authorization profile.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C002
+    statement: >-
+      An MCP server must validate that a presented token was issued specifically for
+      that server, reject invalid or unintended tokens, and not accept or transit other tokens.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Token Handling
+          - Token Audience Binding and Validation
+          - Access Token Privilege Restriction
+      - source_id: SRC-rfc9068
+        support: corroborating
+        exact_locators:
+          - Section 4, Validating JWT Access Tokens, paragraphs 217-225
+    corroboration: RFC 9068 independently requires expected-audience validation for JWT access tokens.
+    limitations:
+      - JWT-specific validation fields do not directly apply to opaque tokens, which require equivalent validator or introspection output.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C003
+    statement: >-
+      MCP servers use 401 for invalid tokens and 403 with insufficient_scope for a
+      valid token that lacks permission, after which clients may perform step-up authorization.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Error Handling
+          - Runtime Insufficient Scope Errors
+          - Step-Up Authorization Flow
+    corroboration: RFC 9068 Section 4 requires invalid_token on JWT validation failure.
+    limitations:
+      - The specification permits client-specific handling rather than mandatory step-up in every case.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C004
+    statement: >-
+      OAuth resource indicators distinguish target resource from scope, bind requested
+      resources to the full authorization grant, permit token requests to narrow that
+      resource set, and recommend downscoping for each resource.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 1, paragraphs 80-86
+          - Section 2, paragraphs 95-115
+          - Section 2.2, paragraphs 138-144
+          - Section 3, paragraphs 205-210
+    corroboration: The MCP authorization specification makes this resource parameter mandatory for MCP clients.
+    limitations:
+      - RFC 8707 allows deployment policy to determine acceptable resources and supports multiple audiences with explicit trust assumptions.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C005
+    statement: >-
+      A JWT access-token resource server validates token type, exact issuer, expected
+      audience, signature, expiry, and any authorization claims used for the current call;
+      audience and scope retain distinct meanings.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 2.1, paragraphs 113-116
+          - Section 2.2, paragraphs 119-127
+          - Section 2.2.3, paragraphs 161-163
+          - Section 4, paragraphs 217-225
+          - Section 5, paragraphs 228-234
+    corroboration: MCP Token Handling independently requires intended-audience validation.
+    limitations:
+      - RFC 9068 is a JWT profile and leaves application-specific authorization checks to the resource server.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C006
+    statement: >-
+      If an authorization or resource server widens, ignores, or semantically substitutes
+      the binding among grant resources, token audience, and operation scopes, an adversary
+      with a valid token or grant can obtain authorization outside the original context.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2.2, paragraphs 138-144
+          - Section 3, paragraphs 205-210
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 4, paragraphs 217-225
+      - source_id: SRC-cve-2026-14541
+        support: corroborating
+        exact_locators:
+          - containers.cna.descriptions[0]
+      - source_id: SRC-ghsa-p2fr-6hmx-4528
+        support: corroborating
+        exact_locators:
+          - Summary
+          - Details
+          - Impact
+      - source_id: SRC-oxdc-adv-2026-0003
+        support: corroborating
+        exact_locators:
+          - vulnerabilities entry CVE-2026-73208, description and impact
+    corroboration: Three independent vulnerability records instantiate audience nonvalidation, resource widening, and audience-to-scope substitution.
+    limitations:
+      - No reviewed primary source documents the complete behavior in a production MCP intrusion.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The bounded technique is synthesized from normative bindings and direct component vulnerabilities.
+    status: validated
+
+  - id: SAF-T1308-C007
+    statement: >-
+      CVE-2026-14541 affected Google mcp-toolbox 1.4.0 when MCP was enabled without
+      explicit audience or client ID, allowing unrelated valid Google OAuth access tokens
+      to reach protected tools and data backends; Google credited HE WEI (ギカク).
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-14541
+        support: direct
+        exact_locators:
+          - cveMetadata
+          - containers.cna.affected[0]
+          - containers.cna.descriptions[0]
+          - containers.cna.metrics[0]
+          - containers.cna.credits[0]
+          - containers.adp[0].metrics[0]
+    corroboration: NVD direct-authority queries returned the same CVE for the MCP OAuth audience search.
+    limitations:
+      - The CVE record reports no exploitation and does not identify a fixed release.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C008
+    statement: >-
+      GHSA-p2fr-6hmx-4528 documents that @better-auth/oauth-provider before
+      1.7.0-beta.4 could issue a token for an allow-listed resource outside the original
+      authorization or refresh grant; the advisory credits dvanmali and identifies fixes.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-p2fr-6hmx-4528
+        support: direct
+        exact_locators:
+          - Affected versions and Patched versions
+          - Summary
+          - Details
+          - Patches
+          - Impact
+          - Credit
+      - source_id: SRC-cve-2026-67332
+        support: corroborating
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.cna.affected[0]
+          - containers.cna.credits[0]
+          - containers.adp[0].metrics[0]
+    corroboration: The CVE Project record independently records the affected range, fixed beta, reporter, and no known exploitation.
+    limitations:
+      - This authorization-server package is not inherently MCP-specific and the advisory documents no production exploitation.
+      - The reachable operations remain limited to scopes independently granted to the client.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C009
+    statement: >-
+      CVE-2026-73208 in OX Dovecot used aud as a fallback for a missing scope claim,
+      which could accept a token with no relevant permission; Open-Xchange documented
+      affected and fixed versions and no publicly available exploit.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-oxdc-adv-2026-0003
+        support: direct
+        exact_locators:
+          - Document tracking, version 4
+          - CVE-2026-73208 description, product_status, remediations, score, impact, and exploit_status
+      - source_id: SRC-cve-2026-73208
+        support: corroborating
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.cna.affected
+          - containers.cna.metrics[0]
+    corroboration: The Open-Xchange CNA record matches the vendor CSAF description and fixed ranges.
+    limitations:
+      - Dovecot is not an MCP or agentic system and this record does not raise the technique evidence label.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C010
+    statement: >-
+      In 2023 Storm-0558 used forged authentication tokens to access email at about 25
+      organizations, with a Microsoft key-validation issue and a separate token-renewal
+      design flaw; Microsoft mitigated the validation, renewal, and signing-key paths.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-microsoft-storm-0558
+        support: direct
+        exact_locators:
+          - Executive summary, paragraphs 34-44
+          - Initial discovery and analysis, paragraphs 58-63
+          - Token forgery, paragraphs 65-71
+          - Identity techniques for access, paragraphs 73-75
+          - Mitigation and hardening, paragraphs 148-157
+    corroboration: The Microsoft source supplies first-party incident telemetry and remediation details.
+    limitations:
+      - The incident involved forged tokens and was not MCP or valid-token scope substitution.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C011
+    statement: >-
+      No qualifying direct production MCP incident was identified in the reviewed
+      direct-authority corpus through 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-token-scope-corpus
+        support: direct
+        exact_locators:
+          - Ten exact NVD keyword queries recorded in source-coverage.yml
+          - Distinct reviewed results and final two no-change passes
+      - source_id: SRC-microsoft-storm-0558
+        support: context
+        exact_locators:
+          - Executive summary and Actor techniques
+    corroboration: Direct MCP vulnerability searches found a disclosed CVE, while the reviewed production incident was non-MCP and involved forgery.
+    limitations:
+      - This is a bounded corpus conclusion, not proof that no unreported or inaccessible incident exists.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Absence is limited to the recorded authoritative searches and sources.
+    status: validated
+
+  - id: SAF-T1308-C012
+    statement: >-
+      A detection analytic can identify substitution by comparing original grant resources,
+      requested resources, presented and expected audiences, effective and required scopes,
+      and the final issuance or allow decision under one correlation chain.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2.2, paragraphs 138-144
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 2.2, audience and scope claims
+          - Section 4, validation requirements
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Scope Minimization, server guidance
+    corroboration: Vulnerability records identify the precise false decision states the analytic compares.
+    limitations:
+      - The analytic depends on normalized decision telemetry and cannot recover unlogged original-grant state.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The rule operationalizes the normative binding and disclosed failure states.
+    status: validated
+
+  - id: SAF-T1308-C013
+    statement: >-
+      Detection is blind when validators do not expose audience, scope, grant-resource,
+      and decision results; opaque tokens need equivalent introspection output, and
+      unnormalized resource aliases can create false positives.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 4, validation requirements
+          - Section 6, paragraph 240
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2, paragraphs 95-108
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Canonical Server URI
+          - Token Handling
+    corroboration: The standards identify both the fields required for a decision and URI canonicalization considerations.
+    limitations:
+      - The sources do not provide a measured false-positive rate for the proposed analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Blind spots and alias false positives follow from the absence or ambiguity of required comparison fields.
+    status: validated
+
+  - id: SAF-T1308-C014
+    statement: >-
+      Preventive controls are grant-bound resource narrowing, fail-closed token validation,
+      expected-audience checks, and operation-specific authorization from effective scopes.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Token Handling
+          - Access Token Privilege Restriction
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2.2, paragraphs 138-144
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 4, paragraphs 217-225
+    corroboration: Product advisories remediate the same bindings by adding audience validation or preserving grant resources.
+    limitations:
+      - Exact implementation depends on token format and authorization-server architecture.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C015
+    statement: >-
+      OAuth access tokens should have least privilege, audience restriction, and resource/action
+      restriction; MCP guidance recommends progressive scopes and logging requested and granted elevation state.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 2.3, Access Token Privilege Restriction, lines 352-381
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Scope Minimization, lines 535-585
+    corroboration: The MCP authorization specification uses targeted scope challenges and step-up authorization.
+    limitations:
+      - Least privilege constrains impact but does not repair a missing audience or grant-binding check.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C016
+    statement: >-
+      The technique evidence label is Research-Derived because direct vulnerabilities establish
+      component failure modes but no reviewed source establishes a production MCP incident or a
+      public controlled end-to-end reproduction.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-14541
+        support: direct
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.adp[0].metrics[0]
+      - source_id: SRC-nvd-token-scope-corpus
+        support: corroborating
+        exact_locators:
+          - Query result classifications and no-change follow-ups
+    corroboration: The MCP-specific record is a vulnerability disclosure with exploitation recorded as none, not an incident report or public demonstration.
+    limitations:
+      - A later incident report or reproducible public evaluation could change the classification.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The label applies the SAF evidence definitions to the reviewed corpus.
+    status: validated
+
+  - id: SAF-T1308-C017
+    statement: >-
+      Substitution can have high confidentiality or integrity impact when newly authorized MCP
+      operations reach sensitive tools or data, while availability impact requires a disruptive
+      operation and blast radius is limited by accepted audiences, scopes, and connected systems.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-14541
+        support: direct
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.cna.metrics[0]
+      - source_id: SRC-oxdc-adv-2026-0003
+        support: corroborating
+        exact_locators:
+          - CVE-2026-73208 impact and score
+      - source_id: SRC-rfc9700
+        support: context
+        exact_locators:
+          - Section 2.3, lines 352-381
+    corroboration: Independent vulnerability records assign high confidentiality and integrity consequences to two concrete failure modes.
+    limitations:
+      - Severity is conditional and not every substituted token reaches write-capable or disruptive operations.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Technique-level impact is bounded from the direct product impacts and least-privilege model.
+    status: validated
+
+  - id: SAF-T1308-C018
+    statement: >-
+      Token theft or replay, token passthrough, broad granted scopes, and token forgery are
+      neighboring behaviors distinguished from substitution by acquisition, forwarding,
+      legitimate breadth, or cryptographic fabrication rather than a changed authorization binding.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Token Passthrough
+          - Scope Minimization
+      - source_id: SRC-mitre-t1550-001
+        support: direct
+        exact_locators:
+          - Technique description, lines 25-34
+      - source_id: SRC-microsoft-storm-0558
+        support: context
+        exact_locators:
+          - Token forgery, lines 65-70
+    corroboration: Each source describes a different operative mechanism from grant, audience, or scope substitution.
+    limitations:
+      - Multiple behaviors may co-occur in one intrusion and require multiple technique assignments.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The distinctions reconcile independently defined neighboring mechanisms.
+    status: validated
+
+  - id: SAF-T1308-C019
+    statement: >-
+      ATT&CK T1550.001 is an analogous mapping because it covers application access tokens
+      used to access protected services, but it emphasizes stolen tokens rather than tokens
+      accepted under an unauthorized resource or scope context.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1550-001
+        support: direct
+        exact_locators:
+          - Technique description, lines 16-35
+          - Version and contributors, lines 47-52
+    corroboration: MCP and OAuth sources establish the additional authorization-context distinction.
+    limitations:
+      - The ATT&CK technique is under Lateral Movement rather than the supplied SAF Privilege Escalation tactic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping type is an SAF reconciliation judgment based on overlapping but nonidentical behavior.
+    status: validated
+
+  - id: SAF-T1308-C020
+    statement: >-
+      CISA KEV catalog version 2026.09.01 did not list CVE-2026-14541,
+      CVE-2026-67332, or CVE-2026-73208; non-inclusion does not prove absence of exploitation.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - catalogVersion 2026.09.01
+          - Exact cveID membership checks for all three identifiers returned zero records
+    corroboration: CNA/CISA ADP records separately report exploitation as none for the three CVEs.
+    limitations:
+      - KEV is a curated known-exploitation catalog and non-inclusion is not evidence that exploitation has never occurred.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C021
+    statement: >-
+      CVE-2026-40205 is an adjacent scope-enforcement failure in which a remote validation
+      path accepted one of multiple required scopes rather than the complete set.
+    class: disclosed_vulnerability
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-token-scope-corpus
+        support: direct
+        exact_locators:
+          - Query "OAuth scope validation", CVE-2026-40205 result
+    corroboration: The result is from the official NVD CVE API corpus.
+    limitations:
+      - The failure is partial-scope OR semantics, not substitution among audience, resource, and scope, so it was not selected as a primary example.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1308-C022
+    statement: >-
+      Representative validation for this analytic should exercise grant-resource mismatch,
+      audience mismatch, incomplete scope sets, normal denials, missing fields, and alias false positives.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8707
+        support: direct
+        exact_locators:
+          - Section 2.2 and Section 3
+      - source_id: SRC-rfc9068
+        support: direct
+        exact_locators:
+          - Section 4, paragraphs 217-225
+      - source_id: SRC-oxdc-adv-2026-0003
+        support: corroborating
+        exact_locators:
+          - CVE-2026-73208 description and impact
+    corroboration: The cases correspond to normative validation branches and disclosed failure modes.
+    limitations:
+      - Synthetic cases validate deterministic rule behavior, not field availability or performance in a production environment.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The test classes are derived from the analytic's evidence-backed failure states.
+    status: validated

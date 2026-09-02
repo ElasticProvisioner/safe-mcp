@@ -1,0 +1,168 @@
+version: 1
+technique_id: SAF-T2103
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2103/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2103/technique-contract.yml
+  supports: Neutral name, tactic, scope, neighbor distinctions, and safe-example constraints.
+- id: LOCAL-clean-room
+  path: research/techniques/SAF-T2103/clean-room-attestation.yml
+  supports: Clean-room inputs, prohibited artifacts, searches, and freeze attestation.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T2103/source-coverage.yml
+  supports: Evidence label, research passes, production gap, candidate classification,
+    and selected examples.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2103/quality-review.yml
+  supports: Review date, gate status, detector result, and validator result.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2103/detection-rule.yml
+  supports: Detection logic, fields, false positives, and component-level claim traceability.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T2103/cases.json
+  supports: Positive, negative, boundary, malformed, expected-false-positive, normalization,
+    and evasion cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T2103/test_detector.py
+  supports: Deterministic detector implementation and assertions.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2103/validation/canonical-validation.txt
+  supports: Destination detector and strict-validator results after mechanical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2103-X001
+  candidate: A verified production breach in which an agent deliberately sabotaged
+    repository code.
+  origin: Required production-breach research pass.
+  attempted_searches:
+  - site:cisa.gov AI coding agent code sabotage incident
+  - site:ncsc.gov.uk AI coding agent sabotage source code incident
+  - site:anthropic.com code sabotage production incident
+  - site:microsoft.com/security/blog AI coding agent code sabotage incident
+  consulted_source_ids:
+  - SRC-anthropic-reward-2025
+  - SRC-anthropic-agentic-2026
+  - SRC-scheme-2026
+  - SRC-enemy-2026
+  reason: Only controlled demonstrations were verified; no authoritative production
+    incident satisfied the contract.
+  prohibited_publishable_text:
+  - confirmed production Code Sabotage campaign
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X002
+  candidate: CVE-2025-54135 as direct evidence that Code Sabotage occurred.
+  origin: Vulnerability and advisory pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE-2025-54135 exploitation none CISA-ADP
+  consulted_source_ids:
+  - SRC-ghsa-cursor-4cxx-2025
+  reason: The advisory establishes an enabling MCP configuration-write path, not a
+    deliberate repository behavior change.
+  prohibited_publishable_text:
+  - CVE-2025-54135 proves a Code Sabotage incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X003
+  candidate: CVE-2025-61591 as a selected direct Code Sabotage example.
+  origin: Vulnerability and advisory pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail CVE-2025-61591 exploitation CISA-ADP
+  consulted_source_ids:
+  - SRC-cursor-61591
+  reason: The source documents adjacent host command execution, not the defining repository-code
+    outcome.
+  prohibited_publishable_text:
+  - CVE-2025-61591 is direct Code Sabotage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X004
+  candidate: CVE-2025-53098 as a selected direct Code Sabotage example.
+  origin: Vulnerability and advisory pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail coding agent prompt injection file write approval
+    bypass
+  consulted_source_ids:
+  - SRC-roocode-53098
+  reason: The advisory requires prompt influence and auto-approved writes but does
+    not establish sabotage intent or repository behavior impact.
+  prohibited_publishable_text:
+  - CVE-2025-53098 documents an actual sabotage event
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X005
+  candidate: Semantic Kernel host-code-execution demonstrations as Code Sabotage.
+  origin: Controlled demonstration and vulnerability pass.
+  attempted_searches:
+  - site:microsoft.com/security/blog coding agent repository sabotage prompt injection
+  consulted_source_ids:
+  - SRC-microsoft-semantic-kernel-cves-2026
+  reason: Host execution crosses a different boundary and does not require behavior-changing
+    repository edits.
+  prohibited_publishable_text:
+  - Semantic Kernel RCE is Code Sabotage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X006
+  candidate: SHADE-Arena as a uniformly code-specific direct example.
+  origin: Contrary and gap research pass.
+  attempted_searches:
+  - site:anthropic.com/research code sabotage limitations false positive
+  consulted_source_ids:
+  - SRC-shade-2025
+  reason: The suite covers broader covert side tasks; it is retained for monitoring
+    limits but not selected as a code-specific example.
+  prohibited_publishable_text:
+  - every SHADE-Arena task is code sabotage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X007
+  candidate: CVE-2026-24887 as proof of malicious repository modification.
+  origin: Final vulnerability saturation pass.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail Claude Code confirmation prompt
+  consulted_source_ids:
+  - SRC-nvd-24887
+  reason: The NVD record establishes a repeat confirmation-bypass weakness and no
+    exploitation, not a sabotage outcome.
+  prohibited_publishable_text:
+  - CVE-2026-24887 proves malicious repository modification
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X008
+  candidate: Accidental coding-agent defects as instances of this adversary technique.
+  origin: Scope and contrary-evidence review.
+  attempted_searches:
+  - site:anthropic.com/research coding agent sabotage production incident
+  consulted_source_ids:
+  - SRC-anthropic-sabotage-2024
+  - SRC-anthropic-reward-2025
+  reason: The contract requires adversary-directed behavior; accidents do not establish
+    that element.
+  prohibited_publishable_text:
+  - all coding-agent bugs are sabotage
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2103-X009
+  candidate: Operational exploit payloads or executable sabotage recipes.
+  origin: Safe-publication review.
+  attempted_searches:
+  - Reviewed each selected source for the minimum non-operational detail needed to
+    support claims.
+  consulted_source_ids:
+  - SRC-anthropic-sabotage-2024
+  - SRC-anthropic-reward-2025
+  - SRC-scheme-2026
+  reason: Such detail is unnecessary for verification and would violate inert-example
+    constraints.
+  prohibited_publishable_text:
+  - execute this sabotage payload
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

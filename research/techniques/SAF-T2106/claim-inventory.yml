@@ -1,0 +1,226 @@
+version: 1
+technique_id: SAF-T2106
+claims:
+  - id: SAF-T2106-C001
+    statement: MCP resources can provide context, while the application chooses incorporation and may automatically include resources; MCP does not itself specify vector-backed memory.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2025-11-25
+        support: direct
+        exact_locators: [Resources overview and User Interaction Model, lines 76-87; Reading Resources, lines 187-214; Security Considerations, lines 448-453]
+    corroboration: The specification is the direct authority; agent papers separately describe vector-memory implementations.
+    limitations: [Does not establish that a particular MCP deployment uses persistent vector memory.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C002
+    statement: AgentPoison demonstrated poisoned records being retrieved from long-term memory or RAG knowledge bases and influencing evaluated agent actions across three agent types.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-neurips-agentpoison-2024
+        support: direct
+        exact_locators: [Abstract lines 0-26; threat model lines 183-219; results lines 557-567; conclusion lines 631-638]
+    corroboration: PoisonedRAG independently demonstrates injected retrieval content affecting downstream outputs.
+    limitations: [Evaluated research systems, not a production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C003
+    statement: AgentPoison reported 81.2 percent average retrieval attack success, 62.6 percent target-action environmental impact, and 0.74 percent average benign impact, with a principal white-box embedder assumption and tested transferability.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-neurips-agentpoison-2024
+        support: direct
+        exact_locators: [Experimental metrics lines 463-479; results lines 557-567; limitations lines 756-769]
+    corroboration: The same paper reports poison ratios below 0.1 percent at lines 784-789.
+    limitations: [Metrics are study-specific and should not be generalized to production success rates.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C004
+    statement: PoisonedRAG demonstrated target-answer manipulation through knowledge-database injection and measured downstream LLM-agent attack success, while documenting failures and non-target effects.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators: [Threat model pages 5-6 lines 247-302; main results lines 733-777; agent evaluation lines 1259-1282; limitations lines 1448-1493]
+    corroboration: AgentPoison independently demonstrates the persistent retrieval-to-agent-action mechanism.
+    limitations: [Dataset and agent results do not establish production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C005
+    statement: GHSA-7r82-qhg4-6wvj disclosed cross-collection overwrite and attacker-content replacement in Open WebUI versions before 0.9.0; version 0.9.0 fixed it and the CISA ADP record reported exploitation none.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openwebui-ghsa
+        support: direct
+        exact_locators: [Affected Versions and Description lines 137-178; Impact lines 196-206; Credits lines 305-307]
+      - source_id: SRC-nvd-openwebui
+        support: corroborating
+        exact_locators: [CVE Description and CISA SSVC change record dated 2026-06-17]
+    corroboration: NVD reproduces the version boundary and records CISA exploitation status.
+    limitations: [A disclosed exploit path is not evidence that a production victim was compromised.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C006
+    statement: IBM disclosed CVE-2026-13444, where shared Langflow Chroma and FAISS namespaces permitted cross-tenant collection pollution and reads in 1.0.0 through 1.10.1, fixed in 1.10.2.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ibm-langflow
+        support: direct
+        exact_locators: [Vulnerability Details and affected versions lines 24-45]
+    corroboration: No independent primary advisory with equivalent detail was available in the reviewed corpus.
+    limitations: [The advisory does not report observed exploitation or a measured downstream model outcome.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C007
+    statement: The reviewed source corpus did not establish a qualifying production breach with verified vector-store contamination and downstream model effect.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: direct
+        exact_locators: [Observed manipulation attempts and variable effects lines 39-63; mechanism discussion lines 79-118]
+      - source_id: SRC-microsoft-ai-gateway-incident
+        support: direct
+        exact_locators: [RAGFlow compromise description lines 121-130]
+    corroboration: The direct vulnerability advisories and empirical papers reviewed also did not assert a production breach.
+    limitations: [This is a bounded search conclusion, not proof that no such breach has occurred.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Classification follows the contract's requirement for both persistent vector-state contamination and verified downstream effect.}
+    status: validated
+  - id: SAF-T2106-C008
+    statement: Persistent retrieval-state poisoning is distinct from current-turn prompt injection and from poisoning that changes learned model weights.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-neurips-agentpoison-2024
+        support: direct
+        exact_locators: [Abstract lines 0-26; threat model lines 197-219]
+      - source_id: SRC-nist-aml
+        support: context
+        exact_locators: [Data poisoning taxonomy lines 440-464; targeted poisoning lines 868-909]
+    corroboration: AgentPoison explicitly states that its attack needs no retraining or fine-tuning.
+    limitations: [Neighbor names are synthetic integration placeholders until post-freeze reconciliation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The distinction applies the technique contract to separate state boundaries.}
+    status: validated
+  - id: SAF-T2106-C009
+    statement: Correlating an unauthorized or untrusted memory write with a later retrieval of the same record identifier in a different session is a technically supported detection design.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: direct
+        exact_locators: [Defensive controls and monitoring lines 74-95]
+      - source_id: SRC-otel-genai-2026
+        support: direct
+        exact_locators: [gen_ai.retrieval.documents lines 579-586]
+      - source_id: SRC-attack-det0193
+        support: context
+        exact_locators: [Stored-data write monitoring and baselining lines 35-83]
+    corroboration: The three sources cover memory-write logging, retrieval IDs and scores, and abnormal stored-data modification respectively.
+    limitations: [The exact cross-session correlation is a framework inference and requires implementation-specific write telemetry.]
+    conflicts: []
+    inference: {is_inference: true, rationale: No reviewed authority publishes this exact cross-source correlation as a complete analytic.}
+    status: validated
+  - id: SAF-T2106-C010
+    statement: Missing record identifiers or provenance limits write-to-retrieval correlation, while approved ingestion, migrations, rebuilds, and test fixtures can produce similar telemetry.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: direct
+        exact_locators: [Write identity, timestamp, reason, and retrieval-influence monitoring lines 74-95]
+      - source_id: SRC-attack-det0193
+        support: context
+        exact_locators: [Authorized process lists, time windows, and baselines lines 35-83]
+    corroboration: Both sources make authorization context and baselining central to interpretation.
+    limitations: [False-positive categories are operational inferences and vary by deployment.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The specific benign workflows are derived from the documented tuning requirements.}
+    status: validated
+  - id: SAF-T2106-C011
+    statement: Write authorization, provenance, versioning, source approval, tenant isolation, and retrieval monitoring reduce or expose persistent memory contamination.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: direct
+        exact_locators: [Controls lines 74-95]
+      - source_id: SRC-azure-search-acl
+        support: direct
+        exact_locators: [Document-level access controls and permission metadata lines 33-53]
+      - source_id: SRC-nist-aml
+        support: context
+        exact_locators: [Sanitization, outlier detection, clustering, and provenance lines 824-861]
+    corroboration: Authorities independently support access control, provenance, and integrity monitoring.
+    limitations: [No control is asserted to be sufficient alone.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C012
+    statement: In the reviewed empirical evaluations, paraphrasing, perplexity filtering, duplicate checks, and knowledge expansion did not reliably eliminate retrieval poisoning.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-poisonedrag-2025
+        support: direct
+        exact_locators: [Defense evaluations lines 1283-1447]
+      - source_id: SRC-neurips-agentpoison-2024
+        support: corroborating
+        exact_locators: [Defense resilience lines 617-630]
+    corroboration: Two independent studies report resilience against evaluated content-oriented defenses.
+    limitations: [Results apply to the evaluated defenses and configurations, not all filtering systems.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C013
+    statement: ReliabilityRAG provides bounded robustness under explicit corruption, reliability, and inference assumptions, challenging any universal claim that retrieval poisoning is indefensible.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-reliabilityrag
+        support: direct
+        exact_locators: [Threat model lines 148-185; theorem assumptions lines 314-371; limitations lines 2077-2102]
+    corroboration: The paper directly states and tests its bounded guarantee.
+    limitations: [Guarantees depend on bounded corruption and component reliability assumptions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2106-C014
+    statement: MITRE ATT&CK T1565.001 is an enterprise integrity analogue for manipulating stored data to influence outcomes, but does not prove the AI retrieval mechanism.
+    class: historical_analogy
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1565.001
+        support: direct
+        exact_locators: [Definition and metadata lines 16-47; mitigations and detection lines 58-69]
+    corroboration: MITRE DET0193 separately specifies detection for abnormal stored-data writes.
+    limitations: [ATT&CK does not identify vector-memory retrieval or model influence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

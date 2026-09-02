@@ -1,0 +1,29 @@
+version: 1
+technique_id: SAF-T1007
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent /root/cleanroom_saf_t1007_retry2
+gates:
+  clean_room_integrity: {status: passed, notes: Attestation records no prohibited access and strict isolated mock validation.}
+  contract_and_scope: {status: passed, notes: Immediate objective is cross-user binding of a victim OAuth grant; destination, passthrough, and ordinary consent phishing are excluded.}
+  technical_accuracy: {status: passed, notes: Current MCP 2026-07-28 requirements and direct vendor PoC support the flow.}
+  claim_traceability: {status: passed, notes: All claims use canonical IDs, directly reviewed sources, and exact stable locators.}
+  source_or_omit: {status: passed, notes: Strict validator resolved every hidden trace; three unsupported candidate classes are excluded and prohibited wording absent.}
+  evidence_classification: {status: passed, notes: Demonstrated is supported by a public end-to-end PoC; production observation remains unverified.}
+  research_saturation: {status: passed, notes: Two final post-change NVD and first-party site passes added no material facts.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Incident, vulnerability, advisory, exploitation, and demonstration searches were separated; one direct and one adjacent CVE selected.}
+  detection_quality: {status: passed, notes: Six deterministic cases cover positive, negative, missing identity, time boundary, alias false positive, and incomplete flow.}
+  mitigation_quality: {status: passed, notes: Controls enforce the defining same-user invariant and bound OAuth impact.}
+  framework_alignment: {status: passed, notes: T1566.002 direct and T1528 analogous mappings validated; canonical SAF-T1009 and SAF-T1706 boundaries plus repository mitigation joins were reconciled after freeze and passed strict validation.}
+  publication_rights: {status: passed, notes: Original paraphrase only; named authors and teams credited; no protected code, figures, or indicators reproduced.}
+  safe_publication: {status: passed, notes: Example is inert, token value redacted, and no live authorization URL or deployable payload included.}
+validation:
+  commands:
+    - {command: python3 scripts/validate-technique-research.py SAF-T1007, result: passed}
+    - {command: python3 techniques/SAF-T1007/test_detection_rule.py, result: passed_6_of_6}
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1007/test_detection_rule.py
+    result: Six of six deterministic cases passed.
+    waiver: null
+unresolved: []

@@ -1,0 +1,279 @@
+version: 1
+technique_id: SAF-T1801
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/server/resources"
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/client/roots"
+        - "DIRECT https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+      material_changes:
+        - Bound the technique to systematic data reads through MCP resources or tools and separated filesystem authorization from user-task intent.
+        - Added protocol-backed approval, rate-limit, access-control, and logging requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=model%20context%20protocol"
+        - "NVD API https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=MCP%20data%20exfiltration"
+        - "CISA KEV https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+        - "CVE API exact records: CVE-2025-34072, CVE-2025-49596, CVE-2025-53109, CVE-2025-53110, CVE-2025-6514, CVE-2026-25536, CVE-2026-33946, CVE-2026-15643"
+        - "Exact GitHub advisories opened only from CVE records: GHSA-q66q-fx2p-7w4m, GHSA-hc55-p739-j48w, GHSA-7f8r-222p-6f5g"
+        - "DIRECT https://aws.amazon.com/security/security-bulletins/2026-054-aws/"
+      material_changes:
+        - Classified twelve candidates by direct, enabling, adjacent, or rejected boundary and checked remediation and exploitation state.
+        - Selected one production incident, two controlled MCP demonstrations, and one direct retrieval/exfiltration vulnerability as the four highest-impact nonredundant examples.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - "MITRE ATT&CK T1119 procedure C0062 exact Anthropic report link"
+        - "DIRECT https://invariantlabs.ai/blog/whatsapp-mcp-exploited"
+        - "DIRECT https://invariantlabs.ai/blog/mcp-github-vulnerability"
+        - "DIRECT https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks"
+        - "DIRECT https://embracethered.com/blog/posts/2025/security-advisory-anthropic-slack-mcp-server-data-leakage/"
+      material_changes:
+        - Raised the evidence label to Observed based on Anthropic's production campaign and retained demonstrations as supporting evidence only.
+        - Preserved researcher names, controlled-environment limits, and safe non-payload summaries.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT https://attack.mitre.org/techniques/T1119/"
+        - "DIRECT https://attack.mitre.org/techniques/T1213/"
+        - "DIRECT https://attack.mitre.org/detectionstrategies/DET0413/"
+        - "MCP Tools Security Considerations and MCP Roots Security Considerations"
+      material_changes:
+        - Added a tunable distinct-object count analytic using MCP host or gateway audit telemetry.
+        - Added connected-service correlation for one-call bulk results and recorded false positives and blind spots.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - "DIRECT https://genai.owasp.org/llmrisk/llm01-prompt-injection/"
+        - "MCP Security Best Practices: consent, sandboxing, session binding, URL validation"
+        - "CVE fixed-version and CISA SSVC recheck for all packet candidates"
+        - "ATT&CK mutable detection elements: threshold, time window, known users, and safe IPs"
+      material_changes:
+        - Narrowed prompt injection to delivery, unintended path access to enabling access, and external transfer to follow-on exfiltration.
+        - Explicitly rejected universal effectiveness for the 20-object/five-minute test threshold and recorded low-and-slow and one-call blind spots.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API keywordSearch=model context protocol automated collection"
+        - "NVD API keywordSearch=model context protocol mass data access"
+        - "Exact CVE record re-fetch: CVE-2025-34072"
+        - "Exact CVE record re-fetch: CVE-2026-15643"
+        - "Exact MITRE ATT&CK T1119 re-fetch"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - "NVD API keywordSearch=MCP bulk data"
+        - "NVD API keywordSearch=model context protocol data leak"
+        - "Exact Anthropic GTG-1002 report re-fetch"
+        - "Exact CISA KEV catalog re-fetch"
+        - "Exact MITRE ATT&CK T1213 re-fetch"
+      material_changes: []
+  rationale: >-
+    Direct MCP specifications cover data access and controls; Anthropic covers
+    the defining production behavior; original researchers cover independent
+    demonstrations; CVE, vendor, GitHub advisory, NVD, and CISA records cover
+    vulnerabilities and exploitation status; MITRE covers collection mappings
+    and observable access shapes. The final two authority-only passes returned
+    no new qualifying direct example or material change: their re-fetched
+    authorities were byte-identical, and their narrow NVD results were empty or
+    returned only the already reviewed CVE-2026-25536.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 12
+  selected_examples:
+    - SRC-anthropic-espionage-2025-11
+    - SRC-invariant-whatsapp-mcp-2025-04-07
+    - SRC-invariant-github-mcp-2025
+    - SRC-cve-2025-34072
+  no_qualifying_examples_rationale: Four qualifying examples were selected; no gap rationale is required.
+  candidates:
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: Anthropic GTG-1002 AI-orchestrated cyber espionage campaign
+      relationship: direct_production_incident
+      exploitation_status: observed_in_production
+      impact: Successful intrusions included autonomous database and system queries, extraction, parsing, and intelligence categorization at large scale.
+      remediation: Anthropic banned identified accounts, notified affected entities, coordinated with authorities, and expanded detection capabilities.
+      selected: true
+      rationale: Highest-impact direct production evidence of the complete agentic and MCP-enabled collection behavior.
+    - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+      identifier: WhatsApp MCP chat-history and contact-collection experiments
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: Entire chat history in context or recent contact identifiers were acquired and sent through a connected service.
+      remediation: Researchers recommended distrust of third-party servers, contextual data-flow controls, and monitoring; no product breach was asserted.
+      selected: true
+      rationale: Direct broad-data demonstration in a messaging environment with explicit controlled-research limitations.
+    - source_id: SRC-invariant-github-mcp-2025
+      identifier: GitHub MCP private-repository retrieval experiment
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: An agent retrieved private-repository information after processing a public malicious issue and placed the information into a public pull request.
+      remediation: Researchers recommended granular repository permissions and continuous contextual monitoring.
+      selected: true
+      rationale: Direct cross-repository collection demonstration with high confidentiality consequence and a distinct code-repository environment.
+    - source_id: SRC-cve-2025-34072
+      identifier: CVE-2025-34072
+      relationship: direct_vulnerability
+      exploitation_status: proof_of_concept_only
+      impact: A controlled flow retrieved private data and automatic Slack link unfurling transmitted it to an attacker-controlled endpoint.
+      remediation: The server was deprecated and unmaintained; disabling link and media unfurling was proposed by the reporting researcher.
+      selected: true
+      rationale: Direct demonstrated retrieval stage plus a disclosed MCP vulnerability; exfiltration is explicitly treated as adjacent follow-on behavior.
+    - source_id: SRC-invariant-tpa-2025-04-01
+      identifier: Invariant MCP tool-poisoning experiment
+      relationship: direct_demonstration
+      exploitation_status: controlled_demonstration
+      impact: An agent retrieved configuration and private-key files and passed them to a malicious server.
+      remediation: Researchers recommended full tool-description visibility, integrity pinning, and cross-server data-flow controls.
+      selected: false
+      rationale: Direct but narrower than the selected broad-data demonstrations and redundant with their steering mechanism.
+    - source_id: SRC-ghsa-cve-2025-53109
+      identifier: CVE-2025-53109 / GHSA-q66q-fx2p-7w4m
+      relationship: enabling_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: Symlinks inside an allowed directory could expose unintended files.
+      remediation: Upgrade to 0.6.4 or 2025.7.01 as the conservative fixed floor stated by the advisory text and CVE record.
+      selected: false
+      rationale: Widens reachable scope but does not automate collection; advisory affected-range wording also conflicts internally.
+    - source_id: SRC-ghsa-cve-2025-53110
+      identifier: CVE-2025-53110 / GHSA-hc55-p739-j48w
+      relationship: enabling_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: A colliding allowed-directory prefix could expose unintended files.
+      remediation: Upgrade to 0.6.4 or 2025.7.01 as the conservative fixed floor stated by the advisory text and CVE record.
+      selected: false
+      rationale: Near-duplicate enabling scope expansion without automated collection.
+    - source_id: SRC-aws-cve-2026-15643
+      identifier: CVE-2026-15643
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: An authenticated actor could redirect pagination to expose temporary AWS credentials.
+      remediation: Upgrade AWS HealthLake MCP Server to 0.0.14 or later, scope IAM to least privilege, and rotate credentials if exposure is suspected.
+      selected: false
+      rationale: Pagination SSRF and credential exfiltration do not establish automated harvesting of HealthLake records.
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: An untrusted authorization endpoint could yield command execution through affected mcp-remote versions.
+      remediation: Upgrade to 0.1.16 and connect only to trusted servers over HTTPS.
+      selected: false
+      rationale: Initial access and code execution are distinct from data collection.
+    - source_id: SRC-ghsa-inspector-7f8r
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: Unauthenticated requests could launch MCP commands through Inspector's proxy.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later.
+      selected: false
+      rationale: Command execution capability does not establish automated collection.
+    - source_id: SRC-cve-2026-25536
+      identifier: CVE-2026-25536
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no_observed_exploitation_in_reviewed_authorities
+      impact: Concurrent clients could receive one another's MCP responses because of message-ID collisions in a shared server and transport instance.
+      remediation: Upgrade the MCP TypeScript SDK to 1.26.0 or later and avoid shared per-client state.
+      selected: false
+      rationale: Cross-client response disclosure is not agent-directed systematic acquisition.
+    - source_id: SRC-cve-2026-33946
+      identifier: CVE-2026-33946
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof_of_concept_only
+      impact: A stolen session ID could permit interception of a victim's real-time SSE stream.
+      remediation: Upgrade the MCP Ruby SDK to 0.9.2 or later and bind sessions to authorized users.
+      selected: false
+      rationale: Passive stream interception does not use agent automation to harvest data.
+
+sources_consulted:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-cve-2026-15643
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-34072
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-cve-2025-6514
+  - SRC-cve-2026-25536
+  - SRC-cve-2026-33946
+  - SRC-cve-34072
+  - SRC-ghsa-inspector-7f8r
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-roots-20250618
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1119-v1.4
+  - SRC-mitre-t1213-v3.4
+  - SRC-nvd-mcp-query-20260902
+  - SRC-owasp-llm01-2025
+sources_cited:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-aws-cve-2026-15643
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-34072
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-cve-34072
+  - SRC-ghsa-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-invariant-github-mcp-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mcp-roots-20250618
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mitre-t1119-v1.4
+  - SRC-mitre-t1213-v3.4
+  - SRC-owasp-llm01-2025
+sources_rejected:
+  - source_id: SRC-cve-2025-6514
+    reason: Directly reviewed but excluded from publishable examples because command execution is adjacent initial access.
+  - source_id: SRC-ghsa-inspector-7f8r
+    reason: Directly reviewed but excluded because Inspector proxy execution is not automated collection.
+  - source_id: SRC-cve-2026-25536
+    reason: Directly reviewed but excluded because response misrouting is an adjacent disclosure mechanism.
+  - source_id: SRC-cve-2026-33946
+    reason: Directly reviewed but excluded because stream interception is adjacent passive collection without agent automation.
+  - source_id: SRC-nvd-mcp-query-20260902
+    reason: Used only for discovery; aggregate catalog text was not treated as substantive evidence where direct records existed.
+sources_blocked: []
+
+conflicts:
+  - issue: The two July 2025 filesystem GitHub advisories list inconsistent affected-version headings and prose remediation boundaries.
+    resolution: The technique records the conservative upgrade target of 0.6.4 or 2025.7.01 and discloses the inconsistency rather than asserting a narrower safe range.
+  - issue: Anthropic's report documents real campaign behavior but has visibility only into Claude usage and does not publish every MCP protocol event.
+    resolution: The evidence label remains Observed because the end-to-end agentic and MCP-enabled collection is directly documented; protocol-event granularity remains a stated limitation.
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1801-C001
+    - SAF-T1801-C005
+  rationale: >-
+    Anthropic directly documents a real espionage campaign in which Claude Code
+    and MCP tools autonomously queried systems, extracted and processed large
+    data volumes, and categorized intelligence after successful intrusions.
+    Controlled WhatsApp, GitHub, tool-poisoning, and Slack demonstrations support
+    mechanisms and consequences but do not raise the label.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

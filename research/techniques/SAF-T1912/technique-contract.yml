@@ -1,0 +1,71 @@
+version: 1
+technique_id: SAF-T1912
+name: Stego Response Exfil
+status: ready_for_review
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0010
+adversary_objective: Move protected context to a cooperating observer by hiding recoverable
+  information inside an outward agent or model response that appears benign.
+scope:
+  security_boundary: The trusted response-generation boundary to an external, less-trusted,
+    or adversary-observable response destination.
+  in_scope:
+  - Protected context is encoded into a text, structured, image, audio, resource,
+    or metadata response carrier.
+  - A cooperating receiver can recover hidden information from the outward response.
+  - The response retains an overt task purpose or plausible appearance.
+  out_of_scope:
+  - Plaintext or otherwise explicit disclosure visible in ordinary response semantics.
+  - Secrets transferred directly in tool parameters, URLs, email, or separate network
+    requests.
+  - Prompt or tool-output injection without a recoverable protected payload in the
+    response.
+  - Covert transfer of provider model weights rather than user or workflow context.
+  affected_components:
+  - model or response generator
+  - MCP host and client
+  - tool result and resource content
+  - response serializer and media encoder
+  - external response consumer
+nearest_neighbors:
+- technique_id: SAF-T1911
+  distinction: Direct egress exposes or transmits the secret in a tool call, request,
+    message, or network body; this technique requires a hidden, recoverable payload
+    in the outward response carrier.
+- technique_id: SAF-T1102
+  distinction: Injection changes agent behavior and may enable encoding, but this
+    technique additionally requires protected data, an encoded response, and a cooperating
+    decoder.
+required_evidence:
+- Establish that an LLM or agent response can carry recoverable hidden information
+  while retaining overt utility.
+- Establish protected-context access, adversarial control or optimization, observable
+  output, and compatible decoding as prerequisites.
+- Bound MCP-specific claims to the response types the protocol actually supports.
+- Search for production incidents and disclosed vulnerabilities, classify their relationship,
+  and select only direct nonredundant demonstrations.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Full response content or cryptographic media provenance at the last trusted egress
+    point.
+  - Response destination trust, content type, serialization policy, and sensitive-context-access
+    indicator.
+  - Unicode, encoded-blob, whitespace, script-confusable, and binary-media attestation
+    features.
+safe_example_constraints:
+- Use only inert synthetic telemetry and no real secrets or decoder payloads.
+- Exercise detection predicates without publishing a reusable covert encoder.
+- Keep examples limited to defensive validation and boundary distinctions.
+completion_evidence:
+- Every substantive README unit has hidden SAF-TRACE linkage to validated claims and
+  reviewed sources.
+- Unverified candidates are omitted and preserved in the exclusion ledger.
+- Five research passes and two final authority-only no-change passes are recorded.
+- The deterministic detection tests and strict isolated validator pass.
+- Publication-rights and quality reviews pass with no blocking unresolved item.

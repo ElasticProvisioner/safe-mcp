@@ -1,0 +1,289 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2025-11-25
+    title: Tools - Model Context Protocol specification 2025-11-25
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official HTML page opened and reviewed.
+    locators: [Protocol Messages > Calling Tools, Data Types > Tool, trust and safety note]
+    review_notes: Verified tools/call name and arguments, tool metadata, and untrusted-annotation requirement.
+    review_status: opened_reviewed
+    archive: &remote
+      status: remote_reviewed_not_archived
+      reason: Public authoritative HTML was directly reviewed; no third-party snapshot is redistributed in the clean-room bundle.
+      review_evidence: {method: opened official page, reviewed_on: "2026-09-01"}
+
+  - id: SRC-mcp-2026-release
+    title: The 2026-07-28 MCP Specification
+    source_class: protocol_or_standard
+    publisher: Model Context Protocol Blog
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    official_url: https://blog.modelcontextprotocol.io/posts/2026-07-28/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official HTML page opened and reviewed.
+    locators: [What changed, No handshake or sessions, tools/call request example]
+    review_notes: Confirmed the current specification release and continued tools/call request form; not required for publishable claims.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-cve-litellm-42271
+    title: CVE-2026-42271 - LiteLLM authenticated command execution via MCP stdio test endpoints
+    source_class: official_advisory
+    publisher: CVE Program
+    authors: [GitHub maintainer security advisory CNA team]
+    version_or_date: "2026-05-08"
+    official_url: https://www.cve.org/CVERecord?id=CVE-2026-42271
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered CVE record reviewed.
+    locators: [Description, Product Status, CVSS]
+    review_notes: Verified affected versions, low-privilege API-key prerequisite, subprocess privilege context, and 1.83.7 fix.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-nvd-librechat-22252
+    title: NVD CVE-2026-22252 - LibreChat MCP Stdio Remote Command Execution
+    source_class: official_advisory
+    publisher: National Institute of Standards and Technology
+    authors: [NIST NVD team, GitHub maintainer security advisory CNA team, CISA-ADP]
+    version_or_date: "2026-06-17"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-22252
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete NVD detail and change history reviewed.
+    locators: [Description, CISA-ADP SSVC change record, Product affected record, CVSS]
+    review_notes: Verified affected range, container-root impact, fixed version, proof-of-concept enrichment, and CVSS disagreement.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-zdi-docker-26-363
+    title: Docker MCP Plugin OCI Image Label Parsing Argument Injection Remote Code Execution Vulnerability
+    source_class: official_advisory
+    publisher: TrendAI Zero Day Initiative
+    authors: [Jabr Al-Otaibi at DarkCov, TrendAI Zero Day Initiative]
+    version_or_date: "2026-06-24"
+    official_url: https://www.zerodayinitiative.com/advisories/ZDI-26-363/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete advisory HTML page reviewed.
+    locators: [Vulnerability Details, Additional Details, Disclosure Timeline, Credit]
+    review_notes: Verified user-interaction prerequisite, OCI label argument path, host-root context, and update statement. The exact GitHub advisory URL was supplied by this non-GitHub authority and was not opened.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-cve-langchain-30617
+    title: CVE-2026-30617 - LangChain-ChatChat MCP STDIO command execution
+    source_class: official_advisory
+    publisher: CVE Program
+    authors: [MITRE Corporation CNA team]
+    version_or_date: "2026-04-15"
+    official_url: https://www.cve.org/CVERecord?id=CVE-2026-30617
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete rendered CVE record reviewed.
+    locators: [Description, References]
+    review_notes: Verified version 0.3.1, public MCP management prerequisite, deferred agent trigger, and service-context execution; no fix stated.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-jfrog-malicious-mcp
+    title: 3 Malicious MCP servers found on PyPI
+    source_class: research
+    publisher: JFrog Security Research
+    authors: [Guy Korolevski, JFrog Security Research team]
+    version_or_date: "2025-10-19"
+    official_url: https://research.jfrog.com/post/3-malicious-mcps-pypi-reverse-shell/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete researcher-authored disclosure reviewed.
+    locators: [Paragraphs 1-4, PyPI packages found, code-path description]
+    review_notes: Verified package names, stated download count, and startup-time reverse-shell behavior; classified as adjacent supply-chain evidence.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-microsoft-sysmon
+    title: Sysmon events
+    source_class: implementation_artifact
+    publisher: Microsoft Learn
+    authors: [Microsoft Learn contributors]
+    version_or_date: "2026"
+    official_url: https://learn.microsoft.com/en-us/windows/security/operating-system-security/sysmon/sysmon-events
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official documentation page reviewed.
+    locators: [What a Sysmon event represents, Events as behavioral building blocks, Process Create Event ID 1]
+    review_notes: Verified timestamp, process context, full command line, parent process, hashes, Process GUID, and correlation limitations.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-elastic-ecs-process
+    title: Elastic Common Schema process fields
+    source_class: implementation_artifact
+    publisher: Elastic
+    authors: [Elastic documentation team]
+    version_or_date: current on 2026-09-01
+    official_url: https://www.elastic.co/docs/reference/ecs/ecs-process
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official field-reference page reviewed.
+    locators: [process.args, process.command_line, process.executable, process.entity_id]
+    review_notes: Verified normalized process argument, command-line, executable, and entity-correlation fields.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-owasp-command-injection
+    title: OS Command Injection Defense Cheat Sheet
+    source_class: credible_practice
+    publisher: OWASP Cheat Sheet Series
+    authors: [OWASP Cheat Sheet Series contributors]
+    version_or_date: current on 2026-09-01
+    official_url: https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full guidance page reviewed.
+    locators: [Introduction, Primary Defenses, Defense option 3, Additional Defenses]
+    review_notes: Verified command-injection definition, avoid-command guidance, parameterization, positive validation, and least privilege.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-docker-rootless
+    title: Docker Rootless mode
+    source_class: implementation_artifact
+    publisher: Docker
+    authors: [Docker documentation team]
+    version_or_date: current on 2026-09-01
+    official_url: https://docs.docker.com/engine/security/rootless/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official documentation page reviewed.
+    locators: [Rootless mode introduction, How it works]
+    review_notes: Verified that daemon and containers run without root under rootless mode and use a user namespace.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-mitre-t1059
+    title: ATT&CK T1059 - Command and Scripting Interpreter
+    source_class: protocol_or_standard
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: "2.7; modified 2026-05-12"
+    official_url: https://attack.mitre.org/techniques/T1059/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Full official technique page reviewed.
+    locators: [Technique description, Detection Strategy, Mitigations]
+    review_notes: Verified command-interpreter abuse definition and abnormal-parent detection guidance.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-zdi-aws-26-245
+    title: aws-mcp-server AWS CLI Command Injection Remote Code Execution Vulnerability
+    source_class: official_advisory
+    publisher: TrendAI Zero Day Initiative
+    authors: [Alfredo Oliveira, David Fiser, Trend Research]
+    version_or_date: "2026-04-21"
+    official_url: https://www.zerodayinitiative.com/advisories/ZDI-26-245/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete advisory reviewed.
+    locators: [Vulnerability Details, Additional Details, Disclosure Timeline, Credit]
+    review_notes: Direct vulnerability candidate; not selected because the four retained examples had stronger boundary diversity and remediation detail.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-zdi-mcp-manager-26-023
+    title: MCP Manager for Claude Desktop execute-command Command Injection Sandbox Escape Vulnerability
+    source_class: official_advisory
+    publisher: TrendAI Zero Day Initiative
+    authors: [Peter Girnus, Brandon Niemczyk, Trend Zero Day Initiative]
+    version_or_date: "2026-01-09"
+    official_url: https://www.zerodayinitiative.com/advisories/ZDI-26-023/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete advisory reviewed.
+    locators: [Vulnerability Details, Additional Details, Disclosure Timeline, Credit]
+    review_notes: Direct vulnerability candidate; not selected because affected versions and patch state were absent from the reviewed advisory.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-zdi-github-kanban-26-022
+    title: github-kanban-mcp-server execAsync Command Injection Remote Code Execution Vulnerability
+    source_class: official_advisory
+    publisher: TrendAI Zero Day Initiative
+    authors: [Brandon Niemczyk, Peter Girnus, Trend Zero Day Initiative]
+    version_or_date: "2026-01-09"
+    official_url: https://www.zerodayinitiative.com/advisories/ZDI-26-022/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete advisory reviewed.
+    locators: [Vulnerability Details, Additional Details, Disclosure Timeline, Credit]
+    review_notes: Direct vulnerability candidate; not selected because it duplicated the generic service-account pattern and had no patch details.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-zdi-win-cli-25-930
+    title: win-cli-mcp-server resolveCommandPath Command Injection Remote Code Execution Vulnerability
+    source_class: official_advisory
+    publisher: TrendAI Zero Day Initiative
+    authors: [Peter Girnus, Trend Research]
+    version_or_date: "2025-10-03"
+    official_url: https://www.zerodayinitiative.com/advisories/ZDI-25-930/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete advisory reviewed.
+    locators: [Vulnerability Details, Additional Details, Disclosure Timeline, Credit]
+    review_notes: Direct vulnerability candidate; not selected because the retained examples better distinguish privilege contexts and management paths.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-nvd-jaaz-30616
+    title: NVD CVE-2026-30616 - Jaaz MCP STDIO command execution
+    source_class: official_advisory
+    publisher: National Institute of Standards and Technology
+    authors: [NIST NVD team, MITRE Corporation CNA team, CISA-ADP]
+    version_or_date: "2026-06-17"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-30616
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete NVD detail and change history reviewed.
+    locators: [Description, CISA-ADP SSVC change record, Affected record]
+    review_notes: Direct vulnerability candidate; not selected due lower documented impact and absent remediation detail.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-cisa-week-2025-272
+    title: Vulnerability Summary for the Week of September 22, 2025
+    source_class: secondary
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA vulnerability bulletin team]
+    version_or_date: "2025-09-29"
+    official_url: https://www.cisa.gov/news-events/bulletins/sb25-272
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Relevant complete bulletin table and notice reviewed.
+    locators: [High Vulnerabilities > srmorete adb-mcp entry, bulletin source disclaimer]
+    review_notes: ADB MCP command-injection candidate was retained as unselected secondary context; bulletin states some data is compiled from external reports.
+    review_status: opened_reviewed
+    archive: *remote
+
+  - id: SRC-nvd-aws-5277
+    title: NVD CVE-2025-5277 - aws-mcp-server command injection
+    source_class: official_advisory
+    publisher: National Institute of Standards and Technology
+    authors: [NIST NVD team, Snyk CNA team, CISA-ADP]
+    version_or_date: "2026-06-17"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2025-5277
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete NVD detail and change history reviewed.
+    locators: [Description, Affected record, CISA-ADP SSVC]
+    review_notes: Direct vulnerability lead for aws-mcp-server versions before 1.3.0; omitted from selected set as an earlier product-specific record overlapping the newer ZDI finding.
+    review_status: opened_reviewed
+    archive: *remote

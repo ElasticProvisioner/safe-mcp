@@ -1,0 +1,36 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1912
+    name: Stego Response Exfil
+    documentation_status: draft
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0010
+    technique_path: techniques/SAF-T1912/README.md
+    research_packet: research/techniques/SAF-T1912
+    related_techniques:
+      - SAF-T1911
+      - SAF-T1102
+    mitigations:
+      - SAF-M-4
+      - SAF-M-7
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-21
+      - SAF-M-22
+      - SAF-M-34
+      - SAF-M-49
+      - SAF-M-54
+      - SAF-M-72
+    detection:
+      rule: techniques/SAF-T1912/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1912/test_detection_rule.py
+        - research/techniques/SAF-T1912/validation/detection-tests.txt
+        - research/techniques/SAF-T1912/validation/strict-validation.txt
+    attack_mappings:
+      - id: T1027.003
+        type: direct
+      - id: T1567
+        type: analogous

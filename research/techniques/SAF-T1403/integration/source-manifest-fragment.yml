@@ -1,0 +1,291 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2025-06-18
+    title: Tools - Model Context Protocol
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete versioned specification page.
+    locators: ["User Interaction Model, lines 79-87", "Security Considerations, lines 454-465"]
+    review_notes: Verified model-controlled tool invocation, confirmation UI, rate limiting, input display, and audit logging guidance.
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Public canonical source directly reviewed; snapshot omitted from the merge bundle.
+      review_evidence: {method: direct_page_review, locators_recorded: true}
+
+  - id: SRC-mcp-elicitation-2025-06-18
+    title: Elicitation - Model Context Protocol
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete versioned specification page.
+    locators: ["User Interaction Model, lines 73-84", "Response Actions, lines 312-342", "Security Considerations, lines 347-354"]
+    review_notes: Verified server-originated requests, decision states, provenance UI, decline, and client rate limiting.
+    archive: *remote_archive
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Security Best Practices - Model Context Protocol
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete attacks index and relevant consent, authorization, and scope-minimization sections.
+    locators: ["Confused Deputy, lines 120-208", "OAuth URL Validation, lines 472-482", "Scope Minimization, lines 535-585"]
+    review_notes: Verified consent UI requirements, precise scopes, denied-scope retry caching, and correlation logging guidance.
+    archive: *remote_archive
+
+  - id: SRC-nist-sp800-63b-4
+    title: "NIST SP 800-63B-4: Digital Identity Guidelines - Authentication and Authenticator Management"
+    publisher: National Institute of Standards and Technology
+    authors: [David Temoshok, James Fenton, Yee-Yin Choong, Naomi Lefkovitz, Andrew Regenscheid, Ryan Galluzzo, Justin Richer]
+    version_or_date: July 2025 final
+    source_class: protocol_or_standard
+    official_url: https://csrc.nist.gov/pubs/sp/800/63/b/4/final
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of publication metadata and the complete relevant authentication-fatigue, intent, rate-limit, threat, and mitigation sections.
+    locators: ["CSRC authors and publication metadata, lines 64-106", "Section 3.1.3, lines 298-347", "Section 3.2.8, lines 536-540", "Table 3, lines 857-920"]
+    review_notes: Verified the definition and observed pattern of authentication fatigue plus transaction-secret and rate-limit controls.
+    archive: *remote_archive
+
+  - id: SRC-mitre-t1621-v1.2
+    title: Multi-Factor Authentication Request Generation
+    publisher: The MITRE Corporation
+    authors: [The MITRE Corporation, Arun Seelagan, Jon Sternstein, Obsidian Security, Pawel Partyka, Shanief Webb]
+    version_or_date: "Version 1.2; modified 2025-10-24"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/versions/v19/techniques/T1621/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete versioned ATT&CK technique page.
+    locators: ["Description and contributors, lines 16-40", "Procedure Examples, lines 45-51", "Mitigations and Detection Strategy, lines 52-67"]
+    review_notes: Verified repeated MFA request generation, procedure examples, mitigations, detection, version, and named contributors.
+    archive: *remote_archive
+
+  - id: SRC-mitre-det0160-v1.0
+    title: Detection Strategy for Multi-Factor Authentication Request Generation
+    publisher: The MITRE Corporation
+    authors: [MITRE ATT&CK team]
+    version_or_date: "Version 1.0; modified 2026-05-12"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/detectionstrategies/DET0160/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete ATT&CK detection strategy page.
+    locators: ["Metadata, lines 16-33", "Analytics AN0449-AN0454, lines 35-124"]
+    review_notes: Verified prompt-frequency, time-window, login-origin, decision-state, and tuning fields for analogous detection.
+    archive: *remote_archive
+
+  - id: SRC-uber-security-update-2022
+    title: Security update
+    publisher: Uber
+    authors: [Uber Team]
+    version_or_date: "2022-09-19 update"
+    source_class: incident_report
+    official_url: https://www.uber.com/us/en/newsroom/security-update/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete incident update.
+    locators: ["What happened, lines 11-18", "Response and impact, lines 20-37"]
+    review_notes: Verified repeated login approvals, eventual acceptance, affected internal systems, bounded impact, and response steps.
+    archive: *remote_archive
+
+  - id: SRC-microsoft-dev0537-2022
+    title: DEV-0537 criminal actor targeting organizations for data exfiltration and destruction
+    publisher: Microsoft
+    authors: [Microsoft Threat Intelligence, Microsoft Defender Experts Cybersecurity Incident Response]
+    version_or_date: "2022-03-22; updated 2023-04"
+    source_class: incident_report
+    official_url: https://www.microsoft.com/en-us/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the full campaign analysis, recommendations, and detection sections.
+    locators: ["Byline and campaign scope, lines 8-53", "Initial access, lines 54-68", "Impact, lines 81-94", "MFA recommendations, lines 95-113"]
+    review_notes: Verified observed prompt spam, eventual-consent objective, broader campaign consequences, authorship, and defenses.
+    archive: *remote_archive
+
+  - id: SRC-openai-mcp-approvals-2026
+    title: MCP and Connectors
+    publisher: OpenAI
+    authors: [OpenAI]
+    version_or_date: Continuously updated; reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://developers.openai.com/api/docs/guides/tools-connectors-mcp
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of complete approval-flow and safety sections plus surrounding API examples.
+    locators: ["MCP output and operation, lines 1399-1485", "Approval request and response example, lines 2076-2211", "Safety, lines 3298-3306"]
+    review_notes: Verified explicit approval request and response items, always/never approval settings, and sensitive-action guidance.
+    archive: *remote_archive
+
+  - id: SRC-anthropic-permissions-2026
+    title: Configure permissions
+    publisher: Anthropic
+    authors: [Anthropic]
+    version_or_date: Continuously updated; reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://code.claude.com/docs/en/permissions
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete permission system, rule, scope, enforcement, and managed-setting sections.
+    locators: ["Permission system, lines 99-141", "Permission modes, lines 148-160", "MCP and enforcement details, lines 261-273 and 463-507", "Managed settings, lines 579-595"]
+    review_notes: Verified one-time, session, persistent, ask, deny, application enforcement, and managed-policy behaviors.
+    archive: *remote_archive
+
+  - id: SRC-nvd-cve-2026-27124
+    title: CVE-2026-27124
+    publisher: National Vulnerability Database
+    authors: [National Vulnerability Database, GitHub Security Advisory maintainers]
+    version_or_date: "Published 2026-04-03; modified 2026-07-24"
+    source_class: official_advisory
+    official_url: "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-27124"
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct retrieval and complete review of the official NVD API record.
+    locators: ["CVE description", "affectedData: fastmcp < 3.2.0", "CVSS v4.0 and v3.1", "CISA SSVC exploitation: poc", "references"]
+    review_notes: Verified the consent-check confused-deputy weakness, affected range, patch, and proof-of-concept status.
+    archive: *remote_archive
+
+  - id: SRC-ghsa-rww4-4w9c-7733
+    title: Missing Consent Verification in OAuth Proxy Callback Facilitates Confused Deputy Vulnerabilities
+    publisher: PrefectHQ FastMCP project via GitHub Security Advisories
+    authors: [jlowin, an7y]
+    version_or_date: "Published 2026-03-31"
+    source_class: official_advisory
+    official_url: https://github.com/PrefectHQ/fastmcp/security/advisories/GHSA-rww4-4w9c-7733
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after provenance from the directly reviewed NVD CVE record; complete advisory reviewed.
+    locators: ["Publisher and affected versions, lines 134-150", "Technical Details, lines 152-162", "Steps to reproduce and recommendation, lines 163-178", "Credits, lines 193-195"]
+    review_notes: Verified the consent-bypass mechanism, practical reproduction, affected and patched versions, limitation, publisher, and reporter credit.
+    discovery_provenance: SRC-nvd-cve-2026-27124
+    archive: *remote_archive
+
+  - id: SRC-nvd-cve-2026-32112
+    title: CVE-2026-32112
+    publisher: National Vulnerability Database
+    authors: [National Vulnerability Database, GitHub Security Advisory maintainers]
+    version_or_date: "Published 2026-03-11; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-32112
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete NVD detail page and corresponding API record.
+    locators: ["Description, lines 76-79", "Metrics and advisory reference, lines 80-94", "Change History, lines 105-150"]
+    review_notes: Verified consent-form XSS, beta OAuth prerequisite, affected range, fixed version, and CISA SSVC exploitation-none status.
+    archive: *remote_archive
+
+  - id: SRC-ghsa-pf93-j98v-25pv
+    title: XSS via Unescaped HTML in OAuth Consent Form
+    publisher: homeassistant-ai ha-mcp project via GitHub Security Advisories
+    authors: [julienld, yotampe-pluto]
+    version_or_date: "Published 2026-03-11"
+    source_class: official_advisory
+    official_url: https://github.com/homeassistant-ai/ha-mcp/security/advisories/GHSA-pf93-j98v-25pv
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after provenance from the directly reviewed NVD CVE record; complete advisory reviewed.
+    locators: ["Affected and patched versions, lines 134-150", "Summary and details, lines 152-180", "Fix, lines 184-186", "Credits, lines 265-268"]
+    review_notes: Verified OAuth-mode constraints, user-interaction bar, XSS impact, fix, and named credits; rejected as a fatigue example.
+    discovery_provenance: SRC-nvd-cve-2026-32112
+    archive: *remote_archive
+
+  - id: SRC-nvd-cve-2026-67333
+    title: CVE-2026-67333
+    publisher: National Vulnerability Database
+    authors: [National Vulnerability Database, VulnCheck]
+    version_or_date: "Published 2026-08-01; modified 2026-08-03"
+    source_class: official_advisory
+    official_url: "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-67333"
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct retrieval and complete review of the official NVD API record.
+    locators: ["CVE description", "affectedData and fixed versions", "CVSS metrics", "CISA SSVC exploitation: none", "references"]
+    review_notes: Verified an MCP-plugin redirect-scheme XSS condition; rejected because it does not use repeated approval requests.
+    archive: *remote_archive
+
+  - id: SRC-nvd-cve-2026-79786
+    title: CVE-2026-79786
+    publisher: National Vulnerability Database
+    authors: [National Vulnerability Database, VulnCheck]
+    version_or_date: "Published 2026-08-25; modified 2026-08-28"
+    source_class: official_advisory
+    official_url: "https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-79786"
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct retrieval and complete review of the official NVD API record.
+    locators: ["CVE description", "affectedData", "CVSS metrics", "CISA SSVC exploitation: poc", "references"]
+    review_notes: Verified an MCP OAuth redirect-registration weakness involving a consent approval; rejected because repetition and fatigue are absent.
+    archive: *remote_archive
+
+  - id: SRC-microsoft-number-match-2025
+    title: How number matching works in MFA push notifications for Authenticator
+    publisher: Microsoft
+    authors: [Microsoft]
+    version_or_date: "Updated 2025-11-06"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-number-match
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete Microsoft Learn page.
+    locators: ["Overview and scenarios, lines 24-55", "AD FS and NPS limitations, lines 56-108", "FAQ, lines 138-164"]
+    review_notes: Verified number-entry transaction binding, deployment state, and legacy approve/deny limitations.
+    archive: *remote_archive
+
+  - id: SRC-rfc9700
+    title: Best Current Practice for OAuth 2.0 Security
+    publisher: Internet Engineering Task Force
+    authors: [Torsten Lodderstedt, John Bradley, Andrey Labunets, Daniel Fett]
+    version_or_date: "RFC 9700; January 2025"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc9700.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of complete metadata, best-practice summary, dynamic deployment context, and consent-adjacent attack index.
+    locators: ["Metadata and authors, lines 0-50", "Introduction, lines 207-224", "Best Practices, lines 231-272"]
+    review_notes: Verified current OAuth security context; rejected as direct support because it does not address repeated approval fatigue.
+    archive: *remote_archive
+
+  - id: SRC-arxiv-1510.07728
+    title: Design of Raptor Codes in the Low SNR Regime with Applications in Quantum Key Distribution
+    publisher: arXiv
+    authors: [Mahyar Shirvanimoghaddam, Sarah J. Johnson, Andrew M. Lance]
+    version_or_date: "Submitted 2015-10-27"
+    source_class: research
+    official_url: https://arxiv.org/abs/1510.07728
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of complete abstract and metadata after an identifier-level discovery error.
+    locators: ["Title, authors, abstract, and history, lines 6-28"]
+    review_notes: Unrelated quantum key distribution paper; immediately rejected and used for no claim.
+    archive: *remote_archive

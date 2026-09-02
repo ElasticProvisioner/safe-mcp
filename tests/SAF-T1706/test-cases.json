@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "technique_id": "SAF-T1706",
+  "window_seconds": 600,
+  "cases": [
+    {
+      "name": "positive_accepted_audience_mismatch",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-a", "presenter_id": "workload-a", "resource_id": "resource-b", "audience_match": false, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-a"}
+      ]
+    },
+    {
+      "name": "positive_cross_presenter_at_600_second_boundary",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-b", "presenter_id": "workload-a", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-a"},
+        {"timestamp": "2026-09-02T12:10:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-b", "presenter_id": "workload-b", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-b"}
+      ]
+    },
+    {
+      "name": "negative_normal_single_presenter",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-c", "presenter_id": "workload-a", "resource_id": "resource-a", "audience_match": true, "sender_constrained": true, "approved_handoff": false, "client_instance_group": "group-a"}
+      ]
+    },
+    {
+      "name": "boundary_601_seconds_no_alert",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-d", "presenter_id": "workload-a", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-a"},
+        {"timestamp": "2026-09-02T12:10:01Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-d", "presenter_id": "workload-b", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-b"}
+      ]
+    },
+    {
+      "name": "malformed_missing_fingerprint_and_bad_time",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "not-a-time", "event_action": "oauth_token_use", "auth_result": "success", "presenter_id": "workload-a", "resource_id": "resource-a", "audience_match": true, "approved_handoff": false}
+      ]
+    },
+    {
+      "name": "legitimate_lookalike_scaled_client_group",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-e", "presenter_id": "pod-a", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "frontend-ha"},
+        {"timestamp": "2026-09-02T12:05:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-e", "presenter_id": "pod-b", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "frontend-ha"}
+      ]
+    },
+    {
+      "name": "negative_failed_authentication",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "failure", "token_fingerprint": "sha256:synthetic-f", "presenter_id": "workload-a", "resource_id": "resource-b", "audience_match": false, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "group-a"}
+      ]
+    },
+    {
+      "name": "legitimate_approved_handoff",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-02T12:00:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-g", "presenter_id": "gateway-a", "resource_id": "resource-a", "audience_match": true, "sender_constrained": false, "approved_handoff": false, "client_instance_group": "gateway-a"},
+        {"timestamp": "2026-09-02T12:01:00Z", "event_action": "oauth_token_use", "auth_result": "success", "token_fingerprint": "sha256:synthetic-g", "presenter_id": "gateway-b", "resource_id": "resource-b", "audience_match": true, "sender_constrained": false, "approved_handoff": true, "client_instance_group": "gateway-b"}
+      ]
+    }
+  ]
+}

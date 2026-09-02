@@ -1,34 +1,49 @@
-title: MCP OAuth Authorization Phishing Detection
-id: 8f3e7b92-4a56-4d89-b789-2c5e8f9a3d21
-status: experimental
-description: Detects potential OAuth phishing through malicious MCP servers
-author: Frederick Kautz
-date: 2025-01-06
+title: MCP OAuth Callback Subject Mismatch
+id: 7a3a9c39-49de-4e6d-a685-20b7ac3ea8ce
+status: test
+description: Detects completed third-party OAuth callbacks that store tokens when the authoritative callback subject is missing or differs from the MCP flow initiator.
 references:
-  - https://github.com/saf-mcp/techniques/SAF-T1007
-  - https://github.com/modelcontextprotocol/modelcontextprotocol/issues/544
+  - https://modelcontextprotocol.io/specification/2026-07-28/client/elicitation#phishing
+  - https://github.com/danny-avila/LibreChat/security/advisories/GHSA-vf7j-7mrx-hp7g
+author: OpenAI Codex clean-room agent
+date: 2026-09-01
+tags: [saf.t1007, attack.t1566.002, attack.t1528]
 logsource:
-  product: mcp
-  service: oauth_flow
+  category: application
+  product: mcp_integration_server
 detection:
-  selection_suspicious_redirect:
-    oauth_redirect_uri:
-      - '*://*/oauth/callback*'
-      - '*://*/auth/return*'
-    oauth_redirect_domain|not:
-      - '*.google.com'
-      - '*.amazonaws.com'
-      - '*.microsoft.com'
-      - '*.github.com'
-  selection_multiple_providers:
-    oauth_provider|count|gt: 2
-    timeframe: 1h
-  condition: selection_suspicious_redirect or selection_multiple_providers
+  selection_completed:
+    event: oauth_callback
+    outcome: completed
+    token_stored: true
+  selection_mismatch:
+    compare_fields:
+      left: initiator_subject
+      operator: not_equals
+      right: callback_subject
+  selection_missing_callback_subject:
+    callback_subject: null
+  timeframe: 10m
+  condition: selection_completed and (selection_mismatch or selection_missing_callback_subject)
+fields: [timestamp, request_id, server_id, initiator_subject, callback_subject, bound_subject, provider, scope_set, outcome, token_stored]
 falsepositives:
-  - Legitimate MCP servers with custom OAuth implementations
-  - Development/testing environments
+  - Issuer-qualified and local aliases for the same person are compared without prior identity normalization.
+  - Account migration changes a stable subject identifier during an in-flight OAuth request.
 level: high
-tags:
-  - attack.initial_access
-  - attack.t1566
-  - safe.t1007
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1007-C008]
+  telemetry_claim_ids: [SAF-T1007-C008]
+  limitation_claim_ids: [SAF-T1007-C009]
+  validation_artifacts:
+    - techniques/SAF-T1007/test-logs.json
+    - techniques/SAF-T1007/test_detection_rule.py
+  components:
+    logsource: {claim_ids: [SAF-T1007-C008], rationale: MCP integration server is the component that knows the initiating and callback subjects.}
+    selection_completed: {claim_ids: [SAF-T1007-C008], rationale: The technique completes only when the server accepts the callback and stores the grant.}
+    selection_mismatch: {claim_ids: [SAF-T1007-C008], rationale: Subject mismatch is the defining security invariant violation.}
+    selection_missing_callback_subject: {claim_ids: [SAF-T1007-C008, SAF-T1007-C009], rationale: Token storage without authoritative completer identity cannot satisfy the same-user requirement.}
+    timeframe: {claim_ids: [SAF-T1007-C009], rationale: Correlation is bounded to the configured flow lifetime; ten minutes is an explicit test assumption.}
+    condition: {claim_ids: [SAF-T1007-C008], rationale: Requires a completed token-storing callback plus missing or mismatched identity.}
+    fields: {claim_ids: [SAF-T1007-C008, SAF-T1007-C009], rationale: Fields preserve flow, identity, outcome, and provider context for triage.}
+    falsepositives: {claim_ids: [SAF-T1007-C009], rationale: Alias and migration cases can differ textually without representing different people.}

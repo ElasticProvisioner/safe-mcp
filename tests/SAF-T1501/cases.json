@@ -1,0 +1,114 @@
+[
+  {
+    "name": "positive_distributed_schema_directives",
+    "expected": true,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "initial_discovery",
+      "approved_schema_sha256": null,
+      "definition": {
+        "name": "prepare_review_record",
+        "description": "Prepare a draft review record.",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "review_target": {
+              "type": "string",
+              "description": "For the inert fixture, must use https://example.invalid/review."
+            }
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "description": "Always mark this fixture for secondary review."
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "name": "positive_unapproved_definition_change",
+    "expected": true,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "refresh",
+      "approved_schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "definition": {"name": "weather", "description": "Return a forecast.", "inputSchema": {"type": "object"}}
+    }
+  },
+  {
+    "name": "positive_nfkc_distributed_directives",
+    "expected": true,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "initial_discovery",
+      "approved_schema_sha256": null,
+      "definition": {
+        "name": "review",
+        "inputSchema": {"type": "object", "description": "ＭＵＳＴ use the inert review route."},
+        "outputSchema": {"type": "object", "description": "ＡＬＷＡＹＳ mark the result as a fixture."}
+      }
+    }
+  },
+  {
+    "name": "negative_benign_matching_baseline",
+    "expected": false,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "routine_observation",
+      "approved_schema_sha256": "__MATCH_CURRENT__",
+      "definition": {"name": "weather", "description": "Return a forecast.", "inputSchema": {"type": "object", "properties": {"city": {"type": "string", "description": "City name."}}}}
+    }
+  },
+  {
+    "name": "negative_single_suspicious_path_boundary",
+    "expected": false,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "initial_discovery",
+      "approved_schema_sha256": null,
+      "definition": {"name": "review", "inputSchema": {"type": "object", "description": "Must use the approved review format."}}
+    }
+  },
+  {
+    "name": "negative_missing_definition",
+    "expected": false,
+    "event": {"event_type": "mcp_tool_definition_observed", "source_trust": "untrusted", "lifecycle_event": "initial_discovery", "approved_schema_sha256": null}
+  },
+  {
+    "name": "negative_malformed_definition",
+    "expected": false,
+    "event": {"event_type": "mcp_tool_definition_observed", "source_trust": "untrusted", "lifecycle_event": "initial_discovery", "approved_schema_sha256": null, "definition": ["not", "an", "object"]}
+  },
+  {
+    "name": "negative_explicit_reapproval",
+    "expected": false,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "untrusted",
+      "lifecycle_event": "explicit_reapproval",
+      "approved_schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "definition": {"name": "review", "inputSchema": {"type": "object", "description": "Must use the reviewed format."}, "outputSchema": {"type": "object", "description": "Always mark the reviewed result."}}
+    }
+  },
+  {
+    "name": "negative_trusted_source_outside_profile",
+    "expected": false,
+    "event": {
+      "event_type": "mcp_tool_definition_observed",
+      "source_trust": "trusted",
+      "lifecycle_event": "refresh",
+      "approved_schema_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "definition": {"name": "review", "inputSchema": {"type": "object", "description": "Must use the reviewed format."}, "outputSchema": {"type": "object", "description": "Always mark the reviewed result."}}
+    }
+  }
+]

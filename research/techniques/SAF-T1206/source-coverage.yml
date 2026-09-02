@@ -1,0 +1,229 @@
+version: 1
+technique_id: SAF-T1206
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "site:modelcontextprotocol.io/specification/2026-07-28 authorization security token storage resource indicators"
+        - "site:modelcontextprotocol.io SEP-2352 credential isolation 2026-07-28"
+        - "site:code.visualstudio.com MCP configuration input variables API keys passwords approval trust"
+        - "site:docs.github.com/copilot MCP configuration secrets allowlist read-only tools"
+      material_changes:
+        - Established static and persisted credential support, issuer binding, token audience validation, config paths, and credential-bearing fields.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail mcp.json"
+        - "site:nvd.nist.gov/vuln/detail Model Context Protocol configuration"
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-64107"
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-66580"
+        - "site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-68433"
+        - "official NVD API exact cveId lookups for CVE-2025-64107, CVE-2025-66580, CVE-2025-68433, CVE-2026-57860, CVE-2026-14541, CVE-2025-4143"
+      material_changes:
+        - Selected one enabling config-write vulnerability and two adjacent config-injection/execution vulnerabilities.
+        - Confirmed no selected CVE appeared in CISA KEV version 2026.09.01.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "exact GHSA-2jr2-8wf5-v6pf opened after NVD provenance"
+        - "exact GHSA-xv8m-365j-x6h2 opened after NVD provenance"
+        - "exact GHSA-cv6g-cmxc-vw8j opened after NVD provenance"
+        - "site:zed.dev CVE-2025-68433 MCP configuration worktree trust"
+      material_changes:
+        - Verified demonstration prerequisites, affected and fixed versions, and researcher credits while excluding operational payloads.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "site:learn.microsoft.com Azure MCP security credential vault rotation issuer audience"
+        - "site:attack.mitre.org/techniques/T1098 credential-related configuration changes detection"
+        - "site:code.visualstudio.com MCP configuration trust reset synchronization"
+      material_changes:
+        - Defined privacy-preserving config-change telemetry, identity correlation, false positives, and defensive controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "site:microsoft.com/en-us/security/blog MCP incident credentials configuration"
+        - "site:cloud.google.com/blog/topics/threat-intelligence MCP incident credential configuration agent"
+        - "site:nvd.nist.gov/vuln/detail MCP OAuth credential"
+        - "site:cisa.gov MCP incident credentials configuration AI agent"
+      material_changes:
+        - Rejected exposed-server exploitation, credential theft, audience bypass, redirect theft, and config-execution cases as proof of the defining credential-implant behavior.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "site:nvd.nist.gov/vuln/detail MCP client secret configuration persistence"
+        - "site:modelcontextprotocol.io/specification/2026-07-28 credential isolation"
+        - "site:msrc.microsoft.com MCP credential configuration incident"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "site:cisa.gov known exploited MCP credential configuration"
+        - "site:docs.github.com Copilot MCP secret configuration trust"
+        - "site:code.visualstudio.com MCP credential configuration security"
+      material_changes: []
+  rationale: >-
+    Current protocol, two independent client implementations, first-party cloud
+    guidance, three product advisories, official NVD/CISA exploitation records,
+    current incident research, and framework guidance cover every publishable
+    proposition. Two narrower authority-only follow-ups added no requirement,
+    direct case, material limitation, remediation change, or better example.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 9
+  selected_examples:
+    - SRC-t1206-ghsa-cursor
+    - SRC-ghsa-dive-66580
+    - SRC-ghsa-zed-68433
+  no_qualifying_examples_rationale: >-
+    Three examples qualified for publication, but none is a direct production
+    incident or a complete credential implant. The section therefore preserves
+    the direct-production evidence gap and labels every selected example as
+    enabling or adjacent.
+  candidates:
+    - source_id: SRC-t1206-ghsa-cursor
+      identifier: CVE-2025-64107 / GHSA-2jr2-8wf5-v6pf
+      relationship: enabling_vulnerability
+      exploitation_status: CISA ADP recorded none; not present in CISA KEV 2026.09.01.
+      impact: Approval-bypassing overwrite of sensitive Cursor editor files on Windows could lead to RCE after prompt injection or malicious-model control.
+      remediation: Fixed in Cursor 2.0.
+      selected: true
+      rationale: Highest relevance because it directly supplies an unauthorized write path to mcp.json, but the advisory does not show a credential implant.
+    - source_id: SRC-ghsa-dive-66580
+      identifier: CVE-2025-66580 / GHSA-xv8m-365j-x6h2
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded proof-of-concept; not present in CISA KEV 2026.09.01.
+      impact: Click-triggered stored XSS could overwrite MCP server configuration and reach RCE.
+      remediation: Fixed in Dive 0.11.1.
+      selected: true
+      rationale: Critical config-injection demonstration with full affected and fixed ranges; objective is execution rather than credential persistence.
+    - source_id: SRC-ghsa-zed-68433
+      identifier: CVE-2025-68433 / GHSA-cv6g-cmxc-vw8j
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded none; not present in CISA KEV 2026.09.01.
+      impact: Opening a seeded project could auto-execute an MCP server configuration with user privileges.
+      remediation: Worktree trust added in Zed 0.218.2-pre.
+      selected: true
+      rationale: High-quality first-party configuration-boundary demonstration with named researcher credit; objective is execution.
+    - source_id: SRC-t1206-nvd-forgecode
+      identifier: CVE-2026-57860
+      relationship: rejected
+      exploitation_status: CISA ADP recorded proof-of-concept; NVD status Deferred.
+      impact: Reported unvetted repository mcp.json execution with user privileges.
+      remediation: Affected record and references were present, but an authoritative fixed version was not established in the reviewed source.
+      selected: false
+      rationale: Adjacent command execution and weaker remediation certainty than selected examples; no credential implant.
+    - source_id: SRC-t1206-nvd-google-toolbox
+      identifier: CVE-2026-14541
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded none.
+      impact: Missing audience/clientId configuration could allow unrelated Google OAuth tokens to access protected tools and data.
+      remediation: Google patch reference was recorded; only version 1.4.0 was listed affected.
+      selected: false
+      rationale: Authentication bypass caused by missing validation, not persistent client credential implantation.
+    - source_id: SRC-t1206-nvd-cloudflare-oauth
+      identifier: CVE-2025-4143
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded none.
+      impact: Redirect validation weakness could enable credential theft and impersonation under stated auto-approval conditions.
+      remediation: Fixed before workers-oauth-provider 0.0.5.
+      selected: false
+      rationale: Credential theft without a persistent configuration write is outside the contract.
+    - source_id: SRC-t1206-ms-config-risk
+      identifier: Microsoft Defender observed AI/MCP misconfiguration abuse
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Production observations and active Mage AI exploitation were reported.
+      impact: Exposed agentic services enabled RCE, credential theft, and access to internal tools.
+      remediation: Authentication defaults and deployment guidance were improved for described products.
+      selected: false
+      rationale: The incidents concern exposed or weakly authenticated services, not attacker-written credential-bearing client config.
+    - source_id: SRC-t1206-gtig-ai-threats
+      identifier: TeamPCP AI-package supply-chain compromises
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Production incident-response engagements reported.
+      impact: Compromised packages embedded a credential stealer and extracted cloud secrets from build environments.
+      remediation: Defensive discussion and ecosystem controls were reported; no MCP client-config remediation applied.
+      selected: false
+      rationale: Credential theft through compromised packages is not credential implantation in MCP configuration.
+    - source_id: SRC-cisa-kev-2026-09-01
+      identifier: CISA KEV catalog version 2026.09.01
+      relationship: rejected
+      exploitation_status: Selected CVE identifiers absent from the current catalog.
+      impact: Catalog status only; it is not an incident or vulnerability itself.
+      remediation: Not applicable.
+      selected: false
+      rationale: Used only as a current exploitation cross-check.
+sources_consulted:
+  - SRC-t1206-attack-t1098-001
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-t1206-copilot-cli
+  - SRC-t1206-foundry-auth
+  - SRC-t1206-ghsa-cursor
+  - SRC-ghsa-dive-66580
+  - SRC-ghsa-zed-68433
+  - SRC-t1206-gtig-ai-threats
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-t1206-mcp-client-registration
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-nvd-cloudflare-oauth
+  - SRC-t1206-nvd-cursor
+  - SRC-t1206-nvd-dive
+  - SRC-t1206-nvd-forgecode
+  - SRC-t1206-nvd-google-toolbox
+  - SRC-t1206-nvd-zed
+  - SRC-t1206-vscode-config
+  - SRC-vscode-mcp-servers
+  - SRC-zed-secure-default
+sources_cited:
+  - SRC-t1206-attack-t1098-001
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-t1206-copilot-cli
+  - SRC-t1206-foundry-auth
+  - SRC-t1206-ghsa-cursor
+  - SRC-ghsa-dive-66580
+  - SRC-ghsa-zed-68433
+  - SRC-t1206-gtig-ai-threats
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-t1206-mcp-client-registration
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-nvd-cursor
+  - SRC-t1206-nvd-dive
+  - SRC-t1206-nvd-zed
+  - SRC-t1206-vscode-config
+  - SRC-vscode-mcp-servers
+  - SRC-zed-secure-default
+sources_rejected:
+  - source_id: SRC-t1206-nvd-forgecode
+    reason: Deferred NVD record described config execution but did not establish a credential implant or an authoritative fixed version.
+  - source_id: SRC-t1206-nvd-google-toolbox
+    reason: Direct authentication bypass, but no persistent client-config write.
+  - source_id: SRC-t1206-nvd-cloudflare-oauth
+    reason: Conditional credential theft via redirect validation, but no credential implant.
+sources_blocked: []
+conflicts:
+  - issue: Several sources call malicious MCP configuration a persistence primitive even when the immediate mechanism is command execution.
+    resolution: Classified those cases under the synthetic configuration-execution neighbor and retained them only as adjacent or enabling examples.
+  - issue: NVD and CNA CVSS vectors differ for the selected Cursor and Zed vulnerabilities.
+    resolution: Omitted score-dependent reasoning and relied on agreed behavior, affected/fixed ranges, and explicit evidence limitations.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids: [SAF-T1206-C001, SAF-T1206-C005]
+  rationale: >-
+    Authoritative client and protocol sources establish persistent credential
+    selection, and a direct advisory establishes unauthorized MCP-config writes,
+    but no source demonstrates the complete credential implant and later reuse.
+    The end-to-end behavior is therefore an explicit supported inference.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

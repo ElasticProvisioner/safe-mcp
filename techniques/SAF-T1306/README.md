@@ -1,511 +1,240 @@
-# SAF-T1306 Rogue Authentication Server
-
----
+# SAF-T1306: Rogue Authorization Server
 
 ## Overview
 
-**Tactic**: **Credential Access, Defense Evasion**  
-**Technique ID**: **SAF-T1306**  
-**Severity**: **Critical**  
-**First Observed**: **2025-03** (red team simulation of MCP integrated LLM infrastructure)  
-**Last Updated**: **2025-11-08**
+- **Tactic**: Privilege Escalation (ATK-TA0004)
+- **Technique ID**: SAF-T1306
+- **Research Packet**: [research/techniques/SAF-T1306](../../research/techniques/SAF-T1306/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1306/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Research-Derived
+- **Severity**: High
+- **Severity Rationale**: A successful flow can disclose a victim-bound authorization code or token, with consequence bounded by scope, audience, lifetime, sender constraint, and downstream authorization. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 -->
+- **First Observed**: Not observed in an MCP production incident in the authoritative corpus reviewed through 2026-09-01. <!-- SAF-TRACE: claims=SAF-T1306-C009; sources=SRC-mcp-release-2026-07-28,SRC-cisa-kev-2026-09-01,SRC-nvd-cve-2025-10619,SRC-nvd-cve-2025-4143 -->
+- **Last Updated**: 2026-09-01
 
----
+## Scope
+
+This technique covers a multi-authorization-server MCP flow in which a rogue or compromised authorization server causes the client to misassociate an honest server's authorization response and disclose the resulting code or token to the rogue endpoint. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-rfc9700,SRC-rfc9207 -->
+
+### In Scope
+
+- An attacker-controlled authorization server participating in an MCP protected-resource authorization flow. <!-- SAF-TRACE: claims=SAF-T1306-C001,SAF-T1306-C003; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9728,SRC-mcp-sep-2468,SRC-rfc9700 -->
+- Failure to bind the authorization response to the authenticated expected issuer before choosing the token endpoint. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207 -->
+- Immediate theft of an authorization code or access token carrying the victim's delegated privileges. <!-- SAF-TRACE: claims=SAF-T1306-C006,SAF-T1306-C018; sources=SRC-rfc9700,SRC-rfc9207,SRC-mcp-sep-2468 -->
+
+### Out of Scope
+
+- Passive authorization-code interception, wrong-resource token acceptance, and discovery command injection when issuer confusion does not occur. <!-- SAF-TRACE: claims=SAF-T1306-C011,SAF-T1306-C023; sources=SRC-nvd-cve-2025-10619,SRC-rfc9700,SRC-mcp-sep-2468 -->
+- Open-redirect or redirect URI validation weaknesses without authorization-server mix-up. <!-- SAF-TRACE: claims=SAF-T1306-C013,SAF-T1306-C023; sources=SRC-nvd-cve-2025-4143,SRC-rfc9700,SRC-mcp-sep-2468 -->
+- Local modification of an authentication process that does not make the client associate an honest response with a rogue issuer. <!-- SAF-TRACE: claims=SAF-T1306-C017,SAF-T1306-C023; sources=SRC-attack-t1556,SRC-rfc9700,SRC-mcp-sep-2468 -->
+
+### Distinguishing Characteristics
+
+The defining observable is issuer association failure: the expected issuer for a flow differs from, or is required but absent in, the authorization response before code redemption. This separates the technique from [Authorization Code Interception](../SAF-T1507/README.md), [Credential Relay Chain](../SAF-T1304/README.md), and [Metadata Manipulation](../SAF-T1406/README.md). <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C023; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc9700 -->
 
 ## Description
 
-A **Rogue Authentication Server** attack occurs when a malicious or compromised **Model Context Protocol** server redirects OAuth or OpenID Connect flows to an attacker‑controlled Authorization Server. The rogue AS issues tokens that **ignore audience restrictions** and **bypass Proof‑of‑Possession** enforcement, producing overly permissive bearer tokens or **super‑tokens** with expanded scopes and extended lifetimes.
+MCP authorization makes the MCP server an OAuth protected resource, the MCP client an OAuth client, and an authorization server the token issuer. Protected-resource metadata can advertise candidate authorization servers, while RFC 9728 leaves secure appropriateness decisions to the deployment. <!-- SAF-TRACE: claims=SAF-T1306-C001,SAF-T1306-C002; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9728 -->
 
-The attack exploits weak trust boundaries and dynamic discovery in federated identity setups. By poisoning discovery metadata or substituting JWKS keys, an attacker can introduce a shadow issuer whose tokens appear valid to resource servers that rely on signature presence alone and fail to validate `iss`, `aud`, `cnf`, or key origin.
+In the defining attack, at least one honest and one rogue or compromised authorization server are available. The client begins an honest authorization flow but fails to bind the returned response to its validated issuer, then exposes the honest code or token to the rogue server during redemption. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-rfc9700,SRC-rfc9207 -->
 
----
+Current MCP guidance closes this path by recording the validated metadata issuer, comparing the response issuer exactly, rejecting an advertised-but-missing issuer, and aborting mismatches before redemption. The end-to-end MCP technique remains Research-Derived because the reviewed corpus contains protocol remediation and generic OAuth demonstrations, but no direct MCP production event or MCP-specific public reproduction. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C007,SAF-T1306-C009,SAF-T1306-C010; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-fett-oauth-analysis,SRC-mcp-release-2026-07-28,SRC-cisa-kev-2026-09-01,SRC-nvd-cve-2025-10619,SRC-nvd-cve-2025-4143 -->
+
+## Attack Vectors
+
+- **Primary Vector**: A rogue or compromised authorization server participates in a multi-server MCP authorization flow and benefits from missing or incorrect issuer binding. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-rfc9700,SRC-rfc9207 -->
+- **Secondary Vectors**: Untrusted protected-resource metadata can steer server selection, or stale and unauthenticated issuer state can create a false expected baseline. <!-- SAF-TRACE: claims=SAF-T1306-C002,SAF-T1306-C019,SAF-T1306-C021; sources=SRC-rfc9728,SRC-mcp-authorization-2026-07-28 -->
+- **Affected Components**: MCP client authorization state, protected-resource metadata, authorization response processing, and token endpoint selection. <!-- SAF-TRACE: claims=SAF-T1306-C001,SAF-T1306-C004; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9728,SRC-mcp-sep-2468 -->
+- **Trust Boundary Crossed**: The binding between resource discovery, expected authorization-server issuer, returned authorization response, and redemption endpoint. <!-- SAF-TRACE: claims=SAF-T1306-C002,SAF-T1306-C003; sources=SRC-rfc9728,SRC-mcp-sep-2468,SRC-rfc9700 -->
 
 ## Technical Details
 
-**Root Cause**: Overtrust in federated discovery and insufficient PoP enforcement.
-**Primary Violations**:
-
-* **Least Privilege** (excessive scopes)
-* **Fail Safe Defaults** (trusting unknown issuers)
-* **Complete Mediation** (incomplete claim validation)
-
-### Key Takeaways
-
-- **PoP proves key possession not legitimacy**. PoP confirms the client holds a key but does not guarantee the issuer authorized the token claims.
-- **MCP is a trust root**. If an MCP server is rogue or misconfigured, PoP and other protections can be undermined.  
-- **Every hop must validate tokens**. Resource servers must validate issuer, audience, PoP binding, scope, and key origin.  
-- **Treat tokens as untrusted until validated**. Implement strict claim checks and pinned trust anchors.
-
-### Attack Vectors
-
-- **Primary Vector**: OAuth or OIDC redirection to attacker‑controlled AS via manipulated discovery metadata or compromised MCP.  
-- **Secondary Vectors**: poisoned JWKS endpoints, compromised MCP injecting altered `iss`/`aud`/`scope`/`cnf`, open redirect or discovery poisoning in clients.
-
 ### Prerequisites
 
-- MCP or client allows dynamic discovery or accepts unvalidated issuer metadata.  
-- Resource servers do not strictly validate `aud` or PoP (`cnf`) claims.  
-- Attacker can host or influence an AS or JWKS endpoint reachable by clients or MCP.
+- The client can authorize against at least two servers, including a rogue or compromised server. <!-- SAF-TRACE: claims=SAF-T1306-C006; sources=SRC-rfc9700,SRC-rfc9207 -->
+- The client does not maintain an authentic flow-bound expected issuer or does not enforce exact issuer validation before redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207 -->
+- The returned code or token remains usable under its scope, audience, lifetime, client type, and sender constraints. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 -->
 
 ### Attack Flow
 
-#### Sequence Diagram
+1. **Setup**: The adversary controls or compromises one authorization server reachable in a multi-server MCP environment. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-rfc9700 -->
+2. **Selection**: The client accepts the server as a candidate through discovery or configuration without a trustworthy appropriateness decision. <!-- SAF-TRACE: claims=SAF-T1306-C001,SAF-T1306-C002; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9728 -->
+3. **Authorization**: The victim authorizes at an honest server, which returns an authorization response for that honest issuer. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-rfc9700,SRC-rfc9207 -->
+4. **Boundary Crossing**: The client fails to compare the response issuer with the flow-bound expected issuer, or accepts a required issuer as missing. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207 -->
+5. **Objective**: The client sends the honest code or token to the rogue authorization server, exposing delegated credentials. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C006,SAF-T1306-C018; sources=SRC-mcp-sep-2468,SRC-rfc9700,SRC-rfc9207 -->
+6. **Follow-On**: If the credential remains usable, the adversary can exercise its bounded permissions against the intended resource. <!-- SAF-TRACE: claims=SAF-T1306-C016,SAF-T1306-C018,SAF-T1306-C024; sources=SRC-mitre-t1528,SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 -->
 
-```mermaid
-%% SAF-T1306: Rogue Authentication Server - Sequence + Flow
-%% Sequence diagram shows the attack steps.
-sequenceDiagram
-    autonumber
-    participant C as Client (legit)
-    participant MCP as MCP Server (compromised)
-    participant RA as Rogue AS (attacker-controlled)
-    participant RS as Resource Server (model/API)
-    participant AT as Attacker (controls RA)
+### Example Scenario
 
-    Note over C,MCP: 1. Client starts OAuth/OIDC flow via MCP
-    C->>MCP: Authorization request (redirect / discovery)
-    Note over MCP,RA: 2. MCP redirects/discovers attacker AS (malicious .well-known)
-    MCP-->>RA: Discovery / redirect
-    RA->>C: Authorization code / token endpoint (attacker issues super-token)
-    Note over RA: 3. RA mints "super-token" (broad scope, long exp, missing/invalid cnf)
-    C->>RS: Call resource with token (no valid PoP)
-    Note over RS: 4. RS verifies signature (trusted KID) -> ACCEPTS token
-    Note over RS: 4b. RS fails to validate aud/cnf/scope strictly
-    RS-->>AT: Resource returns sensitive data / admin action performed
-    Note over AT: 5. Attacker uses rogue AS + tokens to access/pivot
-```
+An MCP client records `https://auth.good.example.invalid` as the expected issuer, then receives `iss=https://auth.rogue.example.invalid`. A conforming client rejects the mismatch and emits a fatal issuer-validation event before sending any code; a vulnerable client that skips that check could choose the rogue endpoint for redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005,SAF-T1306-C008; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207,SRC-mcp-ts-auth-errors -->
 
+## Evidence and Current State
 
-1. **Reconnaissance** — Attacker identifies MCPs and services that perform dynamic discovery or accept external issuer metadata.  
-2. **Compromise or Discovery Poisoning** — Attacker compromises MCP or injects malicious discovery metadata pointing to rogue AS and JWKS.  
-3. **Token Issuance** — Rogue AS issues tokens with expanded scopes, extended `exp`, or missing/invalid PoP binding.  
-4. **Acceptance by Resources** — Resource servers validate signature against attacker JWKS or accept tokens without strict `aud`/`cnf` checks.  
-5. **Post Exploitation** — Attacker uses tokens for lateral access, data exfiltration, impersonation, or persistence until trust anchors are rotated.
+### Evidence Summary
 
-### Synthetic Example Token for Defensive Analysis
+| Claim ID | Claim | Evidence Status | Source and Limitation |
+| --- | --- | --- | --- |
+| SAF-T1306-C001 | MCP roles and discovery expose a multi-server authorization boundary. | Research-Derived | SRC-mcp-authorization-2026-07-28 and SRC-rfc9728; role definitions alone do not establish exploitation. |
+| SAF-T1306-C002 | Server appropriateness requires a secure deployment decision. | Research-Derived | SRC-rfc9728; this is a trust-boundary statement, not an incident. |
+| SAF-T1306-C003 | Missing issuer binding can expose an honest credential to a rogue server. | Research-Derived | SRC-mcp-sep-2468 and SRC-rfc9700; MCP production exploitation is not established. |
+| SAF-T1306-C004 | Current MCP requires exact response-issuer validation and rejection. | Research-Derived | SRC-mcp-authorization-2026-07-28 and SRC-mcp-sep-2468; legacy compatibility retains a blind spot. |
+| SAF-T1306-C005 | OAuth issuer values require exact string comparison. | Research-Derived | SRC-rfc8414 and SRC-rfc9207; an authentic baseline is still required. |
+| SAF-T1306-C006 | Generic OAuth mix-up prerequisites and objective are standardized. | Demonstrated | SRC-rfc9700 and SRC-rfc9207; they are not MCP incident reports. |
+| SAF-T1306-C007 | OAuth implementation research reproduced the generic mix-up. | Demonstrated | SRC-fett-oauth-analysis; the work predates MCP. |
+| SAF-T1306-C008 | MCP SDK documentation defines fatal issuer-mismatch telemetry. | Research-Derived | SRC-mcp-ts-auth-errors; deployment logging is not guaranteed. |
+| SAF-T1306-C009 | No direct MCP production event appeared in the reviewed corpus. | Research-Derived | SRC-mcp-release-2026-07-28, SRC-cisa-kev-2026-09-01, and two NVD records; corpus-bounded only. |
+| SAF-T1306-C010 | The July 2026 MCP update closed the protocol hole. | Research-Derived | SRC-mcp-release-2026-07-28 and SRC-mcp-sep-2468; remediation is not exploitation evidence. |
+| SAF-T1306-C011 | CVE-2025-10619 is a discovery command-injection vulnerability. | Demonstrated | SRC-nvd-cve-2025-10619; adjacent, not issuer mix-up. |
+| SAF-T1306-C012 | Actors redirected TACACS+ activity to controlled infrastructure. | Observed | SRC-cisa-aa25-239a; non-MCP historical analogy. |
+| SAF-T1306-C013 | CVE-2025-4143 is a redirect validation weakness. | Research-Derived | SRC-nvd-cve-2025-4143; adjacent and exact fixed version omitted. |
+| SAF-T1306-C014 | Neither adjacent CVE is in the dated KEV snapshot. | Research-Derived | SRC-cisa-kev-2026-09-01; non-listing is nondispositive. |
+| SAF-T1306-C015 | Unexpected authorization-server address monitoring is a historical detection pattern. | Research-Derived | SRC-cisco-security-warnings and SRC-cisa-aa25-239a; technology differs. |
+| SAF-T1306-C016 | ATT&CK token theft directly matches the immediate objective. | Research-Derived | SRC-mitre-t1528; ATT&CK does not specify MCP mix-up. |
+| SAF-T1306-C017 | Authentication-process modification is only analogous. | Research-Derived | SRC-attack-t1556; local modification is not required here. |
+| SAF-T1306-C018 | Credential disclosure creates conditional high confidentiality and integrity risk. | Research-Derived | SRC-rfc9700 and SRC-mcp-sep-2468; impact is token-bound. |
+| SAF-T1306-C019 | Authentic baselines, allowlisting, issuer binding, and rejection prevent the mechanism. | Research-Derived | SRC-mcp-authorization-2026-07-28 and SRC-rfc9728; baseline integrity remains essential. |
+| SAF-T1306-C020 | Response requires abort, preservation, exposure assessment, and conditional revocation. | Research-Derived | SRC-rfc9207 and SRC-mcp-ts-auth-errors; revocation depends on exposure. |
+| SAF-T1306-C021 | Legitimate issuer migration can produce benign mismatch. | Research-Derived | SRC-rfc9728; refresh must remain authenticated. |
+| SAF-T1306-C022 | Mismatch analytics have legacy and poisoned-baseline blind spots. | Research-Derived | SRC-mcp-authorization-2026-07-28 and SRC-mcp-ts-auth-errors; fields need normalization. |
+| SAF-T1306-C023 | Issuer association distinguishes the technique from its neighbors. | Research-Derived | SRC-rfc9700 and SRC-mcp-sep-2468; canonical framework relationships were reconciled after freeze. |
+| SAF-T1306-C024 | Scope and audience controls reduce impact but do not replace issuer binding. | Research-Derived | SRC-mcp-authorization-2026-07-28; consequence reduction is not prevention. |
 
-```json
-{
-  "iss": "https://rogue-as.attacker.example",
-  "aud": "https://mcp.api.service",
-  "scope": "read:all write:all admin",
-  "cnf": { "jkt": null },
-  "exp": 1700000000
-}
-```
+### Current State
 
-**Note**: This example is synthetic and redacted for defensive analysis only. `cnf.jkt` set to `null` illustrates missing PoP binding.
+- **Affected Environments**: MCP clients supporting multiple authorization servers are exposed when they lack a trustworthy expected-issuer baseline or do not validate the response issuer before redemption. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C004,SAF-T1306-C006; sources=SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28,SRC-rfc9700,SRC-rfc9207 -->
+- **Known Exploitation**: The reviewed authoritative corpus contains generic OAuth implementation demonstrations and non-MCP production analogies, but no qualifying direct MCP production event. <!-- SAF-TRACE: claims=SAF-T1306-C007,SAF-T1306-C009,SAF-T1306-C012; sources=SRC-fett-oauth-analysis,SRC-mcp-release-2026-07-28,SRC-cisa-kev-2026-09-01,SRC-nvd-cve-2025-10619,SRC-nvd-cve-2025-4143,SRC-cisa-aa25-239a -->
+- **Available Protections**: The current MCP issuer-validation matrix, exact issuer comparison, trusted authorization-server policy, least-privilege scopes, and token audience restriction constrain the path and consequences. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005,SAF-T1306-C019,SAF-T1306-C024; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207,SRC-rfc9728 -->
+- **Residual Risk**: Poisoned baselines, legacy no-issuer compatibility, missing telemetry, or unsafe administrative migration can preserve blind spots. <!-- SAF-TRACE: claims=SAF-T1306-C021,SAF-T1306-C022; sources=SRC-rfc9728,SRC-mcp-authorization-2026-07-28,SRC-mcp-ts-auth-errors -->
 
----
+### Known Breaches and Vulnerabilities
 
-## Advanced Techniques and Current Status
-
-**Advanced variations** include key substitution where a rogue JWKS returns attacker keys, PoP null binding where `cnf` is omitted or falsified, and discovery poisoning that redirects clients to malicious metadata. Industry mitigations emphasize issuer pinning, static JWKS trust lists, PoP enforcement with hardware‑backed keys, and strict audience validation. OAuth security best practices recommend minimizing dynamic trust and enforcing sender‑constrained tokens.
-
----
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| July 2026 MCP authorization update | 2026-07-28; multi-server MCP authorization | Issuer binding closes code or token disclosure path. | Direct protocol vulnerability and remediation. | No exploitation reported. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C004,SAF-T1306-C010; sources=SRC-mcp-release-2026-07-28,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28,SRC-rfc9700 --> |
+| OAuth IdP mix-up implementation study | 2016; OAuth and OpenID Connect implementations | Demonstrated code disclosure; bind and compare issuer identity. | Historical direct demonstration of the generic mechanism. | Predates and does not test MCP. <!-- SAF-TRACE: claims=SAF-T1306-C007; sources=SRC-fett-oauth-analysis --> |
+| AA25-239A actor-controlled TACACS+ server | 2025; network infrastructure | Captured administrator authentication attempts; remove unexpected servers and restrict flows. | Observed historical authorization-infrastructure analogy. | Neither OAuth nor MCP. <!-- SAF-TRACE: claims=SAF-T1306-C012,SAF-T1306-C015; sources=SRC-cisa-aa25-239a,SRC-cisco-security-warnings --> |
+| CVE-2025-10619 | 2025; sequa-mcp through 1.0.13 | Discovery input can lead to OS command execution; fixed in 1.0.14. | Adjacent discovery vulnerability. | Command injection, not issuer confusion; public proof of concept does not establish production exploitation. <!-- SAF-TRACE: claims=SAF-T1306-C011,SAF-T1306-C014; sources=SRC-nvd-cve-2025-10619,SRC-cisa-kev-2026-09-01 --> |
 
 ## Impact Assessment
 
-- **Confidentiality**: **High** — unauthorized access to LLM contexts, datasets, and secrets.  
-- **Integrity**: **High** — attacker can impersonate users or services and manipulate AI outputs.  
-- **Availability**: **Medium** — abuse can cause throttling, resource exhaustion, or service disruption.  
-- **Scope**: **Network wide** — affects any service trusting the compromised token issuance chain.
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | A usable stolen credential can expose resources within its delegated scope and audience. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 --> |
+| Integrity | High | The attacker can act with permissions carried by the credential when downstream authorization permits writes. <!-- SAF-TRACE: claims=SAF-T1306-C016,SAF-T1306-C018; sources=SRC-mitre-t1528,SRC-rfc9700,SRC-mcp-sep-2468 --> |
+| Availability | Low | Disruption is normally a follow-on consequence rather than the defining objective. <!-- SAF-TRACE: claims=SAF-T1306-C018; sources=SRC-rfc9700,SRC-mcp-sep-2468 --> |
+| Scope | Multi-System | Client, authorization server, and protected resource can be affected, but token scope, audience, lifetime, and sender constraints limit blast radius. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 --> |
 
----
+### Severity Conditions
+
+- **Severity increases when**: tokens have broad scopes, long lifetimes, weak audience restriction, no sender constraint, and access to high-value resources. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 -->
+- **Severity decreases when**: scopes are minimal, tokens are audience-bound and short-lived, downstream approvals constrain action, and issuer mismatch is rejected before redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C019,SAF-T1306-C024; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc9728 -->
 
 ## Detection Methods
 
-### Indicators of Compromise
+### Required Telemetry
 
-- Tokens issued by unknown or unexpected `iss` values.  
-- JWKS `kid` values not matching registered keys.  
-- Tokens missing or containing null `cnf` claims where PoP is expected.  
-- Tokens with unusually broad scopes such as `admin` or wildcard scopes.  
-- Sudden token issuance spikes from nonstandard AS endpoints.
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP client authorization validation | Metadata validation, authorization-response validation, and rejection | timestamp, session_id, resource_uri, expected_issuer, received_issuer, authorization_response_iss_parameter_supported, issuer_match, outcome, error_code, validation_kind, token_endpoint | Preserve a flow-bound expected issuer and emit a fatal event before redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C008,SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-mcp-ts-auth-errors --> |
+| Configuration and network audit | Authorization-server metadata change and outbound token-endpoint connection | change actor, prior and new issuer, approval, destination, session_id, timestamp | Correlate changes and unexpected destinations; treat cross-technology AAA guidance only as historical tuning evidence. <!-- SAF-TRACE: claims=SAF-T1306-C015,SAF-T1306-C019,SAF-T1306-C021; sources=SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-mcp-authorization-2026-07-28,SRC-rfc9728 --> |
 
-### Detection Rule Example
+### Indicators of Compromise (IoCs)
 
-```yaml
-title: SAF-T1306 Rogue Authentication Server Detection Pack
-id: 8b4db9e8-9a8d-4cf0-9f0d-5b7c6c91a2b2
-description: >
-  Comprehensive detection coverage for malicious MCP servers or rogue authorization servers 
-  minting overly-permissive tokens or bypassing Proof of Possession (PoP). 
-  Detects discovery poisoning, key substitution, super-token issuance, and PoP bypass.
-
-status: experimental
-author: ryjen (RJ)
-date: 2025/11/08
-references:
-  - https://portswigger.net/research/hidden-oauth-attack-vectors
-  - https://learn.microsoft.com/en-us/entra/msal/dotnet/advanced/proof-of-possession-tokens
-  - https://www.usenix.org/system/files/conference/usenixsecurity25/sec24winter-prepub-332-luo.pdf
-  - https://modelcontextprotocol.io/specification
-  - https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1415
-  - https://www.usenix.org/conference/usenixsecurity15/technical-sessions/presentation/mladenov
-  - https://lirias.kuleuven.be/server/api/core/bitstreams/6a50c462-5fbe-4481-bf85-0873cc430c61/content
-
-logsource:
-  category: authentication
-  product: mcp
-  service: oauth2
-
-tags:
-  - attack.defense-evasion
-  - attack.credential-access
-  - safe.t1306
-  - owasp.a02.2023-cryptographic-failures
-
----
-title: Suspicious OAuth Issuer or Discovery Endpoint Change
-id: 930b6b7d-1de4-49b8-b857-1b2eac1b2383
-description: Detects when MCP or OAuth client interacts with a new or unexpected issuer/discovery URL.
-logsource:
-  product: mcp
-  service: discovery
-detection:
-  selection:
-    event.action: [ "discovery.fetch", "openid.configuration", "jwks.fetch" ]
-    issuer.url:
-      - not_in: trusted_issuer_list
-  condition: selection
-level: high
-falsepositives:
-  - Legitimate onboarding of new AS
-  - Development environment
-fields:
-  - issuer.url
-  - kid
-  - jwks_uri
-
----
-title: New JWKS Key ID Detected
-id: 62f91ac7-4d5d-4a56-9b2f-0a94e7fbe89f
-description: Detects use of new or unknown Key ID (kid) in token verification, which may indicate key substitution.
-logsource:
-  product: resource_server
-  service: oauth2
-detection:
-  selection:
-    event.action: "token.signature.valid"
-    token.kid:
-      - not_in: trusted_kid_list
-  condition: selection
-level: high
-fields:
-  - kid
-  - iss
-  - aud
-
----
-title: Token Missing Proof of Possession (PoP)
-id: 55b3c14e-2f1e-4d8e-87a8-4b8d1b73e332
-description: Detects tokens missing cnf/jkt binding when PoP is required.
-logsource:
-  product: resource_server
-detection:
-  selection:
-    event.action: "token.validated"
-    token.cnf.jkt: [ null, "", "undefined" ]
-  filter:
-    config.pop_required: true
-  condition: selection and filter
-level: high
-falsepositives:
-  - Non-interactive service accounts using bearer-only tokens
-fields:
-  - iss
-  - aud
-  - cnf
-  - kid
-
----
-title: Super-Token Issued With Overly Broad Scope
-id: 4a94c222-bb76-4f8a-9874-43182c449b4c
-description: Detects tokens issued with excessive or wildcard scopes that may indicate rogue AS or privilege escalation.
-logsource:
-  product: authorization_server
-detection:
-  selection:
-    event.action: "token.issued"
-    token.scope|contains:
-      - "admin"
-      - "*:*"
-      - "system.*"
-      - "root"
-  condition: selection
-level: high
-falsepositives:
-  - Maintenance or break-glass accounts
-fields:
-  - client_id
-  - scope
-  - iss
-  - aud
-
----
-title: Abnormal Audience or Scope Combination
-id: b2eae722-662d-4dc9-9df1-824aaf6a8b24
-description: Detects tokens where audience or scope do not match expected client configuration.
-logsource:
-  product: resource_server
-detection:
-  selection:
-    event.action: "token.validated"
-    aud: 
-      - not_in: expected_audiences
-    token.scope|contains: "admin"
-  condition: selection
-level: medium
-
----
-title: Token Replay Without PoP Binding
-id: 1e1e8a13-dc2d-41c1-8ec2-2ce0f51c8240
-description: Detects reuse of same token `jti` or signature hash from multiple source IPs or devices without valid PoP.
-logsource:
-  category: authentication
-  product: resource_server
-detection:
-  selection:
-    event.action: "token.used"
-    token.jti|count_distinct_src_ip: ">1"
-  filter:
-    token.cnf.jkt: [ null, "", "undefined" ]
-  condition: selection and filter
-level: critical
-fields:
-  - jti
-  - cnf
-  - src_ip
-  - device_id
-
----
-title: Unusual Token Lifetime or Expiry
-id: 7c8d88a5-9bfa-4f61-bf2d-d46874a598df
-description: Detects tokens issued with unusually long expiration times.
-logsource:
-  product: authorization_server
-detection:
-  selection:
-    event.action: "token.issued"
-    token.exp - token.iat: ">3600" # > 1 hour
-  condition: selection
-level: medium
-
----
-title: Sudden Surge in Discovery or JWKS Requests
-id: 0f21a145-9441-4db2-9b70-22d91f85b1a9
-description: May indicate automated scanning or rogue MCP performing discovery enumeration.
-logsource:
-  product: mcp
-  service: discovery
-detection:
-  selection:
-    event.action: [ "openid.configuration", "jwks.fetch" ]
-    count_per_minute: ">50"
-  condition: selection
-level: medium
-falsepositives:
-  - Cluster restart or cache warm-up
----
-```
-
-### SIEM Query Examples and Thresholds
-
-#### Splunk SPL
-
-```spl
-index=auth_logs jwt.iss=* OR jwt.cnf.jkt=* 
-| stats count by jwt.iss, jwt.kid, jwt.scope 
-| where jwt.iss NOT IN ("https://trusted-issuer.example") OR count > 5
-```
-
-#### Elastic KQL
-
-```kql
-event.dataset:auth and (jwt.iss : "*" or jwt.cnf.jkt : "*") 
-| group by jwt.iss, jwt.kid, jwt.scope 
-| filter count > 5
-```
-
-**Alert Threshold**: more than 5 tokens from unknown `iss` within 10 minutes triggers high severity alert.
+- No durable universal IoC is known; issuer URLs and token endpoints are deployment-specific and attacker-controlled values must not be displayed without sanitization. <!-- SAF-TRACE: claims=SAF-T1306-C008,SAF-T1306-C022; sources=SRC-mcp-ts-auth-errors,SRC-mcp-authorization-2026-07-28 -->
 
 ### Behavioral Indicators
 
-- Cross service reuse of the same token without corresponding consent or re authentication.  
-- New or foreign AS domains appearing in auth logs.  
-- Rapid privilege escalation events tied to recently issued tokens.
+- A fatal authorization-response or metadata `issuer_mismatch` event with different expected and received issuer values. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C008; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-ts-auth-errors -->
+- A missing response issuer when issuer support was advertised, followed by a rejected authorization flow. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468 -->
+- An unexpected authorization-server baseline change correlated with an outbound token-endpoint connection raises confidence, while an approved migration lowers it. <!-- SAF-TRACE: claims=SAF-T1306-C015,SAF-T1306-C019,SAF-T1306-C021; sources=SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-mcp-authorization-2026-07-28,SRC-rfc9728 -->
 
----
+### Detection Analytic
+
+The standalone example analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Detect exact issuer mismatch, a derived mismatch flag, or an advertised-but-missing issuer before credential redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C008,SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-mcp-ts-auth-errors -->
+- **Rule Status**: Experimental. <!-- SAF-TRACE: claims=SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-ts-auth-errors -->
+- **Detection Logic**: Alert on fatal issuer validation errors, `issuer_match=false`, or required issuer absence; exact string matching is intentional. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005,SAF-T1306-C008,SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207,SRC-mcp-ts-auth-errors -->
+- **Correlation Window**: One authorization session from protected-resource metadata resolution through code redemption. <!-- SAF-TRACE: claims=SAF-T1306-C003,SAF-T1306-C004; sources=SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+- **Known False Positives**: Approved authorization-server migration with stale local state can produce a benign mismatch but must still be rejected until the expected issuer is refreshed authentically. <!-- SAF-TRACE: claims=SAF-T1306-C021; sources=SRC-rfc9728 -->
+- **Known Limitations**: The analytic misses poisoned expected-issuer baselines, environments without normalized issuer fields, and legacy responses where support is neither advertised nor returned. <!-- SAF-TRACE: claims=SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-ts-auth-errors -->
+- **Tuning Guidance**: Normalize issuer strings without changing their value, retain approved issuer history, correlate resource and token endpoint, and suppress only verified maintenance windows. <!-- SAF-TRACE: claims=SAF-T1306-C005,SAF-T1306-C015,SAF-T1306-C019,SAF-T1306-C021; sources=SRC-rfc8414,SRC-rfc9207,SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-mcp-authorization-2026-07-28,SRC-rfc9728 -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](../../tests/SAF-T1306/test-logs.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1306/test_detection_rule.py)
+- **Expected Result**: Nine synthetic cases pass, including five alerts, four negatives, and one documented maintenance false positive. <!-- SAF-TRACE: claims=SAF-T1306-C021,SAF-T1306-C022; sources=SRC-rfc9728,SRC-mcp-authorization-2026-07-28,SRC-mcp-ts-auth-errors -->
+- **Last Validated**: [2026-09-01 result](../../research/techniques/SAF-T1306/validation/detection-test.txt)
+- **Feasibility Waiver**: [None; strict quality review](../../research/techniques/SAF-T1306/quality-review.yml)
 
 ## Mitigation Strategies
 
-Apply *Defense in Depth* by combining cryptographic binding (PoP), static trust anchors, attestation, and layered validation.
-
-### Flowchart
-
-```mermaid
-%% Flowchart overlay showing mitigations
-flowchart LR
-    subgraph Attack
-        A1[MCP dynamic discovery] --> A2[Rogue AS returns JWKS]
-        A2 --> A3[Super-token minted]
-        A3 --> A4[Client uses token -> Resource Server]
-        A4 --> A5[Resource validates signature only -> grants access]
-    end
-
-    subgraph Mitigations
-        M1[Issuer pinning / static trusted_issuers]
-        M2[JWKS integrity & pinned keys]
-        M3[PoP enforcement cnf binding]
-        M4[HTTP Message Signing RFC9421]
-        M5[Strict aud/scope checks & short token lifetimes]
-        M6[Token audit logging & behavioral analytics]
-    end
-
-    A1 --- M1
-    A2 --- M2
-    A3 --- M5
-    A4 --- M3
-    A4 --- M4
-    A5 --- M6
-
-    classDef mitig fill:#e6ffed,stroke:#2b7a2b;
-    class M1,M2,M3,M4,M5,M6 mitig
-```
-
 ### Preventive Controls
 
-- **HTTP Message Signing - MCP Client Authentication** - require that all MCP clients authenticate each request using HTTP Message Signatures per RFC 9421 (as proposed in MCP SEP-1415). This adds strong cryptographic binding of client identity, prevents replay of stolen bearer tokens, and requires possession of a client private key for request submission.
-- **Strict Token Claim Validation** - Validate iss, aud, exp, nbf, scope, and cnf on every request (Complete Mediation). Reject tokens not matching expected audience or missing PoP binding.
-- **Issuer Pinning / Static Trust Anchors** — Accept tokens only from statically configured `iss` values.  Reject dynamic/discovery redirection unless issuer is pre-approved. Prevents initial spoof.
-- **JWKS Integrity Validation** — Cache and validate JWKS metadata; prefer signed metadata or pinned keys.  
-- **PoP Enforcement** — Require PoP tokens (RFC 7800 / DPoP patterns) for sensitive APIs. Mitigates token re-use and forces possession of client private key
-- **Authorization Code with PKCE** — Use authorization code flow with PKCE for public clients and avoid implicit flows.  
-- **Least Privilege Scopes** — Issue minimal scopes and enforce scope checks at resource APIs.  
-- **Attestation and Signed Metadata** — Operate MCP servers under attestation or secure enclave guarantees and use signed metadata.  
-- **Rotation and Revocation** — Support key rotation and token revocation to mitigate damage if an MCP server or signing key is compromised.
+1. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md)**: Store an authentic expected issuer per authorization session, require exact response matching, and reject before code redemption. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005,SAF-T1306-C019; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207 -->
+2. **[SAF-M-14: Server Allowlisting](../../mitigations/SAF-M-14/README.md)**: Authenticate discovery metadata and allow only approved authorization servers for each protected resource. <!-- SAF-TRACE: claims=SAF-T1306-C002,SAF-T1306-C019; sources=SRC-rfc9728,SRC-mcp-authorization-2026-07-28 -->
+3. **Least Privilege and Audience Binding**: Request minimal scopes and enforce audience-bound tokens to reduce consequences without treating these controls as issuer-binding substitutes. <!-- SAF-TRACE: claims=SAF-T1306-C024; sources=SRC-mcp-authorization-2026-07-28 -->
 
 ### Detective Controls
 
-- **Token Audit Logging** — Record issuer, audience, scope, `kid`, and `cnf` for all tokens.  
-- **Behavioral Analytics** — Use ML based monitoring to detect anomalous issuer usage, scope inflation, or cross service token reuse.  
-- **JWKS Monitoring** — Alert on unexpected key rotations or JWKS endpoint changes.
-- **Key Transparency & Auditing** — Maintain a trusted public key registry or audited JWKS for valid MCP issuers.
+1. **[SAF-M-18: OAuth Flow Monitoring](../../mitigations/SAF-M-18/README.md)**: Emit and retain flow-correlated issuer validation, configuration change, and token-endpoint events. <!-- SAF-TRACE: claims=SAF-T1306-C008,SAF-T1306-C015,SAF-T1306-C022; sources=SRC-mcp-ts-auth-errors,SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-mcp-authorization-2026-07-28 -->
+2. **Approved-Issuer Drift Review**: Alert on unexpected baseline changes and distinguish authenticated migrations from unapproved issuer changes. <!-- SAF-TRACE: claims=SAF-T1306-C015,SAF-T1306-C019,SAF-T1306-C021; sources=SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-mcp-authorization-2026-07-28,SRC-rfc9728 -->
 
 ### Response Procedures
 
 #### Immediate Actions
 
-- Revoke tokens issued by the rogue AS and block the rogue AS domain.  
-- Rotate signing keys and clear JWKS caches.
+- Abort the authorization flow and prevent code or token delivery to the mismatched endpoint. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C020; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9207,SRC-mcp-ts-auth-errors -->
+- If telemetry shows credential exposure, revoke or rotate the affected credential and constrain the associated session. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C020; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-rfc9207,SRC-mcp-ts-auth-errors -->
 
 #### Investigation Steps
 
-- Correlate auth logs to identify affected principals and services.  
-- Trace token issuance and usage patterns to scope impact.
+- Preserve discovery metadata, expected and received issuer values, redirects, validation outcomes, and token-endpoint connections under a shared session identifier. <!-- SAF-TRACE: claims=SAF-T1306-C008,SAF-T1306-C015,SAF-T1306-C020,SAF-T1306-C022; sources=SRC-mcp-ts-auth-errors,SRC-cisco-security-warnings,SRC-cisa-aa25-239a,SRC-rfc9207,SRC-mcp-authorization-2026-07-28 -->
+- Determine whether the expected baseline was poisoned, whether any code reached an untrusted endpoint, and which scopes and audience were exposed. <!-- SAF-TRACE: claims=SAF-T1306-C018,SAF-T1306-C019,SAF-T1306-C020,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28,SRC-rfc9728,SRC-rfc9207,SRC-mcp-ts-auth-errors -->
 
 #### Remediation
 
-- Implement issuer pinning and disable dynamic discovery where possible.  
-- Harden MCP configurations to prevent discovery poisoning and enforce strict redirect URI whitelisting.
-
----
-
-## Operational Guidance
-
-### Proof of Possession Operational Checklist
-
-- **Expected `cnf` formats**: `cnf` may include `jkt` (JWK thumbprint), `x5t#S256` (certificate thumbprint), or `kid` referencing a known key.  
-- **Verification steps**: verify `cnf` presence, validate `jkt` or `x5t#S256` against stored public key, require request signature or mTLS channel binding, reject tokens missing PoP when policy requires it.  
-- **Key storage**: store PoP private keys in hardware backed stores such as TPM or HSM, avoid exporting private keys.  
-- **Failure modes**: missing `cnf`, mismatched thumbprint, expired PoP key, or signature verification failure must result in token rejection and logging.
-
-### HTTP Message Signing
-
-- Improves proof of possession (PoP) of a key by requiring each HTTP request from the client to be signed with the client’s private key (and the public key is previously shared).
-
-- It strengthens session binding: the signed request ties the request to an authenticated client session (timestamp, session id etc) so that the attacker cannot simply replay a bearer token.
-
-- It adds request integrity and tamper protection: the body, method, target URI and other headers form part of the signature base string. That means a rogue issuer cannot easily forge legitimate signed requests without the client’s private key.
-
-- It raises the bar for token misuse: even if a “super-token” is issued, the resource server (or MCP server) can require signed requests by the client instance in order to act. That way issuance alone isn’t sufficient.
-
-- It **does not** prevent the initial issuance of an overly-permissive token by a rogue authorization server, or the need for validation on token permissions
-
-### JWKS Hardening
-
-- **Pin keys** for critical issuers and maintain a signed registry for key updates.  
-- **Cache JWKS** and apply short TTLs with validation on rotation events.  
-- **Validate `kid`** against pinned keys and alert on unexpected `kid` values.  
-- **Require signed metadata** for discovery where possible.
-
-### Test Cases and Acceptance Criteria
-
-- **Test 1**: Token from unpinned issuer must be rejected with 401 and log `jwt.iss` mismatch.  
-- **Test 2**: Token missing `cnf` when PoP required must be rejected and logged.  
-- **Test 3**: JWKS rotation from unknown `kid` must trigger alert and require manual approval before acceptance.  
-- **Test 4**: Redirect URI wildcard attempts must be rejected and logged.  
-- **Acceptance Criteria**: All tests must pass in staging before deployment to production.
-
-### Incident Playbook Skeleton
-
-1. **Detect** — Trigger alert for unknown `iss` or missing `cnf`.  
-2. **Contain** — Block rogue AS domain and disable affected MCP endpoints.  
-3. **Collect** — Preserve auth logs, JWKS responses, and token samples.  
-4. **Eradicate** — Revoke tokens, rotate keys, and remove rogue discovery metadata.  
-5. **Recover** — Reissue tokens, restore pinned trust anchors, and validate service access.  
-6. **Review** — Conduct post incident review, update detection rules, and apply configuration hardening.
-
-### Integration with Lifecycle Phases
-
-| Phase              | Application                                                                |
-| ------------------ | -------------------------------------------------------------------------- |
-| **Requirements**   | Define token trust boundaries and issuer policies explicitly.              |
-| **Design**         | Architect PoP enforcement and JWKS validation layers.                      |
-| **Implementation** | Harden libraries (avoid auto-discovery, validate claims fully).            |
-| **Testing**        | Include unit and integration tests for token validation and issuer checks. |
-| **Deployment**     | Configure key rotation and issuer lists via secure CI/CD.                  |
-| **Maintenance**    | Continuously monitor for new token substitution exploits.                  |
-
----
+- Restore an authenticated issuer baseline, remove unapproved authorization servers, and enforce exact issuer validation before retrying. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C005,SAF-T1306-C019; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc8414,SRC-rfc9207,SRC-rfc9728 -->
+- Add regression coverage for exact mismatch, required issuer absence, legacy compatibility, and approved migration handling. <!-- SAF-TRACE: claims=SAF-T1306-C004,SAF-T1306-C021,SAF-T1306-C022; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-sep-2468,SRC-rfc9728,SRC-mcp-ts-auth-errors -->
 
 ## Related Techniques
 
-- **SAF-T1307** JWKS Key Substitution Attack — key substitution and signing key abuse.  
-- **SAF-T1308** Proof of Possession Null Binding — PoP omission or falsification.  
-- **SAF-T1204** Open Redirect Exploitation — redirect abuse enabling flow manipulation.
-
----
-
-## References
-
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)  
-- [OWASP Top 10 for Large Language Model Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)  
-- [OAuth 2.0 Security Best Current Practice RFC 9126](https://datatracker.ietf.org/doc/html/rfc9126)  
-- [On the Security of Modern SSO Protocols Second Order Vulnerabilities](https://arxiv.org/abs/1508.04324)  
-- [Exploiting and Securing OAuth 2.0 in Integration Platforms USENIX Security preprint](https://www.usenix.org/system/files/conference/usenixsecurity25/sec24winter-prepub-332-luo.pdf)
-- [HTTP Message Signatures](https://datatracker.ietf.org/doc/rfc9421/)
-- [HTTP Message Signatures for MCP](https://github.com/modelcontextprotocol/modelcontextprotocol/issues/1415)
-- [Auth0 Blog Critical Vulnerabilities in JSON Web Token Libraries](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/)  
-- [Auth0 Blog Five Myths About JWTs Debunked](https://auth0.com/blog/five-myths-about-jwts-debunked/)  
-- [Proof of Possession tokens Microsoft Authentication](https://learn.microsoft.com/en-us/entra/msal/dotnet/advanced/proof-of-possession-tokens)  
-- [Signing key rollover Microsoft Identity Platform](https://learn.microsoft.com/en-us/entra/identity-platform/signing-key-rollover)  
-- [Access tokens Microsoft Identity Platform](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens)  
-- [Hidden OAuth attack vectors PortSwigger Research](https://portswigger.net/research/hidden-oauth-attack-vectors)
-
----
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1507: Authorization Code Interception](../SAF-T1507/README.md) | Alternative | Interception captures a code in transit; this technique makes the client deliver it to a rogue server through issuer confusion. <!-- SAF-TRACE: claims=SAF-T1306-C023; sources=SRC-rfc9700,SRC-mcp-sep-2468 --> |
+| [SAF-T1304: Credential Relay Chain](../SAF-T1304/README.md) | Follow-On or Alternative | Credential relay accepts delegated authority across an unintended hop or resource; this technique discloses a credential during authorization-server selection or redemption. <!-- SAF-TRACE: claims=SAF-T1306-C023,SAF-T1306-C024; sources=SRC-rfc9700,SRC-mcp-sep-2468,SRC-mcp-authorization-2026-07-28 --> |
+| [SAF-T1406: Metadata Manipulation](../SAF-T1406/README.md) | Possible Prerequisite | Metadata manipulation can deliver a rogue candidate, but this technique requires the separate issuer-association failure and credential disclosure. <!-- SAF-TRACE: claims=SAF-T1306-C002,SAF-T1306-C023; sources=SRC-rfc9728,SRC-rfc9700,SRC-mcp-sep-2468 --> |
 
 ## MITRE ATT&CK Mapping
 
-- [T1078 Valid Accounts](https://attack.mitre.org/techniques/T1078/)  
-- [T1556.006 Modify Authentication Process Federated Authentication](https://attack.mitre.org/techniques/T1556/006/)  
-- [T1552.001 Unsecured Credentials Tokens](https://attack.mitre.org/techniques/T1552/001/)
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1528](https://attack.mitre.org/techniques/T1528/) | Steal Application Access Token | Direct | The immediate objective is theft of an application access token or precursor code, although ATT&CK assigns a different tactic and does not specify MCP issuer mix-up. <!-- SAF-TRACE: claims=SAF-T1306-C016; sources=SRC-mitre-t1528 --> |
+| [T1556](https://attack.mitre.org/techniques/T1556/) | Modify Authentication Process | Analogous | Both subvert authentication trust, but a rogue server does not require modification of a local authentication process. <!-- SAF-TRACE: claims=SAF-T1306-C017; sources=SRC-attack-t1556 --> |
 
----
+## References
+
+1. **SRC-mcp-authorization-2026-07-28**: [Model Context Protocol Authorization Specification, 2026-07-28](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — Model Context Protocol contributors; roles, discovery, issuer validation, scopes, and audience.
+2. **SRC-mcp-sep-2468**: [Recommend Issuer Claim for Auth](https://modelcontextprotocol.io/seps/2468-recommend-issuer-claim-for-auth) — Emily Lauber; MCP mix-up rationale and exact issuer validation, with working-group acknowledgments in the source.
+3. **SRC-mcp-release-2026-07-28**: [July 2026 MCP Specification Update](https://blog.modelcontextprotocol.io/posts/2026-07-28/) — Model Context Protocol project team; protocol-hole closure.
+4. **SRC-rfc9700**: [Best Current Practice for OAuth 2.0 Security](https://datatracker.ietf.org/doc/html/rfc9700) — Torsten Lodderstedt, John Bradley, Andrey Labunets, and Daniel Fett; mix-up prerequisites and mitigation.
+5. **SRC-rfc9207**: [OAuth 2.0 Authorization Server Issuer Identification](https://datatracker.ietf.org/doc/rfc9207/) — Kristina Meyer zu Selhausen and Daniel Fett; response issuer validation.
+6. **SRC-rfc8414**: [OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414) — Michael B. Jones, Yaron Sheffer, and Dick Hardt; issuer metadata.
+7. **SRC-rfc9728**: [OAuth 2.0 Protected Resource Metadata](https://datatracker.ietf.org/doc/html/rfc9728) — Michael B. Jones, Phil Hunt, and Aaron Parecki; authorization-server discovery and trust boundary.
+8. **SRC-mcp-ts-auth-errors**: [TypeScript SDK Authentication Errors API](https://ts.sdk.modelcontextprotocol.io/v2/api/@modelcontextprotocol/client/client/authErrors.html) — MCP TypeScript SDK maintainers; mismatch telemetry.
+9. **SRC-fett-oauth-analysis**: [A Comprehensive Formal Security Analysis of OAuth 2.0](https://arxiv.org/pdf/1601.01229) — Daniel Fett, Ralf Küsters, and Guido Schmitz; formal and implementation mix-up demonstration.
+10. **SRC-nvd-cve-2025-10619**: [CVE-2025-10619](https://nvd.nist.gov/vuln/detail/CVE-2025-10619) — VulDB CNA, NIST NVD, and CISA ADP; adjacent discovery command injection.
+11. **SRC-nvd-cve-2025-4143**: [CVE-2025-4143](https://nvd.nist.gov/vuln/detail/CVE-2025-4143) — Cloudflare CNA, NIST NVD, and CISA ADP; adjacent redirect validation weakness.
+12. **SRC-cisa-kev-2026-09-01**: [Known Exploited Vulnerabilities Catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) — CISA Vulnerability Management; dated exploitation-catalog check.
+13. **SRC-cisa-aa25-239a**: [Countering Chinese State-Sponsored Actors Compromise of Networks Worldwide](https://www.cisa.gov/news-events/cybersecurity-advisories/aa25-239a) — NSA, CISA, FBI, DC3, and international partners; actor-controlled TACACS+ infrastructure and detection.
+14. **SRC-cisco-security-warnings**: [Cisco Resilient Infrastructure Security Warnings Reference](https://www.cisco.com/c/dam/en_us/about/doing_business/trust-center/docs/cisco-resilient-infrastructure-security-warnings-reference.pdf) — Cisco Trust Center; authorization-server address-change monitoring.
+15. **SRC-mitre-t1528**: [Steal Application Access Token](https://attack.mitre.org/techniques/T1528/) — MITRE ATT&CK and named contributors; token-theft mapping.
+16. **SRC-attack-t1556**: [Modify Authentication Process](https://attack.mitre.org/techniques/T1556/) — MITRE ATT&CK and Chris Ross; analogous mapping.
 
 ## Version History
 
 | Version | Date | Changes | Author |
-| ------- | ---- | ------- | ------ |
-| 1.0 | 2025-11-08 | Consolidated document, validated references, added PoP operational guidance, SIEM queries, test cases, and incident playbook | Ryan Jennings |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Initial clean-room research draft | Unattributed; project technique author not established from allowed inputs |

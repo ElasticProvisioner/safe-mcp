@@ -1,0 +1,67 @@
+version: 1
+technique_id: SAF-T1305
+name: Host OS Priv-Esc (RCE)
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Convert MCP-level, remote, browser-origin, or low-privileged
+  local influence into arbitrary host operating-system code execution with the vulnerable
+  MCP component's process or service-account privileges.
+scope:
+  security_boundary: The boundary between attacker-controlled MCP-adjacent input and
+    the host OS account executing an MCP client, bridge, proxy, Inspector, or server.
+  in_scope:
+  - Exploitation of an MCP-connected component flaw that creates arbitrary host OS
+    execution.
+  - Relative privilege gain into the vulnerable component's process or service-account
+    context.
+  out_of_scope:
+  - Intended and transparently approved execution by a correctly functioning tool.
+  - Silent installation of an attacker-selected local MCP server configuration.
+  - Prompt injection that does not exploit a component flaw to expand OS authority.
+  - Follow-on persistence, collection, lateral movement, or root/SYSTEM escalation.
+  affected_components:
+  - MCP host and client runtime
+  - Local or remote MCP server
+  - MCP bridge or proxy
+  - MCP Inspector or development tooling
+nearest_neighbors:
+- technique_id: SAF-T1309
+  distinction: Privileged Tool Invocation via Prompt Manipulation ends at unintended
+    use of an authorized capability, while SAF-T1305 requires exploitation that
+    expands authority into host OS code execution.
+- technique_id: SAF-T1003
+  distinction: Malicious MCP-Server Distribution directly delivers attacker-selected
+    code or configuration, while SAF-T1305 exploits an established MCP-connected
+    component.
+required_evidence:
+- Establish MCP host-client-server and subprocess boundaries from the official specification.
+- Establish at least one complete controlled MCP-to-host OS execution demonstration.
+- Search separately for production incidents, vulnerabilities, exploitation status,
+  and fixes.
+- Select no more than four high-impact direct examples and state their limitations.
+- Establish testable process telemetry and false-positive constraints.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP host audit events with timestamp, session, server, transport, tool, approval
+    state, and process identifier.
+  - Endpoint process creation with timestamp, child and parent images and identifiers,
+    command line, user, and host identifier.
+safe_example_constraints:
+- Use only inert placeholder metadata and synthetic normalized events.
+- Do not reproduce working command-injection payloads, destructive commands, credentials,
+  or persistence steps.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden trace comments or a declared
+  repository artifact.
+- All unverified leads are omitted and recorded as excluded.
+- Five research passes and two consecutive no-change follow-ups are recorded.
+- Detection positive, negative, boundary, malformed, and expected-lookalike cases
+  pass.
+- Rights, alignment, safe-publication, and strict isolated validation gates pass.

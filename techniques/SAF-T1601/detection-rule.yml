@@ -1,95 +1,94 @@
-title: MCP Server Enumeration Detection
-id: 4623D4B7-E353-4022-98F3-0BF678B92D60
+title: Rapid MCP Server Discovery Across Distinct Server Identities
+id: 4121c02c-8e13-4d59-bbca-982725afc6b9
 status: experimental
-description: Detects potential enumeration of MCP servers and their capabilities through network scanning and protocol interactions
-author: SAF-MCP Team
-date: 2025-08-17
-references:
-  - https://modelcontextprotocol.io/specification
-  - https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+description: >-
+  Detects one actor and session issuing successful modern server/discover or
+  legacy initialize operations to at least three distinct MCP server identities
+  within five minutes, excluding approved startup, health-check, and explicit
+  administrative Inspector contexts.
+author: SAF-MCP Research Team
+date: 2026-09-01
 logsource:
-  category: network_connection
-  product: firewall
+  category: application
+  product: mcp
+  service: host_client_audit
 detection:
-  # Network-level MCP port scanning
-  selection_port_scan:
-    DestinationPort:
-      - 8000
-      - 8080
-      - 3000
-      - 5000
-      - 9090
-      - 80
-    ConnectionCount: '>10'  # Multiple connection attempts
-    TimeWindow: '5m'        # Within 5 minutes
-  
-  # HTTP-level MCP endpoint enumeration
-  selection_http_enum:
-    RequestURI|contains:
-      - '/sse'
-      - '/message'
-    HTTP_Method: 'GET'
-    ResponseHeaders|contains: 'text/event-stream'
-  
-  # MCP protocol-specific enumeration
-  selection_protocol_enum:
-    RequestBody|contains:
-      - '"method":"tools/list"'
-      - '"method":"resources/list"'
-      - '"method":"prompts/list"'
-      - '"method":"initialize"'
-    ContentType: 'application/json'
-  
-  # Automated scanning indicators
-  selection_automated:
-    UserAgent|contains:
-      - 'masscan'
-      - 'nmap'
-      - 'curl'
-      - 'wget'
-      - 'python-requests'
-    SourceIP: '*'
-    RequestCount: '>20'     # High volume requests
-  
-  # DNS rebinding attack patterns
-  selection_dns_rebind:
-    DNSQuery|contains:
-      - 'localhost'
-      - '127.0.0.1'
-      - '0.0.0.0'
-    SourceType: 'external'
-    ResolutionChange: true   # DNS record changed during session
-  
-  condition: 
-    selection_port_scan or 
-    selection_http_enum or 
-    selection_protocol_enum or 
-    selection_automated or 
-    selection_dns_rebind
-
+  selection_discovery:
+    method:
+      - server/discover
+      - initialize
+    result: success
+  filter_approved_context:
+    approved_context: true
+  condition: >-
+    selection_discovery and not filter_approved_context |
+    count_distinct(server_id) by actor_id, session_id >= 3 within 5m
 falsepositives:
-  - Legitimate MCP client applications connecting to authorized servers
-  - Network monitoring and health check systems
-  - Development and testing environments with expected MCP traffic
-  - Load balancers and reverse proxies health checking MCP endpoints
-  - Authorized security scanning and penetration testing activities
-
-level: high
-
-tags:
-  - attack.discovery
-  - attack.t1046        # Network Service Scanning
-  - attack.t1040        # Network Sniffing  
-  - attack.t1595        # Active Scanning
-  - safe.t1601          # MCP Server Enumeration
-
+  - Approved host startup or configuration reload that initializes every configured server.
+  - Health checks that probe several server endpoints from one service identity.
+  - Explicit MCP Inspector administration or inventory activity.
 fields:
-  - SourceIP
-  - DestinationIP
-  - DestinationPort
-  - RequestURI
-  - UserAgent
-  - RequestBody
-  - ResponseHeaders
-  - ConnectionCount
-  - TimeWindow
+  - timestamp
+  - actor_id
+  - process_id
+  - process_role
+  - session_id
+  - server_id
+  - server_endpoint
+  - transport
+  - method
+  - protocol_version
+  - server_info_name
+  - capability_classes
+  - result
+  - approved_context
+level: medium
+tags:
+  - saf.t1601
+  - attack.discovery
+  - attack.t1046
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1601-C011
+    - SAF-T1601-C012
+  telemetry_claim_ids:
+    - SAF-T1601-C001
+    - SAF-T1601-C002
+    - SAF-T1601-C011
+  limitation_claim_ids:
+    - SAF-T1601-C003
+    - SAF-T1601-C012
+  validation_artifacts:
+    - tests/SAF-T1601/test_detection_rule.py
+    - tests/SAF-T1601/test-logs.json
+    - research/techniques/SAF-T1601/validation/detection-test.txt
+    - research/techniques/SAF-T1601/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1601-C001
+        - SAF-T1601-C011
+      rationale: Host/client audit events are the point that can correlate one actor across multiple one-to-one server connections.
+    selection_discovery:
+      claim_ids:
+        - SAF-T1601-C002
+        - SAF-T1601-C011
+      rationale: server/discover is the current discovery method and initialize covers legacy handshake telemetry.
+    filter_approved_context:
+      claim_ids:
+        - SAF-T1601-C012
+      rationale: Legitimate startup, health checking, and Inspector administration use the same operations and require explicit context suppression.
+    condition:
+      claim_ids:
+        - SAF-T1601-C011
+      rationale: Distinct-server correlation within five minutes is a bounded, testable starting analytic rather than a universal threshold.
+    falsepositives:
+      claim_ids:
+        - SAF-T1601-C012
+      rationale: Each false-positive class is a documented or directly inferred legitimate use of discovery operations.
+    fields:
+      claim_ids:
+        - SAF-T1601-C002
+        - SAF-T1601-C011
+      rationale: The fields bind actor, session, endpoint, method, result, protocol version, and self-reported response metadata for investigation.

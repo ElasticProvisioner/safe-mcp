@@ -1,26 +1,108 @@
----
-title: OAuth Implicit Flow Downgrade Detection
-id: 7f3a9c2a-8d2e-4b6a-9a7f-3c2a9c2a7f3a   # Replace with uuidgen output
+title: MCP OAuth PKCE Downgrade State
+id: 3c893f96-f9f3-4c52-98a3-d7b86290f661
 status: experimental
-description: Detects attempts to force OAuth implicit flow in MCP context
-author: Ryan Jennings
-date: 2025-11-21
+description: >-
+  Detects MCP-scoped authorization flows that successfully use plain or absent
+  PKCE, exchange a verifier without a recorded challenge, or retry from failed
+  S256 to a weaker state within ten minutes.
+author: OpenAI Codex clean-room generator /root/cleanroom_saf_t1408
+date: 2026-09-01
+modified: 2026-09-01
 references:
-  - https://www.ietf.org/rfc/rfc9700.html
-  - https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/
+  - https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+  - https://www.rfc-editor.org/rfc/rfc7636.html#section-7.2
+  - https://www.rfc-editor.org/rfc/rfc9700.html#name-pkce-downgrade-attack
+  - https://github.com/better-auth/better-auth/security/advisories/GHSA-9h47-pqcx-hjr4
 logsource:
-  product: mcp
-  service: auth
+  category: application
+  product: oauth_authorization_server
+  service: mcp_authorization
+  definition: >-
+    Normalized authorization, retry, and token-exchange events with a shared
+    client and transaction or session identifier.
 detection:
-  selection:
-    oauth.response_type:
-      - 'token'
-      - 'id_token'
-  condition: selection
+  selection_weak_authorization:
+    protocol: mcp
+    event_type: oauth_authorization_request
+    outcome: success
+    legacy_pkce_plain_approved: false
+    code_challenge_method|re: "(?i)^(plain|missing)$"
+  selection_absent_challenge:
+    protocol: mcp
+    event_type: oauth_authorization_request
+    outcome: success
+    legacy_pkce_plain_approved: false
+    code_challenge_present: false
+  selection_inconsistent_exchange:
+    protocol: mcp
+    event_type: oauth_token_request
+    outcome: success
+    code_verifier_present: true
+    original_code_challenge_present: false
+  correlation_s256_to_weaker:
+    group_by: [client_id, session_id]
+    ordered_events:
+      - {event_type: oauth_authorization_request, code_challenge_method: S256, outcome: failure}
+      - {event_type: oauth_client_retry, code_challenge_method|re: "(?i)^(plain|missing)$", outcome: success}
+    maxspan: 10m
+    inclusive_boundary: true
+    legacy_pkce_plain_approved: false
+  condition: >-
+    selection_weak_authorization or selection_absent_challenge or
+    selection_inconsistent_exchange or correlation_s256_to_weaker
+fields:
+  - timestamp
+  - protocol
+  - client_id
+  - session_id
+  - transaction_id
+  - event_type
+  - outcome
+  - code_challenge_present
+  - original_code_challenge_present
+  - code_challenge_method
+  - code_verifier_present
+  - legacy_pkce_plain_approved
 falsepositives:
-  - Legacy clients not yet migrated
+  - Explicitly approved and time-bounded legacy clients that intentionally use plain PKCE.
+  - Incorrect event normalization or incomplete correlation between authorization and token records.
 level: high
 tags:
-  - attack.credential_access
-  - attack.t1408
-  - safe.t1408
+  - saf.t1408
+  - attack.t1528
+
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1408-C004, SAF-T1408-C013]
+  telemetry_claim_ids: [SAF-T1408-C004, SAF-T1408-C013, SAF-T1408-C014]
+  limitation_claim_ids: [SAF-T1408-C014]
+  validation_artifacts:
+    - tests/SAF-T1408/test_detection_rule.py
+    - tests/SAF-T1408/test-cases.json
+    - research/techniques/SAF-T1408/validation/detection-test.txt
+    - research/techniques/SAF-T1408/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1408-C004, SAF-T1408-C013]
+      rationale: RFC 9700 requires authorization-to-token state binding, so both stages and join identifiers are required.
+    selection_weak_authorization:
+      claim_ids: [SAF-T1408-C002, SAF-T1408-C007, SAF-T1408-C013]
+      rationale: RFC 7636 forbids S256-to-plain downgrade and the MCP-plugin advisory documents plain and missing-method acceptance.
+    selection_absent_challenge:
+      claim_ids: [SAF-T1408-C003, SAF-T1408-C013]
+      rationale: RFC 9700 identifies removed code_challenge accepted by an optional-PKCE server as the downgrade state.
+    selection_inconsistent_exchange:
+      claim_ids: [SAF-T1408-C004, SAF-T1408-C013]
+      rationale: RFC 9700 requires rejecting a verifier when the initiating request had no challenge.
+    correlation_s256_to_weaker:
+      claim_ids: [SAF-T1408-C002, SAF-T1408-C013]
+      rationale: A rapid retry from failed S256 to weaker state operationalizes the RFC 7636 downgrade warning.
+    condition:
+      claim_ids: [SAF-T1408-C013]
+      rationale: The condition joins the three source-defined unsafe states and the bounded retry sequence.
+    fields:
+      claim_ids: [SAF-T1408-C004, SAF-T1408-C013, SAF-T1408-C014]
+      rationale: These fields preserve stage, method, join, outcome, and approved-lookalike context.
+    falsepositives:
+      claim_ids: [SAF-T1408-C014]
+      rationale: RFC 7636 and the product advisory document deliberate legacy plain compatibility.

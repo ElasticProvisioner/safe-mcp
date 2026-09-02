@@ -1,0 +1,440 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2025-11-25
+    title: Model Context Protocol Specification - Tools
+    publisher: Model Context Protocol
+    authors:
+      - Model Context Protocol contributors
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official Markdown response downloaded and reviewed section by section.
+    locators:
+      - Calling Tools
+      - Tool Result
+      - Structured Content
+      - Error Handling
+      - Security Considerations
+    review_notes: Verified result channels, model delivery of tool errors, output sanitization, result validation, and audit-log guidance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: b372c48eea58744850f5684b796438f32643402533b24084d82b49b580721aff
+        bytes: 14061
+        media_type: text/markdown
+
+  - id: SRC-mcp-auth-2025-11-25
+    title: Model Context Protocol Specification - Authorization
+    publisher: Model Context Protocol
+    authors:
+      - Model Context Protocol contributors
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official Markdown response downloaded and reviewed section by section.
+    locators:
+      - Access Token Usage
+      - Token Handling
+      - Security Considerations - Token Audience Binding and Validation
+      - Security Considerations - Token Theft
+      - Access Token Privilege Restriction
+    review_notes: Verified bearer-header use, query-string prohibition, audience validation, token-theft guidance, token lifetime, and scope constraints.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: bb322b24c3aa5d4e613b9f420719273c71151b71e418187f3460480ffe0f7675
+        bytes: 41643
+        media_type: text/markdown
+
+  - id: SRC-mcp-security-2025-11-25
+    title: Model Context Protocol Security Best Practices
+    publisher: Model Context Protocol
+    authors:
+      - Model Context Protocol contributors
+    version_or_date: "2025-11-25"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official Markdown response downloaded and reviewed section by section.
+    locators:
+      - Token Passthrough
+      - Server-Side Request Forgery - Attack Description
+      - Server-Side Request Forgery - Mitigation
+      - Scope Minimization
+    review_notes: Verified token-passthrough boundary, SSRF response-reflection risk, URL and redirect validation, network egress controls, and least-privilege guidance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 27dfdc9c8fb0f29750e52d64797077bc1ba01f25a0d584e3189954f47a2601c7
+        bytes: 37327
+        media_type: text/markdown
+
+  - id: SRC-rfc6750
+    title: RFC 6750 - The OAuth 2.0 Authorization Framework - Bearer Token Usage
+    publisher: RFC Editor
+    authors:
+      - Michael B. Jones
+      - Dick Hardt
+    version_or_date: October 2012
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc6750.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete RFC plain-text edition downloaded and reviewed.
+    locators:
+      - Section 1.2, Terminology
+      - Section 2.1, Authorization Request Header Field
+      - Section 5, Security Considerations
+      - Section 5.2, Threat Mitigation
+      - Section 5.3, Summary of Recommendations
+    review_notes: Verified bearer possession semantics, opaque token handling, disclosure risks, transport protection, audience and scope restriction, and token lifetime guidance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 9dc385cf4ecdd85024e5a95e447ede9230e11700bf35251906b25b37557d604b
+        bytes: 38949
+        media_type: text/plain
+
+  - id: SRC-cve-2026-48039
+    title: CVE-2026-48039 Record
+    publisher: CVE Program
+    authors:
+      - GitHub Security Advisory CVE Numbering Authority
+    version_or_date: "2026-08-07"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-48039
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE JSON 5 record downloaded and reviewed.
+    locators:
+      - cveMetadata
+      - containers.cna.descriptions
+      - containers.cna.affected
+      - containers.cna.metrics
+      - containers.cna.references
+    review_notes: Verified the MCP JSON-RPC token-disclosure mechanism, affected versions, fixed version, severity, and the exact GHSA URL used for follow-up.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: cc50976960257ccdb98c0edcdecaa6d92545bc6a3238a0be7fa2d0ed1fa325d2
+        bytes: 3288
+        media_type: application/json
+
+  - id: SRC-ghsa-meta-ads
+    title: Unauthenticated HTTP MCP Tool Execution Leaks Operator Meta Access Token
+    publisher: pipeboard-co on GitHub Security Advisories
+    authors:
+      - nictuku
+      - 232-323 (reporter)
+    version_or_date: "2026-05-20; updated record reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://github.com/pipeboard-co/meta-ads-mcp/security/advisories/GHSA-9gw6-46qc-99vr
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL obtained from SRC-cve-2026-48039; complete public advisory page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Summary
+      - Affected Code
+      - Proof of Concept
+      - Impact
+      - Remediation
+      - Credits
+    review_notes: Verified controlled end-to-end placeholder-token disclosure, code-path description, impact, remediation, and reporter credit. Discovery provenance is SRC-cve-2026-48039.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party page is cited by fact and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: b3c35d475251de12754b3406d20ba9c9e385078cf1b279a17d6ac82b40b09569
+        bytes: 212413
+        media_type: text/html
+
+  - id: SRC-cve-2026-39974
+    title: CVE-2026-39974 Record
+    publisher: CVE Program
+    authors:
+      - GitHub Security Advisory CVE Numbering Authority
+    version_or_date: "2026-04-13"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-39974
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE JSON 5 record downloaded and reviewed.
+    locators:
+      - cveMetadata
+      - containers.cna.descriptions
+      - containers.cna.affected
+      - containers.cna.metrics
+      - containers.cna.references
+    review_notes: Verified the authenticated SSRF, reflected JSON-RPC response body, deployment prerequisites, fixed version, and exact GHSA provenance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 1990823e49d0731d9d3c057021350a7a7e1ff7ae4817f7b258fa8d5ed943fcb3
+        bytes: 3306
+        media_type: application/json
+
+  - id: SRC-ghsa-n8n-mcp
+    title: Authenticated SSRF via instance-URL header in multi-tenant HTTP mode
+    publisher: czlonkowski on GitHub Security Advisories
+    authors:
+      - czlonkowski
+      - Eresus Security Research Team
+      - ibrahmsql
+    version_or_date: "2026-04-08"
+    source_class: official_advisory
+    official_url: https://github.com/czlonkowski/n8n-mcp/security/advisories/GHSA-4ggg-h7ph-26qr
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL obtained from SRC-cve-2026-39974; complete public advisory page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Impact
+      - Affected versions
+      - Patched versions
+      - Workarounds
+      - Remediation
+      - Credits
+    review_notes: Verified response reflection, affected configurations, fixed version, mitigations, severity, and Eresus team credit. Discovery provenance is SRC-cve-2026-39974.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party page is cited by fact and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 05a01a5bb8d1617a7a176f3b9f5d24ec21fb43d90a5e75bf0d9dbd369c4446e4
+        bytes: 204531
+        media_type: text/html
+
+  - id: SRC-cve-2026-27826
+    title: CVE-2026-27826 Record
+    publisher: CVE Program
+    authors:
+      - GitHub Security Advisory CVE Numbering Authority
+    version_or_date: "2026-03-10"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-27826
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE JSON 5 record downloaded and reviewed.
+    locators:
+      - containers.cna.descriptions
+      - containers.cna.affected
+      - containers.cna.references
+    review_notes: Verified unauthenticated SSRF, potential credential impact, attacker content in tool results, fixed version, and exact GHSA provenance.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 2459926708c77b315f003937b9ce0e2c31649f6baad5f3db8186369264f3ccba
+        bytes: 3044
+        media_type: application/json
+
+  - id: SRC-ghsa-mcp-atlassian
+    title: SSRF via unvalidated Atlassian URL headers
+    publisher: sooperset on GitHub Security Advisories
+    authors:
+      - sooperset
+      - yotampe-pluto (reporter)
+      - gil-maman-p (reporter)
+    version_or_date: "2026-02-24"
+    source_class: official_advisory
+    official_url: https://github.com/sooperset/mcp-atlassian/security/advisories/GHSA-7r34-79r5-rcc9
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL obtained from SRC-cve-2026-27826; complete public advisory page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Summary
+      - Details
+      - Proof of Concept
+      - Impact
+      - Credits
+    review_notes: Verified demonstrated outbound SSRF and tool-result content injection, potential cloud-token impact, and reporter credits; no token-bearing response was demonstrated. Discovery provenance is SRC-cve-2026-27826.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party page is referenced for classification and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 6a76dc32a801304e4b0930ecd6143e5261469c189504609c01d9d5e922792579
+        bytes: 228158
+        media_type: text/html
+
+  - id: SRC-cve-2026-33461
+    title: CVE-2026-33461 Record
+    publisher: CVE Program
+    authors:
+      - Elastic Product Security Team
+    version_or_date: "2026-04-09"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-33461
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE JSON 5 record downloaded and reviewed.
+    locators:
+      - containers.cna.descriptions
+      - containers.cna.affected
+      - containers.cna.references
+    review_notes: Verified unauthorized API response of complete Kibana configuration objects, affected version ranges, and the first-party Elastic advisory URL.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: ed41a25178c7f79c8793a64f7cf8f1a78fee16a1d3ce6cbc65e31e17b14c6718
+        bytes: 3370
+        media_type: application/json
+
+  - id: SRC-elastic-esa-2026-24
+    title: Kibana 8.19.14, 9.2.8, 9.3.3 Security Update - ESA-2026-24
+    publisher: Elastic
+    authors:
+      - Paul (ismisepaul)
+      - Elastic Product Security Team
+    version_or_date: "2026-04-08"
+    source_class: official_advisory
+    official_url: https://discuss.elastic.co/t/kibana-8-19-14-9-2-8-9-3-3-security-update-esa-2026-24/385812
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete first-party advisory page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Incorrect Authorization in Kibana Fleet Leading to Information Disclosure
+      - Affected Versions
+      - Solutions and Mitigations
+      - Indicators of Compromise
+    review_notes: Verified the non-agentic API-response analogy, affected and fixed versions, rotation guidance, and authorization-aware audit-log indicator.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party page is cited by fact and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 54146fbef2681d29952a5ba8849c305e0d2858f41d8bc2921888251546b1fc00
+        bytes: 34213
+        media_type: text/html
+
+  - id: SRC-cve-2026-25650
+    title: CVE-2026-25650 Record
+    publisher: CVE Program
+    authors:
+      - GitHub Security Advisory CVE Numbering Authority
+    version_or_date: "2026-02-09"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2026-25650
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete CVE JSON 5 record downloaded and reviewed.
+    locators:
+      - containers.cna.descriptions
+      - containers.cna.affected
+      - containers.cna.references
+    review_notes: Verified MCP-Salesforce token disclosure and fixed version, while noting that the record does not identify the disclosure channel.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Acquisition corpus is intentionally excluded from the clean-room handoff bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: b455d579150e75ca2157028f556a396a137e72a053f6e3ea2f4e03d9efc2f6d6
+        bytes: 2755
+        media_type: application/json
+
+  - id: SRC-ghsa-mcp-salesforce
+    title: Arbitrary attribute access leads to disclosure of Salesforce auth token
+    publisher: smn2gnt on GitHub Security Advisories
+    authors:
+      - smn2gnt
+      - nirhaas (reporter)
+    version_or_date: "2026-02-06"
+    source_class: official_advisory
+    official_url: https://github.com/smn2gnt/MCP-Salesforce/security/advisories/GHSA-vf6j-c56p-cq58
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL obtained from SRC-cve-2026-25650; complete public advisory page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Impact
+      - Patches
+      - Workarounds
+      - Credits
+    review_notes: Verified bearer-token disclosure, fixed version, rotation advice, and reporter credit; the advisory does not identify an API-response channel. Discovery provenance is SRC-cve-2026-25650.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party page is referenced for classification and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 391606c50d7732f6466e844f6ddf73a905a8b40bda78ac48b0af53a5519c3279
+        bytes: 188125
+        media_type: text/html
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Cybersecurity Division
+    version_or_date: Retrieved 2026-09-01
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official CSV catalog downloaded and searched for selected CVE IDs, MCP, response, and token terms.
+    locators:
+      - Full CSV catalog snapshot retrieved 2026-09-01
+      - Exact-ID checks for CVE-2026-48039 and CVE-2026-39974
+    review_notes: Neither selected CVE appeared in the catalog snapshot; the absence supports only a bounded no-KEV finding.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Government catalog snapshot is excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: f1d645966a30b56e82b2130fd7252ee27f7dc2e05f8327ff67da890aae9af566
+        bytes: 979898
+        media_type: text/csv
+
+  - id: SRC-attack-t1528
+    title: Steal Application Access Token - T1528
+    publisher: MITRE ATT&CK
+    authors:
+      - MITRE ATT&CK team
+      - Alon Klayman, Hunters Security
+      - Arun Seelagan, CISA
+      - Eliraz Levi, Hunters Security
+      - Jack Burns, HubSpot
+      - Jeff Sakowicz, Microsoft Identity Developer Platform Services
+      - Mark Wee
+      - Ram Pliskin, Microsoft Azure Security Center
+      - Saisha Agrawal, Microsoft Threat Intelligence Center
+      - Shailesh Tiwary, Indian Army
+      - Suzy Schapperle, Microsoft Azure Red Team
+    version_or_date: Version 1.5; last modified 2026-05-12
+    source_class: research
+    official_url: https://attack.mitre.org/techniques/T1528/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete official technique page downloaded, converted to plain text, and reviewed.
+    locators:
+      - Technique description
+      - ID, tactic, version, created, and last-modified metadata
+      - Detection Strategy DET0515
+      - Contributors
+    review_notes: Verified token-theft behavior, Credential Access tactic, use of stolen tokens, detection strategy, and named contributors.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Framework page is cited by fact and excluded from the bundle; integrity metadata is retained.
+      review_evidence:
+        sha256: 18f61d8f02c25a4588c47c64f1eeb83f2032340c38e8a364bc05f21ebd392e6d
+        bytes: 93405
+        media_type: text/html

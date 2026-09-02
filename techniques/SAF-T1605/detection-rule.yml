@@ -1,81 +1,90 @@
-title: MCP Capability Mapping Prompt Enumeration Detection
-id: 1d6c3f3f-b3d7-40a5-a2de-1cf0f42ff5e4
+title: Concentrated MCP Capability Mapping Sequence
+id: 7f9a2cb2-09d8-46f4-bbad-d623e640c7b7
 status: experimental
-description: |
-  Detects capability-mapping reconnaissance in MCP chat prompts that attempt to coax
-  agents into listing their available tools, privileged workflows, or policy exceptions.
-  Inspired by MITRE ATT&CK Discovery (TA0007) and Gather Victim Host Information (T1592),
-  this rule watches for repeated enumeration phrasing immediately after session start,
-  requests for “what can you do,” automation summaries, and follow-up questions targeting
-  deployment guardrails.
-
-  Use alongside behavioral analytics and OWASP logging guidance for comprehensive coverage.
-author: SAF-MCP Team
-date: 2025-11-22
-modified: 2025-11-22
-references:
-  - https://attack.mitre.org/tactics/TA0007/
-  - https://attack.mitre.org/techniques/T1592/
-  - https://modelcontextprotocol.io/specification
-  - https://owasp.org/www-project-top-10-for-large-language-model-applications/
-  - https://arxiv.org/abs/2504.03767
-logsource:
-  product: mcp
-  service: conversation_engine
-  category: llm_interaction
-detection:
-  selection_capability_questions:
-    prompt_text|contains:
-      - 'what can you do'
-      - 'list the tools you have'
-      - 'summarize your api surface'
-      - 'describe your capabilities'
-      - 'which integrations are enabled'
-      - 'what automations are available'
-      - 'enumerate your skills'
-      - 'show me every action you can perform'
-  selection_policy_interest:
-    prompt_text|contains:
-      - 'what policies restrict you'
-      - 'what are your guardrails'
-      - 'are there actions you refuse'
-      - 'describe your safety rules'
-  selection_privileged_focus:
-    prompt_text|contains:
-      - 'deploy_cluster'
-      - 'rotate_credentials'
-      - 'read_secret_store'
-      - 'database writer'
-      - 'cloud control'
-      - 'shell access'
-  selection_repeated_enumeration:
-    prompt_count_last_60s|gte: 3
-    prompt_text|contains:
-      - 'tool'
-      - 'capability'
-  filter_early_turns:
-    turn_index|lte: 3
-  filter_system_or_admin:
-    actor_type:
-      - assistant
-      - system
-    authenticated: true
-condition: (selection_capability_questions or selection_policy_interest or selection_privileged_focus or selection_repeated_enumeration) and filter_early_turns and not filter_system_or_admin
-falsepositives:
-  - Legitimate onboarding flows where trusted administrators review tool manifests
-  - Documentation or FAQ sessions explicitly explaining MCP capabilities to vetted users
-  - Automated health checks that query capability status via authenticated service accounts
-level: medium
+description: >-
+  Detects one requester querying server/discover and then at least three
+  distinct capability-list methods against one MCP server within 120 seconds,
+  unless the activity is explicitly labeled as approved inventory.
+author: SAF-MCP Research Team
+date: 2026-09-02
 tags:
+  - saf.t1605
   - attack.discovery
-  - attack.t1592
-  - safe.t1605
-  - mcp.capability_enumeration
+logsource:
+  category: application
+  product: mcp
+  service: request_audit
+  definition: Normalized MCP request audit events, correlated by actor_id and server_id.
+detection:
+  discovery:
+    method: server/discover
+    result_status: success
+  capability_lists:
+    method:
+      - tools/list
+      - resources/list
+      - resources/templates/list
+      - prompts/list
+      - roots/list
+    result_status: success
+  approved_inventory_suppression:
+    purpose:
+      - approved_inventory
+      - approved_bootstrap
+  condition: >-
+    For the same nonempty actor_id and server_id, one discovery event followed
+    by at least three distinct capability-list methods at or after discovery
+    and no more than 120 seconds later, excluding groups whose matching events
+    carry an approved purpose.
+  timeframe: 120s
 fields:
   - timestamp
-  - prompt_text
+  - actor_id
+  - server_id
   - session_id
-  - actor_type
-  - turn_index
-  - authenticated
-  - prompt_count_last_60s
+  - method
+  - result_status
+  - authorization_context
+  - purpose
+  - result_count
+  - next_cursor_present
+falsepositives:
+  - Legitimate client bootstrap or capability negotiation without an approved-purpose label.
+  - MCP Inspector troubleshooting and validation.
+  - Authorized inventory, catalog refresh, and conformance testing.
+level: medium
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1605-C012, SAF-T1605-C013]
+  telemetry_claim_ids: [SAF-T1605-C012, SAF-T1605-C007]
+  limitation_claim_ids: [SAF-T1605-C013, SAF-T1605-C016]
+  validation_artifacts:
+    - techniques/SAF-T1605/test_detection_rule.py
+    - techniques/SAF-T1605/test-logs.json
+    - research/techniques/SAF-T1605/validation/detection-tests.txt
+    - research/techniques/SAF-T1605/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1605-C012, SAF-T1605-C007]
+      rationale: Protocol methods and production observability support normalized MCP request auditing.
+    discovery:
+      claim_ids: [SAF-T1605-C001, SAF-T1605-C012]
+      rationale: server/discover is the current single-request server capability inventory event.
+    capability_lists:
+      claim_ids: [SAF-T1605-C002, SAF-T1605-C003, SAF-T1605-C012]
+      rationale: The current and legacy listing methods expose distinct capability surfaces.
+    approved_inventory_suppression:
+      claim_ids: [SAF-T1605-C013]
+      rationale: Official administration and production discovery make purpose-aware suppression necessary.
+    condition:
+      claim_ids: [SAF-T1605-C012, SAF-T1605-C013]
+      rationale: The tested correlation emphasizes breadth and concentration but remains behavioral rather than dispositive.
+    timeframe:
+      claim_ids: [SAF-T1605-C012, SAF-T1605-C016]
+      rationale: The bounded window is a tested analytic choice; caching and changes can legitimately alter request timing.
+    fields:
+      claim_ids: [SAF-T1605-C012, SAF-T1605-C007]
+      rationale: These fields support requester/server correlation, authorization review, result context, and tuning.
+    falsepositives:
+      claim_ids: [SAF-T1605-C004, SAF-T1605-C013]
+      rationale: Inspector, bootstrap, inventory, and catalog refresh can emit the same sequence.

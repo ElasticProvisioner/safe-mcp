@@ -1,0 +1,117 @@
+version: 1
+technique_id: SAF-T1606
+frozen_on: "2026-09-02"
+integration_mode: mechanical_post_freeze_only
+prohibited_during_integration:
+  - Do not use the prior technique, prior research, history, diff, blame, issue, pull request, catalog description, or SAF website as a research source.
+  - Do not change independently derived scope, claims, evidence classification, example relationships, exclusions, or prose meaning while resolving joins.
+
+synthetic_tactic_joins: []
+tactic_joins:
+  - generated_id: ATK-TA0007
+    basis: User-supplied neutral tactic identifier and name Discovery.
+    action: Confirm the existing tactic identifier only; no research change is permitted.
+
+synthetic_neighbor_joins:
+  - generated_id: SAF-T9901
+    neutral_role: Nearest technique whose immediate objective is reading or acquiring file contents.
+    action: Replace with the real catalog ID and link after freeze, preserving the distinction that SAF-T1606 stops at directory metadata.
+  - generated_id: SAF-T9902
+    neutral_role: Nearest technique whose mechanism is filesystem root or path-boundary bypass.
+    action: Replace with the real catalog ID and link after freeze, preserving the distinction between enabling boundary bypass and discovery objective.
+
+synthetic_mitigation_joins:
+  - generated_id: SAF-M-9001
+    neutral_role: Mitigation that limits filesystem roots and server process privileges.
+    action: Replace with the real mitigation ID and link after freeze without changing the cited control requirements.
+  - generated_id: SAF-M-9002
+    neutral_role: Mitigation that authorizes, confirms, and audits MCP tool calls.
+    action: Replace with the real mitigation ID and link after freeze without changing the cited control requirements.
+
+synthetic_source_id_joins: []
+source_id_joins:
+  - {generated_id: SRC-anthropic-gtg1002-2025, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-cisa-kev-2026-09-01, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-ghsa-hc55-p739-j48w, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-ghsa-q66q-fx2p-7w4m, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-completion-2025-11-25, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-example-servers-2026-09-02, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-filesystem-reference-2026-09-02, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-fix-cc99bda, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-fix-d00c60d, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-roots-2025-11-25, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-security-2025-11-25, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mcp-tools-2025-11-25, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mitre-attack-t1083-v1.7, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-mitre-det0370-v1.0, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2025-47274, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2025-53109, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2025-53110, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2025-67366, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2025-68143, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2026-40576, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2026-43901, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2026-46555, action: reuse_if_exact_else_rename_mechanically}
+  - {generated_id: SRC-nvd-cve-2026-73498, action: reuse_if_exact_else_rename_mechanically}
+source_id_join_rule: >-
+  Compare canonical URL and source identity only after freeze. If an identical
+  shared record exists under another stable ID, replace that ID consistently in
+  the claim inventory, trace comments, coverage, rights review, References,
+  fragments, and tests without adding evidence or revising content.
+
+synthetic_history_sha_joins:
+  - generated_sha: 2e7307c6af85d63e6ee22a3b8ea076ce11ac0712
+    basis: Honest commit of the generic validator and blank schemas in the isolated mock repository.
+    action: Replace with the real repository commit that first contains this canonical bundle.
+
+path_joins:
+  - source: source-manifest-fragment.yml
+    destination: research/source-manifest.yml
+    action: Merge records after source-ID collision resolution; do not use the shared manifest to add research leads.
+  - source: framework-fragment.yml
+    destination: research/framework-model.yml
+    action: Merge the SAF-T1606 technique record after synthetic neighbor and mitigation IDs are replaced.
+  - source: alignment-fragment.yml
+    destination: research/alignment-ledger.yml
+    action: Merge the three resolved alignment records and update only identifiers changed by mechanical joins.
+  - source: techniques/SAF-T1606/
+    destination: techniques/SAF-T1606/
+    action: Replace the target directory atomically without inspecting prior contents or a revealing diff.
+  - source: research/techniques/SAF-T1606/
+    destination: research/techniques/SAF-T1606/
+    action: Replace the target research packet atomically without inspecting prior contents.
+  - source: tests/SAF-T1606/
+    destination: tests/SAF-T1606/
+    action: Add the independently authored detection fixtures and validation script.
+
+deferred_real_repository_joins:
+  - Resolve real neighbor IDs and confirm their files exist.
+  - Resolve real mitigation IDs and confirm their files exist.
+  - Reuse or rename stable source IDs solely by canonical-URL equality.
+  - Replace the isolated mock baseline SHA with the first honest integration commit SHA.
+  - Run strict validation and regression tests after all mechanical joins.
+unresolved_research_questions: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-ghsa-q66q-fx2p-7w4m: SRC-ghsa-cve-2025-53109
+    SRC-ghsa-hc55-p739-j48w: SRC-ghsa-cve-2025-53110
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-mitre-attack-t1083-v1.7: SRC-attack-t1083
+    SRC-anthropic-gtg1002-2025: SRC-anthropic-espionage-2025-11
+  canonical_neighbors:
+    SAF-T9901: SAF-T1502
+    SAF-T9902: SAF-T1105
+  canonical_mitigations:
+    - SAF-M-12
+    - SAF-M-20
+    - SAF-M-29
+    - SAF-M-69
+    - SAF-M-70
+    - SAF-M-74
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_validation:
+    detection: research/techniques/SAF-T1606/validation/detection-test.txt
+    strict: research/techniques/SAF-T1606/validation/strict-validator.txt
+  status: integrated_and_validated

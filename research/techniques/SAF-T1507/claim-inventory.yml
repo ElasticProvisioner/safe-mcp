@@ -1,0 +1,416 @@
+version: 1
+technique_id: SAF-T1507
+claims:
+  - id: SAF-T1507-C001
+    statement: >-
+      In an MCP HTTP authorization deployment, an adversary who receives an
+      authorization code from the redirect path can obtain or attempt to
+      obtain an MCP-scoped access token when transaction binding, PKCE, exact
+      redirect validation, or single-use enforcement is absent or defeated.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Authorization Code Protection; Open Redirection; Authorization Flow Steps]
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators: [Sections 1 and 1.1]
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Sections 2.1.1, 4.1.1, and 4.5.3.1]
+    corroboration: RFC 7636 and RFC 9700 independently describe code interception, redemption, and transaction-binding controls; the MCP specification makes those controls normative for MCP clients.
+    limitations:
+      - This is an SAF synthesis; no directly reviewed source documented the complete behavior in a production MCP incident.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The end-to-end MCP behavior is inferred by joining MCP's OAuth requirements with directly documented OAuth attack mechanics and MCP-specific implementation vulnerabilities.
+    status: validated
+
+  - id: SAF-T1507-C002
+    statement: MCP authorization for HTTP transports assigns OAuth client, authorization-server, and protected-resource roles and uses an authorization flow to obtain access tokens for the MCP server.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Purpose and Scope; Roles; Authorization Flow Steps]
+      - source_id: SRC-rfc6749
+        support: corroborating
+        exact_locators: [Sections 1.1, 1.2, and 4.1]
+    corroboration: RFC 6749 defines the underlying roles and authorization-code flow used by the MCP specification.
+    limitations:
+      - Authorization is optional for MCP overall and this claim applies only when an HTTP MCP deployment uses the specified authorization mechanism.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C003
+    statement: MCP clients must implement PKCE, verify advertised PKCE support before authorization, and use S256 when technically capable.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Authorization Code Protection, lines 485-491]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Section 2.1.1]
+    corroboration: RFC 9700 requires public clients to use PKCE, requires authorization servers to support it, and identifies S256 as the only current method that does not expose the verifier.
+    limitations:
+      - The MCP text says S256 when technically capable; deployments that accept weaker behavior remain exposed to the documented limitations.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C004
+    statement: MCP authorization servers must validate exact pre-registered redirect URIs, and MCP clients should verify state and discard mismatched authorization results.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Open Redirection, lines 496-498]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Sections 2.1 and 4.1.3]
+    corroboration: RFC 9700 independently requires exact string matching, with the native loopback-port exception, and prohibits open redirectors.
+    limitations:
+      - State protects request-response correlation but is not a substitute for PKCE protection of a stolen public-client code.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C005
+    statement: In the OAuth authorization-code grant, the authorization server sends a code through the user agent to the client, which presents that code to the token endpoint for an access token.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6749
+        support: direct
+        exact_locators: [Sections 4.1, 4.1.2, 4.1.3, and 4.1.4]
+      - source_id: SRC-rfc8252
+        support: corroborating
+        exact_locators: [Section 4.1]
+    corroboration: RFC 8252 restates the same sequence for native applications using an external user agent.
+    limitations:
+      - This flow description does not itself establish exploitation.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C006
+    statement: PKCE binds a transaction-specific authorization code to a high-entropy verifier by sending a derived challenge in the authorization request and requiring the verifier during token exchange.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators: [Sections 1.1, 4.1 through 4.6, and 7.1]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Sections 2.1.1 and 4.5.3.1]
+    corroboration: RFC 9700 explains that a stolen public-client code cannot be redeemed without the verifier and requires correct verifier enforcement.
+    limitations:
+      - PKCE does not help when the verifier is also disclosed, is weak, or its enforcement is downgraded or bypassed.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C007
+    statement: Private-use URI schemes and loopback redirects can permit a different local application to receive or intercept an authorization response; app-claimed HTTPS redirects reduce but do not eliminate redirect-path risk.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8252
+        support: direct
+        exact_locators: [Sections 7.1 through 7.3 and 8.1 through 8.3]
+      - source_id: SRC-rfc7636
+        support: corroborating
+        exact_locators: [Section 1]
+    corroboration: RFC 7636 gives the custom-scheme interception attack and its prerequisites.
+    limitations:
+      - Applicability depends on the redirect mechanism, operating-system dispatch behavior, and local attacker capability.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C008
+    statement: CVE-2025-4143 affected workers-oauth-provider versions before 0.0.5 because the authorization endpoint failed to validate redirect_uri against the registered client allowlist, enabling bounded credential theft and impersonation under stated reauthorization and user-navigation preconditions; Cloudflare fixed it in pull request 26.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-4143
+        support: direct
+        exact_locators: [CNA container title, affected versions, description, metrics, and CISA ADP exploitation field]
+      - source_id: SRC-cloudflare-pr26
+        support: corroborating
+        exact_locators: [Commit 66de8d8; oauth-provider.ts parseAuthRequest change; invalid redirect URI regression test]
+    corroboration: The Cloudflare-authored patch adds authorization-time allowlist validation and a regression test that rejects an attacker-domain callback.
+    limitations:
+      - The record documents a vulnerability and bounded potential impact, not a production breach; the CISA ADP record marked exploitation none.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C009
+    statement: CVE-2025-4144 affected workers-oauth-provider versions before 0.0.5 because a token exchange could accept a verifier when the authorization request had no challenge, bypassing PKCE through downgrade; Cloudflare fixed it in pull request 27.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2025-4144
+        support: direct
+        exact_locators: [CNA container title, affected versions, description, metrics, and CISA ADP exploitation field]
+      - source_id: SRC-cloudflare-pr27
+        support: corroborating
+        exact_locators: [Commit d954473; oauth-provider.ts downgrade rejection; regression test]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Section 4.8]
+    corroboration: The first-party patch implements RFC 9700's specific downgrade countermeasure and adds a regression test.
+    limitations:
+      - The record documents a direct MCP-related vulnerability, not end-to-end production exploitation; the CISA ADP record marked exploitation none.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C010
+    statement: CVE-2026-67336 affected Better Auth versions before 1.6.11 when its legacy oidcProvider and mcp plugins accepted plain PKCE by default or silently defaulted a missing method to plain, permitting authorization-code interception when the authorization URL leaked; version 1.6.11 changed the defaults and validation.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-67336
+        support: direct
+        exact_locators: [CNA affected versions, description, references, and CISA ADP exploitation field]
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators: [Affected versions; Summary; Patches; Impact; Credit]
+      - source_id: SRC-rfc7636
+        support: corroborating
+        exact_locators: [Section 7.2]
+    corroboration: The Better Auth maintainer advisory names the MCP plugin, its inherited default, the URL-leak prerequisite, the patched version, and reporter Subhan Umer.
+    limitations:
+      - The advisory combines an unrelated unsigned-token defect with the PKCE defect; only the PKCE authorization-code-interception portion is in scope. CISA ADP marked exploitation none.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C011
+    statement: No directly documented production MCP authorization-code-interception incident was identified in the official standards, CVE/CNA records, CISA KEV catalog, first-party advisories, or implementation patches reviewed through 2026-09-01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cleanroom-queries
+        support: direct
+        exact_locators: [Recorded NVD keyword-query result sets reviewed 2026-09-01]
+      - source_id: SRC-cisa-kev-authorization-code-2026-09-01
+        support: direct
+        exact_locators: [Catalog version 2026.09.01; CVE-2025-4143, CVE-2025-4144, and CVE-2026-67336 absent]
+      - source_id: SRC-cve-2025-4143
+        support: corroborating
+        exact_locators: [CISA ADP SSVC exploitation none]
+      - source_id: SRC-cve-2025-4144
+        support: corroborating
+        exact_locators: [CISA ADP SSVC exploitation none]
+      - source_id: SRC-cve-2026-67336
+        support: corroborating
+        exact_locators: [CISA ADP SSVC exploitation none]
+    corroboration: Three current CVE records independently distinguish disclosed weaknesses from observed exploitation.
+    limitations:
+      - This is a bounded corpus finding, not a claim that no incident has ever occurred; KEV absence alone does not prove non-exploitation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement is limited to named official corpora and the review date.
+    status: validated
+
+  - id: SAF-T1507-C012
+    statement: Correlating authorization and token-endpoint events for redirect mismatches, missing or weak PKCE, failed verifier checks, and repeated exchanges of the same code fingerprint is a defensible experimental analytic for attempted interception or control failure.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6749
+        support: direct
+        exact_locators: [Sections 4.1.3, 10.5, and 10.6]
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators: [Sections 4.4.1, 4.6, and 7.2]
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Sections 2.1.1, 4.1.3, and 4.8.2]
+    corroboration: The standards define the reject conditions and require action on repeated exchange attempts, providing the observable decision points used by the analytic.
+    limitations:
+      - The proposed field names are an SAF normalization, not a standardized OAuth or MCP log schema; a successful first redemption without a later attempt may be invisible.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic is derived from normative server decisions and required invariants rather than a published detector evaluation.
+    status: validated
+
+  - id: SAF-T1507-C013
+    statement: Legitimate client retries, clock or transaction-correlation errors, privacy-preserving code hashing, missing authorization events, and attacker-first redemption can create false positives or blind spots in authorization-code-interception analytics.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6749
+        support: direct
+        exact_locators: [Section 10.5]
+      - source_id: SRC-rfc9700
+        support: context
+        exact_locators: [Sections 4.5.4 and 4.8]
+    corroboration: The sources establish short-lived single-use codes, repeated-exchange handling, and attacker capabilities; the operational consequences for telemetry are explicitly inferred.
+    limitations:
+      - No directly reviewed accuracy study quantifies sensitivity or false-positive rates for the proposed analytic.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: These are operational consequences of the protocol and threat model, not measured performance claims.
+    status: validated
+
+  - id: SAF-T1507-C014
+    statement: Exact redirect matching, mandatory transaction-specific S256 PKCE with downgrade rejection, state verification, short-lived single-use codes, and protected redirect endpoints are complementary preventive controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Authorization Code Protection; Open Redirection; Communication Security]
+      - source_id: SRC-rfc6749
+        support: direct
+        exact_locators: [Sections 3.1.2.3, 4.1.3, 10.5, and 10.6]
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Sections 2.1, 2.1.1, 4.1.3, and 4.8.2]
+      - source_id: SRC-rfc8252
+        support: corroborating
+        exact_locators: [Sections 8.1 through 8.4]
+    corroboration: Multiple standards independently cover redirect integrity, transaction binding, code lifetime, and native/loopback handling.
+    limitations:
+      - These controls do not protect a transaction if both the authorization code and verifier are compromised or if the trusted client endpoint is fully compromised.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1507-C015
+    statement: On suspected code replay or interception, responders should contain the affected authorization transaction and client, invalidate related tokens where supported, preserve endpoint telemetry, correct redirect or PKCE handling, and apply the relevant fixed release.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc6749
+        support: direct
+        exact_locators: [Section 10.5]
+      - source_id: SRC-cloudflare-pr26
+        support: direct
+        exact_locators: [Merged fix and regression test]
+      - source_id: SRC-cloudflare-pr27
+        support: direct
+        exact_locators: [Merged fix and regression test]
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators: [Fix and Workarounds]
+    corroboration: RFC 6749 calls for revocation after multiple exchange attempts, and the first-party sources identify concrete fixes.
+    limitations:
+      - Revocation mechanisms and available historical telemetry vary by authorization server and deployment.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The ordered response procedure is an SAF operational synthesis of normative guidance and vendor remediation.
+    status: validated
+
+  - id: SAF-T1507-C016
+    statement: Successful redemption can expose MCP-accessible data and permit actions within the token's scopes, while direct availability impact is normally limited unless the granted operations themselves are disruptive.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Roles; Access Token Usage; Token Theft; Access Token Privilege Restriction]
+      - source_id: SRC-cve-2025-4143
+        support: corroborating
+        exact_locators: [CNA impact and CVSS confidentiality impact]
+      - source_id: SRC-cve-2026-67336
+        support: corroborating
+        exact_locators: [CNA metrics and description]
+    corroboration: MCP defines access tokens as authorization for protected requests, while the CVE records bound confidentiality and integrity consequences.
+    limitations:
+      - Actual impact is limited by scopes, token audience, lifetime, server capabilities, and downstream authorization.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The dimension ratings synthesize token semantics and bounded vulnerability impacts for MCP environments.
+    status: validated
+
+  - id: SAF-T1507-C017
+    statement: MITRE ATT&CK T1528, Steal Application Access Token, is an analogous mapping because interception of the authorization code is a precursor used to obtain an application access token rather than direct theft of an already issued token.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators: [Technique description, ID, tactic, version, and contributors]
+      - source_id: SRC-rfc7636
+        support: corroborating
+        exact_locators: [Section 1]
+    corroboration: ATT&CK defines the token-focused outcome; RFC 7636 supplies the distinct authorization-code precursor mechanism.
+    limitations:
+      - ATT&CK T1528 does not specifically describe redirect-path interception or PKCE defeat.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping is based on outcome correspondence with an explicit mechanism limitation.
+    status: validated
+
+  - id: SAF-T1507-C018
+    statement: Authorization-code injection and access-token theft are operationally distinct neighbors because they respectively substitute an attacker-owned code into a client session or target a token after issuance, whereas this technique obtains a victim-issued code before token issuance.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Sections 4.5, 4.5.1, and 4.10]
+      - source_id: SRC-rfc7636
+        support: corroborating
+        exact_locators: [Section 1]
+    corroboration: RFC 9700 distinguishes authorization-code injection from stolen-token misuse, while RFC 7636 separately defines code interception.
+    limitations:
+      - SAF-T1009 is the nearest canonical authorization-flow neighbor, not an exact repository label for authorization-code injection.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The SAF boundaries are derived from separate standards-defined attack sequences.
+    status: validated
+
+  - id: SAF-T1507-C019
+    statement: MCP resource indicators and server-side token audience validation constrain a successfully redeemed token to its intended protected resource when correctly implemented.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators: [Resource Parameter Implementation; Token Handling; Token Audience Binding and Validation]
+    corroboration: The same MCP specification requires the resource parameter in authorization and token requests and audience validation by the MCP server.
+    limitations:
+      - Audience binding limits cross-resource reuse but does not prevent use against the intended MCP server.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

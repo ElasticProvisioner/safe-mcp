@@ -1,0 +1,51 @@
+version: 1
+technique_id: SAF-T1301
+name: Cross-Server Tool Shadowing
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+  - ATK-TA0004
+adversary_objective: >-
+  Cause a separately trusted server's tool to be invoked with behavior or arguments that exceed or contradict the user's intended authority.
+scope:
+  security_boundary: >-
+    The provenance boundary between metadata supplied by one server and the execution authority of a tool supplied by another server in a shared agent context.
+  in_scope:
+    - Semantic instructions in one server's descriptor that target a different trusted server's tool.
+    - Unauthorized selection, argument alteration, or behavior of the trusted tool caused by that cross-server influence.
+  out_of_scope:
+    - Generic poisoning that affects only the malicious server's own tool.
+    - Descriptor mutation after approval, identical-name collision, indirect prompt injection in tool output, and downstream impact mechanisms.
+    - Vulnerabilities that merely enable server compromise without demonstrating the defining cross-server descriptor influence.
+  affected_components:
+    - MCP host or client and model tool context
+    - Attacker-controlled server descriptor
+    - Trusted server tool and downstream service
+nearest_neighbors:
+  - technique_id: SAF-T1001
+    distinction: Tool Description Poisoning governs selection or use of the descriptor owner's own tool; SAF-T1301 targets another server's trusted tool.
+  - technique_id: SAF-T1205
+    distinction: Tool Metadata Mutation is defined by a post-approval descriptor change; SAF-T1301 is defined by cross-server semantic influence regardless of when the descriptor appears.
+required_evidence:
+  - Establish how tool descriptors reach model-controlled selection context.
+  - Establish direct cross-server influence over a trusted tool and its prerequisites.
+  - Classify the complete technique's evidence status without promoting adjacent vulnerabilities.
+  - Search current production incidents, demonstrations, advisories, CVEs, and authoritative catalogs and rank no more than four qualifying examples.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Tool descriptor registration and change events with server identity, trust, descriptor hash, cross-server references, and review state.
+    - Tool selection, approval, and call events correlated by session, server, tool, actor, and arguments.
+safe_example_constraints:
+  - Use inert example.invalid destinations and descriptive, non-executable metadata.
+  - Do not reproduce an operational poisoning payload or live credential.
+completion_evidence:
+  - Every substantive README unit has a validated hidden claim trace or a declared local artifact.
+  - All unverified leads are omitted and recorded in the exclusion ledger.
+  - Two consecutive follow-up passes produce no material change.
+  - Eight representative detection cases and the strict validator pass.
+  - Rights and quality review pass with no unresolved item.

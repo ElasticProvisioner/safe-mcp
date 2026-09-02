@@ -1,0 +1,97 @@
+version: 1
+technique_id: SAF-T1105
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1105/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1105/technique-contract.yml
+  supports: Internal scope, name, tactic, generation mode, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1105/quality-review.yml
+  supports: Quality gates and validation results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1105/detection-rule.yml
+  supports: Detection analytic definition and traceability.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1105/test_detection_rule.py
+  supports: Deterministic detection evaluator.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1105/test-logs.json
+  supports: Positive, negative, boundary, normalization, override, and missing-field
+    cases.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1105-X001
+  candidate: A hostile actor exploited the selected MCP path traversal vulnerabilities
+    in a production breach.
+  origin: Production-breach and exploitation-status research pass.
+  attempted_searches:
+  - site:cisa.gov MCP filesystem path traversal incident breach
+  - site:aws.amazon.com/security MCP path traversal incident breach file tool
+  - site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2026-4270 OR CVE-2026-18953
+    OR CVE-2026-15415 OR CVE-2026-74798
+  consulted_source_ids:
+  - SRC-aws-cve-2026-4270
+  - SRC-aws-cve-2026-18953
+  - SRC-aws-cve-2026-15415
+  - SRC-vulncheck-cve-2026-74798
+  reason: Reviewed sources establish advisories and controlled demonstrations, not
+    hostile production exploitation.
+  prohibited_publishable_text:
+  - attackers exploited these vulnerabilities in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1105-X002
+  candidate: CVE-2025-67364 is one of the four highest-impact examples and has a verified
+    fixed version.
+  origin: NVD vulnerability discovery.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail MCP filesystem path traversal
+  - site:cve.org/CVERecord fast-filesystem-mcp CVE-2025-67364 fixed version
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-67364
+  reason: The reviewed record did not establish a fixed version, and four better-supported
+    current examples were available.
+  prohibited_publishable_text:
+  - CVE-2025-67364 was fixed in
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1105-X003
+  candidate: The reference filesystem server advisories provide unambiguous affected
+    and fixed version ranges.
+  origin: Directly opened GHSAs after NVD and CVE records supplied their exact URLs.
+  attempted_searches:
+  - site:nvd.nist.gov/vuln/detail/CVE-2025-53110
+  - site:cve.org/CVERecord CVE-2025-53109
+  consulted_source_ids:
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  reason: Each GHSA page conflicts internally between 0.6.3 metadata and prose recommending
+    0.6.4.
+  prohibited_publishable_text:
+  - the reference server version boundary is unambiguous
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1105-X004
+  candidate: Prompt injection, unauthenticated MCP exposure, or archive extraction
+    alone is an instance of this technique.
+  origin: Gap-and-challenge boundary review.
+  attempted_searches:
+  - site:microsoft.com/security/blog MCP filesystem path traversal incident
+  - site:aws.amazon.com/security/security-bulletins/2026 MCP path traversal tool
+  - site:cwe.mitre.org/data/definitions/22.html path traversal canonicalization
+  consulted_source_ids:
+  - SRC-cwe-22
+  - SRC-mcp-tools-2026-07-28
+  reason: Those behaviors use different delivery or trust boundaries unless a file-capable
+    tool resolves and operates on an out-of-scope path.
+  prohibited_publishable_text:
+  - prompt injection is path traversal
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1901
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI clean-room research agent
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh isolated bundle; prohibited target, registry, history, issue, prior-run, and conversation artifacts were not accessed.
+  contract_and_scope:
+    status: passed
+    notes: Operator-control objective, response-consumption boundary, in-scope conditions, and exclusions are explicit.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, ATT&CK, telemetry, and advisory claims are bounded to reviewed authority text and exact locators.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims link to supporting source records, limitations, and readable hidden traces.
+  source_or_omit:
+    status: passed
+    notes: Four unsupported or unsafe candidates are recorded in the exclusion ledger and omitted from publishable prose.
+  evidence_classification:
+    status: passed
+    notes: The complete behavior remains Research-Derived; enabling vulnerability evidence is not elevated to an observed C2 claim.
+  research_saturation:
+    status: passed
+    notes: Five methodological passes and two consecutive direct-authority no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Ten candidates were assessed; four highest-relevance enabling vulnerabilities were ranked; the direct-incident gap is explicit.
+  detection_quality:
+    status: passed
+    notes: The executable detector passed ten positive, negative, boundary, malformed, false-positive, and blind-spot fixture cases.
+  mitigation_quality:
+    status: passed
+    notes: Approval, destination, redirect, address, DNS, egress, privilege, monitoring, and patch controls are source-bounded.
+  framework_alignment:
+    status: passed
+    notes: Tactic, ATT&CK, synthetic neighbor, detection, and integration joins are explicit and machine-readable.
+  publication_rights:
+    status: passed
+    notes: The draft uses factual paraphrase, nominative identifiers, direct links, and named credits without copied protected expression.
+  safe_publication:
+    status: passed
+    notes: Example traffic uses a reserved non-resolving domain and contains no exploit payload, secret, live destination, or malicious command.
+validation:
+  commands:
+    - command: python3 tests/SAF-T1901/test_detector.py
+      result: passed
+      output: "PASS SAF-T1901 detector: 10 cases, 3 expected alerts, 1 expected-false-positive alert"
+    - command: python3 scripts/validate-technique-research.py SAF-T1901
+      result: passed
+      output: PASS SAF-T1901
+      environment: Fresh isolated synthetic repository using the generic validator.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1901/test_detector.py
+    result: "10 cases passed; 3 expected alerts; 1 expected-false-positive alert"
+  canonical_artifacts:
+    - research/techniques/SAF-T1901/validation/detection-test.txt
+    - research/techniques/SAF-T1901/validation/strict-validator.txt
+    - research/techniques/SAF-T1901/validation/canonical-validation.txt
+limitations_reviewed:
+  - No direct qualifying production incident or end-to-end public demonstration.
+  - Legitimate recurring webhook automations may match.
+  - Slow, one-off, GET-based, encrypted, approved-service, or uncorrelated behavior may evade detection.
+  - Synthetic framework joins require post-freeze reconciliation.
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "PASS SAF-T1901 detector: 10 cases, 3 expected alerts, 1 expected-false-positive alert"
+  validator: "PASS SAF-T1901"
+  proof: research/techniques/SAF-T1901/validation/canonical-validation.txt
+  notes: Independently authored SAF-T1913 now resolves the data-only POST boundary; the detector and strict validator pass in the destination repository.

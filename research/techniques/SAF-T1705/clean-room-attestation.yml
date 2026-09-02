@@ -1,0 +1,134 @@
+version: 1
+technique_id: SAF-T1705
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1705
+  neutral_name: Cross-Agent Instruction Injection
+allowed_inputs:
+- The complete author-saf-technique skill and required methodology, breach-and-vulnerability,
+  clean-room, and readable-trace references, excluding methodology impact examples.
+- Generic techniques/TEMPLATE.md and research/README.md.
+- Blank research/templates/technique schemas, blank source and framework fragment
+  schemas, and scripts/validate-technique-research.py.
+- Neutral technique ID SAF-T1705, neutral name Cross-Agent Instruction Injection,
+  and assigned tactic ATK-TA0008 supplied by the requester.
+- Directly opened standards-body, government, academic-publisher, first-party project,
+  vendor, maintainer, and researcher authorities identified independently.
+prohibited_inputs:
+- Any existing or historical techniques/SAF-T1705/README.md.
+- Any existing or historical techniques/SAF-T1705/detection-rule.yml.
+- Any existing or historical research/techniques/SAF-T1705/ artifact.
+- Target git history, git diff, git blame, issues, pull request material, or review
+  commentary.
+- Shared SAF source, framework, alignment, mitigation, and catalog registries beyond
+  blank schemas.
+- SAF websites, repositories, forks, catalog descriptions, and any previous conversation
+  containing target-specific research or prose.
+- Other agents' work product and methodology impact examples.
+independent_research:
+  searches:
+  - Direct review of A2A, MCP, NIST, MITRE ATT&CK, AI Incident Database, NVD, CVE
+    Program, academic-publisher, maintainer, and first-party researcher authorities.
+  - Exact arXiv API queries for LLM-to-LLM, cross-agent, multi-agent, and agent-to-agent
+    prompt injection.
+  - Exact NVD API queries for multi-agent prompt injection, agent-to-agent injection,
+    AI command injection, and Model Context Protocol.
+  - Two final exact authority-only saturation passes for agent communication poisoning
+    and cross-agent prompt injection.
+  opened_source_ids:
+  - SRC-a2a-spec
+  - SRC-aiid-snapshot-20260831
+  - SRC-cai-zhang-hei-child-inherits
+  - SRC-cve-2025-32711
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-ghsa-v7px
+  - SRC-gu-agent-smith
+  - SRC-hossain-et-al-channelguard
+  - SRC-jfrog-cve-2025-6514
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-mcp-architecture
+  - SRC-mcp-security-2025-11-25
+  - SRC-mitre-atlas-aml-t0051-shell
+  - SRC-mitre-t1072
+  - SRC-msrc-cve-2025-32711-shell
+  - SRC-naik-et-al-omni-leak
+  - SRC-nist-ai-600-1
+  - SRC-nvd-token-scope-corpus
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-triedman-jha-shmatikov-mas-hijacking
+  - SRC-wang-planflip
+  - SRC-injecagent-acl-2024
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect the preexisting target technique or target-specific research until
+  this bundle's FREEZE.sha256 has been verified.
+- Integrate by mechanical replacement only; do not use old text, citations, diffs,
+  or target history to revise the frozen content.
+- Reconcile synthetic tactic, neighbor, source-ID, framework, alignment, and history
+  joins without changing independently researched propositions.
+- If a material research or prose change is required, stop integration, use a separate
+  clean-room normalization or research run as appropriate, and create a new freeze.
+attestation: This run used only the allowed generic inputs, the requester-supplied
+  neutral identity and tactic, and independently opened direct authorities. It did
+  not access, compare, derive from, or receive any existing SAF-T1705 artifact, target
+  history, shared SAF registry content, prior target conversation, or other agent
+  work before the immutable clean-room handoff was prepared.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-architecture: SRC-mcp-architecture
+    SRC-mcp-security: SRC-mcp-security-2025-11-25
+    SRC-mitre-attck-t1072: SRC-mitre-t1072
+    SRC-nvd-catalog-20260902: SRC-nvd-token-scope-corpus
+    SRC-cve-2025-32711: SRC-cve-2025-32711
+    SRC-zhan-et-al-injecagent: SRC-injecagent-acl-2024
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-oligo-cve-2025-49596: SRC-oligo-inspector-cve-2025-49596
+  new_shared_source_records:
+  - SRC-a2a-spec
+  - SRC-nist-ai-600-1
+  - SRC-lee-tiwari-prompt-infection
+  - SRC-triedman-jha-shmatikov-mas-hijacking
+  - SRC-naik-et-al-omni-leak
+  - SRC-aiid-snapshot-20260831
+  - SRC-ghsa-v7px
+  - SRC-gu-agent-smith
+  - SRC-debenedetti-et-al-agentdojo
+  - SRC-hossain-et-al-channelguard
+  - SRC-cai-zhang-hei-child-inherits
+  - SRC-wang-planflip
+  - SRC-msrc-cve-2025-32711-shell
+  - SRC-mitre-atlas-aml-t0051-shell
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0008
+  canonical_mitigations:
+  - SAF-M-1
+  - SAF-M-5
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-21
+  - SAF-M-22
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T1701
+  - SAF-T1702
+  canonical_validation_proof:
+  - research/techniques/SAF-T1705/validation/detection-tests.txt
+  - research/techniques/SAF-T1705/validation/strict-validator.txt
+  source_corpus_hash_proof: research/techniques/SAF-T1705/validation/source-corpus.sha256
+  source_archive_disposition: Source bodies remain outside the repository; the canonical
+    packet retains the frozen source-corpus checksum and reviewed source records.
+  status: integrated_and_validated

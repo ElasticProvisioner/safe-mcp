@@ -1,0 +1,41 @@
+version: 1
+technique_id: SAF-T1201
+freeze_scope: clean_room_bundle_only
+synthetic_tactics:
+  - id: ATK-TA0003
+    status: provided_seed
+    action: Reconcile mechanically with the canonical tactic record without altering technique prose.
+synthetic_neighbors:
+  - {id: SAF-T1998, name: Initial Tool Metadata Poisoning, action: Resolve to the canonical nearest-neighbor ID and path after freeze.}
+  - {id: SAF-T1999, name: Runtime Tool Output Injection, action: Resolve to the canonical nearest-neighbor ID and path after freeze.}
+synthetic_mitigations: []
+source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-rashidi-2607.05744
+  - SRC-song-2506.02040
+  - SRC-etdi-2506.01333
+  - SRC-invariant-tool-poisoning-2025
+  - SRC-invariant-mcp-scan-2025
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-ms-visual-studio-mcp-2026
+  - SRC-owasp-third-party-mcp-2025
+  - SRC-owasp-agentic-top10-2026
+  - SRC-mitre-t1195.002
+  - SRC-nvd-cve-2025-53098
+source_id_action: Merge canonical source records by stable ID; reject a collision with materially different provenance.
+history_shas:
+  - {sha: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, synthetic: true, action: Replace only with an actual repository commit during authorized integration.}
+path_joins:
+  - {from: framework-fragment.yml, field: "techniques[0].technique_path", to: techniques/SAF-T1201/README.md}
+  - {from: framework-fragment.yml, field: "techniques[0].research_packet", to: research/techniques/SAF-T1201}
+  - {from: framework-fragment.yml, field: "techniques[0].detection.rule", to: techniques/SAF-T1201/detection-rule.yml}
+  - {from: techniques/SAF-T1201/README.md, field: Related Techniques, to: synthetic_neighbors}
+  - {from: source-manifest-fragment.yml, field: sources, to: research/source-manifest.yml}
+  - {from: framework-fragment.yml, field: techniques, to: research/framework-model.yml}
+  - {from: alignment-fragment.yml, field: issues, to: research/alignment-issues.yml}
+validation_join: Run detection test and strict validator again after canonical IDs, history SHA, and paths are mechanically reconciled.
+prohibited_integration_actions:
+  - Do not revise prose from the pre-existing target or other technique prose.
+  - Do not inspect git history, diffs, blame, or prior bundles to modify this clean-room draft.
+  - Do not integrate, commit, or push without separate authorization.

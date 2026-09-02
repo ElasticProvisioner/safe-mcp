@@ -1,0 +1,372 @@
+version: 1
+technique_id: SAF-T1303
+claims:
+  - id: SAF-T1303-C001
+    statement: >-
+      Across the reviewed implementations, attacker-controlled MCP-facing
+      command material could reach server-side process creation and cross an
+      intended sandbox or authorization boundary into the launcher context.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: direct
+        exact_locators: [Description; Product Status]
+      - source_id: SRC-nvd-librechat-22252
+        support: corroborating
+        exact_locators: [Description; Change History]
+      - source_id: SRC-zdi-docker-26-363
+        support: corroborating
+        exact_locators: [Vulnerability Details; Additional Details]
+      - source_id: SRC-cve-langchain-30617
+        support: corroborating
+        exact_locators: [Description]
+    corroboration: Four independent product records establish the same input-to-process boundary pattern in distinct MCP-facing components.
+    limitations: [This is a cross-product SAF synthesis, not a report of one production intrusion.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The technique contract generalizes the shared boundary failure without asserting that every MCP implementation is affected.
+    status: validated
+
+  - id: SAF-T1303-C002
+    statement: MCP tools/call requests identify a server tool and may carry an arguments object supplied to that tool.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Protocol Messages > Calling Tools; Data Types > Tool]
+    corroboration: The same request shape appears in the specification's schema reference reviewed during discovery.
+    limitations: [The protocol request shape does not prescribe how an implementation starts operating-system processes.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C003
+    statement: >-
+      LiteLLM versions 1.74.2 through 1.83.6 allowed authenticated users,
+      including low-privilege internal-user key holders, to cause MCP stdio
+      preview endpoints to spawn supplied commands with proxy-process
+      privileges; version 1.83.7 patched the issue.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: direct
+        exact_locators: [Description; Product Status; CVSS]
+    corroboration: NVD product enrichment was reviewed and did not contradict the CNA record.
+    limitations: [The record does not document production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C004
+    statement: >-
+      LibreChat before v0.8.2-rc2 allowed an authenticated user to execute
+      shell commands as root inside the container through its MCP stdio
+      transport; CISA-ADP classified exploitation as proof of concept, and
+      v0.8.2-rc2 fixed the issue.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-librechat-22252
+        support: direct
+        exact_locators: [Description; CISA-ADP SSVC change record; Product affected record]
+    corroboration: The NVD page carries both the GitHub CNA record and CISA-ADP exploitation enrichment.
+    limitations: [Root inside the container does not by itself establish host-root access or a production incident.]
+    conflicts: [NVD and CNA CVSS privilege-required assessments differ; the technique does not rely on either score.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C005
+    statement: >-
+      Docker MCP Plugin could execute code on the host as root when a target
+      referenced a malicious Docker image whose metadata reached a system-call
+      argument path; Docker issued an update.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-zdi-docker-26-363
+        support: direct
+        exact_locators: [Vulnerability Details; Additional Details; Disclosure Timeline]
+    corroboration: The ZDI advisory names the CVE and links the exact vendor advisory URL obtained from the non-GitHub authority; that GitHub URL was not opened.
+    limitations: [User interaction is required; the reviewed advisory does not state affected or fixed versions or production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C006
+    statement: >-
+      LangChain-ChatChat 0.3.1 exposed an MCP management interface that could
+      accept attacker-controlled stdio commands and arguments for execution by
+      later agent activity in the service context.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-langchain-30617
+        support: direct
+        exact_locators: [Description]
+    corroboration: NVD discovery reproduced the CVE description and referenced the same originating research disclosure.
+    limitations: [The CVE record does not state a fixed version or production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C007
+    statement: >-
+      No qualifying direct production incident was identified in the reviewed
+      authoritative corpus through 2026-09-01; a documented malicious-PyPI MCP
+      campaign executed during server startup and is adjacent supply-chain
+      evidence rather than this request-to-exec boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: context
+        exact_locators: [Description]
+      - source_id: SRC-nvd-librechat-22252
+        support: context
+        exact_locators: [Description; CISA-ADP SSVC change record]
+      - source_id: SRC-zdi-docker-26-363
+        support: context
+        exact_locators: [Vulnerability Details; Disclosure Timeline]
+      - source_id: SRC-cve-langchain-30617
+        support: context
+        exact_locators: [Description]
+      - source_id: SRC-jfrog-malicious-mcp
+        support: direct
+        exact_locators: [Paragraphs 1-4; PyPI packages found; code-path description]
+    corroboration: Separate incident, advisory, CVE, and exploitation-status queries are recorded in source-coverage.yml.
+    limitations: [This is a bounded reviewed-corpus absence claim, not a claim that exploitation has never occurred.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Classification depends on the technique contract's request-to-exec boundary and the completed search record.
+    status: validated
+
+  - id: SAF-T1303-C008
+    statement: >-
+      Correlating an MCP request or management action with endpoint process
+      creation by request identifier, parent identity, command line, and
+      expected versus observed security context can detect this boundary mismatch.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Protocol Messages > Calling Tools]
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: [What a Sysmon event represents; Process Create Event ID 1]
+      - source_id: SRC-elastic-ecs-process
+        support: corroborating
+        exact_locators: [Process field details for process.args; process.command_line; process.executable; process.entity_id]
+    corroboration: MCP request fields and endpoint process fields provide the two sides of the proposed correlation.
+    limitations: [MCP implementations must preserve a cross-layer correlation identifier and expected-context baseline.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic is an SAF detection design derived from independently defined protocol and endpoint fields.
+    status: validated
+
+  - id: SAF-T1303-C009
+    statement: A process-start event alone is not proof of malicious behavior; process telemetry gains meaning through correlation and normal administration may look similar.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: [What a Sysmon event represents; Events as behavioral building blocks]
+    corroboration: The deterministic tests include approved administration and in-sandbox process creation as expected negatives.
+    limitations: [False-positive behavior is environment-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C010
+    statement: >-
+      Command-injection defenses should avoid direct OS command calls where
+      possible; otherwise they should separate command from data, positively
+      validate commands and arguments, and run with least privilege.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-command-injection
+        support: direct
+        exact_locators: [Primary Defenses; Defense option 3; Additional Defenses]
+    corroboration: The disclosed vulnerabilities consistently identify insufficient validation before system calls.
+    limitations: [Generic escaping alone may not prevent argument injection; implementation-specific APIs still require review.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C011
+    statement: Docker rootless mode runs both daemon and containers without root privileges and can reduce the privilege consequence of a compromised Docker execution path.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-docker-rootless
+        support: direct
+        exact_locators: [Rootless mode introduction; How it works]
+    corroboration: OWASP separately recommends lowest-privilege and isolated task accounts.
+    limitations: [Rootless mode is product-specific and does not remove command injection or protect non-Docker launchers.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C012
+    statement: MITRE ATT&CK T1059 is an analogous mapping because it covers abuse of command and script interpreters, but it does not define the MCP sandbox boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1059-current
+        support: direct
+        exact_locators: [Technique description; Detection Strategy]
+    corroboration: Selected vulnerabilities use system-call or shell execution paths consistent with command-interpreter abuse.
+    limitations: [The mapping is analogous, not a statement that every instance invokes a shell interpreter.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF adds the MCP-specific privilege-boundary condition absent from ATT&CK T1059.
+    status: validated
+
+  - id: SAF-T1303-C013
+    statement: MCP tool annotations are untrusted unless received from a trusted server and do not themselves enforce sandboxing.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Data Types > Tool; trust and safety note]
+    corroboration: The reviewed specification page separates tool metadata from implementation enforcement.
+    limitations: [This does not evaluate any particular client's approval user interface.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1303-C014
+    statement: >-
+      The privilege and blast radius of server-exec escape are bounded by the
+      effective context and isolation of the MCP launcher, ranging in reviewed
+      records from proxy or service context to container root and host root.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: direct
+        exact_locators: [Description]
+      - source_id: SRC-nvd-librechat-22252
+        support: direct
+        exact_locators: [Description]
+      - source_id: SRC-zdi-docker-26-363
+        support: direct
+        exact_locators: [Vulnerability Details]
+      - source_id: SRC-cve-langchain-30617
+        support: direct
+        exact_locators: [Description]
+      - source_id: SRC-owasp-command-injection
+        support: corroborating
+        exact_locators: [Introduction; Additional Defenses]
+    corroboration: Product records explicitly name distinct obtained security contexts, while OWASP explains the effect of excessive process privilege.
+    limitations: [Reachable files, credentials, and systems remain deployment-specific.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The impact range is synthesized across product-specific privilege contexts.
+    status: validated
+
+  - id: SAF-T1303-C015
+    statement: Investigation should preserve and correlate MCP actions with process lineage and surrounding endpoint events before attributing or scoping the escape.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Protocol Messages > Calling Tools]
+      - source_id: SRC-microsoft-sysmon
+        support: direct
+        exact_locators: [Events as behavioral building blocks; Process Create Event ID 1; Network and file events]
+    corroboration: The proposed analytic exercises the same cross-source joins.
+    limitations: [Specific containment and forensic steps depend on operating system and deployment.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Response guidance is derived from the available audit and process evidence model.
+    status: validated
+
+  - id: SAF-T1303-C016
+    statement: >-
+      The selected vulnerabilities support potentially severe confidentiality,
+      integrity, and availability consequences because they permit arbitrary
+      execution in privileged server, container, or host contexts.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: direct
+        exact_locators: [Description; CVSS]
+      - source_id: SRC-nvd-librechat-22252
+        support: direct
+        exact_locators: [Description; CVSS]
+      - source_id: SRC-zdi-docker-26-363
+        support: direct
+        exact_locators: [Vulnerability Details; CVSS Score]
+      - source_id: SRC-cve-langchain-30617
+        support: direct
+        exact_locators: [Description]
+    corroboration: Three records assign high or critical severity and all four describe arbitrary command or code execution.
+    limitations: [Actual consequence depends on deployment privilege, reachable assets, and attacker follow-on actions.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: CIA ratings are conditional SAF judgments derived from bounded execution contexts.
+    status: validated
+
+  - id: SAF-T1303-C017
+    statement: >-
+      Effective remediation combines available product updates with removal or
+      restriction of unnecessary process-launch paths, structured command
+      invocation, least privilege, and regression monitoring.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-litellm-42271
+        support: direct
+        exact_locators: [Description; Product Status]
+      - source_id: SRC-nvd-librechat-22252
+        support: direct
+        exact_locators: [Description; Product affected record]
+      - source_id: SRC-zdi-docker-26-363
+        support: direct
+        exact_locators: [Additional Details]
+      - source_id: SRC-owasp-command-injection
+        support: direct
+        exact_locators: [Primary Defenses; Additional Defenses]
+      - source_id: SRC-docker-rootless
+        support: corroborating
+        exact_locators: [Rootless mode introduction; How it works]
+    corroboration: Product-specific patch records and general command-injection controls address both known flaws and recurring mechanism.
+    limitations: [No fixed version was identified for LangChain-ChatChat in the reviewed CVE record.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response package combines source-specific fixes with mechanism-level controls.
+    status: validated

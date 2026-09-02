@@ -1,0 +1,107 @@
+version: 1
+technique_id: SAF-T1109
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1109/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1109/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1109/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1109/detection-rule.yml
+  supports: Explicitly labeled detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1109/test_detection_rule.py
+  supports: Deterministic detection evaluator.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1109/test-cases.json
+  supports: Positive, negative, boundary, malformed, and tuning cases.
+- id: LOCAL-detection-log
+  path: tests/SAF-T1109/test-logs.json
+  supports: Deterministic expected-versus-actual record.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1109/source-coverage.yml
+  supports: Search, examples, exclusions, saturation, and evidence classification.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1109/claim-inventory.yml
+  supports: Complete claim inventory and exact locators.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1109-X001
+  candidate: Tool-description poisoning or prompt injection without a debugging control-surface
+    exploit.
+  origin: Nearest-behavior pass.
+  attempted_searches:
+  - Restricted Microsoft control-plane and MCP tool-trust authority review.
+  consulted_source_ids:
+  - SRC-ms-agt
+  - SRC-mcp-tools-2026-07-28
+  reason: Different mechanism changes model choice rather than exploiting a process-launching
+    debug control plane.
+  prohibited_publishable_text:
+  - Debugging Tool Exploitation includes all prompt injection and tool poisoning.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1109-X002
+  candidate: Malicious one-click local MCP server installation.
+  origin: Nearest-behavior pass.
+  attempted_searches:
+  - Restricted MCP standards search for local server installation security.
+  consulted_source_ids:
+  - SRC-mcp-sep-1024
+  reason: Execution occurs at installation and consent, not through exploitation of
+    an already-running debug surface.
+  prohibited_publishable_text:
+  - Any malicious MCP package installation is Debugging Tool Exploitation.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1109-X003
+  candidate: Production compromise attributed to either Inspector CVE or AutoJack.
+  origin: Production-breach and exploitation-status pass.
+  attempted_searches:
+  - Restricted CISA, NVD, Oligo, and Microsoft authority searches.
+  consulted_source_ids:
+  - SRC-ghsa-inspector-7f8r
+  - SRC-ghsa-inspector-g9hg
+  - SRC-microsoft-autojack-2026
+  reason: Reviewed sources establish advisories and demonstrations but no qualifying
+    production incident.
+  prohibited_publishable_text:
+  - These vulnerabilities were exploited in production.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1109-X004
+  candidate: Public LiteLLM test-endpoint exploitation.
+  origin: Vulnerability pass.
+  attempted_searches:
+  - Restricted Oligo vulnerability research review.
+  consulted_source_ids:
+  - SRC-oligo-litellm-2026
+  - SRC-mitre-attack-t1190-v2.8
+  reason: Public server API boundary differs from the local developer debugging control
+    plane.
+  prohibited_publishable_text:
+  - All public testing endpoints are Debugging Tool Exploitation.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1109-X005
+  candidate: Browser-to-localhost access alone.
+  origin: Historical demonstration research.
+  attempted_searches:
+  - Restricted Oligo original research review.
+  consulted_source_ids:
+  - SRC-oligo-localhost-2025
+  reason: Enabling condition without the defining debug-surface-to-process-launch
+    outcome.
+  prohibited_publishable_text:
+  - Any browser request to localhost is Debugging Tool Exploitation.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

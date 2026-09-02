@@ -1,0 +1,127 @@
+version: 1
+technique_id: SAF-T1707
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1707
+  neutral_name: CSRF Token Relay
+allowed_inputs:
+- Neutral tuple SAF-T1707, CSRF Token Relay, ATK-TA0008.
+- Generic author-saf-technique skill, generic methodology and clean-room instructions,
+  generic templates, schemas, and validator.
+prohibited_inputs:
+- Existing techniques/SAF-T1707/README.md target artifact.
+- Existing research/techniques/SAF-T1707/ packet.
+- Existing techniques/SAF-T1707/detection-rule.yml target artifact.
+- Git history, diff, blame, pull request records, issues, reviews, or methodology
+  impact examples.
+- Shared source, framework, alignment, mitigation, and catalog descriptions beyond
+  the neutral tuple.
+- SAF websites, prior target context, previous conversation, and other agents' target
+  work.
+independent_research:
+  searches:
+  - Direct official MCP documentation index and versioned pages; no general search
+    engine.
+  - Direct RFC Editor and IETF authority documents.
+  - NVD API keyword endpoints and CISA KEV/catalog search endpoints.
+  - Exact GitHub advisories opened only from URLs first supplied by NVD records, with
+    provenance retained.
+  - Direct paper URL cited by RFC 9700 and direct OWASP/MITRE authority pages.
+  opened_source_ids:
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-auth-security-2026-07-28
+  - SRC-mcp-security-spec-2026-07-28
+  - SRC-mcp-doc-index-2026
+  - SRC-rfc9700-state-relay
+  - SRC-rfc6749-state-binding
+  - SRC-rfc7636-state-relay
+  - SRC-oauth21-draft13
+  - SRC-fett-oauth-state-leak
+  - SRC-fastapi-advisory
+  - SRC-authlib-advisory
+  - SRC-fastify-advisory
+  - SRC-openclaw-advisory
+  - SRC-nvd-state-query
+  - SRC-nvd-oauth-query
+  - SRC-nvd-saturation-1
+  - SRC-nvd-saturation-2
+  - SRC-cisa-kev-2026-09-01
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-mitre-t1204-001
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Bundle is standalone and was validated only in a synthetic mock repository with
+  no prior SAF-T1707 artifacts.
+- Synthetic neighbor IDs and history anchor must not be mistaken for destination framework
+  facts.
+- Integration must reconcile neighbor joins and replace only mechanical registry paths
+  without changing frozen prose or evidence conclusions.
+attestation: I attest that this SAF-T1707 bundle was independently researched and
+  authored from only the allowed neutral tuple and generic authoring materials; prohibited
+  target artifacts, repository history, shared registries, SAF sites, prior target
+  context, other agents' work, and methodology examples were not accessed.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-authorization-2026: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-authorization-security-2026: SRC-mcp-auth-security-2026-07-28
+    SRC-mcp-security-2026: SRC-mcp-security-spec-2026-07-28
+    SRC-mcp-index: SRC-mcp-doc-index-2026
+    SRC-mcp-authorization-2025: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025: SRC-mcp-security-spec-2025-11-25
+    SRC-rfc9700: SRC-rfc9700-state-relay
+    SRC-rfc6749: SRC-rfc6749-state-binding
+    SRC-rfc7636: SRC-rfc7636-state-relay
+    SRC-fett-oauth-analysis: SRC-fett-oauth-state-leak
+    SRC-fett-oauth-abstract: SRC-fett-oauth-analysis
+    SRC-cisa-kev: SRC-cisa-kev-2026-09-01
+    SRC-owasp-logging: SRC-owasp-logging-cheat-sheet
+  new_shared_source_records:
+  - SRC-rfc9700-state-relay
+  - SRC-rfc9700-errata
+  - SRC-rfc6749-state-binding
+  - SRC-rfc7636-state-relay
+  - SRC-oauth21-draft13
+  - SRC-fett-oauth-state-leak
+  - SRC-fastapi-advisory
+  - SRC-nvd-2025-68481
+  - SRC-authlib-advisory
+  - SRC-nvd-2025-68158
+  - SRC-fastify-advisory
+  - SRC-nvd-2026-18165
+  - SRC-openclaw-advisory
+  - SRC-nvd-2026-28477
+  - SRC-nvd-state-query
+  - SRC-nvd-oauth-query
+  - SRC-nvd-saturation-1
+  - SRC-nvd-saturation-2
+  - SRC-cisa-search-state
+  - SRC-cisa-search-incident
+  - SRC-cisa-search-saturation
+  - SRC-mitre-t1204-001
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0008
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-18
+  - SAF-M-38
+  canonical_neighbors:
+  - SAF-T1009
+  - SAF-T1507
+  - SAF-T1706
+  canonical_validation_proof:
+  - research/techniques/SAF-T1707/validation/detection-test.txt
+  - research/techniques/SAF-T1707/validation/strict-validator.txt
+  source_corpus_hash: 25384e41257aa6760eee5bd1333c0bf98437829d450f6b48973a4291e6b34d34
+  source_archive_disposition: Source bodies remain outside the repository; canonical source records and the frozen manifest hash preserve the reviewed evidence disposition.
+  status: integrated_and_validated

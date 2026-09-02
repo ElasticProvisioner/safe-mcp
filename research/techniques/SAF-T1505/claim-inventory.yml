@@ -1,0 +1,550 @@
+version: 1
+technique_id: SAF-T1505
+claims:
+  - id: SAF-T1505-C001
+    statement: >-
+      Radosevich and Halloran demonstrated an end-to-end MCP workflow in which
+      retrieved malicious instructions caused tools to find OpenAI and
+      Hugging Face API keys in environment variables and disclose them through Slack.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-2504.03767v2
+        support: direct
+        exact_locators:
+          - Section 4, pages 5-6, Figure 4 and surrounding paragraph
+          - Section 3, page 3, definition of Credential Theft
+    corroboration: >-
+      Product vulnerabilities in LibreChat, awesome-llm-apps, and PraisonAI
+      independently establish live environment-state disclosure mechanisms.
+    limitations:
+      - The study is a controlled evaluation, not a production incident.
+      - The scenario includes prompt injection and Slack exfiltration that are adjacent to the extraction step.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C002
+    statement: >-
+      The MCP authorization specification says stdio implementations should
+      retrieve credentials from the environment, so live process state can
+      legitimately contain MCP credentials.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Protocol Requirements, requirement for STDIO transport credentials
+    corroboration: >-
+      The PraisonAI advisory documents a concrete implementation in which a
+      parent process environment contains sensitive credentials.
+    limitations:
+      - The specification does not require forwarding the full environment to child processes.
+      - Environment-based credential retrieval is not itself malicious.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C003
+    statement: >-
+      MCP security guidance states that local MCP servers run on the user's
+      machine, may have direct system access, and should be launched with
+      restricted filesystem and network access in a sandbox with minimal privileges.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise, Attack Description, Risks, and Mitigation
+    corroboration: >-
+      The PraisonAI and FrontMCP advisories show concrete privilege-boundary
+      failures involving local subprocesses and sandboxed code.
+    limitations:
+      - The guidance addresses broad local-server compromise, not only secret extraction.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C004
+    statement: >-
+      MCP authorization guidance warns that attackers who obtain tokens stored
+      by a client or cached or logged by a server can access protected resources,
+      and recommends secure storage and short-lived access tokens.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Security Considerations, Token Theft
+    corroboration: >-
+      The LibreChat and awesome-llm-apps disclosures describe concrete secret
+      material whose compromise can enable access to other resources.
+    limitations:
+      - The guidance does not specify how an attacker obtains a token from process memory.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C005
+    statement: >-
+      CVE-2026-32625 affected LibreChat through 0.8.3: user-supplied MCP server
+      URLs could resolve process.env placeholders and transmit cryptographic and
+      database secrets; the advisory lists 0.8.4-rc1 as patched.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+        support: direct
+        exact_locators:
+          - Affected versions, Patched versions, Summary, Details, Impact, and Credits
+      - source_id: SRC-nvd-cve-2026-32625
+        support: corroborating
+        exact_locators:
+          - CVE-2026-32625 English description, configurations, references, and SSVC data
+    corroboration: >-
+      NVD independently records the affected range, patched release, proof-of-concept
+      exploitation state, and vendor-advisory reference.
+    limitations:
+      - The evidence establishes a vulnerability and proof of concept, not production exploitation.
+      - The advisory's reporter credit is YLChen-007; no real secret values are reproduced here.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C006
+    statement: >-
+      CVE-2026-29872 documents a Streamlit GitHub MCP Agent that stored user
+      tokens in process-wide os.environ state, allowing another unauthenticated
+      session to retrieve them in a controlled reproduction at commit e46690f.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: direct
+        exact_locators:
+          - Summary, Technical Description, Security Boundary Violation, Proof of Concept, and Credit
+      - source_id: SRC-nvd-cve-2026-29872
+        support: corroborating
+        exact_locators:
+          - CVE-2026-29872 English description, configurations, references, and SSVC data
+    corroboration: >-
+      NVD records the same tested commit, cross-session process-global mechanism,
+      unauthenticated retrieval consequence, and proof-of-concept status.
+    limitations:
+      - The reviewed records do not identify a fixed release.
+      - The disclosure says a minimal display modification made the leakage observable.
+      - Credit belongs to researcher Pham Minh.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C007
+    statement: >-
+      CVE-2026-40159 documents PraisonAI forwarding a parent process environment
+      to a user-selected MCP stdio subprocess, giving untrusted code access to
+      API keys, tokens, and database credentials; version 4.5.128 is patched.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: direct
+        exact_locators:
+          - Affected versions, Patched versions, Description, Reproducing the Attack, Remediation Steps, and Credits
+      - source_id: SRC-nvd-cve-2026-40159
+        support: corroborating
+        exact_locators:
+          - CVE-2026-40159 English description, configurations, references, and SSVC data
+    corroboration: >-
+      NVD corroborates the environment-inheritance mechanism, potential secret
+      exposure, patch release, and proof-of-concept status.
+    limitations:
+      - The advisory lists affected versions through 4.5.117 while NVD says prior to 4.5.128; 4.5.118-4.5.127 remain uncertain.
+      - Exploitation requires an untrusted or compromised child command and user interaction.
+      - Reporter credit belongs to l3tchupkt.
+    conflicts:
+      - Affected-version range differs between the vendor advisory and NVD summary.
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C008
+    statement: >-
+      CVE-2026-67531 is an enabling, not defining, example: a FrontMCP sandbox
+      escape permitted server-process code execution and described process-held
+      secrets as exposed, but the advisory did not demonstrate secret extraction.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-mp29-fxh8-92px
+        support: direct
+        exact_locators:
+          - Summary, Details, Security Impact, Remediation, and Credits
+      - source_id: SRC-nvd-cve-2026-67531
+        support: corroborating
+        exact_locators:
+          - CVE-2026-67531 English description, references, metrics, and SSVC data
+    corroboration: >-
+      NVD corroborates the sandbox escape, process-level code execution, listed
+      secret impact, patch in 1.5.7, and proof-of-concept status.
+    limitations:
+      - Reporter credit belongs to fg0x0 and remediation credit to frontegg-david.
+      - The record does not establish actual acquisition of a secret value.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Classification as enabling follows from the difference between possible
+        process access and demonstrated secret acquisition.
+    status: validated
+
+  - id: SAF-T1505-C009
+    statement: >-
+      No qualifying production breach was identified in the direct-authority
+      corpus reviewed on 2026-09-01; the evidence consists of controlled
+      demonstrations and disclosed vulnerabilities, and the selected CVEs were
+      absent from that day's CISA KEV catalog.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-in-memory-secrets-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog version 2026.09.01 and exact-match check for four selected CVE IDs
+      - source_id: SRC-arxiv-2504.03767v2
+        support: context
+        exact_locators:
+          - Abstract and Sections 3-4 identifying demonstrations
+      - source_id: SRC-nvd-cve-2026-32625
+        support: context
+        exact_locators:
+          - SSVC exploitation field marked poc
+      - source_id: SRC-nvd-cve-2026-29872
+        support: context
+        exact_locators:
+          - SSVC exploitation field marked poc
+      - source_id: SRC-nvd-cve-2026-40159
+        support: context
+        exact_locators:
+          - SSVC exploitation field marked poc
+    corroboration: >-
+      Separate NVD incident/breach keyword passes returned no records, while the
+      sources that did qualify explicitly describe PoCs or controlled evaluations.
+    limitations:
+      - This is a bounded corpus finding, not a claim that no incident has ever occurred.
+      - Absence from KEV does not prove absence of exploitation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The absence statement is limited to the documented searches and reviewed authorities.
+    status: validated
+
+  - id: SAF-T1505-C010
+    statement: >-
+      A high-signal analytic can correlate an external MCP destination with
+      attacker-controlled environment-variable resolution, or an untrusted MCP
+      child process with inheritance of secret-like variable names, without logging values.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+        support: direct
+        exact_locators:
+          - Details, external URL plus process.env placeholder sequence
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: direct
+        exact_locators:
+          - Description and Remediation Steps, inherited environment and allowlist guidance
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: corroborating
+        exact_locators:
+          - Security Boundary Violation and Remediation
+    corroboration: >-
+      The three disclosures expose distinct but convergent observable joins:
+      untrusted actor, secret-bearing live state, and unauthorized recipient.
+    limitations:
+      - The proposed event schema is synthetic and requires application instrumentation.
+      - Secret-like names are heuristic and should be tuned locally.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The rule combines fields implied by independently demonstrated mechanisms;
+        no reviewed source evaluates this exact detector.
+    status: validated
+
+  - id: SAF-T1505-C011
+    statement: >-
+      Environment use or inheritance alone is not sufficient evidence of attack,
+      because MCP stdio implementations may legitimately obtain credentials from
+      the environment; destination trust, child trust, session ownership, and
+      authorization context are needed to reduce false positives.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Protocol Requirements, STDIO credential guidance
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: corroborating
+        exact_locators:
+          - Description and Remediation Steps, untrusted command and explicit allowlist conditions
+    corroboration: >-
+      The PraisonAI advisory conditions risk on untrusted or third-party child commands,
+      supporting contextual rather than name-only detection.
+    limitations:
+      - Trust labeling and ownership context may be unavailable in existing logs.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The false-positive distinction synthesizes normative credential handling
+        with the advisory's exploit preconditions.
+    status: validated
+
+  - id: SAF-T1505-C012
+    statement: >-
+      LibreChat's advisory recommends preventing environment substitution in
+      untrusted user-supplied MCP configuration, particularly remote endpoint URLs.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+        support: direct
+        exact_locators:
+          - Suggested Fix, schema decoupling and strict filtering
+    corroboration: >-
+      The NVD record confirms that version 0.8.4-rc1 remediates the vulnerable path.
+    limitations:
+      - The fix is product-specific and does not address child-process inheritance.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C013
+    statement: >-
+      PraisonAI's advisory recommends sanitizing child environments and using a
+      strict allowlist for variables explicitly intended for the MCP subprocess.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: direct
+        exact_locators:
+          - Remediation Steps
+    corroboration: >-
+      MCP security guidance independently recommends sandboxing local servers
+      with minimal default privileges and restricted resources.
+    limitations:
+      - Name-based filtering alone can miss unrecognized secret names.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C014
+    statement: >-
+      The CVE-2026-29872 disclosure recommends session-scoped credential state,
+      strict session binding, clearing sensitive data after use, and avoiding
+      shared global environment state.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: direct
+        exact_locators:
+          - Remediation and Additional recommendations
+    corroboration: >-
+      The disclosure's controlled cross-session reproduction directly establishes
+      the boundary that session scoping is intended to restore.
+    limitations:
+      - The recommendations are specific to multi-user application state.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1505-C015
+    statement: >-
+      ATT&CK T1003 is only analogous: it covers credential dumping from operating-system
+      protected memory or stores, whereas SAF-T1505 includes application-level
+      environment and runtime-state access without requiring OS credential dumping.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1003
+        support: direct
+        exact_locators:
+          - Technique description, Mitigations, and Detection Strategy
+    corroboration: >-
+      The selected MCP disclosures operate through application environment state,
+      not LSASS, SAM, /proc process-memory access, or another OS credential store.
+    limitations:
+      - A process-memory-scraping variant of SAF-T1505 could overlap T1003 more closely.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The mapping compares the ATT&CK definition with the independently bounded SAF behavior.
+    status: validated
+
+  - id: SAF-T1505-C016
+    statement: >-
+      Required detection fields are event time, actor and session, operation,
+      remote destination trust, referenced or inherited variable names, parent
+      and child identity, child trust, and authorization or allowlist decision.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+        support: direct
+        exact_locators:
+          - Details, actor, endpoint, transport URL, environment lookup, and outbound request
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: direct
+        exact_locators:
+          - Description and Remediation Steps, parent environment, child command, and allowlist
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: direct
+        exact_locators:
+          - Technical Description and Security Boundary Violation, cross-session state access
+    corroboration: >-
+      Each field participates in a reviewed causal sequence or in the control
+      needed to distinguish an authorized flow.
+    limitations:
+      - Existing products may not emit this normalized schema.
+      - Values should be redacted, limiting content-based confirmation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The field set is a defensive synthesis of directly documented attack paths.
+    status: validated
+
+  - id: SAF-T1505-C017
+    statement: >-
+      Response should terminate the affected session or process, preserve
+      redacted configuration and launch telemetry, determine which secret
+      identifiers crossed the boundary, and rotate potentially exposed credentials.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Token Theft, secure storage and short-lived token guidance
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: corroborating
+        exact_locators:
+          - Remediation Steps
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: corroborating
+        exact_locators:
+          - Additional recommendations, clear sensitive data after use
+    corroboration: >-
+      Selected disclosures establish that environment-held values may include
+      API keys, tokens, database credentials, and signing secrets.
+    limitations:
+      - The reviewed sources do not prescribe one universal incident-response playbook.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The procedure combines containment and credential-lifecycle implications
+        of the reviewed mechanisms.
+    status: validated
+
+  - id: SAF-T1505-C018
+    statement: >-
+      Confidentiality impact can be high when live state contains signing keys,
+      database credentials, personal access tokens, or paid API keys; integrity
+      and availability effects require follow-on use and are not inherent to extraction.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-4pcc-j6m6-wcwx
+        support: direct
+        exact_locators:
+          - Impact and CVSS confidentiality and integrity metrics
+      - source_id: SRC-pham-minh-cve-2026-29872
+        support: direct
+        exact_locators:
+          - Impact and Attack Vector
+      - source_id: SRC-ghsa-pj2r-f9mw-vrcq
+        support: corroborating
+        exact_locators:
+          - Description, Impact, and CVSS confidentiality metric
+    corroboration: >-
+      Three independent disclosures identify high-value live credentials and
+      distinguish direct disclosure from subsequent misuse.
+    limitations:
+      - Actual impact depends on secret privilege, lifetime, and compensating controls.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The SAF rating generalizes across product-specific disclosed consequences.
+    status: validated
+
+  - id: SAF-T1505-C019
+    statement: >-
+      Model refusal is an unreliable sole control for this behavior: the controlled
+      MCP study observed both refusals and successful credential-theft workflows
+      after prompt changes and warned about false confidence from guardrail tests.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-2504.03767v2
+        support: direct
+        exact_locators:
+          - Introduction, Sections 3-5, and Discussion
+    corroboration: >-
+      Product vulnerabilities in the selected examples arise below the model
+      guardrail layer and require implementation controls.
+    limitations:
+      - The study evaluated specific model and MCP-server combinations in a controlled setting.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated

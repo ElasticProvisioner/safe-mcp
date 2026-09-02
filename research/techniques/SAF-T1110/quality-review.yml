@@ -1,0 +1,55 @@
+version: 1
+technique_id: SAF-T1110
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room research agent
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records allowed inputs, prohibited-input avoidance, isolation, and freeze constraints.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires image/audio carrier, third-party trust crossing, and behavior change while excluding named neighbors.
+  technical_accuracy:
+    status: passed
+    notes: Protocol capability, prerequisites, controlled attack flows, impact conditions, and limitations are externally traced.
+  claim_traceability:
+    status: passed
+    notes: Seventeen validated claims have exact reviewed source locators and hidden README trace links.
+  source_or_omit:
+    status: passed
+    notes: Every substantive publishable unit is externally traced or backed by a declared local artifact; seven unsupported overclaims are excluded.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by four independent controlled examples; no production incident supports Observed.
+  research_saturation:
+    status: passed
+    notes: Two consecutive final domain-restricted title/synonym passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Current incident, NVD, CISA, advisory, exploitation, remediation, and demonstration searches are recorded with honest relationship classifications.
+  detection_quality:
+    status: passed
+    notes: Deterministic nine-case analytic test passes and covers modalities, approval, time boundary, malformed input, a neighbor, and a documented false positive.
+  mitigation_quality:
+    status: passed
+    notes: Controls address media provenance, modality-aware screening, privilege, action authorization, telemetry, and response.
+  framework_alignment:
+    status: passed
+    notes: Execution tactic, analogous T1204 mapping, T1204.003 rejection, and canonical SAF-T1102 and SAF-T2107 neighbor joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited uses are attributed paraphrases; no quotation, media, code, table, or dataset is reused.
+  safe_publication:
+    status: passed
+    notes: Scenario and test data use inert placeholders and omit attack construction, credentials, and destructive detail.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1110
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 research/techniques/SAF-T1110/test_detection_rule.py
+    result: Nine of nine deterministic cases passed with zero failures.
+    waiver: null
+unresolved: []

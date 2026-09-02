@@ -1,0 +1,255 @@
+version: 1
+technique_id: SAF-T1903
+claims:
+  - id: SAF-T1903-C001
+    statement: JFrog Security Research documented malicious packages presented as MCP servers that opened a reverse shell to attacker infrastructure.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-jfrog-malicious-mcp
+        support: direct
+        exact_locators: ["Title/byline/date and opening summary, lines 8-18; payload behavior and timing, lines 19-45"]
+    corroboration: The independent Unit 42 finding corroborates that server-branded integrations have been distributed with persistent remote control behavior.
+    limitations: [The report establishes malicious packages and download exposure, not victim execution, a named breach, or the number of compromised systems.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C002
+    statement: Unit 42 documented a Chrome extension presented as an MCP server that hardcoded a remote WebSocket C2 channel, exposed remote commands, and persistently reconnected.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-unit42-browser-c2
+        support: direct
+        exact_locators: ["Findings and response, lines 9-25; WebSocket C2 table, line 51; Chrome MCP Server analysis, lines 61-84"]
+    corroboration: The JFrog incident independently corroborates the distribution of malicious MCP-presented software with remote control behavior.
+    limitations: [The report does not establish MCP specification conformance, a named victim, or confirmed victim compromise.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C003
+    statement: The current MCP specification supports client-launched subprocess servers and custom transports over bidirectional communication while treating server tools as potentially arbitrary code paths.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-overview-2026
+        support: direct
+        exact_locators: ["Overview protocol roles and server features, lines 63-112; Security and Trust & Safety, lines 138-170"]
+      - source_id: SRC-mcp-transports-2026
+        support: direct
+        exact_locators: ["Overview and standard transports, lines 64-72; message directions, lines 77-85; Custom Transports, lines 95-106"]
+    corroboration: Two separate authoritative pages in the same specification define roles/security and transport behavior.
+    limitations: [Protocol capability is legitimate and does not itself establish malicious use.]
+    conflicts: [The 2026-07-28 revision removed connection-scoped sessions and server-initiated requests used by earlier revisions; the technique does not rely on either feature.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C004
+    statement: The catalog boundary is the ongoing bidirectional operator command loop rather than delivery, model steering, one-way exfiltration, or server takeover alone.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-malicious-mcp
+        support: direct
+        exact_locators: ["Opening summary, lines 8-18; reverse-shell behavior, lines 31-45"]
+      - source_id: SRC-unit42-browser-c2
+        support: direct
+        exact_locators: ["Chrome MCP Server remote-command and reconnect analysis, lines 61-84"]
+      - source_id: SRC-jfrog-jfsa-2026-001653030
+        support: context
+        exact_locators: ["Summary and takeover description, lines 11-34"]
+      - source_id: SRC-mcp-overview-2026
+        support: context
+        exact_locators: ["Security and Trust & Safety, lines 138-170"]
+      - source_id: SRC-checkpoint-codex-cli
+        support: context
+        exact_locators: ["Project-local MCP startup demonstration, lines 35-55"]
+      - source_id: SRC-checkpoint-claude-code
+        support: context
+        exact_locators: ["MCP consent-bypass configuration and demonstration, lines 92-121"]
+    corroboration: The two selected incidents share a command loop, while the adjacent JFrog advisory shows that server takeover can stop at tool shadowing.
+    limitations: [This is a clean-room catalog distinction, not language adopted by the source publishers.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The boundary is derived by comparing documented mechanisms and immediate objectives.}
+    status: validated
+  - id: SAF-T1903-C005
+    statement: The JFrog report identified three malicious packages with approximately 1,600 downloads using the same reverse-shell payload family.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-jfrog-malicious-mcp
+        support: direct
+        exact_locators: ["Opening summary and campaign scope, lines 8-18; package table, lines 19-31"]
+    corroboration: No independent download-count source was identified; this quantitative claim remains single-source.
+    limitations: [Downloads are exposure counts and must not be interpreted as compromise counts.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C006
+    statement: The Unit 42 extension exposed more than thirty remote commands and reconnect behavior that survived browser restart.
+    class: observed_incident
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-unit42-browser-c2
+        support: direct
+        exact_locators: ["Chrome MCP Server analysis, lines 61-84"]
+    corroboration: The broader extension table independently identifies WebSocket C2 and persistence/reconnect characteristics within the same investigation.
+    limitations: [The report does not provide a victim count or prove that every command was exercised.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C007
+    statement: Check Point demonstrated that a Codex CLI project-local configuration could start an arbitrary MCP command without a fresh prompt, providing an enabling path to a control channel.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-checkpoint-codex-cli
+        support: direct
+        exact_locators: ["Title/byline/date, lines 22-30; project-local MCP startup demonstration, lines 35-55; disclosure and remediation, lines 71-75"]
+      - source_id: SRC-cve-2025-61260
+        support: corroborating
+        exact_locators: ["CVE record title, description, CNA, publication date, and affected-version record"]
+    corroboration: The CVE Program record independently records the project-local MCP configuration code-execution issue.
+    limitations: [The demonstration is not production exploitation, and the CVE affected range conflicts with Check Point's statement that v0.23.0 fixed the issue.]
+    conflicts: [Check Point reports a v0.23.0 fix; the later CVE record describes v0.23.0 and earlier as affected. The README reports the conflict rather than resolving it.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C008
+    statement: Check Point demonstrated a Claude Code project configuration that bypassed MCP server-startup consent and executed the configured command before the trust dialog; the CVE record identifies versions before 1.0.111 as affected.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-checkpoint-claude-code
+        support: direct
+        exact_locators: ["Title/byline/date, lines 22-40; MCP consent-bypass configuration and demonstration, lines 92-121; remediation discussion, lines 205 onward"]
+      - source_id: SRC-cve-2025-59536
+        support: corroborating
+        exact_locators: ["CVE record title, description, CNA, publication date, and fixed version 1.0.111"]
+    corroboration: The CVE Program record independently supplies the affected and fixed version boundary.
+    limitations: [The source presents a controlled demonstration and does not establish production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C009
+    statement: The selected production reports do not establish a named victim breach attributable to the technique.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-jfrog-malicious-mcp
+        support: direct
+        exact_locators: ["Full report reviewed; package findings and downloads are stated, but no victim organization or confirmed compromise is identified"]
+      - source_id: SRC-unit42-browser-c2
+        support: direct
+        exact_locators: ["Full article reviewed; removal/reporting actions and extension behavior are stated, but no named victim breach is identified"]
+      - source_id: SRC-unit42-ai-ir
+        support: corroborating
+        exact_locators: ["AI incident-response interview, lines 10-31, characterizing MCP-related C2 campaigns as nascent without major impacts"]
+    corroboration: Unit 42 incident-response commentary characterizes MCP-related C2 experimentation as nascent rather than mature high-impact campaigning.
+    limitations: [Absence in the reviewed reports is not proof that no breach exists, and a government exploitation-feed fetch was blocked.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a bounded negative finding limited to reviewed sources.}
+    status: validated
+  - id: SAF-T1903-C010
+    statement: Unusual external destinations from GenAI processes are useful C2 or exfiltration signals, with legitimate service, package, and development activity as expected false positives.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-elastic-unusual-domain
+        support: direct
+        exact_locators: ["Rule purpose and data source, lines 13-28; investigation guidance and false-positive analysis, lines 29-76"]
+    corroboration: The selected incidents independently show malicious servers reaching external operator infrastructure.
+    limitations: [Destination novelty alone cannot distinguish C2 from legitimate new services.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C011
+    statement: Child-process telemetry attributed to MCP or GenAI processes provides useful execution context for correlation with network activity.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-elastic-mcp-child
+        support: direct
+        exact_locators: ["Rule description and telemetry indices, lines 14-29; parent-process selections and exclusions, lines 53-178"]
+    corroboration: The JFrog incident documents command-channel behavior originating from the malicious server process.
+    limitations: [Parent-child ancestry is a low-severity building block and is not proof of malicious control.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C012
+    statement: Server provenance review, least privilege, tool restrictions, isolation, audit logging, and network restriction constrain malicious-server risk.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-mcp-security-2026
+        support: direct
+        exact_locators: ["Least-privilege identity guidance, lines 61-68; data isolation, lines 69-84; malicious-tool mitigations, lines 85-101; audit and license, lines 107-113"]
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators: ["Security and Trust & Safety, lines 138-170"]
+    corroboration: The current protocol specification independently warns that tools can represent arbitrary code execution and requires robust host controls.
+    limitations: [Guidance does not quantify control effectiveness or guarantee containment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C013
+    statement: MITRE ATT&CK T1071 is an analogous mapping because it covers commands and results over an application-layer protocol, while observed channels need not be MCP protocol traffic.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1071
+        support: direct
+        exact_locators: ["Technique definition, version, and contributor, lines 16-46; detection guidance, lines 74-82"]
+      - source_id: SRC-jfrog-malicious-mcp
+        support: context
+        exact_locators: ["Reverse-shell behavior, lines 31-45"]
+      - source_id: SRC-unit42-browser-c2
+        support: context
+        exact_locators: ["WebSocket C2 behavior, lines 61-84"]
+    corroboration: Both observed examples implement command/result communication, but by different channel types.
+    limitations: [The mapping is analogous, not a claim that all control traffic is T1071-conformant or MCP-native.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping compares immediate objective and traffic role, while preserving transport differences.}
+    status: validated
+  - id: SAF-T1903-C014
+    statement: Pre-execution analysis combined with in-execution behavioral-deviation analysis has demonstrated promise for detecting malicious MCP servers.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-connor
+        support: direct
+        exact_locators: ["Abstract, lines 16-20: 114-server PoC dataset, two-stage Connor design, 94.6% F1, and two real-world detections"]
+    corroboration: Elastic's behavioral building blocks independently support correlating process and network deviations.
+    limitations: [The evaluation used a curated dataset, spans broader malicious-server behaviors, and does not validate this bundle's specific channel analytic.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1903-C015
+    statement: The potential impact of a malicious server control channel is bounded by the server process's permissions, accessible data, credentials, and network reach.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-google-mcp-security-2026
+        support: direct
+        exact_locators: ["Agent identity and least privilege, lines 61-68; malicious-tool risk and controls, lines 85-101"]
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators: ["Tool safety and arbitrary-code warning, lines 138-170"]
+    corroboration: Both sources tie risk to tool/server trust, access, and host controls.
+    limitations: [This conditional severity inference is not a loss estimate and selected incidents did not report measured victim impact.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The severity boundary is derived from documented privilege and control conditions.}
+    status: validated

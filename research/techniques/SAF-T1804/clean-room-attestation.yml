@@ -1,0 +1,124 @@
+version: 1
+technique_id: SAF-T1804
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1804
+  neutral_name: API Data Harvest
+allowed_inputs:
+- Neutral identifier SAF-T1804, neutral name API Data Harvest, and tactic ATK-TA0009
+  supplied by the commissioning task.
+- The generic author-saf-technique skill, its generic references excluding methodology
+  impact examples, generic templates and schemas, and the generic validator.
+- Direct protocol authorities, standards, first-party advisories, government catalogs,
+  incident reports, and research repositories independently opened during this run.
+prohibited_inputs:
+- Existing techniques/SAF-T1804/README.md.
+- Existing techniques/SAF-T1804/detection-rule.yml.
+- Existing research/techniques/SAF-T1804/ packet contents or tests.
+- Git history, diff, blame, catalog metadata, and shared framework, source, or alignment
+  registries.
+- Pull request, issue, review, SAF website, other-agent output, or methodology impact
+  example concerning the target.
+- Previous conversation or inherited target-specific context.
+independent_research:
+  searches:
+  - 'Direct review: MCP 2025-11-25 Tools, Resources, Authorization, and Security Best
+    Practices authorities'
+  - Direct NVD API keywordSearch=Model Context Protocol, resultsPerPage=200
+  - Direct NVD API keywordSearch=Model Context Protocol data query
+  - Direct NVD API keywordSearch=Model Context Protocol data access
+  - Direct CISA KEV JSON catalog review for selected CVE identifiers
+  - Direct arXiv API all:"Model Context Protocol" AND all:data
+  - Direct arXiv API all:"Model Context Protocol" AND all:"data exfiltration"
+  - Direct arXiv API all:"Model Context Protocol" AND all:"data access"
+  - 'Final pass 1: NVD MCP bulk data retrieval; arXiv MCP bulk data; MCP security
+    authority refresh'
+  - 'Final pass 2: NVD MCP resource enumeration; arXiv MCP resource enumeration; CISA
+    KEV refresh'
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nist-sp800-228-upd1
+  - SRC-mitre-t1213-v3.4
+  - SRC-nvd-mcp-corpus-20260901
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-splunk-svd-2025-1210
+  - SRC-ghsa-meta-ads
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-update
+  - SRC-microsoft-silk-typhoon-2025
+  - SRC-microsoft-dev0537-2022
+  - SRC-arxiv-padilla-2608-00150
+  - SRC-arxiv-securemcp-2605-05260
+  - SRC-arxiv-appa-2607-24625
+  - SRC-arxiv-hcp-2606-29073
+  - SRC-arxiv-pentestmcp-2510-03610
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Preserve this packet byte-for-byte until an integration reviewer completes catalog-only
+  reconciliation.
+- Treat SAF-T1504, SAF-T1104, and SAF-T1803 as synthetic neighbor placeholders that
+  must be mechanically reconciled without changing the frozen evidence conclusions.
+- Do not import prose, claims, examples, or detector logic from any pre-existing target
+  artifact.
+attestation: I attest that this artifact was independently derived only from the allowed
+  neutral tuple, generic authoring machinery, and directly reviewed authorities; no
+  prohibited target artifact or inherited target context was accessed.
+unresolved: []
+post_freeze_reconciliation:
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_neighbors: [SAF-T1801, SAF-T1504, SAF-T1104, SAF-T1803]
+  canonical_mitigations: [SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-71, SAF-M-72]
+  canonical_validation_proof:
+    - research/techniques/SAF-T1804/validation/detection-tests.txt
+    - research/techniques/SAF-T1804/validation/strict-validator.txt
+  source_archive_disposition: Source bodies remain outside the repository; frozen hashes and extraction metadata remain in canonical source records.
+  status: integrated_and_validated
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-mcp-resources-2025-11-25: SRC-mcp-resources-2025-11-25
+    SRC-mcp-authorization-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-mitre-attck-t1213-v3-4: SRC-mitre-t1213-v3.4
+    SRC-nvd-mcp-2026-09-02: SRC-nvd-mcp-corpus-20260901
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-ghsa-mcp-pinot-73cv: SRC-ghsa-mcp-pinot-73cv
+    SRC-ghsa-adx-vphc: SRC-ghsa-vphc-468g-8rfp
+    SRC-ghsa-meta-ads-9gw6: SRC-ghsa-meta-ads
+    SRC-google-unc6395-2025: SRC-gtig-drift-2025
+    SRC-salesloft-drift-2026: SRC-salesloft-drift-update
+    SRC-microsoft-dev0537-2022: SRC-microsoft-dev0537-2022
+  new_shared_source_records:
+  - SRC-nist-sp800-228-upd1
+  - SRC-splunk-svd-2025-1210
+  - SRC-microsoft-silk-typhoon-2025
+  - SRC-arxiv-padilla-2608-00150
+  - SRC-arxiv-securemcp-2605-05260
+  - SRC-arxiv-appa-2607-24625
+  - SRC-arxiv-hcp-2606-29073
+  - SRC-arxiv-pentestmcp-2510-03610
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0009
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-71
+  - SAF-M-72
+  status: integrated_pending_repository_validation

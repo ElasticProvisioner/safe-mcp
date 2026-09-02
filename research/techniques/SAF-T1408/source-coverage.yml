@@ -1,0 +1,218 @@
+version: 1
+technique_id: SAF-T1408
+research_status: saturated
+search_operation_count: 14
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Exact official MCP authorization specifications for 2025-11-25 and 2025-06-18
+        - Exact RFC Editor documents RFC 9700, RFC 7636, RFC 8414, and RFC 8252
+        - Exact IANA OAuth Parameters and MITRE CWE-757 entries
+      material_changes:
+        - Bound the technique to PKCE-to-plain or PKCE-to-absent weakening rather than every OAuth downgrade.
+        - Established current MCP fail-closed metadata behavior and S256 preference.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=PKCE
+        - NVD API keywordSearch=OAuth downgrade
+        - NVD API keywordSearch=PKCE plain
+        - NVD API keywordSearch=Model Context Protocol OAuth
+        - CISA KEV 2026.09.01 OAuth, PKCE, MCP, and exact-CVE scans
+      material_changes:
+        - Selected CVE-2026-67336 as a direct MCP-plugin vulnerability.
+        - Selected CVE-2024-23647 and CVE-2024-22258 as enabling OAuth authorization-server vulnerabilities with explicit MCP limitations.
+        - Found no qualifying production MCP breach in the reviewed authority corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - RFC 9700 Sections 4.8 through 4.8.2 attack and countermeasure review
+        - First-party GHSA-9h47-pqcx-hjr4 runtime behavior and patch review
+        - First-party GHSA-mrx3-gxjx-hjqj attack details review
+      material_changes:
+        - Classified the generic OAuth attack as demonstrated but the complete MCP behavior as Research-Derived.
+        - Preserved the direct MCP-plugin weakness without treating the advisory as a production incident.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - RFC 9700 Section 4.8.2 server-state correlation and rejection requirement
+        - RFC 7636 Section 7.2 S256-to-plain downgrade signal
+        - Current MCP PKCE capability verification and refusal rules
+      material_changes:
+        - Designed three correlated downgrade patterns and an explicit legacy-compatibility suppression.
+        - Added eleven deterministic positive, negative, boundary, malformed, normalization, and expected-lookalike cases.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=code_challenge_method
+        - MCP security guidance for issuer mix-up, metadata SSRF, and authorization URL injection
+        - Spring advisory unaffected-public-client condition
+        - CISA KEV exact-ID and exploitation-status checks
+      material_changes:
+        - Excluded endpoint, SSRF, transport, OAuth 1.0, verifier-recovery, and parameter-substitution analogies.
+        - Narrowed Spring applicability to confidential clients and made incomplete telemetry an explicit analytic blind spot.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=OAuth PKCE stripping
+        - NVD API keywordSearch=OAuth S256 downgrade
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD API keywordSearch=OAuth code_challenge removed
+        - NVD API keywordSearch=OAuth PKCE downgrade confidential client
+      material_changes: []
+  rationale: >-
+    Current MCP requirements, underlying OAuth standards, one direct MCP-plugin
+    advisory, two first-party authorization-server advisories, government CVE
+    records, KEV exploitation checks, detection requirements, contrary cases,
+    and neighbor mechanisms were directly reviewed. After incorporating the
+    authentik and Spring cases, two consecutive narrow authority-catalog passes
+    returned no records and added no controlling requirement, qualifying
+    example, remediation change, detection constraint, or scope distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-cve-2026-67336
+    - SRC-cve-2024-23647
+    - SRC-cve-2024-22258
+  no_qualifying_examples_rationale: >-
+    No direct production incident qualified. Only CVE-2026-67336 names an MCP
+    plugin; the two other selected examples are enabling OAuth authorization-
+    server vulnerabilities retained for mechanism and remediation value, not
+    evidence that an MCP deployment was exploited.
+  candidates:
+    - source_id: SRC-cve-2026-67336
+      identifier: CVE-2026-67336 / GHSA-9h47-pqcx-hjr4
+      relationship: direct_vulnerability
+      exploitation_status: CISA Coordinator SSVC reported none on 2026-08-03; no CISA KEV entry on 2026-09-01.
+      impact: Plain PKCE in the legacy MCP plugin can expose authorization codes when the authorization URL is observable; the same advisory also covers a separate unsigned-token default.
+      remediation: Fixed in better-auth 1.6.11; migrate to @better-auth/oauth-provider or disable plain PKCE explicitly.
+      selected: true
+      rationale: Highest directness because the affected legacy plugin is explicitly an MCP authorization component and silently downgraded a missing method to plain.
+    - source_id: SRC-cve-2024-23647
+      identifier: CVE-2024-23647 / GHSA-mrx3-gxjx-hjqj
+      relationship: enabling_vulnerability
+      exploitation_status: No production exploitation was stated in the reviewed advisory and no CISA KEV entry was present on 2026-09-01.
+      impact: Removing code_challenge could bypass PKCE and enable code-injection or CSRF outcomes when a victim followed the attacker-controlled authorization link.
+      remediation: Fixed in authentik 2023.8.7 and 2023.10.7.
+      selected: true
+      rationale: Exact match to the standards-described challenge-removal downgrade; retained with the limitation that the source does not document MCP use.
+    - source_id: SRC-cve-2024-22258
+      identifier: CVE-2024-22258
+      relationship: enabling_vulnerability
+      exploitation_status: No production exploitation was stated in the reviewed Spring advisory and no CISA KEV entry was present on 2026-09-01.
+      impact: Confidential clients using PKCE were exposed to downgrade; public clients were explicitly unaffected.
+      remediation: Fixed in Spring Authorization Server 1.0.6, 1.1.6, and 1.2.3.
+      selected: true
+      rationale: First-party advisory precisely bounds an important client-type exception and fixed ranges; no MCP deployment is established.
+    - source_id: SRC-cve-2026-26247
+      identifier: CVE-2026-26247
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA Coordinator SSVC reported none; no CISA KEV entry was present on 2026-09-01.
+      impact: Gitea could exchange a code without the expected verifier after failing to persist S256 state.
+      remediation: Fixed in Gitea 1.25.5.
+      selected: false
+      rationale: Relevant PKCE enforcement failure but less faithful to attacker-influenced negotiation than the selected challenge-removal cases, and no MCP use is established.
+    - source_id: SRC-nvd-2023-48228
+      identifier: CVE-2023-48228
+      relationship: enabling_vulnerability
+      exploitation_status: Unknown; the reviewed record did not establish production exploitation.
+      impact: authentik accepted token exchange without a verifier even when a challenge had started the flow.
+      remediation: Fixed in authentik 2023.8.5 and 2023.10.4.
+      selected: false
+      rationale: Redundant inverse-stage PKCE enforcement failure superseded for explanatory value by CVE-2024-23647.
+
+sources_consulted:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-auth-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc9700
+  - SRC-rfc7636
+  - SRC-rfc8414
+  - SRC-rfc8252
+  - SRC-iana-oauth-parameters
+  - SRC-cwe-757
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-67336
+  - SRC-nvd-2026-67336
+  - SRC-vulncheck-2026-67336
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cve-2024-23647
+  - SRC-ghsa-mrx3-gxjx-hjqj
+  - SRC-cve-2024-22258
+  - SRC-spring-cve-2024-22258
+  - SRC-cve-2026-26247
+  - SRC-nvd-2026-26247
+  - SRC-gitea-1.25.5
+  - SRC-nvd-2023-48228
+sources_cited:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc9700
+  - SRC-rfc7636
+  - SRC-rfc8414
+  - SRC-cwe-757
+  - SRC-mitre-t1528
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-67336
+  - SRC-nvd-2026-67336
+  - SRC-ghsa-9h47-pqcx-hjr4
+  - SRC-cve-2024-23647
+  - SRC-ghsa-mrx3-gxjx-hjqj
+  - SRC-cve-2024-22258
+  - SRC-spring-cve-2024-22258
+sources_rejected:
+  - source_id: SRC-mcp-auth-2025-06-18
+    reason: Superseded protocol version; used to challenge currency but not cited for current requirements.
+  - source_id: SRC-rfc8252
+    reason: Native-app context corroborates PKCE but does not improve the bounded MCP claims beyond current sources.
+  - source_id: SRC-iana-oauth-parameters
+    reason: Registry confirms names but not security preference; RFC 7636 provides controlling guidance.
+  - source_id: SRC-vulncheck-2026-67336
+    reason: CNA summary is materially duplicated by the CVE List and more detailed first-party advisory.
+  - source_id: SRC-cve-2026-26247
+    reason: Adjacent implementation-state failure not selected for publication.
+  - source_id: SRC-nvd-2026-26247
+    reason: Adjacent implementation-state failure not selected for publication.
+  - source_id: SRC-gitea-1.25.5
+    reason: Release note confirms a fix but does not establish the attacker-driven downgrade contract.
+  - source_id: SRC-nvd-2023-48228
+    reason: Redundant inverse-stage PKCE failure not selected for publication.
+sources_blocked: []
+
+conflicts:
+  - issue: The better-auth discovery document advertised S256 while runtime accepted plain and silently rewrote a missing method.
+    resolution: Treat metadata verification as necessary but insufficient; require runtime fail-closed behavior and correlate observed request state.
+  - issue: Spring's confidential-client vulnerability did not affect public clients.
+    resolution: State the client-type limitation beside the example and do not generalize the affected range.
+  - issue: No direct MCP incident or complete public MCP demonstration was found despite a direct MCP-plugin vulnerability.
+    resolution: Set overall evidence to Research-Derived and preserve the bounded absence statement.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1408-C006
+  rationale: >-
+    MCP requires PKCE verification and supplies the boundary; RFC 9700 and RFC
+    7636 establish the complete OAuth downgrade mechanism; and CVE-2026-67336
+    establishes a vulnerable MCP plugin. No reviewed source documents all stages
+    in a production MCP incident or complete controlled MCP evaluation, so the
+    defining end-to-end behavior remains an explicit inference.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

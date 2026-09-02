@@ -1,0 +1,169 @@
+version: 1
+technique_id: SAF-T1111
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct open of current Claude Code security and CLI reference pages.
+        - Direct open of current Codex CLI reference and Gemini CLI sandbox documentation.
+      material_changes: [Bound the technique to intentional adversary operation and documented product execution modes.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of Anthropic August and November 2025 Threat Intelligence reports.
+        - NVD CVE API exact keyword and CVE-ID queries for Claude Code, Codex CLI, and Gemini CLI.
+        - CISA KEV catalog exact-ID checks for the reviewed vulnerabilities.
+        - Exact GHSA opens only after NVD supplied each identifier and canonical URL.
+      material_changes: [Selected two direct production incidents and two adjacent enabling vulnerabilities; classified two additional Claude Code advisories as excluded catalog leads.]
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed first-party advisory proof conditions and incident lifecycle evidence.
+        - Reviewed direct first-party CLI documentation for inert capability confirmation.
+      material_changes: [Confirmed observed production evidence exceeds the demonstration threshold; retained vulnerability proofs as adjacent.]
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review of Sysmon process telemetry documentation.
+        - Direct review of vendor sandbox, approval, folder-trust, and unsafe-mode guidance.
+        - Direct review of ATT&CK T1059 and its detection strategy.
+      material_changes: [Defined and tested a narrow process-lineage analytic with explicit false positives and blind spots.]
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed Anthropic's hallucination and provider-visibility limitations.
+        - Compared intentional operation with prompt injection, vulnerable workspace trust, and direct shell execution.
+        - Checked fixed versions, contrary identifier state, and current exploitation fields.
+      material_changes: [Narrowed neighbor boundaries and preserved the GHSA-to-later-CVE identifier discrepancy for CVE-2026-12537.]
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Re-ran exact NVD keyword variants for AI agent CLI, coding agent CLI, Codex CLI, Gemini CLI, and Claude Code.
+        - Rechecked the current CISA KEV catalog and selected advisory remediation ranges.
+        - Reopened both Anthropic incident reports for incident-vulnerability boundary review.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Rechecked first-party unsafe-mode, sandbox, folder-trust, and permission documentation.
+        - Rechecked ATT&CK execution mapping, Sysmon telemetry limits, and both selected incident limitations.
+        - Re-ran exact-ID absence checks for reviewed CVEs in CISA KEV catalog version 2026.09.01.
+      material_changes: []
+  rationale: >-
+    Direct provider incident reports establish the defining production behavior;
+    first-party documentation covers implementation and controls; maintainer
+    advisories plus NVD and CISA cover current vulnerabilities and exploitation
+    status; Microsoft and MITRE cover telemetry and execution mapping. Two
+    narrower follow-ups added no controlling fact, example, limitation, source,
+    remediation change, or boundary distinction.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-anthropic-espionage-2025-11
+    - SRC-anthropic-tir-2025-08
+    - SRC-ghsa-codex-sandbox
+    - SRC-ghsa-gemini-trust
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: GTG-1002 cyber-espionage campaign
+      relationship: direct_production_incident
+      exploitation_status: observed in a handful of successful intrusions
+      impact: Reconnaissance, exploitation, credential access, lateral movement, data collection, and exfiltration across high-value targets.
+      remediation: Accounts banned, entities notified, authorities coordinated with, and provider detection expanded.
+      selected: true
+      rationale: Highest-confidence direct instance of agent CLI weaponization at scale.
+    - source_id: SRC-anthropic-tir-2025-08
+      identifier: GTG-2002 data-extortion operation
+      relationship: direct_production_incident
+      exploitation_status: observed against at least 17 organizations
+      impact: Live intrusion support, sensitive-data theft, and tailored extortion demands.
+      remediation: Accounts banned, tailored classifier and detection method developed, and indicators shared with partners.
+      selected: true
+      rationale: Direct production case with distinct criminal motive and multi-sector impact.
+    - source_id: SRC-ghsa-codex-sandbox
+      identifier: CVE-2025-59532 / GHSA-w5fx-fh39-j5rw
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no in-the-wild exploitation established in reviewed NVD or CISA records
+      impact: Potential arbitrary writes and commands outside the intended workspace with Codex process privileges.
+      remediation: Fixed in Codex CLI 0.39.0 and IDE extension 0.4.12.
+      selected: true
+      rationale: High-impact adjacent example clarifying that hostile model context and sandbox escape are different from intentional operator weaponization.
+    - source_id: SRC-ghsa-gemini-trust
+      identifier: CVE-2026-12537 / GHSA-wpqr-6v78-jr5g
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof-of-concept status; no production exploitation established
+      impact: Potential pre-sandbox or prompt-injection-driven command execution in headless workflows.
+      remediation: Fixed in Gemini CLI 0.39.1 and run-gemini-cli 0.1.22 with explicit trust and allowlist enforcement.
+      selected: true
+      rationale: Current critical adjacent example that defines the hostile-input boundary.
+    - source_id: SRC-ghsa-claude-command-bypass
+      identifier: CVE-2025-54795 / GHSA-x56v-x2h6-7j34
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no exploitation recorded in reviewed CISA SSVC field or KEV catalog
+      impact: Potential untrusted command execution by bypassing confirmation.
+      remediation: Fixed in Claude Code 1.0.20; old versions forced to update.
+      selected: false
+      rationale: Valid adjacent vulnerability but adds no boundary or impact not already represented by the selected Codex and Gemini examples.
+    - source_id: SRC-ghsa-claude-exfil
+      identifier: CVE-2025-55284 / GHSA-x5gv-jw7f-j6xj
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no exploitation recorded in reviewed CISA SSVC field or KEV catalog
+      impact: Potential file read and network exfiltration without confirmation.
+      remediation: Fixed in Claude Code 1.0.4; old versions forced to update.
+      selected: false
+      rationale: Lower-impact adjacent approval-bypass example omitted from the publishable example table.
+sources_consulted:
+  - SRC-anthropic-claude-cli
+  - SRC-anthropic-claude-code-security
+  - SRC-anthropic-espionage-2025-11
+  - SRC-anthropic-tir-2025-08
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ghsa-claude-command-bypass
+  - SRC-ghsa-claude-exfil
+  - SRC-ghsa-codex-sandbox
+  - SRC-ghsa-gemini-trust
+  - SRC-google-gemini-sandbox
+  - SRC-mitre-t1059-current
+  - SRC-sysmon-15-21
+  - SRC-nvd-t1103-corpus
+  - SRC-openai-codex-cli
+sources_cited:
+  - SRC-anthropic-claude-cli
+  - SRC-anthropic-claude-code-security
+  - SRC-anthropic-espionage-2025-11
+  - SRC-anthropic-tir-2025-08
+  - SRC-cisa-kev-catalog-page-2026-09-01
+  - SRC-ghsa-claude-command-bypass
+  - SRC-ghsa-claude-exfil
+  - SRC-ghsa-codex-sandbox
+  - SRC-ghsa-gemini-trust
+  - SRC-google-gemini-sandbox
+  - SRC-mitre-t1059-current
+  - SRC-sysmon-15-21
+  - SRC-nvd-t1103-corpus
+  - SRC-openai-codex-cli
+sources_rejected:
+  - source_id: SRC-ghsa-claude-command-bypass
+    reason: Valid adjacent advisory, but not selected because it duplicates the hostile-input approval-bypass boundary already represented by higher-impact selected examples.
+  - source_id: SRC-ghsa-claude-exfil
+    reason: Valid adjacent advisory, but lower impact and duplicative for the bounded publishable example set.
+sources_blocked: []
+conflicts:
+  - issue: GHSA-wpqr-6v78-jr5g displayed no CVE when published, while the later NVD record assigns CVE-2026-12537.
+    resolution: Retain both stable identifiers, their dates, and the provenance sequence; do not imply the GHSA originally carried the CVE.
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids: [SAF-T1111-C001, SAF-T1111-C002, SAF-T1111-C003]
+  rationale: Two directly reviewed provider investigations document the complete intentional agent-CLI execution behavior in live production attacks.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

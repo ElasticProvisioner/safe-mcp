@@ -1,0 +1,17 @@
+version: 1
+scope: isolated_clean_room_fragment_for_SAF-T1207
+issues:
+  - id: SAF-T1207-A001
+    triggered_by: SAF-T1207
+    affects: [SAF-T9998, SAF-T9999, SAF-M-998, SAF-M-999]
+    change: Replace synthetic neighbor and mitigation IDs with semantically matching real catalog IDs after the bundle is frozen.
+    reason: Strict clean-room boundaries prohibit inspecting real technique prose or shared framework joins before freeze.
+    severity: medium
+    status: deferred_until_post_freeze_integration
+  - id: SAF-T1207-A002
+    triggered_by: SAF-T1207
+    affects: [research/source-manifest.yml]
+    change: Reconcile source identifiers for collisions without changing claims or evidence classifications.
+    reason: The bundle contains an isolated source-manifest fragment and was not compared with the real shared registry.
+    severity: low
+    status: deferred_until_post_freeze_integration

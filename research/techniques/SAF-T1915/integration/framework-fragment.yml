@@ -1,0 +1,34 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1915
+    name: Cross-Chain Laundering via Bridges/DEXs
+    documentation_status: under_review
+    evidence_status: research-derived
+    tactics:
+      - ATK-TA0010
+    technique_path: techniques/SAF-T1915/README.md
+    research_packet: research/techniques/SAF-T1915
+    related_techniques:
+      - SAF-T2104
+    mitigations:
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-29
+      - SAF-M-46
+      - SAF-M-47
+      - SAF-M-48
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1915/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1915/test_detection_rule.py
+        - tests/SAF-T1915/test-cases.json
+        - tests/SAF-T1915/test-logs.json
+        - research/techniques/SAF-T1915/validation/detection-test.txt
+        - research/techniques/SAF-T1915/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1657
+        type: analogous

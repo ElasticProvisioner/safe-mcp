@@ -1,0 +1,504 @@
+version: 1
+x-remote-review: &remote_review
+  status: remote_reviewed_not_archived
+  reason: The complete public source was reviewed at its authoritative URL; the isolated bundle retains provenance and locators rather than redistributing publisher content.
+  review_evidence:
+    access_method: Direct authoritative URL or authoritative catalog API
+    notes: The relevant complete record or identified sections were opened and reviewed during the clean-room run.
+sources:
+  - id: SRC-mcp-architecture-2026-07-28
+    title: Architecture
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/architecture
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Host responsibilities, Client responsibilities, Server features]
+    review_notes: Reviewed the host-client-server trust and responsibility separation and the placement of tools at servers.
+    archive: *remote_review
+  - id: SRC-mcp-tools-2026-07-28
+    title: Server tools
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [User Interaction Model, Tools/call, Tool annotations, Security considerations]
+    review_notes: Reviewed model-controlled tool behavior, call fields, untrusted annotations, validation, confirmation, and logging requirements.
+    archive: *remote_review
+  - id: SRC-mcp-security-2026-07-28
+    title: Security Best Practices
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Local MCP server compromise, OAuth server URL validation and command injection, Proxy server security]
+    review_notes: Reviewed the documented shell command-injection sequence and the required URL validation, no-shell, authorization, logging, sandboxing, and least-privilege controls.
+    archive: *remote_review
+  - id: SRC-mcp-inspector-2026
+    title: MCP Inspector
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol contributors]
+    version_or_date: "Accessed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Starting the Inspector, Authentication]
+    review_notes: Reviewed current Inspector launch and session-token behavior as post-fix implementation context.
+    archive: *remote_review
+  - id: SRC-cwe-78-v4.20
+    title: CWE-78 Improper Neutralization of Special Elements used in an OS Command
+    publisher: MITRE CWE Program
+    authors: [MITRE CWE Program]
+    version_or_date: "CWE 4.20, 2026-04-30"
+    source_class: credible_practice
+    official_url: https://cwe.mitre.org/data/definitions/78.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Description, Variant 1, Variant 2, Common Consequences, Potential Mitigations, Detection Methods]
+    review_notes: Reviewed the weakness definition, command-modification and command-selection variants, consequences, controls, and detection limitations.
+    archive: *remote_review
+  - id: SRC-python-subprocess-3.14
+    title: subprocess — Subprocess management, Security Considerations
+    publisher: Python Software Foundation
+    authors: [Python Software Foundation]
+    version_or_date: "Python 3.14.7 documentation"
+    source_class: credible_practice
+    official_url: https://docs.python.org/3/library/subprocess.html#security-considerations
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Security Considerations]
+    review_notes: Reviewed direct process execution behavior and the caller's quoting responsibility when explicitly using a shell.
+    archive: *remote_review
+  - id: SRC-node-child-process-v26
+    title: Child process
+    publisher: OpenJS Foundation / Node.js
+    authors: [Node.js contributors]
+    version_or_date: "Node.js v26.8.1 documentation"
+    source_class: credible_practice
+    official_url: https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [child_process.exec command options callback]
+    review_notes: Reviewed that exec spawns a shell and the explicit warning against unsanitized input containing shell metacharacters.
+    archive: *remote_review
+  - id: SRC-owasp-command-injection
+    title: OS Command Injection Defense Cheat Sheet
+    publisher: OWASP Foundation
+    authors: [OWASP Cheat Sheet Series contributors]
+    version_or_date: "Accessed 2026-09-01"
+    source_class: credible_practice
+    official_url: https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [OS Command Injection, Defense Option 1, Defense Option 3, Additional Defenses]
+    review_notes: >-
+      Reviewed the definition and prioritized defenses: avoid OS commands, separate commands and arguments, allowlist, and least privilege.
+    archive: *remote_review
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA]
+    version_or_date: "Catalog version 2026.09.01"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog
+    locators: [CVE-2026-42271 catalog record]
+    review_notes: Reviewed the current full catalog and the record naming LiteLLM command injection, arbitrary command execution by an authenticated low-privilege user, date added, and remediation due date; no victim or campaign is named.
+    archive: *remote_review
+  - id: SRC-ghsa-2026-42271
+    title: Authenticated command execution via MCP stdio test endpoints
+    publisher: BerriAI LiteLLM project
+    authors: [jaydns, BerriAI LiteLLM security maintainers]
+    version_or_date: "Published 2026-04-21"
+    source_class: official_advisory
+    official_url: https://github.com/BerriAI/litellm/security/advisories/GHSA-v4p8-mg3p-g94g
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: exact_github_advisory_after_non_github_discovery
+    locators: [Summary, Impact, Affected versions, Patched versions, Workarounds]
+    review_notes: The exact advisory URL and identifier were first discovered in the reviewed CISA KEV record; reviewed endpoint fields, subprocess behavior, access requirements, versions, and fix.
+    archive: *remote_review
+  - id: SRC-nvd-2026-42271
+    title: CVE-2026-42271
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "Published 2026-05-08; modified 2026-07-15"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-42271
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Weaknesses, Configurations, References]
+    review_notes: Reviewed the analyzed NVD record, affected ranges, product configurations, CWE-78 mapping, and references.
+    archive: *remote_review
+  - id: SRC-redhat-2026-27784
+    title: RHSA-2026:27784 — Red Hat OpenShift AI 3.4.1 security update
+    publisher: Red Hat
+    authors: [Red Hat Product Security]
+    version_or_date: "Issued 2026-06-22"
+    source_class: official_advisory
+    official_url: https://access.redhat.com/errata/RHSA-2026:27784
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Synopsis, CVE-2026-42271, Affected Products, Fixes]
+    review_notes: Reviewed vendor impact and corrected OpenShift AI images as remediation context for CVE-2026-42271.
+    archive: *remote_review
+  - id: SRC-ibm-2026-12940
+    title: IBM Security Bulletin — Langflow vulnerable to command injection in MCP stdio launcher
+    publisher: IBM
+    authors: [IBM Product Security Incident Response Team]
+    version_or_date: "Published 2026-07-14"
+    source_class: official_advisory
+    official_url: https://www.ibm.com/support/pages/node/7279995
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Security Bulletin, Vulnerability Details, Affected Products and Versions, Remediation/Fixes]
+    review_notes: Reviewed unauthenticated environment-variable command injection, CWE-78, severity, affected versions, and the 1.10.2 fix.
+    archive: *remote_review
+  - id: SRC-nvd-2026-12940
+    title: CVE-2026-12940
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, IBM PSIRT]
+    version_or_date: "Published 2026-07-30; modified 2026-08-04"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-12940
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Weaknesses, Configurations, References]
+    review_notes: Reviewed the analyzed record and its IBM provenance, affected versions, and CWE-78 mapping.
+    archive: *remote_review
+  - id: SRC-jfrog-2025-6514
+    title: CVE-2025-6514 — Critical mcp-remote RCE vulnerability
+    publisher: JFrog Security Research
+    authors: [Or Peles]
+    version_or_date: "2025-07-09"
+    source_class: research
+    official_url: https://jfrog.com/blog/2025-6514-critical-mcp-remote-rce-vulnerability/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_research_page
+    locators: [Technical details, Attack flow, Affected versions, Remediation]
+    review_notes: Reviewed the public non-destructive demonstration, malicious authorization-endpoint mechanism, platform differences, affected range, and fixed version without retaining payload text.
+    archive: *remote_review
+  - id: SRC-jfsa-2025-6514
+    title: MCP Remote Command Injection RCE — JFSA-2025-001290844
+    publisher: JFrog Security Research
+    authors: [Or Peles, JFrog Security Research]
+    version_or_date: "2025-07-09"
+    source_class: official_advisory
+    official_url: https://research.jfrog.com/vulnerabilities/mcp-remote-command-injection-rce-jfsa-2025-001290844/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_advisory
+    locators: [Overview, Affected versions, Fixed versions]
+    review_notes: Reviewed the advisory identifier, CVE, CVSS, affected range, and fix.
+    archive: *remote_review
+  - id: SRC-nvd-2025-6514
+    title: CVE-2025-6514
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, JFrog CNA]
+    version_or_date: "Published 2025-07-09; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-6514
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Weaknesses, References]
+    review_notes: Reviewed the deferred NVD record, CWE-78, affected behavior, and first-party references.
+    archive: *remote_review
+  - id: SRC-oligo-2025-49596
+    title: Critical RCE vulnerability in Anthropic MCP Inspector — CVE-2025-49596
+    publisher: Oligo Security Research
+    authors: [Avi Lumelsky]
+    version_or_date: "2025-06-27"
+    source_class: research
+    official_url: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_research_page
+    locators: [Attack demonstration, Impact, Fix, Disclosure timeline]
+    review_notes: Reviewed the browser-to-local-proxy demonstration, arbitrary stdio command launch, affected version, fix, and exact project-advisory provenance.
+    archive: *remote_review
+  - id: SRC-ghsa-2025-49596
+    title: MCP Inspector vulnerable to unauthenticated access to proxy server
+    publisher: Model Context Protocol Inspector project
+    authors: [Peter Yan, Rémy Marot]
+    version_or_date: "Published 2025-06-13"
+    source_class: official_advisory
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: exact_github_advisory_after_non_github_discovery
+    locators: [Summary, Impact, Affected versions, Patched versions, Credits]
+    review_notes: The exact advisory URL and identifier were first discovered in Oligo's reviewed non-GitHub research page; reviewed the project record and credited reporter.
+    archive: *remote_review
+  - id: SRC-nvd-2025-49596
+    title: CVE-2025-49596
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "Published 2025-06-13; modified 2026-06-17"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-49596
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Weaknesses, References]
+    review_notes: Reviewed the deferred NVD record and its missing-authorization weakness classification.
+    archive: *remote_review
+  - id: SRC-sysmon-v15.21
+    title: Sysmon v15.21
+    publisher: Microsoft Sysinternals
+    authors: [Mark Russinovich, Thomas Garnier]
+    version_or_date: "Published 2026-06-17"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Overview of Sysmon Capabilities, Event ID 1 Process creation]
+    review_notes: Reviewed process-creation telemetry including command line, parent, hashes, ProcessGUID, and session information.
+    archive: *remote_review
+  - id: SRC-ecs-process-current
+    title: ECS Process fields
+    publisher: Elastic
+    authors: [Elastic documentation team]
+    version_or_date: "Current documentation accessed 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://www.elastic.co/guide/en/ecs/current/ecs-process.html
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [process.args, process.command_line, process.entity_id, process.executable, process.parent]
+    review_notes: Reviewed normalized process and parent field definitions used by the analytic and fixtures.
+    archive: *remote_review
+  - id: SRC-mitre-t1059-current
+    title: Command and Scripting Interpreter — T1059
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK]
+    version_or_date: "Current page accessed 2026-09-01"
+    source_class: credible_practice
+    official_url: https://attack.mitre.org/techniques/T1059/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_web
+    locators: [Technique description, Detection guidance]
+    review_notes: Reviewed interpreter execution scope and process-based detection guidance for an analogous, not identical, framework mapping.
+    archive: *remote_review
+  - id: SRC-vulncheck-2026-75149
+    title: Marimo Code Injection via MCP Server Configuration
+    publisher: VulnCheck
+    authors: [Gregory Tan]
+    version_or_date: "2026-08-19"
+    source_class: official_advisory
+    official_url: https://www.vulncheck.com/advisories/marimo-code-injection-via-mcp-server-configuration
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_advisory
+    locators: [Description, Affected versions, Remediation, Credit]
+    review_notes: Reviewed a recent malicious-notebook MCP command-selection flaw; retained as a non-selected candidate because the advisory maps it to CWE-94 and it added no distinct higher-impact mechanism.
+    archive: *remote_review
+  - id: SRC-nvd-2026-75149
+    title: CVE-2026-75149
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, VulnCheck CNA]
+    version_or_date: "Published 2026-08-19"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-75149
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Weaknesses, References]
+    review_notes: Reviewed the received NVD record and CWE-94 classification for boundary comparison.
+    archive: *remote_review
+  - id: SRC-nvd-2025-54074
+    title: CVE-2025-54074
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "Record reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-54074
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Configurations, References]
+    review_notes: Reviewed Cherry Studio's malicious MCP OAuth-server command-injection record; not selected because it duplicated the better-documented authorization-URL mechanism.
+    archive: *remote_review
+  - id: SRC-nvd-2025-64340
+    title: CVE-2025-64340
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "Record reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2025-64340
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Configurations, References]
+    review_notes: Reviewed a FastMCP Windows shell-metacharacter flaw; retained as a non-selected lower-reach candidate.
+    archive: *remote_review
+  - id: SRC-nvd-2026-30615
+    title: CVE-2026-30615
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD, GitHub CNA]
+    version_or_date: "Record reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=CVE-2026-30615
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [CVE description, Configurations, References]
+    review_notes: Reviewed a prompt-injected MCP configuration pathway; classified as adjacent because instruction/configuration manipulation precedes process execution rather than command construction itself.
+    archive: *remote_review
+  - id: SRC-ox-mcp-2026
+    title: MCP Supply Chain Advisory — RCE Vulnerabilities Across the AI Ecosystem
+    publisher: OX Security Research
+    authors: [Moshe Siman Tov Bustan, Mustafa Naamnih, Nir Zadok]
+    version_or_date: "2026-04-15"
+    source_class: research
+    official_url: https://www.ox.security/blog/mcp-supply-chain-advisory-rce-vulnerabilities-across-the-ai-ecosystem/
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_research_page
+    locators: [Vulnerability families, Disclosure status, Vendor responses]
+    review_notes: Reviewed cross-ecosystem research and vendor responses; used only for challenge and candidate discovery because several cases were disputed as intended behavior or lacked independent advisories.
+    archive: *remote_review
+  - id: SRC-oligo-localhost-2025
+    title: 0.0.0.0 Day — Exploiting Localhost APIs From the Browser
+    publisher: Oligo Security Research
+    authors: [Oligo Security Research]
+    version_or_date: "2025"
+    source_class: research
+    official_url: https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_research_page
+    locators: [Localhost threat model, Browser access path]
+    review_notes: Reviewed browser-to-local-service behavior as historical context; rejected as core evidence because it does not establish the MCP command-generation boundary.
+    archive: *remote_review
+  - id: SRC-nvd-keyword-baseline-2026
+    title: NVD CVE API keyword baseline for Model Context Protocol and MCP command injection
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "Queried 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=MCP%20command%20injection&resultsPerPage=200
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [All returned CVE records, 78 results]
+    review_notes: Reviewed the result set for direct, enabling, adjacent, duplicate, and rejected candidates; exact candidate records were separately opened where selected.
+    archive: *remote_review
+  - id: SRC-nvd-saturation-followup-1
+    title: NVD CVE API saturation follow-up — MCP stdio environment variable injection
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "Queried 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=MCP%20stdio%20environment%20variable%20injection&resultsPerPage=200
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [All three returned CVE records]
+    review_notes: Reviewed all results; every identifier was already present in the baseline corpus, producing no material change.
+    archive: *remote_review
+  - id: SRC-nvd-saturation-followup-2
+    title: NVD CVE API saturation follow-up — Model Context Protocol OS command injection
+    publisher: NIST National Vulnerability Database
+    authors: [NIST NVD]
+    version_or_date: "Queried 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Model%20Context%20Protocol%20OS%20command%20injection&resultsPerPage=200
+    access_status: public
+    accessed_on: "2026-09-01"
+    review_status: opened_reviewed
+    reviewed_on: "2026-09-01"
+    review_method: direct_authoritative_catalog_api
+    locators: [All three returned CVE records]
+    review_notes: Reviewed all results; every identifier was already present in the baseline corpus, producing the second consecutive no-change pass.
+    archive: *remote_review

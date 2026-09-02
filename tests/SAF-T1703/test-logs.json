@@ -1,0 +1,22 @@
+{
+  "events": [
+    {"trace_id":"t1","event_id":"s1","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"untrusted","source_server_id":"mail-read"},
+    {"trace_id":"t1","event_id":"a1","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","caused_by_event_id":"s1","target_server_id":"external-mail","user_intent_supported":false,"approval_state":"absent","action_class":"external_write"},
+    {"trace_id":"t2","event_id":"s2","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"unknown","source_server_id":"docs"},
+    {"trace_id":"t2","event_id":"a2","event_type":"tool_call","timestamp":"2026-09-02T12:05:00Z","caused_by_event_id":"s2","target_server_id":"code","user_intent_supported":false,"approval_state":"bypassed","action_class":"code_execution"},
+    {"trace_id":"t3","event_id":"s3","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"untrusted","source_server_id":"mail-read"},
+    {"trace_id":"t3","event_id":"n1","event_type":"tool_call","timestamp":"2026-09-02T12:05:01Z","caused_by_event_id":"s3","target_server_id":"external-mail","user_intent_supported":false,"approval_state":"absent","action_class":"external_write"},
+    {"trace_id":"t4","event_id":"s4","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"untrusted","source_server_id":"mail-read"},
+    {"trace_id":"t4","event_id":"n2","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","caused_by_event_id":"s4","target_server_id":"external-mail","user_intent_supported":false,"approval_state":"granted","action_class":"external_write"},
+    {"trace_id":"t5","event_id":"s5","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"unknown","source_server_id":"docs"},
+    {"trace_id":"t5","event_id":"n3","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","caused_by_event_id":"s5","target_server_id":"code","user_intent_supported":true,"approval_state":"absent","action_class":"code_execution"},
+    {"trace_id":"t6","event_id":"s6","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"untrusted","source_server_id":"files"},
+    {"trace_id":"t6","event_id":"n4","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","caused_by_event_id":"s6","target_server_id":"files","user_intent_supported":false,"approval_state":"absent","action_class":"privileged_read"},
+    {"trace_id":"t7","event_id":"s7","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"untrusted","source_server_id":"mail-read"},
+    {"trace_id":"t7","event_id":"n5","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","target_server_id":"external-mail","user_intent_supported":false,"approval_state":"absent","action_class":"external_write"},
+    {"trace_id":"t8","event_id":"s8","event_type":"tool_result","timestamp":"2026-09-02T12:00:00Z","trust_label":"trusted","source_server_id":"mail-read"},
+    {"trace_id":"t8","event_id":"n6","event_type":"tool_call","timestamp":"2026-09-02T12:01:00Z","caused_by_event_id":"s8","target_server_id":"external-mail","user_intent_supported":false,"approval_state":"absent","action_class":"external_write"}
+  ],
+  "expected_alert_event_ids": ["a1", "a2"],
+  "expected_nonalert_event_ids": ["n1", "n2", "n3", "n4", "n5", "n6"]
+}

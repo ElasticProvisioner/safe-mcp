@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1004
+name: Server Impersonation / Name-Collision
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0001
+
+adversary_objective: >-
+  Cause an operator, client, registry consumer, or deployment process to select,
+  install, configure, resolve, or connect to an unintended MCP server by exploiting
+  an ambiguous, colliding, lookalike, self-asserted, or insufficiently authenticated
+  server identity.
+
+scope:
+  security_boundary: >-
+    The boundary begins when a server candidate is introduced through discovery,
+    marketplace metadata, configuration, a package association, or a remote endpoint,
+    and ends when the unintended server is selected, installed, configured, resolved,
+    or connected, or when the discrepancy is rejected before that action.
+  in_scope:
+    - Colliding or lookalike server titles and aliases used as selection keys.
+    - Self-reported serverInfo names treated as authenticated identity.
+    - Publisher-namespace or package-to-server binding failures.
+    - Substituted remote server URLs or TLS reference identities.
+    - Registry or aggregator identity resolution that selects the wrong server.
+  out_of_scope:
+    - Delivery of malicious server software without identity confusion.
+    - Tool-name collision or misleading tool selection after server connection.
+    - OAuth authorization-server issuer mix-up or token-audience confusion.
+    - Proxy-mediated traffic masquerading that does not depend on wrong server selection.
+    - Lookalike domains unrelated to MCP server discovery, configuration, or connection.
+  affected_components:
+    - MCP host and client server-selection logic
+    - MCP Registry, marketplace, or discovery consumer
+    - Server package, publisher namespace, and artifact binding
+    - Remote endpoint configuration and TLS service identity
+
+nearest_neighbors:
+  - technique_id: SAF-T1003
+    distinction: Malicious server distribution need not involve identity ambiguity; SAF-T1004 requires wrong-server selection through identity resolution or binding.
+  - technique_id: SAF-T1008
+    distinction: Tool shadowing concerns misleading tool identity after server connection; SAF-T1004 concerns the server selected before tool resolution.
+  - technique_id: SAF-T1009
+    distinction: Authorization-server mix-up concerns issuer or token-audience binding, not selection of the MCP server publisher, package, or endpoint.
+  - technique_id: SAF-T1301
+    distinction: Cross-server tool shadowing assumes connected servers and colliding tool names; SAF-T1004 stops at selecting, installing, or connecting to the wrong server.
+  - technique_id: SAF-T1407
+    distinction: Server proxy masquerade requires mediated traffic behavior; SAF-T1004 does not require a proxy.
+
+required_evidence:
+  - Establish whether MCP runtime server identity is self-asserted and how the official Registry binds namespaces, packages, artifacts, and endpoints.
+  - Establish the prerequisites and immediate wrong-server selection or connection outcome.
+  - Establish whether the complete behavior is observed, demonstrated, research-derived, or hypothesized without allowing adjacent evidence to raise the status.
+  - Search separately for production breaches, disclosed vulnerabilities, controlled demonstrations, exploitation state, remediation, detection, defenses, and contrary evidence.
+  - Preserve the bounded absence result when no qualifying production breach is established.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Server discovery, install, configuration, resolution, and connection events with timestamp, actor, action, alias, and decision.
+    - Registry origin, authenticated publisher namespace, server name, package identifier, immutable digest when available, canonical endpoint URI, and expected TLS reference identity.
+    - Publisher-namespace verification, package-binding status, approved identity baseline, resolved certificate identity, and TLS identity result.
+
+safe_example_constraints:
+  - Use only synthetic identities, inert example domains, and invented package metadata.
+  - Do not publish exploit payloads, live credentials, destructive commands, or production targeting instructions.
+  - Preserve advisory proof limitations without reproducing proof-of-concept code.
+
+completion_evidence:
+  - Every substantive publishable unit is linked to a validated full claim ID and reviewed source with exact locators or to a declared repository artifact.
+  - The fourteen frozen claims, source corpus, selected and rejected examples, attributions, and limitations remain materially unchanged through normalization.
+  - Research saturation remains recorded after two consecutive no-change passes.
+  - Deterministic positive, negative, boundary, and expected-false-positive detection tests pass.
+  - Rights, clean-room integrity, framework alignment, and quality gates pass in the isolated synthetic join.
+  - Real shared source IDs, canonical framework joins, and an honest repository-history SHA remain explicitly deferred to integration.

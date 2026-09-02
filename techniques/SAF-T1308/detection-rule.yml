@@ -1,195 +1,89 @@
-title: OAuth Token Scope Substitution Attack Detection
-id: 81be6870-4550-4fd6-adb9-54567d58ad75
+title: Token Scope Substitution Allowed Decision
+id: d95dd99b-1175-40c2-8b4c-4af49d83da08
 status: experimental
-description: |
-  Detects potential OAuth token scope substitution attacks where attackers swap limited-scope tokens 
-  with elevated-scope tokens to gain unauthorized privileges. This rule identifies scope mismatches,
-  anomalous privilege usage patterns, and cross-tool privilege escalation attempts in MCP environments.
-
-  Token scope substitution exploits insufficient scope validation at Resource Servers, where tokens
-  with elevated scopes are used for operations that should be restricted to specific privilege levels.
-author: Raju Kumar Yadav
-date: 2025-11-20
-modified: 2025-11-20
+description: >-
+  Detects an authorization allow decision when the requested resource is outside
+  the authorization grant, the token audience does not match the protected
+  resource, or the token scopes do not satisfy the operation's required scopes.
 references:
-  - https://github.com/SAF-MCP/saf-mcp/techniques/SAF-T1308
-  - https://datatracker.ietf.org/doc/html/rfc6819#section-5.1.5
-  - https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics
-  - https://owasp.org/www-project-api-security/
-  - https://modelcontextprotocol.io/specification/draft/basic/security_best_practices
+  - https://www.rfc-editor.org/rfc/rfc8707.html
+  - https://www.rfc-editor.org/rfc/rfc9068.html
+  - https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization
+author: OpenAI Codex (cleanroom_saf_t1308)
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: oauth_authorization
-  category: api_access
+  category: application
+  product: mcp_authorization
 detection:
-  # Detection 1: Direct scope validation failures
-  selection_scope_mismatch:
-    event_type: "authorization_check"
-    token_signature_valid: true
-    audience_validation: "passed"
-    scope_validation: "failed"
-
-  # Detection 2: Elevated operations with unusual scopes
-  selection_elevated_operation:
-    event_type:
-      - "api_request"
-      - "mcp_tool_invocation"
-    operation_type:
-      - "delete"
-      - "admin"
-      - "modify_permissions"
-      - "system_config"
-      - "write_all"
-      - "grant_access"
-    token_scope|contains:
-      - "admin"
-      - "delete"
-      - "write_all"
-      - "*"
-
-  # Detection 3: Scope anomaly indicators
-  selection_scope_anomaly:
-    event_type: "scope_usage_analysis"
-    scope_deviation_severity:
-      - "high"
-      - "critical"
-    scope_elevation_detected: true
-    baseline_exceeded: true
-
-  # Detection 4: Multiple tokens with different scopes in short window
-  selection_token_switching:
-    event_type: "token_usage_pattern"
-    unique_token_count|gte: 2
-    scope_variance: "high"
-    time_window_seconds|lte: 300
-    same_user: true
-
-  # Detection 5: Cross-tool privilege escalation in MCP
-  selection_cross_tool_escalation:
-    event_type: "mcp_tool_chain_analysis"
-    source_tool_scope:
-      - "read"
-      - "list"
-      - "view"
-    target_operation_scope:
-      - "write"
-      - "delete"
-      - "admin"
-      - "execute"
-    privilege_elevation: true
-
-  # Detection 6: Scope substitution indicators
-  selection_scope_substitution:
-    event_type: "token_analysis"
-    token_scope_change_detected: true
-    audience_match: true
-    issuer_match: true
-    different_token_id: true
-    elevated_scope: true
-
-  # Detection 7: Repeated auth failures followed by success
-  selection_auth_retry_pattern:
-    event_type: "authorization_sequence"
-    failed_attempts|gte: 2
-    final_attempt_status: "success"
-    token_changed: true
-    time_window_seconds|lte: 60
-
-  # Detection 8: Service account token misuse
-  selection_service_account_abuse:
-    event_type: "api_request"
-    token_subject_type: "service_account"
-    requester_type: "user"
-    token_scope|contains:
-      - "admin"
-      - "service"
-      - "automation"
-
-  # Detection 9: Cross-service token reuse
-  selection_cross_service:
-    event_type: "token_validation"
-    token_audience_mismatch: true
-    token_accepted: true
-    different_service: true
-
-  # Detection 10: Wildcard or overly broad scope usage
-  selection_wildcard_scope:
-    token_scope|contains:
-      - "*"
-      - "all"
-      - "full_access"
-    event_type:
-      - "api_request"
-      - "mcp_tool_invocation"
-
-  # Detection 11: Temporal anomalies (off-hours with elevated scopes)
-  selection_temporal_anomaly:
-    event_type: "api_request"
-    time_of_day: "off_hours"
-    scope_deviation_severity:
-      - "high"
-      - "critical"
-
-  # Detection 12: Geographic anomalies with scope escalation
-  selection_geographic_anomaly:
-    event_type: "api_request"
-    geographic_anomaly: true
-    scope_deviation_severity:
-      - "high"
-      - "critical"
-
-  # Detection 13: Rapid scope escalation pattern
-  selection_rapid_escalation:
-    event_type: "token_usage_pattern"
-    escalation_pattern: "gradual"
-    unique_token_count|gte: 4
-    time_window_seconds|lte: 600
-
-  # Combine detection patterns
-  condition: selection_scope_mismatch or
-    (selection_elevated_operation and selection_scope_anomaly) or
-    selection_token_switching or
-    selection_cross_tool_escalation or
-    selection_scope_substitution or
-    selection_auth_retry_pattern or
-    selection_service_account_abuse or
-    selection_cross_service or
-    selection_wildcard_scope or
-    selection_temporal_anomaly or
-    selection_geographic_anomaly or
-    selection_rapid_escalation
-
+  selection_grant_resource:
+    event.action: oauth_token_issuance
+    auth.decision: allow
+    grant.resource_contains_requested: false
+  selection_audience:
+    event.action: oauth_token_validation
+    auth.decision: allow
+    token.audience_matches: false
+  selection_scope:
+    event.action: mcp_tool_authorization
+    auth.decision: allow
+    token.scope_satisfies_required: false
+  condition: selection_grant_resource or selection_audience or selection_scope
+fields:
+  - event.action
+  - auth.decision
+  - grant.resource_contains_requested
+  - token.audience_matches
+  - token.scope_satisfies_required
+  - oauth.client_id
+  - oauth.resource
+  - oauth.granted_scopes
+  - mcp.tool
 falsepositives:
-  - Legitimate users with multiple roles using different appropriately-scoped tokens
-  - Authorized service accounts with broad scopes performing automation tasks
-  - Administrative operations during scheduled maintenance windows
-  - Multi-tenant environments with complex but legitimate permission structures
-  - Development and testing environments with intentionally relaxed scope enforcement
-  - Legitimate role transitions where users are granted elevated privileges
-  - OAuth flows that intentionally request broad scopes for legitimate purposes
-  - Cross-tool workflows in MCP that legitimately require scope elevation
+  - >-
+    A documented resource alias or gateway trust boundary can produce an apparent
+    audience mismatch; tune only after verifying the alias is explicitly bound.
+  - >-
+    Compatibility telemetry emitted before a deny response can look like an allow
+    unless auth.decision records the final enforcement result.
 level: high
 tags:
-  - attack.privilege_escalation
-  - attack.t1134 # Access Token Manipulation
-  - attack.t1550 # Use Alternate Authentication Material
-  - attack.t1078 # Valid Accounts
-  - safe.t1308
-fields:
-  - event_type
-  - timestamp
-  - user_id
-  - token_id
-  - token_subject
-  - token_issuer
-  - token_audience
-  - granted_scopes
-  - required_scope
-  - operation_type
-  - api_endpoint
-  - validation_result
-  - source_ip
-  - user_agent
-  - mcp_tool_name
-  - privilege_level
-  - scope_elevation_amount
+  - saf.t1308
+  - attack.t1550.001
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1308-C012
+    - SAF-T1308-C022
+  telemetry_claim_ids:
+    - SAF-T1308-C004
+    - SAF-T1308-C005
+    - SAF-T1308-C012
+  limitation_claim_ids:
+    - SAF-T1308-C013
+  validation_artifacts:
+    - tests/SAF-T1308/test-logs.json
+    - tests/SAF-T1308/test_detection_rule.py
+    - research/techniques/SAF-T1308/validation/detection-test.txt
+    - research/techniques/SAF-T1308/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1308-C005, SAF-T1308-C012]
+      rationale: Authorization enforcement must emit a final decision and context.
+    selection_grant_resource:
+      claim_ids: [SAF-T1308-C004, SAF-T1308-C012]
+      rationale: Flags an allowed token issuance whose resource exceeds the grant.
+    selection_audience:
+      claim_ids: [SAF-T1308-C005, SAF-T1308-C012]
+      rationale: Flags a protected-resource allow decision despite audience mismatch.
+    selection_scope:
+      claim_ids: [SAF-T1308-C005, SAF-T1308-C012]
+      rationale: Flags an MCP operation allowed without its required scopes.
+    condition:
+      claim_ids: [SAF-T1308-C022]
+      rationale: Any defining authorization invariant failing on an allow is sufficient.
+    fields:
+      claim_ids: [SAF-T1308-C012, SAF-T1308-C013]
+      rationale: Context fields support investigation and documented tuning.
+    falsepositives:
+      claim_ids: [SAF-T1308-C013]
+      rationale: Records alias and pre-enforcement telemetry limitations.

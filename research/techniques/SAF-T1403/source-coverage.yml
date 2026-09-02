@@ -1,0 +1,242 @@
+version: 1
+technique_id: SAF-T1403
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/server/tools"
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/client/elicitation"
+        - "DIRECT https://modelcontextprotocol.io/specification/2025-06-18/basic/authorization"
+        - "DIRECT https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices"
+        - "DIRECT https://www.rfc-editor.org/rfc/rfc9700.html"
+      material_changes:
+        - Bound the technique to repeated user decisions rather than technical consent bypass.
+        - Identified tool confirmation, elicitation decisions, client rate limits, denial caching, and elevation logs.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT https://www.uber.com/us/en/newsroom/security-update/"
+        - "DIRECT https://www.microsoft.com/en-us/security/blog/2022/03/22/dev-0537-criminal-actor-targeting-organizations-for-data-exfiltration-and-destruction/"
+        - "NVD API keywordSearch=authorization prompt fatigue"
+        - "NVD API keywordSearch=approval prompt fatigue"
+        - "NVD API keywordSearch=MCP authorization consent"
+        - "NVD API keywordSearch=agent approval fatigue"
+        - "NVD API cveId=CVE-2026-27124"
+        - "NVD API cveId=CVE-2026-32112"
+        - "NVD API cveId=CVE-2026-67333"
+        - "NVD API cveId=CVE-2026-79786"
+        - "EXACT GITHUB ADVISORY from SRC-nvd-cve-2026-27124: GHSA-rww4-4w9c-7733"
+        - "EXACT GITHUB ADVISORY from SRC-nvd-cve-2026-32112: GHSA-pf93-j98v-25pv"
+      material_changes:
+        - Selected two observed non-agentic historical analogies, one adjacent consent-bypass vulnerability, and one directly relevant implementation condition.
+        - Preserved the absence of a direct MCP or agentic production breach and rejected three consent-adjacent CVEs as technique evidence.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT OpenAI MCP approval-flow documentation"
+        - "DIRECT Anthropic Claude Code permission-system documentation"
+        - "DIRECT FastMCP GHSA reproduction obtained from NVD"
+        - "DIRECT NIST SP 800-63B-4 authentication-fatigue evidence"
+        - "DIRECT arXiv identifier 1510.07728; rejected as unrelated after opening"
+      material_changes:
+        - Confirmed benign agent approval flows and an adjacent consent-bypass reproduction.
+        - Preserved the gap for an end-to-end adversarial MCP or agentic consent-fatigue demonstration.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT https://attack.mitre.org/versions/v19/techniques/T1621/"
+        - "DIRECT https://attack.mitre.org/detectionstrategies/DET0160/"
+        - "DIRECT https://pages.nist.gov/800-63-4/sp800-63b.html"
+        - "DIRECT https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-number-match"
+        - "DIRECT MCP elicitation rate limiting and MCP scope-minimization denial caching"
+      material_changes:
+        - Adapted request-frequency, time-window, identity, decision-state, and origin correlation to agent approval telemetry.
+        - Defined and tested an experimental four-request, ten-minute decision-sequence analytic.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - "DIRECT Anthropic deny, ask, managed-policy, and application-enforcement behavior"
+        - "DIRECT OpenAI always/never/selective MCP approval behavior"
+        - "DIRECT MCP client rate limiting and denied-scope cache guidance"
+        - "DIRECT NVD/CISA SSVC exploitation status for CVE-2026-27124, CVE-2026-32112, CVE-2026-67333, and CVE-2026-79786"
+        - "DIRECT RFC 9700 consent-adjacent OAuth threats; no repeated-approval support found"
+      material_changes:
+        - Narrowed prerequisites to clients that allow materially equivalent retries and preserved hard-deny and rate-limit counterexamples.
+        - Kept consent bypass, XSS, redirect capture, and first-prompt deception outside scope.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - "NVD API synonyms: authorization prompt fatigue; approval prompt fatigue; agent approval fatigue"
+        - "Version recheck: MCP Tools/Elicitation 2025-06-18, MCP Security 2025-11-25, NIST SP 800-63B-4 final, ATT&CK v19"
+        - "Advisory recheck: affected/fixed versions and SSVC exploitation status for four consent-adjacent CVEs"
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - "Authority cross-check: Uber, Microsoft Threat Intelligence, NIST, MITRE ATT&CK, MCP, OpenAI, Anthropic"
+        - "Falsification recheck: direct incident, direct fatigue CVE, end-to-end adversarial demonstration, and measured detector accuracy"
+        - "Boundary recheck: first-prompt deception, consent bypass, OAuth redirect weakness, ordinary retries"
+      material_changes: []
+  rationale: >-
+    The reviewed corpus covers protocol primitives, two primary incident sources
+    for the repeated-approval analogue, official NVD and vendor advisory records,
+    agent approval implementations, detection, defenses, and counterexamples.
+    The final two narrower authority passes changed no controlling requirement,
+    example classification, limitation, detection choice, remediation status,
+    or scope distinction. Direct MCP production and adversarial demonstration
+    gaps remain stated rather than inferred away.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 7
+  selected_examples:
+    - SRC-mcp-security-2025-11-25
+    - SRC-nvd-cve-2026-27124
+    - SRC-uber-security-update-2022
+    - SRC-microsoft-dev0537-2022
+  no_qualifying_examples_rationale: >-
+    No candidate qualified as a direct MCP or agentic production incident or
+    direct end-to-end demonstration. Four high-impact examples are retained with
+    explicit enabling, adjacent, or historical labels because they establish a
+    denied-scope retry condition, a real MCP consent-boundary vulnerability, and
+    observed consequences of the repeated-approval mechanism outside agentic
+    systems. The evidence gap prevents Observed or Demonstrated status.
+  candidates:
+    - source_id: SRC-mcp-security-2025-11-25
+      identifier: MCP Security Best Practices - Scope Minimization
+      relationship: enabling_vulnerability
+      exploitation_status: unknown
+      impact: Repeated denied-scope elevation loops can create recurring consent requests and audit noise.
+      remediation: Cache recent failures, issue precise scope challenges, and log correlated elevation events.
+      selected: true
+      rationale: Highest-directness implementation condition for repetition, but not a disclosed product flaw or observed exploitation.
+    - source_id: SRC-nvd-cve-2026-27124
+      identifier: CVE-2026-27124 / GHSA-rww4-4w9c-7733
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: proof_of_concept
+      impact: A consent-check failure could provide unauthorized access to resources linked to a victim account.
+      remediation: Fixed in FastMCP 3.2.0 by correcting consent verification.
+      selected: true
+      rationale: High-impact MCP consent-boundary evidence with a reproduced path, but it bypasses rather than fatigues consent.
+    - source_id: SRC-uber-security-update-2022
+      identifier: Uber September 2022 security incident
+      relationship: historical_analogy
+      exploitation_status: observed
+      impact: Accepted repeated two-factor request enabled access to internal systems, Slack messages, finance information, and remediated vulnerability reports.
+      remediation: Accounts blocked or reset, tools disabled, keys rotated, reauthentication required, MFA strengthened, and monitoring increased.
+      selected: true
+      rationale: Primary incident report with the exact repeated-request and eventual-acceptance mechanism, outside MCP.
+    - source_id: SRC-microsoft-dev0537-2022
+      identifier: Microsoft DEV-0537 / LAPSUS$ campaign observations
+      relationship: historical_analogy
+      exploitation_status: observed
+      impact: Repeated simple-approval prompts supported initial access in campaigns involving theft, destructive actions, and extortion.
+      remediation: Stronger MFA, number matching or FIDO, risk-based policies, trusted endpoints, and monitoring.
+      selected: true
+      rationale: Primary threat-intelligence observations across organizations with named response teams, outside MCP.
+    - source_id: SRC-nvd-cve-2026-32112
+      identifier: CVE-2026-32112 / GHSA-pf93-j98v-25pv
+      relationship: rejected
+      exploitation_status: none_observed
+      impact: Consent-form XSS could expose data or alter browser-origin state after social engineering.
+      remediation: Fixed in ha-mcp 7.0.0; beta OAuth mode only.
+      selected: false
+      rationale: Consent UI is involved, but the root cause is output encoding and the path has no repeated request mechanism.
+    - source_id: SRC-nvd-cve-2026-67333
+      identifier: CVE-2026-67333
+      relationship: rejected
+      exploitation_status: none_observed
+      impact: An unsafe redirect scheme could execute script in the authorization-server origin.
+      remediation: Fixed in better-auth 1.6.13 and 1.7.0-beta.4.
+      selected: false
+      rationale: Redirect validation and XSS are outside the contract; no fatigue or repeated prompts are present.
+    - source_id: SRC-nvd-cve-2026-79786
+      identifier: CVE-2026-79786
+      relationship: rejected
+      exploitation_status: proof_of_concept
+      impact: Unvalidated redirect registration could capture authorization codes and hijack MCP sessions after consent.
+      remediation: No fixed-version claim retained because the reviewed NVD record did not supply one.
+      selected: false
+      rationale: User consent appears in the path, but the weakness is redirect registration and code capture without repeated prompting.
+
+sources_consulted:
+  - SRC-anthropic-permissions-2026
+  - SRC-arxiv-1510.07728
+  - SRC-ghsa-pf93-j98v-25pv
+  - SRC-ghsa-rww4-4w9c-7733
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-dev0537-2022
+  - SRC-microsoft-number-match-2025
+  - SRC-mitre-det0160-v1.0
+  - SRC-mitre-t1621-v1.2
+  - SRC-nist-sp800-63b-4
+  - SRC-nvd-cve-2026-27124
+  - SRC-nvd-cve-2026-32112
+  - SRC-nvd-cve-2026-67333
+  - SRC-nvd-cve-2026-79786
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-rfc9700
+  - SRC-uber-security-update-2022
+sources_cited:
+  - SRC-anthropic-permissions-2026
+  - SRC-ghsa-rww4-4w9c-7733
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-dev0537-2022
+  - SRC-microsoft-number-match-2025
+  - SRC-mitre-det0160-v1.0
+  - SRC-mitre-t1621-v1.2
+  - SRC-nist-sp800-63b-4
+  - SRC-nvd-cve-2026-27124
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-uber-security-update-2022
+sources_rejected:
+  - source_id: SRC-arxiv-1510.07728
+    reason: Identifier-level discovery error; the paper concerns quantum key distribution and provides no relevant evidence.
+  - source_id: SRC-nvd-cve-2026-32112
+    reason: Consent-form XSS has no repeated-request or fatigue mechanism.
+  - source_id: SRC-ghsa-pf93-j98v-25pv
+    reason: Vendor advisory confirms the XSS boundary and meaningful user-interaction bar, not fatigue.
+  - source_id: SRC-nvd-cve-2026-67333
+    reason: Redirect-scheme XSS is outside the contract.
+  - source_id: SRC-nvd-cve-2026-79786
+    reason: Redirect registration and code capture are outside the contract.
+  - source_id: SRC-rfc9700
+    reason: Current OAuth BCP was consulted for contrary and boundary evidence but does not address repeated approval fatigue.
+sources_blocked: []
+
+conflicts:
+  - issue: Approval prompts can be enforced by the client, rate-limited, or hard-denied independently of model instructions.
+    resolution: The contract requires a client or workflow that permits materially equivalent requests to recur; client enforcement is a prevention boundary, not evidence against the conditional technique.
+  - issue: High-impact MCP CVEs involving consent might be mistaken for direct examples.
+    resolution: CVE-2026-27124 is labeled adjacent and three redirect or XSS CVEs are excluded because none relies on repeated user decisions.
+  - issue: An alert sequence can represent legitimate retries or independent user actions.
+    resolution: The analytic groups on normalized equivalence, requires negative-before-positive decision order, excludes explicit user initiation, and states residual false positives.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1403-C001
+  rationale: >-
+    MCP and agent product sources directly establish approval and elicitation
+    primitives; NIST, MITRE, Uber, and Microsoft establish the repeated-request
+    fatigue mechanism and consequences for authentication. Applying that
+    mechanism to the human agent-action authorization boundary remains an
+    explicit inference because no direct MCP production incident or end-to-end
+    adversarial demonstration was identified.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

@@ -1,0 +1,114 @@
+version: 1
+technique_id: SAF-T1202
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1202/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1202/technique-contract.yml
+  supports: Internal scope, name, tactic seed, and behavioral boundaries.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1202/source-coverage.yml
+  supports: Search passes, selected-example decisions, evidence status, conflicts,
+    and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1202/quality-review.yml
+  supports: Quality gates, commands, and validation results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1202/detection-rule.yml
+  supports: Explicitly labeled defensive analytic and telemetry contract.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1202/test_detection_rule.py
+  supports: Deterministic evaluator and positive, negative, boundary, malformed, and
+    lookalike cases.
+- id: LOCAL-test-logs
+  path: tests/SAF-T1202/test-logs.json
+  supports: Inert synthetic authorization-server events used by the evaluator.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1202/validation/detection-tests.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1202/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1202-X001
+  candidate: The UNC6395 Drift incident proves that the actor exchanged refresh tokens.
+  origin: Production-incident research pass.
+  attempted_searches:
+  - stolen refresh token production incident postmortem
+  - Salesloft Drift OAuth refresh token incident
+  consulted_source_ids:
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-2026
+  reason: The authorities establish stolen OAuth-token use and revocation of both
+    token types but do not identify an exchange event.
+  prohibited_publishable_text:
+  - UNC6395 exchanged Drift refresh tokens
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1202-X002
+  candidate: The 2022 GitHub incident establishes MCP refresh-token persistence.
+  origin: Production-incident research pass.
+  attempted_searches:
+  - OAuth stolen user token incident site:github.blog
+  consulted_source_ids:
+  - SRC-github-oauth-incident-2022
+  reason: GitHub establishes OAuth user-token abuse but neither MCP nor the defining
+    renewal step.
+  prohibited_publishable_text:
+  - GitHub observed MCP refresh-token persistence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1202-X003
+  candidate: CVE-2026-53512 was exploited in production.
+  origin: Vulnerability and exploitation-status research pass.
+  attempted_searches:
+  - CVE-2026-53512 exploitation status site:nvd.nist.gov
+  consulted_source_ids:
+  - SRC-ghsa-pw9m-5jxm-xr6h
+  reason: The directly reviewed advisory describes impact and a patch but does not
+    report production exploitation.
+  prohibited_publishable_text:
+  - CVE-2026-53512 was actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1202-X004
+  candidate: Any successful refresh-token grant is malicious persistence.
+  origin: Detection-design challenge pass.
+  attempted_searches:
+  - OAuth refresh token detection site:attack.mitre.org
+  - token family replay false positive
+  consulted_source_ids:
+  - SRC-rfc9700
+  - SRC-rfc10017
+  - SRC-mitre-t1550-001
+  - SRC-ms-entra-risk-detections-2026
+  reason: Refresh is normal protocol behavior; the analytic needs lifecycle or reuse
+    context and still has documented lookalikes and blind spots.
+  prohibited_publishable_text:
+  - Every successful refresh is malicious
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1202-X005
+  candidate: Endpoint containment or a password reset always terminates copied OAuth
+    access.
+  origin: Remediation challenge pass.
+  attempted_searches:
+  - stolen refresh token remediation site:cloud.google.com/architecture
+  - token theft revoke access site:microsoft.com/security
+  consulted_source_ids:
+  - SRC-google-oauth-token-mitigation
+  - SRC-ms-token-tactics-2022
+  - SRC-rfc7009
+  reason: Reviewed authorities require provider-specific token or grant revocation
+    and account for residual access-token validity.
+  prohibited_publishable_text:
+  - Password reset always revokes OAuth tokens
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,166 @@
+version: 1
+technique_id: SAF-T1403
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1403
+  inherited_context: false
+target:
+  id: SAF-T1403
+  neutral_name: Consent-Fatigue Exploit
+allowed_inputs:
+- Target ID SAF-T1403, neutral name Consent-Fatigue Exploit, and supplied tactic ATK-TA0005.
+- The author-saf-technique skill and all routed references except impact-classification-examples.md
+  before freeze.
+- Repository-wide techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and scripts/validate-technique-research.py.
+- Independently opened standards-body, government, first-party vendor, researcher,
+  and exact provenance-qualified GitHub advisory sources.
+prohibited_inputs:
+- techniques/SAF-T1403/README.md and all current or historical target prose.
+- research/techniques/SAF-T1403/ including prior research, tests, ledgers, logs, source
+  lists, and attestations.
+- techniques/SAF-T1403/detection-rule.yml and all prior target-specific detection
+  assets.
+- Git history, diffs, blame, branches, stashes, commits, reviews, and repository history
+  that expose the prior target.
+- Any pull request, issue, cache, SAF website, SAF repository or fork, catalog description,
+  shared registry, or previous conversation containing target-specific content.
+- impact-classification-examples.md and methodology examples before freeze.
+independent_research:
+  search_count: 34
+  direct_review_count: 19
+  searches:
+  - DIRECT MCP Authorization 2025-06-18
+  - DIRECT MCP Security Best Practices 2025-11-25
+  - DIRECT NIST SP 800-63B-4 single-page and CSRC publication record
+  - DIRECT MITRE ATT&CK T1621 live and v19 version pages
+  - DIRECT Uber September 2022 security update
+  - DIRECT Microsoft DEV-0537 campaign analysis
+  - DIRECT Microsoft Authenticator number matching
+  - DIRECT MCP Tools 2025-06-18
+  - DIRECT MCP Elicitation 2025-06-18
+  - DIRECT OpenAI MCP and Connectors approvals guide
+  - DIRECT Anthropic Claude Code permissions guide
+  - DIRECT MITRE DET0160 detection strategy
+  - DIRECT RFC 9700 OAuth security BCP
+  - NVD API keywordSearch=model context protocol consent -> 0 results
+  - NVD API keywordSearch=authorization prompt fatigue -> 0 results
+  - NVD API keywordSearch=approval prompt fatigue -> 0 results
+  - NVD API keywordSearch=MCP authorization consent -> 4 results
+  - NVD API keywordSearch=agent approval fatigue -> 0 results
+  - NVD API cveId=CVE-2026-27124
+  - NVD API cveId=CVE-2026-32112
+  - NVD API cveId=CVE-2026-67333
+  - NVD API cveId=CVE-2026-79786
+  - EXACT GitHub GHSA-rww4-4w9c-7733 obtained from SRC-nvd-cve-2026-27124
+  - EXACT GitHub GHSA-pf93-j98v-25pv obtained from SRC-nvd-cve-2026-32112
+  - DIRECT CISA AA23-320A probe -> blocked before substantive review
+  - DIRECT CISA AA24-057A probe -> blocked before substantive review
+  - DIRECT IC3 2024 SVR advisory PDF probe -> title-level only; not used
+  - DIRECT CrowdStrike telco/BPO investigation probe -> inaccessible; not used
+  - DIRECT Google Threat Intelligence Russian-targeting probe -> inaccessible; not
+    used
+  - DIRECT ACM DOI 10.1145/2702123.2702322 probe -> inaccessible; not used
+  - DIRECT BYU Neurosecurity warning-habituation probe -> inaccessible; not used
+  - DIRECT arXiv 1510.07728 -> unrelated paper; rejected
+  - Saturation authority cross-check across MCP, NIST, NVD, MITRE, Uber, Microsoft,
+    OpenAI, and Anthropic
+  - Saturation falsification cross-check for direct incident, direct CVE, adversarial
+    demonstration, and detector accuracy
+  opened_source_ids:
+  - SRC-anthropic-permissions-2026
+  - SRC-arxiv-1510.07728
+  - SRC-ghsa-pf93-j98v-25pv
+  - SRC-ghsa-rww4-4w9c-7733
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-06-18
+  - SRC-microsoft-dev0537-2022
+  - SRC-microsoft-number-match-2025
+  - SRC-mitre-det0160-v1.0
+  - SRC-mitre-t1621-v1.2
+  - SRC-nist-sp800-63b-4
+  - SRC-nvd-cve-2026-27124
+  - SRC-nvd-cve-2026-32112
+  - SRC-nvd-cve-2026-67333
+  - SRC-nvd-cve-2026-79786
+  - SRC-clean-t1301-openai-mcp-guide
+  - SRC-rfc9700
+  - SRC-uber-security-update-2022
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+isolated_validation:
+  mock_repository: /private/tmp/saf-all-cleanroom/SAF-T1403/mock-repository
+  validator_source: current canonical scripts/validate-technique-research.py copied
+    without opening target or shared registries
+  command: PYTHONPATH=/private/tmp/saf-cleanroom-pydeps python3 scripts/validate-technique-research.py
+    SAF-T1403
+  result: passed
+  detector_command: PYTHONPATH=/private/tmp/saf-cleanroom-pydeps python3 tests/SAF-T1403/test_detection_rule.py
+  detector_result: 'PASS SAF-T1403 detector: 10/10 cases'
+integration_constraints:
+- Do not inspect old target content or a diff that reveals it; replace target files
+  atomically from this bundle.
+- Reconcile provisional source IDs against the shared manifest only after freeze,
+  without using the manifest as a research lead.
+- Replace synthetic SAF-T1007, SAF-T1307, SAF-M-73, and SAF-M-69 joins with real repository
+  identifiers mechanically.
+- Replace the synthetic mock history SHA with an honest repository-history SHA and
+  rerun tests and validators.
+- Recompute freeze or integration integrity records after any mechanical join changes.
+attestation: I generated this technique from only the allowed seed, generic authoring
+  materials, and independently reviewed external authorities. I did not access prior
+  target artifacts, shared registries, SAF content, history, diffs, or methodology
+  impact examples before freeze. GitHub advisories were opened only at exact URLs
+  obtained from directly reviewed NVD records.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-06-18: SRC-mcp-tools-2025-06-18
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-openai-mcp-approvals-2026: SRC-clean-t1301-openai-mcp-guide
+    SRC-rfc9700: SRC-rfc9700
+  new_shared_source_records:
+  - SRC-mcp-elicitation-2025-06-18
+  - SRC-nist-sp800-63b-4
+  - SRC-mitre-t1621-v1.2
+  - SRC-mitre-det0160-v1.0
+  - SRC-uber-security-update-2022
+  - SRC-microsoft-dev0537-2022
+  - SRC-anthropic-permissions-2026
+  - SRC-nvd-cve-2026-27124
+  - SRC-ghsa-rww4-4w9c-7733
+  - SRC-nvd-cve-2026-32112
+  - SRC-ghsa-pf93-j98v-25pv
+  - SRC-nvd-cve-2026-67333
+  - SRC-nvd-cve-2026-79786
+  - SRC-microsoft-number-match-2025
+  - SRC-arxiv-1510.07728
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-15
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-73
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1007
+    SAF-T9002: SAF-T1307
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-73
+    SAF-M-9002: SAF-M-69
+  status: integrated_and_repository_validated

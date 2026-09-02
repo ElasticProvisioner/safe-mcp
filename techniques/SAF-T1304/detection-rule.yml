@@ -1,42 +1,83 @@
-title: MCP Credential Relay Chain Detection
-id: 7B67EA0A-2966-4251-8522-77FCA3434801
-status: experimental
-description: Detects potential credential relay attacks between MCP tools where stolen tokens are used to escalate privileges
-author: pritikabista
-date: 2025-01-02
-references:
-  - https://github.com/pritikabista/saf-mcp/blob/main/techniques/SAF-T1304/README.md
-  - https://attack.mitre.org/techniques/T1550/
+title: SAF-T1304 Credential Relay Chain
+id: 4bfed65f-a3cb-47bf-8ed7-47a36052c02f
+status: test
+description: >-
+  Detects wrong-audience token use, cross-principal credential substitution,
+  or reuse of one token fingerprint at different protected resources within a
+  600-second inclusive window unless a validated token exchange is recorded.
+author: Frank Kautz with OpenAI Codex
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: authentication
+  category: application
+  product: mcp_authorization_gateway
 detection:
-  selection:
-    token_usage:
-      - '*oauth_token*'
-      - '*bearer_token*'
-      - '*jwt_token*'
-      - '*access_token*'
-    cross_tool_usage:
-      - '*different_tool_same_token*'
-      - '*token_scope_violation*'
-      - '*cross_service_auth*'
-    privilege_escalation:
-      - '*rapid_privilege_increase*'
-      - '*admin_operations_after_token_theft*'
-      - '*unauthorized_elevated_access*'
-    suspicious_patterns:
-      - '*token_relay*'
-      - '*credential_chain*'
-      - '*privilege_escalation*'
-  condition: selection
+  audience_mismatch:
+    expected_resource: present
+    token_audience: present
+    comparison: not_equal
+  principal_mismatch:
+    principal_id: present
+    upstream_principal_id: present
+    comparison: not_equal
+  reuse_selection:
+    token_fingerprint: present
+    expected_resource: distinct_within_window
+  valid_exchange_filter:
+    token_exchange_validated: true
+  timeframe: 600s_inclusive
+  condition: audience_mismatch or principal_mismatch or (reuse_selection and not valid_exchange_filter)
+fields:
+  - timestamp
+  - request_id
+  - session_id
+  - principal_id
+  - upstream_principal_id
+  - expected_resource
+  - token_audience
+  - token_fingerprint
+  - token_exchange_validated
+  - action
 falsepositives:
-  - Legitimate cross-service authentication with proper authorization
-  - Normal token refresh operations
-  - Authorized privilege escalation workflows
-  - Multi-tool authentication for legitimate business processes
+  - Approved shared-service gateways intentionally using one service credential across multiple resources.
+  - Normalization differences in logically equivalent resource identifiers.
 level: high
 tags:
-  - attack.privilege_escalation
-  - attack.t1550
-  - safe.t1304
+  - saf.t1304
+  - attack.t1550.001
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1304-C013]
+  telemetry_claim_ids: [SAF-T1304-C002, SAF-T1304-C013]
+  limitation_claim_ids: [SAF-T1304-C014]
+  validation_artifacts:
+    - tests/SAF-T1304/test-logs.json
+    - tests/SAF-T1304/test_detection_rule.py
+    - tests/SAF-T1304/validation-results.json
+  components:
+    logsource:
+      claim_ids: [SAF-T1304-C013]
+      rationale: MCP authorization gateways can record the resource, caller, and token-binding decision needed for correlation.
+    audience_mismatch:
+      claim_ids: [SAF-T1304-C002, SAF-T1304-C013]
+      rationale: A mismatch directly contradicts the MCP resource-audience binding requirement.
+    principal_mismatch:
+      claim_ids: [SAF-T1304-C009, SAF-T1304-C013]
+      rationale: Cross-user credential-cache substitution presents an upstream credential under a different current caller.
+    reuse_selection:
+      claim_ids: [SAF-T1304-C013]
+      rationale: Cross-resource use of one fingerprint approximates bearer-token relay without retaining raw tokens.
+    valid_exchange_filter:
+      claim_ids: [SAF-T1304-C015]
+      rationale: A validated exchange creates a new downstream authorization context and is an explicit benign discriminator.
+    timeframe:
+      claim_ids: [SAF-T1304-C013, SAF-T1304-C014]
+      rationale: A bounded window follows the mutable token-reuse-window pattern and limits correlation cost.
+    condition:
+      claim_ids: [SAF-T1304-C013]
+      rationale: Any defining boundary mismatch is sufficient to produce a test alert.
+    fields:
+      claim_ids: [SAF-T1304-C013, SAF-T1304-C014]
+      rationale: These fields support audience, principal, resource, and exchange correlation while avoiding raw tokens.
+    falsepositives:
+      claim_ids: [SAF-T1304-C014]
+      rationale: Shared-service credentials and identifier normalization are documented tuning boundaries for the analytic.

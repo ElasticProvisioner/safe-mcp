@@ -1,0 +1,151 @@
+version: 1
+technique_id: SAF-T1601
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1601
+  inherited_context: false
+  context_statement: The agent received only the target ID, neutral name, assigned
+    tactic, clean-room constraints, and authorized deliverables; it received no prior
+    target prose, target research, candidate sources, or prior conclusions.
+target:
+  id: SAF-T1601
+  neutral_name: MCP Server Enumeration
+allowed_inputs:
+- The author-saf-technique skill and all routed references except impact-classification-examples.md
+  before freeze.
+- Repository-wide generic techniques/TEMPLATE.md, research/README.md, blank research/templates/technique
+  schemas, and scripts/validate-technique-research.py.
+- User-supplied neutral ID SAF-T1601, neutral name MCP Server Enumeration, and tactic
+  ATK-TA0007.
+- Directly reviewed standards-body, government, first-party vendor/research-team,
+  and framework-authority sources independently located from official indexes or catalogs.
+- Exact GitHub advisory URLs only after an opened NVD record supplied the URL and
+  the provenance was recorded.
+prohibited_inputs:
+- techniques/SAF-T1601/README.md and every other existing target technique file.
+- research/techniques/SAF-T1601/ and every existing target research or test artifact.
+- techniques/SAF-T1601/detection-rule.yml and target-specific detection tests or logs.
+- Git history, diffs, blame, logs, stashes, branches, commits, and review records
+  that expose prior target content.
+- Any pull request, issue, SAF site, catalog description, shared registry, cached
+  target page, or source list copied from prior target work.
+- Any previous conversation, summary, agent context, or inherited message containing
+  prior SAF-T1601 content or conclusions.
+- impact-classification-examples.md before freeze, unrestricted search, search_query,
+  GitHub search, and GitHub-scoped discovery.
+independent_research:
+  searches:
+  - Direct official index review: https://modelcontextprotocol.io/llms.txt
+  - Direct current specification review: https://modelcontextprotocol.io/specification/latest
+  - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/architecture
+  - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
+  - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+  - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli
+  - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration
+  - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+  - Direct NVD API: keywordSearch=Model Context Protocol
+  - Direct NVD API: keywordSearch=MCP server
+  - Direct NVD API: keywordSearch=MCP Inspector
+  - Direct NVD API: keywordSearch=MCP server enumeration
+  - Direct NVD API: keywordSearch=MCP server discovery
+  - Direct NVD API: keywordSearch=Model Context Protocol server discovery
+  - Direct NVD API: keywordSearch=server/discover
+  - Direct NVD API: keywordSearch=MCP server inventory
+  - Direct NVD API: keywordSearch=Model Context Protocol servers/list
+  - Direct NVD API: keywordSearch=MCP server catalog enumeration; initial HTTP 429
+      resolved by successful zero-result retry on 2026-09-02
+  - Direct NVD record: CVE-2025-66416
+  - Direct NVD record: CVE-2026-49257
+  - Direct NVD record: CVE-2025-66454
+  - Direct NVD record: CVE-2026-46519
+  - Direct CISA KEV catalog review and exact-CVE membership check
+  - Direct review of MITRE ATT&CK T1046 and its linked first-party Anthropic incident
+    report
+  - Direct review of NIST SP 800-92 official publication record
+  - Exact GitHub advisory GHSA-9h52-p55h-vw2f after SRC-nvd-cve-2025-66416 supplied
+    it
+  - Exact GitHub advisory GHSA-73cv-556c-w3g6 after SRC-nvd-cve-2026-49257 supplied
+    it
+  opened_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-server-enumeration-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-9h52-p55h-vw2f
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-inspector-cli-20260728
+  - SRC-mcp-inspector-config-20260728
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-nist-sp80092
+  - SRC-nvd-cve-2025-66416
+  - SRC-nvd-cve-2025-66454
+  - SRC-nvd-cve-2026-46519
+  - SRC-nvd-cve-2026-49257
+  - SRC-nvd-mcp-corpus-20260901
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- No integration, commit, push, or pull request is authorized in this run.
+- Shared source IDs may be reconciled only after freeze and may not introduce research
+  leads.
+- The pre-freeze synthetic neighbor roles must be mechanically reconciled after freeze
+  without using prior SAF-T1601 content.
+- The synthetic history SHA must be replaced with an honest integration commit SHA.
+- Target directories must be replaced atomically without opening old content or a
+  revealing diff.
+mock_validation:
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1601
+  result: PASS SAF-T1601 (strict isolated synthetic mock, 2026-09-02)
+  mock_root: /private/tmp/saf-all-cleanroom/SAF-T1601/mock
+  copied_real_target_or_shared_registry: false
+  deferred_real_repository_joins:
+  - Stable source-ID collision resolution
+  - Real nearest-neighbor IDs
+  - Honest repository-history SHA
+attestation: I attest that the draft and evidence packet were independently derived
+  from allowed generic inputs and directly reviewed external authorities, that no
+  prohibited prior SAF-T1601 artifact or prior target content was accessed, and that
+  the independent draft was complete before any integration activity.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-architecture-20260728: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-discovery-20260728: SRC-mcp-discovery-2026-07-28
+    SRC-mcp-security-20260728: SRC-mcp-security-2026-07-28
+    SRC-ghsa-73cv-556c-w3g6: SRC-ghsa-mcp-pinot-73cv
+    SRC-cisa-kev-20260901: SRC-cisa-kev-server-enumeration-2026-09-01
+    SRC-anthropic-gtg1002-202511: SRC-anthropic-espionage-2025-11
+    SRC-nvd-cve-2026-46519: SRC-nvd-cve-2026-46519
+  new_shared_source_records:
+  - SRC-mcp-inspector-cli-20260728
+  - SRC-mcp-inspector-config-20260728
+  - SRC-nvd-mcp-corpus-20260901
+  - SRC-nvd-cve-2025-66416
+  - SRC-ghsa-9h52-p55h-vw2f
+  - SRC-nvd-cve-2026-49257
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-nist-sp80092
+  - SRC-nvd-cve-2025-66454
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-45
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1602
+  removed_synthetic_role:
+  - Generic network endpoint discovery has no exact SAF neighbor and remains represented by ATT&CK T1046.

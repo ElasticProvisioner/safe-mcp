@@ -1,0 +1,174 @@
+version: 1
+technique_id: SAF-T1702
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1702/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1702/technique-contract.yml
+  supports: Frozen neutral name, scope, tactic, evidence requirements, and telemetry
+    contract.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1702/quality-review.yml
+  supports: Completed gates, validation command, detector result, review date, and
+    reviewer identity.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1702/detection-rule.yml
+  supports: Explicitly labeled behavioral correlation and component-level claim mappings.
+- id: LOCAL-detector-test
+  path: tests/SAF-T1702/test_detector.py
+  supports: Deterministic reference implementation for the behavioral correlation.
+- id: LOCAL-detector-fixtures
+  path: tests/SAF-T1702/fixtures.json
+  supports: Positive, negative, timing-boundary, trusted-curator, dormant, and missing-provenance
+    cases.
+- id: LOCAL-detector-results
+  path: tests/SAF-T1702/test-results.json
+  supports: Frozen summary of the passing nine-case detector run.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1702/validation/detection-test.txt
+  supports: Captured isolated and canonical detector commands and results.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1702/validation/strict-validator.txt
+  supports: Captured isolated and canonical strict-validator commands and results.
+- id: LOCAL-framework-fragment
+  path: research/framework-model.yml
+  supports: Canonical join for name, tactic, evidence, neighbors, mitigations, and
+    detector artifacts.
+- id: LOCAL-alignment-fragment
+  path: research/alignment-ledger.yml
+  supports: Resolved canonical boundary and mapping alignment issue.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1702-X001
+  candidate: A production breach caused by shared-memory poisoning.
+  origin: Breach and vulnerability research pass.
+  attempted_searches:
+  - Domain-restricted CISA, NVD, first-party vendor, OWASP, and exact-title academic
+    searches on 2026-09-02.
+  consulted_source_ids:
+  - SRC-cisco-memorytrap-2026
+  - SRC-owasp-agentic-top10-2026
+  reason: No reviewed direct source documented qualifying production exploitation;
+    available evidence was disclosure or controlled demonstration.
+  prohibited_publishable_text:
+  - Shared-memory poisoning has caused confirmed production breaches.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X002
+  candidate: A mechanism-specific CVE or CISA KEV entry.
+  origin: Government vulnerability-catalog searches.
+  attempted_searches:
+  - Domain-restricted NVD searches for MemoryTrap, AgentPoison, MINJA, InjecMEM, MemoryGraft,
+    agent memory poisoning, and MCP memory poisoning.
+  - Domain-restricted CISA KEV searches for the same terms; direct feed endpoints
+    returned access errors.
+  consulted_source_ids: []
+  reason: Search results were unrelated memory-safety, code-injection, or denial-of-service
+    issues and did not establish the defining cross-consumer memory mechanism.
+  prohibited_publishable_text:
+  - CVE-2025-33226 establishes shared-memory poisoning.
+  - CISA lists MemoryTrap in the Known Exploited Vulnerabilities catalog.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X003
+  candidate: Independent first-party confirmation of the Claude Code 2.1.50 remediation.
+  origin: Cisco disclosure follow-up.
+  attempted_searches:
+  - Domain-restricted Anthropic and Anthropic documentation search for Claude Code
+    2.1.50 and user memories.
+  consulted_source_ids:
+  - SRC-cisco-memorytrap-2026
+  reason: No directly reviewed Anthropic advisory was found, so the remediation remains
+    attributed to Cisco.
+  prohibited_publishable_text:
+  - Anthropic independently confirmed the MemoryTrap patch in a reviewed advisory.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X004
+  candidate: Universal attack-success percentages for shared-memory poisoning.
+  origin: Academic evaluation results.
+  attempted_searches:
+  - Compared MINJA and AgentPoison results with pre-existing-memory challenge evidence
+    and benchmark defense tradeoffs.
+  consulted_source_ids:
+  - SRC-minja-2026
+  - SRC-agentpoison-2024
+  - SRC-arxiv-memory-defense-2026
+  - SRC-injecmem-2026
+  reason: Success varies materially across models, memory state, access assumptions,
+    and defenses; laboratory aggregates are not universal rates.
+  prohibited_publishable_text:
+  - Shared-memory poisoning always succeeds at 80 percent or more.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X005
+  candidate: Content scanning alone prevents shared-memory poisoning.
+  origin: Detection and defense pass.
+  attempted_searches:
+  - Reviewed AgentPoison, MINJA, InjecMEM, and MIND defense evaluations for evasion
+    and error tradeoffs.
+  consulted_source_ids:
+  - SRC-agentpoison-2024
+  - SRC-minja-2026
+  - SRC-injecmem-2026
+  - SRC-mind-2026
+  reason: Direct evaluations document evasion, false-positive, or configuration-dependent
+    limitations for content or prompt screening.
+  prohibited_publishable_text:
+  - A prompt classifier completely prevents memory poisoning.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X006
+  candidate: Field precision and recall for the bundle's joined behavioral analytic.
+  origin: Detector validation review.
+  attempted_searches:
+  - Reviewed MIND, SMSR, MITRE detection guidance, and the bundle's deterministic
+    tests.
+  consulted_source_ids:
+  - SRC-mind-2026
+  - SRC-smsr-2026
+  - SRC-mitre-t1565.001
+  reason: No reviewed source evaluated this exact write-read-action correlation on
+    production telemetry.
+  prohibited_publishable_text:
+  - The SAF-T1702 detector has proven production accuracy.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X007
+  candidate: MCP Tasks or Sampling directly standardizes persistent shared memory.
+  origin: Protocol and authority pass.
+  attempted_searches:
+  - Reviewed the complete MCP Tasks and Sampling specification pages and compared
+    them with the core specification.
+  consulted_source_ids:
+  - SRC-mcp-tasks-2025-11
+  - SRC-mcp-sampling-2025-11
+  - SRC-mcp-spec-2025-06
+  reason: These utilities govern task context or sampling controls but do not define
+    the persistent shared-memory mechanism.
+  prohibited_publishable_text:
+  - MCP Tasks defines a shared persistent agent memory database.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1702-X008
+  candidate: Exact repository exploit artifacts or payloads linked from research papers.
+  origin: Academic source footnotes.
+  attempted_searches:
+  - Reviewed the papers' methodology, results, limitations, and official publication
+    pages without opening implementation repositories.
+  consulted_source_ids:
+  - SRC-agentpoison-2024
+  - SRC-minja-2026
+  - SRC-smsr-2026
+  reason: Implementation artifacts were unnecessary to establish the publishable claims
+    and would add operational detail without evidentiary benefit.
+  prohibited_publishable_text:
+  - Run the authors' payload to poison another user's memory.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

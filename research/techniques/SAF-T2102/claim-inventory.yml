@@ -1,0 +1,264 @@
+version: 1
+technique_id: SAF-T2102
+claims:
+  - id: SAF-T2102-C001
+    statement: >-
+      Attacker-controlled MCP or agentic inputs can crash a shared service,
+      cancel another principal's task, or amplify resource use enough to reduce
+      shared throughput or availability.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-j975-95f5-7wqh
+        support: direct
+        exact_locators: ["Description; Affected versions; Patched versions; CVSS Availability High"]
+      - source_id: SRC-ghsa-python-hvrp
+        support: direct
+        exact_locators: ["Details; Impact; Affected versions; Patched versions"]
+      - source_id: SRC-arxiv-resource-amplification-2026
+        support: direct
+        exact_locators: ["Abstract; arXiv:2601.10955v2, results summary"]
+    corroboration: Three independent mechanism classes support the bounded composite claim.
+    limitations:
+      - The sources do not establish an adversarial production incident.
+      - Impact varies with process isolation, authorization, quotas, and resilience controls.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The technique unifies three demonstrated availability outcomes at the same MCP or agentic execution boundary.
+    status: validated
+  - id: SAF-T2102-C002
+    statement: MCP tools are model-controlled functions invoked with caller-supplied arguments through tools/call.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools overview; Listing tools; Calling tools"]
+    corroboration: The current specification is the controlling protocol authority.
+    limitations:
+      - The protocol description does not state that any particular implementation is vulnerable.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C003
+    statement: Current MCP tool guidance requires server-side input validation, access controls, and rate limits and recommends client timeouts and tool-usage logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations, lines 725-737 in reviewed rendering"]
+    corroboration: NIST API guidance independently recommends the same control families.
+    limitations:
+      - The guidance does not prescribe universal thresholds or implementation code.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C004
+    statement: The legacy 2025-11-25 MCP Tasks design required authorization-context isolation and recommended rate, concurrency, TTL, cleanup, monitoring, and lifecycle-log controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tasks-2025-11
+        support: direct
+        exact_locators: ["Security Considerations: Task Isolation and Access Control; Resource Management; Audit and Logging"]
+    corroboration: The later SEP-2663 explains why the legacy list scoping was removed.
+    limitations:
+      - These requirements apply to the legacy experimental 2025-11-25 task surface, not the current extension wire format.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C005
+    statement: CVE-2025-53365 allowed a remote client to deliberately trigger an uncaught ClosedResourceError that crashed an MCP Python SDK server and required restart before version 1.10.0.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-j975-95f5-7wqh
+        support: direct
+        exact_locators: ["Description; Affected versions <1.10.0; Patched version 1.10.0; CVSS v4"]
+      - source_id: SRC-nvd-cve-2025-53365
+        support: corroborating
+        exact_locators: ["CVE change record dated 2025-07-04; Added Description; CVSS v4 vector"]
+    corroboration: The official vendor advisory and NVD change record agree on trigger, crash, restart, and fixed version.
+    limitations:
+      - Neither source reports exploitation in a production breach.
+      - Infrastructure resilience can change realized impact.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C006
+    statement: CVE-2026-52870 allowed one connected client to enumerate, read, consume, or cancel another client's tasks in MCP Python SDK versions 1.23.0 through 1.27.1.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-python-hvrp
+        support: direct
+        exact_locators: ["Details; Impact; Affected versions >=1.23.0 and <=1.27.1; Patched version 1.27.2"]
+      - source_id: SRC-nvd-cve-2026-52870
+        support: corroborating
+        exact_locators: ["CVE description; CISA ADP SSVC block; affected-version record"]
+    corroboration: The official advisory and government record agree on the cross-client task-isolation failure.
+    limitations:
+      - CISA ADP recorded exploitation as none at review time; that is not proof exploitation never occurred.
+      - The vulnerable handlers were experimental and version-bounded.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C007
+    statement: A controlled MCP-compatible malicious tool-server experiment produced trajectories above 60,000 tokens, up to 658-fold cost, 100–560-fold energy, 35–74% accelerator-cache occupancy, and about 50% lower co-running throughput across six models.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-resource-amplification-2026
+        support: direct
+        exact_locators: ["Abstract, arXiv:2601.10955v2; evaluation result summary"]
+    corroboration: The USENIX AgentDoS study independently demonstrates agent-resource exhaustion but not the same MCP tool-return mechanism.
+    limitations:
+      - The source is a preprint and controlled benchmark study, not a production incident.
+      - Economic amplification does not guarantee complete service outage in every deployment.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C008
+    statement: A useful disruption analytic requires timestamp, actor or client identity, method or endpoint, outcome, task ownership, service health, errors, latency, and resource or policy-enforcement telemetry.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-228-upd1
+        support: direct
+        exact_locators: ["pp. 26-27 minimum telemetry; pp. 32-34 health and policy-enforcement logs"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations: timeouts and tool-usage logging"]
+      - source_id: SRC-mcp-tasks-2025-11
+        support: corroborating
+        exact_locators: ["Audit and Logging"]
+    corroboration: Standards from NIST and MCP independently identify complementary request, health, policy, and task-lifecycle fields.
+    limitations:
+      - Field names and availability differ by implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The field set joins authoritative telemetry guidance to the selected mechanisms.
+    status: validated
+  - id: SAF-T2102-C009
+    statement: Successful cross-owner cancellation, a known server error plus unavailable health state, or actor-attributed request pressure plus degraded service are deterministic high-value signals, subject to local baselines and blind spots.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-228-upd1
+        support: direct
+        exact_locators: ["pp. 18, 32-34, 38-39: resource consumption, circuit breaking, health and policy telemetry"]
+      - source_id: SRC-mitre-attack-t1499
+        support: corroborating
+        exact_locators: ["Detection section: resource exhaustion, service crash, OOM, restarts, degraded and unhealthy state"]
+      - source_id: SRC-arxiv-aegis-2026
+        support: context
+        exact_locators: ["Abstract: cross-domain MCP resource abuse and policy normalization"]
+      - source_id: SRC-github-availability-2026-07
+        support: context
+        exact_locators: ["July 16, 2026 incident: non-adversarial service-degradation comparator and safeguards"]
+    corroboration: The sources support the constituent observables; the exact Boolean is repository-authored and tested.
+    limitations:
+      - Distributed low-rate actors, missing ownership fields, and unknown error classes can evade the analytic.
+      - Load and resilience tests may resemble attacks.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: No external source specifies this exact multi-branch rule or thresholds.
+    status: validated
+  - id: SAF-T2102-C010
+    statement: Availability defenses should combine input validation, authorization, quotas, concurrency and lifetime bounds, timeouts, circuit breakers, isolation, and health and policy monitoring.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-228-upd1
+        support: direct
+        exact_locators: ["p. 18 unrestricted resource consumption; pp. 32-34 rate limits and circuit breakers; pp. 38-39 control summary"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+      - source_id: SRC-mcp-tasks-2025-11
+        support: corroborating
+        exact_locators: ["Resource Management; Audit and Logging"]
+      - source_id: SRC-arxiv-aegis-2026
+        support: context
+        exact_locators: ["Abstract: normalized policy enforcement for heterogeneous MCP resource requests"]
+      - source_id: SRC-github-availability-2026-07
+        support: context
+        exact_locators: ["July 16, 2026 incident: time budget, monitoring, runbooks, planned circuit breaker and backup source"]
+    corroboration: NIST and MCP authorities independently support the layered control set.
+    limitations:
+      - Thresholds and isolation mechanisms must be selected for the deployment.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The layered set consolidates controls from multiple authoritative sources.
+    status: validated
+  - id: SAF-T2102-C011
+    statement: The reviewed corpus established a non-adversarial production MCP outage but no qualifying adversarial production Service Disruption incident.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-github-availability-2026-07
+        support: direct
+        exact_locators: ["July 16, 2026 incident: 08:50-09:50 UTC; root cause; remediation"]
+      - source_id: SRC-nvd-cve-2025-53365
+        support: context
+        exact_locators: ["CVE record and exploitation-status review trail"]
+      - source_id: SRC-nvd-cve-2026-52870
+        support: context
+        exact_locators: ["CVE record and CISA ADP SSVC exploitation none"]
+    corroboration: Production-incident and government vulnerability passes were supplemented by first-party vendor and academic searches.
+    limitations:
+      - This is a corpus-bounded absence statement, not proof that no incident exists.
+      - Unpublished or undisclosed incidents are outside the evidence base.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Absence is inferred only within the documented whitelist-only search corpus.
+    status: validated
+  - id: SAF-T2102-C012
+    statement: The current Tasks extension removes tasks/list, requires authorization checks on every task-related request, and is not wire-compatible with the legacy 2025-11-25 task design.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep2663-2026
+        support: direct
+        exact_locators: ["Backward Compatibility; Security Implications; lines 1032-1053 in reviewed rendering"]
+    corroboration: The current MCP release notes independently place Tasks in the extension framework.
+    limitations:
+      - SEP-2663 states it is a preserved accepted design record and directs readers to the current specification for authoritative requirements.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2102-C013
+    statement: MITRE ATT&CK T1499 Endpoint Denial of Service is the closest direct external mapping for attacker-driven resource exhaustion or persistent crash that blocks or degrades service.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1499
+        support: direct
+        exact_locators: ["Description; Detection Strategy; version 1.2 modified 2025-10-24"]
+    corroboration: The mechanism and outcome align without relying on an MCP-specific ATT&CK entry.
+    limitations:
+      - ATT&CK T1499 is not MCP-specific and does not cover every cross-task authorization nuance.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Mapping is an analytical reconciliation between SAF scope and ATT&CK wording.
+    status: validated

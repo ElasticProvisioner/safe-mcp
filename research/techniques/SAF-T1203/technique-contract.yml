@@ -1,0 +1,61 @@
+version: 1
+technique_id: SAF-T1203
+name: Backdoored Server Binary
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+  - ATK-TA0003
+adversary_objective: >-
+  Obtain persistent re-execution of attacker code whenever an MCP host launches
+  a previously approved local server path.
+scope:
+  security_boundary: >-
+    Continuing host trust in the contents, digest, signer, and directly loaded
+    artifacts of a server command approved at an earlier time.
+  in_scope:
+    - Post-approval replacement, patching, or infection of a configured local MCP server executable.
+    - Modification of a directly loaded support binary when the unchanged configured server path activates it.
+  out_of_scope:
+    - Initial malicious server installation or deception at the installation-consent boundary.
+    - Prompt, tool-metadata, or response poisoning without artifact modification.
+    - Compromise inserted before delivery to the consumer.
+    - Separately installed server extensions, plugins, or web shells.
+    - Generic arbitrary code execution or file write unless the trusted server artifact is changed and later launched.
+  affected_components:
+    - MCP host or client
+    - Local MCP server process
+    - Server executable and directly loaded support binaries
+nearest_neighbors:
+  - technique_id: SAF-T1006
+    distinction: >-
+      Malicious MCP Server Distribution ends at delivery or first installation
+      of attacker-selected server software; SAF-T1203 requires a trusted artifact
+      to change later.
+  - technique_id: SAF-T1001
+    distinction: >-
+      Tool Poisoning Attack changes protocol-visible metadata without an on-disk
+      executable or support-binary change.
+required_evidence:
+  - Establish local MCP process launch behavior from current first-party documentation.
+  - Establish host-binary replacement as a persistence mechanism from an authoritative framework and incidents.
+  - Distinguish direct MCP evidence from historical analogies and adjacent demonstrations.
+  - Search current production incidents, advisories, exploitation status, demonstrations, defenses, and boundary cases.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Registered server process-start events with server identity and resolved executable path.
+    - Execution-time observed SHA-256 and separately approved SHA-256.
+    - Artifact change-approval state and optional signature-validation result.
+safe_example_constraints:
+  - Use inert identifiers and fixed placeholder digests only.
+  - Do not include executable payloads, destructive commands, credentials, or exploitation steps.
+completion_evidence:
+  - Every substantive publishable unit maps to a validated claim and reviewed source or declared local artifact.
+  - All unsupported candidates are omitted and recorded in the exclusion ledger.
+  - Two consecutive no-change saturation passes are recorded.
+  - Deterministic detection fixtures and strict packet validation pass.
+  - Publication-rights and quality reviews pass with no unresolved issue.

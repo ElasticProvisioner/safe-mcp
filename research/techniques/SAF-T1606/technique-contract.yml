@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1606
+name: Directory Listing via File Tool
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Enumerate file and directory names or directory structure by
+  invoking an MCP file-capable tool, so the returned metadata can guide later activity.
+scope:
+  security_boundary: The boundary between an MCP client or model-controlled tool invocation
+    and the filesystem namespace exposed by the MCP server under the invoking identity
+    and configured roots.
+  in_scope:
+  - Invocation of a file-capable MCP tool whose immediate result is a directory listing,
+    recursive tree, matching paths, or allowed-directory list.
+  - Discovery of names, entry types, sizes, counts, or directory structure returned
+    by that invocation.
+  out_of_scope:
+  - Reading file contents, collecting or exfiltrating identified files, and modifying
+    filesystem state.
+  - Obtaining the ability to call a tool through prompt injection, session theft,
+    malicious server installation, or another initial-access mechanism.
+  - Escaping configured roots through traversal, symlink, prefix-collision, or authorization
+    flaws; those mechanisms may enlarge listing scope but are not the defining discovery
+    behavior.
+  affected_components:
+  - MCP client or host that issues tools/call requests
+  - MCP filesystem or file-capable server that evaluates paths and returns metadata
+  - Filesystem namespace, allowed roots, tool-audit pipeline, and invoking identity
+nearest_neighbors:
+- technique_id: SAF-T1502
+  distinction: SAF-T1606 stops at names and directory metadata, while SAF-T1502
+    reads credential-bearing file contents as a narrower follow-on.
+- technique_id: SAF-T1105
+  distinction: SAF-T1606 is the directory-enumeration objective, while SAF-T1105
+    uses path-boundary weakness to expand which locations a file tool can reach.
+required_evidence:
+- Establish current MCP tool discovery, invocation, result, confirmation, access-control,
+  and logging semantics from the versioned specification.
+- Establish that a first-party filesystem reference server exposes directory-listing
+  and recursive-tree tools with configured directory boundaries.
+- Establish the discovery objective and operational detection concepts from a current
+  authoritative framework.
+- Search production incidents, advisories, CVEs, government exploitation catalogs,
+  maintainer fixes, and demonstrations; classify each against this exact boundary.
+- Establish telemetry fields and limitations sufficient for representative positive,
+  negative, boundary, and legitimate-lookalike tests.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP tool-call audit events containing timestamp, session identifier, actor, server,
+    rpc.method, tool.name, tool.arguments.path, approval state, and result status.
+  - Optional filesystem-access or process telemetry containing normalized path, invoking
+    process or service identity, and event time for corroboration.
+safe_example_constraints:
+- Use only inert example paths and synthetic audit events; do not name live credentials,
+  secrets, or victim directories.
+- Show directory metadata only and omit file contents, traversal payloads, exploit
+  steps, and destructive actions.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and directly reviewed
+  source, or to a declared local validation artifact.
+- Unverified production-breach, vulnerability, version-boundary, and detection-effectiveness
+  candidates are omitted and recorded in traceability-ledger.yml.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- The deterministic detection tests cover positive, negative, boundary, malformed,
+  and expected legitimate-lookalike cases and pass.
+- Publication-rights, framework, safe-publication, clean-room, and strict isolated-validator
+  gates pass without unresolved blocking issues.

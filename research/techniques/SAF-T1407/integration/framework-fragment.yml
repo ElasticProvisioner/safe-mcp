@@ -1,0 +1,19 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1407
+    name: Server Proxy Masquerade
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics: [ATK-TA0005]
+    technique_path: techniques/SAF-T1407/README.md
+    research_packet: research/techniques/SAF-T1407
+    related_techniques: [SAF-T1004, SAF-T1404, SAF-T1304]
+    mitigations: [SAF-M-6, SAF-M-12, SAF-M-13, SAF-M-14, SAF-M-16, SAF-M-18, SAF-M-20, SAF-M-31, SAF-M-45]
+    detection:
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1407/cases.json
+        - tests/SAF-T1407/test_detection_rule.py
+        - research/techniques/SAF-T1407/validation/detection-test.txt
+        - research/techniques/SAF-T1407/validation/strict-validator.txt
+      rule: techniques/SAF-T1407/detection-rule.yml

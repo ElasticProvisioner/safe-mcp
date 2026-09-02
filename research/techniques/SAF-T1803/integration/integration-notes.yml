@@ -1,0 +1,86 @@
+version: 1
+technique_id: SAF-T1803
+generated_on: "2026-09-02"
+integration_mode: mechanical_post_freeze
+bundle_root: .
+canonical_paths:
+  technique_directory: techniques/SAF-T1803
+  research_directory: research/techniques/SAF-T1803
+  test_directory: tests/SAF-T1803
+  source_manifest_fragment: source-manifest-fragment.yml
+  framework_fragment: framework-fragment.yml
+  alignment_fragment: alignment-fragment.yml
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0009
+      status: supplied_neutral_tuple
+      action: Reconcile against the destination tactic registry without changing the frozen prose.
+  neighbors:
+    - id: SAF-T1802
+      label: Targeted Database Query
+      status: synthetic_clean_room_join
+      action: Resolve the destination identifier and label, then update only the mechanical link or registry field if necessary.
+    - id: SAF-T1804
+      label: Backup Artifact Theft
+      status: synthetic_clean_room_join
+      action: Resolve the destination identifier and label, then update only the mechanical link or registry field if necessary.
+  mitigations:
+    - id: SAF-M-1
+      label: Least-Privilege Tool and Data Access
+      status: synthetic_clean_room_join
+      action: Resolve against the destination mitigation registry and update only the mechanical link or registry field if necessary.
+    - id: SAF-M-2
+      label: Human Approval and Audit
+      status: synthetic_clean_room_join
+      action: Resolve against the destination mitigation registry and update only the mechanical link or registry field if necessary.
+  source_ids:
+    - SRC-adx-patch-0abe0ee
+    - SRC-anthropic-agentic-espionage-2025
+    - SRC-avideo-patch-c85d076
+    - SRC-cisa-kev-2026-09-01
+    - SRC-cve-2026-33478
+    - SRC-cve-2026-33980
+    - SRC-cve-2026-75133
+    - SRC-ghsa-687q-32c6-8x68
+    - SRC-ghsa-vphc-468g-8rfp
+    - SRC-mandiant-snowflake-hunting-2024
+    - SRC-mandiant-unc5537-2024
+    - SRC-mcp-security-2025-11-25
+    - SRC-mcp-tools-2026-07-28
+    - SRC-mitre-attack-t1213-006
+    - SRC-nvd-db-dump-search
+    - SRC-nvd-mcp-database-search
+    - SRC-postgresql-pg-stat-activity-18
+    - SRC-postgresql-pgdump-18
+    - SRC-pypi-adx-mcp-server
+    - SRC-wordpress-keep-backup-daily
+  source_id_status: Independently generated provisional stable IDs; resolve collisions mechanically during destination manifest merge.
+  history_sha:
+    value: "1111111111111111111111111111111111111111"
+    status: synthetic_isolated_validation_join
+    action: Replace with the destination history commit during authorized post-freeze integration.
+  paths:
+    - techniques/SAF-T1803/README.md
+    - techniques/SAF-T1803/detection-rule.yml
+    - research/techniques/SAF-T1803
+    - tests/SAF-T1803/test-logs.json
+    - tests/SAF-T1803/test_detection_rule.py
+    - mitigations/SAF-M-1/README.md
+    - mitigations/SAF-M-2/README.md
+post_freeze_allowed_changes:
+  - Merge the source-manifest fragment while preserving factual fields and credits.
+  - Merge the framework and alignment fragments.
+  - Resolve synthetic tactic, neighbor, mitigation, source-ID, history-SHA, and path joins mechanically.
+  - Re-run strict validation and record destination-only validation evidence outside this immutable bundle.
+post_freeze_prohibited_changes:
+  - Change substantive prose, scope, evidence classification, claims, sources, examples, exclusions, detection logic, tests, or rights decisions without invalidating and regenerating the freeze.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1801, SAF-T1804]
+  canonical_mitigations: [SAF-M-12, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-71, SAF-M-72]
+  attack_mapping: {id: T1213.006, type: direct}
+  validation_proof:
+    - research/techniques/SAF-T1803/validation/detection.txt
+    - research/techniques/SAF-T1803/validation/strict-validator.txt
+  source_archive: No source bodies are distributed in the repository; canonical source records preserve remote-reviewed disposition.

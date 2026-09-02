@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T1308
+name: Token Scope Substitution
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0004
+adversary_objective: Obtain authorization for a protected MCP resource or operation
+  outside the resource-and-scope context bound to the adversary's valid OAuth grant
+  or token.
+scope:
+  security_boundary: The binding from OAuth authorization grant to issued token and
+    from token audience and effective permissions to an MCP resource-server decision.
+  in_scope:
+  - Widening or replacing the authorized resource during code or refresh redemption.
+  - Presenting a valid token to an unintended MCP audience that accepts it.
+  - Treating an audience or partial scope set as satisfying a different required scope.
+  out_of_scope:
+  - Theft or replay when the token remains within its valid audience and permissions.
+  - Token passthrough to a downstream API.
+  - Broad but legitimately granted scopes, token forgery, and post-escalation tool
+    abuse.
+  affected_components:
+  - MCP client
+  - OAuth authorization server
+  - MCP resource server or gateway
+  - Token-validation middleware
+  - Protected MCP tools and connected data backends
+nearest_neighbors:
+- technique_id: SAF-T1202
+  distinction: OAuth token acquisition or reuse for persistent access is distinct
+    from changing or misreading the token's authorized context.
+- technique_id: SAF-T1304
+  distinction: Credential propagation across a downstream authorization boundary is
+    not required for substitution.
+- technique_id: SAF-T1306
+  distinction: A rogue authorization server and issuer-misbinding path are distinct
+    from accepting authority outside the resource or scope binding actually granted.
+required_evidence:
+- Current MCP authorization requirements for resource indicators, token audience,
+  and scope errors.
+- OAuth standards that distinguish audience, resource, scope, and authorization-grant
+  binding.
+- Directly reviewed production incident, vulnerability, and demonstration searches.
+- Direct vulnerabilities establishing audience nonvalidation, resource widening, or
+  audience-to-scope fallback.
+- Operational telemetry and a deterministic analytic for issuance and allow decisions
+  across the three binding failures.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Authorization-server events with grant ID, original resources, requested resource,
+    effective scopes, token ID, client ID, and decision.
+  - MCP resource-server events with issuer, token type, token ID, presented and expected
+    audiences, effective and required scopes, operation, and decision.
+safe_example_constraints:
+- Use only the inert example.test domain, placeholder identifiers, and a no-op operation.
+- Do not include live tokens, signatures, secrets, payloads, or instructions for exploiting
+  a product.
+- Describe vulnerable conditions and consequences without reproducing offensive proof-of-concept
+  code.
+completion_evidence:
+- Every substantive publishable unit resolves through a hidden claim/source trace
+  or a declared local artifact.
+- Every candidate that could not support publishable wording is excluded and ledgered.
+- Direct-authority research covers protocol, production incidents, vulnerabilities,
+  demonstrations, detection, defense, and contrary evidence.
+- The final two follow-up passes add no material source, example, constraint, or contradiction.
+- Positive, negative, boundary, malformed-field, and expected-false-positive detection
+  cases pass.
+- Rights, framework, safe-publication, and strict isolated-validator gates pass with
+  only mechanical real-repository joins deferred.

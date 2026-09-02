@@ -1,0 +1,476 @@
+version: 1
+technique_id: SAF-T1005
+claims:
+  - id: SAF-T1005-C001
+    statement: >-
+      MCP Streamable HTTP uses one POST endpoint; the 2026-07-28 specification
+      requires validation of present Origin headers, a 403 response for an
+      invalid Origin, recommends loopback binding for local servers, and
+      recommends authentication for all connections.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - "Streamable HTTP > Security & Endpoint, lines 87-105"
+          - "Streamable HTTP > Sending Messages, lines 110-121"
+    corroboration: The Inspector and Go SDK advisories demonstrate consequences of missing authentication or rebinding protection.
+    limitations:
+      - Normative protocol text does not establish whether a deployment implements the controls.
+      - Authentication remains a SHOULD at the transport layer and the authorization profile is optional.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C002
+    statement: >-
+      The 2026-07-28 Streamable HTTP binding requires the protocol version,
+      method, and applicable tool or resource name in headers that can be
+      recorded by HTTP intermediaries, with server rejection when required
+      headers and the body do not match.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - "Request Metadata > Protocol Version Header, lines 156-167"
+          - "Request Metadata > Standard Request Headers, lines 172-178"
+          - "Request Metadata > Server Validation, lines 368-393"
+    corroboration: The 2026-07-28 tools specification shows tools/call request shapes and names.
+    limitations:
+      - Earlier protocol revisions do not necessarily provide all current headers.
+      - Authentication decision fields still require application or gateway enrichment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C003
+    statement: >-
+      When an untrusted caller reaches a sensitive MCP or companion endpoint
+      whose authentication, authorization, Origin, or Host decision is absent
+      or bypassed, the caller can obtain unauthorized use of the endpoint's
+      exposed capability or privileged backend action.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: context
+        exact_locators:
+          - "Protocol Requirements, lines 97-110"
+          - "Access Token Usage and Token Handling, lines 239-267"
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators:
+          - "Summary and Root cause, lines 172-217"
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators:
+          - "Description and Impact, lines 133-154"
+      - source_id: SRC-horizon3-litellm-chain
+        support: corroborating
+        exact_locators:
+          - "Attack chain and patches, lines 285-342"
+    corroboration: Three independent product disclosures show the same boundary failure through different endpoint types.
+    limitations:
+      - The resulting impact depends on which operations are exposed and what authority the server holds.
+      - This synthesis does not imply every unauthenticated endpoint is sensitive or unintended.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The technique definition generalizes the common immediate boundary crossing demonstrated by multiple product-specific sources.
+    status: validated
+
+  - id: SAF-T1005-C004
+    statement: >-
+      Oligo Security Research publicly demonstrated a remote website reaching a
+      locally exposed MCP Inspector proxy and causing command execution through
+      the proxy's missing authentication and Origin protections.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators:
+          - "Executive Summary, lines 23-33"
+          - "Demo, lines 116-124"
+          - "Fix, lines 126-141"
+    corroboration: The project advisory confirms the missing authentication and patched version.
+    limitations:
+      - The report documents a controlled demonstration, not a production compromise.
+      - User interaction with a malicious page was part of the demonstrated path.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C005
+    statement: >-
+      MCP Inspector versions before 0.14.1 lacked authentication between the
+      client and proxy, allowing unauthenticated requests to launch MCP commands
+      over stdio; version 0.14.1 added the fix.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: direct
+        exact_locators:
+          - "Affected and patched versions, lines 133-152"
+          - "Impact and CVSS, lines 152-194"
+    corroboration: Oligo's research documents the independent discovery, demonstration, and remediation behavior.
+    limitations:
+      - Applies to the affected Inspector proxy and its launch context.
+      - The advisory does not report exploitation in production.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C006
+    statement: >-
+      MCP-Pinot through 3.0.1 defaulted to 0.0.0.0:8080 with OAuth disabled,
+      exposing every MCP tool to network-adjacent callers using the server's
+      Pinot credentials; 3.1.0 changed the defaults and rejects unauthenticated
+      non-loopback exposure.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators:
+          - "Resolution, lines 151-170"
+          - "Summary and Root cause, lines 172-217"
+          - "Exposed tools, lines 218-229"
+          - "Credits, lines 400-403"
+    corroboration: The NVD discovery record independently identified CVE-2026-49257 and linked this maintainer advisory before it was opened.
+    limitations:
+      - The advisory and proof of concept do not establish production exploitation.
+      - Effective downstream impact depends on the server-side Pinot account.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C007
+    statement: >-
+      MCP Go SDK versions before 1.4.0 did not enable DNS-rebinding protection
+      by default for localhost HTTP handlers, so an unauthenticated malicious
+      website could access tools and resources; version 1.4.0 enables the
+      protection by default.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-go-sdk-xw59
+        support: direct
+        exact_locators:
+          - "Affected and patched versions, lines 134-151"
+          - "Description and impact, lines 152-156"
+    corroboration: Current MCP transport requirements independently require Origin validation for this boundary.
+    limitations:
+      - Applies to affected HTTP handlers; stdio transport is unaffected.
+      - The path requires a browser victim and absent independent authentication.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C008
+    statement: >-
+      LiteLLM versions from 1.74.2 through 1.83.6 exposed two MCP test endpoints
+      to low-privilege API keys and allowed supplied stdio configurations to
+      spawn a process; version 1.83.7 restricted access to proxy administrators.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-litellm-v4p8
+        support: direct
+        exact_locators:
+          - "Affected and patched versions, lines 138-151"
+          - "Description, impact, and workaround, lines 152-167"
+    corroboration: Horizon3.ai independently demonstrates how the endpoint can be chained with an auth bypass.
+    limitations:
+      - The direct advisory requires a low-privilege API key.
+      - The two named test endpoints are product-specific companion routes.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C009
+    statement: >-
+      Horizon3.ai demonstrated that Starlette's Host-based request-path
+      reconstruction flaw could bypass LiteLLM path authorization and reach the
+      vulnerable MCP test endpoint without authentication, producing remote
+      code execution; LiteLLM 1.83.7+ and Starlette 1.0.1+ contain the fixes.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-horizon3-litellm-chain
+        support: direct
+        exact_locators:
+          - "Attack chain, affected versions, indicators, and patches, lines 285-342"
+      - source_id: SRC-ostif-badhost-starlette
+        support: corroborating
+        exact_locators:
+          - "BadHost mechanism and impact, lines 8-37"
+          - "Fixes and mitigations, lines 41-60"
+    corroboration: OSTIF's disclosure independently describes the path-confusion mechanism and Starlette 1.0.1 remediation.
+    limitations:
+      - The sources establish a controlled chain, not confirmed production exploitation.
+      - The chain requires both affected LiteLLM and Starlette conditions.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C010
+    statement: >-
+      The reviewed selected disclosures establish vulnerabilities and controlled
+      demonstrations but do not document a qualifying production compromise for
+      this technique as of the review date.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-oligo-inspector-cve-2025-49596
+        support: direct
+        exact_locators:
+          - "Executive Summary, Demo, and disclosure timeline, lines 23-33 and 116-153"
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: context
+        exact_locators:
+          - "Advisory summary, reproduction, and remediation, lines 172-312"
+      - source_id: SRC-horizon3-litellm-chain
+        support: context
+        exact_locators:
+          - "Controlled attack chain and indicators, lines 285-342"
+    corroboration: Separate incident, exploitation-status, and production-breach searches produced no directly reviewed qualifying incident.
+    limitations:
+      - This is a bounded corpus finding and must not be read as proof that exploitation has never occurred.
+      - CISA KEV machine-readable feeds were access-blocked during this run; exact-identifier web searches returned no catalog result.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conclusion is limited to what the directly reviewed sources and recorded search corpus document.
+    status: validated
+
+  - id: SAF-T1005-C011
+    statement: >-
+      OpenTelemetry HTTP server spans can record request method, route or path,
+      response status, client address, server address, and user-agent fields
+      needed to correlate endpoint access.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-otel-http-spans-1.44.0
+        support: direct
+        exact_locators:
+          - "HTTP server span definitions, lines 594-629"
+          - "HTTP server span attributes, lines 633-661"
+    corroboration: Current Streamable HTTP request headers provide protocol version, method, and applicable operation names.
+    limitations:
+      - MCP method, authentication, authorization, and Origin results require application or gateway enrichment.
+      - Field collection and retention remain deployment-specific.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C012
+    statement: >-
+      Correlating an anomalous request to a public endpoint with errors,
+      successful server behavior, or a child shell or other sensitive process
+      action raises confidence in exploitation detection.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1190-v2.8
+        support: direct
+        exact_locators:
+          - "Detection Strategy DET0080 and Analytic AN0219, lines 137-147"
+    corroboration: Product advisories show sensitive tool and process activity as the immediate result of accepted endpoint requests.
+    limitations:
+      - The detection strategy is not MCP-exclusive and can match benign administration.
+      - Reliable correlation requires shared identifiers and synchronized clocks.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The repository analytic adapts ATT&CK's public-endpoint correlation to MCP-specific operation fields.
+    status: validated
+
+  - id: SAF-T1005-C013
+    statement: >-
+      Authentication successes and failures, authorization failures, unexpected
+      HTTP methods, control-flow bypass, and higher-risk functions are priority
+      application security events to log.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: direct
+        exact_locators:
+          - "Which events to log, lines 279-300"
+    corroboration: The MCP specifications define 401, 403, and malformed-request outcomes suitable for logging.
+    limitations:
+      - The guidance does not guarantee that a product emits these events.
+      - Logging sensitive tokens or full arguments would create additional risk and is not recommended here.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1005-C014
+    statement: >-
+      Origin validation, loopback binding for local endpoints, authentication and
+      audience validation for protected endpoints, least-privileged server
+      authority, and product patches constrain exposed-endpoint exploitation.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-streamable-http-2026-07-28
+        support: direct
+        exact_locators:
+          - "Security & Endpoint, lines 98-105"
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators:
+          - "Access Token Usage and Token Handling, lines 239-267"
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: corroborating
+        exact_locators:
+          - "Resolution and Suggested remediation, lines 151-170 and 284-312"
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators:
+          - "Affected and patched versions, lines 133-152"
+      - source_id: SRC-ghsa-go-sdk-xw59
+        support: corroborating
+        exact_locators:
+          - "Affected and patched versions, lines 134-156"
+      - source_id: SRC-ghsa-litellm-v4p8
+        support: corroborating
+        exact_locators:
+          - "Affected versions, patch, and workaround, lines 138-167"
+      - source_id: SRC-ostif-badhost-starlette
+        support: corroborating
+        exact_locators:
+          - "Fixes and mitigations, lines 41-60"
+      - source_id: SRC-mitre-attack-t1190-v2.8
+        support: context
+        exact_locators:
+          - "Mitigations, lines 126-136"
+    corroboration: Affected-product fixes independently apply the same fail-closed binding and authorization principles.
+    limitations:
+      - No single control covers direct exposure, browser-to-local access, and companion-route bypasses.
+      - Exact implementation depends on product and protocol revision.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mitigation set synthesizes normative and product-specific fixes against each demonstrated mechanism.
+    status: validated
+
+  - id: SAF-T1005-C015
+    statement: >-
+      The confidentiality, integrity, availability, and blast-radius impact of an
+      exposed endpoint is bounded by the enabled operations and the local or
+      downstream privileges under which the server acts.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-mcp-pinot-73cv
+        support: direct
+        exact_locators:
+          - "Confused-deputy and exposed-tools analysis, lines 215-229"
+          - "CVSS rationale, lines 270-283"
+      - source_id: SRC-ghsa-inspector-7f8r
+        support: corroborating
+        exact_locators:
+          - "Impact and CVSS, lines 152-194"
+    corroboration: Independent disclosures show both cross-service data/configuration impact and host process execution.
+    limitations:
+      - Product examples cannot determine another deployment's privileges or business impact.
+      - A reachable low-impact public operation may have little or no security consequence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conditional severity model generalizes bounded impact factors across direct disclosures.
+    status: validated
+
+  - id: SAF-T1005-C016
+    statement: >-
+      Internet-facing MCP endpoint exploitation is analogous to MITRE ATT&CK
+      T1190 Exploit Public-Facing Application, while the browser-to-local variant
+      falls outside T1190's public-facing application boundary.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1190-v2.8
+        support: direct
+        exact_locators:
+          - "Technique definition, lines 15-18"
+          - "Version and contributor metadata, lines 33-41"
+    corroboration: Direct MCP disclosures show both internet/network-facing and browser-to-local variants.
+    limitations:
+      - ATT&CK T1190 does not specifically model MCP.
+      - The mapping is analogous for the overall SAF technique because its scope is broader than public-facing applications.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares the SAF boundary and objective to ATT&CK's published definition.
+    status: validated
+
+  - id: SAF-T1005-C017
+    statement: >-
+      An intentionally public read-only capability, approved scanning, or lost
+      identity context in a logging pipeline can resemble exposed-endpoint
+      exploitation, so local route inventory and sensitivity labels are needed
+      to tune the analytic.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: context
+        exact_locators:
+          - "Protocol Requirements, lines 97-110"
+      - source_id: SRC-owasp-logging-cheat-sheet
+        support: context
+        exact_locators:
+          - "Which events to log, lines 279-300"
+    corroboration: Authorization is optional at the protocol level, while security logging must distinguish expected and unexpected events.
+    limitations:
+      - The exact false-positive rate is deployment-specific and was not measured.
+      - Public intent cannot be inferred from traffic alone.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The false-positive model follows from optional authorization and environment-specific logging context.
+    status: validated

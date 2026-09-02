@@ -1,0 +1,36 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1801
+    name: Automated Data Harvesting
+    documentation_status: under_review
+    evidence_status: observed
+    tactics:
+      - ATK-TA0009
+    technique_path: techniques/SAF-T1801/README.md
+    research_packet: research/techniques/SAF-T1801
+    related_techniques:
+      - SAF-T1102
+      - SAF-T1803
+      - SAF-T1804
+      - SAF-T1910
+    mitigations:
+      - SAF-M-12
+      - SAF-M-16
+      - SAF-M-29
+      - SAF-M-69
+      - SAF-M-70
+      - SAF-M-71
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T1801/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T1801/test-logs.json
+        - techniques/SAF-T1801/test_detection_rule.py
+        - research/techniques/SAF-T1801/validation/detector-tests.txt
+        - research/techniques/SAF-T1801/validation/research-validator.txt
+    attack_mappings:
+      - id: T1119
+        type: direct
+      - id: T1213
+        type: analogous

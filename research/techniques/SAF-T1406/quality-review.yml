@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1406
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room agent
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation records a fresh agent, no inherited context, all prohibited classes, independent direct-authority research, and pre-integration freeze.
+  contract_and_scope:
+    status: passed
+    notes: The draft requires metadata-driven misclassification and excludes content-only prompt injection, command injection, missing authentication, and payload-only behavior.
+  technical_accuracy:
+    status: passed
+    notes: Protocol fields, trust warnings, prerequisites, immediate outcome, conditional impacts, and advisory conflict were checked against exact locators.
+  claim_traceability:
+    status: passed
+    notes: Every external proposition maps to a validated claim with reviewed source IDs and exact locators.
+  source_or_omit:
+    status: passed
+    notes: Publishable lines carry hidden traces or declared local links; unsupported candidates are excluded in the ledger.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by an end-to-end controlled rug-pull and does not overstate the absence of an observed production incident.
+  research_saturation:
+    status: passed
+    notes: All five research passes and two final no-change challenge passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Official CVE and CISA data, CVE-supplied advisories, first-party analysis, and demonstrations were ranked; four examples were selected and three adjacent CVEs excluded.
+  detection_quality:
+    status: passed
+    notes: Required telemetry, deterministic selection logic, positive and negative cases, boundaries, malformed input, false-positive control, limitations, and tuning are documented and tested.
+  mitigation_quality:
+    status: passed
+    notes: Controls address descriptor distrust, identity and approval binding, drift review, privilege limits, and integrity-analysis blind spots.
+  framework_alignment:
+    status: passed
+    notes: The supplied tactic is preserved, T1036 is explicitly analogous, and canonical neighbors, stable source IDs, mitigations, and framework joins are reconciled.
+  publication_rights:
+    status: passed
+    notes: Sources are paraphrased or used as factual references; authors and teams are credited; no source code, prompt, dataset, table, image, or protected passage is reproduced.
+  safe_publication:
+    status: passed
+    notes: The example and tests are isolated inert JSON without a server, credentials, live endpoint, executable content, or destructive action.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1406
+      result: passed
+      notes: Executed in the isolated synthetic mock repository; strict review is the default.
+    - command: python3 -m unittest discover -s tests/SAF-T1406 -p 'test_*.py' -v
+      result: 3 tests passed over 7 fixtures
+    - command: /Users/fkautz/anaconda3/bin/python3 -m unittest discover -s tests/SAF-T1406 -p 'test_*.py' -v
+      result: 3 tests passed over 7 fixtures
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1406
+      result: passed
+      environment: integrated repository
+      output: PASS SAF-T1406
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 -m unittest discover -s tests/SAF-T1406 -p 'test_*.py' -v
+    result: 3 tests passed; all 7 inert fixtures matched expected outcomes
+    waiver: null
+
+unresolved: []

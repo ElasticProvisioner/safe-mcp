@@ -1,0 +1,482 @@
+version: 1
+technique_id: SAF-T1006
+claims:
+  - id: SAF-T1006-C001
+    statement: >-
+      Cursor 1.7.28's MCP deep-link handling could display trusted Playwright
+      branding while concealing attacker-specified commands; a victim who
+      accepted the deceptive install caused those commands to execute.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cursor-64106
+        support: direct
+        exact_locators:
+          - Summary
+          - Details, intended warning and actual deceptive dialog
+          - Impact
+          - Affected versions and Patched versions
+      - source_id: SRC-nvd-mcp-catalog
+        support: corroborating
+        exact_locators:
+          - CVE-2025-64106 record, English description, published and lastModified
+    corroboration: >-
+      The NVD record independently preserves the identifier, affected versions,
+      social-engineering prerequisite, hidden-command behavior, and user acceptance path.
+    limitations:
+      - The sources document a vulnerability and controlled attack description, not production exploitation.
+      - The advisory does not provide detection accuracy measurements.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C002
+    statement: >-
+      Cherry Studio before 1.6.4 processed an MCP installation URL so that a
+      user's click on deceptively normal content directly triggered the embedded
+      server command; the public advisory demonstrated local command execution.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-cherry-61929
+        support: direct
+        exact_locators:
+          - Summary
+          - Proof-of-concept description, excluding payload reproduction
+          - Impact
+          - Affected versions and Patched versions
+      - source_id: SRC-nvd-mcp-catalog
+        support: corroborating
+        exact_locators:
+          - CVE-2025-61929 record, English description, published and lastModified
+    corroboration: >-
+      NVD corroborates the click-triggered MCP installation path, affected
+      product, and remediation state.
+    limitations:
+      - The advisory proves the flaw with an inert local command but does not establish production exploitation.
+      - The user click initiates execution without an informed approval decision, so this is the lower-consent edge of scope.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C003
+    statement: >-
+      Dive through 0.12.6 accepted a crafted MCP install deep link whose
+      non-stdio transport value bypassed the frontend confirmation while a
+      supplied command still reached local process creation; version 0.13.0 fixed the flaw.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-dive-23523
+        support: direct
+        exact_locators:
+          - Summary
+          - Details, confirmation branch and backend execution path
+          - Impact
+          - Affected versions and Patched versions
+      - source_id: SRC-nvd-mcp-catalog
+        support: corroborating
+        exact_locators:
+          - CVE-2026-23523 record, English description, published and lastModified
+    corroboration: >-
+      NVD corroborates the crafted deep link, insufficient confirmation,
+      arbitrary local command consequence, and fixed version.
+    limitations:
+      - The sources describe a public demonstration and vulnerability, not an observed production compromise.
+      - The root cause is a confirmation bypass in one client rather than a protocol requirement.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C004
+    statement: >-
+      Local MCP servers may be installed through client configuration flows and
+      run as local binaries with direct access to resources available to the user or client.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Attacks and Mitigations > Local MCP Server Compromise, opening paragraph
+          - Local MCP Server Compromise > Attack Description, opening paragraph
+      - source_id: SRC-mcp-connect-local
+        support: corroborating
+        exact_locators:
+          - Understanding MCP Servers
+          - Installing the Filesystem Server > Understanding the Configuration
+          - Installing the Filesystem Server > Security Consideration
+    corroboration: >-
+      The MCP local-server guide shows a concrete client configuration that starts
+      a package command and states that it runs with the user's permissions.
+    limitations:
+      - Remote-only MCP servers do not necessarily create a local server process.
+      - Actual privileges depend on client sandboxing and operating-system controls.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C005
+    statement: >-
+      MCP security guidance requires one-click local-server configuration to
+      display the complete command, identify code execution risk, require
+      explicit approval, and permit cancellation before execution.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise > Mitigation > Pre-Configuration Consent
+    corroboration: >-
+      VS Code independently implements a first-start trust decision and exposes
+      server configuration for review.
+    limitations:
+      - The security-practices page is implementation guidance, not evidence that every client complies.
+      - User approval can still be manipulated by deceptive identity or incomplete presentation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C006
+    statement: >-
+      The MCP local-server tutorial uses a configuration that automatically
+      starts a package through npx and explains that the -y option automatically
+      confirms package installation and that the server runs with the user's permissions.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-connect-local
+        support: direct
+        exact_locators:
+          - Installing the Filesystem Server > Configure the Filesystem Server
+          - Installing the Filesystem Server > Understanding the Configuration
+          - Installing the Filesystem Server > Security Consideration
+    corroboration: >-
+      MCP security guidance separately treats downloaded local servers and client
+      configuration commands as local code-execution boundaries.
+    limitations:
+      - The tutorial covers one example client and official example server, not malicious distribution.
+      - Other package launchers and clients behave differently.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C007
+    statement: >-
+      VS Code warns that local MCP servers can run arbitrary code, recommends
+      trusted sources plus publisher and configuration review, and requires a
+      first-start trust decision unless the server is started directly from mcp.json.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators:
+          - Add an MCP server > Caution
+          - MCP server trust
+          - MCP server trust > Warning
+    corroboration: >-
+      MCP security guidance independently requires exact-command disclosure and
+      explicit approval before a one-click local-server command executes.
+    limitations:
+      - The behavior is specific to documented VS Code versions and configuration paths.
+      - Direct starts from mcp.json are a documented visibility gap, not proof of malicious activity.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C008
+    statement: >-
+      MCP guidance and VS Code document sandboxing or restricted filesystem and
+      network access as controls that can limit a local MCP server's reach after installation.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise > Mitigation, client guardrails
+      - source_id: SRC-vscode-mcp-servers
+        support: corroborating
+        exact_locators:
+          - Sandbox MCP servers
+    corroboration: >-
+      VS Code provides a concrete macOS and Linux configuration for filesystem
+      and network restrictions.
+    limitations:
+      - VS Code documents that its MCP sandbox is not available on Windows.
+      - Sandboxing constrains impact but does not authenticate the server publisher.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C009
+    statement: >-
+      Zed before 0.218.2-pre could automatically start project-configured MCP
+      commands when a project was opened; worktree trust changed the default to
+      block server download or execution until the worktree was trusted.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-zed-secure-default
+        support: direct
+        exact_locators:
+          - Vulnerability reports prove the importance of secure-by-default > MCP Servers
+          - What's changing: Restricted mode by default
+          - How worktree trust works
+      - source_id: SRC-nvd-mcp-catalog
+        support: corroborating
+        exact_locators:
+          - CVE-2025-68433 record, English description and references
+    corroboration: >-
+      NVD records the affected version boundary, automatic trigger, user
+      privileges, and worktree-trust remediation.
+    limitations:
+      - This is adjacent because opening a project, not a deceived MCP install or trust decision, triggers execution.
+      - The source describes a reported vulnerability, not production exploitation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C010
+    statement: >-
+      MITRE ATT&CK T1204.002 defines user-executed malicious files as an
+      execution behavior in which social engineering and masquerading can induce a user to run code.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1204-002
+        support: direct
+        exact_locators:
+          - User Execution: Malicious File, first three descriptive paragraphs
+          - ID, tactic, platforms, contributor, version, and last-modified metadata
+    corroboration: >-
+      Unit 42 documents a production campaign in which fake recruiters induced
+      job seekers to install and execute disguised software.
+    limitations:
+      - T1204.002 is not MCP-specific and does not establish MCP exploitation.
+      - The SAF mapping is analogous because the integration workflow is not limited to a malicious file.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C011
+    statement: >-
+      Unit 42 observed fake recruiters persuading technology job seekers to
+      install software masquerading as conferencing applications; the installed
+      malware collected and exfiltrated data and deployed a backdoor.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-unit42-contagious-interview
+        support: direct
+        exact_locators:
+          - Executive Summary
+          - Social Engineering and Infection: Fake Recruiters and Job Interviews
+          - Analysis of BeaverTail's New Cross-Platform Version
+          - Conclusion
+    corroboration: >-
+      MITRE ATT&CK lists Contagious Interview and BeaverTail as examples of
+      malicious-file user execution.
+    limitations:
+      - The campaign did not use an MCP integration in the reviewed evidence.
+      - It is an impact and social-engineering analogy only and cannot raise the technique's MCP evidence status.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C012
+    statement: >-
+      CWE-494 describes execution of remotely obtained code without sufficient
+      origin or integrity verification and identifies code signing, least
+      privilege, sandboxing, and process/network observation as relevant controls or detection methods.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cwe-494
+        support: direct
+        exact_locators:
+          - Description and Extended Description
+          - Common Consequences
+          - Potential Mitigations
+          - Detection Methods > Black Box
+    corroboration: >-
+      MCP and VS Code guidance apply the same trust, least-privilege, and sandbox principles to local MCP servers.
+    limitations:
+      - CWE-494 covers origin and integrity failures, not social engineering itself.
+      - Signed or integrity-valid software can still be malicious.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C013
+    statement: >-
+      Sysmon process-creation telemetry includes full command lines, parent
+      process context, hashes, and process/session correlation identifiers;
+      optional network and file-creation events can add execution context.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-sysmon-15-21
+        support: direct
+        exact_locators:
+          - Overview of Sysmon Capabilities
+          - Events > Event ID 1: Process creation
+          - Events > Event ID 3: Network connection
+          - Events > Event ID 11: FileCreate
+    corroboration: >-
+      CWE-494 recommends process and network monitoring around plugin installation and downloaded-code execution.
+    limitations:
+      - Sysmon is Windows-specific and does not supply MCP semantic fields.
+      - Network connection logging is disabled by default and collection configuration affects coverage.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1006-C014
+    statement: >-
+      Correlating a user-initiated MCP configuration or deep-link acceptance with
+      a same-server local process start from an unknown or untrusted source within
+      a short window is a defensible experimental analytic for the defining behavior.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise > Mitigation, command display, approval, and stdio logging
+      - source_id: SRC-vscode-mcp-servers
+        support: corroborating
+        exact_locators:
+          - Add an MCP server
+          - MCP server trust
+      - source_id: SRC-sysmon-15-21
+        support: corroborating
+        exact_locators:
+          - Overview of Sysmon Capabilities
+          - Events > Event ID 1: Process creation
+    corroboration: >-
+      Three independent client advisories demonstrate a short path from user
+      interaction with installation content to attacker-selected local command execution.
+    limitations:
+      - The analytic requires normalized MCP client events that many products may not expose.
+      - Legitimate internal or development servers can match and must be allowlisted after verification.
+      - Remote-only servers, delayed starts, trusted-but-malicious publishers, and missing endpoint telemetry are blind spots.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        No reviewed source publishes this exact cross-source rule; it is an SAF
+        synthesis of documented install/trust events and process telemetry.
+    status: validated
+
+  - id: SAF-T1006-C015
+    statement: >-
+      A successful attacker-controlled local-server start can affect
+      confidentiality, integrity, and availability up to the access of the user,
+      client process, and any explicitly granted sandbox resources.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Local MCP Server Compromise > Risks
+          - Local MCP Server Compromise > Mitigation
+      - source_id: SRC-cwe-494
+        support: corroborating
+        exact_locators:
+          - Common Consequences
+          - Potential Mitigations > least privilege and sandbox
+    corroboration: >-
+      The direct client advisories rate confidentiality, integrity, and
+      availability effects high for local command execution.
+    limitations:
+      - Consequence and blast radius depend on user privileges, client sandboxing, credentials, and server reach.
+      - Installation alone does not prove that every consequence occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The bounded multi-dimension rating synthesizes consequence statements
+        across MCP guidance, CWE, and the direct advisory evidence.
+    status: validated
+
+  - id: SAF-T1006-C016
+    statement: >-
+      Containment should stop or disable the new server, preserve the install
+      configuration and process evidence, assess reachable resources and
+      outbound activity, and rotate credentials only when exposure is established or reasonably suspected.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-vscode-mcp-servers
+        support: direct
+        exact_locators:
+          - Manage MCP servers
+          - Enable or disable MCP servers
+          - Troubleshoot and debug MCP servers > MCP output log
+      - source_id: SRC-sysmon-15-21
+        support: corroborating
+        exact_locators:
+          - Overview of Sysmon Capabilities
+          - Events > Event IDs 1, 3, and 11
+      - source_id: SRC-mcp-security-2025-11-25
+        support: corroborating
+        exact_locators:
+          - Local MCP Server Compromise > Risks and Mitigation
+    corroboration: >-
+      The cited platform and endpoint sources expose the server controls and
+      evidence needed for scoped containment and investigation.
+    limitations:
+      - Product-specific response steps and credential rotation criteria require local incident context.
+      - Disabling a server does not automatically remove follow-on persistence created after execution.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The response sequence is an SAF operational synthesis rather than a verbatim vendor procedure.
+    status: validated

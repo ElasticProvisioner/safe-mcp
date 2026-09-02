@@ -1,0 +1,93 @@
+version: 1
+technique_id: SAF-T1201
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1201/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1201/technique-contract.yml
+  supports: Internal scope name tactic and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1201/quality-review.yml
+  supports: Validation commands results review date and waiver status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1201/source-coverage.yml
+  supports: Search coverage, selected examples, exclusions, and saturation.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1201/detection-rule.yml
+  supports: Explicitly labeled deterministic detection analytic.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1201/test_detection_rule.py
+  supports: Deterministic detection validation harness.
+- id: LOCAL-detection-data
+  path: techniques/SAF-T1201/test-logs.json
+  supports: Inert synthetic detection records and expected outcomes.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1201/validation/detection-test.txt
+  supports: Captured successful deterministic detection-test output.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1201/validation/strict-validator.txt
+  supports: Captured successful isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1201-X001
+  candidate: A confirmed production incident establishing this technique.
+  origin: Separate authority-only production-incident pass.
+  attempted_searches:
+  - Direct Microsoft NVD CISA OWASP and original-research authority-domain checks
+    for production MCP rug-pull incidents.
+  consulted_source_ids:
+  - SRC-ms-indirect-injection-2025
+  - SRC-ms-azure-mcp-security-2026
+  - SRC-invariant-tpa-2025-04-01
+  reason: No documented victim environment consequence and remediation meeting the
+    contract boundary was identified.
+  prohibited_publishable_text:
+  - confirmed production rug-pull breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1201-X002
+  candidate: A direct CVE establishing the temporal provider-controlled mutation.
+  origin: Separate NVD and CISA vulnerability and exploitation-status pass.
+  attempted_searches:
+  - Direct NVD candidate review and authority-domain CISA exploitation-status check.
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-53098
+  reason: CVE-2025-53098 is adjacent configuration injection rather than provider-controlled
+    post-approval mutation under a retained identity.
+  prohibited_publishable_text:
+  - direct rug-pull CVE
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1201-X003
+  candidate: Treat the Invariant disclosure as a full temporal end-to-end demonstration.
+  origin: Original Invariant disclosure review.
+  attempted_searches:
+  - Direct review of the disclosure's described experiments and rug-pull section.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  reason: It names the risk and demonstrates initial tool-poisoning effects but does
+    not test the complete temporal transition.
+  prohibited_publishable_text:
+  - Invariant demonstrated a post-approval rug pull end to end
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1201-X004
+  candidate: Universal client retention of prior approvals after tool changes.
+  origin: Protocol and product behavior boundary pass.
+  attempted_searches:
+  - Direct MCP protocol review and direct Visual Studio lifecycle documentation review.
+  consulted_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-ms-visual-studio-mcp-2026
+  reason: The protocol does not specify universal approval behavior and Visual Studio
+    documents resetting acceptances after list-change notifications.
+  prohibited_publishable_text:
+  - all MCP clients retain approvals after tool changes
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

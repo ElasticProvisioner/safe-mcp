@@ -1,0 +1,45 @@
+version: 1
+technique_id: SAF-T1501
+bundle_status: frozen_clean_room_candidate
+created_on: "2026-09-01"
+clean_room_boundary:
+  target_artifacts_accessed: false
+  shared_registries_accessed: false
+  catalog_descriptions_accessed: false
+  saf_sites_accessed: false
+  git_or_pull_request_history_accessed: false
+  contamination_detected: false
+merge_instructions:
+  - Merge techniques/SAF-T1501 and research/techniques/SAF-T1501 as new paths; do not compare the generator against prior target content.
+  - Merge source-manifest-fragment.yml by source id into research/source-manifest.yml.
+  - Merge framework-fragment.yml by technique_id into research/framework-model.yml.
+  - Merge alignment-fragment.yml by issue id into research/alignment-ledger.yml.
+  - Reconcile synthetic neighbor IDs SAF-T1997, SAF-T1998, and SAF-T1999 against the live catalog by mechanism and distinction without rewriting target prose from prior content.
+  - Reconcile synthetic mitigation IDs SAF-M-97 and SAF-M-98 against the live mitigation registry by control meaning.
+  - Replace synthetic repository-history SHA 1111111111111111111111111111111111111501 with the actual integration commit after acceptance.
+  - Re-run detector tests and strict repository validation after every mechanical join replacement.
+source_provenance:
+  exact_github_url: https://github.com/invariantlabs-ai/mcp-injection-experiments/blob/main/direct-poisoning.py
+  allowed_discovery_source: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+  discovery_locator: Direct Tool Poisoning section linked the exact repository; the exact source file was then opened from that repository.
+  github_search_used: false
+  unrestricted_search_used: false
+validation_environment:
+  type: strict_isolated_synthetic_repository
+  live_target_or_registry_content_used: false
+  validator_copied_into_bundle: false
+  dependencies_copied_into_bundle: false
+unresolved: []
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T1997: SAF-T1001
+    SAF-T1998: SAF-T1205
+    SAF-T1999: SAF-T1102
+  canonical_mitigations:
+    SAF-M-97: SAF-M-15
+    SAF-M-98: SAF-M-2
+  dedicated_query_corpus: SRC-nvd-fsp-catalog-queries-2026-09-01
+  validation_artifacts:
+  - research/techniques/SAF-T1501/validation/detection-test.txt
+  - research/techniques/SAF-T1501/validation/strict-validator.txt
+  status: integrated_and_validated

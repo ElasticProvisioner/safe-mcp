@@ -1,0 +1,109 @@
+version: 1
+technique_id: SAF-T1401
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1401/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1401/technique-contract.yml
+  supports: Internal name, scope, tactic, clean-room mode, and completion contract.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1401/quality-review.yml
+  supports: Validation commands, test results, review date, and gate results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1401/detection-rule.yml
+  supports: The explicitly labeled behavioral detection analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1401/test_detection_rule.py
+  supports: Executable positive, negative, boundary, malformed, and false-positive
+    checks.
+- id: LOCAL-detection-logs
+  path: tests/SAF-T1401/test-logs.json
+  supports: Inert deterministic detection fixtures.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1401/validation/detection-test.txt
+  supports: Isolated and integrated deterministic detection-test result.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1401/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator result.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1401-X001
+  candidate: Established industry meaning for the neutral seed phrase.
+  origin: Neutral seed terminology review.
+  attempted_searches:
+  - Direct arXiv exact-phrase query for line jumping and direct authoritative terminology
+    review.
+  consulted_source_ids:
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  reason: No authoritative security definition of the phrase was identified.
+  prohibited_publishable_text:
+  - established industry term
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1401-X002
+  candidate: Direct exploitation of priority or lastModified annotations.
+  origin: Current MCP annotation semantics.
+  attempted_searches:
+  - Direct NVD and arXiv queries for MCP priority, precedence, ranking, and resolution
+    order.
+  consulted_source_ids:
+  - SRC-mcp-resources-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  reason: The semantics support a research-derived variant, but no direct exploit
+    was found.
+  prohibited_publishable_text:
+  - exploited MCP priority annotations in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1401-X003
+  candidate: Classifying CVE-2026-25905 as a direct Line Jumping example.
+  origin: JFrog vulnerability disclosure.
+  attempted_searches:
+  - Exact NVD record and complete original JFrog disclosure review.
+  consulted_source_ids:
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  reason: Python isolation escape is the root mechanism; precedence manipulation is
+    downstream.
+  prohibited_publishable_text:
+  - CVE-2026-25905 is a direct Line Jumping vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1401-X004
+  candidate: Classifying CVE-2025-6515 as a direct Line Jumping example.
+  origin: JFrog vulnerability disclosure.
+  attempted_searches:
+  - Complete original JFrog disclosure and exact identifier catalog checks.
+  consulted_source_ids:
+  - SRC-jfsa-2025-001494691
+  - SRC-cisa-kev-2026-09-01
+  reason: The behavior hijacks session authenticity without resolving a competing
+    object.
+  prohibited_publishable_text:
+  - CVE-2025-6515 is a direct Line Jumping vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1401-X005
+  candidate: Production breach observation.
+  origin: Incident and exploitation-status research pass.
+  attempted_searches:
+  - Direct NVD MCP corpus
+  - current CISA KEV feed
+  - original advisories
+  - and official CISA advisory index.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-api-cve-2026-30856
+  - SRC-ghsa-6cvf-cfch-4g7m
+  reason: The bounded authoritative corpus established controlled demonstrations but
+    no qualifying production incident.
+  prohibited_publishable_text:
+  - observed in a production breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

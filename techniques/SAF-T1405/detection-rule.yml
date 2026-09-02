@@ -1,0 +1,92 @@
+title: MCP Unapproved Tool Identity or Definition Drift
+id: 2dc02e74-1915-4a68-b854-91b6ad9df546
+status: experimental
+description: >-
+  Detects an unapproved machine-name change, definition-hash drift, or
+  cross-server name collision in normalized MCP tool discovery or registry
+  events.
+author: OpenAI Codex
+date: 2026-09-01
+modified: 2026-09-01
+tags:
+  - saf.t1405
+logsource:
+  category: application
+  product: mcp_host
+  service: tool_registry
+detection:
+  selection_lifecycle:
+    event_type:
+      - tool_discovered
+      - tool_updated
+  selection_unapproved:
+    approval_state: unapproved
+  selection_drift:
+    tool_name_changed: true
+  selection_hash_mismatch:
+    definition_hash_matches_approved: false
+  selection_collision:
+    cross_server_name_collision: true
+  condition: >-
+    selection_lifecycle and selection_unapproved and
+    (selection_drift or selection_hash_mismatch or selection_collision)
+fields:
+  - timestamp
+  - event_type
+  - server_identity
+  - provider_identity
+  - tool_name
+  - previous_tool_name
+  - definition_hash
+  - approved_definition_hash
+  - approval_state
+  - cross_server_name_collision
+falsepositives:
+  - Approved provider migrations or planned tool renames not synchronized to the baseline
+  - Legitimate schema or description revisions awaiting review
+  - Generic tool names independently used by unrelated servers
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1405-C007
+  telemetry_claim_ids:
+    - SAF-T1405-C001
+    - SAF-T1405-C007
+  limitation_claim_ids:
+    - SAF-T1405-C008
+  validation_artifacts:
+    - tests/SAF-T1405/test-logs.json
+    - tests/SAF-T1405/expected-results.json
+    - tests/SAF-T1405/test_detection_rule.py
+    - tests/SAF-T1405/validation-output.txt
+    - research/techniques/SAF-T1405/validation/detection-output.txt
+    - research/techniques/SAF-T1405/validation/isolated-validator-output.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1405-C001, SAF-T1405-C007]
+      rationale: Tool discovery and registry audit events expose the identity metadata and baseline relationship needed for comparison.
+    selection_lifecycle:
+      claim_ids: [SAF-T1405-C007]
+      rationale: Definition integrity is evaluated when a tool first appears or changes.
+    selection_unapproved:
+      claim_ids: [SAF-T1405-C007]
+      rationale: Approved changes are separated from unreviewed drift.
+    selection_drift:
+      claim_ids: [SAF-T1405-C007]
+      rationale: A machine-name change is a direct identity-drift observable.
+    selection_hash_mismatch:
+      claim_ids: [SAF-T1405-C007]
+      rationale: Comparing the current definition hash with an approved baseline detects mutable metadata.
+    selection_collision:
+      claim_ids: [SAF-T1405-C001]
+      rationale: Cross-server collisions require explicit disambiguation because uniqueness is only per server.
+    condition:
+      claim_ids: [SAF-T1405-C001, SAF-T1405-C007]
+      rationale: Requiring an unapproved lifecycle event reduces noise while retaining the three supported drift indicators.
+    fields:
+      claim_ids: [SAF-T1405-C001, SAF-T1405-C007]
+      rationale: Stable origin, name, hash, and approval fields permit review and correlation.
+    falsepositives:
+      claim_ids: [SAF-T1405-C001, SAF-T1405-C008]
+      rationale: Legitimate cross-server collisions and defensive classification tradeoffs require review.

@@ -1,0 +1,174 @@
+version: 1
+technique_id: SAF-T1004
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1004/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1004/technique-contract.yml
+  supports: Frozen behavior boundary, scope, neighbor distinctions, tactic proposal,
+    generation mode, and completion conditions.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1004/source-coverage.yml
+  supports: Exact searches, source coverage, bounded production-breach absence result,
+    saturation, and selected or rejected evidence classifications.
+- id: LOCAL-framework-model
+  path: research/framework-model.yml
+  supports: Repository-owned tactic, neighboring-technique, and mitigation joins reconciled
+    after the clean-room freeze.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1004/quality-review.yml
+  supports: Quality gates, validation commands and results, review date, and detection-test
+    status.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1004/clean-room-attestation.yml
+  supports: Clean-room provenance, isolation boundary, synthetic validation joins,
+    and deferred real-repository joins.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1004/detection-rule.yml
+  supports: The experimental detection analytic, telemetry schema, correlation logic,
+    false positives, limitations, and tuning.
+- id: LOCAL-detection-test
+  path: techniques/SAF-T1004/test_detection_rule.py
+  supports: Deterministic implementation of the detection conditions and result comparison.
+- id: LOCAL-detection-fixtures
+  path: techniques/SAF-T1004/fixtures/detection-events.json
+  supports: Synthetic positive, negative, boundary, and expected-false-positive cases.
+- id: LOCAL-detection-results
+  path: techniques/SAF-T1004/test-results.json
+  supports: Machine-readable results for all six detection cases.
+- id: LOCAL-detection-log
+  path: techniques/SAF-T1004/test-log.jsonl
+  supports: One normalized validation record per detection case.
+- id: LOCAL-framework-fragment
+  path: research/techniques/SAF-T1004/integration/framework-fragment.yml
+  supports: Merge-compatible isolated framework record and explicitly synthetic tactic
+    join.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1004/integration/integration-notes.yml
+  supports: Deferred real-registry, framework, alignment, and repository-history work
+    plus old-to-new preservation review.
+- id: LOCAL-validation-results
+  path: research/techniques/SAF-T1004/integration/validation-results.json
+  supports: Strict isolated validator, detection-test, syntax, and freeze-verification
+    outcomes.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1004-X001
+  candidate: Treat the Palo Alto Networks hypothetical third-party server impersonation
+    discussion as direct evidence.
+  origin: Independent practitioner-analysis search lead.
+  attempted_searches:
+  - MCP malicious server impersonation fake server name security research demonstration
+    -"SAF-T1004" -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-paloalto-mcp-overview
+  reason: The source presents a hypothetical risk and adds no stronger evidence than
+    the reviewed primary sources.
+  prohibited_publishable_text:
+  - Palo Alto demonstrated MCP server impersonation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X002
+  candidate: Use the Microsoft 60-prompt control-plane benchmark as proof of server
+    name-collision outcomes.
+  origin: Independent empirical-research pass.
+  attempted_searches:
+  - MCP malicious fake server typosquatting incident -"SAF-T1004" -"SAFE-T1004" -"SAF-MCP"
+    -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-ms-agt
+  reason: The broad benchmark does not isolate the frozen server-identity resolution
+    mechanism.
+  prohibited_publishable_text:
+  - the 60-prompt benchmark proved server identity collision
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X003
+  candidate: Classify CVE-2025-56406 as server impersonation or name-collision evidence.
+  origin: Independent vulnerability search lead.
+  attempted_searches:
+  - Model Context Protocol server impersonation name collision vulnerability CVE -"SAF-T1004"
+    -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-nvd-cve-2025-56406
+  reason: The disputed record concerns unauthenticated access, not identity collision.
+  prohibited_publishable_text:
+  - CVE-2025-56406 directly demonstrates server impersonation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X004
+  candidate: Treat configuration-creation or configuration-write vulnerabilities as
+    direct name-collision evidence.
+  origin: Independent vulnerability search leads.
+  attempted_searches:
+  - '"MCP server" duplicate name overwrite configuration vulnerability -"SAF-T1004"
+    -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"'
+  - '"MCP server" name collision malicious configuration vulnerability -"SAF-T1004"
+    -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"'
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-22792
+  - SRC-nvd-cve-2025-66580
+  - SRC-nvd-cve-2026-9077
+  reason: The weaknesses can introduce or alter configuration but do not establish
+    the defining identity-resolution mechanism.
+  prohibited_publishable_text:
+  - configuration creation is direct proof of name collision
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X005
+  candidate: Treat an endpoint allowlist bypass and response-spoofing weakness as
+    MCP server identity collision.
+  origin: Independent vulnerability search lead.
+  attempted_searches:
+  - '"MCP server" spoofed URL vulnerability -"SAF-T1004" -"SAFE-T1004" -"SAF-MCP"
+    -"SAFE-MCP"'
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-73845
+  reason: The SSRF-style request and response boundary is adjacent to, but does not
+    establish, MCP server discovery or identity binding.
+  prohibited_publishable_text:
+  - CVE-2026-73845 is a direct server name collision
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X006
+  candidate: Include unrelated task-authorization, session, or missing-authentication
+    vulnerabilities as technique examples.
+  origin: Independent vulnerability search leads.
+  attempted_searches:
+  - '"Model Context Protocol" impersonation CVE -"SAF-T1004" -"SAFE-T1004" -"SAF-MCP"
+    -"SAFE-MCP"'
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-52870
+  - SRC-nvd-cve-2026-33946
+  - SRC-nvd-cve-2026-32211
+  reason: None of the records contains the defining server identity collision behavior.
+  prohibited_publishable_text:
+  - unrelated authorization flaws are server identity collisions
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1004-X007
+  candidate: Convert the bounded failure to find a qualifying production breach into
+    a universal absence claim.
+  origin: Independent production-incident search result.
+  attempted_searches:
+  - MCP Registry malicious server impersonation production incident breach -"SAF-T1004"
+    -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"
+  - Model Context Protocol fake server impersonation incident breach -"SAF-T1004"
+    -"SAFE-T1004" -"SAF-MCP" -"SAFE-MCP"
+  - MCP server masquerading lookalike registry namespace advisory -"SAF-T1004" -"SAFE-T1004"
+    -"SAF-MCP" -"SAFE-MCP"
+  consulted_source_ids:
+  - SRC-ghsa-oci-rate-limit
+  - SRC-nvd-cve-2026-45781
+  reason: Search indexes and source availability are incomplete, and the direct proof
+    expressly excludes production exploitation.
+  prohibited_publishable_text:
+  - No production exploitation has ever occurred
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

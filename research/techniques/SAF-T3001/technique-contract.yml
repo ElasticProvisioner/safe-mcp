@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T3001
+name: RAG Backdoor Attack
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Cause trigger-matching RAG queries to produce an attacker-selected
+  response by planting content in the retrieval corpus while ordinary queries remain
+  normal.
+scope:
+  security_boundary: Admission of external or mutable content into a trusted retrieval
+    corpus and its later transition into model grounding context.
+  in_scope:
+  - Attacker-controlled passages become durable retrieval-corpus state.
+  - A lexical or semantic trigger causes retrieval of the planted passage.
+  - Retrieved poison changes generated content without modifying model weights or
+    retriever parameters.
+  out_of_scope:
+  - One-shot indirect prompt injection without durable retrieval-corpus state.
+  - Training-time poisoning of model weights or retriever parameters.
+  - Generic authorization leakage and downstream tool execution.
+  affected_components:
+  - ingestion pipeline
+  - document store
+  - vector index
+  - retriever
+  - prompt assembly
+  - language model generator
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: 'Synthetic clean-room join: transient indirect instructions do not
+    require trigger-conditioned selection from durable corpus state.'
+- technique_id: SAF-T2106
+  distinction: 'Synthetic clean-room join: direct assistant-memory writes bypass the
+    document retriever used by this technique.'
+required_evidence:
+- Demonstrate durable corpus insertion, trigger-conditioned retrieval, and downstream
+  generation.
+- Establish prerequisites, clean-query behavior, and the unchanged model-component
+  boundary.
+- Search current production incidents, advisories, demonstrations, defenses, and contrary
+  evidence.
+- Distinguish exact corpus backdoors from retriever training, prompt injection, and
+  memory poisoning.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - RAG retrieval events with returned status, document identity, source approval,
+    and integrity-verification result.
+  - Ingestion identity, document hash, query identifier, retrieval rank, and response
+    identifier for investigation.
+safe_example_constraints:
+- Use inert event fixtures and no adversarial passage text.
+- Do not include operational optimization code or destructive downstream actions.
+completion_evidence:
+- Every substantive README unit maps to a validated claim or declared local artifact.
+- Excluded leads are recorded and absent from publishable prose.
+- The final two domain-restricted saturation passes produced no material change.
+- The candidate analytic passes positive, negative, boundary, missing-field, and suppression
+  tests.
+- Rights and quality reviews pass with no unresolved blocking issue.

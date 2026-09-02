@@ -1,0 +1,235 @@
+version: 1
+technique_id: SAF-T1804
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of MCP Tools, Resources, Authorization, and Security Best Practices version 2025-11-25.
+        - Direct review of NIST SP 800-228-upd1 and MITRE ATT&CK T1213 version 3.4.
+      material_changes:
+        - Defined the task-intent versus delegated-data-authority boundary and normative tool/resource read paths.
+        - Added scope, token audience, response-limit, rate-limit, logging, and repository-detection claims.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - NVD API keywordSearch=Model Context Protocol, resultsPerPage=200; all 77 records reviewed.
+        - NVD API narrow queries for Model Context Protocol data query and data access.
+        - CISA KEV catalog version 2026.09.01 identifier review.
+        - Exact first-party or GitHub advisories opened only from NVD references; Google, Salesloft, and Microsoft first-party incident reports.
+      material_changes:
+        - Added two direct MCP data-server demonstrations, one controlled database demonstration, and adjacent production API collection examples.
+        - Bounded the direct-production-MCP evidence gap and recorded remediation conflicts.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - arXiv API all:"Model Context Protocol" AND all:data.
+        - arXiv API narrow queries for data exfiltration and data access; candidate PDFs and limitations reviewed.
+      material_changes:
+        - Added the SecureMCP controlled policy-failure evidence and its generalization limits.
+        - Rejected scanner prevalence and unrelated execution-policy results from the core evidence.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - NIST API response, pagination, query, rate-limit, logging, enumeration, and masking recommendations.
+        - ATT&CK T1213 DET0413 and AN1160-AN1163 analytics.
+        - MCP authorization and security scope, audience, token, and access-control guidance.
+      material_changes:
+        - Derived and tested a sequence-plus-breadth-plus-volume analytic with local tuning and bulk-job exclusions.
+        - Added external authorization, query-bound, response-bound, monitoring, and containment controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Challenged MCP specificity, production status, protected-boundary semantics, threshold universality, version conflicts, and ATT&CK directness.
+        - Re-reviewed source limitations, author credits, safe-publication content, and excluded leads.
+      material_changes:
+        - Limited overall status to Demonstrated and removed any implication of a confirmed production MCP breach.
+        - Labeled detector values as starter thresholds and separated credential theft, invocation, local files, writes, and exfiltration.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - NVD API keywordSearch=MCP bulk data retrieval returned 0 records.
+        - arXiv API all:"Model Context Protocol" AND all:"bulk data" returned 0 records.
+        - Refreshed the current MCP Security Best Practices authority.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - NVD API keywordSearch=MCP resource enumeration returned 0 records.
+        - arXiv API all:"Model Context Protocol" AND all:"resource enumeration" returned one PentestMCP false positive, reviewed and rejected.
+        - Refreshed CISA KEV catalog version 2026.09.01 and rechecked selected CVE identifiers; none were listed.
+      material_changes: []
+  rationale: >-
+    Direct protocol, standard, advisory, incident, government-catalog, empirical,
+    detection, defense, and contrary-evidence classes cover every publishable
+    proposition. The final two independent authority-only passes added no
+    material evidence; the sole new title was an irrelevant reconnaissance use
+    of resource enumeration. The remaining gap is a direct production MCP
+    incident, which is stated rather than inferred away.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 9
+  selected_examples:
+    - SRC-ghsa-mcp-pinot-73cv
+    - SRC-ghsa-vphc-468g-8rfp
+    - SRC-arxiv-securemcp-2605-05260
+    - SRC-gtig-drift-2025
+  no_qualifying_examples_rationale: >-
+    Four examples qualified, but no direct production MCP incident did. The
+    production example is explicitly adjacent and does not raise the evidence
+    label; catalog absence is not treated as proof of no exploitation.
+  candidates:
+    - source_id: SRC-ghsa-mcp-pinot-73cv
+      identifier: CVE-2026-49257 / GHSA-73cv-556c-w3g6
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept recorded; no confirmed production exploitation identified.
+      impact: Unauthenticated use of configured server credentials could expose table enumeration and full Pinot read access, with write capability outside this technique's core.
+      remediation: Upgrade to version 3.1.0 or later; bind safely and require authentication and authorization.
+      selected: true
+      rationale: Highest-impact direct MCP data-read case with a complete public advisory and patch.
+    - source_id: SRC-ghsa-vphc-468g-8rfp
+      identifier: CVE-2026-33980 / GHSA-vphc-468g-8rfp
+      relationship: direct_vulnerability
+      exploitation_status: Public proof of concept recorded; no confirmed production exploitation identified.
+      impact: Injection can turn trusted metadata operations into arbitrary ADX queries across reachable data.
+      remediation: No patched release is listed by the GitHub advisory; enforce parameterized construction and external authorization. NVD carries differing version and patch metadata.
+      selected: true
+      rationale: Direct read-boundary bypass in a data-query MCP server with high confidentiality impact.
+    - source_id: SRC-arxiv-securemcp-2605-05260
+      identifier: SecureMCP controlled IoT-SQL evaluation
+      relationship: direct_demonstration
+      exploitation_status: Controlled evaluation only; no production exploitation claim.
+      impact: Genuine authorization-policy failures occurred in an MCP-mediated database benchmark; layered deterministic controls improved compliance.
+      remediation: External RBAC, query-cost gating, interception, risk filtering, and isolation were evaluated.
+      selected: true
+      rationale: Direct controlled evidence complements advisory proof-of-concept evidence while disclosing model and benchmark limitations.
+    - source_id: SRC-gtig-drift-2025
+      identifier: UNC6395 Salesloft Drift connected-app incident
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Confirmed production incident involving stolen OAuth tokens and API-driven Salesforce collection.
+      impact: Systematic Salesforce exports and secret-oriented searches across connected customer environments.
+      remediation: Tokens were revoked; affected integrations were disabled or reauthorized; monitoring and scope controls were recommended.
+      selected: true
+      rationale: Highest-impact production API collection example, explicitly bounded as non-MCP and non-model-directed.
+    - source_id: SRC-splunk-svd-2025-1210
+      identifier: CVE-2025-20381 / SVD-2025-1210
+      relationship: enabling_vulnerability
+      exploitation_status: Public advisory; no exploit or production incident established by the reviewed source.
+      impact: Search allowlist bypass could permit unauthorized Splunk operations, but the advisory does not establish repository harvesting.
+      remediation: Upgrade to Splunk MCP Server 0.2.4 or later.
+      selected: false
+      rationale: Lower directness and bounded confidentiality relevance than selected cases.
+    - source_id: SRC-ghsa-meta-ads
+      identifier: CVE-2026-48039 / GHSA-9gw6-46qc-99vr
+      relationship: enabling_vulnerability
+      exploitation_status: Public advisory; no production incident established.
+      impact: Unauthenticated callers could invoke tools and expose an operator token, enabling downstream actions.
+      remediation: Upgrade to 1.0.109 or later and require authentication.
+      selected: false
+      rationale: Credential disclosure and invocation are prerequisites, not direct evidence of record harvesting.
+    - source_id: SRC-microsoft-silk-typhoon-2025
+      identifier: Silk Typhoon service-provider and cloud-app collection
+      relationship: historical_analogy
+      exploitation_status: Confirmed production API collection outside MCP.
+      impact: Stolen API keys and OAuth applications enabled email-data collection through Graph and EWS, including downstream customers.
+      remediation: Microsoft recommends credential, application, sign-in, and service-principal hunting and stronger identity controls.
+      selected: false
+      rationale: Strong analogy but less direct to the MCP contract than the four selected examples.
+    - source_id: SRC-arxiv-padilla-2608-00150
+      identifier: Internet-facing MCP server dynamic assessment
+      relationship: rejected
+      exploitation_status: Scanner and non-destructive dynamic audit findings only.
+      impact: Reports exposed and vulnerable deployments but does not demonstrate contracted API record harvesting.
+      remediation: Recommends authentication, exposure reduction, and hardening; no product-specific patch controls the corpus.
+      selected: false
+      rationale: Selection bias, HTTP-only discovery, heuristics, temporal churn, and no data extraction limit contract relevance.
+    - source_id: SRC-microsoft-dev0537-2022
+      identifier: DEV-0537 data exfiltration report
+      relationship: rejected
+      exploitation_status: Confirmed production threat activity outside MCP.
+      impact: Broad collection and exfiltration activity was reported.
+      remediation: Microsoft published monitoring and hardening guidance.
+      selected: false
+      rationale: The reviewed passages do not establish the API-backed repository mechanism required by this contract.
+
+sources_consulted:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nist-sp800-228-upd1
+  - SRC-mitre-t1213-v3.4
+  - SRC-nvd-mcp-corpus-20260901
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-splunk-svd-2025-1210
+  - SRC-ghsa-meta-ads
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-update
+  - SRC-microsoft-silk-typhoon-2025
+  - SRC-microsoft-dev0537-2022
+  - SRC-arxiv-padilla-2608-00150
+  - SRC-arxiv-securemcp-2605-05260
+  - SRC-arxiv-appa-2607-24625
+  - SRC-arxiv-hcp-2606-29073
+  - SRC-arxiv-pentestmcp-2510-03610
+sources_cited:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-nist-sp800-228-upd1
+  - SRC-mitre-t1213-v3.4
+  - SRC-nvd-mcp-corpus-20260901
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-gtig-drift-2025
+  - SRC-salesloft-drift-update
+  - SRC-microsoft-silk-typhoon-2025
+  - SRC-arxiv-securemcp-2605-05260
+sources_rejected:
+  - source_id: SRC-splunk-svd-2025-1210
+    reason: Allowlist bypass is enabling but does not establish broad repository collection.
+  - source_id: SRC-ghsa-meta-ads
+    reason: Authentication and token exposure concern invocation and credentials rather than the collection outcome.
+  - source_id: SRC-microsoft-dev0537-2022
+    reason: Production activity lacks the required API-backed repository specificity.
+  - source_id: SRC-arxiv-padilla-2608-00150
+    reason: Scanner findings establish exposure context but not contracted harvest behavior.
+  - source_id: SRC-arxiv-appa-2607-24625
+    reason: General agentic information-flow defense benchmark is not API-harvest specific.
+  - source_id: SRC-arxiv-hcp-2606-29073
+    reason: Small controlled execution-policy study does not demonstrate API record harvesting.
+  - source_id: SRC-arxiv-pentestmcp-2510-03610
+    reason: Final-pass query false positive concerning penetration-test reconnaissance.
+sources_blocked: []
+
+conflicts:
+  - issue: NVD metadata and the GitHub ADX advisory differ on affected-version notation and whether a patched release exists.
+    resolution: Publish the GitHub maintainer advisory's through-0.1.0 and no-patched-release statements, disclose the conflict, and avoid inferring a fixed release.
+  - issue: Direct public demonstrations exist, but reviewed catalogs and first-party reporting did not establish a production MCP incident.
+    resolution: Use Demonstrated, not Observed, and label production API cases as adjacent or historical analogies.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids: [SAF-T1804-C004, SAF-T1804-C005, SAF-T1804-C011]
+  rationale: >-
+    Two independent MCP data-server advisories demonstrate end-to-end read paths
+    across the contracted boundary, and controlled MCP-SQL research provides
+    supporting direct evidence. No direct production MCP incident was found, so
+    observed API incidents remain contextual and the status cannot be Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

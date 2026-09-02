@@ -1,0 +1,175 @@
+version: 1
+technique_id: SAF-T1103
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1103
+  inherited_context: false
+target:
+  id: SAF-T1103
+  neutral_name: Fake Tool Invocation (Function Spoofing)
+allowed_inputs:
+- Target ID, neutral name, and tactic supplied as seed metadata.
+- Authoring skill, routed methodology references except impact-classification examples,
+  canonical blank templates, and canonical validator.
+- Direct authoritative external protocol, standards, advisory, government-catalog,
+  and academic sources independently discovered and opened.
+prohibited_inputs:
+- techniques/SAF-T1103/README.md and every current or historical target technique
+  artifact.
+- research/techniques/SAF-T1103/ and every current or historical target research packet
+  artifact.
+- techniques/SAF-T1103/detection-rule.yml and target tests, logs, or prior generated
+  artifacts.
+- git history, git diffs, blame, logs, branches, commits, stashes, and any history-derived
+  target content.
+- pull request, issue, review, or old PR content exposing prior target content.
+- previous conversation, cached summary, agent message, or prior artifact containing
+  technique-specific conclusions.
+- technique catalog descriptions, SAF or SAFE pages, shared source/framework registries,
+  GitHub search, and unrestricted web search before freeze.
+independent_research:
+  query_count: 40
+  searches:
+  - 'NVD keywordSearch: Model Context Protocol'
+  - 'NVD keywordSearch: LLM tool call'
+  - 'NVD keywordSearch: AI agent tool'
+  - 'NVD keywordSearch: forged tool call'
+  - 'NVD keywordSearch: unresolved tool call'
+  - 'NVD keywordSearch: fabricated tool call'
+  - 'NVD keywordSearch: client supplied tool call'
+  - 'NVD keywordSearch: model never emitted tool call'
+  - 'NVD keywordSearch: forged assistant tool'
+  - 'NVD keywordSearch: client assistant tool'
+  - 'NVD keywordSearch: tool execution spoof'
+  - 'NVD keywordSearch: tool result spoof'
+  - 'NVD keywordSearch: undeclared tool name'
+  - 'arXiv API all: forged tool call'
+  - 'arXiv API all: tool call spoofing'
+  - 'arXiv API all: function spoofing AND agent'
+  - 'arXiv API all: unresolved tool call'
+  - 'arXiv API all: tool result spoofing'
+  - 'arXiv API all: tool invocation AND security'
+  - CISA KEV complete catalog check
+  - 'NVD keywordSearch: assistant message tool call'
+  - 'NVD keywordSearch: model generated tool call'
+  - 'NVD keywordSearch: client submitted tool call'
+  - 'arXiv API all: client-submitted tool call'
+  - 'arXiv API all: model-generated tool call'
+  - 'NVD keywordSearch: dangling assistant tool'
+  - 'NVD keywordSearch: tool resolver undeclared callable'
+  - 'NVD keywordSearch: function name tool execution'
+  - 'arXiv API all: client-supplied tool call'
+  - 'arXiv API all: forged function call AND agent'
+  - 'NVD keywordSearch: tool import path LLM'
+  - 'NVD keywordSearch: assistant tool call dispatched'
+  - 'NVD keywordSearch: tool name globals'
+  - 'arXiv API all: function identity AND tool call'
+  - 'arXiv API all: tool provenance AND execution'
+  - 'NVD keywordSearch: untrusted message history tool call'
+  - 'NVD keywordSearch: tool call allowlist callable'
+  - 'arXiv API all: call provenance AND agent AND tool'
+  - 'arXiv API all: pre-execution firewall AND tool call'
+  - CISA KEV final complete catalog recheck
+  opened_source_count: 23
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-agui-events
+  - SRC-agui-architecture
+  - SRC-cwe-470
+  - SRC-cwe-863
+  - SRC-cve-2026-65975
+  - SRC-ghsa-pydantic-65975
+  - SRC-cve-2026-44339
+  - SRC-ghsa-praison-44339
+  - SRC-cve-2026-61536
+  - SRC-ghsa-banks-61536
+  - SRC-cve-2026-39419
+  - SRC-ghsa-maxkb-39419
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-pact-2605.11039
+  - SRC-flowguard-2607.14754
+  - SRC-aegis-2603.12621
+  - SRC-withdrawn-caller-identity-2603.07473
+  - SRC-attack-ta0002
+  - SRC-mitre-t1059-current
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect existing target content during integration; replace target artifacts
+  mechanically from this bundle.
+- Reconcile source IDs only for exact-source collisions; no new research leads may
+  enter from the shared manifest.
+- Replace synthetic framework neighbors and mitigations only through mechanical catalog
+  reconciliation recorded in integration-notes.yml.
+- Replace the synthetic repository-history SHA with the actual integration commit
+  after bundle placement.
+- Run canonical validation again after all mechanical joins.
+mock_validation:
+  root: /private/tmp/saf-t1103-cleanroom-mock
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1103
+  mode: strict
+  result: passed
+  proof: research/techniques/SAF-T1103/validation/strict-validator.txt
+source_cache:
+  path: /private/tmp/saf-t1103-cleanroom-cache
+  aggregate_manifest: /private/tmp/saf-t1103-cleanroom-cache/SOURCE-CACHE.sha256
+  aggregate_manifest_sha256_before_freeze: 76f5d0f96c212c9dcfbd7c92e0e519265a9a1c3ce1b229adefe23c6d97d2dae0
+attestation: This fresh agent inherited no conversation content, accessed no prohibited
+  target or registry artifact, independently discovered and reviewed the recorded
+  sources, and completed the draft before any integration activity.
+unresolved: []
+post_freeze_reconciliation:
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+    SAF-T9002: SAF-T1001
+    SAF-T9003: omitted_no_exact_catalog_neighbor
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-6
+    SAF-M-9002: SAF-M-69
+    SAF-M-9003: SAF-M-12
+  source_id_mapping:
+    SRC-mcp-tools-2026-07-28: SRC-mcp-tools-2026-07-28
+    SRC-mcp-architecture-2026-07-28: SRC-mcp-architecture-2026-07-28
+    SRC-mcp-schema-2026-07-28: SRC-mcp-2026-schema
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-attack-t1059: SRC-mitre-t1059-current
+  new_shared_source_records:
+  - SRC-agui-events
+  - SRC-agui-architecture
+  - SRC-cwe-470
+  - SRC-cwe-863
+  - SRC-cve-2026-65975
+  - SRC-ghsa-pydantic-65975
+  - SRC-cve-2026-44339
+  - SRC-ghsa-praison-44339
+  - SRC-cve-2026-61536
+  - SRC-ghsa-banks-61536
+  - SRC-cve-2026-39419
+  - SRC-ghsa-maxkb-39419
+  - SRC-nvd-t1103-corpus
+  - SRC-pact-2605.11039
+  - SRC-flowguard-2607.14754
+  - SRC-aegis-2603.12621
+  - SRC-withdrawn-caller-identity-2603.07473
+  - SRC-attack-ta0002
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0002
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-12
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  status: integrated_and_repository_validated

@@ -1,0 +1,139 @@
+version: 1
+technique_id: SAF-T1506
+research_status: saturated
+sources_consulted:
+  - SRC-aqua-trivy-2026
+  - SRC-aqua-trivy-product
+  - SRC-aws-imds
+  - SRC-aws-imds-credentials
+  - SRC-azure-imds
+  - SRC-circleci-alert-2023
+  - SRC-cisa-kev-infrastructure-token-2026-09-01
+  - SRC-cve-2025-1974
+  - SRC-cve-2025-30066
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-doj-capital-one-2019
+  - SRC-fbi-teampcp-2026
+  - SRC-gcp-metadata
+  - SRC-ghsa-inspector-7f8r
+  - SRC-git-50df0e1
+  - SRC-git-607b226
+  - SRC-google-ai-threats-2026
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-k8s-cve-2025-1974
+  - SRC-k8s-service-account-admin
+  - SRC-k8s-service-accounts
+  - SRC-litellm-incident-2026
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-spec-2026-07-28
+  - SRC-mitre-t1528
+  - SRC-mitre-t1552.005
+  - SRC-occ-capital-one-2020
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-otel-general
+  - SRC-otel-http-spans-1.44.0
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-unit42-teampcp-2026
+sources_cited:
+  - SRC-aqua-trivy-2026
+  - SRC-aws-imds
+  - SRC-aws-imds-credentials
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-fbi-teampcp-2026
+  - SRC-gcp-metadata
+  - SRC-jfrog-cve-2025-6514
+  - SRC-k8s-service-account-admin
+  - SRC-k8s-service-accounts
+  - SRC-litellm-incident-2026
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-t1528
+  - SRC-mitre-t1552.005
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-otel-http-spans-1.44.0
+  - SRC-rfc6750
+  - SRC-rfc9700
+sources_rejected:
+  - {source_id: SRC-aqua-trivy-product, reason: Product page did not add incident evidence beyond Aqua's incident report.}
+  - {source_id: SRC-azure-imds, reason: Reviewed for provider coverage but not needed after better-scoped AWS, Google, and Kubernetes token authorities were selected.}
+  - {source_id: SRC-circleci-alert-2023, reason: Credible historical adjacent incident superseded by newer direct and adjacent 2026 examples.}
+  - {source_id: SRC-cisa-kev-infrastructure-token-2026-09-01, reason: Confirmed CVE-2025-30066 only; it did not change the selected current examples.}
+  - {source_id: SRC-cve-2025-1974, reason: High-impact Kubernetes vulnerability but established code execution and secret disclosure rather than this technique's direct token-theft evidence.}
+  - {source_id: SRC-cve-2025-30066, reason: Active adjacent supply-chain case but less direct than the selected 2026 campaign evidence.}
+  - {source_id: SRC-doj-capital-one-2019, reason: Official breach page did not establish the token mechanics needed for this technique.}
+  - {source_id: SRC-ghsa-inspector-7f8r, reason: Corroborating GitHub advisory was not required after the CVE and original researcher sources were selected.}
+  - {source_id: SRC-git-50df0e1, reason: Patch was reviewed after authority-provided discovery but is implementation corroboration rather than core evidence.}
+  - {source_id: SRC-git-607b226, reason: Patch was reviewed after authority-provided discovery but is implementation corroboration rather than core evidence.}
+  - {source_id: SRC-google-ai-threats-2026, reason: Reviewed current AI threat context but found no direct support for the scoped technique.}
+  - {source_id: SRC-jfsa-2025-6514, reason: Duplicated the selected JFrog research article and CVE record.}
+  - {source_id: SRC-k8s-cve-2025-1974, reason: Corroborated CVE-2025-1974 but remained outside selected examples.}
+  - {source_id: SRC-mcp-authorization-2025-11-25, reason: Superseded by the directly reviewed 2026-07-28 specification.}
+  - {source_id: SRC-mcp-security-2025-11-25, reason: Superseded by the directly reviewed 2026-07-28 guidance.}
+  - {source_id: SRC-mcp-spec-2026-07-28, reason: General architecture context was not necessary for a substantive published proposition.}
+  - {source_id: SRC-occ-capital-one-2020, reason: Official enforcement context did not establish token mechanics.}
+  - {source_id: SRC-otel-general, reason: General attribute guidance was unnecessary after the specific HTTP semantic convention was reviewed.}
+  - {source_id: SRC-unit42-teampcp-2026, reason: Useful corroboration but claims about campaign scale were less direct than victim and FBI reporting and were omitted.}
+sources_blocked: []
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  rationale: Five distinct research passes covered protocol, incidents and vulnerabilities, empirical demonstrations, detection and defense, and contrary evidence; two later exact-authority refreshes yielded no material change to claims, examples, classification, or detection.
+  passes:
+    - pass: protocol_and_authority
+      completed_on: 2026-09-01
+      material_changes: [Defined bearer semantics, MCP authorization boundary, workload token locations, and audience and sender constraints.]
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: 2026-09-01
+      material_changes: [Added LiteLLM and TeamPCP observed evidence and eight ranked incident or vulnerability candidates.]
+    - pass: demonstration_and_empirical_research
+      completed_on: 2026-09-01
+      material_changes: [Separated controlled MCP RCE demonstrations from unproven production token theft.]
+    - pass: detection_and_defense
+      completed_on: 2026-09-01
+      material_changes: [Derived and tested the private-address MCP authorization HTTP analytic and documented limitations.]
+    - pass: gap_and_challenge
+      completed_on: 2026-09-01
+      material_changes: [Excluded universal exposure, unproven exploitation, campaign-scale claims, and weak historical analogies.]
+    - pass: saturation_follow_up_1
+      completed_on: 2026-09-01
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: 2026-09-01
+      material_changes: []
+research_tracks:
+  breach: {status: complete, result: LiteLLM and TeamPCP established current observed production evidence.}
+  vulnerability: {status: complete, result: Four CVEs were assessed and enabling primitives were not misclassified as theft incidents.}
+  demonstration: {status: complete, result: Original researcher demonstrations for the two selected MCP vulnerabilities were reviewed.}
+  detection: {status: complete, result: Direct MCP security and OpenTelemetry authorities supported a tested behavioral analytic.}
+  contrary: {status: complete, result: No authority established universal exposure or known exploitation of the selected MCP CVEs; those claims were omitted.}
+  saturation: {status: complete, result: Two consecutive direct-authority refresh passes produced no material changes.}
+breach_and_vulnerability_assessment:
+  searched_on: 2026-09-01
+  candidate_count: 8
+  selected_examples: [SRC-aqua-trivy-2026, SRC-cve-2025-49596, SRC-cve-2025-6514, SRC-litellm-incident-2026]
+  candidates:
+    - {source_id: SRC-litellm-incident-2026, identifier: LiteLLM PyPI 1.82.7 and 1.82.8, relationship: direct_production_incident, exploitation_status: Observed malicious releases executed credential-harvesting code in a production package channel, impact: Environment secrets and cloud and Kubernetes workload credentials were targeted for exfiltration, remediation: Upgrade to a verified safe release and rotate exposed credentials, rationale: Highest-impact direct and current agentic-gateway evidence, selected: true}
+    - {source_id: SRC-aqua-trivy-2026, identifier: Trivy supply-chain compromise March 2026, relationship: adjacent_incident_or_vulnerability, exploitation_status: Observed compromise of release automation and malicious distribution, impact: Automation and cloud or CI credentials were extracted or targeted, remediation: Upgrade, verify artifacts, and rotate exposed credentials, rationale: Current high-impact infrastructure-tool incident in the same documented campaign, selected: true}
+    - {source_id: SRC-cve-2025-6514, identifier: CVE-2025-6514, relationship: enabling_vulnerability, exploitation_status: Controlled exploit demonstrated; CVE record reported no known exploitation, impact: Malicious authorization endpoint could obtain local command execution in affected mcp-remote versions, remediation: Upgrade to 0.1.16 or later, rationale: Direct MCP authorization-path enabling primitive with clear affected and fixed versions, selected: true}
+    - {source_id: SRC-cve-2025-49596, identifier: CVE-2025-49596, relationship: enabling_vulnerability, exploitation_status: Controlled exploit demonstrated; CVE record reported no known exploitation, impact: Unauthenticated Inspector proxy could yield local remote code execution, remediation: Upgrade to 0.14.1 or later and restrict exposure, rationale: Direct MCP tool enabling primitive with original research and a clear fix, selected: true}
+    - {source_id: SRC-cve-2025-1974, identifier: CVE-2025-1974, relationship: adjacent_incident_or_vulnerability, exploitation_status: Public proof of concept reported by CISA ADP, impact: ingress-nginx admission controller code execution and secret disclosure, remediation: Upgrade to 1.12.1 or 1.11.5 or later fixed release, rationale: High impact but not direct MCP or infrastructure-token theft evidence, selected: false}
+    - {source_id: SRC-cve-2025-30066, identifier: CVE-2025-30066, relationship: adjacent_incident_or_vulnerability, exploitation_status: Listed by CISA as known exploited, impact: Malicious GitHub Action code exposed workflow secrets in logs, remediation: Apply CISA and vendor mitigations and rotate exposed secrets, rationale: Active adjacent case but less direct and less current than selected examples, selected: false}
+    - {source_id: SRC-circleci-alert-2023, identifier: CircleCI January 2023 security incident, relationship: historical_analogy, exploitation_status: Observed customer environment-variable and token exfiltration after engineer compromise, impact: Customer tokens keys and environment secrets required rotation, remediation: Rotate secrets and review provider logs, rationale: Strong analogy but superseded by newer evidence, selected: false}
+    - {source_id: SRC-doj-capital-one-2019, identifier: Capital One 2019 cloud breach, relationship: historical_analogy, exploitation_status: Observed cloud data theft through a misconfigured application firewall, impact: Large-scale cloud data exposure, remediation: Criminal and regulatory response plus control improvements, rationale: Official source lacked direct token mechanics and was excluded from claims, selected: false}
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids: [SAF-T1506-C006, SAF-T1506-C018]
+  rationale: A directly reviewed victim report documents malicious production packages executing a credential stealer that targeted cloud and Kubernetes infrastructure tokens; FBI reporting corroborates the campaign mechanics.
+source_archive:
+  validation_status: passed
+  note: Every consulted remote authority records an explicit non-archive exception and review evidence in the source manifest fragment.
+rights_review:
+  status: passed
+  note: All publishable content is paraphrased factual synthesis with attribution and no protected figures, payloads, or long quotations.

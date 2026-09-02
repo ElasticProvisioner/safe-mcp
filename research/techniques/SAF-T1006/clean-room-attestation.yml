@@ -1,0 +1,128 @@
+version: 1
+technique_id: SAF-T1006
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1006_retry3
+  inherited_context: false
+target:
+  id: SAF-T1006
+  neutral_name: User-Social-Engineering Install
+allowed_inputs:
+- Target ID and neutral name supplied by the parent task.
+- Authoring skill, routed clean-room methodology, breach research, and readable-trace
+  references.
+- Generic repository template, blank packet schemas, research protocol, and canonical
+  validator.
+- Directly opened authoritative external sources and first-party or government catalog
+  endpoints.
+- Exact GitHub advisory URLs only after their identifiers and URLs were obtained from
+  directly reviewed NVD records.
+prohibited_inputs:
+- techniques/SAF-T1006/README.md
+- techniques/SAF-T1006/detection-rule.yml
+- research/techniques/SAF-T1006/
+- Target git history, diffs, blame, stashes, commits, branches, or cached target artifacts.
+- Any pull request, issue, review, fork, or repository page exposing prior target
+  content.
+- Any previous conversation, summary, source list, conclusion, draft, or target-specific
+  agent output.
+- SAF or SAFE public pages and shared source or framework registries before freeze.
+- Impact-classification examples before freeze.
+- General web search, image search, and GitHub discovery or search.
+independent_research:
+  searches:
+  - Direct MCP security best-practices and local-server guide URLs.
+  - Direct VS Code MCP management and Microsoft Sysmon documentation URLs.
+  - Direct MITRE ATT&CK T1204.002 and CWE-494 URLs.
+  - Direct Unit 42 Contagious Interview URL obtained from the reviewed ATT&CK page.
+  - NVD API keywordSearch=model context protocol
+  - NVD API keywordSearch=malicious MCP configuration
+  - NVD API keywordSearch=MCP server install
+  - NVD API keywordSearch=MCP deeplink user confirmation
+  - NVD API keywordSearch=MCP install social engineering
+  - NVD API keywordSearch=MCP install deeplink arguments
+  - NVD API keywordSearch=MCP one-click install command execution
+  - CISA KEV direct JSON catalog exact-ID scan.
+  - Exact CVE records and vendor advisory URLs independently obtained from NVD.
+  opened_source_ids:
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-connect-local
+  - SRC-vscode-mcp-servers
+  - SRC-ghsa-cursor-64106
+  - SRC-ghsa-cherry-61929
+  - SRC-ghsa-dive-23523
+  - SRC-nvd-mcp-catalog
+  - SRC-zed-secure-default
+  - SRC-ghsa-zed-68433
+  - SRC-ghsa-dive-66580
+  - SRC-ghsa-cursor-54133
+  - SRC-mitre-attack-t1204-002
+  - SRC-unit42-contagious-interview
+  - SRC-cwe-494
+  - SRC-sysmon-15-21
+  - SRC-cisa-kev-2026-09-01
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+mock_validation:
+  command: PYTHONPATH=vendor python3 scripts/validate-technique-research.py SAF-T1006
+  isolation: Synthetic mock contains only generic validator, generated bundle, minimal
+    source manifest, synthetic neighbors, framework record, alignment ledger, and
+    placeholder history SHA.
+  strict_result: passed
+  deferred_real_repository_joins:
+  - Replace synthetic neighboring-technique placeholders with actual catalog identifiers
+    after freeze.
+  - Reconcile stable shared source IDs without introducing new evidence.
+  - Replace the synthetic nonzero repository-history SHA with an honest integration
+    SHA.
+  - Register the framework and alignment records mechanically in the real repository.
+integration_constraints:
+- Do not inspect the prior target content or a diff that exposes it during replacement.
+- Reconcile only stable IDs, framework joins, paths, and honest history metadata after
+  freeze.
+- Do not use shared registries or old target material to add claims, sources, examples,
+  wording, or omissions.
+- Preserve the freeze manifest and record every mechanical post-freeze transformation.
+attestation: This bundle was independently derived from the supplied target ID and
+  neutral name, generic authoring materials, and directly reviewed authoritative sources.
+  No prohibited prior target artifact or general/GitHub discovery search was used.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-security-best-practices: SRC-mcp-security-2025-11-25
+  new_shared_source_records:
+  - SRC-mcp-connect-local
+  - SRC-vscode-mcp-servers
+  - SRC-ghsa-cursor-64106
+  - SRC-ghsa-cherry-61929
+  - SRC-ghsa-dive-23523
+  - SRC-nvd-mcp-catalog
+  - SRC-zed-secure-default
+  - SRC-ghsa-zed-68433
+  - SRC-ghsa-dive-66580
+  - SRC-ghsa-cursor-54133
+  - SRC-mitre-attack-t1204-002
+  - SRC-unit42-contagious-interview
+  - SRC-cwe-494
+  - SRC-sysmon-15-21
+  - SRC-cisa-kev-2026-09-01
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0001
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-15
+  - SAF-M-29
+  - SAF-M-45
+  synthetic_neighbor_mapping:
+    SAF-T1998: SAF-T1003
+    SAF-T1999: SAF-T1002
+  status: integrated_and_repository_validated

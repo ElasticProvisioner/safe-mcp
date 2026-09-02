@@ -1,0 +1,210 @@
+version: 1
+technique_id: SAF-T1702
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - site:modelcontextprotocol.io/specification resources context trust security
+        - site:nist.gov AI adversarial machine learning data poisoning taxonomy
+        - site:attack.mitre.org TA0008 T1565.001
+      material_changes:
+        - Established MCP implementation trust boundaries and absence of a core persistent-memory policy.
+        - Established the qualified Lateral Movement and Stored Data Manipulation analogy.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - site:blogs.cisco.com/ai persistent memory compromise MemoryTrap
+        - site:nvd.nist.gov/vuln/detail memory poisoning agent memory MCP
+        - site:cisa.gov/known-exploited-vulnerabilities-catalog memory poisoning agent
+        - site:anthropic.com OR site:docs.anthropic.com Claude Code 2.1.50 user memories
+      material_changes:
+        - Selected Cisco MemoryTrap as a direct vulnerability and controlled demonstration.
+        - Recorded explicit gaps for production exploitation, mechanism-specific CVE/KEV coverage, and independently reviewed vendor patch confirmation.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org AgentPoison memory knowledge bases
+        - site:arxiv.org Memory Injection Attacks Query-Only MINJA
+        - site:arxiv.org MemoryGraft InjecMEM shared memory poisoning
+      material_changes:
+        - Selected MINJA and AgentPoison as the highest-impact complementary direct demonstrations.
+        - Bounded the contract around durable cross-consumer retrieval rather than generic prompt injection.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org MIND memory injection defense
+        - site:arxiv.org SMSR certified defence multi-session memory poisoning
+        - site:arxiv.org PoEM verifiable execution memory poisoning
+      material_changes:
+        - Derived a write-provenance, cross-consumer retrieval, and action-correlation analytic.
+        - Added content-filter limitations, provenance assumptions, rollback, and independent action gating.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org Defending Long-Term Memory Against Memory Injection pre-existing memory
+        - site:arxiv.org InjecMEM defenses tradeoffs
+        - site:genai.owasp.org ASI06 shared memory poisoning
+      material_changes:
+        - Added condition-dependent success, false-positive, and field-generalization limitations.
+        - Rejected derivative, adjacent, and redundant sources from publishable support.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - site:arxiv.org exact-title review for MINJA, MemoryGraft, InjecMEM, MIND, SMSR, and PoEM
+        - site:genai.owasp.org ASI06 Shared Memory Poisoning
+        - site:blogs.cisco.com/ai persistent memory compromise MemoryTrap
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - site:nvd.nist.gov/vuln/detail MemoryTrap AgentPoison MINJA InjecMEM MemoryGraft
+        - site:cisa.gov/known-exploited-vulnerabilities-catalog MemoryTrap MINJA memory poisoning
+        - site:anthropic.com OR site:docs.anthropic.com Claude Code 2.1.50 user memories
+        - Exact-title checks for the final provenance and action-gating sources
+      material_changes: []
+  rationale: >-
+    The final corpus covers protocol authority, a formal agentic risk category, a
+    first-party researcher disclosure, complementary controlled demonstrations,
+    government and ATT&CK authority, challenge evidence, behavioral detection, and
+    layered defenses. Two consecutive domain-restricted follow-ups produced no new
+    qualifying incident, vulnerability catalog entry, controlling protocol fact,
+    counterexample, or detection requirement.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 6
+  selected_examples:
+    - SRC-cisco-memorytrap-2026
+    - SRC-agentpoison-2024
+    - SRC-minja-2026
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-cisco-memorytrap-2026
+      identifier: MemoryTrap persistent memory compromise
+      relationship: direct_vulnerability
+      exploitation_status: controlled demonstration; no production exploitation reported
+      impact: Persistent global memory and hook changes could influence subsequent projects, sessions, and reboots.
+      remediation: Cisco reports that Anthropic removed user memories from the system prompt in Claude Code 2.1.50; no independently reviewed Anthropic advisory was found.
+      selected: true
+      rationale: The product-specific path crosses the exact persistent cross-session boundary and is the strongest reviewed disclosure.
+    - source_id: SRC-minja-2026
+      identifier: MINJA query-only memory injection
+      relationship: direct_demonstration
+      exploitation_status: controlled academic demonstration
+      impact: Shared long-term memory can carry attacker-injected records into later user interactions and alter agent behavior.
+      remediation: The paper evaluates prompt detection, memory isolation, rate limits, permissions, and guardrails while documenting residual limitations.
+      selected: true
+      rationale: It removes the direct-storage-access assumption and explicitly evaluates memory shared across users.
+    - source_id: SRC-agentpoison-2024
+      identifier: AgentPoison memory and knowledge-base poisoning
+      relationship: direct_demonstration
+      exploitation_status: controlled academic demonstration
+      impact: A small poisoning budget can bias long-term-memory and retrieval-augmented agent behavior.
+      remediation: Evaluated perplexity and rephrasing defenses did not eliminate the attack; the paper does not provide a product patch.
+      selected: true
+      rationale: It is the earliest reviewed direct demonstration and complements MINJA with a different access model.
+    - source_id: SRC-memorygraft-2025
+      identifier: MemoryGraft indirect cross-session poisoning
+      relationship: direct_demonstration
+      exploitation_status: controlled academic demonstration
+      impact: Input artifacts can reach a persistent shared memory path and affect later sessions or users.
+      remediation: Research mitigations only; no production patch or incident response was reviewed.
+      selected: false
+      rationale: Directly relevant but lower priority than the selected sources because it is a redundant laboratory path in a narrower evaluated system.
+    - source_id: SRC-injecmem-2026
+      identifier: InjecMEM benchmark
+      relationship: direct_demonstration
+      exploitation_status: controlled benchmark demonstration
+      impact: Single-interaction memory injection can alter later agent behavior without direct memory access.
+      remediation: The benchmark evaluates multiple defenses and documents security-utility tradeoffs.
+      selected: false
+      rationale: Highly relevant but published after the selected foundational demonstrations and used here primarily for defense limitations.
+    - source_id: SRC-owasp-memory-blog-2026
+      identifier: OWASP Memory Is a Feature blog
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: synthesis of disclosed and research examples
+      impact: Summarizes persistent agent-memory risks and MemoryTrap.
+      remediation: Recommends layered memory security controls.
+      selected: false
+      rationale: Derivative of the directly reviewed OWASP report and Cisco disclosure, so it adds no independent example.
+
+sources_consulted:
+  - SRC-agentpoison-2024
+  - SRC-cisco-memorytrap-2026
+  - SRC-injecmem-2026
+  - SRC-mcp-sampling-2025-11
+  - SRC-mcp-spec-2025-06
+  - SRC-mcp-tasks-2025-11
+  - SRC-arxiv-memory-defense-2026
+  - SRC-memorygraft-2025
+  - SRC-mind-2026
+  - SRC-minja-2026
+  - SRC-mitre-t1565.001
+  - SRC-mitre-ta0008-2025
+  - SRC-nist-ai100-2e2025
+  - SRC-owasp-agentic-top10-2026
+  - SRC-owasp-memory-blog-2026
+  - SRC-poem-2026
+  - SRC-smsr-2026
+  - SRC-tma-nm-2026
+sources_cited:
+  - SRC-agentpoison-2024
+  - SRC-cisco-memorytrap-2026
+  - SRC-injecmem-2026
+  - SRC-mcp-spec-2025-06
+  - SRC-arxiv-memory-defense-2026
+  - SRC-mind-2026
+  - SRC-minja-2026
+  - SRC-mitre-t1565.001
+  - SRC-mitre-ta0008-2025
+  - SRC-owasp-agentic-top10-2026
+  - SRC-poem-2026
+  - SRC-smsr-2026
+sources_rejected:
+  - source_id: SRC-mcp-tasks-2025-11
+    reason: Task authorization and lifecycle logging are useful context but do not directly establish persistent memory poisoning.
+  - source_id: SRC-mcp-sampling-2025-11
+    reason: Sampling context controls are adjacent to context inclusion but do not define shared persistent memory.
+  - source_id: SRC-nist-ai100-2e2025
+    reason: The adversarial-ML taxonomy is authoritative but broader than the agent shared-memory mechanism and unnecessary for a sourced claim.
+  - source_id: SRC-owasp-memory-blog-2026
+    reason: The blog is derivative of the directly cited OWASP report and Cisco disclosure.
+  - source_id: SRC-tma-nm-2026
+    reason: The origin-bound authority proposal is recent single-author research and is redundant with stronger cited provenance sources.
+  - source_id: SRC-memorygraft-2025
+    reason: The demonstration is relevant but redundant with the three higher-impact selected examples and not needed for a unique claim.
+sources_blocked: []
+
+conflicts:
+  - issue: Aggregate success rates in MINJA could be mistaken for universal effectiveness.
+    resolution: The technique reports no universal rate and cites counterevidence showing material variation with memory contents, models, and defenses.
+  - issue: Lateral Movement normally describes movement through an environment after initial access.
+    resolution: The mapping is retained as the supplied tactic but expressly qualified as a cross-consumer agentic-context pivot, with Stored Data Manipulation shown only as an analogy.
+  - issue: Cisco reports a product remediation without an independently reviewed Anthropic advisory in the final corpus.
+    resolution: The patch statement is attributed to Cisco and the missing vendor confirmation is an explicit evidence gap.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1702-C003
+    - SAF-T1702-C004
+    - SAF-T1702-C005
+    - SAF-T1702-C007
+  rationale: >-
+    Multiple independent controlled sources demonstrate the complete write,
+    persistence, later retrieval, and influence mechanism across complementary
+    access models, including cross-user and cross-session paths. No qualifying
+    production incident was found, so the label does not rise to Observed.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

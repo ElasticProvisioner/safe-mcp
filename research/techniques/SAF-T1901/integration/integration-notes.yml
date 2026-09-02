@@ -1,0 +1,54 @@
+version: 1
+technique_id: SAF-T1901
+bundle_type: immutable_clean_room_handoff
+generated_on: "2026-09-02"
+pre_integration_requirements:
+  - Verify every entry in FREEZE.sha256 before opening any prohibited destination context.
+  - Preserve an unchanged copy of the frozen bundle and perform reconciliation in a separate integration workspace.
+  - Keep the overall evidence status Research-Derived unless independently reviewed direct evidence supports a change.
+synthetic_joins:
+  - join: tactic
+    value: ATK-TA0011
+    treatment: Neutral user-supplied tactic; verify the canonical destination label without changing the frozen value.
+  - join: nearest_neighbor
+    value: SAF-T1913 / HTTP POST Exfil
+    treatment: Canonical data-transfer neighbor; completion remains pending its independent clean-room replacement.
+  - join: nearest_neighbor
+    value: SAF-T1309 / Privileged Tool Invocation via Prompt Manipulation
+    treatment: Canonical invocation-abuse neighbor resolved after freeze.
+  - join: mitigation_registry
+    value: SAF-M-12, SAF-M-14, SAF-M-16, SAF-M-17, SAF-M-20, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74
+    treatment: Canonical source-supported controls joined after freeze.
+  - join: source_registry
+    value: source-manifest-fragment.yml
+    treatment: Reconcile ID collisions after freeze without changing URLs, credits, locators, review status, or claim support.
+  - join: framework_registry
+    value: framework-fragment.yml
+    treatment: Merge the one technique record after resolving synthetic neighbors.
+  - join: alignment_registry
+    value: alignment-fragment.yml
+    treatment: Merge or resolve the three disclosed non-high alignment issues.
+  - join: repository_history
+    value: 26c39823e0b55144bc7891f6345e6030646c16a0
+    treatment: Destination baseline joined after freeze.
+validation:
+  detector_command: python3 tests/SAF-T1901/test_detector.py
+  detector_expected: "PASS SAF-T1901 detector: 10 cases, 3 expected alerts, 1 expected-false-positive alert"
+  strict_command: python3 scripts/validate-technique-research.py SAF-T1901
+  strict_expected: PASS SAF-T1901
+known_gaps:
+  - No qualifying direct production incident or end-to-end public MCP/agent webhook-C2 demonstration was identified.
+  - The detector requires application-specific MCP-to-HTTP and response-consumption correlation.
+  - No canonical SAF neighbor or mitigation registry was consulted before freeze.
+contamination:
+  detected: false
+  details: []
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  resolved_dependency: SAF-T1913 independently authored, integrated, and strictly validated.
+  freeze_manifest_sha256: 245ab59532055ccf665292ba2831d3f20f4c3e7c807d07c39965a3b80ec2319e
+  attack_mappings:
+    - {id: T1102.002, type: direct}
+    - {id: T1102.003, type: boundary}
+  detector: "PASS SAF-T1901 detector: 10 cases, 3 expected alerts, 1 expected-false-positive alert"
+  strict_validator: "PASS SAF-T1901"

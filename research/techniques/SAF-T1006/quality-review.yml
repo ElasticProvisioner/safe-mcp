@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1006
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/cleanroom_saf_t1006_retry3
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Draft validation passed in the isolated synthetic join; strict validation is the final freeze gate.
+  contract_and_scope:
+    status: passed
+    notes: Contract is limited to a deceived user-mediated MCP install or trust decision and separates automatic configuration, supply-chain, and follow-on behavior.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, platform, advisory, version, privilege, and remediation claims were checked against directly reviewed sources.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims have exact locators, limitations, attribution, and source relations.
+  source_or_omit:
+    status: passed
+    notes: README hidden traces and declared local links cover every substantive unit; four excluded leads are prohibited from publishable wording.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by three complete public advisory attack paths and is not elevated to Observed without a production MCP incident.
+  research_saturation:
+    status: passed
+    notes: A late result reset the counter; the final two narrower official-catalog passes then produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production incidents, vulnerabilities, advisories, demonstrations, exploitation status, fixes, adjacency, and CISA KEV status were searched and classified separately.
+  detection_quality:
+    status: passed
+    notes: Seven deterministic cases pass, including exact 900-second and 901-second boundaries, malformed input, adjacency, and an expected false positive.
+  mitigation_quality:
+    status: passed
+    notes: Consent specificity, provenance, patching, integrity, least privilege, sandboxing, logging, and response are tied to the defining boundary and limitations.
+  framework_alignment:
+    status: passed
+    notes: The isolated joins were replaced after freeze with canonical SAF-T1003 and SAF-T1002 boundaries, Initial Access, and repository mitigation links; strict repository validation passed.
+  publication_rights:
+    status: passed
+    notes: All cited uses are paraphrases with named author and team attribution; no source code, payload, quote, image, or table is reproduced.
+  safe_publication:
+    status: passed
+    notes: Scenario and examples are inert; deployable deep links, encoded configurations, commands, indicators, credentials, and destructive detail are omitted.
+
+validation:
+  commands:
+    - command: PYTHONPATH=vendor python3 bundle/techniques/SAF-T1006/test_detection_rule.py
+      result: passed
+    - command: PYTHONPATH=vendor python3 scripts/validate-technique-research.py SAF-T1006 --draft
+      result: passed
+    - command: PYTHONPATH=vendor python3 scripts/validate-technique-research.py SAF-T1006
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1006
+      result: passed
+  detection_tests:
+    status: passed
+    command: PYTHONPATH=vendor python3 bundle/techniques/SAF-T1006/test_detection_rule.py
+    result: 7 of 7 cases passed on 2026-09-01.
+    waiver: null
+
+unresolved: []

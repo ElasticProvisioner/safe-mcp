@@ -1,0 +1,240 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2026
+    title: Tools - Model Context Protocol
+    publisher: Model Context Protocol
+    version_or_date: "2026-07-28"
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the current normative specification page.
+    review_notes: Reviewed user-interaction, tool-annotation, and security-consideration sections.
+    authors: [Model Context Protocol maintainers]
+    source_class: protocol_or_standard
+    locators: ["User Interaction Model", "Tool definition", "Security Considerations"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public normative specification; no redistribution needed.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-mcp-http-2026
+    title: Streamable HTTP - Model Context Protocol
+    publisher: Model Context Protocol
+    version_or_date: "2026-07-28"
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the current normative transport specification.
+    review_notes: Reviewed endpoint-security and request-header requirements.
+    authors: [Model Context Protocol maintainers]
+    source_class: protocol_or_standard
+    locators: ["Security & Endpoint", "Sending Messages to the MCP Server", "Standard Request Headers"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public normative specification; no redistribution needed.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-ghsa-inspector-49596
+    title: MCP Inspector is vulnerable to Cross-site Request Forgery
+    publisher: GitHub Security Advisories
+    version_or_date: "2025-06-13"
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory URL opened after Oligo supplied the identifier and link.
+    review_notes: Reviewed affected and patched versions, impact, credits, and CVE mapping.
+    authors: [petery-ant, Rémy Marot, Tenable Research]
+    source_class: official_advisory
+    locators: ["Affected versions", "Patched versions", "Impact", "Credits", "CVE ID"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public advisory; exact URL provenance recorded.
+      review_evidence: {method: direct_exact_url_review, discovered_via: SRC-oligo-inspector-49596}
+  - id: SRC-oligo-inspector-49596
+    title: Critical RCE Vulnerability in Anthropic MCP Inspector (CVE-2025-49596)
+    publisher: Oligo Security
+    version_or_date: "2025-06-27"
+    official_url: https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the original research disclosure.
+    review_notes: Reviewed demonstration, root cause, disclosure timeline, remediation, and researcher attribution.
+    authors: [Avi Lumelsky, Oligo Research]
+    source_class: research
+    locators: ["Attack Flow", "How the Attack Works", "Disclosure Timeline", "Remediation"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public original research; used by paraphrase only.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-inspector-fix-0141
+    title: Inspector security fix for authentication, local binding, and Origin validation
+    publisher: Model Context Protocol Inspector maintainers
+    version_or_date: "2025-04-18"
+    official_url: https://github.com/modelcontextprotocol/inspector/commit/50df0e1ec488f3983740b4d28d2a968f12eb8979
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact commit opened after the Oligo disclosure supplied its identifier.
+    review_notes: Reviewed the authentication token, loopback binding, Origin checks, and documentation changes.
+    authors: [Model Context Protocol Inspector maintainers]
+    source_class: implementation_artifact
+    locators: ["README.md diff", "server/src/index.ts diff", "server/src/middleware"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public code change; exact URL provenance recorded.
+      review_evidence: {method: direct_exact_url_review, discovered_via: SRC-oligo-inspector-49596}
+  - id: SRC-ghsa-inspector-58444
+    title: MCP Inspector has Cross-site Scripting that can lead to Remote Code Execution
+    publisher: GitHub Security Advisories
+    version_or_date: "2025-09-06"
+    official_url: https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-g9hg-qhmf-q45m
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact advisory opened after NVD supplied its identifier and URL during restricted direct-authority discovery.
+    review_notes: Reviewed affected and fixed versions, malicious redirect path, credits, and CVE mapping.
+    authors: [jenn-newton, Raymond of Veria Labs, Gavin Zhong, Shuyang Wang]
+    source_class: official_advisory
+    locators: ["Affected versions", "Patched versions", "Impact", "Credits", "CVE ID"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public advisory; exact URL provenance recorded.
+      review_evidence: {method: direct_exact_url_review, discovered_via: NVD_restricted_direct_authority_result}
+  - id: SRC-inspector-fix-0166
+    title: Validate OAuth redirect URLs before opening them
+    publisher: Model Context Protocol Inspector maintainers
+    version_or_date: "2025-09-05"
+    official_url: https://github.com/modelcontextprotocol/inspector/commit/650f3090d26344a672026b737d81586595bb1f60
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact fix commit opened after the official advisory supplied its identifier.
+    review_notes: Reviewed protocol restrictions and regression cases for unsafe redirect schemes.
+    authors: [Model Context Protocol Inspector maintainers]
+    source_class: implementation_artifact
+    locators: ["Redirect validation diff", "Validation tests"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public code change; exact URL provenance recorded.
+      review_evidence: {method: direct_exact_url_review, discovered_via: SRC-ghsa-inspector-58444}
+  - id: SRC-microsoft-autojack-2026
+    title: AutoJack - A single page to RCE on the host running your AI agent
+    publisher: Microsoft Security Blog
+    version_or_date: "2026-06-18"
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/18/autojack-single-page-rce-host-running-ai-agent/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of Microsoft's original defensive research.
+    review_notes: Reviewed controlled exploit chain, product-state limitation, fixes, hunting queries, and mitigation guidance.
+    authors: [Microsoft Defender Security Research Team, Shaked Ilan, Microsoft Threat Intelligence]
+    source_class: research
+    locators: ["The AutoJack attack chain", "Three design flaws", "Hunting and detection", "Mitigation and hardening", "Disclosure and remediation"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public original research; used by paraphrase only.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-mcp-sep-1024
+    title: SEP-1024 - MCP Client Security Requirements for Local Server One-Click Installations
+    publisher: Model Context Protocol
+    version_or_date: "2025-07-22"
+    official_url: https://modelcontextprotocol.io/seps/1024-mcp-client-security-requirements-for-local-server-
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the final standards proposal.
+    review_notes: Reviewed consent, transparency, and installation-boundary requirements.
+    authors: [Den Delimarsky]
+    source_class: protocol_or_standard
+    locators: ["Abstract", "Specification", "Security implications"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public standards proposal; no redistribution needed.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-microsoft-control-plane-2026
+    title: Securing MCP - A control plane for agent tool execution
+    publisher: Microsoft Developer Blog
+    version_or_date: "2026-04-22"
+    official_url: https://developer.microsoft.com/blog/securing-mcp-a-control-plane-for-agent-tool-execution/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of implementation and governance guidance.
+    review_notes: Reviewed threat distinctions and per-call policy control guidance.
+    authors: [Jack Batzner]
+    source_class: credible_practice
+    locators: ["Threat model", "Why a control plane", "Policy enforcement"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public guidance; used by paraphrase only.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-mitre-t1203
+    title: Exploitation for Client Execution (T1203)
+    publisher: MITRE ATT&CK
+    version_or_date: "2025-10-24"
+    official_url: https://attack.mitre.org/techniques/T1203/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the ATT&CK technique page.
+    review_notes: Reviewed execution mapping, detection strategy, and mitigations.
+    authors: [MITRE ATT&CK]
+    source_class: credible_practice
+    locators: ["Description", "Detection", "Mitigations"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public framework reference.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-mitre-t1190
+    title: Exploit Public-Facing Application (T1190)
+    publisher: MITRE ATT&CK
+    version_or_date: current as reviewed 2026-09-01
+    official_url: https://attack.mitre.org/techniques/T1190/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of the ATT&CK technique page.
+    review_notes: Reviewed boundary for exploitation of internet-facing applications.
+    authors: [MITRE ATT&CK]
+    source_class: credible_practice
+    locators: ["Description", "Procedure Examples"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public framework reference.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-oligo-zero-day-2024
+    title: 0.0.0.0 Day - Exploiting Localhost APIs From the Browser
+    publisher: Oligo Security
+    version_or_date: "2024-08-07"
+    official_url: https://www.oligo.security/blog/0-0-0-0-day-exploiting-localhost-apis-from-the-browser
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of original browser-to-localhost research.
+    review_notes: Reviewed as historical enabling context; not selected as a technique example.
+    authors: [Avi Lumelsky, Oligo Research]
+    source_class: research
+    locators: ["Attack mechanism", "Browser behavior", "Mitigations"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public original research; consulted for context only.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}
+  - id: SRC-oligo-litellm-2026
+    title: Active Exploitation of LiteLLM Test Endpoints
+    publisher: Oligo Security
+    version_or_date: "2026-06-11"
+    official_url: https://www.oligo.security/blog/litellm-critical-rce-vulnerability
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct review of original research after restricted authority discovery.
+    review_notes: Consulted and rejected because it concerns public server API endpoints rather than the bounded local developer control plane.
+    authors: [Uri Katz, Oligo Research]
+    source_class: research
+    locators: ["Overview", "How Attack Works", "Detection", "Recommended Actions"]
+    review_status: opened_reviewed
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Public original research; consulted for boundary analysis only.
+      review_evidence: {method: direct_page_review, date: "2026-09-01"}

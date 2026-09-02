@@ -1,0 +1,676 @@
+version: 1
+technique_id: SAF-T1805
+claims:
+  - id: SAF-T1805-C001
+    statement: >-
+      A public vendor advisory demonstrates that duplicate agent identifiers can
+      bind distinct agents to one ledger and expose another agent's system
+      prompt and conversation history.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-766v-q9x3-g744
+        support: direct
+        exact_locators:
+          - Summary
+          - Affected packages
+          - Proof of Concept
+          - Impact
+    corroboration: >-
+      The CVE Program record independently restates the affected versions and
+      cross-agent disclosure mechanism.
+    limitations:
+      - The advisory demonstrates a vulnerable agent library, not exploitation in a production victim.
+      - The separate path-traversal issue in the same advisory is outside this claim.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C002
+    statement: >-
+      IBM Langflow OSS versions 1.0.0 through 1.10.3 allowed authenticated users
+      in affected multi-user deployments to access other users' chat history
+      through session identifier collision because ownership fields were not
+      validated; IBM recommends version 1.11.0 or newer.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ibm-cve-2026-9130
+        support: direct
+        exact_locators:
+          - Vulnerability Details, CVE-2026-9130
+          - Affected Products and Versions
+          - Remediation/Fixes
+      - source_id: SRC-cve-2026-9130
+        support: corroborating
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.cna.affected[0]
+          - containers.cna.solutions[0]
+    corroboration: >-
+      The IBM-authored CNA record independently exposes the same description,
+      version range, score, remediation, and researcher credit.
+    limitations:
+      - The sources do not document use against a production victim.
+      - The condition is limited to multi-user deployments with automatic login disabled.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C003
+    statement: >-
+      Context Snapshot Capture is the unauthorized read, export, or
+      serialization of point-in-time active agent execution state across its
+      owner or tenant authorization boundary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-766v-q9x3-g744
+        support: direct
+        exact_locators:
+          - Summary
+          - Impact
+      - source_id: SRC-ibm-cve-2026-9130
+        support: direct
+        exact_locators:
+          - Vulnerability Details, CVE-2026-9130
+      - source_id: SRC-langgraph-persistence
+        support: context
+        exact_locators:
+          - Checkpoints
+          - Threads
+      - source_id: SRC-langsmith-observability
+        support: context
+        exact_locators:
+          - Traces
+          - Threads
+          - Tracing table
+    corroboration: >-
+      Two independent vendor vulnerabilities establish the authorization
+      boundary, while implementation documentation establishes that active
+      state is materialized as histories, checkpoints, and traces.
+    limitations:
+      - This is a SAF analytical boundary inferred from sources, not terminology used by the cited vendors.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The sources describe concrete state and disclosure mechanisms; the
+        neutral technique boundary is the minimal generalization that covers
+        both without absorbing prompt-only extraction or exfiltration.
+    status: validated
+
+  - id: SAF-T1805-C004
+    statement: >-
+      MCP resources can supply contextual data to applications, may be selected
+      or included by the host, and can return one or more content objects from a
+      resource read, subject to authorization and access controls.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators:
+          - User Interaction Model
+          - Reading Resources
+          - Authorization
+          - Security Considerations
+    corroboration: >-
+      The MCP overview independently identifies resources as contextual
+      information exposed by servers and controlled by host applications.
+    limitations:
+      - Resource support alone does not demonstrate unauthorized capture.
+      - The protocol does not mandate a particular user interface.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C005
+    statement: >-
+      MCP sampling can request server or broader context inclusion, while the
+      client may modify or ignore that preference and separate requests should
+      not retain messages; the current specification marks this capability as
+      deprecated.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sampling-2026
+        support: direct
+        exact_locators:
+          - Context Inclusion
+          - Message Retention
+          - Security Considerations
+          - Deprecated capability notice
+    corroboration: >-
+      These constraints appear together in the current MCP sampling
+      specification and bound what is normal versus suspicious context use.
+    limitations:
+      - Sampling context inclusion is not itself malicious or proof of snapshot capture.
+      - Deprecated all-server context behavior may be absent from modern clients.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C006
+    statement: >-
+      MCP tool results may include embedded resources, and stateful tool handles
+      must be authorized on every call and bound to an authenticated principal
+      rather than treated as bearer authorization.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators:
+          - Tool Result
+          - Resource Links and Embedded Resources
+          - Stateful Tools
+      - source_id: SRC-mcp-security-spec-2026-07-28
+        support: corroborating
+        exact_locators:
+          - Explicit State Handle Hijacking
+          - Mitigations
+    corroboration: >-
+      The security guidance explains the cross-user read or modification risk
+      when state handles are guessed or obtained without ownership binding.
+    limitations:
+      - The guidance describes a generic state-handle class and not either selected product vulnerability.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C007
+    statement: >-
+      MCP security principles require explicit user consent and control before
+      exposing user data to servers or transmitting resource data elsewhere.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-overview-2026
+        support: direct
+        exact_locators:
+          - Security and Trust & Safety
+          - User Consent and Control
+          - Data Privacy
+    corroboration: >-
+      Resource and tool security sections separately require access controls and
+      recommend user visibility into operations.
+    limitations:
+      - The specification states principles; deployments may implement consent and authorization differently.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C008
+    statement: >-
+      LangGraph checkpointers persist thread-scoped graph-state snapshots and
+      expose checkpoint histories that can be replayed or forked, with the
+      original execution history remaining intact after a fork.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-langgraph-persistence
+        support: direct
+        exact_locators:
+          - Checkpoints
+          - Threads
+          - Capabilities enabled by persistence
+      - source_id: SRC-langgraph-time-travel
+        support: corroborating
+        exact_locators:
+          - Overview
+          - Replay
+          - Fork
+    corroboration: >-
+      The time-travel guide demonstrates history enumeration, replay, and
+      branching from an earlier checkpoint.
+    limitations:
+      - These are legitimate features and do not imply a vulnerability when authorization is correct.
+      - Replay can execute downstream nodes again rather than merely reading cached output.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C009
+    statement: >-
+      LangSmith traces can record complete run inputs and outputs, threads group
+      multi-turn runs, and trajectories contain human, AI, and tool messages,
+      making trace access potentially equivalent to a rich execution snapshot.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-langsmith-observability
+        support: direct
+        exact_locators:
+          - Traces
+          - Threads
+          - Trajectories
+          - Tracing table
+          - Data retention
+    corroboration: >-
+      LangSmith's sensitive-data guide provides controls specifically intended
+      to keep inputs, outputs, and metadata out of traces.
+    limitations:
+      - Actual trace content and retention depend on product configuration and deployment plan.
+      - Authorized observability use is not adversarial capture.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The equivalence to an execution snapshot follows from the documented
+        inclusion of run inputs, outputs, and message trajectories.
+    status: validated
+
+  - id: SAF-T1805-C010
+    statement: >-
+      The two direct disclosed vulnerabilities carry high confidentiality
+      impact in their official scoring, so technique severity can be High when
+      captured context crosses users or tenants and contains sensitive state.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-56077
+        support: direct
+        exact_locators:
+          - containers.cna.metrics[0].cvssV3_1
+          - containers.cna.descriptions[0]
+      - source_id: SRC-cve-2026-9130
+        support: direct
+        exact_locators:
+          - containers.cna.metrics[0].cvssV3_1
+          - containers.cna.descriptions[0]
+    corroboration: >-
+      The PraisonAI record scores confidentiality High, and IBM assigns CVSS
+      7.1 with High confidentiality impact for the Langflow flaw.
+    limitations:
+      - Severity is conditional and may be lower for isolated, redacted, or low-sensitivity context.
+      - CVSS scores rate specific vulnerabilities rather than every instance of the generalized technique.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The technique rating is bounded from two concrete vulnerability ratings
+        and conditioned on the same cross-user sensitive-data outcome.
+    status: validated
+
+  - id: SAF-T1805-C011
+    statement: >-
+      As of 2026-09-02, CISA's vulnerability enrichment records exploitation as
+      none for both direct vulnerabilities, and neither identifier appears in
+      the 2026-09-01 Known Exploited Vulnerabilities catalog.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-56077
+        support: direct
+        exact_locators:
+          - containers.adp[0].metrics[0].other.content.options
+      - source_id: SRC-cve-2026-9130
+        support: direct
+        exact_locators:
+          - containers.adp[0].metrics[0].other.content.options
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - catalogVersion 2026.09.01
+          - Absence check for CVE-2026-56077 and CVE-2026-9130 across 1,687 entries
+    corroboration: >-
+      Government vulnerability enrichment and the independently checked KEV
+      catalog agree that known exploitation is not established by these sources.
+    limitations:
+      - A none or absent catalog status is not proof that exploitation has never occurred.
+      - Catalog and enrichment status may change after the review date.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1805-C012
+    statement: >-
+      CVE-2025-32711 documents a Critical M365 Copilot information-disclosure
+      vulnerability reached through AI command injection, fully mitigated by
+      Microsoft with no user action and marked not exploited; it is an enabling
+      or adjacent example because the public record does not establish direct
+      snapshot, checkpoint, history, or trace retrieval.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-msrc-cve-2025-32711
+        support: direct
+        exact_locators:
+          - cveTitle
+          - description
+          - severity
+          - exploited
+          - articles[0].description
+      - source_id: SRC-cve-2025-32711
+        support: corroborating
+        exact_locators:
+          - containers.cna.descriptions[0]
+          - containers.cna.metrics
+          - containers.adp metrics exploitation option
+    corroboration: >-
+      The Microsoft CNA record corroborates the network disclosure mechanism
+      and CISA's enrichment records no known exploitation.
+    limitations:
+      - Public authority records do not identify the disclosed data as an active context snapshot.
+      - The source does not establish an MCP implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Classifying the case as adjacent prevents a command-injection disclosure
+        from raising the evidence status of direct context snapshot capture.
+    status: validated
+
+  - id: SAF-T1805-C013
+    statement: >-
+      A detector needs successful context-read or export events correlated with
+      actor and owner identities, tenant boundaries, authorization and approval
+      results, object identifiers, content classifications, counts, bytes,
+      destination, and time.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-spec-2026-07-28
+        support: direct
+        exact_locators:
+          - Explicit State Handle Hijacking
+          - Logging recommendations with correlation identifiers
+      - source_id: SRC-nist-sp800-61r3
+        support: corroborating
+        exact_locators:
+          - Table 2, PR.PS-04
+          - Table 3, DE.AE-02
+          - Table 3, DE.AE-03
+    corroboration: >-
+      NIST recommends preserving logs, analyzing them, and correlating multiple
+      event sources; the vulnerability mechanisms identify ownership and key
+      fields needed for this analytic.
+    limitations:
+      - Field names are a normalized proposal and must be mapped to each implementation.
+      - Content bodies are neither required nor recommended for this detector.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        No authority standardizes this event schema; the fields are the minimum
+        join needed to test the documented authorization failures.
+    status: validated
+
+  - id: SAF-T1805-C014
+    statement: >-
+      The example analytic alerts on a successful sensitive context read or
+      export when authorization is not allowed, tenants differ, or an
+      unapproved actor differs from the owner, and it suppresses empty or
+      explicitly authorized approved activity.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ghsa-766v-q9x3-g744
+        support: direct
+        exact_locators:
+          - Summary
+          - Impact
+      - source_id: SRC-ibm-cve-2026-9130
+        support: direct
+        exact_locators:
+          - Vulnerability Details, CVE-2026-9130
+      - source_id: SRC-nist-sp800-61r3
+        support: context
+        exact_locators:
+          - Table 3, DE.CM
+          - Table 3, DE.AE-08
+    corroboration: >-
+      The local fixture suite demonstrates this decision logic against positive,
+      negative, boundary, and malformed cases.
+    limitations:
+      - This is an illustrative portable analytic, not a product-native rule.
+      - The local test demonstrates logic, not production detection efficacy.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The rule operationalizes the ownership and authorization failures in the
+        direct vulnerability evidence while preserving NIST's incident-criteria approach.
+    status: validated
+
+  - id: SAF-T1805-C015
+    statement: >-
+      The analytic can miss unlogged reads, compromised but authorized
+      principals, and redacted events, and can falsely flag legitimate delegated
+      support or incident-response workflows when ownership or approval fields
+      are incomplete.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-61r3
+        support: direct
+        exact_locators:
+          - Table 3, DE.CM, R2
+          - Table 3, DE.AE, N2
+          - Table 3, DE.AE-08, R1
+      - source_id: SRC-langsmith-sensitive-trace-controls
+        support: context
+        exact_locators:
+          - Hide inputs and outputs
+          - Hide metadata
+          - Rule-based masking of inputs and outputs
+          - Conditional tracing note
+    corroboration: >-
+      NIST expressly requires tuning for acceptable false-positive and
+      false-negative levels and notes that benign and malicious anomalies can overlap.
+    limitations:
+      - Product-specific baselines and delegation models determine the practical error rate.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        These limitations follow from the rule's required fields and documented
+        ways traces can be hidden, masked, or disabled.
+    status: validated
+
+  - id: SAF-T1805-C016
+    statement: >-
+      Preventive controls should bind state identifiers to authenticated owners,
+      authorize every read, enforce least privilege and consent, minimize
+      retention, and hide or mask sensitive trace inputs, outputs, and metadata.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-security-spec-2026-07-28
+        support: direct
+        exact_locators:
+          - Explicit State Handle Hijacking, Mitigations
+          - Least-privilege scope guidance
+      - source_id: SRC-mcp-overview-2026
+        support: corroborating
+        exact_locators:
+          - User Consent and Control
+          - Data Privacy
+      - source_id: SRC-langsmith-sensitive-trace-controls
+        support: direct
+        exact_locators:
+          - Hide inputs and outputs
+          - Hide metadata
+          - Rule-based masking of inputs and outputs
+          - Conditional tracing note
+    corroboration: >-
+      The controls independently address identifier ownership, user consent, and
+      reduction of sensitive snapshot content.
+    limitations:
+      - Masking implementations can miss formats or deep payloads and can add performance cost.
+      - Retention and tracing controls do not replace authorization.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The control set combines directly prescribed measures at each layer of
+        the documented mechanism.
+    status: validated
+
+  - id: SAF-T1805-C017
+    statement: >-
+      Response should preserve the integrity and provenance of incident records,
+      scope affected identities and services, contain the incident, disable
+      breached accounts or entry points, and retain evidence under policy.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-61r3
+        support: direct
+        exact_locators:
+          - Table 3, RS.AN-03
+          - Table 3, RS.AN-06
+          - Table 3, RS.AN-07
+          - Table 3, RS.MI-01
+          - Table 3, RS.MI-02
+    corroboration: >-
+      The recommendations form one evidence-preserving containment and
+      eradication sequence applicable after unauthorized context access.
+    limitations:
+      - Exact notification, retention, and credential-rotation duties depend on the affected data and governing requirements.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The response is a technique-specific application of NIST incident-response outcomes.
+    status: validated
+
+  - id: SAF-T1805-C018
+    statement: >-
+      MITRE ATT&CK T1213, Data from Information Repositories, is an analogous
+      mapping because it covers collection from data repositories and detection
+      of unusual or programmatic access, but it does not specifically define
+      active agent snapshots or tenant-bound execution state.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1213-v3.4
+        support: direct
+        exact_locators:
+          - Description
+          - Detection Strategy DET0413
+          - Mitigations
+          - Version 3.4 metadata
+    corroboration: >-
+      Both behaviors collect sensitive data from a managed repository, while the
+      explicit limitation preserves the agent-context boundary.
+    limitations:
+      - The mapping is analogous, not direct.
+      - ATT&CK T1213 is broader than transient or thread-scoped agent state.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Mapping type and limitation are framework reconciliation judgments.
+    status: validated
+
+  - id: SAF-T1805-C019
+    statement: >-
+      Prompt-only extraction, context mutation, persistent-memory enumeration,
+      and prompt-induced disclosure are neighboring behaviors rather than
+      duplicates because they differ in target state, immediate objective, or
+      acquisition mechanism.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2026
+        support: context
+        exact_locators:
+          - Resources overview
+      - source_id: SRC-langgraph-persistence
+        support: context
+        exact_locators:
+          - Checkpoints
+          - Memory Store
+      - source_id: SRC-msrc-cve-2025-32711
+        support: context
+        exact_locators:
+          - description
+    corroboration: >-
+      The sources distinguish active checkpointed state, longer-lived memory,
+      contextual resources, and instruction-driven disclosure mechanisms.
+    limitations:
+      - Neighbor identifiers are synthetic clean-room placeholders pending destination-framework reconciliation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        Boundary distinctions are necessary framework judgments derived from the independently documented mechanisms.
+    status: validated
+
+  - id: SAF-T1805-C020
+    statement: >-
+      The reviewed direct-authority corpus did not identify a qualifying
+      production breach for this technique; it identified two direct disclosed
+      vulnerabilities, one public direct demonstration within a vendor advisory,
+      and one high-impact adjacent disclosure vulnerability.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-search-corpus
+        support: direct
+        exact_locators:
+          - Six recorded direct NVD keyword queries and result classifications
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators:
+          - catalogVersion 2026.09.01
+          - Absence check for selected direct identifiers across 1,687 entries
+      - source_id: SRC-ghsa-766v-q9x3-g744
+        support: context
+        exact_locators:
+          - Proof of Concept
+      - source_id: SRC-ibm-cve-2026-9130
+        support: context
+        exact_locators:
+          - Vulnerability Details, CVE-2026-9130
+    corroboration: >-
+      Current government catalogs and direct vendor records support the bounded
+      inventory, but not an assertion that no undisclosed incident exists.
+    limitations:
+      - This is an absence finding limited to the documented corpus and cutoff date.
+      - Private, undisclosed, differently described, or later incidents may exist.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The claim reports only the result of a recorded direct-authority search
+        and deliberately avoids a universal nonexistence assertion.
+    status: validated

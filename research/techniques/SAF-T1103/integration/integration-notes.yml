@@ -1,0 +1,90 @@
+version: 1
+technique_id: SAF-T1103
+bundle_root: /private/tmp/saf-all-cleanroom/SAF-T1103/bundle
+integration_policy: >-
+  Mechanical joins only after freeze. Do not inspect old target content and do
+  not use shared registries to add sources, claims, examples, or prose.
+synthetic_tactics: []
+seed_tactics:
+  - id: ATK-TA0002
+    disposition: Preserve; supplied as authorized seed metadata and independently verified against MITRE ATT&CK.
+synthetic_neighbors:
+  - id: SAF-T9001
+    mock_name: Prompt Injection and Tool-Use Hijacking
+    replace_with: Exact existing neighbor ID for genuine model calls induced by prompt injection, if one exists; otherwise create or omit the relationship through normal framework review.
+  - id: SAF-T9002
+    mock_name: Tool Definition Poisoning and Shadowing
+    replace_with: Exact existing neighbor ID for poisoned or shadowed tool definitions, if one exists; otherwise create or omit the relationship through normal framework review.
+  - id: SAF-T9003
+    mock_name: Tool Result Spoofing
+    replace_with: Exact existing neighbor ID for forged tool results, if one exists; otherwise create or omit the relationship through normal framework review.
+synthetic_mitigations:
+  - id: SAF-M-9001
+    mock_name: Authenticated Call Provenance and Registry Allowlisting
+    replace_with: Existing mitigation that binds trusted call provenance to an explicit callable registry, or a newly reviewed mitigation record.
+  - id: SAF-M-9002
+    mock_name: Per-Tool Authorization and Approval
+    replace_with: Existing mitigation for authorization and approval at the tool boundary, or a newly reviewed mitigation record.
+  - id: SAF-M-9003
+    mock_name: Correlated Tool Audit Logging
+    replace_with: Existing mitigation for correlated model, host, approval, and execution audit events, or a newly reviewed mitigation record.
+source_id_joins:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-schema-2026-07-28
+  - SRC-agui-events
+  - SRC-agui-architecture
+  - SRC-cwe-470
+  - SRC-cwe-863
+  - SRC-cve-2026-65975
+  - SRC-ghsa-pydantic-65975
+  - SRC-cve-2026-44339
+  - SRC-ghsa-praison-44339
+  - SRC-cve-2026-61536
+  - SRC-ghsa-banks-61536
+  - SRC-cve-2026-39419
+  - SRC-ghsa-maxkb-39419
+  - SRC-nvd-t1103-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-pact-2605.11039
+  - SRC-flowguard-2607.14754
+  - SRC-aegis-2603.12621
+  - SRC-withdrawn-caller-identity-2603.07473
+  - SRC-attack-ta0002
+  - SRC-attack-t1059
+source_join_rule: >-
+  For each exact-source collision, reuse the stable repository ID and replace
+  that ID consistently in README traces, claims, coverage, rights, and the
+  source fragment. Otherwise append the canonical fragment record unchanged.
+synthetic_history:
+  - sha: "1111111111111111111111111111111111111111"
+    location: research/techniques/SAF-T1103/traceability-ledger.yml
+    replace_with: Actual integration commit supporting the independently authored 0.1 version-history row.
+path_joins:
+  - from: techniques/SAF-T1103/
+    to: techniques/SAF-T1103/
+    mode: replace target directory atomically without reading old content
+  - from: research/techniques/SAF-T1103/
+    to: research/techniques/SAF-T1103/
+    mode: replace target directory atomically without reading old content
+  - from: tests/SAF-T1103/
+    to: tests/SAF-T1103/
+    mode: replace target directory atomically without reading old content
+  - from: source-manifest-fragment.yml
+    to: research/source-manifest.yml
+    mode: append or reconcile exact-source IDs only
+  - from: framework-fragment.yml
+    to: research/framework-model.yml
+    mode: append record after mechanical neighbor and mitigation reconciliation
+  - from: alignment-fragment.yml
+    to: research/alignment-ledger.yml
+    mode: append relevant issues and resolve deferred mechanical joins
+deferred_validations:
+  - Replace all synthetic neighbor and mitigation IDs, then update README, contract, and framework record together.
+  - Replace the synthetic history SHA.
+  - Confirm exact source-ID collisions and update all references atomically.
+  - Run python3 scripts/validate-technique-research.py SAF-T1103 in strict mode.
+prohibited_integration_actions:
+  - Reading or diffing the old target technique or packet.
+  - Adding a new research lead from shared registries.
+  - Retaining mock repository stubs or temporary source caches in the repository.

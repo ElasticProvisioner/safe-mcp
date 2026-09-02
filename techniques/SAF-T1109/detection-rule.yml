@@ -1,58 +1,47 @@
-title: MCP Inspector Remote Code Execution Detection
-id: a7d8f349-2c5e-4b91-8f7a-3e2d4c1a9b6f
-status: experimental
-description: Detects potential remote code execution attempts via MCP Inspector vulnerability (CVE-2025-49596)
-author: SAF-MCP Team
-date: 2025-01-09
-modified: 2025-01-09
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1109
-  - https://nvd.nist.gov/vuln/detail/CVE-2025-49596
-  - https://github.com/modelcontextprotocol/inspector/security/advisories/GHSA-7f8r-222p-6f5g
-  - https://www.oligo.security/blog/critical-rce-vulnerability-in-anthropic-mcp-inspector-cve-2025-49596
+title: Correlate untrusted debug-control requests with disallowed child processes
+id: 4a9e1843-6187-4dad-a80c-0b515f63d2cb
+status: test
+description: Detects a local MCP or agent debugging control request that lacks effective authentication and is followed by a disallowed process start from the same developer-tool session within five minutes.
+tags: [saf.t1109, attack.t1203]
 logsource:
-  product: webserver
-  service: access
+  category: correlation
+  product: developer_tool_control_plane
 detection:
-  selection_sse_endpoint:
-    c-uri-path: '/sse'
-    c-uri-query|contains:
-      - 'transportType=stdio'
-      - 'command='
-  selection_suspicious_commands:
-    c-uri-query|contains:
-      - 'command=calc'
-      - 'command=cmd'
-      - 'command=powershell'
-      - 'command=bash'
-      - 'command=sh'
-      - 'command=curl'
-      - 'command=wget'
-      - 'command=python'
-      - 'command=node'
-      - 'command=nc'
-      - 'command=netcat'
-  selection_port:
-    cs-uri-port:
-      - 6277
-      - 6274
-  condition: selection_sse_endpoint and (selection_suspicious_commands or selection_port)
+  selection_control_request:
+    event_type: control_request
+    destination_scope: loopback
+    endpoint_kind: [mcp_debug, mcp_inspector, agent_prototype]
+    authentication_result: [missing, bypassed]
+    caller_trust: untrusted
+  selection_process_spawn:
+    event_type: process_start
+    parent_role: [mcp_inspector, agent_prototype, debug_proxy]
+    child_allowed: false
+  correlation:
+    type: ordered_sequence
+    by: [device_id, session_id]
+    sequence: [selection_control_request, selection_process_spawn]
+    within_seconds: 300
+  condition: correlation
+fields: [timestamp, device_id, session_id, endpoint_kind, authentication_result, caller_trust, parent_role, child_image, child_allowed]
 falsepositives:
-  - Legitimate development and testing activities using MCP Inspector
-  - Automated testing frameworks executing valid commands
-  - Developer using MCP Inspector for legitimate debugging purposes
+  - Authorized developer tests that deliberately start a previously unseen child process; tune with authenticated sessions and reviewed executable allowlists.
+  - Maintenance or extension workflows with incomplete session attribution; validate parent role and operator identity.
 level: high
-tags:
-  - attack.execution
-  - attack.t1059
-  - attack.t1190
-  - safe.t1109
-  - cve.2025.49596
-  - mcp.inspector
-fields:
-  - c-uri-path
-  - c-uri-query
-  - c-ip
-  - cs-uri-port
-  - cs-method
-  - sc-status 
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1109-C009]
+  telemetry_claim_ids: [SAF-T1109-C009]
+  limitation_claim_ids: [SAF-T1109-C009, SAF-T1109-C014]
+  validation_artifacts:
+    - tests/SAF-T1109/test_detection_rule.py
+    - tests/SAF-T1109/test-cases.json
+    - tests/SAF-T1109/test-logs.json
+  components:
+    logsource: {claim_ids: [SAF-T1109-C009], rationale: Joins local control-plane and endpoint process telemetry.}
+    selection_control_request: {claim_ids: [SAF-T1109-C009], rationale: Captures the documented unauthenticated or bypassed local-control prerequisite.}
+    selection_process_spawn: {claim_ids: [SAF-T1109-C009], rationale: Captures the unexpected child-process outcome.}
+    correlation: {claim_ids: [SAF-T1109-C009], rationale: Requires ordered same-device and same-session causality within a bounded window.}
+    condition: {claim_ids: [SAF-T1109-C009], rationale: Alerts only when the complete correlation succeeds.}
+    fields: {claim_ids: [SAF-T1109-C009], rationale: Retains the minimum fields needed to explain and tune the alert.}
+    falsepositives: {claim_ids: [SAF-T1109-C009, SAF-T1109-C014], rationale: Limits alerting around authorized developer process launches and incomplete attribution.}

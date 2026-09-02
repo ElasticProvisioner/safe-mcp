@@ -1,0 +1,178 @@
+version: 1
+technique_id: SAF-T1305
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:modelcontextprotocol.io specification architecture host client server security authorization local servers stdio'
+        - 'site:modelcontextprotocol.io specification security best practices local MCP server command execution'
+        - 'site:modelcontextprotocol.io docs security best practices MCP servers least privilege consent'
+      material_changes:
+        - Established the host-client-server trust boundary, stdio subprocess model, Streamable HTTP controls, tool-consent principles, and local-install command-transparency requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov MCP remote code execution CVE'
+        - 'site:nvd.nist.gov "Model Context Protocol" command injection'
+        - 'site:nvd.nist.gov MCP Inspector CVE remote code execution'
+        - 'site:cisa.gov "Model Context Protocol" vulnerability'
+        - 'site:cisa.gov "MCP Inspector" incident breach exploitation'
+        - 'site:jfrog.com mcp-remote production incident exploitation CVE-2025-6514'
+        - 'site:oligo.security MCP Inspector production incident exploitation'
+        - 'site:zerodayinitiative.com/advisories ZDI-26-245 aws-mcp-server command injection'
+      material_changes:
+        - Classified four selected direct vulnerabilities or demonstrations and one lower-impact direct candidate.
+        - Found no qualifying production victim incident in the reviewed authoritative corpus.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:jfrog.com CVE-2025-6514 mcp-remote RCE demonstration'
+        - 'site:oligo.security CVE-2025-49596 MCP Inspector RCE demonstration'
+        - 'site:zerodayinitiative.com/advisories MCP command injection remote code execution'
+      material_changes:
+        - Directly reviewed JFrog and Oligo end-to-end demonstrations and ZDI coordinated disclosures.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:learn.microsoft.com sysmon event ID 1 process creation command line parent process official'
+        - 'site:attack.mitre.org/techniques/T1068 detection process token behavior parent child'
+        - 'site:modelcontextprotocol.io "arbitrary commands" security local server'
+      material_changes:
+        - Established process-lineage telemetry, correlated-event limitations, transport protections, explicit consent, patching, trust restriction, and isolation controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-6514'
+        - 'site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-49596'
+        - 'site:cisa.gov/known-exploited-vulnerabilities-catalog CVE-2025-53107'
+        - 'site:attack.mitre.org/techniques/T1068 Exploitation for Privilege Escalation'
+        - 'site:modelcontextprotocol.io security privilege escalation service account MCP server'
+      material_changes:
+        - Narrowed the evidence label to Demonstrated, preserved the absence of production observation, and made T1068 analogous rather than direct.
+        - Excluded universal root/SYSTEM impact, unverified deployment counts, and undocumented fix claims.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov CVE-2026-0758 affected fixed exploitation'
+        - 'site:zerodayinitiative.com/advisories ZDI-26-024 update mitigation fixed'
+        - 'site:cisa.gov CVE-2026-0758 known exploited'
+        - 'site:modelcontextprotocol.io security privilege escalation service account MCP server'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - 'site:nvd.nist.gov "mcp-server-siri-shortcuts" CVE-2026-0758'
+        - 'site:nvd.nist.gov "Host OS" MCP "privilege escalation"'
+        - 'site:zerodayinitiative.com/advisories "MCP server" "service account" "privilege escalation"'
+        - 'site:modelcontextprotocol.io security privilege escalation service account MCP server'
+      material_changes: []
+  rationale: >-
+    Directly reviewed official MCP specifications, two original controlled
+    demonstrations, two current coordinated vulnerability advisories, an exact
+    maintainer advisory opened only after NVD supplied its URL, MITRE ATT&CK,
+    and Microsoft telemetry documentation. Separate incident, vulnerability,
+    exploitation-status, fix, detection, defense, and contrary-evidence passes
+    were followed by two narrower authoritative-domain passes with no material
+    change. No blocked source is needed to support a publishable claim.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 5
+  selected_examples:
+    - SRC-zdi-aws-26-245
+    - SRC-jfrog-cve-2025-6514
+    - SRC-oligo-inspector-cve-2025-49596
+    - SRC-zdi-cve-2026-0758
+  no_qualifying_examples_rationale: not_applicable_four_examples_selected
+  candidates:
+    - source_id: SRC-zdi-aws-26-245
+      identifier: CVE-2026-5059 / ZDI-26-245
+      relationship: direct_vulnerability
+      exploitation_status: Public coordinated disclosure; no production exploitation documented.
+      impact: Unauthenticated arbitrary code execution in the aws-mcp-server process context; CVSS 9.8.
+      remediation: No patch documented; ZDI advises restricting interaction with the product.
+      selected: true
+      rationale: Highest severity and no-authentication precondition, with current zero-day status and explicit server-context execution.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: direct_demonstration
+      exploitation_status: Controlled public proof; no production exploitation documented.
+      impact: Arbitrary Windows OS command execution from a malicious remote MCP server; CVSS 9.6.
+      remediation: Fixed in mcp-remote 0.1.16; use trusted servers and HTTPS.
+      selected: true
+      rationale: Complete client-side MCP-to-host execution proof with affected and fixed versions and platform-specific limits.
+    - source_id: SRC-oligo-inspector-cve-2025-49596
+      identifier: CVE-2025-49596
+      relationship: direct_demonstration
+      exploitation_status: Controlled public proof and exposed-instance observation; no victim exploitation documented.
+      impact: Browser-originated arbitrary commands through an unauthenticated MCP Inspector proxy; CVSS 9.4.
+      remediation: Version 0.14.1 added session-token and origin protections.
+      selected: true
+      rationale: Complete browser-to-local-MCP-proxy execution chain with a documented fix and distinct boundary.
+    - source_id: SRC-zdi-cve-2026-0758
+      identifier: CVE-2026-0758 / ZDI-26-024
+      relationship: direct_vulnerability
+      exploitation_status: Public coordinated disclosure; no production exploitation documented.
+      impact: Low-privileged local actor can execute arbitrary code as the MCP server service account; CVSS 7.8.
+      remediation: No fixed version documented; ZDI advises restricting interaction.
+      selected: true
+      rationale: Most direct evidence for the tactic's relative privilege-escalation boundary and service-account outcome.
+    - source_id: SRC-ghsa-cve-2025-53107
+      identifier: CVE-2025-53107 / GHSA-3q26-f695-pp76
+      relationship: direct_demonstration
+      exploitation_status: Controlled public proof; no production exploitation documented.
+      impact: Command injection under the git-mcp-server process privileges; CVSS 7.5.
+      remediation: Fixed in 2.1.5 according to the advisory.
+      selected: false
+      rationale: Qualifying but lower impact than the four selected records; retained to bound prompt-induced invocation from the subsequent command-injection flaw.
+sources_consulted:
+  - SRC-ghsa-cve-2025-53107
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-sep-1024
+  - SRC-mcp-spec-2025-11-25
+  - SRC-mcp-transports-2025-06-18
+  - SRC-microsoft-sysmon
+  - SRC-mitre-attack-t1068
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-zdi-cve-2026-0758
+  - SRC-zdi-aws-26-245
+sources_cited:
+  - SRC-ghsa-cve-2025-53107
+  - SRC-jfrog-cve-2025-6514
+  - SRC-mcp-architecture-2025-06-18
+  - SRC-mcp-sep-1024
+  - SRC-mcp-spec-2025-11-25
+  - SRC-mcp-transports-2025-06-18
+  - SRC-microsoft-sysmon
+  - SRC-mitre-attack-t1068
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-zdi-cve-2026-0758
+  - SRC-zdi-aws-26-245
+sources_rejected: []
+sources_blocked: []
+conflicts:
+  - issue: ZDI records that the aws-mcp-server vendor rejected CVE-2026-5059 before coordinated disclosure.
+    resolution: The technique labels this as a disclosed vulnerability, preserves the rejection, and does not claim production exploitation or a vendor patch.
+  - issue: RCE does not necessarily imply root or SYSTEM privilege.
+    resolution: The scope defines privilege gain relative to the attacker's MCP or low-privileged starting context and bounds outcome to the vulnerable process account.
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1305-C003
+    - SAF-T1305-C004
+    - SAF-T1305-C005
+  rationale: >-
+    JFrog Security Research and Oligo Security Research each published a
+    controlled, complete MCP-connected path to host OS execution. These
+    demonstrations establish the defining boundary crossing, while the absence
+    of a reviewed production victim incident prevents an Observed label.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

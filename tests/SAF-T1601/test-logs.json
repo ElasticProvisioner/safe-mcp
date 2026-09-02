@@ -1,0 +1,105 @@
+{
+  "schema": "synthetic_mcp_host_audit_v1",
+  "cases": [
+    {
+      "name": "rapid_three_modern_servers",
+      "class": "positive",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T12:00:00Z", "actor_id": "user-a", "session_id": "s1", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T12:01:00Z", "actor_id": "user-a", "session_id": "s1", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T12:02:00Z", "actor_id": "user-a", "session_id": "s1", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "mixed_legacy_and_modern",
+      "class": "positive",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T12:10:00Z", "actor_id": "user-b", "session_id": "s2", "server_id": "srv-a", "method": "initialize", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T12:11:00Z", "actor_id": "user-b", "session_id": "s2", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T12:12:00Z", "actor_id": "user-b", "session_id": "s2", "server_id": "srv-c", "method": "initialize", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "exact_five_minute_boundary",
+      "class": "boundary",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T13:00:00Z", "actor_id": "user-c", "session_id": "s3", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T13:02:30Z", "actor_id": "user-c", "session_id": "s3", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T13:05:00Z", "actor_id": "user-c", "session_id": "s3", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "outside_five_minute_boundary",
+      "class": "boundary",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T14:00:00Z", "actor_id": "user-d", "session_id": "s4", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T14:02:30Z", "actor_id": "user-d", "session_id": "s4", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T14:05:01Z", "actor_id": "user-d", "session_id": "s4", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "two_distinct_servers_only",
+      "class": "negative",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T15:00:00Z", "actor_id": "user-e", "session_id": "s5", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T15:01:00Z", "actor_id": "user-e", "session_id": "s5", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "repeated_single_server",
+      "class": "negative",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T16:00:00Z", "actor_id": "user-f", "session_id": "s6", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T16:01:00Z", "actor_id": "user-f", "session_id": "s6", "server_id": "srv-a", "method": "initialize", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T16:02:00Z", "actor_id": "user-f", "session_id": "s6", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "approved_startup",
+      "class": "false_positive",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T17:00:00Z", "actor_id": "service-host", "session_id": "boot1", "server_id": "srv-a", "method": "server/discover", "result": "success", "process_role": "startup", "approved_context": true},
+        {"timestamp": "2026-09-01T17:00:01Z", "actor_id": "service-host", "session_id": "boot1", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "startup", "approved_context": true},
+        {"timestamp": "2026-09-01T17:00:02Z", "actor_id": "service-host", "session_id": "boot1", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "startup", "approved_context": true}
+      ]
+    },
+    {
+      "name": "inspector_administration",
+      "class": "false_positive",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T18:00:00Z", "actor_id": "admin-a", "session_id": "audit1", "server_id": "srv-a", "method": "initialize", "result": "success", "process_role": "administrator_inspector"},
+        {"timestamp": "2026-09-01T18:00:20Z", "actor_id": "admin-a", "session_id": "audit1", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "administrator_inspector"},
+        {"timestamp": "2026-09-01T18:00:40Z", "actor_id": "admin-a", "session_id": "audit1", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "administrator_inspector"}
+      ]
+    },
+    {
+      "name": "failed_requests_do_not_count",
+      "class": "negative",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T19:00:00Z", "actor_id": "user-g", "session_id": "s7", "server_id": "srv-a", "method": "server/discover", "result": "failed", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T19:01:00Z", "actor_id": "user-g", "session_id": "s7", "server_id": "srv-b", "method": "server/discover", "result": "success", "process_role": "interactive"},
+        {"timestamp": "2026-09-01T19:02:00Z", "actor_id": "user-g", "session_id": "s7", "server_id": "srv-c", "method": "server/discover", "result": "success", "process_role": "interactive"}
+      ]
+    },
+    {
+      "name": "malformed_and_missing_fields",
+      "class": "malformed",
+      "expected": false,
+      "events": [
+        {"timestamp": "not-a-time", "actor_id": "user-h", "session_id": "s8", "server_id": "srv-a", "method": "server/discover", "result": "success"},
+        {"timestamp": "2026-09-01T20:01:00Z", "session_id": "s8", "server_id": "srv-b", "method": "server/discover", "result": "success"},
+        {"timestamp": "2026-09-01T20:02:00Z", "actor_id": "user-h", "session_id": "s8", "method": "server/discover", "result": "success"},
+        "not-an-event"
+      ]
+    }
+  ]
+}

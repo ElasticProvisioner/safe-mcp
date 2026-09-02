@@ -1,0 +1,259 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2026-07-28
+    title: Model Context Protocol 2026-07-28 - Tools
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete first-party Markdown source reviewed directly.
+    review_notes: Verified Tool fields, nested property descriptions, discovery, consent, logging, and annotation trust guidance.
+    locators: ["Tools > Tool", "Listing Tools", "Security Considerations"]
+    review_status: opened_reviewed
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Complete working copy was retained outside the canonical bundle; redistribution was unnecessary.
+      review_evidence: {reviewer: clean-room-author, reviewed_on: "2026-09-01", method: complete_direct_review}
+
+  - id: SRC-mcp-client-practices-2026-07-28
+    title: Model Context Protocol - Client Best Practices
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/develop/clients/client-best-practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete first-party Markdown source reviewed directly.
+    review_notes: Verified naive and progressive definition injection, definition caching, refresh, and programmatic calling.
+    locators: ["Progressive Tool Discovery", "Caching Tool Definitions", "Implementation Guidelines"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mcp-security-practices-2026-07-28
+    title: Model Context Protocol - Security Best Practices
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete first-party Markdown source reviewed directly.
+    review_notes: Verified local-server sandboxing, scope minimization, command disclosure, and security logging guidance.
+    locators: ["Local MCP Server Security", "Scope Minimization", "Logging"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-rfc8785
+    title: RFC 8785 - JSON Canonicalization Scheme (JCS)
+    publisher: RFC Editor
+    authors: [Anders Rundgren, Bret Jordan, Samuel Erdtman]
+    version_or_date: "June 2020"
+    source_class: protocol_or_standard
+    official_url: https://www.rfc-editor.org/rfc/rfc8785
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete RFC text and appendices reviewed directly from RFC Editor.
+    review_notes: Verified invariant serialization purpose, recursive property sorting, primitive handling, UTF-8 output, limits, and rights notice.
+    locators: ["Sections 1 and 3", "Sections 3.2.1-3.2.4", "Section 5", "Appendices A-I"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-invariant-tool-poisoning
+    title: MCP Security Notification - Tool Poisoning Attacks
+    publisher: Invariant Labs
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-01"
+    source_class: credible_practice
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete public article reviewed directly, including byline and linked experiment repository.
+    review_notes: Verified description-only direct poisoning, tool shadowing, rug-pull discussion, and proposed defenses.
+    locators: ["Direct Tool Poisoning", "Tool Shadowing", "Rug Pulls"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-invariant-direct-poisoning-code
+    title: mcp-injection-experiments - direct-poisoning.py
+    publisher: Invariant Labs
+    authors: [Invariant Labs research team]
+    version_or_date: "reviewed 2026-09-01"
+    source_class: implementation_artifact
+    official_url: https://github.com/invariantlabs-ai/mcp-injection-experiments/blob/main/direct-poisoning.py
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact source file reviewed after the directly reviewed Invariant article supplied the repository URL.
+    review_notes: "Provenance: Invariant article, Direct Tool Poisoning section, linked https://github.com/invariantlabs-ai/mcp-injection-experiments; no GitHub search or discovery used. Verified a description-only controlled implementation."
+    locators: ["direct-poisoning.py, complete 30-line file on main as reviewed 2026-09-01"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mcptox
+    title: "MCPTox: A Benchmark for Tool Poisoning Attack on Real-World MCP Servers"
+    publisher: arXiv
+    authors: [Zhiqiang Wang, Yichao Gao, Yanting Wang, Suyuan Liu, Haifeng Sun, Haoran Cheng, Guanquan Shi, Haohua Du, Xiangyang Li]
+    version_or_date: "arXiv:2508.14925v1, 2025-08-19"
+    source_class: research
+    official_url: https://arxiv.org/abs/2508.14925v1
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete author-supplied PDF, tables, references, and limitations reviewed directly.
+    review_notes: Verified 45-server benchmark, description-only poisoning construction, results, and controlled-study limits.
+    locators: ["Sections 3-5", "Table 2", "Section 7 Limitations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mcp-itp
+    title: "MCP-ITP: An Automated Framework for Implicit Tool Poisoning in MCP"
+    publisher: arXiv
+    authors: [Ruiqi Li, Zhiqiang Wang, Yunhao Yao, Xiang-Yang Li]
+    version_or_date: "arXiv:2601.07395v1, 2026-01-12"
+    source_class: research
+    official_url: https://arxiv.org/abs/2601.07395v1
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete author-supplied PDF, evaluation, references, and limitations reviewed directly.
+    review_notes: Verified description-only implicit poisoning, legitimate-tool execution path, adaptive evaluation, and experimental limits.
+    locators: ["Sections III-V", "Tables III-VI", "Limitations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mindguard
+    title: "MindGuard: Intrinsic Decision Inspection for Securing LLM Agents Against Metadata Poisoning"
+    publisher: arXiv
+    authors: [Zhiqiang Wang, Haohua Du, Guanquan Shi, Junyang Zhang, Haoran Cheng, Yunhao Yao, Kaiwen Guo, Xiang-Yang Li]
+    version_or_date: "arXiv:2508.20412v3, 2026-01-15"
+    source_class: research
+    official_url: https://arxiv.org/abs/2508.20412v3
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete author-supplied PDF, appendices, artifacts statement, and limitations reviewed directly.
+    review_notes: Verified decision-inspection design, evaluation, pre/post-decision blind spots, white-box requirement, and failure analysis.
+    locators: ["Sections 1-7", "Tables 6-8", "Appendix"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-huang-fsp-threat-model
+    title: Model Context Protocol Threat Modeling and Analyzing Vulnerabilities to Prompt Injection with Tool Poisoning
+    publisher: arXiv
+    authors: [Charoes Huang, Xin Huang, Ngoc Phu Tran, Amin Milani Fard]
+    version_or_date: "arXiv:2603.22489v1, 2026-03-23"
+    source_class: research
+    official_url: https://arxiv.org/abs/2603.22489v1
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete author-supplied PDF, threat tables, experiments, references, and limitations reviewed directly.
+    review_notes: Verified Threat 37 FSP classification and that empirical testing covered description poisoning rather than an end-to-end full-schema payload.
+    locators: ["Section 4.5, Threat 37", "Sections 5-7", "Threats to Validity"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-cascade
+    title: "CASCADE: A Cascaded Hybrid Defense Architecture for Prompt Injection Detection in MCP-Based Systems"
+    publisher: arXiv
+    authors: [Ipek Abasikeles-Turgut, Edip Gumus]
+    version_or_date: "arXiv:2604.17125v1, 2026-04-18"
+    source_class: research
+    official_url: https://arxiv.org/abs/2604.17125v1
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete author-supplied experimental HTML, tables, limitations, references, license, and AI-use declaration reviewed directly.
+    review_notes: Verified normalization and layered scan design, 5000-sample results, tool-poisoning recall, false negatives, and static-dataset limitations.
+    locators: ["Sections 3.1-3.3", "Sections 4.1-4.4", "Tables 8-11"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-nvd-catalog-queries
+    title: NIST National Vulnerability Database CVE API 2.0 keyword query results
+    publisher: National Institute of Standards and Technology
+    authors: [NIST National Vulnerability Database team]
+    version_or_date: "queried 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete API result sets for two exact keyword queries were parsed and root-cause candidates reviewed.
+    review_notes: Model Context Protocol returned 77 entries; tool poisoning returned 6 unrelated entries; no coordinated schema-wide root cause qualified.
+    locators: ["keywordSearch=Model Context Protocol, totalResults=77", "keywordSearch=tool poisoning, totalResults=6"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Known Exploited Vulnerabilities team]
+    version_or_date: "catalog reviewed 2026-09-01"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/csv/known_exploited_vulnerabilities.csv
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete official CSV reviewed and filtered for MCP, Model Context Protocol, schema poisoning, and tool poisoning terms.
+    review_notes: No entry described the defining FSP root cause; catalog absence is bounded and does not prove no exploitation.
+    locators: ["Complete CSV snapshot reviewed 2026-09-01"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mitre-t1195-002
+    title: "Supply Chain Compromise: Compromise Software Supply Chain (T1195.002)"
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: "version 1.1, modified 2025-10-24"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1195/002/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete official definition and metadata card reviewed directly.
+    review_notes: Verified pre-consumer software manipulation definition, identifier, tactic, platforms, version, and dates.
+    locators: ["Description", "ID/tactic/version/last-modified card"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-adversa-mcp-top25
+    title: MCP Security Top 25
+    publisher: Adversa AI
+    authors: [Adversa AI research team]
+    version_or_date: "updated 2026-08-16"
+    source_class: secondary
+    official_url: https://adversa.ai/mcp-security-top-25-mcp-vulnerabilities/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete public page, taxonomy, citations, and methodology statements reviewed directly.
+    review_notes: Rejected for publishable support because FSP assertions were derivative and lacked a direct incident or reproducible schema-wide evidence packet.
+    locators: ["Full Schema Poisoning entry", "Methodology and references"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-cyberark-fsp-redirect
+    title: Poison Everywhere - No Output from Your MCP Server Is Safe
+    publisher: CyberArk Labs
+    authors: [Shaked Kosman]
+    version_or_date: "2025; requested 2026-09-01"
+    source_class: credible_practice
+    official_url: https://www.cyberark.com/resources/threat-research-blog/poison-everywhere-no-output-from-your-mcp-server-is-safe
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Exact URL supplied by reviewed literature was opened and its redirect destination inspected.
+    review_notes: Original research content did not resolve; the URL redirected to an unrelated product page, so no claim uses it.
+    locators: ["HTTP redirect observed 2026-09-01; original article unavailable"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+
+  - id: SRC-mcp-tools-2025-06-18
+    title: Model Context Protocol 2025-06-18 - Tools
+    publisher: Model Context Protocol project
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Complete superseded specification page reviewed directly before the current version was selected.
+    review_notes: Rejected for current normative claims because the 2026-07-28 version was available and reviewed.
+    locators: ["Complete Tools page"]
+    review_status: opened_reviewed
+    archive: *remote_archive

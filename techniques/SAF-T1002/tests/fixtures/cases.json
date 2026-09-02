@@ -1,0 +1,58 @@
+{
+  "cases": [
+    {
+      "name": "positive_digest_mismatch_then_execution",
+      "kind": "positive",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-01T10:00:00Z", "event_type": "artifact_acquired", "host_id": "host-a", "artifact_name": "example-agent-tool", "artifact_version": "2.4.0", "component_type": "agent_tool", "expected_channel": true, "verification_status": "digest_mismatch", "approved_exception": false},
+        {"timestamp": "2026-09-01T10:02:00Z", "event_type": "artifact_executed", "host_id": "host-a", "artifact_name": "example-agent-tool", "artifact_version": "2.4.0", "parent_process": "agent-host", "approved_exception": false}
+      ]
+    },
+    {
+      "name": "negative_verified_artifact",
+      "kind": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T11:00:00Z", "event_type": "artifact_acquired", "host_id": "host-b", "artifact_name": "example-mcp-server", "artifact_version": "1.1.0", "component_type": "mcp_server", "expected_channel": true, "verification_status": "verified", "approved_exception": false},
+        {"timestamp": "2026-09-01T11:01:00Z", "event_type": "artifact_executed", "host_id": "host-b", "artifact_name": "example-mcp-server", "artifact_version": "1.1.0", "parent_process": "mcp-client", "approved_exception": false}
+      ]
+    },
+    {
+      "name": "boundary_exactly_600_seconds",
+      "kind": "boundary",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-09-01T12:00:00Z", "event_type": "artifact_acquired", "host_id": "host-c", "artifact_name": "example-agent-dependency", "artifact_version": "3.0.0", "component_type": "agent_dependency", "expected_channel": true, "verification_status": "unexpected_builder", "approved_exception": false},
+        {"timestamp": "2026-09-01T12:10:00Z", "event_type": "artifact_executed", "host_id": "host-c", "artifact_name": "example-agent-dependency", "artifact_version": "3.0.0", "parent_process": "python", "approved_exception": false}
+      ]
+    },
+    {
+      "name": "boundary_601_seconds_no_alert",
+      "kind": "boundary",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T13:00:00Z", "event_type": "artifact_acquired", "host_id": "host-d", "artifact_name": "example-mcp-client", "artifact_version": "5.0.0", "component_type": "mcp_client", "expected_channel": true, "verification_status": "missing", "approved_exception": false},
+        {"timestamp": "2026-09-01T13:10:01Z", "event_type": "artifact_executed", "host_id": "host-d", "artifact_name": "example-mcp-client", "artifact_version": "5.0.0", "parent_process": "desktop-shell", "approved_exception": false}
+      ]
+    },
+    {
+      "name": "false_positive_approved_local_build",
+      "kind": "false_positive",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T14:00:00Z", "event_type": "artifact_acquired", "host_id": "host-e", "artifact_name": "local-dev-server", "artifact_version": "0.0.0-dev", "component_type": "mcp_server", "expected_channel": true, "verification_status": "missing", "approved_exception": true},
+        {"timestamp": "2026-09-01T14:00:30Z", "event_type": "artifact_executed", "host_id": "host-e", "artifact_name": "local-dev-server", "artifact_version": "0.0.0-dev", "parent_process": "mcp-client", "approved_exception": true}
+      ]
+    },
+    {
+      "name": "negative_different_version",
+      "kind": "negative",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-09-01T15:00:00Z", "event_type": "artifact_acquired", "host_id": "host-f", "artifact_name": "example-server", "artifact_version": "1.0.0", "component_type": "mcp_server", "expected_channel": true, "verification_status": "invalid_signature", "approved_exception": false},
+        {"timestamp": "2026-09-01T15:01:00Z", "event_type": "artifact_executed", "host_id": "host-f", "artifact_name": "example-server", "artifact_version": "1.0.1", "parent_process": "mcp-client", "approved_exception": false}
+      ]
+    }
+  ]
+}

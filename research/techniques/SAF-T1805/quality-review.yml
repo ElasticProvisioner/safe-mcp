@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1805
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI Codex clean-room author and isolated-validator operator
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: No prohibited target, registry, history, issue, SAF site, or prior-conversation content was accessed before freeze.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires unauthorized acquisition of active execution state across an owner or tenant boundary and excludes adjacent mechanisms.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, implementation, vulnerability, version, remediation, and exploitation statements map to exact first-party locators.
+  claim_traceability:
+    status: passed
+    notes: Twenty validated claims cover all substantive README content with readable hidden traces.
+  source_or_omit:
+    status: passed
+    notes: Unsupported leads are absent from publishable prose and recorded as exclusions.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by a vendor proof of the defining mechanism; no Observed production claim is made.
+  research_saturation:
+    status: passed
+    notes: All five passes and two consecutive no-change follow-ups are complete.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Three examples are impact-ranked; two are direct and one is explicitly enabling or adjacent; production-incident gap is stated.
+  detection_quality:
+    status: passed
+    notes: The content-free analytic passed positive, negative, boundary, and malformed-event tests and documents tuning limits.
+  mitigation_quality:
+    status: passed
+    notes: Controls address ownership binding, per-call authorization, least privilege, consent, retention, redaction, logging, and response.
+  framework_alignment:
+    status: passed
+    notes: Tactic and analogous ATT&CK mapping are reconciled; synthetic neighbor identifiers are isolated and integration-ledgered.
+  publication_rights:
+    status: passed
+    notes: All source use is paraphrase or factual summary with attribution; no exploit code, source diagrams, or protected excerpts were copied.
+  safe_publication:
+    status: passed
+    notes: The scenario and fixtures contain only invented identifiers, classifications, counts, and example.invalid destinations.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1805
+      result: passed
+      environment: Isolated synthetic repository assembled from the frozen bundle and generic validator.
+  detection_tests:
+    status: passed
+    command: python3 -m unittest discover -s tests/SAF-T1805 -p 'test_*.py' -v
+    result: 4 tests passed; 4 expected alerts; 0 unexpected or missing alerts.
+    waiver: null
+
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "4 tests passed; 4 expected alerts; 0 unexpected or missing alerts"
+  validator: "PASS SAF-T1805"
+  proof: research/techniques/SAF-T1805/validation/canonical-validation.txt
+  notes: Source IDs, four synthetic neighbors, eight mitigations, ATT&CK T1213, history, framework, alignment, canonical labels, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

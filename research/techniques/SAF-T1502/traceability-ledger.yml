@@ -1,0 +1,113 @@
+version: 1
+technique_id: SAF-T1502
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1502/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1502/technique-contract.yml
+  supports: Internal target identity, tactic, scope, canonical neighbor joins, and
+    completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1502/quality-review.yml
+  supports: Gate decisions, test command, strict validator result, review date, and
+    reviewer identity.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1502/detection-rule.yml
+  supports: The repository's experimental detection analytic and its source-or-omit
+    component mapping.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1502/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed-field, normalization,
+    and expected false-positive validation logic.
+- id: LOCAL-detection-data
+  path: tests/SAF-T1502/test-logs.json
+  supports: Inert synthetic detection cases and expected outcomes.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1502/validation/detection-test.txt
+  supports: Captured isolated and integrated detector commands and results.
+- id: LOCAL-strict-validation-result
+  path: research/techniques/SAF-T1502/validation/strict-validator.txt
+  supports: Captured isolated and integrated strict-validator commands and results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1502-X001
+  candidate: A second independent production incident directly documenting MCP or
+    agentic file-based credential harvest.
+  origin: Required breach and incident research pass.
+  attempted_searches:
+  - Direct review of current MITRE ATT&CK T1552.001 procedures and primary-source
+    links.
+  - Direct review of the Google Threat Intelligence Group 2026 AI Threat Tracker.
+  - Direct review of the Anthropic incident report and its references.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-google-gtig-ai-threat-tracker-2026
+  - SRC-mitre-attack-t1552.001-v1.3
+  reason: No second directly reviewed primary source established the complete target
+    behavior in production; the single qualifying Anthropic campaign remains sufficient
+    for an Observed label but the corpus gap is explicit.
+  prohibited_publishable_text:
+  - Multiple independent production campaigns have confirmed this technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1502-X002
+  candidate: Treat CVE-2025-49596 Inspector remote code execution as a direct example
+    of credential-file harvesting.
+  origin: Exact official CVE advisory pass.
+  attempted_searches:
+  - Direct review of CVE-2025-49596 and its provenance-authorized maintainer advisory.
+  - Comparison with the technique contract's immediate objective and boundary.
+  consulted_source_ids:
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  reason: The record establishes unauthenticated command execution but not discovery
+    or reading of credential-bearing files; it is only an enabling condition.
+  prohibited_publishable_text:
+  - CVE-2025-49596 is a direct file credential harvesting vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1502-X003
+  candidate: Claim active or public production exploitation of CVE-2025-53109 or CVE-2025-53110.
+  origin: Vulnerability exploitation-status research requirement.
+  attempted_searches:
+  - Direct review of both CVE records' CISA ADP SSVC fields.
+  - Exact CISA KEV catalog lookups for both identifiers.
+  - Direct review of both maintainer advisories.
+  consulted_source_ids:
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-ghsa-cve-2025-53109
+  - SRC-ghsa-cve-2025-53110
+  reason: CISA ADP recorded exploitation as none, the advisories did not claim production
+    exploitation, and the KEV interface supplied no reviewable inclusion record.
+  prohibited_publishable_text:
+  - Both filesystem CVEs are actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1502-X004
+  candidate: Treat every MCP file URI, model credential claim, or credential-labeled
+    read as proof of successful malicious credential acquisition.
+  origin: Gap-and-challenge and detection false-positive passes.
+  attempted_searches:
+  - Direct review of MCP Resources URI qualification.
+  - Direct review of the Anthropic report's invalid-credential limitation.
+  - Direct review of operating-system telemetry requirements and detection boundary
+    cases.
+  consulted_source_ids:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-mcp-resources-2025-11-25
+  - SRC-microsoft-event-4663
+  - SRC-rhel9-audit
+  reason: File URIs may be virtual, model claims can be wrong, and legitimate processes
+    may read credential files; the analytic requires correlated successful system
+    evidence and tuning.
+  prohibited_publishable_text:
+  - Any credential-file read conclusively proves compromise
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

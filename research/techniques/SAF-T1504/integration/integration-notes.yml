@@ -1,0 +1,91 @@
+version: 1
+technique_id: SAF-T1504
+frozen_layout: /private/tmp/saf-all-cleanroom/SAF-T1504/bundle
+generated_on: "2026-09-01"
+
+metrics:
+  search_operation_count: 13
+  reviewed_source_count: 16
+  candidate_count: 5
+  selected_candidate_count: 2
+  excluded_candidate_count: 3
+  direct_production_incident_count: 0
+  detector_case_count: 10
+  detector_expected_alert_count: 4
+  detector_expected_non_alert_count: 6
+  detector_result: passed
+
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0006
+      state: user_supplied_not_synthetic
+      integration_action: Verify the existing tactic record maps to Credential Access without reading a prior SAF-T1504 description.
+  neighbors:
+    - id: SAF-T1998
+      label: Synthetic SSRF Neighbor
+      integration_action: Replace with the repository's actual SSRF or upstream-fetch technique ID and name; preserve the distinction based only on this bundle's contract and direct sources.
+    - id: SAF-T1999
+      label: Synthetic Token Passthrough Neighbor
+      integration_action: Replace with the repository's actual token-passthrough or closest credential-boundary technique ID and name; preserve the response-versus-downstream distinction.
+  mitigations: []
+  source_ids:
+    - state: independently_assigned
+      ids:
+        - SRC-attack-t1528
+        - SRC-cisa-kev-2026-09-01
+        - SRC-cve-2026-25650
+        - SRC-cve-2026-27826
+        - SRC-cve-2026-33461
+        - SRC-cve-2026-39974
+        - SRC-cve-2026-48039
+        - SRC-elastic-esa-2026-24
+        - SRC-ghsa-mcp-atlassian
+        - SRC-ghsa-mcp-salesforce
+        - SRC-ghsa-meta-ads
+        - SRC-ghsa-n8n-mcp
+        - SRC-mcp-auth-2025-11-25
+        - SRC-mcp-security-2025-11-25
+        - SRC-mcp-tools-2025-11-25
+        - SRC-rfc6750
+      integration_action: Reuse an existing stable ID only when canonical URL identity is exact; do not use the shared manifest as a new research lead.
+  history_sha:
+    value: 065cc18ee43fc95ae978d934152661189b15afde
+    state: honest_synthetic_mock_commit
+    integration_action: Replace with an honest integrated-repository commit SHA that supports the version-history record.
+  paths:
+    - path: techniques/SAF-T1504/README.md
+      action: Mechanically replace the target after verifying FREEZE.sha256; do not inspect a diff against prior content.
+    - path: techniques/SAF-T1504/detection-rule.yml
+      action: Mechanically replace the target after hash verification.
+    - path: research/techniques/SAF-T1504/
+      action: Mechanically replace the packet after hash verification.
+    - path: tests/SAF-T1504/
+      action: Install the independent detector tests and run them in the integrated repository.
+
+post_freeze_validation:
+  - Rebuild shared research/source-manifest.yml from source-manifest-fragment.yml with stable-ID collision reconciliation only.
+  - Merge framework-fragment.yml and alignment-fragment.yml using real neighbor joins.
+  - Replace the synthetic history SHA and confirm every declared local path.
+  - Run the detector test and the strict canonical validator with /Users/fkautz/anaconda3/bin/python3.
+  - If any substantive wording, source, classification, or detector logic changes, discard the freeze and start a new clean-room research cycle.
+
+prohibited_integration_inputs:
+  - Prior target prose, sources, detection assets, tests, research packet, history, diffs, and review comments must not be used to revise the frozen content.
+  - SAF sites, catalog descriptions, and shared registries must not introduce new facts or research leads.
+unresolved_research: []
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T1998: SAF-T1307
+    SAF-T1999: SAF-T1304
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-72
+  dedicated_query_corpus: SRC-cisa-kev-token-response-2026-09-01
+  validation_artifacts:
+  - research/techniques/SAF-T1504/validation/detection-test-output.txt
+  - research/techniques/SAF-T1504/validation/strict-validator-output.txt
+  status: integrated_and_validated

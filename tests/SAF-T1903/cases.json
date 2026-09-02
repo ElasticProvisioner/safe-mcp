@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "window_seconds": 300,
+  "cases": [
+    {
+      "id": "positive_interactive_child",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T10:00:00Z","event_type":"mcp_server_start","host_id":"h1","process_id":"p1","server_id":"s1","role":"mcp_server","approved_destinations":["api.example.invalid"]},
+        {"timestamp":"2026-09-02T10:00:10Z","event_type":"network_connection","host_id":"h1","process_id":"p1","server_id":"s1","direction":"outbound","destination":"control.example.invalid"},
+        {"timestamp":"2026-09-02T10:00:20Z","event_type":"child_process_start","host_id":"h1","process_id":"p1","server_id":"s1","interactive":true,"child_category":"shell"}
+      ]
+    },
+    {
+      "id": "positive_remote_exchange",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T11:00:00Z","event_type":"mcp_server_start","host_id":"h2","process_id":"p2","server_id":"s2","role":"server","approved_destinations":[]},
+        {"timestamp":"2026-09-02T11:00:15Z","event_type":"network_connection","host_id":"h2","process_id":"p2","server_id":"s2","direction":"outbound","destination":"operator.example.invalid"},
+        {"timestamp":"2026-09-02T11:00:30Z","event_type":"channel_message","host_id":"h2","process_id":"p2","server_id":"s2","channel_id":"c2","direction":"inbound","semantic":"remote_command"},
+        {"timestamp":"2026-09-02T11:00:45Z","event_type":"channel_message","host_id":"h2","process_id":"p2","server_id":"s2","channel_id":"c2","direction":"outbound","semantic":"command_result"}
+      ]
+    },
+    {
+      "id": "negative_approved_destination",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T12:00:00Z","event_type":"mcp_server_start","host_id":"h3","process_id":"p3","server_id":"s3","role":"mcp_server","approved_destinations":["backend.example.invalid"]},
+        {"timestamp":"2026-09-02T12:00:10Z","event_type":"network_connection","host_id":"h3","process_id":"p3","server_id":"s3","direction":"outbound","destination":"backend.example.invalid."},
+        {"timestamp":"2026-09-02T12:00:20Z","event_type":"child_process_start","host_id":"h3","process_id":"p3","server_id":"s3","interactive":true,"child_category":"shell"}
+      ]
+    },
+    {
+      "id": "boundary_exact_300",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T13:00:00Z","event_type":"mcp_server_start","host_id":"h4","process_id":"p4","server_id":"s4","role":"mcp_server","approved_destinations":[]},
+        {"timestamp":"2026-09-02T13:04:59Z","event_type":"network_connection","host_id":"h4","process_id":"p4","server_id":"s4","direction":"outbound","destination":"edge.example.invalid"},
+        {"timestamp":"2026-09-02T13:05:00Z","event_type":"child_process_start","host_id":"h4","process_id":"p4","server_id":"s4","interactive":true,"child_category":"command_interpreter"}
+      ]
+    },
+    {
+      "id": "boundary_301_no_alert",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T14:00:00Z","event_type":"mcp_server_start","host_id":"h5","process_id":"p5","server_id":"s5","role":"mcp_server","approved_destinations":[]},
+        {"timestamp":"2026-09-02T14:00:05Z","event_type":"network_connection","host_id":"h5","process_id":"p5","server_id":"s5","direction":"outbound","destination":"late.example.invalid"},
+        {"timestamp":"2026-09-02T14:05:01Z","event_type":"child_process_start","host_id":"h5","process_id":"p5","server_id":"s5","interactive":true,"child_category":"shell"}
+      ]
+    },
+    {
+      "id": "malformed_missing_destination",
+      "expected_alert": false,
+      "minimum_invalid_events": 1,
+      "events": [
+        {"timestamp":"2026-09-02T15:00:00Z","event_type":"mcp_server_start","host_id":"h6","process_id":"p6","server_id":"s6","role":"mcp_server","approved_destinations":[]},
+        {"timestamp":"2026-09-02T15:00:10Z","event_type":"network_connection","host_id":"h6","process_id":"p6","server_id":"s6","direction":"outbound"},
+        {"timestamp":"2026-09-02T15:00:20Z","event_type":"child_process_start","host_id":"h6","process_id":"p6","server_id":"s6","interactive":true,"child_category":"shell"}
+      ]
+    },
+    {
+      "id": "expected_false_positive_network_only",
+      "expected_alert": false,
+      "events": [
+        {"timestamp":"2026-09-02T16:00:00Z","event_type":"mcp_server_start","host_id":"h7","process_id":"p7","server_id":"s7","role":"mcp_server","approved_destinations":[]},
+        {"timestamp":"2026-09-02T16:00:10Z","event_type":"network_connection","host_id":"h7","process_id":"p7","server_id":"s7","direction":"outbound","destination":"packages.example.invalid"}
+      ]
+    },
+    {
+      "id": "normalization_case_and_whitespace",
+      "expected_alert": true,
+      "events": [
+        {"timestamp":"2026-09-02T17:00:00Z","event_type":" MCP_SERVER_START ","host_id":"H8","process_id":"P8","server_id":"S8","role":" MCP_Server ","approved_destinations":["safe.example.invalid"]},
+        {"timestamp":"2026-09-02T17:00:10Z","event_type":"NETWORK_CONNECTION","host_id":"H8","process_id":"P8","server_id":"S8","direction":" OUTBOUND ","destination":"CONTROL.EXAMPLE.INVALID."},
+        {"timestamp":"2026-09-02T17:00:20Z","event_type":"CHILD_PROCESS_START","host_id":"H8","process_id":"P8","server_id":"S8","interactive":true,"child_category":" COMMAND_INTERPRETER "}
+      ]
+    }
+  ]
+}

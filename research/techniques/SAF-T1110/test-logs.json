@@ -1,0 +1,76 @@
+{
+  "cases": [
+    {
+      "name": "image_external_send_unapproved",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T12:00:00Z", "session_id": "s-image", "event_type": "multimodal_input", "media_type": "image", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T12:00:30Z", "session_id": "s-image", "event_type": "tool_call", "action_type": "external_send", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "audio_state_change_denied",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T13:00:00Z", "session_id": "s-audio", "event_type": "multimodal_input", "media_type": "audio", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T13:01:00Z", "session_id": "s-audio", "event_type": "tool_call", "action_type": "state_change", "approval_state": "denied", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "inclusive_120_second_boundary",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T14:00:00Z", "session_id": "s-boundary", "event_type": "multimodal_input", "media_type": "image", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T14:02:00Z", "session_id": "s-boundary", "event_type": "tool_call", "action_type": "file_write", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "documented_expected_false_positive",
+      "expected": true,
+      "events": [
+        {"timestamp": "2026-09-01T15:00:00Z", "session_id": "s-benign-overlap", "event_type": "multimodal_input", "media_type": "audio", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T15:00:05Z", "session_id": "s-benign-overlap", "event_type": "tool_call", "action_type": "external_send", "approval_state": "not_requested", "action_source": "user_workflow"}
+      ]
+    },
+    {
+      "name": "benign_image_no_instruction",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T16:00:00Z", "session_id": "s-benign", "event_type": "multimodal_input", "media_type": "image", "media_source_trust": "untrusted", "instruction_detected": false},
+        {"timestamp": "2026-09-01T16:00:10Z", "session_id": "s-benign", "event_type": "tool_call", "action_type": "external_send", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "explicitly_approved_action",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T17:00:00Z", "session_id": "s-approved", "event_type": "multimodal_input", "media_type": "audio", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T17:00:20Z", "session_id": "s-approved", "event_type": "tool_call", "action_type": "state_change", "approval_state": "approved", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "outside_120_second_window",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T18:00:00Z", "session_id": "s-late", "event_type": "multimodal_input", "media_type": "image", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T18:02:01Z", "session_id": "s-late", "event_type": "tool_call", "action_type": "credential_access", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "text_only_neighbor",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T19:00:00Z", "session_id": "s-text", "event_type": "multimodal_input", "media_type": "text", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T19:00:15Z", "session_id": "s-text", "event_type": "tool_call", "action_type": "external_send", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    },
+    {
+      "name": "missing_session_identifier",
+      "expected": false,
+      "events": [
+        {"timestamp": "2026-09-01T20:00:00Z", "event_type": "multimodal_input", "media_type": "audio", "media_source_trust": "untrusted", "instruction_detected": true},
+        {"timestamp": "2026-09-01T20:00:15Z", "event_type": "tool_call", "action_type": "external_send", "approval_state": "not_requested", "action_source": "model"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1904
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: /root/cleanroom_saf_t1904 (OpenAI Codex fresh-agent author)
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Only the neutral tuple and generic authoring machinery were used; prohibited target and shared repository artifacts were not opened.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires external chat ingress, an actionable tool or command path, and a repeatable returned chat response; prompt-only, one-way, exfil-only, malicious-server, and authorized-chatops neighbors are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Protocol/provider behavior and each selected vulnerability were checked against direct authorities and exact locators; prerequisites and advisory conflicts are disclosed.
+  claim_traceability:
+    status: passed
+    notes: Seventeen validated claims map to reviewed manifest sources with exact locators and appear in the README Evidence Summary.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README line uses hidden SAF-TRACE metadata or a declared local artifact; ten unsupported, adjacent, or displaced propositions are ledgered and omitted.
+  evidence_classification:
+    status: passed
+    notes: Research-Derived is retained because the core end-to-end sequence is an explicit multi-source inference without a qualifying incident or single complete demonstration.
+  research_saturation:
+    status: passed
+    notes: Two consecutive post-ranking authority-only NVD query sets produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: A complete 592-record NVD OpenClaw corpus, 175 channel-related matches, CISA KEV, authority incident queries, and selected/comparator vendor advisories were reviewed; four highest-impact direct examples were selected.
+  detection_quality:
+    status: passed
+    notes: The tested analytic covers positive, approved-chatops negative, wrong-session/channel, time-boundary, missing/malformed field, mutable-identity, missing-tool, and missing-reply cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address stable identity, webhook authentication, least privilege, approval, monitoring, patching, and response at the defining boundary.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0011, canonical neighbors including independently authored SAF-T1903, seven mitigations, and the MITRE T1102.002 analogy are reconciled.
+  publication_rights:
+    status: passed
+    notes: All third-party use is factual paraphrase or nominative reference with direct attribution; there are no quotations, copied code, diagrams, or redistributed source datasets.
+  safe_publication:
+    status: passed
+    notes: Examples and tests use inert synthetic identities and tool names and contain no real credential or exploit payload.
+
+validation:
+  commands:
+    - command: PYTHONPATH=/private/tmp/saf-all-cleanroom/SAF-T1904/work/python-deps python3 scripts/validate-technique-research.py SAF-T1904
+      result: passed
+      notes: Isolated synthetic repository result captured at research/techniques/SAF-T1904/validation/strict-validator.txt.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1904/test_detection_rule.py
+    result: 12 of 12 test cases passed; captured at research/techniques/SAF-T1904/validation/detection-tests.txt
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: 12 of 12 cases passed.
+    validator_result: PASS SAF-T1904
+    proof: research/techniques/SAF-T1904/validation/canonical-validation.txt
+
+unresolved: []

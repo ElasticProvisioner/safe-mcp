@@ -1,0 +1,33 @@
+version: 1
+techniques:
+  - technique_id: SAF-T2102
+    name: Service Disruption
+    documentation_status: stable
+    evidence_status: demonstrated
+    tactics:
+      - ATK-TA0040
+    technique_path: techniques/SAF-T2102/README.md
+    research_packet: research/techniques/SAF-T2102
+    related_techniques:
+      - SAF-T1106
+      - SAF-T2101
+    mitigations:
+      - SAF-M-9
+      - SAF-M-11
+      - SAF-M-12
+      - SAF-M-29
+      - SAF-M-70
+      - SAF-M-73
+      - SAF-M-74
+    detection:
+      rule: techniques/SAF-T2102/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - techniques/SAF-T2102/test_detection_rule.py
+        - techniques/SAF-T2102/test-logs.json
+        - research/techniques/SAF-T2102/validation/detection-tests.txt
+        - research/techniques/SAF-T2102/validation/strict-validator.txt
+        - research/techniques/SAF-T2102/validation/canonical-validation.txt
+    attack_mappings:
+      - id: T1499
+        type: direct

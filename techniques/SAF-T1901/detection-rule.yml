@@ -1,0 +1,108 @@
+title: Repeated Unapproved Model-Driven Outbound Webhook Traffic
+id: 72ec0479-d817-4dde-9d06-caad4703e01b
+status: experimental
+description: >-
+  Identifies repeated HTTPS POST requests from a model-driven MCP tool to the
+  same non-approved webhook endpoint when the application consumes response
+  data. This is a suspicious-behavior heuristic, not proof of command and
+  control.
+author: Clean-room agent SAF-T1901-r2
+date: 2026-09-02
+modified: 2026-09-02
+logsource:
+  category: application
+  product: mcp_agent_runtime
+  service: correlated_tool_and_http_client_telemetry
+detection:
+  selection_http:
+    event.kind: http.client
+    http.request.method: POST
+    url.scheme: https
+  selection_context:
+    mcp.invocation.mode: model
+    saf.webhook.destination_approved: false
+    saf.webhook.response_consumed: true
+  correlation:
+    group_by:
+      - mcp.session.id
+      - mcp.tool.name
+      - normalized_webhook_endpoint
+    window: 10m
+    min_events: 3
+    min_distinct_invocation_ids: 2
+  condition: selection_http and selection_context and correlation
+fields:
+  - timestamp
+  - mcp.session.id
+  - mcp.tool.name
+  - mcp.invocation.id
+  - mcp.invocation.mode
+  - http.request.method
+  - server.address
+  - server.port
+  - url.full
+  - http.request.body.size
+  - http.response.status_code
+  - http.response.body.size
+  - saf.webhook.destination_approved
+  - saf.webhook.response_consumed
+falsepositives:
+  - Newly deployed legitimate webhook integrations not yet present in the destination allowlist.
+  - Automated workflow status callbacks whose response bodies are consumed for ordinary acknowledgements.
+level: high
+tags:
+  - saf.t1901
+  - attack.command-and-control
+  - attack.t1102.002
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1901-C004
+    - SAF-T1901-C011
+  telemetry_claim_ids:
+    - SAF-T1901-C010
+    - SAF-T1901-C015
+  limitation_claim_ids:
+    - SAF-T1901-C013
+    - SAF-T1901-C016
+  validation_artifacts:
+    - tests/SAF-T1901/detector.py
+    - tests/SAF-T1901/fixtures.json
+    - tests/SAF-T1901/test_detector.py
+    - research/techniques/SAF-T1901/validation/detection-test.txt
+    - research/techniques/SAF-T1901/validation/strict-validator.txt
+    - research/techniques/SAF-T1901/validation/canonical-validation.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1901-C010
+        - SAF-T1901-C015
+      rationale: Correlates MCP invocation context with outbound HTTP client telemetry.
+    selection_http:
+      claim_ids:
+        - SAF-T1901-C010
+        - SAF-T1901-C011
+      rationale: Webhook delivery is represented as an outbound HTTPS POST with destination and response fields.
+    selection_context:
+      claim_ids:
+        - SAF-T1901-C001
+        - SAF-T1901-C004
+      rationale: Limits the heuristic to model-driven tool activity and destinations outside the approved set.
+    correlation:
+      claim_ids:
+        - SAF-T1901-C011
+        - SAF-T1901-C013
+      rationale: Repetition and multiple invocations reduce, but do not eliminate, ordinary one-off callback noise.
+    condition:
+      claim_ids:
+        - SAF-T1901-C011
+      rationale: Requires the HTTP, model-context, and repeated-sequence conditions together.
+    fields:
+      claim_ids:
+        - SAF-T1901-C010
+        - SAF-T1901-C015
+      rationale: Retains the minimum correlation and HTTP attributes needed to investigate an alert.
+    falsepositives:
+      claim_ids:
+        - SAF-T1901-C013
+      rationale: Legitimate unapproved or newly introduced webhook automations can match the same behavior.

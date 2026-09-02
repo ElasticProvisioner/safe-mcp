@@ -1,0 +1,295 @@
+version: 1
+technique_id: SAF-T1406
+
+claims:
+  - id: SAF-T1406-C001
+    statement: >-
+      Current MCP tool metadata includes names, titles, descriptions, input
+      schemas, icons, and annotations; the specification says annotations from
+      untrusted servers are hints and must not be used for security decisions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Tool; Listing Tools; Security Considerations]
+      - source_id: SRC-mcp-2026-schema
+        support: direct
+        exact_locators: [ToolAnnotations; Tool]
+    corroboration: The Tools and generated Schema pages independently expose the same fields and trust boundary.
+    limitations:
+      - The specification defines fields and consumer duties; it does not measure real-client compliance.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1406-C002
+    statement: >-
+      Controlled MCP demonstrations show that hostile or post-approval tool
+      descriptions can alter agent behavior and can remain dormant until after
+      an initial approval step.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Tool Poisoning Attacks; Rug Pull Attacks; Tool Shadowing]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: [Silent Data Exfiltration via WhatsApp; Rug Pull Attack]
+    corroboration: Two first-party experiment reports describe descriptor-driven behavior and a sleeper-server variant.
+    limitations:
+      - These are researcher-controlled demonstrations, not evidence of a production breach.
+      - Some demonstrated outcomes also depend on model behavior and client handling of instructions.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1406-C003
+    statement: >-
+      A controlled study of malicious tool metadata reported high attack success
+      across its tested agent settings and also found that a content-only auditor
+      did not consistently detect the attacks.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-2508.02110v2
+        support: direct
+        exact_locators: [Abstract; Sections 3.2, 4.1, and 4.6; Tables 2 and 6; Limitations]
+    corroboration: MCPTox independently demonstrates broad tool-poisoning susceptibility under constructed test cases.
+    limitations:
+      - The paper uses simulated scenarios and public data rather than real users or a production deployment.
+      - Results are bounded to the tested prompts, tools, agents, models, and evaluator design.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1406-C004
+    statement: >-
+      MCPTox paired authentic tools from 45 live MCP servers with 1,312
+      constructed poisoning cases and reported a maximum attack-success rate of
+      72.8 percent across the evaluated settings.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcptox-2508.14925
+        support: direct
+        exact_locators: [Abstract; Sections 2.2, 3.1, 3.4, and 4.2-4.4; Table 2; Section 5]
+    corroboration: The malicious-tool-metadata study independently reports susceptibility in controlled agent settings.
+    limitations:
+      - The attacks were constructed test cases, not attacks observed on the live servers.
+      - The benchmark is single-turn and does not evaluate sleeper or persistent-memory behavior.
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1406-C005
+    statement: >-
+      CVE-2025-54136 disclosed that modifying an already trusted Cursor MCP
+      server definition could replace a benign command without a warning or a
+      new approval prompt; the advisory identifies version 1.3 as patched.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-cve-2025-54136
+        support: direct
+        exact_locators: [containers.cna.descriptions; containers.cna.affected; containers.cna.references]
+      - source_id: SRC-cursor-ghsa-24mc-g4xr-4395
+        support: direct
+        exact_locators: [Summary; Impact; Remediation; Credit]
+    corroboration: The official CVE record and maintainer advisory describe the same approval-bypass condition.
+    limitations:
+      - The advisory establishes a disclosed vulnerability, not observed exploitation in a production victim.
+      - The CVE affected-range text and maintainer advisory differ; the claim uses only their shared patched-version statement.
+    conflicts:
+      - issue: The CVE record says versions before 1.3 while the advisory lists affected versions before 1.2.4.
+        resolution: Retain both source records, state only the unconflicted patched version, and do not publish the disputed lower boundary.
+    inference: {is_inference: false, rationale: null}
+    status: validated
+
+  - id: SAF-T1406-C006
+    statement: >-
+      The reviewed direct-authority corpus established disclosed vulnerabilities
+      and controlled demonstrations, but did not establish a qualifying
+      production incident for this exact metadata-classification mechanism.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: context
+        exact_locators: [catalogVersion 2026.09.01; exact-identifier filter result]
+      - source_id: SRC-cve-2025-54136
+        support: context
+        exact_locators: [containers.adp.metrics; containers.cna.descriptions]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: context
+        exact_locators: [Rug Pull Attack; Disclosure]
+    corroboration: The CVE ADP record reports no exploitation status, the selected experiment is labeled controlled, and the reviewed CVEs are absent from the dated KEV feed.
+    limitations:
+      - Absence from the reviewed sources is not proof that no incident has occurred.
+      - The conclusion is limited to the recorded direct-authority searches completed on 2026-09-01.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This is a bounded negative conclusion drawn from the recorded direct-authority search set.
+    status: validated
+
+  - id: SAF-T1406-C007
+    statement: >-
+      The defining prerequisite is adversary influence over metadata before a
+      consumer makes or reuses a selection, approval, inventory, or policy
+      decision; the immediate outcome is misclassification, not payload execution.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-2026-schema
+        support: context
+        exact_locators: [ToolAnnotations; Tool]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: [Rug Pull Attack]
+      - source_id: SRC-cursor-ghsa-24mc-g4xr-4395
+        support: direct
+        exact_locators: [Summary; Impact]
+    corroboration: The specification defines the metadata trust warning while the demonstration and advisory show pre-decision and reused-approval cases.
+    limitations:
+      - Downstream harm requires an additional action, access, or consumer behavior not included in this immediate outcome.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The prerequisite and outcome are the narrow intersection of the frozen contract and direct examples.
+    status: validated
+
+  - id: SAF-T1406-C008
+    statement: >-
+      Successful metadata manipulation can weaken approval integrity and can
+      contribute to confidentiality, integrity, or availability harm only when
+      the misclassified object is subsequently trusted or used with relevant access.
+    class: framework_inference
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cursor-ghsa-24mc-g4xr-4395
+        support: direct
+        exact_locators: [Impact]
+      - source_id: SRC-invariant-whatsapp-mcp-2025-04-07
+        support: direct
+        exact_locators: [Silent Data Exfiltration via WhatsApp]
+      - source_id: SRC-arxiv-2508.02110v2
+        support: corroborating
+        exact_locators: [Section 3.2; Table 6; Limitations]
+    corroboration: The advisory identifies high potential impact, while experiments demonstrate conditional data-access outcomes.
+    limitations:
+      - Metadata change alone does not guarantee compromise or any particular impact dimension.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The impact statement deliberately conditions downstream harm on subsequent trust and access.
+    status: validated
+
+  - id: SAF-T1406-C009
+    statement: >-
+      A metadata-integrity analytic can compare canonical current descriptors to
+      an approved baseline and require reapproval when security-relevant fields
+      change; MCP list-change signaling can trigger collection but does not itself
+      prove maliciousness.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Listing Tools; list_changed; Security Considerations]
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: [Detecting Tool Poisoning Attacks; Detecting Rug Pull Attacks]
+    corroboration: The protocol supplies a change signal and the implementation report independently describes descriptor retrieval, hashing, and comparison.
+    limitations:
+      - The cited implementation report provides no independent effectiveness evaluation.
+      - An approved malicious baseline and incomplete telemetry evade hash-drift detection.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic combines documented protocol telemetry with a published comparison design.
+    status: validated
+
+  - id: SAF-T1406-C010
+    statement: >-
+      Legitimate upgrades, localization, schema revisions, and dynamic tool-list
+      changes can produce descriptor drift, so integrity alerts require stable
+      identity, canonicalization, change context, and an approved re-review path.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: [Listing Tools; Tool; Security Considerations]
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: corroborating
+        exact_locators: [Sections III-A, III-F, and VII; Tables XXII and XXIV]
+    corroboration: Dynamic protocol behavior establishes benign change, and the controlled defense study reports false-positive tradeoffs.
+    limitations:
+      - Exact false-positive rates are deployment-specific and are not generalized from the synthetic study.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The tuning guidance follows from legitimate change semantics and controlled defense limitations.
+    status: validated
+
+  - id: SAF-T1406-C011
+    statement: >-
+      Layered controls should treat descriptors as untrusted, bind approved
+      metadata to a stable object and server identity, verify changes before use,
+      and retain semantic or runtime review because integrity checks alone accept
+      a malicious first baseline.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-2026-schema
+        support: direct
+        exact_locators: [ToolAnnotations]
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: direct
+        exact_locators: [Mitigations]
+      - source_id: SRC-jamshidi-2026-arxiv-2512-06556
+        support: corroborating
+        exact_locators: [Abstract; Section III-F; Tables XXII and XXIV; Section VII]
+    corroboration: Protocol trust guidance, the researcher mitigation proposal, and a controlled layered-defense study converge on multiple complementary controls.
+    limitations:
+      - The defense study is synthetic and its reported block and false-positive rates are not production guarantees.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: No single source establishes the full control set; the recommendation is a conservative synthesis.
+    status: validated
+
+  - id: SAF-T1406-C012
+    statement: >-
+      MITRE ATT&CK T1036 Masquerading is an analogous mapping because it covers
+      manipulating artifact features, including metadata, to appear legitimate
+      or benign, while SAF-T1406 is narrower and specific to agentic object metadata.
+    class: historical_analogy
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-attack-t1036
+        support: direct
+        exact_locators: [Description; ID T1036; Version]
+    corroboration: No second framework is needed for this explicitly analogous mapping.
+    limitations:
+      - T1036 spans files, services, accounts, and other platforms beyond the MCP and agentic boundary.
+      - The mapping is analogous, not an assertion of framework identity.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares mechanisms while preserving the narrower SAF boundary.
+    status: validated

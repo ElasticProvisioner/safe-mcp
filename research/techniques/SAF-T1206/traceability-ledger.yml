@@ -1,0 +1,125 @@
+version: 1
+technique_id: SAF-T1206
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1206/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1206/technique-contract.yml
+  supports: Internal scope name tactic and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1206/quality-review.yml
+  supports: Validation commands results review date and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1206/detection-rule.yml
+  supports: The repository detection analytic and its source joins.
+- id: LOCAL-test-events
+  path: tests/SAF-T1206/test-events.json
+  supports: Representative positive negative boundary and false-positive cases.
+- id: LOCAL-test-script
+  path: tests/SAF-T1206/test_detection_rule.py
+  supports: Deterministic detection behavior.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1206/validation/detection-test.txt
+  supports: Compact detection test proof.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1206/validation/strict-validator.txt
+  supports: Compact isolated strict-validator proof.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1206-X001
+  candidate: CVE-2026-57860 as a direct credential-implant example.
+  origin: Authority-only NVD vulnerability search.
+  attempted_searches:
+  - official NVD API exact cveId=CVE-2026-57860
+  - first-party remediation references from the NVD record
+  consulted_source_ids:
+  - SRC-t1206-nvd-forgecode
+  reason: The record documents unvetted MCP config execution and lacked a verified
+    credential implant and authoritative fixed version.
+  prohibited_publishable_text:
+  - ForgeCode proves credential implantation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1206-X002
+  candidate: CVE-2026-14541 as a credential implant in client configuration.
+  origin: Authority-only NVD MCP authorization search.
+  attempted_searches:
+  - official NVD API exact cveId=CVE-2026-14541
+  - site:nvd.nist.gov MCP client secret configuration
+  consulted_source_ids:
+  - SRC-t1206-nvd-google-toolbox
+  reason: The weakness is server-side audience-validation bypass under missing configuration,
+    not attacker persistence of a client credential.
+  prohibited_publishable_text:
+  - Google mcp-toolbox implants credentials
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1206-X003
+  candidate: CVE-2025-4143 as direct persistent credential implantation.
+  origin: Authority-only NVD MCP OAuth search.
+  attempted_searches:
+  - official NVD API exact cveId=CVE-2025-4143
+  - site:nvd.nist.gov MCP OAuth credential
+  consulted_source_ids:
+  - SRC-t1206-nvd-cloudflare-oauth
+  reason: It conditionally enables credential theft through redirect validation failure,
+    but does not modify persistent client configuration.
+  prohibited_publishable_text:
+  - workers-oauth-provider persists an attacker credential
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1206-X004
+  candidate: Exposed MCP and agentic-service exploitation as a direct instance.
+  origin: Current production-incident pass.
+  attempted_searches:
+  - site:microsoft.com/en-us/security/blog MCP incident credentials configuration
+  - article incident and product sections reviewed
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  reason: The directly reviewed incidents concern missing authentication, exposed
+    services, or credential extraction, not an implanted configuration credential.
+  prohibited_publishable_text:
+  - Defender observed this credential implant in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1206-X005
+  candidate: TeamPCP AI-package compromises as direct credential-implant evidence.
+  origin: Current threat-intelligence incident pass.
+  attempted_searches:
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP incident credential
+    configuration agent
+  - GTIG Compromised Code Packages section reviewed
+  consulted_source_ids:
+  - SRC-t1206-gtig-ai-threats
+  reason: The incident used compromised packages to steal credentials; it did not
+    add attacker credentials to MCP or agent configuration.
+  prohibited_publishable_text:
+  - TeamPCP used credential implants in MCP config
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1206-X006
+  candidate: A universal claim that MCP credential implants have already been used
+    in real breaches.
+  origin: Neutral technique seed and production-incident hypothesis.
+  attempted_searches:
+  - site:cisa.gov MCP incident credentials configuration AI agent
+  - site:microsoft.com/en-us/security/blog MCP incident credentials configuration
+  - site:cloud.google.com/blog/topics/threat-intelligence MCP incident credential
+    configuration agent
+  - current NVD and CISA KEV exact identifier checks
+  consulted_source_ids:
+  - SRC-t1206-ms-config-risk
+  - SRC-t1206-gtig-ai-threats
+  - SRC-cisa-kev-2026-09-01
+  reason: No directly reviewed authoritative source documented the defining end-to-end
+    behavior in production.
+  prohibited_publishable_text:
+  - credential implants are an observed MCP breach technique
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

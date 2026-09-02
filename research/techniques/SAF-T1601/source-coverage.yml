@@ -1,0 +1,214 @@
+version: 1
+technique_id: SAF-T1601
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review: https://modelcontextprotocol.io/specification/latest
+        - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/architecture
+        - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/server/discover
+        - Direct review: https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning
+      material_changes:
+        - Established the current 2026-07-28 one-client-per-server architecture and mandatory server/discover behavior.
+        - Established that modern requests carry protocol metadata per request and legacy revisions use initialize.
+        - Established that serverInfo is self-reported and not a security identity.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Direct NVD API catalog query: keywordSearch=Model Context Protocol
+        - Direct NVD API catalog query: keywordSearch=MCP server
+        - Direct NVD individual record review: CVE-2025-66416
+        - Direct NVD individual record review: CVE-2026-49257
+        - Direct CISA KEV catalog membership check for shortlisted CVEs
+        - Exact GitHub maintainer advisory URL GHSA-9h52-p55h-vw2f supplied by SRC-nvd-cve-2025-66416
+        - Exact GitHub maintainer advisory URL GHSA-73cv-556c-w3g6 supplied by SRC-nvd-cve-2026-49257
+        - Direct full-document review of Anthropic GTG-1002 incident report
+      material_changes:
+        - Found two high-impact enabling vulnerabilities but no direct server-enumeration vulnerability.
+        - Found one adjacent production incident using MCP-connected tooling for network-service discovery, not MCP-server discovery.
+        - Verified no shortlisted CVE appeared in CISA KEV and preserved the distinction between proof of concept and production exploitation.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/cli
+        - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector/configuration
+      material_changes:
+        - Found a direct first-party demonstration of servers/list and servers/show against a catalog without connecting.
+        - Confirmed the mcpServers configuration shape and per-server selection behavior.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Direct review: https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+        - Direct review: https://attack.mitre.org/techniques/T1046/
+        - Direct review: https://csrc.nist.gov/pubs/sp/800/92/final
+      material_changes:
+        - Bounded a multi-server, five-minute correlation analytic grounded in protocol method and identity fields.
+        - Added legitimate startup, health-check, and Inspector administration exclusions.
+        - Added consent, loopback/authentication, sandboxing, least-privilege, and log-management controls.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Direct NVD API catalog query: keywordSearch=MCP server enumeration
+        - Direct NVD API catalog query: keywordSearch=MCP server discovery
+        - Direct NVD API catalog query: keywordSearch=Model Context Protocol server discovery
+        - Direct NVD API catalog query: keywordSearch=server/discover
+        - Direct NVD individual record review: CVE-2025-66454
+        - Direct NVD individual record review: CVE-2026-46519
+        - Recheck of serverInfo and Inspector catalog limitations in controlling sources
+      material_changes:
+        - Rejected CVE-2025-66454 because it concerns tools inside one server rather than multiple MCP servers.
+        - Rejected CVE-2026-46519 and recorded the contrary result that discovery filtering need not enforce execution authorization.
+        - Narrowed the technique to configuration and MCP identity/capability metadata and kept generic network scanning out of scope.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - Direct NVD API catalog query: keywordSearch=MCP server inventory
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - Direct NVD API catalog query: keywordSearch=Model Context Protocol servers/list
+        - Direct NVD API catalog query: keywordSearch=MCP server catalog enumeration (initially rate-limited, then retried successfully with zero records on 2026-09-02)
+      material_changes: []
+  rationale: >-
+    The controlling protocol and first-party tool documentation cover the
+    mechanism; separate incident, vulnerability, maintainer-advisory,
+    exploitation-status, demonstration, detection, defense, and challenge
+    passes cover the evidence classes and limitations. The final two narrow
+    direct-authority catalog queries returned zero records and changed no
+    claim, classification, example, control, or neighbor distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 6
+  selected_examples:
+    - SRC-mcp-inspector-cli-20260728
+    - SRC-nvd-cve-2025-66416
+    - SRC-nvd-cve-2026-49257
+    - SRC-anthropic-espionage-2025-11
+  no_qualifying_examples_rationale: >-
+    No direct production incident or direct vulnerability met the technique
+    contract. Four examples were retained because one directly demonstrates
+    the defining enumeration mechanics, two materially enable unauthorized
+    access to server metadata and capabilities, and one is a high-impact
+    adjacent production case that clarifies the boundary.
+  candidates:
+    - source_id: SRC-mcp-inspector-cli-20260728
+      identifier: MCP Inspector servers/list and servers/show
+      relationship: direct_demonstration
+      exploitation_status: legitimate_first_party_demonstration
+      impact: A user can enumerate configured server entries and inspect one entry without opening a connection.
+      remediation: No remediation; use is administrative, and access to configuration should be restricted and audited.
+      selected: true
+      rationale: Highest-confidence direct demonstration of the defining mechanics, while not evidence of malicious use.
+    - source_id: SRC-nvd-cve-2025-66416
+      identifier: CVE-2025-66416 / GHSA-9h52-p55h-vw2f
+      relationship: enabling_vulnerability
+      exploitation_status: CISA_SSVC_none_and_not_in_KEV_as_of_2026-09-01
+      impact: Under stated localhost, unauthenticated HTTP, and browser conditions, an attacker could send requests to a local MCP server and reach exposed tools or resources.
+      remediation: Upgrade to MCP Python SDK 1.23.0 or later and configure transport security; stdio is unaffected.
+      selected: true
+      rationale: High-impact, current, first-party-corroborated access weakness that can expose a discovered local server, but does not itself enumerate servers.
+    - source_id: SRC-nvd-cve-2026-49257
+      identifier: CVE-2026-49257 / GHSA-73cv-556c-w3g6
+      relationship: enabling_vulnerability
+      exploitation_status: CISA_SSVC_poc_and_not_in_KEV_as_of_2026-09-01
+      impact: Default unauthenticated network exposure gave adjacent callers access to all mcp-pinot tools under server-side Pinot credentials, with bounded confidentiality, integrity, and availability consequences.
+      remediation: Upgrade to 3.1.0 or later; the fix changed bind and authentication defaults and gated non-loopback exposure.
+      selected: true
+      rationale: Critical enabling exposure with a directly reviewed maintainer fix; it concerns one known endpoint and cannot elevate the technique evidence label.
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: Anthropic GTG-1002 campaign
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: observed_production_campaign
+      impact: The actor used MCP-connected browser automation during attack-surface mapping and cataloged internal network services across compromised targets.
+      remediation: Anthropic banned accounts, notified affected parties, expanded detection, and incorporated the pattern into safety controls.
+      selected: true
+      rationale: Highest-impact production example involving MCP and enumeration, retained only to show that the enumerated objects were network services rather than MCP servers.
+    - source_id: SRC-nvd-cve-2025-66454
+      identifier: CVE-2025-66454
+      relationship: rejected
+      exploitation_status: public_advisory_not_assessed_as_production_exploitation
+      impact: A hardcoded worker secret permitted unauthorized tool enumeration and invocation within one Arcade MCP deployment.
+      remediation: Upgrade to 1.5.4 or later.
+      selected: false
+      rationale: Tool enumeration inside one server is outside the contract's immediate server-set objective.
+    - source_id: SRC-nvd-cve-2026-46519
+      identifier: CVE-2026-46519
+      relationship: rejected
+      exploitation_status: public_advisory_not_assessed_as_production_exploitation
+      impact: Tool-discovery filters did not prevent direct calls to hidden tools in the affected Kubernetes MCP server.
+      remediation: Upgrade to 3.6.0 or later.
+      selected: false
+      rationale: The record concerns authorization enforcement for tools, not enumerating MCP servers; it is retained as contrary evidence about relying on discovery output.
+
+sources_consulted:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-server-enumeration-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-9h52-p55h-vw2f
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-inspector-cli-20260728
+  - SRC-mcp-inspector-config-20260728
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-nist-sp80092
+  - SRC-nvd-cve-2025-66416
+  - SRC-nvd-cve-2025-66454
+  - SRC-nvd-cve-2026-46519
+  - SRC-nvd-cve-2026-49257
+  - SRC-nvd-mcp-corpus-20260901
+sources_cited:
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-server-enumeration-2026-09-01
+  - SRC-ghsa-mcp-pinot-73cv
+  - SRC-ghsa-9h52-p55h-vw2f
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-inspector-cli-20260728
+  - SRC-mcp-inspector-config-20260728
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-nist-sp80092
+  - SRC-nvd-cve-2025-66416
+  - SRC-nvd-cve-2026-49257
+  - SRC-nvd-mcp-corpus-20260901
+sources_rejected:
+  - source_id: SRC-nvd-cve-2025-66454
+    reason: The record concerns tool enumeration and invocation inside one server, not MCP server enumeration.
+  - source_id: SRC-nvd-cve-2026-46519
+    reason: The record concerns a mismatch between tool discovery and tool-call authorization, not MCP server enumeration.
+sources_blocked: []
+
+conflicts:
+  - issue: serverInfo exposes a name and version but is self-reported and not guaranteed to be trustworthy or unique.
+    resolution: Treat serverInfo as a fingerprinting hint; correlate configuration identity, endpoint, transport, and authenticated principal for detection.
+  - issue: Tool or capability discovery output can differ from effective execution authorization.
+    resolution: Stop the technique at enumeration and require separate assessment of any follow-on invocation or authorization bypass.
+  - issue: Absence from CISA KEV might be mistaken for proof of no exploitation.
+    resolution: State only the dated catalog result and preserve unknown/private exploitation as a limitation.
+
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1601-C005
+  rationale: >-
+    Current protocol and official Inspector sources establish every component of
+    configuration and live-server enumeration, but no directly reviewed source
+    reports the complete adversarial behavior against MCP servers in
+    production or as an adversarial controlled demonstration. The core remains
+    an explicit, bounded inference.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

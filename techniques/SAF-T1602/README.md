@@ -1,309 +1,234 @@
 # SAF-T1602: Tool Enumeration
 
 ## Overview
-**Tactic**: Discovery (ATK-TA0007)  
-**Technique ID**: SAF-T1602  
-**Severity**: Medium  
-**First Observed**: Research-based analysis (2025). No specific public incident attributed to this technique in isolation; it is typically observed as the reconnaissance phase of broader MCP-focused attack chains.  
-**Last Updated**: 2026-04-24  
-**Author**: Asim Mahat (v1.0, 2025-10-25); bishnu bista (v1.1 validation, 2026-04-24)
 
-> **Note**: The Model Context Protocol makes tool discovery a first-class, documented feature — any MCP-authorized client can call `tools/list` and receive the server's complete tool manifest with names, descriptions, and input schemas ([MCP 2025-06-18 Tools specification](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)). This technique is not about discovering something the protocol hides; it is about **abusing the legitimate discovery mechanism at scale or through side channels** — unauthenticated enumeration, fingerprinting through error messages, timing side channels, and aggregation across many servers — to build attack-surface intelligence for follow-on exploitation. The mitigations in this document therefore distinguish between protocol facts cited verbatim from the MCP specification and SAF-M hardening guidance that goes beyond the spec's baseline.
+- **Tactic**: Discovery (ATK-TA0007)
+- **Technique ID**: SAF-T1602
+- **Research Packet**: [research/techniques/SAF-T1602](../../research/techniques/SAF-T1602/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1602/traceability-ledger.yml)
+- **Documentation Status**: Stable
+- **Evidence Status**: Demonstrated
+- **Severity**: Medium
+- **Severity Rationale**: Enumeration reveals the authorized catalog's operational interfaces but does not itself invoke a tool; severity rises when a broad catalog exposes sensitive names, descriptions, or schemas. <!-- SAF-TRACE: claims=SAF-T1602-C003,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+- **First Observed**: No malicious production use was identified in the [reviewed direct-authority corpus](../../research/techniques/SAF-T1602/source-coverage.yml).
+- **Last Updated**: 2026-09-02
+
+## Scope
+
+Tool Enumeration is an actor's use of `tools/list`, including pagination, to obtain the tool definitions an MCP server makes available to that requesting principal. The crossed boundary is the server's authorization- and policy-filtered tool catalog. [MCP Tools specification](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C002,SAF-T1602-C003; sources=SRC-mcp-tools-2026-07-28 -->
+
+### In Scope
+
+- Sending `tools/list` and following `nextCursor` values to inventory the available catalog. <!-- SAF-TRACE: claims=SAF-T1602-C002; sources=SRC-mcp-tools-2026-07-28 -->
+- Collecting returned names, descriptions, schemas, annotations, and related tool metadata to select a possible follow-on operation. <!-- SAF-TRACE: claims=SAF-T1602-C003,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+
+### Out of Scope
+
+- `server/discover`, which returns server identity, supported versions, and capability categories rather than individual tool definitions. [Server Discovery specification](https://modelcontextprotocol.io/specification/2026-07-28/server/discover) <!-- SAF-TRACE: claims=SAF-T1602-C005; sources=SRC-mcp-discovery-2026-07-28 -->
+- `resources/list`, `resources/read`, `prompts/list`, and `prompts/get`, which inventory or retrieve context and prompt templates. [Resources specification](https://modelcontextprotocol.io/specification/2026-07-28/server/resources) [Prompts specification](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts) <!-- SAF-TRACE: claims=SAF-T1602-C006,SAF-T1602-C007; sources=SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+- Tool invocation, tool-definition manipulation, or exploitation of a discovered operation; `tools/call` is a separate request. <!-- SAF-TRACE: claims=SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+
+### Distinguishing Characteristics
+
+The defining observable is a `tools/list` request and its returned tool-definition metadata. Capability discovery stops before individual definitions, resource enumeration centers on URI-addressed context, prompt enumeration centers on user-controlled templates, and execution begins only with a separate tool call. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C005,SAF-T1602-C006,SAF-T1602-C007,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-discovery-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
 
 ## Description
 
-Tool Enumeration is a Discovery-phase technique in which an adversary maps the capabilities exposed by an MCP server (or a population of MCP servers) to inform follow-on attacks. In an authorized MCP session, `tools/list` returns a complete catalog of tools with names, human-readable descriptions, and JSON-schema input definitions. An attacker who holds — or can obtain — any credential with access to that endpoint gains a structured view of what the server can do, including which tools can write to disk, make outbound HTTP requests, execute code, or expose sensitive data. The MCP specification requires servers to *"Implement proper access controls"* and to *"Rate limit tool invocations"* ([MCP 2025-06-18 Tools §Security Considerations](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)). The plain reading of "rate limit tool invocations" is that it covers `tools/call`; whether the same discipline extends to `tools/list` is not settled by the spec itself and is treated in this document as SAF-M hardening guidance. Servers that skip the spec's explicit access-control and tool-invocation rate-limit requirements are enumerable at attacker-controlled rate on `tools/call`; servers that additionally leave `tools/list` unbounded are enumerable at attacker-controlled rate on the primary manifest endpoint.
+MCP servers declaring the `tools` capability must return the tools currently available to the requesting client. The result may vary with authorization on the request, so enumeration observes the catalog after the server's access policy has been applied. [MCP Tools capability requirements](https://modelcontextprotocol.io/specification/2026-07-28/server/tools#capabilities) <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C008; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28 -->
 
-Beyond authorized enumeration, adversaries infer capabilities through side channels on less-protected surfaces: verbose error messages that reveal tool names or argument schemas, timing differences that fingerprint which tools exist, SDK documentation and example clients that leak manifest structure, JS bundles delivered to browser-based MCP clients, and publicly indexed developer pages. MCP deployments that layer a proxy server between MCP clients and upstream providers face an additional inference-level exposure: each layer of the proxy chain is a separate potential enumeration target, and inconsistent rate-limit enforcement between proxy and upstream can let an attacker enumerate the upstream's tools even when the proxy's rate limits appear to hold. This proxy-layer risk is the authors' inference about enumeration under MCP's proxy pattern, not a spec-level guarantee; the MCP 2025-06-18 specification does not explicitly address rate-limit tier alignment between proxies and upstreams.
+The request can disclose names, descriptions, input and output schemas, and annotations. That metadata can reveal which operations are exposed and how later calls would be structured, but enumeration alone does not execute an operation or retrieve resource or prompt content. <!-- SAF-TRACE: claims=SAF-T1602-C003,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
 
-Enumeration is a low-signal precursor. It rarely triggers security alerts on its own because `tools/list` invocation is expected traffic, yet it materially shapes the adversary's follow-on behavior: which tools to poison (see [SAF-T1001](../SAF-T1001/README.md) Tool Poisoning Attack), which credentials to steal (see [SAF-T1504](../SAF-T1504/README.md), [SAF-T1505](../SAF-T1505/README.md), [SAF-T1507](../SAF-T1507/README.md)), and which servers to impersonate (see [SAF-T1004](../SAF-T1004/README.md)). Effective defense anchors on rate limiting, access-controlled `tools/list` invocation, minimal metadata in tool descriptions, and cross-request correlation rather than pattern-match detection of any single call.
+The behavior is Demonstrated because the first-party MCP Inspector documents an end-to-end CLI method for listing a server's tools. This evidence establishes the operation, not malicious use or a production incident. [MCP Inspector quickstart](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector) <!-- SAF-TRACE: claims=SAF-T1602-C004,SAF-T1602-C016; sources=SRC-mcp-inspector-2026,SRC-mcp-tools-2026-07-28 -->
 
 ## Attack Vectors
 
-### Primary Vector: Abuse of the `tools/list` Endpoint
-
-- **Method**: The attacker obtains any MCP credential that grants access to the target server (stolen OAuth token, leaked API key, a compromised developer credential, or a free-tier account on a multi-tenant MCP gateway) and issues `tools/list` at high volume — either against one server at scale to detect dynamic tool registration and `tools/list_changed` notifications, or across many MCP servers to build a cross-deployment capability map.
-- **Prerequisites**: Authentication material for at least one MCP server; a client that speaks JSON-RPC 2.0 (or one of the MCP SDKs); absence or weakness of rate limiting on the `tools/list` endpoint.
-- **Detection difficulty**: Medium — legitimate clients also call `tools/list` (especially on session start and `tools/list_changed` events). Signal comes from rate, breadth, and cross-session correlation rather than any single call.
-
-### Secondary Vectors
-
-#### 1. Error-Message Fingerprinting
-- **Method**: The attacker calls non-existent or malformed `tools/call` requests against the target and parses the JSON-RPC error response. The MCP specification defines `-32602` as the error for unknown tools or invalid arguments ([MCP Tools §Error Handling](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)); servers that echo the attempted tool name, argument schema, or internal handler state in the error's `message` or `data` fields leak enumeration intelligence even without a successful `tools/list` call.
-- **Mitigation anchor**: Constant, non-descriptive error messages for unknown tools and schema violations; separate verbose diagnostics behind an admin-only flag.
-
-#### 2. Timing and Side-Channel Inference
-- **Method**: The attacker measures response-time distributions on `tools/call` with varying tool names. Tools that exist but fail authorization may produce different latency than tools that do not exist at all — letting the attacker infer tool presence without ever obtaining a confirmed `tools/list` response.
-- **Mitigation anchor**: Constant-time unknown-tool rejection; uniform error handling between "unauthorized" and "unknown" cases; response-time jitter on sensitive code paths.
-
-#### 3. Leakage from Public Artifacts
-- **Method**: The attacker harvests tool manifests from places they were never meant to live: SDK documentation generated from the `inputSchema` of production tools, README files in MCP server repositories that include example `tools/list` output, JavaScript bundles shipped to browser-based MCP clients with tool metadata baked in, OpenAPI specs auto-published alongside the MCP server, and developer consoles indexed by search engines.
-- **Mitigation anchor**: Review what ships to each audience; keep production tool manifests out of public documentation pipelines; treat tool names and descriptions as tier-1 sensitive metadata in DLP tooling.
-
-#### 4. Cross-Server Aggregation
-- **Method**: The attacker combines enumeration data from many MCP deployments — each individually unremarkable — into a population view. The [MCPTox benchmark](https://arxiv.org/abs/2508.14925) (Wang et al., 2025) surveyed 45 live MCP servers and 353 tools, demonstrating that the cross-server tool landscape is large and comparable enough to benchmark. An adversary doing the same for targeting purposes can identify which tools appear across multiple deployments (high-value for writing a multi-target exploit) and which are unique to a specific vendor (high-value for targeted attacks).
-- **Mitigation anchor**: Recognize that per-server rate limits do not defend against cross-server enumeration; signal-share suspicious enumeration patterns across MCP deployments through industry ISACs or threat-intel feeds.
-
-### MCP-Specific Amplification
-
-- **Proxy-pattern exposure**: MCP proxy servers that forward `tools/list` to upstream providers expose the upstream's tool surface at the proxy's rate-limit tier, not the upstream's. Inconsistent rate-limit enforcement between layers is a direct enumeration vector. The MCP 2025-06-18 specification does not prescribe how rate limits must align between a proxy and its upstream, so this is a deployment-time hardening concern rather than a spec-level requirement.
-- **`listChanged` notification amplification**: Servers that declare the `listChanged` capability emit `notifications/tools/list_changed` when the tool set changes. An attacker who can trigger dynamic tool registration (e.g., by installing a plugin on a shared MCP server) can use these notifications as an oracle to confirm their changes landed and to map how other clients' tool sets are affected.
-- **Tool-annotation trust**: The MCP specification explicitly warns: *"clients MUST consider tool annotations to be untrusted unless they come from trusted servers."* Annotations — which describe tool behavior in machine-readable form — are rich enumeration targets because they often include capability flags (read-only, destructive, requires network) that let an attacker filter tools by exploitability without invoking them.
+- **Primary Vector**: An actor able to send MCP requests issues `tools/list` to a reachable server. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C002; sources=SRC-mcp-tools-2026-07-28 -->
+- **Secondary Vectors**: <!-- SAF-TRACE: claims=SAF-T1602-C002; sources=SRC-mcp-tools-2026-07-28 -->
+  - Pagination retrieves later catalog pages when the first response includes `nextCursor`. <!-- SAF-TRACE: claims=SAF-T1602-C002; sources=SRC-mcp-tools-2026-07-28 -->
+  - A compromised valid principal enumerates only the set exposed to its authorization unless server policy is overbroad or incorrectly enforced. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C008,SAF-T1602-C009; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28 -->
+- **Affected Components**: MCP client, MCP server catalog, authorization layer, and JSON-RPC observability pipeline. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C008,SAF-T1602-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- **Trust Boundary Crossed**: The requesting principal receives the server's authorization-filtered tool interface metadata. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C003; sources=SRC-mcp-tools-2026-07-28 -->
 
 ## Technical Details
 
 ### Prerequisites
 
-- Authentication material for at least one MCP server (stolen OAuth token, leaked API key, free-tier or trial account on a multi-tenant MCP gateway, or legitimate insider access).
-- A JSON-RPC 2.0 client — any of the MCP SDKs, a custom script, or `curl` with a hand-rolled JSON-RPC envelope.
-- For side-channel vectors: the ability to measure response latency with sub-hundred-millisecond resolution, or read access to server error responses.
-- Absence or weakness of at least one of: rate limiting on `tools/list`, access-controlled tool manifest, minimal error messages, DLP on developer documentation pipelines.
+- The actor can reach an MCP endpoint and send a conforming JSON-RPC request. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C010; sources=SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- When HTTP authorization is used, the request carries a token accepted for that server; authorization is optional in MCP and differs for stdio. <!-- SAF-TRACE: claims=SAF-T1602-C008; sources=SRC-mcp-authorization-2026-07-28 -->
+- The server declares tools and exposes at least one definition to the request's authorization context. <!-- SAF-TRACE: claims=SAF-T1602-C001; sources=SRC-mcp-tools-2026-07-28 -->
 
 ### Attack Flow
 
-```mermaid
-sequenceDiagram
-    participant A as Attacker
-    participant M as MCP Server
-    participant U as Upstream API
-
-    Note over A,M: Phase 1 — Credential or entry point
-    A->>M: Authenticate (stolen token / free-tier account / leaked key)
-    M-->>A: Session established
-
-    Note over A,M: Phase 2 — Direct enumeration
-    loop tools/list across pagination
-        A->>M: JSON-RPC tools/list { cursor }
-        M-->>A: { tools: [...], nextCursor }
-    end
-
-    Note over A,M: Phase 3 — Side-channel enrichment
-    A->>M: tools/call with invalid/unknown tool name
-    M-->>A: JSON-RPC error -32602 (possibly verbose)
-    A->>A: Fingerprint from error messages + response-time distribution
-
-    Note over A,M: Phase 4 — Capability analysis
-    A->>A: Build tool inventory (names, schemas, annotations)
-    A->>A: Flag high-value targets (write access, network, code exec)
-
-    Note over A,U: Phase 5 — Follow-on attack selection
-    A->>M: Targeted exploitation (poisoning / token theft / impersonation)
-    M->>U: Attacker-driven upstream action
-```
-
-1. **Credential acquisition**: the attacker obtains any credential that satisfies the target server's authorization check.
-2. **Direct enumeration**: paginated `tools/list` calls produce the complete tool catalog — names, titles, descriptions, `inputSchema`, `outputSchema`, and annotations.
-3. **Side-channel enrichment**: invalid `tools/call` requests and timing measurements fill in what the direct enumeration missed (tools gated by role, tools that exist but are hidden from `tools/list` responses for that session).
-4. **Capability analysis**: offline, the attacker categorizes tools by the follow-on behavior they enable — file system access, outbound HTTP, code execution, credential exposure, upstream-API scope — and ranks them by exploit utility.
-5. **Follow-on attack selection**: the enumeration output is the input to [SAF-T1001](../SAF-T1001/README.md) (Tool Poisoning), [SAF-T1004](../SAF-T1004/README.md) (Server Impersonation), [SAF-T1504](../SAF-T1504/README.md) (Token Theft via API Response), and similar follow-on techniques.
+1. **Reconnaissance or Setup**: The actor identifies a reachable MCP server or learns from `server/discover` that it supports tools. <!-- SAF-TRACE: claims=SAF-T1602-C005; sources=SRC-mcp-discovery-2026-07-28 -->
+2. **Delivery**: The actor sends a JSON-RPC `tools/list` request with the required request metadata and, when applicable, authorization. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C008,SAF-T1602-C010; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0 -->
+3. **Trigger or Execution**: The server resolves the catalog available to the requesting principal and returns tool definitions. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C003; sources=SRC-mcp-tools-2026-07-28 -->
+4. **Boundary Crossing**: The response crosses the catalog boundary with names, descriptions, schemas, and optional annotations. <!-- SAF-TRACE: claims=SAF-T1602-C003; sources=SRC-mcp-tools-2026-07-28 -->
+5. **Objective**: The actor inventories possible operations and their interfaces without invoking them. <!-- SAF-TRACE: claims=SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+6. **Follow-On Activity**: Any later tool call or exploitation is a separate behavior and must be analyzed independently. <!-- SAF-TRACE: claims=SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
 
 ### Example Scenario
 
-**Scenario: Free-tier gateway enumeration across tenants**
+A synthetic client at `client.example` lists an inert weather server's tool catalog; the example stops at the metadata response and performs no tool call. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C003,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
 
-```text
-1. Attacker signs up for a free-tier account on a multi-tenant MCP gateway
-   that exposes a curated set of MCP servers (company productivity tools,
-   code-execution sandboxes, etc.) under a single JSON-RPC endpoint.
-
-2. Attacker issues `tools/list` against each exposed server:
-       POST /mcp
-       Content-Type: application/json
-       Authorization: Bearer <free-tier-token>
-       { "jsonrpc":"2.0", "id":1, "method":"tools/list",
-         "params":{"cursor":null} }
-
-3. For each server, attacker paginates through the response's `nextCursor`
-   until the full manifest is captured. Each manifest entry includes the
-   tool name, description, JSON schema of arguments, and any annotations.
-
-4. Attacker extracts capability signals from annotations and descriptions:
-   - annotations.readOnlyHint=false  → tool can mutate state
-   - description contains "HTTP" / "fetch" / "URL"  → outbound network
-   - description contains "exec" / "run" / "eval"  → code execution
-   - description contains "credential" / "token" / "secret"  → auth surface
-
-5. Across the gateway's multi-tenant fleet, attacker identifies two
-   high-value candidates:
-   - A shared code-execution sandbox whose `input_schema` accepts arbitrary
-     language + code, with no authenticated scope restrictions documented.
-   - A calendar-integration tool whose description mentions "service
-     account credentials" — candidate for SAF-T1504-style token exfil.
-
-6. Attacker's free-tier rate limit allowed ~30 `tools/list` calls per
-   minute. Across 48 hours, they pulled manifests from every server on the
-   gateway without triggering a single abuse-alert — the gateway's rate
-   limiter was scoped to `tools/call` only, not to `tools/list`.
+```json
+{
+  "request": {"jsonrpc": "2.0", "id": "inventory-1", "method": "tools/list", "params": {"cursor": null}},
+  "response_summary": {"tools": [{"name": "weather.lookup", "inputSchema": {"type": "object"}}]}
+}
 ```
 
-**What changes when `tools/list` is access-controlled and rate-limited per hardening recommendations built on top of the MCP spec**: authenticated free-tier accounts receive a tool manifest scoped to their tier (tools requiring higher scopes either are omitted from the manifest entirely (scope-filtering) or return an error that does not reveal the tool exists (constant error semantics)); `tools/list` has the same rate limit as `tools/call` (preventing manifest-sweep patterns); cross-server aggregation requires an attacker to hold credentials for each target separately rather than one gateway credential; and `tools/list_changed` notifications are scoped to the tool set the requesting session is authorized to see.
+## Evidence and Current State
+
+### Evidence Summary
+
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1602-C001 | Tool catalogs are returned for the requesting client and may vary by authorization. | Demonstrated | SRC-mcp-tools-2026-07-28: [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) | Does not identify intent. |
+| SAF-T1602-C002 | `tools/list` is paginated JSON-RPC and returns tool records. | Demonstrated | SRC-mcp-tools-2026-07-28: [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) | Does not prescribe logging fields. |
+| SAF-T1602-C003 | Tool definitions expose interface metadata. | Demonstrated | SRC-mcp-tools-2026-07-28: [MCP Tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) | Optional fields vary. |
+| SAF-T1602-C004 | MCP Inspector implements a tool-listing CLI workflow. | Demonstrated | SRC-mcp-inspector-2026: [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector) | Controlled workflow, not a malicious incident. |
+| SAF-T1602-C005 | Server discovery returns capabilities, not tool definitions. | Demonstrated | SRC-mcp-discovery-2026-07-28: [Server Discovery](https://modelcontextprotocol.io/specification/2026-07-28/server/discover) | Instructions can contain other text. |
+| SAF-T1602-C006 | Resource operations inventory URI-addressed context. | Demonstrated | SRC-mcp-resources-2026: [Resources](https://modelcontextprotocol.io/specification/2026-07-28/server/resources) | Tools may return resource links. |
+| SAF-T1602-C007 | Prompt operations inventory user-controlled templates. | Demonstrated | SRC-mcp-prompts-2026: [Prompts](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts) | Interface presentation is implementation-specific. |
+| SAF-T1602-C008 | HTTP authorization is per request and invalid tokens must be rejected. | Demonstrated | SRC-mcp-authorization-2026-07-28: [Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Does not apply to stdio. |
+| SAF-T1602-C009 | Least privilege and catalog filtering constrain enumeration. | Research-Derived | SRC-mcp-authorization-2026-07-28; SRC-mcp-security-2026-07-28; SRC-mcp-tools-2026-07-28 | Scope policy is implementation-specific. |
+| SAF-T1602-C010 | JSON-RPC and OpenTelemetry expose correlation fields for telemetry. | Demonstrated | SRC-jsonrpc-2.0; SRC-opentelemetry-jsonrpc-1.44.0 | Method capture is opt-in; authorization context is not standardized. |
+| SAF-T1602-C011 | A list event alone is ambiguous because legitimate clients list tools. | Research-Derived | SRC-mcp-tools-2026-07-28; SRC-mcp-inspector-2026 | Requires local behavioral context. |
+| SAF-T1602-C012 | Authorization and burst-pagination correlation is testable local logic. | Research-Derived | SRC-mcp-tools-2026-07-28; SRC-opentelemetry-jsonrpc-1.44.0 | Threshold is proposed and tunable. |
+| SAF-T1602-C013 | Listing exposes metadata but does not itself invoke or read content. | Research-Derived | SRC-mcp-tools-2026-07-28; SRC-mcp-resources-2026; SRC-mcp-prompts-2026 | Metadata can still be sensitive. |
+| SAF-T1602-C014 | ATT&CK T1046 is analogous, not direct. | Research-Derived | SRC-mitre-attack-t1046-v3.2; SRC-mcp-tools-2026-07-28 | Different discovery layer. |
+| SAF-T1602-C015 | Response should verify identity, preserve correlated records, and reduce catalog exposure. | Research-Derived | SRC-mcp-authorization-2026-07-28; SRC-mcp-tools-2026-07-28; SRC-jsonrpc-2.0 | Operational details vary. |
+| SAF-T1602-C016 | Public evidence demonstrates listing but not malicious production use. | Demonstrated | SRC-mcp-inspector-2026; SRC-mcp-tools-2026-07-28 | Corpus-bounded conclusion. |
+
+### Current State
+
+- **Affected Environments**: Any MCP server that declares tools can answer `tools/list`; the visible set can be authorization-dependent. <!-- SAF-TRACE: claims=SAF-T1602-C001; sources=SRC-mcp-tools-2026-07-28 -->
+- **Known Exploitation**: The complete operation is publicly demonstrated by MCP Inspector, but no malicious production use was identified in the [reviewed corpus](../../research/techniques/SAF-T1602/source-coverage.yml).
+- **Available Protections**: Per-request authorization, least-privilege scopes, catalog filtering, and tool-usage audit records can constrain or expose enumeration. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C009,SAF-T1602-C011; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+- **Residual Risk**: Legitimate clients also list tools, so intent cannot be established from the method alone. <!-- SAF-TRACE: claims=SAF-T1602-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+
+### Known Breaches and Vulnerabilities
+
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| No qualifying direct example in the reviewed corpus | Reviewed 2026-09-02 across current MCP authority pages, CVE records, maintainer advisories, and CISA exploitation assessments | No direct remediation claim; preserve the evidence gap and enforce ordinary authorization and audit controls | The [coverage audit](../../research/techniques/SAF-T1602/source-coverage.yml) classifies three high-impact MCP vulnerability families as adjacent or rejected, not Tool Enumeration | The conclusion is bounded to the direct-authority corpus and date. |
+
+### Real-World Incidents or Demonstrations
+
+#### MCP Inspector controlled listing (2026-07-28 documentation)
+
+The MCP project documents a CLI invocation that lists a server's tools and exits. It demonstrates the end-to-end enumeration operation in a controlled developer context; it does not establish adversarial use. [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector) <!-- SAF-TRACE: claims=SAF-T1602-C004,SAF-T1602-C016; sources=SRC-mcp-inspector-2026,SRC-mcp-tools-2026-07-28 -->
 
 ## Impact Assessment
 
-- **Confidentiality**: Medium (direct) → High (after follow-on attacks) — enumeration itself only exposes tool metadata, but that metadata drives follow-on attacks that expose the data the tools can access.
-- **Integrity**: Low (direct) → High (after follow-on) — enumeration does not modify state; the follow-on attacks it enables (tool poisoning, impersonation) do.
-- **Availability**: Low–Medium — high-volume enumeration can exhaust `tools/list` rate budgets, producing service degradation for legitimate clients on gateways that share quota.
-- **Scope**: Bounded by what a single credential sees. On multi-tenant gateways, scope can widen dramatically if the gateway misimplements per-tenant manifest filtering.
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | Low | The operation returns authorized interface metadata; sensitivity rises when names, descriptions, or schemas expose operational detail. <!-- SAF-TRACE: claims=SAF-T1602-C003,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 --> |
+| Integrity | None | `tools/list` does not itself invoke a tool or modify server state. <!-- SAF-TRACE: claims=SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 --> |
+| Availability | None | Enumeration alone is a listing operation; availability effects from abusive volume require separate rate or resource-exhaustion analysis. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 --> |
+| Scope | Local | The response covers one server's catalog as filtered for one request authorization; aggregation across servers requires additional access. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C003; sources=SRC-mcp-tools-2026-07-28 --> |
 
-### Additional Impacts
+### Severity Conditions
 
-- **Reduced defender time-to-exploit**: a capability-mapped server lets the adversary skip their own reconnaissance and move straight to exploitation; enumeration compresses the timeline of an MCP-driven breach.
-- **Silent third-party exposure**: in the proxy pattern, the upstream provider receives no signal that its tool surface has been mapped because the enumeration happens against the proxy, not the upstream.
-- **Compounding risk across servers**: organizations that run multiple MCP servers with shared authentication infrastructure (e.g., an internal SSO) face compounding enumeration exposure when a single credential is stolen.
+- **Severity increases when**: The requester has broad scopes or the catalog includes sensitive operational vocabulary and rich schemas. <!-- SAF-TRACE: claims=SAF-T1602-C003,SAF-T1602-C009; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28 -->
+- **Severity decreases when**: The server returns only authorization-filtered, least-privilege tool definitions and audits requests. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C009,SAF-T1602-C011; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-inspector-2026 -->
 
 ## Detection Methods
 
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| MCP host, server, or proxy audit | JSON-RPC request and response | timestamp, `rpc.method`, request ID, actor/client identity, target server, authorization decision, cursor, returned tool count | Preserve request/response correlation and record `tools/list` explicitly rather than `_OTHER`. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011,SAF-T1602-C012; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 --> |
+| Authorization and policy decision log | Token validation, scope check, and catalog filtering | principal, audience, scopes, server, decision, policy version, correlation ID | Actor, authorization, cursor, and result-count fields are local extensions beyond generic JSON-RPC telemetry. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C009,SAF-T1602-C010; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0 --> |
+
 ### Indicators of Compromise (IoCs)
 
-- Anomalously high `tools/list` call volume from a single session, IP, or credential — particularly calls that paginate through the full cursor chain repeatedly without intervening `tools/call`.
-- `tools/list` calls from accounts that have never subsequently invoked `tools/call` against the enumerated tools.
-- Bursts of `tools/call` with varied invalid tool names producing `-32602` errors (fingerprinting pattern).
-- `tools/call` requests with consistent argument variation on unknown tools — attempts to map `inputSchema` via trial and error.
-- Access to tool-manifest endpoints or SDK documentation routes from user agents inconsistent with known developer tooling (e.g., `curl`, `python-requests`, headless browsers).
-- Cross-session correlation: a credential that enumerates multiple MCP servers on the same gateway within a short window, especially if those servers are normally accessed in isolation.
-
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. Tool enumeration is an inherently legitimate behavior; detection relies on rate, breadth, and correlation rather than any single invocation. Organizations should:
-- Instrument `tools/list` and `tools/call` at the gateway and correlate credentials, source IPs, and server IDs across the full session.
-- Track per-credential distinct-servers-enumerated counts on short windows; alert on step-function increases.
-- Review error-response payloads regularly to confirm that unknown-tool responses do not leak schema or argument names.
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: MCP Tool Enumeration Detection
-id: 7b3e4a9c-2d18-4f62-9a71-e83d5c6b2f40
-status: experimental
-description: Detects potential MCP tool enumeration through anomalous tools/list volume, cross-server enumeration by a single credential, and fingerprinting patterns against unknown-tool error responses
-author: SAF-MCP Team
-date: 2026-04-24
-references:
-  - https://github.com/SAF-MCP/saf-mcp/tree/main/techniques/SAF-T1602
-  - https://modelcontextprotocol.io/specification/2025-06-18/server/tools
-  - https://attack.mitre.org/techniques/T1526/
-  - https://attack.mitre.org/techniques/T1518/
-logsource:
-  product: mcp
-  service: jsonrpc_requests
-detection:
-  # Correlation selectors — require Sigma v2 correlation rules or equivalent
-  # stateful SIEM logic keyed on credential/session/source IP.
-  selection_high_volume_list:
-    method: 'tools/list'
-    count_per_credential|gt: 50
-    timeframe: 5m
-  selection_cross_server_sweep:
-    method: 'tools/list'
-    distinct_server_ids_per_credential|gt: 5
-    timeframe: 10m
-  selection_unknown_tool_fingerprint:
-    method: 'tools/call'
-    error_code: -32602
-    count_distinct_tool_names_per_session|gt: 10
-    timeframe: 5m
-  selection_list_without_followup_call:
-    method: 'tools/list'
-    session_tools_call_count: 0
-    session_duration|gt: 60
-  condition: selection_high_volume_list or selection_cross_server_sweep or selection_unknown_tool_fingerprint or selection_list_without_followup_call
-falsepositives:
-  - Legitimate developer tools that periodically refresh tool manifests (MCP client SDKs on startup, IDE integrations)
-  - Automated monitoring of tool availability (SRE health checks)
-  - Gateway health probes during deployment
-level: medium
-tags:
-  - attack.discovery
-  - attack.t1526
-  - attack.t1518
-  - safe.t1602
-```
+- No durable artifact is inherent to `tools/list`; treat it as behavior and policy context, not a standalone IoC. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
 
 ### Behavioral Indicators
 
-- A newly created credential that immediately enumerates every reachable MCP server on a gateway before invoking any tool.
-- Off-hours enumeration activity from accounts associated with a time-zone-bounded user population.
-- Enumeration followed within minutes by highly targeted `tools/call` invocations against the most permissive tools identified.
-- User agents rotating across enumerations from the same credential (a signal of automation attempting to evade per-UA rate limits).
-- Enumeration patterns that halt or sharply slow immediately after a `tools/list_changed` notification — consistent with an attacker whose goal was to observe dynamic registration.
+- `tools/list` from a principal not authorized or expected to inventory the target server. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C012; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- Three or more cursor-bearing list pages from the same actor and server within sixty seconds, after excluding approved inventory jobs. <!-- SAF-TRACE: claims=SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- Enumeration followed by a separate `tools/call` can increase investigative priority, but the invocation is not part of this technique. <!-- SAF-TRACE: claims=SAF-T1602-C002,SAF-T1602-C013; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026 -->
+
+### Detection Analytic
+
+The standalone experimental analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Identify tool listing by an unauthorized principal or burst pagination that exceeds a local inventory baseline. <!-- SAF-TRACE: claims=SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- **Rule Status**: Experimental because the protocol does not label adversarial intent and generic telemetry omits some required context. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+- **Detection Logic**: Match `tools/list`, then alert if authorization is denied/unapproved or if one actor and server produce at least three cursor-bearing pages within sixty seconds. <!-- SAF-TRACE: claims=SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- **Correlation Window**: Sixty seconds for the burst branch. <!-- SAF-TRACE: claims=SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- **Known False Positives**: Approved inventory, administration, testing, and client cache refreshes can legitimately list tools. <!-- SAF-TRACE: claims=SAF-T1602-C004,SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-inspector-2026,SRC-mcp-tools-2026-07-28,SRC-opentelemetry-jsonrpc-1.44.0 -->
+- **Known Limitations**: Missing actor, authorization, method, cursor, or server fields prevents reliable correlation; a single approved request is intentionally not alerted. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011,SAF-T1602-C012; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+- **Tuning Guidance**: Maintain server-specific inventory allowlists and replace the three-page threshold with a measured local baseline where available. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-opentelemetry-jsonrpc-1.44.0 -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](test-logs.json)
+- **Validation Script**: [test_detection_rule.py](test_detection_rule.py)
+- **Expected Result**: Nine cases cover positive, negative, threshold boundary, malformed-field, and legitimate-lookalike behavior. [Recorded results](../../research/techniques/SAF-T1602/validation/detection-test.txt) [Strict validation](../../research/techniques/SAF-T1602/validation/strict-validator.txt)
+- **Last Validated**: 2026-09-02. [Quality review](../../research/techniques/SAF-T1602/quality-review.yml)
+- **Feasibility Waiver**: None. [Technique contract](../../research/techniques/SAF-T1602/technique-contract.yml)
 
 ## Mitigation Strategies
 
 ### Preventive Controls
 
-1. **Apply rate limits to `tools/list` invocations — hardening recommendation.** The MCP Tools specification's Security Considerations section requires servers to *"Rate limit tool invocations"* ([MCP 2025-06-18 Tools §Security Considerations](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)), which most plainly reads as applying to `tools/call`. Extending the same rate-limit discipline to `tools/list` is a SAF-M hardening recommendation, not a direct spec requirement — but it is load-bearing for T1602 mitigation because `tools/list` is the primary enumeration vector. Rate-limiting only `tools/call` while leaving `tools/list` unbounded is a common misimplementation.
-
-2. **Hardening recommendation: return scope-filtered manifests from `tools/list`.** The MCP specification does not mandate manifest filtering by caller scope — it only requires access controls on tool invocations generally — but scope filtering is a defensive hardening measure that limits enumeration blast radius on compromised credentials. Tools gated behind higher scopes SHOULD NOT appear in lower-scope `tools/list` responses. Administrative and debug tools in particular should not appear in end-user-scoped manifests.
-
-3. **Constant, non-descriptive error messages.** `-32602` responses for unknown tools and invalid arguments must not reveal whether the tool exists, which schema was expected, or any internal handler state. Verbose diagnostic errors belong in admin-only development channels. ([MCP Tools §Error Handling](https://modelcontextprotocol.io/specification/2025-06-18/server/tools))
-
-4. **Minimal tool metadata.** Tool `description` strings should describe the action in the user's language, not the implementation's language — avoid mentioning credential storage, upstream API names, internal module paths, or security-control details (rate limits, audit hooks) that help an attacker model the server.
-
-5. **Constant-time unknown-tool rejection.** Return `-32602` for unknown tools in a time envelope indistinguishable from unauthorized-tool rejection. This defeats timing-based tool-existence inference.
-
-6. **DLP on developer artifacts.** Audit what ships to external audiences: SDK documentation regenerated from production `inputSchema`, tool manifests baked into browser bundles, OpenAPI specs auto-published alongside the MCP endpoint, and developer-console pages indexed by search engines. Treat production tool names and descriptions as restricted metadata in your DLP tooling.
-
-7. **Proxy-aware rate limiting — hardening guidance.** MCP proxies that forward to upstream providers inherit the upstream's tool surface at the proxy's rate-limit tier. Align rate-limit tiers between proxy and upstream to prevent layer-crossing enumeration; the MCP specification requires rate-limiting on tool invocations ([MCP 2025-06-18 Tools §Security Considerations](https://modelcontextprotocol.io/specification/2025-06-18/server/tools)) but does not specify how proxy and upstream tiers must align, so this is a deployment-time defensive posture rather than a spec requirement.
-
-8. **Scoped `listChanged` notifications.** Servers that support `tools/list_changed` must scope notifications to the tool set the receiving session is authorized to see; a session should never learn about tool-set changes for tools it could not have listed.
+1. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13.md)**: Validate token audience and validity before returning a catalog; reject invalid tokens. [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
+2. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29.md)**: Return only tools permitted by the authorization presented on the request. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C009; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28 -->
+3. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16.md)**: Start with baseline scopes and elevate only for the current operation; avoid publishing an entire scope catalog. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#scope-minimization) <!-- SAF-TRACE: claims=SAF-T1602-C009; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28 -->
 
 ### Detective Controls
 
-1. **Per-credential enumeration metrics.** Track `tools/list` call volume, distinct servers enumerated, and distinct cursor values paginated per credential on rolling 5-, 10-, and 60-minute windows. Alert on step-function increases.
-
-2. **Cross-session correlation.** Correlate credential usage across servers on the same gateway. A credential that enumerates five or more otherwise unrelated servers within ten minutes is an enumeration candidate regardless of individual per-server rate-limit compliance.
-
-3. **Error-pattern monitoring.** Track `-32602` response volume per session. A session with many error responses preceding a successful `tools/call` pattern is a fingerprinting signal.
-
-4. **Manifest-sensitivity audits.** Periodically diff the public-facing manifest against the internal one. Any tool that appears on the public surface unexpectedly is an exposure event; any internal tool whose description has acquired capability-revealing language since the last audit is a regression candidate.
+1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12.md)**: Record the JSON-RPC method and request ID together with actor, server, authorization decision, cursor, and result count. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20.md)**: Allowlist approved inventory jobs and alert on denied principals or unusual pagination bursts. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-opentelemetry-jsonrpc-1.44.0 -->
 
 ### Response Procedures
 
-1. **Immediate actions**:
-   - Rotate the credential used for the enumeration and any related session tokens.
-   - Apply a short-term rate-limit cap on `tools/list` for the affected credential class while the incident is investigated.
-   - Snapshot the manifest state at the time of detection for downstream forensic comparison.
+#### Immediate Actions
 
-2. **Investigation steps**:
-   - Reconstruct the full enumeration timeline (which servers, which tools, which credentials, which source IPs).
-   - Identify whether follow-on `tools/call` activity occurred and which tools it targeted.
-   - Correlate with outbound API logs (for tools that make upstream requests) to determine whether the enumeration progressed to exploitation.
+- Verify the principal, target server, token audience, scopes, and authorization decision; block access and apply **[SAF-M-37: Token Rotation and Invalidation](../../mitigations/SAF-M-37.md)** when local evidence shows it is unauthorized. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
+- Preserve correlated list requests and responses before changing catalog or access policy. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C015; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28 -->
 
-3. **Remediation**:
-   - Tighten rate limits and access-control scoping on `tools/list` to match `tools/call` if they diverged.
-   - Review tool `description` strings and annotations for leakage; rewrite where production tools reveal implementation detail.
-   - If the enumeration used a gateway credential with multi-tenant reach, audit tenant isolation in the gateway's manifest-filtering code path.
-   - Feed detection signatures back into continuous SIEM rules so that the next attempt matches a known-enumeration pattern.
+#### Investigation Steps
+
+- Reconstruct pages by actor, server, request ID, cursor, time, authorization decision, and returned tool count. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C012,SAF-T1602-C015; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28 -->
+- Determine whether a later `tools/call` or another technique followed enumeration, without conflating that activity with the listing itself. <!-- SAF-TRACE: claims=SAF-T1602-C013,SAF-T1602-C015; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-resources-2026,SRC-mcp-prompts-2026,SRC-mcp-authorization-2026-07-28,SRC-jsonrpc-2.0 -->
+
+#### Remediation
+
+- Correct authorization or catalog-filtering policy and reduce broad scopes before restoring access. <!-- SAF-TRACE: claims=SAF-T1602-C009,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
+- Add a regression case for the affected principal, server, and catalog policy and retune the pagination baseline if the alert was a legitimate lookalike. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-opentelemetry-jsonrpc-1.44.0 -->
 
 ## Related Techniques
 
-- [SAF-T1601](../SAF-T1601/README.md): MCP Server Enumeration — upstream sibling. T1601 is Discovery of the *servers* (network scanning, DNS rebinding, IP range sweeps); T1602 is Discovery of the *capabilities* of an already-discovered server.
-- [SAF-T1603](../SAF-T1603/README.md): System Prompt Disclosure — sibling Discovery technique targeting the hidden system prompt. Distinct from T1602 in that the `tools/list` endpoint is a spec-defined, documented part of the MCP tool protocol, while system-prompt contents are not part of any advertised surface.
-- [SAF-T1001](../SAF-T1001/README.md): Tool Poisoning Attack — common follow-on. Enumeration identifies the tool most worth poisoning.
-- [SAF-T1004](../SAF-T1004/README.md): Server Impersonation — common follow-on. A capability-mapped server is easier to impersonate convincingly.
-- [SAF-T1504](../SAF-T1504/README.md): Token Theft via API Response — common follow-on against enumeration targets that expose credential-handling tools.
-
-## References
-
-### Specifications
-
-- [Model Context Protocol Specification — Tools (2025-06-18)](https://modelcontextprotocol.io/specification/2025-06-18/server/tools) — defines `tools/list`, `tools/call`, `tools/list_changed`, error codes, and the Security Considerations mandating access controls and rate-limiting on tool invocations
-- [Model Context Protocol Specification — Security Best Practices (2025-06-18)](https://modelcontextprotocol.io/specification/2025-06-18/basic/security_best_practices) — general MCP security guidance referenced for cross-cutting hardening context; does not itself address enumeration rate-limit tier alignment
-
-### Research
-
-- [Wang et al. — MCPTox: A Benchmark for Tool Poisoning Attack on Real-World MCP Servers (arXiv:2508.14925)](https://arxiv.org/abs/2508.14925) — surveyed 45 live MCP servers and 353 authentic tools; cited here as context for the size and comparability of the real-world MCP tool landscape. The paper's primary subject is tool poisoning ([SAF-T1001](../SAF-T1001/README.md)), not tool enumeration, but its empirical MCP-server census is relevant evidence that cross-server capability aggregation is a realistic adversary objective.
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1601: MCP Server Enumeration](../SAF-T1601/README.md) | Prerequisite or alternative | Returns configured or reachable server identity and capability metadata, not individual tool definitions. <!-- SAF-TRACE: claims=SAF-T1602-C005; sources=SRC-mcp-discovery-2026-07-28 --> |
 
 ## MITRE ATT&CK Mapping
 
-**Note**: MITRE ATT&CK does not include an MCP-specific tool-enumeration technique. The mappings below are the closest analogues in existing MITRE coverage. The previous version of this document claimed a MITRE technique `T1602 – Tool Enumeration` that does not exist in MITRE's enterprise matrix (real MITRE T1602 is "Data from Configuration Repository" under the Collection tactic); this validation corrects that mapping.
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1046](https://attack.mitre.org/techniques/T1046/) | Network Service Discovery | Analogous | Both inventory exposed functionality for later selection, but T1046 concerns services on hosts or network infrastructure while this technique reads an MCP application-protocol catalog. <!-- SAF-TRACE: claims=SAF-T1602-C014; sources=SRC-mitre-attack-t1046-v3.2,SRC-mcp-tools-2026-07-28 --> |
 
-- [T1526 — Cloud Service Discovery](https://attack.mitre.org/techniques/T1526/) — *Primary analogue*. MCP tool enumeration is structurally identical to identity-driven API discovery: the adversary holds a credential and enumerates the services or capabilities exposed to that identity. MITRE's canonical examples (Microsoft Graph API, Azure Resource Manager API) match the shape of JSON-RPC `tools/list` exactly — an authenticated caller retrieves a structured manifest of available operations.
-- [T1518 — Software Discovery](https://attack.mitre.org/techniques/T1518/) — *Secondary analogue*. The less-exact but widely-cited match: MCP tools are functionally similar to software capabilities that adversaries enumerate to shape follow-on behaviors. The mapping is less precise than T1526 because MCP tools are API-exposed operations rather than installed software, but the automation-and-shaping pattern is directly parallel.
-- [T1046 — Network Service Discovery](https://attack.mitre.org/techniques/T1046/) — *Related*, more applicable to the upstream sibling [SAF-T1601](../SAF-T1601/README.md) (finding the MCP servers themselves) than to T1602 (enumerating tools on an already-discovered server). Included here for completeness of the Discovery-tactic mapping.
+## References
+
+1. **SRC-mcp-tools-2026-07-28**: [MCP Tools specification](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) — Model Context Protocol contributors; capabilities, listing, tool metadata, and security considerations.
+2. **SRC-mcp-inspector-2026**: [MCP Inspector](https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector) — Model Context Protocol documentation team; controlled CLI listing workflow.
+3. **SRC-mcp-authorization-2026-07-28**: [MCP Authorization specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — Model Context Protocol contributors; per-request authorization and scope handling.
+4. **SRC-mcp-security-2026-07-28**: [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices) — Model Context Protocol security contributors; scope minimization and audit guidance.
+5. **SRC-mcp-discovery-2026-07-28**: [MCP Server Discovery specification](https://modelcontextprotocol.io/specification/2026-07-28/server/discover) — Model Context Protocol contributors; identity, version, and capability discovery.
+6. **SRC-mcp-resources-2026**: [MCP Resources specification](https://modelcontextprotocol.io/specification/2026-07-28/server/resources) — Model Context Protocol contributors; resource listing and reading.
+7. **SRC-mcp-prompts-2026**: [MCP Prompts specification](https://modelcontextprotocol.io/specification/2026-07-28/server/prompts) — Model Context Protocol contributors; prompt listing and retrieval.
+8. **SRC-jsonrpc-2.0**: [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification) — JSON-RPC Working Group; request, method, identifier, and response correlation.
+9. **SRC-opentelemetry-jsonrpc-1.44.0**: [OpenTelemetry JSON-RPC semantic conventions](https://opentelemetry.io/docs/specs/semconv/rpc/json-rpc/) — OpenTelemetry Semantic Conventions maintainers; JSON-RPC span attributes and limitations.
+10. **SRC-mitre-attack-t1046-v3.2**: [MITRE ATT&CK T1046, Network Service Discovery](https://attack.mitre.org/techniques/T1046/) — MITRE ATT&CK team; contributors Aaron Sullivan (ZerkerEOD) and Praetorian; version 3.2.
 
 ## Version History
 
 | Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-10-25 | Initial documentation of tool enumeration | Asim Mahat |
-| 1.1 | 2026-04-24 | Validation pass: restructured to current sibling template (Attack Vectors with Primary + Secondary, Technical Details with Mermaid flow, Impact Assessment with CIA + Scope, Detection Methods with Sigma block, Mitigation Strategies split Preventive / Detective / Response, Related Techniques, References, MITRE ATT&CK Mapping); corrected MITRE mapping from the non-existent `T1602 – Tool Enumeration` to T1526 (Cloud Service Discovery) primary with T1518 (Software Discovery) secondary and T1046 (Network Service Discovery) related, since MCP's API-exposed tool surface more closely matches cloud-service/API enumeration than installed-software inventory; replaced ChatGPT-sourced references (`utm_source=chatgpt.com`) with verified primary sources anchored by the MCP Tools specification; authored new `detection-rule.yml` covering volume, cross-server, and fingerprinting patterns | bishnu bista |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-02 | Initial clean-room technique, research packet, tested analytic, and framework fragments | OpenAI Codex clean-room research agent |

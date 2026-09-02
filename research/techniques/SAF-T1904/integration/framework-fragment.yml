@@ -1,0 +1,22 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1904
+    name: Chat-Based Backchannel
+    documentation_status: stable
+    evidence_status: research-derived
+    tactics: [ATK-TA0011]
+    technique_path: techniques/SAF-T1904/README.md
+    research_packet: research/techniques/SAF-T1904
+    related_techniques: [SAF-T1102, SAF-T1911, SAF-T1903]
+    mitigations: [SAF-M-11, SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+    detection:
+      rule: techniques/SAF-T1904/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1904/test_detection_rule.py
+        - tests/SAF-T1904/test-cases.json
+        - research/techniques/SAF-T1904/validation/detection-tests.txt
+        - research/techniques/SAF-T1904/validation/strict-validator.txt
+    attack_mappings:
+      - id: T1102.002
+        type: analogous

@@ -1,0 +1,94 @@
+version: 1
+technique_id: SAF-T1801
+bundle_layout: canonical_clean_room_handoff_v1
+substantive_research_changes_after_freeze: prohibited
+mechanical_joins:
+  tactic:
+    - id: ATK-TA0009
+      status: user_supplied_neutral_tuple
+      action: Confirm or register this tactic join without changing the supplied assignment.
+  neighbors:
+    - id: SAF-T1997
+      name: Adversarial Instruction Delivery
+      status: synthetic_clean_room_placeholder
+      action: Replace with the destination catalog's behaviorally matching identifier or register a nonprose join; preserve the authored distinction.
+    - id: SAF-T1998
+      name: Targeted Data Retrieval
+      status: synthetic_clean_room_placeholder
+      action: Replace with the destination catalog's behaviorally matching identifier or register a nonprose join; preserve the authored distinction.
+    - id: SAF-T1999
+      name: Data Exfiltration
+      status: synthetic_clean_room_placeholder
+      action: Replace with the destination catalog's behaviorally matching identifier or register a nonprose join; preserve the authored distinction.
+  mitigations:
+    - id: SAF-M-1801
+      name: Least-Privilege Data Connectors
+      status: synthetic_clean_room_placeholder
+      action: Reconcile to an existing mitigation ID or register the relationship without importing prior target prose.
+    - id: SAF-M-1802
+      name: Contextual Bulk-Read Approval
+      status: synthetic_clean_room_placeholder
+      action: Reconcile to an existing mitigation ID or register the relationship without importing prior target prose.
+  source_ids:
+    status: proposed_collision_unchecked
+    action: Reuse stable destination IDs only for identical canonical URLs; otherwise insert all records from source-manifest-fragment.yml.
+    ids:
+      - SRC-anthropic-gtg1002-202511
+      - SRC-aws-cve-2026-15643
+      - SRC-cisa-kev-20260901
+      - SRC-cve-2025-34072
+      - SRC-cve-2025-53109
+      - SRC-cve-2025-53110
+      - SRC-cve-2025-6514
+      - SRC-cve-2026-25536
+      - SRC-cve-2026-33946
+      - SRC-embrace-red-slack-20250624
+      - SRC-ghsa-7f8r-222p-6f5g
+      - SRC-ghsa-hc55-p739-j48w
+      - SRC-ghsa-q66q-fx2p-7w4m
+      - SRC-invariant-github-20250526
+      - SRC-invariant-tool-poisoning-20250401
+      - SRC-invariant-whatsapp-20250407
+      - SRC-mcp-resources-20250618
+      - SRC-mcp-roots-20250618
+      - SRC-mcp-security-20251125
+      - SRC-mcp-tools-20250618
+      - SRC-mitre-t1119-v1.4
+      - SRC-mitre-t1213-v3.4
+      - SRC-nvd-mcp-query-20260902
+      - SRC-owasp-llm01-2025
+  history_sha:
+    synthetic_value: "1111111111111111111111111111111111111111"
+    action: Replace with an honest nonzero destination-repository SHA before destination validation.
+  paths:
+    - source: techniques/SAF-T1801
+      destination: techniques/SAF-T1801
+    - source: research/techniques/SAF-T1801
+      destination: research/techniques/SAF-T1801
+    - source: source-manifest-fragment.yml
+      destination: research/source-manifest.yml under sources
+    - source: framework-fragment.yml
+      destination: research/framework-model.yml under techniques
+    - source: alignment-fragment.yml
+      destination: research/alignment-ledger.yml under issues
+validation_deferred_until_integration:
+  - Destination source-ID collision resolution.
+  - Destination neighbor and mitigation existence checks.
+  - Honest destination repository-history SHA.
+  - Full repository workflow regression after mechanical joins.
+source_corpus:
+  location: /private/tmp/saf-all-cleanroom/SAF-T1801/source-corpus
+  included_in_bundle: false
+  reason: Canonical handoff excludes source-acquisition copies and validator dependencies; an integrity manifest is retained outside the bundle.
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  canonical_neighbors: [SAF-T1102, SAF-T1803, SAF-T1804, SAF-T1910]
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-71, SAF-M-74]
+  attack_mappings:
+    - {id: T1119, type: direct}
+    - {id: T1213, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T1801/validation/detector-tests.txt
+    - research/techniques/SAF-T1801/validation/research-validator.txt
+  source_corpus_hash: 810c44e54328e2bd4487405009cc0a4668403d5834438aa3b22fcf72039124bc
+  source_archive: Source bodies remain outside the repository; canonical source records and the frozen source-corpus hash retain the evidence disposition.

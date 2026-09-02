@@ -1,0 +1,277 @@
+version: 1
+technique_id: SAF-T1903
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of https://modelcontextprotocol.io/specification/2026-07-28
+        - Direct review of https://modelcontextprotocol.io/specification/2026-07-28/basic/transports
+        - Direct review of https://attack.mitre.org/techniques/T1071/ and tactic TA0011
+      material_changes:
+        - Reframed protocol language for the stateless 2026-07-28 revision and removed reliance on server-initiated requests or connection-scoped sessions.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:research.jfrog.com MCP malicious server reverse shell PyPI'
+        - 'site:unit42.paloaltonetworks.com MCP Server C2 RAT WebSocket'
+        - 'site:research.checkpoint.com MCP project configuration reverse shell Codex Claude Cursor'
+        - 'site:cve.org MCP server configuration RCE 2025 2026'
+        - 'site:cisa.gov KEV CVE-2025-61260 CVE-2025-59536 CVE-2026-34742'
+      material_changes:
+        - Selected two direct production malware findings and two enabling vulnerability demonstrations.
+        - Recorded that the reviewed selected reports do not identify a named victim breach.
+        - Recorded the Codex CLI affected/fixed version conflict instead of resolving it speculatively.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:arxiv.org malicious MCP server detection component behavior 2026'
+        - Direct review of controlled Codex CLI and Claude Code MCP configuration demonstrations
+      material_changes:
+        - Added bounded support for behavioral-deviation analysis and kept the technique-specific detector independently testable.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:elastic.co MCP server child process unusual domain detection'
+        - 'site:cloud.google.com MCP AI security malicious tool least privilege audit'
+        - Direct review of current MCP trust and safety guidance
+      material_changes:
+        - Required correlation of process-bound unapproved egress with interactive child or command-result behavior.
+        - Added explicit false-positive and evasion boundaries.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:unit42.paloaltonetworks.com MCP C2 nascent no major impacts'
+        - 'site:modelcontextprotocol.io deprecated sampling sessions 2026'
+        - 'site:microsoft.com exposed MCP servers unauthenticated 2026'
+        - Direct review of adjacent server takeover and DNS-rebinding disclosures
+      material_changes:
+        - Preserved uncertainty about named victims, standards conformance of the browser extension, and generality of detection research.
+        - Excluded thought experiments, exposed benign servers, and takeover without an operator loop.
+    - pass: production_breach_and_incident
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:research.jfrog.com MCP malicious package production reverse shell downloads'
+        - 'site:unit42.paloaltonetworks.com Chrome MCP Server extension WebSocket C2'
+        - 'site:microsoft.com MCP incident breach malicious server'
+      material_changes:
+        - Confirmed two qualifying production malware findings and retained the explicit named-victim breach gap.
+    - pass: vulnerability_advisory_and_exploitation_status
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:cve.org CVE-2025-61260 CVE-2025-59536 CVE-2026-34742'
+        - 'site:cisa.gov known exploited vulnerabilities MCP CVE-2025-61260 CVE-2025-59536'
+        - Direct review of Check Point and JFrog first-party advisories
+      material_changes:
+        - Classified two selected enabling vulnerabilities and three adjacent or redundant disclosures.
+        - Bounded exploitation status to opened records after the CISA feed returned HTTP 403.
+    - pass: controlled_demonstration
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of inert and reverse-shell demonstrations in the Codex CLI, Claude Code, Cursor, and JFrog server-takeover reports
+        - 'site:arxiv.org malicious MCP server PoC dataset behavioral detection'
+      material_changes:
+        - Kept demonstrations separate from production evidence and omitted operational payload detail.
+    - pass: dedicated_detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of Elastic unusual-domain and MCP child-process rules
+        - Direct review of Google Cloud MCP AI security guidance
+      material_changes:
+        - Finalized process-bound two-signal correlation and deterministic eight-case coverage.
+    - pass: contrary_and_evidence_gap
+      completed_on: "2026-09-02"
+      queries:
+        - Direct review of Unit 42 incident-response commentary and thought experiment
+        - Direct review of current protocol transport changes and adjacent benign-server exposures
+      material_changes:
+        - Recorded no named victim breach, no proven MCP conformance for the browser C2, and no global KEV conclusion.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:research.jfrog.com MCP malicious server reverse shell control channel 2026'
+        - 'site:unit42.paloaltonetworks.com MCP server C2 RAT WebSocket 2026'
+        - 'site:cve.org MCP server configuration remote code execution CVE 2025 2026'
+        - 'site:modelcontextprotocol.io specification malicious server security custom transport 2026'
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - 'site:research.checkpoint.com MCP server reverse shell vulnerability malicious configuration 2026'
+        - 'site:elastic.co MCP server unusual domain child process C2 detection 2026'
+        - 'site:cloud.google.com MCP malicious server security control outbound network 2026'
+        - 'site:arxiv.org malicious MCP server command control detection 2026'
+      material_changes: []
+  rationale: >-
+    The source set covers the current protocol revision, two independent
+    production malware findings, first-party vulnerability demonstrations and
+    CVE records, current detection rules, first-party defense guidance, ATT&CK,
+    empirical research, and contrary or adjacent evidence. The last two
+    domain-restricted passes found no evidence that changed the contract,
+    evidence label, selected examples, detector, or limitations.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 10
+  selected_examples:
+    - SRC-jfrog-malicious-mcp
+    - SRC-unit42-browser-c2
+    - SRC-checkpoint-codex-cli
+    - SRC-checkpoint-claude-code
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-jfrog-malicious-mcp
+      identifier: JFrog three malicious MCP packages on PyPI
+      relationship: direct_production_incident
+      exploitation_status: Observed malicious packages in a public distribution channel; approximately 1,600 downloads; victim execution not established.
+      impact: Reverse-shell behavior could provide remote commands at the launched process privilege.
+      remediation: Remove the packages, block reported infrastructure, and use package scanning and provenance review.
+      selected: true
+      rationale: Highest-directness public production finding matching the server-process control-channel contract.
+    - source_id: SRC-unit42-browser-c2
+      identifier: Chrome MCP Server malicious browser extension
+      relationship: direct_production_incident
+      exploitation_status: Observed malicious extension in a public store; victim compromise not established.
+      impact: Persistent WebSocket C2 exposed more than thirty remote browser actions in authenticated tabs.
+      remediation: Unit 42 reported the extensions; Google removed them or displayed security warnings.
+      selected: true
+      rationale: Direct server-branded persistent command channel with materially different browser observables.
+    - source_id: SRC-checkpoint-codex-cli
+      identifier: CVE-2025-61260
+      relationship: enabling_vulnerability
+      exploitation_status: Controlled public demonstration; no production exploitation established.
+      impact: Project-local MCP configuration could execute an arbitrary startup command in the user's context.
+      remediation: Check Point reports a v0.23.0 fix, while the later CVE affected range conflicts at that version boundary.
+      selected: true
+      rationale: High-impact first-party demonstration of a realistic channel-enabling startup path with explicit uncertainty.
+    - source_id: SRC-checkpoint-claude-code
+      identifier: CVE-2025-59536
+      relationship: enabling_vulnerability
+      exploitation_status: Controlled public demonstration; no production exploitation established.
+      impact: Repository-controlled settings could bypass MCP startup consent and execute a configured command before the trust dialog.
+      remediation: CVE Program record identifies version 1.0.111 as fixed.
+      selected: true
+      rationale: High-impact independent host implementation demonstrating the same startup boundary.
+    - source_id: SRC-checkpoint-mcpoison-2025-54136
+      identifier: Cursor MCPoison configuration trust issue
+      relationship: enabling_vulnerability
+      exploitation_status: Controlled public demonstration; no production exploitation established.
+      impact: An approved server definition could later be changed to run an arbitrary command.
+      remediation: Vendor fix described by the researcher; exact advisory metadata was not needed for the selected set.
+      selected: false
+      rationale: Material but redundant with two better-identified selected configuration vulnerabilities and the four-example cap.
+    - source_id: SRC-jfrog-jfsa-2026-001653030
+      identifier: CVE-2026-25905 / JFSA-2026-001653030
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Public proof of concept; no production exploitation established.
+      impact: Lack of isolation permits MCP server takeover and tool shadowing.
+      remediation: No vendor mitigation supplied; project reported archived.
+      selected: false
+      rationale: Server takeover is adjacent unless a bidirectional remote operator command loop is established.
+    - source_id: SRC-cve-2026-34742
+      identifier: CVE-2026-34742
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Disclosed vulnerability; no production exploitation established in the CVE record.
+      impact: DNS rebinding can let a malicious website invoke tools on an unauthenticated localhost MCP server.
+      remediation: Go SDK 1.4.0 enables the protection.
+      selected: false
+      rationale: This is remote interaction with a benign exposed server, not a malicious server-originated control channel.
+    - source_id: SRC-t1206-ms-config-risk
+      identifier: Microsoft exposed remote MCP server assessment
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Measurement of insecure exposure; not a malicious-server campaign.
+      impact: Unauthenticated remote servers can expose internal tools.
+      remediation: Authentication, least privilege, segmentation, and configuration hardening.
+      selected: false
+      rationale: Exposure of a benign server crosses an inbound authorization boundary rather than the contract's server-process egress boundary.
+    - source_id: SRC-unit42-thought-experiment
+      identifier: Unit 42 MCP C2 thought experiment
+      relationship: rejected
+      exploitation_status: Hypothetical scenario only.
+      impact: Illustrates a possible MCP-mediated operator workflow.
+      remediation: Not applicable to a hypothetical scenario.
+      selected: false
+      rationale: Explicitly presented as a thought experiment and cannot raise evidence status.
+    - source_id: SRC-unit42-ai-ir
+      identifier: Unit 42 AI incident-response interview
+      relationship: rejected
+      exploitation_status: General practitioner observation that adversaries are testing MCP-related C2; no named case.
+      impact: Characterizes activity as nascent and without major impacts.
+      remediation: General monitoring and defense guidance only.
+      selected: false
+      rationale: Useful contrary context but insufficiently specific for an incident row.
+sources_consulted:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-transports-2026
+  - SRC-jfrog-malicious-mcp
+  - SRC-unit42-browser-c2
+  - SRC-checkpoint-codex-cli
+  - SRC-cve-2025-61260
+  - SRC-checkpoint-claude-code
+  - SRC-cve-2025-59536
+  - SRC-elastic-unusual-domain
+  - SRC-elastic-mcp-child
+  - SRC-google-mcp-security-2026
+  - SRC-mitre-t1071
+  - SRC-arxiv-connor
+  - SRC-unit42-ai-ir
+  - SRC-unit42-thought-experiment
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-cve-2026-34742
+  - SRC-t1206-ms-config-risk
+  - SRC-checkpoint-mcpoison-2025-54136
+sources_cited:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-transports-2026
+  - SRC-jfrog-malicious-mcp
+  - SRC-unit42-browser-c2
+  - SRC-checkpoint-codex-cli
+  - SRC-cve-2025-61260
+  - SRC-checkpoint-claude-code
+  - SRC-cve-2025-59536
+  - SRC-elastic-unusual-domain
+  - SRC-elastic-mcp-child
+  - SRC-google-mcp-security-2026
+  - SRC-mitre-t1071
+  - SRC-arxiv-connor
+sources_rejected:
+  - source_id: SRC-unit42-ai-ir
+    reason: General contrary context without a named incident or technical event record.
+  - source_id: SRC-unit42-thought-experiment
+    reason: Explicit thought experiment, not observation or demonstration.
+  - source_id: SRC-jfrog-jfsa-2026-001653030
+    reason: Adjacent server takeover and tool shadowing without a remote operator loop.
+  - source_id: SRC-cve-2026-34742
+    reason: Inbound DNS rebinding against a benign exposed server, outside the contract boundary.
+  - source_id: SRC-t1206-ms-config-risk
+    reason: Measurement of exposed benign servers rather than malicious server software.
+  - source_id: SRC-checkpoint-mcpoison-2025-54136
+    reason: Qualifying but redundant enabling demonstration omitted under the four-example selection cap.
+sources_blocked: []
+conflicts:
+  - issue: Check Point reports Codex CLI v0.23.0 as fixed, but CVE-2025-61260 describes v0.23.0 and earlier as affected.
+    resolution: Preserve the discrepancy in the claim limitation and do not assert a reconciled affected range.
+  - issue: Unit 42 calls the extension an MCP server and says it uses the MCP framework, but the shown channel is a hardcoded WebSocket C2 connection.
+    resolution: Include it as a server-branded integration and explicitly avoid claiming MCP specification conformance.
+  - issue: A direct fetch of the CISA KEV JSON feed returned HTTP 403.
+    resolution: Do not make a global KEV absence claim; limit exploitation-status statements to the opened source records.
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1903-C001
+    - SAF-T1903-C002
+    - SAF-T1903-C004
+  rationale: >-
+    Two independent first-party research teams documented malicious software
+    distributed as MCP servers or server-branded integrations with direct remote
+    command channels. This supports Observed for the defined channel behavior,
+    while limitations prevent claims of named victim breach, confirmed victim
+    execution, or universal MCP protocol conformance.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

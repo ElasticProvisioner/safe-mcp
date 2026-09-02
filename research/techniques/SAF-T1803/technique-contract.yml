@@ -1,0 +1,72 @@
+version: 1
+technique_id: SAF-T1803
+name: Database Dump
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0009
+adversary_objective: Obtain a broad, reusable copy of database contents by directing
+  or abusing an MCP-connected or agentic database capability to export, dump, or bulk-read
+  the data beyond the operator's intended task.
+scope:
+  security_boundary: The authorization and human-intent boundary between an MCP host
+    or agent and the database identity, export function, or query interface used by
+    its tool.
+  in_scope:
+  - A tool or agent invokes a logical database dump, export, or systematic bulk-read
+    operation and returns, downloads, or stages broad database content.
+  - Query-language injection into an apparently narrow MCP database tool when it directly
+    enables unauthorized bulk retrieval.
+  - Repeated collection across tables when the immediate objective and result are
+    equivalent to a logical database dump.
+  out_of_scope:
+  - A narrow, task-scoped query that returns only the authorized records needed for
+    the user's stated task.
+  - Theft of a pre-existing backup or dump artifact without causing the database or
+    an MCP-connected tool to create or stream the logical export.
+  - Restore-time code execution, database modification, credential theft, or exfiltration
+    as separate objectives after the dump is obtained.
+  affected_components:
+  - MCP host or agent orchestrator
+  - MCP database or command-execution server
+  - Database service and its service identity
+  - Dump output channel, local staging path, or object store
+nearest_neighbors:
+- technique_id: SAF-T1801
+  distinction: Automated Data Harvesting covers systematic collection across source
+    types; Database Dump requires dump-equivalent database acquisition.
+- technique_id: SAF-T1804
+  distinction: API Data Harvest collects through APIs; Database Dump is distinguished
+    by dump-equivalent database acquisition.
+required_evidence:
+- Current MCP tool semantics, authorization guidance, and audit recommendations.
+- First-party database dump behavior, privilege constraints, and telemetry fields.
+- Direct production evidence for agentic database extraction or an explicit gap.
+- Current vulnerability and advisory research, including affected and fixed states.
+- Detection evidence for database access, export activity, and legitimate backup noise.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized MCP audit event with timestamp, session, actor, server, tools/call
+    method, tool name, arguments or operation class, approval state, and outcome.
+  - Database audit or activity event with session or correlation ID, database, user,
+    application, client address, operation class, query identifier, and result size.
+  - Dump-file or object-store creation metadata when results are staged outside the
+    MCP response channel.
+safe_example_constraints:
+- Use inert example database names, paths, identities, and placeholder values.
+- Do not reproduce exploit payloads, credentials, destructive queries, or live endpoints.
+- Show only the minimum fields needed to explain the boundary and the analytic.
+completion_evidence:
+- Every substantive publishable unit resolves through a same-line hidden trace or
+  declared local artifact.
+- All unverified or contradictory candidate claims are excluded and ledgered.
+- All five research passes and two final authority-only no-change passes are recorded.
+- Positive, negative, boundary, missing-field, and expected-lookalike detection tests
+  pass.
+- Publication-rights, framework, safe-publication, clean-room, and strict-validation
+  gates pass.

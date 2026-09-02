@@ -1,0 +1,509 @@
+version: 1
+sources:
+  - id: SRC-mcp-security-best-practices
+    title: Security Best Practices
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol documentation contributors
+    version_or_date: "2025-11-25 documentation version; reviewed current 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/docs/2025-11-25/tutorials/security/security_best_practices
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page HTML review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Purpose and Scope
+      - Local MCP Server Compromise > Attack Description
+      - Local MCP Server Compromise > Risks
+      - Local MCP Server Compromise > Mitigation
+    review_notes: >-
+      Verified the local-server execution boundary, malicious configuration and
+      payload risks, exact-command consent requirements, sandbox guidance, and
+      stdio logging recommendation. The unsafe example commands were not reused.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party documentation was retained only in the temporary clean-room workspace and is not part of the redistributable bundle.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/mcp-security-best-practices.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-mcp-connect-local
+    title: Connect to local MCP servers
+    publisher: Model Context Protocol project
+    authors:
+      - Model Context Protocol documentation contributors
+    version_or_date: "2026-07-28 documentation version"
+    source_class: implementation_artifact
+    official_url: https://modelcontextprotocol.io/docs/2026-07-28/develop/connect-local-servers
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page HTML review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Understanding MCP Servers
+      - Installing the Filesystem Server
+      - Understanding the Configuration
+      - Security Consideration
+      - How Approval Works
+    review_notes: >-
+      Verified configuration-driven local server startup, npx -y semantics in
+      the documented example, user-permission warning, and per-action approval.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Third-party documentation was retained only in the temporary clean-room workspace and is not part of the redistributable bundle.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/mcp-connect-local.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-vscode-mcp-servers
+    title: Add and manage MCP servers in VS Code
+    publisher: Microsoft
+    authors:
+      - Visual Studio Code Documentation Team
+    version_or_date: "2026-08-26"
+    source_class: implementation_artifact
+    official_url: https://code.visualstudio.com/docs/agent-customization/mcp-servers
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page HTML review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Quickstart: use an MCP server in chat
+      - Add an MCP server > Caution
+      - Sandbox MCP servers
+      - Manage MCP servers
+      - MCP server trust
+      - Troubleshoot and debug MCP servers
+    review_notes: >-
+      Verified arbitrary-code warning, publisher and configuration review,
+      first-start trust behavior, direct mcp.json prompt exception, sandbox
+      controls, enable/disable controls, and output-log access.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Microsoft documentation was retained only for temporary evidentiary review and is not redistributed.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/vscode-mcp-servers.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-cursor-64106
+    title: Speedbump Modal Bypass in Cursor MCP Server Deep-Link
+    publisher: Cursor Security Advisories
+    authors:
+      - yardenporat353 (reporter)
+      - hmwildermuth (advisory publisher)
+      - Cursor security team
+    version_or_date: "GHSA-4575-fh42-7848; published 2025-11-03"
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-4575-fh42-7848
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Affected versions and Patched versions
+      - Summary
+      - Details
+      - Impact
+      - Remediation
+      - Credits
+    review_notes: >-
+      Verified deceptive trusted branding, concealed command execution after
+      user acceptance, affected Cursor 1.7.28, patched 2.0, CVE-2025-64106,
+      and reporter credit. No production exploitation claim was present.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory includes exploit reproduction details; only factual paraphrase and close citation are used.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-cursor-64106.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-cherry-61929
+    title: One-click on a specific URL to cause a command to execute
+    publisher: Cherry Studio Security Advisories
+    authors:
+      - h3rrr (reporter)
+      - kangfenmao (advisory publisher)
+      - Cherry Studio security team
+    version_or_date: "GHSA-hh6w-rmjc-26f6; published 2025-10-10"
+    source_class: official_advisory
+    official_url: https://github.com/CherryHQ/cherry-studio/security/advisories/GHSA-hh6w-rmjc-26f6
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Affected versions and Patched versions
+      - Summary
+      - Proof-of-concept narrative
+      - Impact
+      - Credits
+    review_notes: >-
+      Verified click-triggered MCP URL handling, direct command execution,
+      affected versions below 1.6.4, fixed version 1.6.4, CVE-2025-61929, and
+      reporter credit. Encoded installation content was not reused.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory contains a complete deep-link proof of concept; it is cited but not redistributed.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-cherry-61929.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-dive-23523
+    title: One-click Remote Code Execution through Deep Links for MCP Install
+    publisher: OpenAgentPlatform Dive Security Advisories
+    authors:
+      - TonyCrane (reporter)
+      - c kaznable (advisory publisher)
+      - OpenAgentPlatform Dive maintainers
+    version_or_date: "GHSA-pjj5-f3wm-f9m8; published 2026-01-16"
+    source_class: official_advisory
+    official_url: https://github.com/OpenAgentPlatform/Dive/security/advisories/GHSA-pjj5-f3wm-f9m8
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Affected versions and Patched versions
+      - Summary
+      - Details
+      - Proof-of-concept narrative
+      - Impact
+      - Credits
+    review_notes: >-
+      Verified frontend confirmation bypass, backend local process execution,
+      affected versions through 0.12.6, fixed version 0.13.0,
+      CVE-2026-23523, and reporter credit. The deployable deep link was omitted.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory contains executable deep-link construction details; only safe factual paraphrase is used.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-dive-23523.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-nvd-mcp-catalog
+    title: National Vulnerability Database MCP keyword and exact-CVE records
+    publisher: National Institute of Standards and Technology
+    authors:
+      - NIST National Vulnerability Database Team
+      - Originating CVE Numbering Authorities identified in each record
+    version_or_date: "API responses acquired 2026-09-01"
+    source_class: official_advisory
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=MCP%20server%20install
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Direct official API queries; complete returned records were parsed and
+      exact selected CVE records were separately acquired and reviewed.
+    review_status: opened_reviewed
+    locators:
+      - CVE-2025-54133 record and references
+      - CVE-2025-64106 record and references
+      - CVE-2025-61929 record and references
+      - CVE-2026-23523 record and references
+      - CVE-2025-68433 record and references
+      - CVE-2025-66580 record and references
+      - Query result totals for all recorded NVD passes
+    review_notes: >-
+      Used as a government catalog and corroborating record, not as evidence of
+      active exploitation. Exact GHSA URLs were obtained here before opening
+      them. Two final query responses yielded only already-reviewed evidence or zero results.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Multiple official API response files remain in the temporary clean-room acquisition set and are represented by integrity hashes rather than bundled copies.
+      review_evidence:
+        method: JSON API responses with jq full-record review
+        temporary_path: sources/nvd-*.json
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-zed-secure-default
+    title: "Zed Moves Toward Secure-by-Default: Introducing Worktree Trust"
+    publisher: Zed Industries
+    authors:
+      - John Swanson
+      - Kirill Bulatov
+      - Aaron Portnoy (vulnerability reporter)
+      - Mindgard research team
+    version_or_date: "2025-12-17"
+    source_class: official_advisory
+    official_url: https://zed.dev/blog/secure-by-default
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page first-party security article review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Vulnerability reports prove the importance of secure-by-default
+      - MCP Servers
+      - What's changing: Restricted mode by default
+      - How worktree trust works
+      - Try it today
+    review_notes: >-
+      Verified prior automatic execution of project-supplied MCP commands,
+      v0.218.2-pre worktree-trust remediation, persistent trust semantics, and
+      byline plus researcher credit. Classified adjacent because no MCP install approval was required.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: First-party article was retained only in the temporary evidence workspace and is paraphrased.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/zed-secure-by-default.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-zed-68433
+    title: Zed IDE MCP Context Server Configuration Arbitrary Code Execution
+    publisher: Zed Industries Security Advisories
+    authors:
+      - Aaron Portnoy (reporter)
+      - SomeoneToIgnore (remediation developer)
+      - swannysec (coordinator)
+      - ConradIrwin (remediation reviewer)
+    version_or_date: "GHSA-cv6g-cmxc-vw8j; published 2025-12-17"
+    source_class: official_advisory
+    official_url: https://github.com/zed-industries/zed/security/advisories/GHSA-cv6g-cmxc-vw8j
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Description
+      - Impact
+      - Patches
+      - Workarounds
+      - Credits
+    review_notes: >-
+      Corroborated the Zed first-party article and preserved all named credits.
+      Not cited because the first-party article supplies the publishable claim.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory includes proof-of-concept configuration and is retained only as temporary review evidence.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-zed.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-dive-66580
+    title: Cross-Site Scripting escalates to Remote Code Execution
+    publisher: OpenAgentPlatform Dive Security Advisories
+    authors:
+      - c2an1 (reporter)
+      - c kaznable (advisory publisher)
+      - OpenAgentPlatform Dive maintainers
+    version_or_date: "GHSA-xv8m-365j-x6h2; published 2025-12-19"
+    source_class: official_advisory
+    official_url: https://github.com/OpenAgentPlatform/Dive/security/advisories/GHSA-xv8m-365j-x6h2
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Summary
+      - Details
+      - Impact
+      - Credits
+    review_notes: >-
+      Classified adjacent: a client-side XSS flaw injects configuration after a
+      rendered-node click, rather than deceiving the user into an MCP install decision.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory contains an executable proof of concept and is not redistributed.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-dive.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-ghsa-cursor-54133
+    title: MCP Install Deeplink Did Not Show Arguments on User-Dialog
+    publisher: Cursor Security Advisories
+    authors:
+      - qerogram (reporter)
+      - hmwildermuth (advisory publisher)
+      - Cursor security team
+    version_or_date: "GHSA-r22h-5wp2-2wfv; published 2025-08-01"
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-r22h-5wp2-2wfv
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Exact advisory URL opened only after NVD directly supplied the identifier
+      and URL; complete rendered advisory reviewed.
+    review_status: opened_reviewed
+    locators:
+      - Affected versions and Patched versions
+      - Summary
+      - Impact
+      - Remediation
+      - Credits
+    review_notes: >-
+      Verified the two-click social-engineering path and hidden arguments. It was
+      excluded from selected examples because the published affected 1.17 and
+      patched 1.3 labels are internally non-monotonic and a later Cursor advisory
+      covers the same control boundary with clearer version data.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The advisory is cited only as an excluded research lead and is not redistributed.
+      review_evidence:
+        method: Exact advisory HTML plus full plain-text extraction
+        temporary_path: sources/ghsa-cursor-54133.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-mitre-attack-t1204-002
+    title: "User Execution: Malicious File (T1204.002)"
+    publisher: The MITRE Corporation
+    authors:
+      - MITRE ATT&CK Team
+      - TruKno (contributor)
+    version_or_date: "Version 1.6; modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1204/002/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page HTML review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - First three descriptive paragraphs
+      - ID, tactic, platforms, contributor, version, and modified date
+      - Contagious Interview and BeaverTail procedure examples
+    review_notes: >-
+      Used for an analogous mapping and to separate generic user-execution
+      social engineering from the MCP-specific installation boundary.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: MITRE ATT&CK content is referenced and paraphrased under its terms; it is not redistributed.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/mitre-t1204-002.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-unit42-contagious-interview
+    title: Contagious Interview - DPRK Threat Actors Lure Tech Industry Job Seekers to Install Malware
+    publisher: Palo Alto Networks Unit 42
+    authors:
+      - Unit 42 research team
+    version_or_date: "2024-10-09"
+    source_class: incident_report
+    official_url: https://unit42.paloaltonetworks.com/north-korean-threat-actors-lure-tech-job-seekers-as-fake-recruiters/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page first-party research review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Executive Summary
+      - Social Engineering and Infection: Fake Recruiters and Job Interviews
+      - Analysis of BeaverTail's New Cross-Platform Version
+      - Conclusion
+    review_notes: >-
+      Verified an observed non-MCP campaign that used fake recruiting and
+      disguised installers. Used only as a historical analogy; indicators and
+      malware implementation details were omitted from the technique.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The vendor research article and indicator set are paraphrased and not redistributed.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/unit42-contagious-interview.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-cwe-494
+    title: "CWE-494: Download of Code Without Integrity Check"
+    publisher: The MITRE Corporation
+    authors:
+      - CWE Content Team
+      - CLASP (original submitter)
+      - Eric Dalci (recorded contributor)
+    version_or_date: "CWE 4.20; page updated 2026-04-30"
+    source_class: protocol_or_standard
+    official_url: https://cwe.mitre.org/data/definitions/494.html
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct complete-record HTML review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Description and Extended Description
+      - Common Consequences
+      - Potential Mitigations
+      - Detection Methods
+      - Content History and Submissions
+    review_notes: >-
+      Used for origin and integrity boundaries, bounded consequences, defensive
+      controls, detection method, and attribution; not as proof of MCP exploitation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: CWE content is referenced and paraphrased under MITRE terms and is not redistributed.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/cwe-494.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-sysmon-15-21
+    title: Sysmon v15.21
+    publisher: Microsoft Sysinternals
+    authors:
+      - Mark Russinovich
+      - Thomas Garnier
+    version_or_date: "15.21; published 2026-06-17"
+    source_class: implementation_artifact
+    official_url: https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: Direct full-page Microsoft documentation review with plain-text extraction.
+    review_status: opened_reviewed
+    locators:
+      - Introduction
+      - Overview of Sysmon Capabilities
+      - Event ID 1: Process creation
+      - Event ID 3: Network connection
+      - Event ID 11: FileCreate
+    review_notes: >-
+      Verified command line, parent, hashes, correlation IDs, network, and file
+      event capabilities and documented limitations. Used as a Windows telemetry example.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: Microsoft documentation is paraphrased and not redistributed.
+      review_evidence:
+        method: HTML snapshot plus full plain-text extraction
+        temporary_path: sources/microsoft-sysmon.html
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt
+
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors:
+      - CISA Known Exploited Vulnerabilities Catalog Team
+    version_or_date: "Catalog release 2026-09-01T19:22:46.2162Z"
+    source_class: official_advisory
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_method: >-
+      Complete JSON catalog acquisition and exact-ID scan for all direct and
+      adjacent CVE candidates.
+    review_status: opened_reviewed
+    locators:
+      - Catalog dateReleased and count fields
+      - Exact-ID scan for CVE-2025-54133, CVE-2025-64106, CVE-2025-61929, CVE-2026-23523, CVE-2025-68433, and CVE-2025-66580
+    review_notes: >-
+      None of the six reviewed candidates appeared in the 1,687-entry catalog.
+      Non-inclusion was treated only as absence from this catalog, not proof of no exploitation.
+    archive:
+      status: remote_reviewed_not_archived
+      reason: The full machine-readable government catalog remains in the temporary acquisition set and is represented by an integrity hash.
+      review_evidence:
+        method: JSON snapshot with jq exact-ID scan
+        temporary_path: sources/cisa-kev.json
+        integrity_record: bundle/integrity/source-acquisition-hashes.txt

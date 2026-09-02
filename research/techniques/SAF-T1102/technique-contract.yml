@@ -1,0 +1,85 @@
+version: 1
+technique_id: SAF-T1102
+name: Prompt Injection (Multiple Vectors)
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Cause an MCP-connected or agentic language model to treat adversary-controlled
+  natural-language content as instructions and execute a model decision that departs
+  from the authorized user objective.
+scope:
+  security_boundary: The instruction-authority boundary between trusted user or application
+    intent and untrusted content delivered through user prompts, MCP prompt content,
+    resource content, tool metadata, or tool results.
+  in_scope:
+  - Direct prompt injection supplied through a model-facing user input.
+  - Indirect prompt injection delivered through MCP prompt content, resources, tool
+    descriptions, or tool results.
+  - The immediate model behavior change or unauthorized model-selected tool action
+    caused by the injected instruction.
+  out_of_scope:
+  - Training-time data or model poisoning that persists without inference-time injected
+    content.
+  - A malicious MCP server that executes harmful code without first manipulating the
+    model through natural-language instructions.
+  - Downstream credential theft, persistence, lateral movement, or destructive impact
+    after the injected instruction has already executed.
+  - Jailbreaking whose objective is solely to bypass model safety policy without crossing
+    an application instruction-authority boundary.
+  affected_components:
+  - MCP host and client context construction
+  - MCP prompts and embedded resources
+  - MCP resource content
+  - MCP tool descriptions and tool results
+  - Language model and tool-selection loop
+nearest_neighbors:
+- technique_id: SAF-T2107
+  distinction: AI-model poisoning changes learned behavior before inference; this
+    technique requires adversary-controlled content to be interpreted at inference
+    time.
+- technique_id: SAF-T1006
+  distinction: Malicious MCP-server installation introduces harmful server or tool
+    code; this technique instead requires the model to execute an injected natural-language
+    instruction.
+required_evidence:
+- Establish the current MCP paths through which server-authored or external content
+  reaches a model.
+- Establish end-to-end controlled demonstrations across more than one MCP delivery
+  vector.
+- Search separately for production incidents, disclosed vulnerabilities, demonstrations,
+  and exploitation status.
+- Establish operational telemetry, false-positive boundaries, and residual detection
+  limits.
+- Establish the limits of model-only defenses and controls that constrain tool authority
+  and data flow.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Timestamped model input segments with source type, source identity, trust label,
+    and session identifier.
+  - MCP tool discovery metadata and version or hash for descriptions presented to
+    the model.
+  - Tool-call request, arguments, risk class, approval state, result, and destination
+    or resource identity.
+  - Prompt-injection classifier or policy verdicts and failed or denied tool-call
+    events.
+safe_example_constraints:
+- Use inert example.org destinations, synthetic identifiers, and placeholder data.
+- Do not reproduce working exfiltration payloads, credential paths, executable commands,
+  or bypass recipes.
+- Show only the minimum instruction shape needed to explain the trust-boundary failure.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and reviewed source
+  or a declared local artifact.
+- Unverified incident and vulnerability leads are omitted and preserved in the exclusion
+  ledger.
+- All five research passes and two consecutive no-change follow-ups are recorded.
+- Positive, negative, boundary, malformed, and legitimate-lookalike detection tests
+  pass.
+- Publication-rights, safe-publication, framework-alignment, and clean-room integrity
+  gates pass.

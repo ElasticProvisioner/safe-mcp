@@ -1,0 +1,132 @@
+version: 1
+technique_id: SAF-T1901
+policy: source_or_omit
+publishable_artifact: techniques/SAF-T1901/README.md
+coverage: all_substantive_publishable_content
+review_status: passed
+reviewed_on: '2026-09-02'
+reviewer: OpenAI clean-room research agent
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1901/technique-contract.yml
+  supports: Scope, evidence requirements, safety bounds, neighbors, and completion
+    criteria.
+- id: LOCAL-claims
+  path: research/techniques/SAF-T1901/claim-inventory.yml
+  supports: Claim text, evidence status, source relations, limitations, and inference
+    labels.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1901/source-coverage.yml
+  supports: Five-pass audit, two no-change passes, candidate assessment, gaps, and
+    evidence conclusion.
+- id: LOCAL-rights
+  path: research/techniques/SAF-T1901/publication-rights.yml
+  supports: Source-by-source publication-rights and attribution review.
+- id: LOCAL-quality
+  path: research/techniques/SAF-T1901/quality-review.yml
+  supports: Required quality gates and validation results.
+- id: LOCAL-ledger
+  path: research/techniques/SAF-T1901/traceability-ledger.yml
+  supports: Publishable trace policy, exclusions, repository evidence, and review
+    state.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1901/detection-rule.yml
+  supports: Detection fields, conditions, limitations, and component-level claim traceability.
+- id: LOCAL-detector
+  path: tests/SAF-T1901/detector.py
+  supports: Executable implementation of the documented correlation heuristic.
+- id: LOCAL-fixtures
+  path: tests/SAF-T1901/fixtures.json
+  supports: Positive, boundary, negative, malformed, expected-false-positive, and
+    blind-spot cases.
+- id: LOCAL-detector-test
+  path: tests/SAF-T1901/test_detector.py
+  supports: Executable fixture harness and expected alert comparison.
+- id: LOCAL-detection-result
+  path: research/techniques/SAF-T1901/validation/detection-test.txt
+  supports: Canonical captured detector test result.
+- id: LOCAL-strict-result
+  path: research/techniques/SAF-T1901/validation/strict-validator.txt
+  supports: Canonical captured isolated strict validator result.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1901/validation/canonical-validation.txt
+  supports: Captured destination detector result and the sole pending catalog-neighbor validation condition.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1901-X001
+  candidate: A universal or production-observation claim for the complete technique.
+  origin: Direct-authority breach, vulnerability, and incident research pass.
+  reason: No qualifying direct production incident or end-to-end public demonstration
+    was found in the bounded reviewed corpus.
+  attempted_searches:
+  - Direct NVD MCP, webhook, callback, C2, command-channel, and outbound web-service
+    keyword combinations.
+  - Exact CISA KEV match for the four selected CVEs.
+  - Official ATT&CK procedure examples and directly identified first-party research.
+  consulted_source_ids:
+  - SRC-nvd-token-scope-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-mitre-t1102-002-v1-1
+  prohibited_publishable_text:
+  - Confirmed in-production MCP webhook command channel
+  - Public evidence proves universal deployment prevalence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1901-X002
+  candidate: The Brute Ratel report as direct evidence of the proposed MCP or agent
+    mechanism.
+  origin: ATT&CK-identified first-party research review.
+  reason: The report's observed samples used direct-IP C2; external services were
+    an advertised capability, and MCP or agent webhooks were not involved.
+  attempted_searches:
+  - Reviewed the official report's observed traffic, capability description, and conclusion.
+  consulted_source_ids:
+  - SRC-unit42-brute-ratel-2022
+  - SRC-mitre-t1102-002-v1-1
+  prohibited_publishable_text:
+  - Unit 42 observed MCP agent webhook C2
+  - Brute Ratel provides direct SAF-T1901 evidence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1901-X003
+  candidate: Treating any selected CVE as direct proof of command and control.
+  origin: Vulnerability candidate ranking and evidence reconciliation.
+  reason: The advisories establish SSRF, outbound requests, or blind callbacks but
+    do not establish returned tasking or an operator-control channel.
+  attempted_searches:
+  - Reviewed Summary, Impact, affected and fixed versions, exploit status, and credits
+    for each selected advisory.
+  - Compared each advisory behavior with the official ATT&CK T1102.002 definition.
+  consulted_source_ids:
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-aws-cve-2026-15643
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-xqq2-4j46-vwp7
+  - SRC-mitre-t1102-002-v1-1
+  prohibited_publishable_text:
+  - CVE-2026-44694 proves webhook command and control
+  - The selected vulnerabilities are observed C2 incidents
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1901-X004
+  candidate: Durable malicious webhook domains, payload signatures, or campaign indicators.
+  origin: Detection and defense pass.
+  reason: No directly sourced durable indicator set was identified, and live indicators
+    would conflict with the safe-example constraint.
+  attempted_searches:
+  - Reviewed official ATT&CK behavior-oriented detection guidance.
+  - Reviewed selected advisories for stable indicators and found none suitable.
+  consulted_source_ids:
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-aws-cve-2026-15643
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-xqq2-4j46-vwp7
+  prohibited_publishable_text:
+  - evil-webhook.example
+  - This domain is a durable malicious IOC
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

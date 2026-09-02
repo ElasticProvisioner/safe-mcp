@@ -1,0 +1,44 @@
+version: 1
+technique_id: SAF-T1007
+name: OAuth Authorization Phishing
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics: [ATK-TA0001]
+adversary_objective: Bind a victim's third-party OAuth grant to an attacker-controlled MCP account or session.
+scope:
+  security_boundary: Authenticated MCP flow initiator versus authenticated browser user completing third-party OAuth authorization.
+  in_scope:
+    - Forwarding an MCP-generated third-party OAuth authorization URL to a different user.
+    - Accepting the callback and storing tokens without verifying that completer and initiator are the same authoritative subject.
+  out_of_scope:
+    - Ordinary consent phishing to attacker-owned OAuth applications.
+    - OAuth open redirects, token passthrough, counterfeit resource servers, callback script injection, and mix-up attacks without cross-user token binding.
+  affected_components: [MCP client, MCP integration server, browser, third-party authorization server, callback handler, token store]
+nearest_neighbors:
+  - technique_id: SAF-T1009
+    distinction: Authorization-server mix-up selects or accepts the wrong issuer; SAF-T1007 preserves the intended external service but misbinds the user completing its OAuth flow.
+  - technique_id: SAF-T1706
+    distinction: OAuth token pivot replay reuses an issued token across an agent or service context rather than binding a victim grant to another MCP subject during authorization.
+required_evidence:
+  - Current MCP requirements for URL-mode OAuth and same-user completion.
+  - A complete public reproduction or disclosed vulnerability matching the defining cross-user binding behavior.
+  - Separate searches for incidents, vulnerabilities, advisories, exploitation status, and controlled demonstrations.
+  - Detection and defense evidence plus contrary and adjacent cases.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - OAuth flow creation with request_id, server_id, and authoritative initiator_subject.
+    - Callback authentication with request_id, authoritative callback_subject, outcome, and token binding subject.
+safe_example_constraints:
+  - Use inert identifiers and no live authorization URLs, codes, tokens, or secrets.
+  - Describe identity mismatch without deployable exploitation instructions.
+completion_evidence:
+  - Every substantive publishable unit maps to validated claims and reviewed sources or a declared local artifact.
+  - Excluded leads remain omitted and ledgered.
+  - Two final no-change passes follow the last material evidence addition.
+  - Deterministic detection tests and strict isolated canonical validation pass.
+  - Rights, framework, safety, and clean-room integrity gates pass after real-registry reconciliation.

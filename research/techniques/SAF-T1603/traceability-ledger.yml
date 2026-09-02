@@ -1,0 +1,160 @@
+version: 1
+technique_id: SAF-T1603
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1603/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1603/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion requirements.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1603/quality-review.yml
+  supports: Validation commands, results, reviewer, and gate decisions.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1603/detection-rule.yml
+  supports: The repository's explicitly labeled detection analytic.
+- id: LOCAL-detection-data
+  path: tests/SAF-T1603/test-logs.json
+  supports: Eight inert synthetic positive, negative, and boundary cases.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1603/test_detection_rule.py
+  supports: Deterministic analytic validation logic.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1603/source-coverage.yml
+  supports: Research passes, saturation, selected examples, and evidence status.
+- id: LOCAL-rights-review
+  path: research/techniques/SAF-T1603/publication-rights.yml
+  supports: Source-use and publication-rights decisions.
+- id: LOCAL-framework-fragment
+  path: research/techniques/SAF-T1603/framework-model-fragment.yml
+  supports: Framework record prepared for post-freeze integration.
+- id: LOCAL-alignment-fragment
+  path: research/techniques/SAF-T1603/alignment-ledger-fragment.yml
+  supports: Reconciliation decisions prepared for post-freeze integration.
+- id: LOCAL-source-fragment
+  path: research/techniques/SAF-T1603/source-manifest-fragment.yml
+  supports: Reviewed external-source metadata prepared for post-freeze integration.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1603/integration-notes.yml
+  supports: Mechanical post-freeze integration constraints and synthetic-mock disclosures.
+- id: LOCAL-author-attribution
+  path: research/techniques/SAF-T1603/author-and-source-attribution.yml
+  supports: Technique author and reviewed source-team or individual attribution.
+- id: LOCAL-validation-result
+  path: research/techniques/SAF-T1603/validation-result.yml
+  supports: Strict synthetic-mock validator and detection-test results.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1603/validation/detection-test.txt
+  supports: Recorded isolated and canonical repository detector results.
+- id: LOCAL-strict-validator
+  path: research/techniques/SAF-T1603/validation/strict-validator.txt
+  supports: Recorded isolated and canonical strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1603-X001
+  candidate: A confirmed malicious production breach caused system-prompt disclosure.
+  origin: Required breach-and-vulnerability research pass.
+  attempted_searches:
+  - Exact NVD API keyword queries for system prompt leakage, breach, incident, and
+    disclosure.
+  - Direct MITRE ATLAS 2026.08 and CISA KEV 2026.09.01 catalog reviews.
+  consulted_source_ids:
+  - SRC-nvd-audit
+  - SRC-atlas-2026-08
+  - SRC-cisa-kev-2026-09-01
+  reason: Reviewed authorities established exercises and vulnerabilities but not a
+    qualifying malicious production breach.
+  prohibited_publishable_text:
+  - confirmed widespread malicious exploitation
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X002
+  candidate: CVE-2026-7482 is a direct system-prompt disclosure technique example.
+  origin: NVD exact system-prompt query.
+  attempted_searches:
+  - Direct NVD CVE record review and boundary comparison against the technique contract.
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-7482
+  reason: Heap memory disclosure is a different mechanism and can reveal prompts only
+    incidentally.
+  prohibited_publishable_text:
+  - Ollama directly exposes its system prompt interface
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X003
+  candidate: LeakAgent's GPT Store evaluation independently proves exact recovered
+    prompts.
+  origin: Direct arXiv system-prompt extraction query.
+  attempted_searches:
+  - Direct full-text review of the GPT Store evaluation and its limitations.
+  consulted_source_ids:
+  - SRC-arxiv-leakagent
+  reason: The authors state that ground-truth system prompts were unavailable and
+    used human judgment.
+  prohibited_publishable_text:
+  - LeakAgent verified every recovered production prompt against ground truth
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X004
+  candidate: Anthropic's deliberate system-prompt publication is unauthorized disclosure.
+  origin: Direct vendor documentation review.
+  attempted_searches:
+  - Compared the vendor's publication scope with the technique authorization boundary.
+  consulted_source_ids:
+  - SRC-anthropic-system-prompts
+  reason: Selected prompt publication for vendor web and mobile products is intentional
+    and authorized.
+  prohibited_publishable_text:
+  - Anthropic suffered a prompt disclosure incident
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X005
+  candidate: Every prompt-exfiltration CVE is an example of hidden-instruction disclosure.
+  origin: First saturation follow-up NVD query.
+  attempted_searches:
+  - Reviewed all 17 NVD records returned by the exact prompt-exfiltration query.
+  consulted_source_ids:
+  - SRC-nvd-audit
+  - SRC-arxiv-query-audit
+  reason: Returned records concerned databases, files, user prompts, arbitrary data,
+    RCE, or instruction injection rather than recovery of a hidden system prompt.
+  prohibited_publishable_text:
+  - all prompt exfiltration vulnerabilities disclose system prompts
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X006
+  candidate: A prompt can safely serve as the application's authorization control
+    if extraction is difficult.
+  origin: Conflict review between confidentiality claims and OWASP guidance.
+  attempted_searches:
+  - Direct OWASP LLM07 prevention-guidance review.
+  - Direct review of selected authorization-bypass advisories.
+  consulted_source_ids:
+  - SRC-owasp-llm07
+  - SRC-ghsa-open-webui
+  - SRC-ghsa-praisonai
+  reason: OWASP directs applications to enforce authorization externally and not treat
+    the prompt as a secret or sole control.
+  prohibited_publishable_text:
+  - prompt secrecy is a sufficient authorization control
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1603-X007
+  candidate: Match-based output detection identifies every form of prompt disclosure.
+  origin: Detection challenge review.
+  attempted_searches:
+  - Direct SPE-LLM defense and limitations review.
+  - Synthetic encoded and one-chunk boundary tests.
+  consulted_source_ids:
+  - SRC-arxiv-spe-llm
+  reason: Paraphrase, transformation, encoding, and small partial disclosures can
+    evade match-based detection.
+  prohibited_publishable_text:
+  - the analytic detects every prompt disclosure
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

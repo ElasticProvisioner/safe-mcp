@@ -1,0 +1,36 @@
+version: 1
+technique_id: SAF-T3001
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: fresh clean-room author
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records permitted and prohibited inputs with no prior-artifact access.}
+  contract_and_scope: {status: passed, notes: Contract requires durable corpus insertion, conditional retrieval, and generated outcome with unchanged components.}
+  technical_accuracy: {status: passed, notes: Mechanism, prerequisites, outcomes, and limits match directly reviewed primary studies.}
+  claim_traceability: {status: passed, notes: Twelve validated claims include exact locators and limitations.}
+  source_or_omit: {status: passed, notes: README units use hidden same-line traces or declared local artifacts; unsupported leads are excluded.}
+  evidence_classification: {status: passed, notes: Demonstrated status is supported by multiple end-to-end controlled studies and does not imply production observation.}
+  research_saturation: {status: passed, notes: Five required passes and four follow-ups are recorded; the final two produced no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Authority-restricted current searches classified direct demonstrations, adjacent events, CVEs, and the production gap.}
+  detection_quality: {status: passed, notes: Candidate analytic states telemetry, limits, false positives, suppression, and seven passing semantic fixtures.}
+  mitigation_quality: {status: passed, notes: Layered controls address corpus admission, index writes, integrity, provenance, response, and residual risk.}
+  framework_alignment: {status: passed, notes: Supplied tactic and inferential ATT&CK mapping are explicit; synthetic neighbors are integration-gated.}
+  publication_rights: {status: passed, notes: Publishable prose is independently paraphrased with named credit and no copied code, images, or datasets.}
+  safe_publication: {status: passed, notes: Tests use inert metadata-only fixtures and publish no operational poison-generation instructions.}
+validation:
+  commands:
+    - command: PYTHONPATH=/private/tmp/saf-t3001-work.Xw5ZAL/python-deps bundled-python3 scripts/validate-technique-research.py SAF-T3001
+      result: passed
+    - command: python3 tests/SAF-T3001/test_detection.py
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T3001/test_detection.py
+    result: "PASS SAF-T3001 detection semantic tests: 7 fixtures"
+    waiver: null
+unresolved: []
+canonical_repository:
+  status: passed
+  detector: "PASS SAF-T3001 detection semantic tests: 7 fixtures"
+  validator: "PASS SAF-T3001"
+  notes: Synthetic neighbors, source IDs, mitigation IDs, ATT&CK mapping, history, framework, alignment, and validation-proof paths were reconciled mechanically after the immutable evidence freeze.

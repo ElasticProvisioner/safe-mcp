@@ -1,0 +1,201 @@
+version: 1
+sources:
+  - id: SRC-mcp-tools-2025-06-18
+    title: Model Context Protocol Tools specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full official HTML page reviewed directly.
+    locators: [User Interaction Model, Tool Result, Security Considerations]
+    review_notes: Verified model-controlled invocation, untrusted tool metadata, result validation, and audit logging guidance.
+    archive: &remote
+      status: remote_reviewed_not_archived
+      reason: Public authoritative source was fully reviewed; no third-party snapshot is included in the canonical clean-room bundle.
+      review_evidence: {method: direct_full_page_review, reviewed_on: "2026-09-01"}
+  - id: SRC-mcp-resources-2025-06-18
+    title: Model Context Protocol Resources specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2025-06-18"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2025-06-18/server/resources
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full official HTML page reviewed directly.
+    locators: [User Interaction Model, Reading Resources, Annotations]
+    review_notes: Verified application-controlled context inclusion and resource metadata used by clients.
+    archive: *remote
+  - id: SRC-langchain-long-term-memory
+    title: Long-term memory
+    publisher: LangChain
+    authors: [LangChain documentation team]
+    version_or_date: current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://docs.langchain.com/oss/python/langchain/long-term-memory
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party documentation page reviewed directly.
+    locators: [Long-term memory, Memory storage, Read long-term memory in tools, Write long-term memory from tools]
+    review_notes: Verified cross-thread persistence, JSON namespace/key storage, and tool-mediated read/write access.
+    archive: *remote
+  - id: SRC-langchain-deepagents-production
+    title: Going to production
+    publisher: LangChain
+    authors: [LangChain documentation team]
+    version_or_date: current page reviewed 2026-09-01
+    source_class: implementation_artifact
+    official_url: https://docs.langchain.com/oss/python/deepagents/going-to-production
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party documentation page reviewed directly.
+    locators: [Configuration, Namespace by org_id, Execution environment, Filesystem]
+    review_notes: Verified cross-thread memory routing, namespace isolation advice, and restriction of writes to shared policy memory.
+    archive: *remote
+  - id: SRC-ms-recommendation-poisoning-2026
+    title: "Manipulating AI memory for profit: The rise of AI Recommendation Poisoning"
+    publisher: Microsoft Security Blog
+    authors: [Microsoft Defender Security Research Team, Noam Kochavi, Shaked Ilan, Sarah Wolstencroft]
+    version_or_date: "2026-02-10"
+    source_class: incident_report
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/02/10/ai-recommendation-poisoning/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party research report reviewed directly.
+    locators: [lines 56-60 summary, Attack discovery section, Scope, Recommendations for security teams, MITRE ATT&CK techniques observed, attribution footer]
+    review_notes: Verified 50 observed prompt-based attempts from 31 companies, variable effectiveness, hunting indicators, mitigations, mappings, and named contributors.
+    archive: *remote
+  - id: SRC-ms-guarding-ai-memory-2026
+    title: Guarding AI memory
+    publisher: Microsoft Security Blog
+    authors: [Natalie Isak, Sarah Cooley, Johann Rehberger, Hakon Maloy, Gal Zror]
+    version_or_date: "2026-06-22"
+    source_class: credible_practice
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/22/guarding-ai-memory/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party security article reviewed directly, including author footer and researcher credits.
+    locators: [What AI memory is, What is an agent memory attack, Memory Creation, Observability, guiding framework, case-study credits]
+    review_notes: Verified delayed influence, MemoryUpdated audit availability, lifecycle logging, provenance, retrieval review, and credited MSRC cases.
+    archive: *remote
+  - id: SRC-ms-zero-trust-memory-2026
+    title: AI Memory / Context Poisoning (Corruption)
+    publisher: Microsoft Learn
+    authors: [Microsoft Security documentation team]
+    version_or_date: "2026-08-01"
+    source_class: credible_practice
+    official_url: https://learn.microsoft.com/en-us/security/zero-trust/catalog-ai-attack-techniques/ai-memory-context-poisoning
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party guidance page reviewed directly.
+    locators: [What happens in this scenario, Why this technique is effective, Recommended controls, Technologies to consider, MITRE ATLAS mapping]
+    review_notes: Verified definition, impact conditions, memory governance, provenance, audit, isolation, sanitization, rollback, monitoring, and ATLAS mapping.
+    archive: *remote
+  - id: SRC-ms-redteam-update-2026
+    title: "Updating the taxonomy of failure modes in agentic AI systems: What a year of red teaming taught us"
+    publisher: Microsoft Security Blog
+    authors: [Microsoft AI Red Team]
+    version_or_date: "2026-06-04"
+    source_class: research
+    official_url: https://www.microsoft.com/en-us/security/blog/2026/06/04/updating-taxonomy-failure-modes-agentic-ai-systems-year-red-teaming-taught-us/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full first-party red-team report reviewed directly.
+    locators: [Operational findings, lines 70-73, New mitigations]
+    review_notes: Verified high-frequency controlled XPIA-memory-poisoning findings in deployed agent engagements and the need for full-session behavioral correlation.
+    archive: *remote
+  - id: SRC-neurips-minja-2025
+    title: Memory Injection Attacks on LLM Agents via Query-Only Interaction
+    publisher: Neural Information Processing Systems Foundation
+    authors: [Shen Dong, Shaochen Xu, Pengfei He, Yige Li, Jiliang Tang, Tianming Liu, Hui Liu, Zhen J. Xiang]
+    version_or_date: NeurIPS 2025
+    source_class: research
+    official_url: https://proceedings.neurips.cc/paper_files/paper/2025/file/42a97bbd9844d2bf68596730af80bcdf-Paper-Conference.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete 35-page peer-reviewed paper reviewed directly.
+    locators: [Abstract, Sections 1 and 3, Figure 1, Section 5.1, Table 1, Section 5.4, limitations checklist]
+    review_notes: Verified query-only threat model, later retrieval chain, 98.2 percent injection and 76.8 percent attack averages, shared-memory assumption, and defense limitations.
+    archive: *remote
+  - id: SRC-neurips-agentpoison-2024
+    title: "AgentPoison: Red-teaming LLM Agents via Poisoning Memory or Knowledge Bases"
+    publisher: Neural Information Processing Systems Foundation
+    authors: [Zhaorun Chen, Zhen Xiang, Chaowei Xiao, Dawn Song, Bo Li]
+    version_or_date: NeurIPS 2024
+    source_class: research
+    official_url: https://proceedings.neurips.cc/paper_files/paper/2024/file/eb113910e9c3f6242541c1652e30dfd6-Paper-Conference.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete 29-page peer-reviewed paper reviewed directly.
+    locators: [Abstract, Sections 3.1 and 3.2, experiment results, Section 5, Appendix A.2.4, Table 6]
+    review_notes: Verified partial database-access assumption, triggered retrieval and action, three-agent evaluation, at least 80 percent average attack success, under 0.1 percent poison rate, and defense tests.
+    archive: *remote
+  - id: SRC-arxiv-memory-defense-2026
+    title: Memory Poisoning Attack and Defense on Memory Based LLM-Agents
+    publisher: arXiv
+    authors: [Balachandra Devarangadi Sunil, Isheeta Sinha, Piyush Maheshwari, Shantanu Todmal, Shreyan Mallik, Shuchi Mishra]
+    version_or_date: arXiv:2601.05504v2, 2026-01-12
+    source_class: research
+    official_url: https://arxiv.org/pdf/2601.05504
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Complete 19-page preprint reviewed directly.
+    locators: [Abstract, Sections 3-6, Tables 1 and 2]
+    review_notes: Verified that pre-existing legitimate memories and retrieval count materially change attack success and that trust thresholds create false-positive and false-negative tradeoffs.
+    archive: *remote
+  - id: SRC-mitre-attack-t1546
+    title: Event Triggered Execution T1546
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: version 1.4, modified 2026-08-04
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1546/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full official technique page reviewed directly.
+    locators: [Description, Tactics, Version]
+    review_notes: Verified the operating-system/cloud definition used only for an analogous, not direct, mapping.
+    archive: *remote
+  - id: SRC-ghsa-openclaw-57r2
+    title: Isolated cron awareness events were recorded as trusted system events
+    publisher: OpenClaw project via GitHub Security Advisory
+    authors: [steipete, zsxsoft, KeenSecurityLab, qclawer]
+    version_or_date: "2026-04-21"
+    source_class: official_advisory
+    official_url: https://github.com/openclaw/openclaw/security/advisories/GHSA-57r2-h2wj-g887
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory URL opened only after discovery in the directly reviewed NVD record.
+    locators: [Affected versions, Impact, Fix, Release, Credits]
+    review_notes: Verified improper trust labeling, low severity, no direct auth or sandbox bypass, fixed version 2026.4.20, and credited reporter/sponsors.
+    archive: *remote
+  - id: SRC-nvd-cve-2026-44999
+    title: CVE-2026-44999 Detail
+    publisher: NIST National Vulnerability Database
+    authors: [NIST National Vulnerability Database team, VulnCheck CNA]
+    version_or_date: published 2026-05-11, modified 2026-06-17
+    source_class: official_advisory
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-44999
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Full authoritative vulnerability record reviewed directly.
+    locators: [Description, Change History, References, Quick Info]
+    review_notes: Consulted as a lead; rejected for this technique because the linked upstream advisory states no known CVE and describes a transient awareness-stream trust-label issue rather than a durable memory implant.
+    archive: *remote

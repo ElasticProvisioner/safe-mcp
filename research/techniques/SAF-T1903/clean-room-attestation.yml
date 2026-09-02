@@ -1,0 +1,143 @@
+version: 1
+technique_id: SAF-T1903
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: /root/cleanroom_saf_t1903
+target:
+  id: SAF-T1903
+  neutral_name: Malicious Server Control Channel
+allowed_inputs:
+- Neutral target ID SAF-T1903, neutral name Malicious Server Control Channel, and
+  tactic ATK-TA0011.
+- The author-saf-technique skill, its routed methodology, breach, clean-room, and
+  trace-format references, generic templates, and the canonical validator.
+- Independently opened authoritative standards, government, academic, first-party
+  vendor, and first-party researcher sources reached by direct URLs or domain-restricted
+  discovery.
+- Fresh temporary paths under /private/tmp/saf-all-cleanroom/SAF-T1903.
+prohibited_inputs:
+- techniques/SAF-T1903/README.md from any prior or destination artifact.
+- research/techniques/SAF-T1903/ from any prior or destination artifact.
+- techniques/SAF-T1903/detection-rule.yml from any prior or destination artifact.
+- Shared source, framework, mitigation, and alignment registries from the destination
+  repository.
+- Git history, diff, blame, branches, tags, commits, and target-specific repository
+  metadata.
+- Pull request, issue, discussion, review, or target-specific external context.
+- Previous conversation, prior target context, and other-agent work.
+- SAF sites, repositories, mirrors, forks, caches, and prior target artifacts.
+- Impact-classification examples before freeze.
+independent_research:
+  searches:
+  - site:unit42.paloaltonetworks.com "Model Context Protocol" "command and control"
+    malicious server
+  - site:research.jfrog.com MCP malicious server reverse shell PyPI
+  - site:research.checkpoint.com MCP server reverse shell vulnerability malicious
+    configuration
+  - site:cve.org CVE-2025-61260 CVE-2025-59536 MCP configuration
+  - site:cisa.gov known exploited vulnerabilities CVE-2025-61260 CVE-2025-59536 MCP
+  - site:arxiv.org malicious MCP server command control detection 2026
+  - site:elastic.co MCP server unusual domain child process C2 detection 2026
+  - site:cloud.google.com MCP malicious server security outbound network 2026
+  - site:modelcontextprotocol.io specification malicious server custom transport security
+    2026
+  - site:microsoft.com remote MCP server security unauthenticated 2026
+  opened_source_ids:
+  - SRC-mcp-overview-2026
+  - SRC-mcp-transports-2026
+  - SRC-jfrog-malicious-mcp
+  - SRC-unit42-browser-c2
+  - SRC-checkpoint-codex-cli
+  - SRC-cve-2025-61260
+  - SRC-checkpoint-claude-code
+  - SRC-cve-2025-59536
+  - SRC-elastic-unusual-domain
+  - SRC-elastic-mcp-child
+  - SRC-google-mcp-security-2026
+  - SRC-mitre-t1071
+  - SRC-arxiv-connor
+  - SRC-unit42-ai-ir
+  - SRC-unit42-thought-experiment
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-cve-2026-34742
+  - SRC-t1206-ms-config-risk
+  - SRC-checkpoint-mcpoison-2025-54136
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Integrators must reconcile synthetic neighbor IDs and any mitigation relationships
+  mechanically without rewriting clean-room substantive prose.
+- Integrators must replace the isolated-validation history placeholder with an honest
+  repository commit after integration.
+- Integrators must merge manifest and framework fragments by stable IDs and preserve
+  every source locator, limitation, exclusion, and rights record.
+- No integration, commit, push, or destination-repository target inspection was performed
+  during generation.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1903/synthetic/repo
+  validator_sha256: d1fd6a0185a18165d4c3d01080938a422c35324bec83061a4228e143f288ba41
+  command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py
+    SAF-T1903
+  mode: strict
+  result: PASS SAF-T1903
+  deliberately_deferred_joins:
+  - Confirm or reconcile the supplied tactic in the destination tactic registry.
+  - Reconcile the two provisional neighbor IDs without opening prior target prose.
+  - Merge source, framework, and alignment fragments by stable key.
+  - Replace the isolated history placeholder with the honest integration commit.
+attestation: I attest that this frozen bundle was authored by a fresh agent from the
+  neutral target and independently reviewed authoritative sources; no prior target
+  artifact, target-specific history, shared destination registry, prior conversation,
+  or other-agent work was accessed before freeze.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-spec-2026: SRC-mcp-overview-2026
+    SRC-jfrog-pypi-reverse-shell: SRC-jfrog-malicious-mcp
+    SRC-google-mcp-security: SRC-google-mcp-security-2026
+    SRC-jfrog-server-takeover: SRC-jfrog-jfsa-2026-001653030
+    SRC-microsoft-exposed-mcp: SRC-t1206-ms-config-risk
+    SRC-checkpoint-cursor-mcpoison: SRC-checkpoint-mcpoison-2025-54136
+  new_shared_source_records:
+  - SRC-mcp-transports-2026
+  - SRC-unit42-browser-c2
+  - SRC-checkpoint-codex-cli
+  - SRC-cve-2025-61260
+  - SRC-checkpoint-claude-code
+  - SRC-cve-2025-59536
+  - SRC-elastic-unusual-domain
+  - SRC-elastic-mcp-child
+  - SRC-mitre-t1071
+  - SRC-arxiv-connor
+  - SRC-unit42-ai-ir
+  - SRC-unit42-thought-experiment
+  - SRC-cve-2026-34742
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0011
+  canonical_neighbors:
+  - SAF-T1003
+  - SAF-T1001
+  canonical_mitigations:
+  - SAF-M-6
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-16
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-69
+  - SAF-M-70
+  attack_mapping:
+    id: T1071
+    type: analogous
+  validation_proof:
+  - research/techniques/SAF-T1903/validation/canonical-validation.txt
+  status: integrated_and_validated

@@ -1,0 +1,48 @@
+{
+  "schema": "saf-normalized-process-mcp-correlation-v1",
+  "validated_on": "2026-09-01",
+  "cases": [
+    {
+      "id": "positive_windows_shell",
+      "category": "positive",
+      "expected_match": true,
+      "event": {"parent_role": "mcp_runtime", "process_image": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "seconds_since_mcp_event": 4, "expected_tool_child": false}
+    },
+    {
+      "id": "positive_unix_shell",
+      "category": "positive",
+      "expected_match": true,
+      "event": {"parent_role": "mcp_runtime", "process_image": "/bin/bash", "seconds_since_mcp_event": 12, "expected_tool_child": false}
+    },
+    {
+      "id": "boundary_60_seconds_inclusive",
+      "category": "boundary",
+      "expected_match": true,
+      "event": {"parent_role": "mcp_runtime", "process_image": "/usr/bin/python3", "seconds_since_mcp_event": 60, "expected_tool_child": false}
+    },
+    {
+      "id": "negative_61_seconds",
+      "category": "boundary-negative",
+      "expected_match": false,
+      "event": {"parent_role": "mcp_runtime", "process_image": "/bin/sh", "seconds_since_mcp_event": 61, "expected_tool_child": false}
+    },
+    {
+      "id": "negative_non_mcp_parent",
+      "category": "negative",
+      "expected_match": false,
+      "event": {"parent_role": "terminal", "process_image": "/bin/zsh", "seconds_since_mcp_event": 3, "expected_tool_child": false}
+    },
+    {
+      "id": "expected_legitimate_tool_child",
+      "category": "expected-false-positive",
+      "expected_match": false,
+      "event": {"parent_role": "mcp_runtime", "process_image": "/usr/bin/python", "seconds_since_mcp_event": 2, "expected_tool_child": true}
+    },
+    {
+      "id": "malformed_missing_time",
+      "category": "malformed",
+      "expected_match": false,
+      "event": {"parent_role": "mcp_runtime", "process_image": "/bin/bash", "expected_tool_child": false}
+    }
+  ]
+}

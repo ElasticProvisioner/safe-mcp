@@ -1,0 +1,109 @@
+version: 1
+technique_id: SAF-T1406
+generation_mode: clean_room
+
+isolation_statement: >-
+  The canonical bundle was authored and validated without opening the real
+  target, shared registries, catalog entries, SAF pages, git history, pull
+  requests, earlier bundles, or neighboring technique content.
+
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0005
+      provenance: coordinator_supplied_saf_tactic
+      action: >-
+        Preserve the SAF tactic label. The reviewed external ATT&CK TA0005 page
+        uses a different label, so external nomenclature must not silently
+        overwrite the SAF label.
+  neighbors:
+    - id: SAF-T9998
+      represents: runtime-content boundary neighbor
+      action: >-
+        Replace with the existing canonical technique, or add an alignment
+        issue if no canonical neighbor exists.
+    - id: SAF-T9999
+      represents: object-substitution boundary neighbor
+      action: >-
+        Replace with the existing canonical technique, or add an alignment
+        issue if no canonical neighbor exists.
+  mitigations: []
+  source_ids:
+    status: provisional_clean_room_identifiers
+    reconcile_exact_duplicates_only: true
+    preserve:
+      - source title
+      - author and team credit
+      - locators
+      - URL provenance
+      - review notes
+      - claim relationships
+    ids:
+      - SRC-mcp-tools-2026-07-28
+      - SRC-mcp-schema-2026-07-28
+      - SRC-mcp-discovery-2026-07-28
+      - SRC-invariant-tool-poisoning
+      - SRC-invariant-whatsapp-rug-pull
+      - SRC-invariant-mcp-scan
+      - SRC-cve-2025-54136
+      - SRC-ghsa-24mc-g4xr-4395
+      - SRC-cve-2025-6514
+      - SRC-jfrog-cve-2025-6514
+      - SRC-cve-2025-54135
+      - SRC-ghsa-4cxx-hrm3-49rm
+      - SRC-cve-2025-49596
+      - SRC-ghsa-7f8r-222p-6f5g
+      - SRC-cisa-kev-2026-09-01
+      - SRC-arxiv-2508.02110v2
+      - SRC-arxiv-2508.14925v1
+      - SRC-arxiv-2512.06556v2
+      - SRC-mitre-attack-t1036
+  history_shas:
+    - sha: "1111111111111111111111111111111111111111"
+      status: synthetic_history_placeholder
+      action: Replace with the integration commit without changing claim prose.
+
+path_joins:
+  - bundle_path: source-manifest-fragment.yml
+    repository_path: research/source-manifest.yml
+    action: Merge without dropping review or rights metadata.
+  - bundle_path: framework-fragment.yml
+    repository_path: research/framework-model.yml
+    action: Merge after replacing synthetic neighbor IDs.
+  - bundle_path: alignment-fragment.yml
+    repository_path: research/alignment-ledger.yml
+    action: Merge after replacing synthetic neighbor IDs.
+  - bundle_path: techniques/SAF-T1406
+    repository_path: techniques/SAF-T1406
+    action: Copy to the matching repository path.
+  - bundle_path: research/techniques/SAF-T1406
+    repository_path: research/techniques/SAF-T1406
+    action: Copy to the matching repository path.
+  - bundle_path: tests/SAF-T1406
+    repository_path: tests/SAF-T1406
+    action: Copy canonical tests to the matching repository path.
+
+merge_order:
+  - Verify FREEZE.sha256 before inspecting repository state.
+  - Reconcile only synthetic identifiers and exact duplicate source IDs.
+  - Merge source-manifest-fragment.yml into research/source-manifest.yml without dropping review or rights metadata.
+  - Merge framework-fragment.yml and alignment-fragment.yml after replacing synthetic neighbor IDs.
+  - Copy the technique, research packet, and canonical tests to their matching repository paths.
+  - Run python3 scripts/validate-technique-research.py SAF-T1406 and the canonical test command again; strict review is the validator default.
+  - >-
+    If integration changes any substantive claim, example, evidence label,
+    detection logic, or publishable wording, reject the merge and schedule a
+    new evidence review instead of altering this frozen bundle in place.
+
+direct_github_url_provenance:
+  - advisory: GHSA-24mc-g4xr-4395
+    exact_url_supplied_by: SRC-cve-2025-54136
+  - advisory: GHSA-4cxx-hrm3-49rm
+    exact_url_supplied_by: SRC-cve-2025-54135
+  - advisory: GHSA-7f8r-222p-6f5g
+    exact_url_supplied_by: SRC-cve-2025-49596
+
+source_corpus:
+  location: /private/tmp/saf-all-cleanroom/SAF-T1406/sources/
+  contents: Three arXiv PDFs and their extracted text.
+  bundle_status: retained_outside_bundle
+  hash_proof: validation/source-corpus.sha256

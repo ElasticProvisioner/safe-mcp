@@ -1,0 +1,24 @@
+version: 1
+techniques:
+  - technique_id: SAF-T1506
+    name: Infrastructure Token Theft
+    documentation_status: stable
+    evidence_status: observed
+    tactics: [ATK-TA0006]
+    technique_path: techniques/SAF-T1506/README.md
+    research_packet: research/techniques/SAF-T1506
+    related_techniques: [SAF-T1502, SAF-T1507]
+    mitigations: [SAF-M-13, SAF-M-16, SAF-M-17, SAF-M-24, SAF-M-29, SAF-M-31, SAF-M-37, SAF-M-74]
+    attack_mappings:
+      - id: T1552.005
+        type: analogous
+      - id: T1528
+        type: analogous
+    detection:
+      rule: techniques/SAF-T1506/detection-rule.yml
+      test_status: passed
+      test_artifacts:
+        - tests/SAF-T1506/test_detection.py
+        - tests/SAF-T1506/fixtures.jsonl
+        - research/techniques/SAF-T1506/validation/detection-test.txt
+        - research/techniques/SAF-T1506/validation/strict-validation.txt

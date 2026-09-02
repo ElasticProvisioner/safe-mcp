@@ -1,0 +1,101 @@
+version: 1
+technique_id: SAF-T2105
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T2105
+  neutral_name: Disinformation Output
+allowed_inputs:
+- Target identifier SAF-T2105, neutral name Disinformation Output, and supplied tactic
+  ATK-TA0040.
+- Generic technique and research templates, clean-room method instructions, and the
+  canonical validator.
+- Directly reviewed public authorities discovered through source-class-restricted
+  queries.
+prohibited_inputs:
+- The exact target README at techniques/SAF-T2105/README.md, target packet at research/techniques/SAF-T2105/,
+  and target rule at techniques/SAF-T2105/detection-rule.yml.
+- Shared registries, existing SAF technique content, SAF sites or repositories or
+  forks, and impact-classification examples.
+- Git history, diffs, blame, pull request or issue content, and any previous conversation
+  about this target.
+- Unrestricted general search, GitHub discovery, and unverified summaries.
+independent_research:
+  searches:
+  - Restricted NIST guidance search for generative-AI information integrity, confabulation,
+    provenance, and monitoring.
+  - Restricted OpenAI and Google first-party searches for production covert-influence
+    and information-operation cases.
+  - Restricted USENIX searches for retrieval-poisoning demonstrations, defenses, and
+    contrary findings.
+  - Restricted NVD, CISA, and CVE catalog searches for directly related disclosed
+    vulnerabilities.
+  - Restricted MCP specification and MITRE ATT&CK searches for protocol and analogous
+    framework authority.
+  - Two final restricted no-change follow-up passes over the strongest authorities
+    and vulnerability catalogs.
+  opened_source_ids:
+  - SRC-google-ai-misuse
+  - SRC-mcp-resources-2025-06-18
+  - SRC-mitre-attack-t1565
+  - SRC-nist-ai-600-1
+  - SRC-openai-forecast-2023
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  - SRC-openai-storm-2035-2025
+  - SRC-usenix-confundo-2026
+  - SRC-usenix-poisonedrag-2025
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Preserve frozen bytes until canonical handoff is complete.
+- Perform shared-registry reconciliation only after the freeze boundary.
+- Replace the synthetic repository-history placeholder with the honest integration
+  commit without changing research conclusions.
+attestation: The technique was independently researched and authored by a fresh agent
+  in a new temporary path without reading prohibited target or repository-specific
+  prior content.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-google-gtig-2025: SRC-google-ai-misuse
+    SRC-mcp-resources-2025-06-18: SRC-mcp-resources-2025-06-18
+    SRC-nist-ai-600-1: SRC-nist-ai-600-1
+  new_shared_source_records:
+  - SRC-mitre-attack-t1565
+  - SRC-openai-forecast-2023
+  - SRC-openai-io-2024
+  - SRC-openai-prc-io-2026
+  - SRC-openai-storm-2035-2025
+  - SRC-usenix-confundo-2026
+  - SRC-usenix-poisonedrag-2025
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-3
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-22
+  - SAF-M-30
+  - SAF-M-32
+  - SAF-M-36
+  - SAF-M-51
+  canonical_neighbors:
+  - SAF-T2106
+  - SAF-T1102
+  attack_mapping:
+    id: T1565
+    type: analogous
+  validation_proof:
+  - research/techniques/SAF-T2105/validation/detection-test.txt
+  - research/techniques/SAF-T2105/validation/strict-validator.txt
+  - research/techniques/SAF-T2105/validation/canonical-validation.txt
+  dependency_resolution: SAF-T2106 was independently clean-room authored and integrated before destination strict validation was rerun.
+  status: integrated_and_validated

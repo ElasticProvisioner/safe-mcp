@@ -1,0 +1,255 @@
+version: 1
+technique_id: SAF-T1901
+research_status: saturated
+reviewed_on: "2026-09-02"
+research_policy: direct_authority_only
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-otel-http-spans-1.44.0
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-aws-cve-2026-15643
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-xqq2-4j46-vwp7
+  - SRC-nvd-token-scope-corpus
+  - SRC-cisa-kev-2026-09-01
+  - SRC-unit42-brute-ratel-2022
+  - SRC-ghsa-n8n-mcp
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mitre-t1102-002-v1-1
+  - SRC-mitre-t1102-003-v1-1
+  - SRC-otel-http-spans-1.44.0
+  - SRC-ghsa-cmrh-wvq6-wm9r
+  - SRC-aws-cve-2026-15643
+  - SRC-ghsa-mcp-atlassian-7r34
+  - SRC-ghsa-xqq2-4j46-vwp7
+  - SRC-nvd-token-scope-corpus
+  - SRC-cisa-kev-2026-09-01
+sources_rejected:
+  - source_id: SRC-unit42-brute-ratel-2022
+    reason: >-
+      The report documents malicious Brute Ratel use and direct-IP C2, while
+      external services are an advertised capability; it does not establish
+      webhook C2 or an MCP/agent instance.
+  - source_id: SRC-ghsa-n8n-mcp
+    reason: >-
+      This earlier n8n-mcp arbitrary-URL SSRF overlaps the selected product and
+      adds less webhook-specific mechanism coverage than CVE-2026-44694.
+sources_blocked: []
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  rationale: >-
+    Five methodological passes reached a stable definition, bounded evidence
+    status, four ranked enabling examples, tested analytic, controls, and
+    limitations. Two subsequent direct-NVD authority query passes returned no
+    new qualifying source or claim and therefore made no material changes.
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      authorities:
+        - SRC-mcp-tools-2026-07-28
+        - SRC-mcp-architecture-2026-07-28
+        - SRC-mitre-t1102-002-v1-1
+        - SRC-mitre-t1102-003-v1-1
+      findings:
+        - Established model-controlled tool authority and external API interaction.
+        - Established bidirectional versus one-way web-service C2 boundaries.
+      material_changes:
+        - Added the explicit operator-control and response-consumption boundary.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      authorities:
+        - SRC-nvd-token-scope-corpus
+        - SRC-cisa-kev-2026-09-01
+        - SRC-ghsa-cmrh-wvq6-wm9r
+        - SRC-aws-cve-2026-15643
+        - SRC-ghsa-mcp-atlassian-7r34
+        - SRC-ghsa-xqq2-4j46-vwp7
+      findings:
+        - Selected four mechanism-relevant enabling vulnerabilities.
+        - Found no direct qualifying production incident in the bounded direct-authority corpus.
+      material_changes:
+        - Ranked four examples and bounded each as enabling rather than observed C2.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      authorities:
+        - SRC-ghsa-cmrh-wvq6-wm9r
+        - SRC-ghsa-mcp-atlassian-7r34
+        - SRC-ghsa-xqq2-4j46-vwp7
+        - SRC-unit42-brute-ratel-2022
+      findings:
+        - Advisory proofs establish outbound primitives but not an end-to-end control channel.
+        - The historical Brute Ratel report does not establish the proposed mechanism.
+      material_changes:
+        - Set the overall evidence level to Research-Derived and added a direct-demo gap.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      authorities:
+        - SRC-otel-http-spans-1.44.0
+        - SRC-mitre-t1102-002-v1-1
+        - SRC-mcp-security-2026-07-28
+      findings:
+        - Defined application-to-HTTP correlation and privacy-aware collection.
+        - Implemented and tested a threshold analytic with positive, negative, false-positive, malformed, and blind-spot fixtures.
+      material_changes:
+        - Added executable detection and destination/redirect/egress defenses.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      authorities:
+        - SRC-mitre-t1102-002-v1-1
+        - SRC-mitre-t1102-003-v1-1
+        - SRC-otel-http-spans-1.44.0
+        - SRC-cisa-kev-2026-09-01
+      findings:
+        - Legitimate recurring webhooks can match the heuristic.
+        - Slow, one-off, encrypted, approved-service, or uncorrelated activity can evade it.
+        - Catalog absence and absence in the reviewed corpus do not establish universal absence.
+      material_changes:
+        - Added contrary cases, explicit inference labels, and bounded absence language.
+    - pass: follow_up_no_change_1
+      completed_on: "2026-09-02"
+      authority: SRC-nvd-token-scope-corpus
+      direct_queries:
+        - keywordSearch=Model Context Protocol webhook command
+        - keywordSearch=Model Context Protocol callback C2
+        - keywordSearch=AI agent webhook C2
+        - keywordSearch=Model Context Protocol outbound web service
+      result: All four direct official NVD API queries returned zero results after a transient rate-limit response was retried successfully.
+      material_changes: []
+    - pass: follow_up_no_change_2
+      completed_on: "2026-09-02"
+      authority: SRC-nvd-token-scope-corpus
+      direct_queries:
+        - keywordSearch=Model Context Protocol webhook beacon
+        - keywordSearch=Model Context Protocol HTTP command channel
+        - keywordSearch=agent webhook bidirectional command
+        - keywordSearch=AI agent webhook remote command
+      result: All four direct official NVD API queries returned zero results and introduced no new candidate, claim, mapping, or limitation.
+      material_changes: []
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 10
+  selected_examples:
+    - SRC-ghsa-cmrh-wvq6-wm9r
+    - SRC-aws-cve-2026-15643
+    - SRC-ghsa-mcp-atlassian-7r34
+    - SRC-ghsa-xqq2-4j46-vwp7
+  no_qualifying_direct_incident_rationale: >-
+    No reviewed authority documented the complete technique in production or
+    as an end-to-end demonstration. Selected items are the highest-impact and
+    most mechanism-relevant enabling vulnerabilities available in the bounded
+    direct-authority corpus.
+  candidates:
+    - source_id: SRC-ghsa-cmrh-wvq6-wm9r
+      identifier: CVE-2026-44694 / GHSA-cmrh-wvq6-wm9r
+      relationship: enabling_vulnerability
+      selected: true
+      exploitation_status: NVD CISA SSVC exploitation value none; no production exploitation identified in the advisory.
+      impact: Authenticated or prompt-influenced requests through webhook and API-client paths with possible response and credential exposure.
+      remediation: Upgrade n8n-mcp to 2.50.2 or later and apply destination controls.
+      rationale: Highest mechanism specificity because the maintainer advisory directly identifies MCP webhook and API outbound paths.
+    - source_id: SRC-aws-cve-2026-15643
+      identifier: CVE-2026-15643 / AWS bulletin 2026-054-AWS
+      relationship: enabling_vulnerability
+      selected: true
+      exploitation_status: NVD CISA SSVC exploitation value none; no observed exploitation stated by AWS.
+      impact: Attacker-directed pagination request with potential temporary AWS credential exposure.
+      remediation: Upgrade AWS HealthLake MCP Server to 0.0.14 or later and restrict egress as documented.
+      rationale: Highest bounded credential impact among the reviewed first-party MCP advisories.
+    - source_id: SRC-ghsa-mcp-atlassian-7r34
+      identifier: CVE-2026-27826 / GHSA-7r34-79r5-rcc9
+      relationship: enabling_vulnerability
+      selected: true
+      exploitation_status: NVD CISA SSVC exploitation value poc; advisory demonstration only.
+      impact: Unauthenticated arbitrary outbound request when the documented HTTP transport prerequisites hold.
+      remediation: Upgrade mcp-atlassian to 0.17.0 or later and enforce trusted URL configuration.
+      rationale: Strong network-reachable primitive with explicit trigger conditions and maintainer remediation.
+    - source_id: SRC-ghsa-xqq2-4j46-vwp7
+      identifier: CVE-2026-33619 / GHSA-xqq2-4j46-vwp7
+      relationship: enabling_vulnerability
+      selected: true
+      exploitation_status: NVD CISA SSVC exploitation value poc; blind callback proof only.
+      impact: Optional scheduler in 0.8.3 could issue a POST to an attacker-chosen callback destination, subject to deployment constraints.
+      remediation: Upgrade PinchTab to 0.8.4 or later and retain destination, IP-pinning, and redirect checks.
+      rationale: Direct agent webhook primitive, retained at rank four because it was optional, default-off, and often admin-constrained.
+    - source_id: SRC-ghsa-n8n-mcp
+      identifier: CVE-2026-39974 / GHSA-4ggg-h7ph-26qr
+      relationship: adjacent_incident_or_vulnerability
+      selected: false
+      exploitation_status: Maintainer advisory proof; no production exploitation identified.
+      impact: Authenticated arbitrary-URL SSRF in an n8n-mcp multi-tenant HTTP path.
+      remediation: Upgrade to 2.47.4 or later and apply the documented workaround where upgrade is delayed.
+      rationale: Rejected from the top four because it overlaps the selected n8n-mcp example and is less webhook-specific.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-45609
+      relationship: adjacent_incident_or_vulnerability
+      selected: false
+      exploitation_status: Cataloged advisory; no direct webhook-C2 evidence identified.
+      impact: Spring AI MCP security OAuth SSRF exposure rather than an operator webhook channel.
+      remediation: Apply the vendor-fixed version recorded by the advisory.
+      rationale: Adjacent outbound URL behavior but a different OAuth security boundary.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-42282
+      relationship: rejected
+      selected: false
+      exploitation_status: Cataloged advisory; not assessed as a webhook primitive.
+      impact: n8n-related logging of sensitive data rather than outbound operator communication.
+      remediation: Apply the affected product's vendor fix.
+      rationale: Mechanism does not establish an outbound webhook or control channel.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-72846
+      relationship: adjacent_incident_or_vulnerability
+      selected: false
+      exploitation_status: Cataloged advisory; no MCP-specific behavior identified.
+      impact: Scheduled webhook SSRF in a non-MCP application.
+      remediation: Apply the vendor-fixed version and restrict callback destinations.
+      rationale: Webhook mechanism is adjacent but lacks the MCP or agentic authority boundary.
+    - source_id: SRC-nvd-token-scope-corpus
+      identifier: CVE-2026-55640
+      relationship: rejected
+      selected: false
+      exploitation_status: Cataloged advisory; no outbound C2 evidence identified.
+      impact: Inbound webhook authentication behavior in a Nextcloud MCP integration.
+      remediation: Apply the vendor remediation recorded by the advisory.
+      rationale: Inbound authentication boundary is directionally different from outbound operator communication.
+    - source_id: SRC-unit42-brute-ratel-2022
+      identifier: Unit 42 Brute Ratel C4 report, 2022
+      relationship: historical_analogy
+      selected: false
+      exploitation_status: Malicious Brute Ratel activity observed, but reviewed samples used direct-IP C2.
+      impact: General command-and-control operation; third-party services were described only as an advertised capability.
+      remediation: Apply network and endpoint detection guidance in the report.
+      rationale: It cannot support an MCP/agent webhook claim or a direct web-service observation.
+evidence_assessment:
+  overall_status: research-derived
+  core_claim_ids:
+    - SAF-T1901-C004
+  rationale: >-
+    The complete behavior is an explicit inference joining model-controlled
+    external tool calls, ATT&CK bidirectional web-service semantics, and
+    disclosed outbound/webhook primitives. No reviewed source establishes an
+    end-to-end or production instance.
+  direct_evidence_gap: >-
+    No qualifying direct production incident or end-to-end public MCP/agent
+    webhook-C2 demonstration was identified.
+conflicts:
+  - issue: Recurring legitimate webhooks can satisfy the same volume and destination pattern.
+    resolution: Require model-driven, approval-state, invocation, and response-consumption context and retain a documented expected false positive.
+  - issue: The selected advisories demonstrate SSRF or callbacks, not command and control.
+    resolution: Classify them only as enabling vulnerabilities and keep the core claim Research-Derived.
+  - issue: A missing KEV record could be mistaken for absence of exploitation.
+    resolution: Limit the statement to exact absence from catalog version 2026.09.01 and reject universal absence claims.
+source_archive:
+  validation_status: passed
+  status: remote_reviewed_not_archived
+  rationale: All consulted sources have review method, exact locators, and archive exception evidence in the source manifest.
+rights_review:
+  status: passed
+  record: research/techniques/SAF-T1901/publication-rights.yml

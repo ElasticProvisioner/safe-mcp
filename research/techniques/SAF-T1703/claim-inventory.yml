@@ -1,0 +1,304 @@
+version: 1
+technique_id: SAF-T1703
+claims:
+  - id: SAF-T1703-C001
+    statement: MCP tools are model-controlled interfaces through which servers expose functions that can interact with external systems, while clients are expected to confirm sensitive operations, display tool inputs, validate results, and log usage.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools overview and interaction model, lines 86-99; Security Considerations, lines 725-737"]
+    corroboration: Microsoft incident-response guidance independently recommends guarding calls and correlating telemetry.
+    limitations: [The protocol specifies responsibilities but does not prove that any particular client implements them correctly.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C002
+    statement: An MCP host can compose multiple client-server sessions, with one client per server, and the host controls permissions, consent, and cross-server interactions.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: direct
+        exact_locators: ["Host and client responsibilities, lines 62-97; composability and server isolation, lines 123-133"]
+    corroboration: The MCP Tools specification separately describes results returning to the client and model.
+    limitations: [Architecture permits composition but does not require unsafe cross-server propagation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C003
+    statement: OpenAI automated red teaming demonstrated a malicious email encountered during an agent workflow causing the agent to send an unintended resignation email, and reports that the demonstrated attack was patched.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-openai-atlas
+        support: direct
+        exact_locators: ["Automated red teaming and long-horizon example, lines 52-75"]
+    corroboration: Microsoft red-team reporting independently describes zero-click multi-step chains beginning with external input.
+    limitations: [This was an authorized automated red-team scenario, not a publicly attributed production intrusion.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C004
+    statement: AttriGuard experimentally evaluates malicious directives in untrusted tool outputs that induce agent tool calls and uses causal attribution and user intent to distinguish compromised actions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-usenix-attriguard
+        support: direct
+        exact_locators: ["USENIX abstract, presentation page lines 6-9; paper abstract and evaluation summary"]
+    corroboration: Microsoft incident guidance recommends correlating agent and MCP telemetry across calls.
+    limitations: [The evaluation uses benchmarks and does not establish production prevalence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C005
+    statement: Tool workflows feed one call's output into the next call's input, while a per-call governance layer that lacks sequence correlation can miss compound risk.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-agt
+        support: direct
+        exact_locators: ["Agent tool execution and benchmark discussion, lines 30-43; limitations and roadmap, lines 46-78"]
+    corroboration: Microsoft AI Red Team reports that individual escalation steps can look normal while their compound effect is harmful.
+    limitations: [The source describes one governance implementation and benchmark, not all agent runtimes.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C006
+    statement: Malicious instructions in tool descriptions or returned content can alter an agent's later behavior, including unintended calls and data disclosure.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-indirect-injection-2025
+        support: direct
+        exact_locators: ["Tool poisoning and indirect injection discussion, lines 19-34"]
+      - source_id: SRC-ms-redteam-update-2026
+        support: corroborating
+        exact_locators: ["MCP / Plugin Abuse and cross-server instruction override, lines 57-65"]
+    corroboration: Independent protocol-community guidance warns that tool annotations are untrusted hints and risk emerges through combinations.
+    limitations: [The proposition identifies an attack surface; successful exploitation depends on model, host, permissions, and controls.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C007
+    statement: CVE-2025-54135 demonstrated prompt injection writing Cursor MCP configuration that could yield persistent code execution when a project was reopened; Cursor added approval for MCP-related changes in version 1.3.9.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-cursor
+        support: direct
+        exact_locators: ["CVE record description and references for CVE-2025-54135"]
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: direct
+        exact_locators: ["Summary, impact, affected versions, and patch, lines 131-159"]
+    corroboration: The CVE authority record supplies the exact vendor advisory URL and identifier.
+    limitations: [The public records establish a vulnerability and controlled exploitation, not known production exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C008
+    statement: CVE-2025-34072 documented a controlled chain in which Slack content caused local-secret retrieval, a Slack post, and link-unfurl disclosure; the affected experimental server was archived and no patch was issued.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-cve-34072
+        support: direct
+        exact_locators: ["Prerequisites and end-to-end demonstration, lines 35-51; boundary and disclosure timeline, lines 61-100; mitigation and archive status, lines 114-140"]
+    corroboration: The advisory is the researcher disclosure linked by the CVE authority record.
+    limitations: [The demonstration used an experimental, unmaintained server and does not establish exploitation in production.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C009
+    statement: The reviewed public corpus does not establish a named external-adversary production intrusion with an auditable event sequence that exactly satisfies the Tool-Chaining Pivot contract.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-redteam-update-2026
+        support: direct
+        exact_locators: ["Deployed-system red-team engagements and zero-click outcomes, lines 66-73"]
+      - source_id: SRC-openai-monitor
+        support: corroborating
+        exact_locators: ["Internal agent monitoring and mostly non-malicious prompt-injection events, lines 279-307"]
+      - source_id: SRC-anthropic-rfi
+        support: corroborating
+        exact_locators: ["Agentic threat-vector evidence and incident-evidence limitations, PDF pages 4-5"]
+    corroboration: Saturation passes across direct vendor, CVE, and conference authorities found demonstrations and red-team evidence but no contract-exact public production incident.
+    limitations: [Absence from the reviewed public corpus is not proof that no private incident has occurred.]
+    conflicts: [Microsoft reports deployed-system red-team lateral movement, which raises confidence to Demonstrated but remains authorized testing rather than an external-adversary incident.]
+    inference:
+      is_inference: true
+      rationale: This is a bounded evidence-gap conclusion derived from the enumerated search corpus and explicit source characterizations.
+    status: validated
+  - id: SAF-T1703-C010
+    statement: The confidentiality, integrity, and execution impact of a Tool-Chaining Pivot is conditional on the privileges and effects available through the second tool and on what compound workflow controls permit.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Finance workflow attack pattern and trust-boundary analysis, lines 48-63"]
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: corroborating
+        exact_locators: ["Persistent code-execution impact, lines 131-159"]
+    corroboration: CVE-2025-34072 demonstrates confidential-data impact through the downstream service.
+    limitations: [Severity varies substantially by target tool scope, approval controls, and runtime isolation.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The conditional impact statement synthesizes distinct demonstrated outcomes without claiming universal consequence.
+    status: validated
+  - id: SAF-T1703-C011
+    statement: Detection requires cross-event telemetry that links an upstream tool result to a later tool call and preserves tool identities, parameters, intent, approval, and outcome context.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Detection and response guidance, lines 67-76"]
+      - source_id: SRC-usenix-attriguard
+        support: corroborating
+        exact_locators: ["Causal attribution and user-intent design in abstract and paper"]
+    corroboration: Microsoft governance research reports sequence correlation as a gap in per-call enforcement.
+    limitations: [Many current products do not emit all required normalized fields.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C012
+    statement: New external destinations, expanded parameters, unusual queries, and tool-metadata changes are useful contextual signals for detecting or investigating a cross-tool pivot.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Detection signals and telemetry correlation, lines 67-76"]
+    corroboration: Microsoft AI Red Team recommends version pinning and change monitoring for tool definitions.
+    limitations: [These signals are not specific and need intent, approval, and provenance context.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C013
+    statement: MCP security guidance calls for server-side input and access validation and client-side confirmation, display of inputs, result validation, and tool-usage logging.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations, lines 725-737"]
+    corroboration: Microsoft response guidance independently recommends action guards and DLP inspection of call parameters.
+    limitations: [The guidance does not standardize cross-tool policy or prove enforcement.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C014
+    statement: Legitimate multi-tool workflows and accidental or non-malicious prompt-like inputs can resemble parts of the technique and are important false-positive sources.
+    class: research_finding
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-openai-monitor
+        support: direct
+        exact_locators: ["Observed internal prompt-injection events and non-malicious characterization, lines 279-307"]
+      - source_id: SRC-mcp-architecture-2026-07-28
+        support: context
+        exact_locators: ["Legitimate host composability, lines 123-133"]
+    corroboration: MCP architecture makes benign cross-server composition an intended host behavior.
+    limitations: [The source population is OpenAI internal coding agents and may not generalize to all deployments.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1703-C015
+    statement: Requiring explicit causal linkage and a five-minute inclusive window is a conservative, testable analytic design for sequence correlation rather than an externally standardized threshold.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-usenix-attriguard
+        support: direct
+        exact_locators: ["Causal attribution design and user-intent comparison in paper"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: context
+        exact_locators: ["Cross-telemetry correlation guidance, lines 67-76"]
+    corroboration: The local fixtures test the 300-second inclusive boundary and a 301-second negative case.
+    limitations: [The time window is locally chosen and requires tuning to workflow duration and event latency.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Sources support sequence correlation and causality, but not a universal five-minute threshold.
+    status: validated
+  - id: SAF-T1703-C016
+    statement: Least privilege, tool provenance and version control, output inspection, deterministic consequential-action approval, and sequence-aware action policy reduce the opportunity or impact of cross-tool pivots.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Security Considerations, lines 725-737"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: direct
+        exact_locators: ["Mitigation and protection guidance, lines 67-76"]
+      - source_id: SRC-ms-redteam-update-2026
+        support: corroborating
+        exact_locators: ["Supply-chain, consent, and session-hardening controls, lines 74-90"]
+    corroboration: Microsoft developer guidance recommends prompt shields, delimiters, monitoring, and supply-chain controls.
+    limitations: [No individual control is sufficient against all models, hosts, and tool combinations.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mitigation set combines directly recommended controls around the defining source-to-sink mechanism.
+    status: validated
+  - id: SAF-T1703-C017
+    statement: MITRE ATT&CK T1072 is an analogous mapping because it uses centralized authorized software to act on other systems, but it is not exact because it concerns deployment tools and does not require agent-context influence across tools.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1072
+        support: direct
+        exact_locators: ["Technique description, version 3.2, last modified 2026-05-12"]
+    corroboration: T1021 and T1210 were reviewed and rejected as narrower remote-service and vulnerability mechanisms.
+    limitations: [The mapping is explicitly analogous and must not imply ATT&CK endorsement or identity.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The mapping compares immediate objective and authorized control interface while preserving mechanism differences.
+    status: validated
+  - id: SAF-T1703-C018
+    statement: Direct demonstrations, disclosed vulnerabilities, and deployed-system red-team engagements collectively establish that attacker-influenced content or metadata at one boundary can induce consequential action through a different tool or connected system.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-redteam-update-2026
+        support: direct
+        exact_locators: ["MCP / Plugin Abuse, lines 57-65; zero-click end-to-end chains and lateral movement, lines 66-73"]
+      - source_id: SRC-openai-atlas
+        support: direct
+        exact_locators: ["Malicious email to unintended email action, lines 52-75"]
+      - source_id: SRC-ghsa-cursor-4cxx-2025
+        support: corroborating
+        exact_locators: ["Prompt injection to MCP configuration and code execution, lines 131-159"]
+      - source_id: SRC-cve-34072
+        support: corroborating
+        exact_locators: ["End-to-end Slack, local-data, and disclosure chain, lines 35-100"]
+    corroboration: AttriGuard independently reproduces the source-output-to-tool-call mechanism across benchmarks.
+    limitations: [The sources do not establish public external-adversary prevalence or a single universal implementation path.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated

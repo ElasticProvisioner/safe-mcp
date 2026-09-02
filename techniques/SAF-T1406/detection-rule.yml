@@ -1,0 +1,87 @@
+title: Unapproved Security-Relevant MCP Metadata Drift
+id: 7f62bcb4-f8d2-4a18-a2fb-caccc12f8b7e
+status: experimental
+description: >-
+  Detects a canonical metadata snapshot that differs from the approved baseline
+  for an MCP or agentic object when a security-relevant descriptor changed and
+  the new snapshot has not completed equivalent reapproval.
+author: SAF clean-room research run
+date: 2026-09-01
+logsource:
+  category: application
+  product: mcp_host
+  service: metadata_integrity
+detection:
+  selection_event:
+    event_type: mcp_metadata_snapshot
+    object_type:
+      - tool
+      - server
+  selection_drift:
+    metadata_changed: true
+  selection_security_field:
+    changed_fields|contains:
+      - name
+      - title
+      - description
+      - inputSchema
+      - icons
+      - annotations.readOnlyHint
+      - annotations.destructiveHint
+      - annotations.idempotentHint
+      - annotations.openWorldHint
+  filter_reapproved:
+    approval_state: reapproved
+  condition: selection_event and selection_drift and selection_security_field and not filter_reapproved
+fields:
+  - timestamp
+  - session_id
+  - server_id
+  - object_type
+  - object_name
+  - metadata_hash
+  - approved_metadata_hash
+  - changed_fields
+  - approval_state
+falsepositives:
+  - Legitimate upgrades, localization, icon changes, or schema revisions that reach telemetry before the approval record is updated.
+  - Canonicalization-version changes that recompute hashes without a semantic descriptor change.
+level: high
+tags:
+  - saf.t1406
+  - attack.defense-evasion
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1406-C009, SAF-T1406-C011]
+  telemetry_claim_ids: [SAF-T1406-C001, SAF-T1406-C009]
+  limitation_claim_ids: [SAF-T1406-C009, SAF-T1406-C010]
+  validation_artifacts:
+    - tests/SAF-T1406/test_detection_rule.py
+    - tests/SAF-T1406/test-events.json
+    - research/techniques/SAF-T1406/validation/detection-tests.txt
+    - research/techniques/SAF-T1406/validation/validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1406-C009]
+      rationale: MCP host metadata collection is where current and approved canonical snapshots can be joined.
+    selection_event:
+      claim_ids: [SAF-T1406-C001, SAF-T1406-C009]
+      rationale: Restricts the analytic to tool and server metadata snapshots documented by the protocol and collection design.
+    selection_drift:
+      claim_ids: [SAF-T1406-C009]
+      rationale: A canonical mismatch is the integrity signal supported by the descriptor-comparison design.
+    selection_security_field:
+      claim_ids: [SAF-T1406-C001, SAF-T1406-C009]
+      rationale: Limits alerts to protocol fields that can influence identification, selection, schema interpretation, or risk hints.
+    filter_reapproved:
+      claim_ids: [SAF-T1406-C007, SAF-T1406-C010]
+      rationale: An equivalent completed reapproval removes the post-approval trust-reuse condition and reduces benign-change alerts.
+    condition:
+      claim_ids: [SAF-T1406-C007, SAF-T1406-C009, SAF-T1406-C010]
+      rationale: Requires the intersection of object metadata, verified drift, a security-relevant field, and absent reapproval.
+    fields:
+      claim_ids: [SAF-T1406-C009, SAF-T1406-C010]
+      rationale: Provides stable identity, baseline, change, approval, and timing context required to investigate and tune an alert.
+    falsepositives:
+      claim_ids: [SAF-T1406-C010]
+      rationale: Legitimate dynamic updates and canonicalization changes are the primary documented benign-drift cases.

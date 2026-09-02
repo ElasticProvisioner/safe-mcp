@@ -1,124 +1,102 @@
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: MCP Consent Fatigue Attack Detection
-id: 8f37ee6c-6f0e-411b-be8e-36ef3f3fefc1
+title: Repeated Agent Approval Requests Followed by Approval
+id: 3a9d4f8c-3f0b-4a7f-9f68-f50e41d9c403
 status: experimental
-description: Detects potential consent fatigue exploitation through high-frequency approval requests followed by sensitive operations. This rule identifies patterns where users are bombarded with benign approval requests, leading to habituation, then presented with malicious requests. Based on MFA fatigue attack patterns observed in Uber (2022) and Cisco (2022) breaches.
-author: SAF-MCP Team
-date: 2025-11-16
-modified: 2025-11-16
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1403
-  - https://www.cisa.gov/news-events/cybersecurity-advisories/aa22-277a
-  - https://www.microsoft.com/en-us/security/blog/2022/08/26/cyber-signals-defending-against-cyber-threats-with-the-latest-research-insights-and-trends/
-  - https://krebsonsecurity.com/2022/09/how-an-mfa-bombing-led-to-ubers-breach/
-  - https://thehackernews.com/2022/09/mfa-fatigue-attack-how-uber-got-hacked.html
+description: >-
+  Detects materially equivalent approval requests for one user and requester
+  within a short window when a denial or cancellation precedes approval.
+author: OpenAI Codex clean-room agent /root/cleanroom_saf_t1403
+date: 2026-09-01
+modified: 2026-09-01
 logsource:
-  product: mcp
-  service: approval_workflow
-  category: agent_operations
+  category: application
+  product: agent_or_mcp_client
+  service: approval_audit
 detection:
-  # High frequency of requests from single agent/server
-  high_frequency:
-    event_type: 'approval_request'
-    timeframe: '1h'
-    count: '>= 10'
-    group_by: 'agent_id'
-  
-  # Decreasing response times indicating habituation
-  habituation_pattern:
-    event_type: 'approval_granted'
-    response_time_trend: 'decreasing'
-    window_size: 5
-    threshold_percentage: -30  # 30% decrease in response time over last 5 approvals
-  
-  # Sensitive operation approval
-  sensitive_approval:
-    event_type: 'approval_granted'
-    risk_level:
-      - 'high'
-      - 'critical'
-    operation_type:
-      - 'credential_access'
-      - 'system_execution'
-      - 'file_deletion'
-      - 'network_exfiltration'
-      - 'privilege_escalation'
-      - 'environment_variable_access'
-      - 'secret_access'
-  
-  # Rapid approval of sensitive operation (under 2 seconds)
-  rapid_sensitive_approval:
-    event_type: 'approval_granted'
-    risk_level:
-      - 'high'
-      - 'critical'
-    response_time_ms: '< 2000'
-  
-  # Approval rate acceleration
-  approval_acceleration:
-    event_type: 'approval_granted'
-    session_approval_rate: '> 90'  # More than 90% approval rate in session
-    baseline_deviation: '> 30'  # 30% higher than user's baseline
-  
-  # Late-night or high-fatigue time approvals
-  temporal_risk:
-    event_type: 'approval_granted'
-    risk_level:
-      - 'high'
-      - 'critical'
-    hour_of_day:
-      - '< 06'  # Before 6 AM
-      - '> 22'  # After 10 PM
-  
-  # Sequential pattern: many benign followed by sensitive
-  condition: (high_frequency and sensitive_approval) or (habituation_pattern and sensitive_approval) or rapid_sensitive_approval or (approval_acceleration and sensitive_approval) or temporal_risk
-
-falsepositives:
-  - Legitimate bulk operations requiring multiple approvals in development/testing environments
-  - Power users with established fast approval patterns for genuinely safe operations
-  - Automated testing or CI/CD workflows with high approval frequency
-  - Users working in different time zones (late-night detections)
-  - Initial onboarding or training scenarios with high approval counts
-  - Scheduled batch jobs requiring sequential approvals
-
-level: high
-
-tags:
-  - attack.defense_evasion
-  - attack.t1204  # User Execution
-  - attack.t1078  # Valid Accounts (when combined with credential theft)
-  - safe.t1403
-  - mcp.approval_workflow
-  - social_engineering
-
+  selection_request:
+    event_type: approval_request
+  group_by:
+    - user_id
+    - requester_id
+    - operation
+    - request_fingerprint
+  timeframe: 10m
+  threshold: 4
+  prior_negative_decisions:
+    decision:
+      - denied
+      - cancelled
+  terminal_decision:
+    decision: approved
+  exclusions:
+    user_initiated: true
+  condition: >-
+    selection_request and count() >= threshold by group_by within timeframe and
+    prior_negative_decisions precedes terminal_decision and not exclusions
 fields:
+  - event_time
   - user_id
-  - agent_id
-  - approval_count
-  - response_time_ms
-  - operation_type
-  - risk_level
   - session_id
-  - timestamp
-  - hour_of_day
-  - approval_rate
-
-notes:
-  - This rule detects patterns of consent fatigue exploitation but requires baseline establishment for each user
-  - Consider implementing machine learning models for more accurate habituation detection
-  - Response time trends are key indicators - monitor for acceleration over time
-  - Combine with user behavior analytics for reduced false positives
-  - Pattern-based detection has limitations - attackers may evade by varying timing or request patterns
-  - Organizations should implement multiple detection layers beyond this signature
-
-# Detection Logic Explanation:
-# 1. high_frequency: Detects when a single agent generates 10+ approval requests in 1 hour
-# 2. habituation_pattern: Identifies when user response times decrease by 30%+ over 5 consecutive approvals
-# 3. sensitive_approval: Flags approval of high-risk operations (credentials, execution, etc.)
-# 4. rapid_sensitive_approval: Critical indicator - sensitive operation approved in under 2 seconds
-# 5. approval_acceleration: User's approval rate significantly exceeds their established baseline
-# 6. temporal_risk: High-risk approvals during known fatigue periods (late night, early morning)
-#
-# The rule triggers when any combination of frequency + sensitive operation occurs,
-# or when rapid approvals of sensitive operations are detected regardless of other factors.
-
+  - requester_id
+  - operation
+  - request_fingerprint
+  - decision
+  - approval_scope
+  - user_initiated
+falsepositives:
+  - Legitimate retries after transient failures when the application preserves an identical request fingerprint.
+  - Separately initiated user actions that happen to request the same operation within the correlation window.
+level: medium
+tags:
+  - saf.t1403
+  - attack.t1621
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1403-C013
+    - SAF-T1403-C014
+  telemetry_claim_ids:
+    - SAF-T1403-C002
+    - SAF-T1403-C010
+    - SAF-T1403-C013
+  limitation_claim_ids:
+    - SAF-T1403-C014
+    - SAF-T1403-C015
+  validation_artifacts:
+    - tests/SAF-T1403/cases.json
+    - tests/SAF-T1403/test_detection_rule.py
+    - research/techniques/SAF-T1403/validation/detection-test.txt
+    - research/techniques/SAF-T1403/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids: [SAF-T1403-C002, SAF-T1403-C010, SAF-T1403-C013]
+      rationale: MCP and analogous authentication guidance require auditable request and decision events.
+    selection_request:
+      claim_ids: [SAF-T1403-C013]
+      rationale: Approval-request events are the base population for sequence analysis.
+    group_by:
+      claim_ids: [SAF-T1403-C013, SAF-T1403-C015]
+      rationale: User, requester, operation, and fingerprint distinguish equivalent requests from unrelated actions.
+    timeframe:
+      claim_ids: [SAF-T1403-C014]
+      rationale: Ten minutes is the explicit experimental correlation boundary.
+    threshold:
+      claim_ids: [SAF-T1403-C014]
+      rationale: Four requests is the explicit experimental count boundary.
+    prior_negative_decisions:
+      claim_ids: [SAF-T1403-C013]
+      rationale: A prior denial or cancellation distinguishes resistance from ordinary approval.
+    terminal_decision:
+      claim_ids: [SAF-T1403-C013]
+      rationale: Later approval represents the technique's immediate objective.
+    exclusions:
+      claim_ids: [SAF-T1403-C015]
+      rationale: Explicit user initiation is an expected legitimate lookalike.
+    condition:
+      claim_ids: [SAF-T1403-C013, SAF-T1403-C014, SAF-T1403-C015]
+      rationale: The full condition binds equivalence, count, time, decision order, and false-positive suppression.
+    fields:
+      claim_ids: [SAF-T1403-C013, SAF-T1403-C015]
+      rationale: These fields support correlation, scoping, validation, and investigation.
+    falsepositives:
+      claim_ids: [SAF-T1403-C015]
+      rationale: Retry loops and separate user actions are documented analytic limitations.

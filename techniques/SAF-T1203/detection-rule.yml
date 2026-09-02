@@ -1,74 +1,67 @@
-title: Backdoored MCP Server Artifact Installation (Persistence via Cron/Autostart)
-id: df39820d-bef0-4bdb-af32-2831928fda78
-status: experimental
-description: |
-  Detects potential installation-time persistence behaviors consistent with a backdoored MCP server
-  artifact (package, container, binary). Signals include suspicious installer commands (cron/systemd),
-  writes to persistence locations, and unexpected outbound network activity during installation.
-author: Vikranth Kumar Shivaa
-date: 2025-12-11
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1203
-  - https://attack.mitre.org/techniques/T1195/
-  - https://attack.mitre.org/techniques/T1053/003/
-  - https://attack.mitre.org/techniques/T1547/
+title: Unapproved MCP Server Binary Digest at Process Start
+id: 12030000-0000-4000-8000-000000001203
+status: test
+description: >-
+  Detects a configured local MCP server process start when the executable's
+  observed SHA-256 digest differs from its approved digest and the change was
+  not approved.
+author: OpenAI Codex clean-room research agent
+date: 2026-09-01
 logsource:
-  product: mcp
-  service: package_manager
+  category: process_creation
+  product: mcp_host_endpoint
 detection:
-  # Installer / lifecycle hooks invoking persistence mechanisms or common reverse-shell tooling.
-  # Source: MITRE ATT&CK persistence techniques and common package-manager abuse patterns.
-  selection_install_script_suspicious:
-    command_line:
-      - '*crontab*'
-      - '*/etc/cron*'
-      - '*/etc/crontab*'
-      - '*systemctl*enable*'
-      - '*systemctl*daemon-reload*'
-      - '*launchctl*'
-      - '*schtasks*'
-      - '*reg*add*Run*'
-      - '*authorized_keys*'
-      - '*curl *'
-      - '*wget *'
-      - '*nc *'
-      - '*ncat *'
-      - '*bash -c*'
-      - '*/dev/tcp/*'
-      - '*powershell* -enc*'
-
-  # File writes into common persistence locations.
-  selection_persistence_file_write:
-    file_path:
-      - '*/etc/cron*'
-      - '*/var/spool/cron*'
-      - '*/etc/systemd/system/*'
-      - '*/lib/systemd/system/*'
-      - '*/.config/autostart/*'
-      - '*/.ssh/authorized_keys*'
-      - '*\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\*'
-
-  # Outbound destinations during install (example-only; tune per environment).
-  selection_outbound_during_install:
-    network_destination:
-      - '*pastebin*'
-      - '*discord*'
-      - '*ngrok*'
-      - '*.onion*'
-
-  condition: selection_install_script_suspicious or selection_persistence_file_write or selection_outbound_during_install
+  selection:
+    event_type: mcp_server_process_start
+    server_registered: true
+    change_approved: false
+  digest_mismatch:
+    observed_sha256|not_equals_field: approved_sha256
+  condition: selection and digest_mismatch
+fields:
+  - server_id
+  - executable_path
+  - observed_sha256
+  - approved_sha256
+  - change_approved
+  - signature_valid
 falsepositives:
-  - Legitimate installers that register scheduled tasks or enable services as part of normal setup
-  - Dev environments where package install scripts fetch dependencies over the network
-  - Configuration management tools that write to systemd/cron paths for legitimate automation
+  - Legitimate upgrade or local rebuild launched before its approved digest is registered.
+  - Collection that hashes a different path than the resolved executable launched by the host.
 level: high
 tags:
-  - attack.initial_access
+  - saf.t1203
   - attack.persistence
-  - attack.t1195
-  - attack.t1053.003
-  - attack.t1547
-  - safe.t1203
-  - mcp
-  - supply_chain
-
+  - attack.t1554
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1203-C011
+    - SAF-T1203-C015
+  telemetry_claim_ids:
+    - SAF-T1203-C011
+  limitation_claim_ids:
+    - SAF-T1203-C013
+    - SAF-T1203-C015
+  validation_artifacts:
+    - techniques/SAF-T1203/test-logs.json
+    - techniques/SAF-T1203/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids: [SAF-T1203-C011]
+      rationale: ATT&CK DET0336 identifies process-creation and file-integrity telemetry for changed binaries.
+    selection:
+      claim_ids: [SAF-T1203-C011, SAF-T1203-C015]
+      rationale: Restricts evaluation to registered MCP server starts and unapproved changes.
+    digest_mismatch:
+      claim_ids: [SAF-T1203-C011, SAF-T1203-C015]
+      rationale: Compares execution-time identity with an approved artifact baseline.
+    condition:
+      claim_ids: [SAF-T1203-C011, SAF-T1203-C015]
+      rationale: Requires both the lifecycle context and an unapproved identity mismatch.
+    fields:
+      claim_ids: [SAF-T1203-C011, SAF-T1203-C015]
+      rationale: Retains the fields needed to investigate identity, path, approval, and signing state.
+    falsepositives:
+      claim_ids: [SAF-T1203-C015]
+      rationale: Declares expected deployment and path-resolution lookalikes exercised by fixtures.

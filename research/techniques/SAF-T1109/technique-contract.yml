@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T1109
+name: Debugging Tool Exploitation
+status: ready_for_review
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Execute attacker-selected processes by reaching a privileged
+  MCP or agentic debugging, inspection, testing, or prototyping control surface that
+  converts caller-controlled connection parameters into local process launches.
+scope:
+  security_boundary: The boundary between untrusted web, remote-server, or agent-controlled
+    input and a developer-facing local control plane permitted to spawn MCP subprocesses.
+  in_scope:
+  - Exploitation of a debugging, inspection, testing, or prototyping surface whose
+    process-launch capability is reachable from attacker-controlled input.
+  - Immediate execution under the developer-tool or agent-host process identity.
+  out_of_scope:
+  - Prompt or tool-description manipulation that causes an otherwise authorized tool
+    call without exploiting the developer control surface.
+  - Silent installation or launch of a malicious MCP server through configuration
+    or package supply-chain mechanisms.
+  - Post-execution persistence, collection, credential theft, lateral movement, and
+    impact.
+  affected_components:
+  - MCP Inspector or comparable developer-facing MCP inspection proxy
+  - Agent prototyping user interface and its local MCP control socket
+  - Developer workstation process-launch and endpoint telemetry
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt injection changes model instructions; SAF-T1109 requires
+    exploitation of a privileged debugging or prototyping control surface to obtain
+    process execution.
+- technique_id: SAF-T1001
+  distinction: Tool poisoning changes model-visible metadata; SAF-T1109 instead
+    exploits the process-launch capability of a developer control surface.
+- technique_id: SAF-T1006
+  distinction: Malicious MCP-server installation crosses the installation and consent
+    boundary; SAF-T1109 begins after a developer control surface exists and is reached
+    through a vulnerability or unsafe trust assumption.
+required_evidence:
+- Current MCP requirements for tool access control, input validation, audit logging,
+  Origin validation, local binding, and authentication.
+- Directly reviewed advisories or demonstrations establishing attacker-controlled
+  process launch through developer-facing MCP or agentic control surfaces.
+- Separate current searches for production incidents, vulnerabilities, advisories,
+  exploitation status, demonstrations, detection, defense, challenges, and adjacent
+  behavior.
+- Exact affected and fixed states, exploitation limitations, and named researcher
+  or advisory credits for selected examples.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Control-plane HTTP or WebSocket events with timestamp, device, session, path,
+    origin, authentication result, and initiating process.
+  - Endpoint process creation with timestamp, device, session or correlation key,
+    parent process and command line, child image and command line, and user.
+safe_example_constraints:
+- Use example.invalid, placeholder session identifiers, and a non-destructive print-only
+  child process.
+- Do not reproduce advisory payloads, encoded commands, credentials, persistence,
+  reverse shells, or destructive actions.
+completion_evidence:
+- Every substantive publishable unit is validated and linked to a reviewed source
+  with exact locators or a declared repository artifact.
+- Unverified candidate claims and examples are omitted from publishable prose and
+  recorded in traceability-ledger.yml.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Deterministic positive, negative, boundary, malformed, and legitimate-lookalike
+  detection tests pass.
+- Rights, safe-publication, clean-room, framework, and quality gates pass with no
+  unresolved issue.

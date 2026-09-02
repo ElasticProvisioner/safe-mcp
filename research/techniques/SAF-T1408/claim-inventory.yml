@@ -1,0 +1,480 @@
+version: 1
+technique_id: SAF-T1408
+claims:
+  - id: SAF-T1408-C001
+    statement: >-
+      The 2025-11-25 MCP authorization specification requires HTTP authorization
+      implementations to follow OAuth 2.1 security practices, requires MCP
+      clients to implement PKCE and verify support before proceeding, and
+      requires refusal when authorization-server metadata omits PKCE support.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Standards Compliance and Overview, lines 125-152
+          - Security Considerations / Authorization Code Protection, lines 451-491
+    corroboration: RFC 9700 Sections 2.1.1 and 4.8 supply the underlying OAuth requirements and attack model.
+    limitations:
+      - The specification states S256 when technically capable rather than establishing every deployed client's behavior.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C002
+    statement: >-
+      RFC 7636 says clients must not downgrade to plain after trying S256;
+      plain can expose the verifier because the challenge and verifier are equal.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators:
+          - Section 7.2, paragraphs on S256 failure and downgrade, lines 666-705
+    corroboration: The current MCP authorization specification directs capable clients to S256.
+    limitations:
+      - RFC 7636 is OAuth-wide and does not document an MCP incident.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C003
+    statement: >-
+      RFC 9700 describes a PKCE downgrade in which attacker-controllable removal
+      of code_challenge is accepted by a server that does not mandate PKCE;
+      when state protection is absent or faulty, the client can receive a token
+      bound to the attacker's resources.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.8, paragraphs 1-4 and Section 4.8.1, steps 1-6
+    corroboration: CVE-2024-23647 documents the challenge-removal condition in authentik.
+    limitations:
+      - The RFC attack description is OAuth-wide, not an MCP-specific controlled evaluation.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C004
+    statement: >-
+      RFC 9700 requires an authorization server to reject a token request that
+      contains code_verifier when the corresponding authorization request had no
+      code_challenge, making cross-stage correlation a defensible analytic signal.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.8.2, paragraphs 1-7
+    corroboration: The authentik downgrade advisory identifies missing code_challenge as the vulnerable state.
+    limitations:
+      - The RFC specifies behavior, not a standardized authorization-server log schema.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C005
+    statement: >-
+      RFC 8414 defines code_challenge_methods_supported and says omission means
+      the authorization server does not support PKCE; MCP applies a stricter
+      fail-closed rule to that metadata.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8414
+        support: direct
+        exact_locators:
+          - Section 2, code_challenge_methods_supported, lines 357-364
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Authorization Code Protection, lines 485-491
+    corroboration: The two sources define the metadata meaning and the MCP fail-closed requirement independently.
+    limitations:
+      - Metadata can disagree with runtime behavior, as CVE-2026-67336 demonstrates.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C006
+    statement: >-
+      In an MCP OAuth flow, attacker-influenced fallback from S256 to plain or
+      removal of PKCE crosses the authorization boundary when a client or
+      authorization server accepts the weaker state and issues or redeems a code.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Authorization Code Protection, lines 485-491
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Sections 4.8 through 4.8.2
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: corroborating
+        exact_locators:
+          - Summary, Details, Patches, and Impact, lines 171-202
+    corroboration: A directly reviewed MCP-plugin advisory documents acceptance of plain and silent fallback from a missing method.
+    limitations:
+      - No qualifying production MCP incident or complete MCP-specific public demonstration was found in the reviewed corpus.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The end-to-end MCP technique is synthesized from MCP normative behavior,
+        the standardized OAuth downgrade attack, and an MCP-plugin vulnerability;
+        no source establishes all stages in a production MCP incident.
+    status: validated
+
+  - id: SAF-T1408-C007
+    statement: >-
+      CVE-2026-67336 affects better-auth before 1.6.11; its legacy oidcProvider
+      and mcp plugins accepted plain PKCE by default and silently treated a
+      missing code_challenge_method as plain despite advertising S256.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2026-67336
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, references, and credits
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators:
+          - Affected versions, Am I affected, Summary, and Details, lines 144-180
+    corroboration: The CVE List and first-party advisory agree on affected range and downgrade behavior.
+    limitations:
+      - The advisory does not document exploitation in a production MCP deployment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C008
+    statement: >-
+      better-auth 1.6.11 changed the secure defaults to reject plain and a
+      challenge without S256; NVD's CISA-coordinator SSVC record reported no
+      exploitation as of 2026-08-03.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators:
+          - Patches and Workarounds, lines 181-195
+      - source_id: SRC-nvd-2026-67336
+        support: direct
+        exact_locators:
+          - Change History and CISA SSVC record, lines 104-141
+    corroboration: The CVE List identifies 1.6.11 as unaffected.
+    limitations:
+      - An SSVC exploitation value of none is time-bounded and is not proof that exploitation never occurred.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C009
+    statement: >-
+      CVE-2024-23647 allowed authentik before 2023.8.7 and in the 2023.10 line
+      before 2023.10.7 to skip PKCE when an attacker removed code_challenge;
+      the maintainer advisory credits Pieter Philippaerts.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2024-23647
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, and references
+      - source_id: SRC-ghsa-mrx3-gxjx-hjqj
+        support: direct
+        exact_locators:
+          - Affected versions, Patches, Details, and Credits, lines 138-171 and 244-254
+    corroboration: The CVE List and maintainer advisory agree on mechanism and fixed versions.
+    limitations:
+      - The affected product is an OAuth identity provider; the sources do not document an MCP deployment.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C010
+    statement: >-
+      CVE-2024-22258 affected Spring Authorization Server 1.0.5 and earlier,
+      1.1.0-1.1.5, and 1.2.0-1.2.2 for confidential clients using PKCE;
+      public clients were not affected, and fixed releases were 1.0.6, 1.1.6,
+      and 1.2.3. Spring credits Pieter Philippaerts.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cve-2024-22258
+        support: direct
+        exact_locators:
+          - CNA title, description, affected versions, and reference
+      - source_id: SRC-spring-cve-2024-22258
+        support: direct
+        exact_locators:
+          - Description, affected versions, mitigation, and credit, lines 6-46
+    corroboration: The CVE List and Spring advisory agree on affected and fixed ranges.
+    limitations:
+      - The vulnerability applies only to confidential clients and is not MCP-specific.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C011
+    statement: >-
+      The reviewed authority corpus contained no qualifying production incident
+      for the complete MCP technique as of 2026-09-01, and the three selected
+      CVEs were absent from CISA KEV catalog version 2026.09.01.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators:
+          - Catalog version 2026.09.01 and exact-ID scan returning zero matches
+      - source_id: SRC-nvd-2026-67336
+        support: corroborating
+        exact_locators:
+          - CISA SSVC exploitation value none, 2026-08-03
+    corroboration: First-party vulnerability advisories describe weaknesses and patches but do not claim production exploitation.
+    limitations:
+      - This is a bounded search conclusion, not a universal claim that exploitation has never occurred.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: >-
+        The absence statement is limited to the directly reviewed authority set
+        and dated search log recorded in source-coverage.yml.
+    status: validated
+
+  - id: SAF-T1408-C012
+    statement: >-
+      Successful downgrade can expose authorization-code confidentiality or
+      session integrity only when an attacker can influence the authorization
+      request or observe the plain challenge and the implementation accepts the
+      weaker state.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators:
+          - Section 7.2, plain and S256 security properties
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Sections 4.8 and 4.8.1
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators:
+          - Am I affected and Impact, lines 157-164 and 196-199
+    corroboration: The standards and MCP-plugin advisory identify the same exposure and acceptance preconditions.
+    limitations:
+      - Availability impact is not established by the reviewed downgrade evidence.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The impact statement combines source-specific preconditions and bounds the result to code or session compromise.
+    status: validated
+
+  - id: SAF-T1408-C013
+    statement: >-
+      A testable detector can correlate MCP authorization and token events to
+      flag successful plain or missing-method requests, a verifier with no
+      recorded challenge, or S256 failure followed by weaker success within ten minutes.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.8.2, downgrade state and rejection requirement
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators:
+          - Section 7.2, S256-to-plain downgrade warning
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: corroborating
+        exact_locators:
+          - Summary and Patches, runtime acceptance and missing-method behavior
+    corroboration: Deterministic tests exercise all three patterns plus negative and boundary conditions.
+    limitations:
+      - Ten minutes is an operational starting point, not a standardized OAuth interval.
+      - The analytic requires transaction-correlated authorization-server telemetry.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The sources define unsafe states; the correlation and window are an SAF analytic design choice.
+    status: validated
+
+  - id: SAF-T1408-C014
+    statement: >-
+      Approved legacy plain-PKCE interoperability can resemble the detector's
+      target, while missing transaction fields can create blind spots; an
+      explicit allowlist must therefore be narrow and time-bounded.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators:
+          - Section 7.2, plain retained only for compatibility
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators:
+          - Patches and Workarounds, opt-in legacy plain behavior
+    corroboration: The detector's expected-lookalike case validates suppression only when a legacy approval flag is present.
+    limitations:
+      - Sources do not prescribe an allowlist data model or expiry period.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Tuning guidance is derived from documented compatibility behavior and telemetry requirements.
+    status: validated
+
+  - id: SAF-T1408-C015
+    statement: >-
+      Prevention requires fail-closed verification of PKCE support, S256 rather
+      than plain where technically capable, and server-side binding of challenge
+      presence and method through token exchange.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2025-11-25
+        support: direct
+        exact_locators:
+          - Authorization Code Protection, lines 485-491
+      - source_id: SRC-rfc7636
+        support: direct
+        exact_locators:
+          - Section 7.2
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.8.2
+    corroboration: CVE-2026-67336 and CVE-2024-23647 fixes restore these properties.
+    limitations:
+      - These controls do not prevent issuer mix-up, metadata SSRF, or token theft by other mechanisms.
+    conflicts: []
+    inference:
+      is_inference: false
+      rationale: null
+    status: validated
+
+  - id: SAF-T1408-C016
+    statement: >-
+      Authorization-server mix-up and attacker-controlled OAuth metadata URLs
+      are neighboring behaviors with different boundary failures from PKCE downgrade.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators:
+          - Section 4.4, Mix-Up Attacks
+      - source_id: SRC-mcp-security-2025-11-25
+        support: direct
+        exact_locators:
+          - Server-Side Request Forgery, lines 245-305
+          - OAuth Authorization URL Validation, lines 427-482
+    corroboration: The sources name endpoint/issuer and URL-fetch failures rather than PKCE method weakening.
+    limitations:
+      - Provisional SAF neighbor IDs require mechanical reconciliation against the real registry after freeze.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF boundaries are assigned from the source-described mechanisms.
+    status: validated
+
+  - id: SAF-T1408-C017
+    statement: >-
+      High severity is supportable when an exposed MCP authorization flow accepts
+      the downgrade and the resulting code or token reaches sensitive resources;
+      severity falls when those preconditions are absent or the request fails closed.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-9h47-pqcx-hjr4
+        support: direct
+        exact_locators:
+          - Am I affected, Impact, and CVSS 3.1 score 8.7
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators:
+          - Section 4.8 prerequisites and outcome
+    corroboration: The direct MCP-plugin advisory rates confidentiality and integrity impact high with specific attack requirements.
+    limitations:
+      - The rating is conditional and does not assert identical impact for every implementation.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF severity is synthesized from documented preconditions and bounded impacts.
+    status: validated
+
+  - id: SAF-T1408-C018
+    statement: >-
+      MITRE ATT&CK T1528 is an analogous downstream mapping because it covers
+      theft of application access tokens, while CWE-757 directly characterizes
+      selection of a less-secure protection during negotiation.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators:
+          - Technique definition, ID, tactic, contributors, and version, lines 15-45
+      - source_id: SRC-cwe-757
+        support: direct
+        exact_locators:
+          - Description, Extended Description, and consequence, lines 44-58
+    corroboration: The selected CVE-2026-67336 advisory describes both negotiation downgrade and possible code interception.
+    limitations:
+      - T1528 describes the downstream credential objective, not PKCE negotiation itself.
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Framework mappings are analytic correspondences rather than source-declared SAF mappings.
+    status: validated

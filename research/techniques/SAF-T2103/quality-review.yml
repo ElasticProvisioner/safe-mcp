@@ -1,0 +1,60 @@
+version: 1
+technique_id: SAF-T2103
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: OpenAI SAF-MCP clean-room research agent
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation passes; prohibited target and shared artifacts were not accessed before freeze.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires adversary-directed repository behavior change and excludes prompt-only, generic destructive, data-theft, and accidental-defect behavior.
+  technical_accuracy:
+    status: passed
+    notes: Capability, prerequisites, attack flow, and bounded impacts are supported and demonstrations are separated from production claims.
+  claim_traceability:
+    status: passed
+    notes: Every external proposition maps to a validated claim and reviewed source with exact locators.
+  source_or_omit:
+    status: passed
+    notes: Publishable content uses hidden SAF-TRACE linkage or declared local artifacts; unsupported leads are excluded.
+  evidence_classification:
+    status: passed
+    notes: Multiple direct controlled evaluations justify Demonstrated; no production evidence supports Observed.
+  research_saturation:
+    status: passed
+    notes: Two consecutive final domain-restricted passes made no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production incidents, advisories, exploitation status, direct demonstrations, and remediation were separately assessed; four demonstrations were selected.
+  detection_quality:
+    status: passed
+    notes: Deterministic tests cover positives, negatives, boundaries, malformed input, expected false positive, and normalization/evasion.
+  mitigation_quality:
+    status: passed
+    notes: Controls address authorization, agent reach, repository integrity, review, monitoring, and recovery.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0040, canonical neighbors SAF-T1102 and SAF-T2101, seven mitigations, and analogous ATT&CK T1565.001 mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited sources have attribution and paraphrase-only review; no quotations or third-party artifacts are reproduced.
+  safe_publication:
+    status: passed
+    notes: Examples use inert names and abstract indicators with no payloads, bypass recipe, destructive command, credential, or operational secret.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T2103
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T2103/test_detector.py
+    result: "PASS cases=10 alerts=5 expected_false_positives=1"
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: PASS cases=10 alerts=5 expected_false_positives=1
+    validator_result: PASS SAF-T2103
+    proof: research/techniques/SAF-T2103/validation/canonical-validation.txt
+unresolved: []

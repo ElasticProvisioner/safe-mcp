@@ -1,0 +1,110 @@
+version: 1
+technique_id: SAF-T1203
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T1203
+  neutral_name: Backdoored Server Binary
+allowed_inputs:
+- Seed metadata SAF-T1203, neutral name, and ATK-TA0003 Persistence.
+- Generic author-saf-technique skill and routed methodology references.
+- techniques/TEMPLATE.md, blank research schemas, generic research README, current
+  validator, and minimal generic identifiers.
+- Independently reviewed external direct authorities.
+prohibited_inputs:
+- techniques/saf-t1203/readme.md
+- research/techniques/saf-t1203/
+- techniques/saf-t1203/detection-rule.yml
+- Technique catalog descriptions and shared source, framework, or alignment registries
+  before freeze.
+- SAF or SAFE sites and repositories, git history, diffs, blame, pull requests, prior
+  bundles, and other technique prose.
+- Methodology examples that name targets and previous conversation content.
+independent_research:
+  searches:
+  - site:modelcontextprotocol.io specification local server stdio subprocess security
+  - site:cloud.google.com/blog/topics/threat-intelligence replace legitimate daemon
+    malicious binary persistence
+  - site:access.redhat.com/security/cve CVE-2024-3094 malicious code liblzma
+  - site:unit42.paloaltonetworks.com model context protocol malicious server legitimate
+    functionality covert
+  - site:attack.mitre.org detection compromise host software binaries file integrity
+    process creation
+  - site:nist.gov software firmware integrity verify prior to execution code signing
+  - site:modelcontextprotocol.io "binary integrity" MCP server
+  - site:cisa.gov "MCP server" "backdoored"
+  - site:nvd.nist.gov/vuln/detail "MCP server" "Embedded Malicious Code"
+  - site:attack.mitre.org/techniques/T1554 "MCP"
+  - site:cloud.google.com/blog/topics/threat-intelligence "MCP server binary" tamper
+  - site:unit42.paloaltonetworks.com MCP "binary replacement"
+  - site:nist.gov "integrity verification" "user-installed software" execution
+  - site:access.redhat.com/security/cve "MCP server" overwrite programs libraries
+  opened_source_ids:
+  - SRC-mcp-ts-stdio-v2
+  - SRC-mcp-sep-1024
+  - SRC-mitre-t1554
+  - SRC-mitre-det0336-v1
+  - SRC-mitre-attack-t1195
+  - SRC-mitre-t1505-v1.5
+  - SRC-mandiant-unc3886-2024
+  - SRC-mandiant-solarwinds
+  - SRC-redhat-cve-2024-3094
+  - SRC-nvd-cve-2024-3094
+  - SRC-unit42-mcp-sampling-2025
+  - SRC-redhat-cve-2026-44192
+  - SRC-nist-sp800-53r5.1
+  - SRC-nist-code-signing-2018
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Reconcile provisional source identifiers only after verifying the freeze hash.
+- Replace synthetic neighbor and mitigation identifiers through mechanical integration
+  joins.
+- Replace the synthetic repository-history placeholder with an honest integration
+  commit.
+attestation: The named fresh agent authored this packet from the seed, generic methodology,
+  blank schemas, current validator, and independently reviewed direct authorities;
+  prohibited inherited and repository technique material was not accessed.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-sep-1024: SRC-mcp-sep-1024
+    SRC-mitre-t1554-v2.2: SRC-mitre-t1554
+    SRC-mitre-t1195-v1.7: SRC-mitre-attack-t1195
+    SRC-mandiant-sunburst-2020: SRC-mandiant-solarwinds
+  new_shared_source_records:
+  - SRC-mcp-ts-stdio-v2
+  - SRC-mitre-det0336-v1
+  - SRC-mitre-t1505-v1.5
+  - SRC-mandiant-unc3886-2024
+  - SRC-redhat-cve-2024-3094
+  - SRC-nvd-cve-2024-3094
+  - SRC-unit42-mcp-sampling-2025
+  - SRC-redhat-cve-2026-44192
+  - SRC-nist-sp800-53r5.1
+  - SRC-nist-code-signing-2018
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0003
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-14
+  - SAF-M-20
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-45
+  - SAF-M-70
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1006
+    SAF-T9002: SAF-T1001
+  synthetic_mitigation_mapping:
+    SAF-M-9001: SAF-M-45
+    SAF-M-9002: SAF-M-29
+  status: integrated_and_repository_validated

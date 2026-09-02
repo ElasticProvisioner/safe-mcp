@@ -1,0 +1,349 @@
+version: 1
+sources:
+  - id: SRC-mcp-overview-2026
+    title: Model Context Protocol Specification
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned specification.
+    locators: ["Overview", "Security and Trust & Safety", "Key Principles"]
+    review_notes: Verified protocol participants, feature classes, tool trust guidance, consent, and authorization principles.
+    archive: &remote
+      status: remote_reviewed_not_archived
+      reason: Public authoritative page was reviewed remotely; the clean-room handoff excludes copied source corpora.
+      review_evidence: {method: direct_web_review, retained_locator_record: true}
+
+  - id: SRC-mcp-prompts-2026
+    title: MCP Server Features - Prompts
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/prompts
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned prompt specification.
+    locators: ["User Interaction Model", "Getting a Prompt", "PromptMessage", "Security"]
+    review_notes: Verified that prompt content is server-authored, can contain multiple content forms, and must be validated against injection.
+    archive: *remote
+
+  - id: SRC-mcp-resources-2026
+    title: MCP Server Features - Resources
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/resources
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned resource specification.
+    locators: ["User Interaction Model", "Reading Resources", "Resource Contents", "Security Considerations"]
+    review_notes: Verified automatic context inclusion as an application option and text, binary, and URI resource forms.
+    archive: *remote
+
+  - id: SRC-mcp-tools-2026
+    title: MCP Server Features - Tools
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "2026-07-28"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of the versioned tool specification.
+    locators: ["User Interaction Model", "Listing Tools", "Calling Tools", "Tool Result", "Security Considerations"]
+    review_notes: Verified model-controlled discovery and invocation, tool metadata and result paths, confirmation, validation, and audit recommendations.
+    archive: *remote
+
+  - id: SRC-invariant-tool-poisoning-2025
+    title: "MCP Security Notification: Tool Poisoning Attacks"
+    publisher: Invariant Labs AG
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-01"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review including methods, experiment descriptions, limitations, mitigations, and author footer.
+    locators: ["What is a Tool Poisoning Attack", "Experiment 1", "MCP Rug Pulls", "Experiment 2", "Mitigation Strategies", "Authors"]
+    review_notes: Verified controlled tool-description poisoning and cross-server shadowing demonstrations; treated as demonstrations, not breaches.
+    archive: *remote
+
+  - id: SRC-invariant-whatsapp-mcp-2025
+    title: "WhatsApp MCP Exploited: Exfiltrating your message history via MCP"
+    publisher: Invariant Labs AG
+    authors: [Luca Beurer-Kellner, Marc Fischer]
+    version_or_date: "2025-04-07; updated 2025-04-09"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/whatsapp-mcp-exploited
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of both experiments, attack visibility, conclusion, and author footer.
+    locators: ["Experiment 1", "Attack Visibility", "Experiment 2: Attacking via an Injected Message", "Conclusion", "Authors"]
+    review_notes: Verified controlled MCP tool-description and tool-output injection demonstrations; unsafe payload details were not reproduced.
+    archive: *remote
+
+  - id: SRC-invariant-github-mcp-2025
+    title: "GitHub MCP Exploited: Accessing private repositories via MCP"
+    publisher: Invariant Labs AG
+    authors: [Marco Milanta, Luca Beurer-Kellner]
+    version_or_date: "2025-05-26"
+    source_class: research
+    official_url: https://invariantlabs.ai/blog/mcp-github-vulnerability
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of setup, demonstration, scope, mitigation, and author footer.
+    locators: ["Attack Setup", "Attack Demonstration", "Scope and Mitigations", "Authors"]
+    review_notes: Verified a demonstration-repository flow from a malicious public issue through GitHub MCP to public disclosure of private test data.
+    archive: *remote
+
+  - id: SRC-greshake-ipi-2023
+    title: "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
+    publisher: ACM / arXiv
+    authors: [Kai Greshake, Sahar Abdelnabi, Shailesh Mishra, Christoph Endres, Thorsten Holz, Mario Fritz]
+    version_or_date: "arXiv:2302.12173v2, 2023-05-05"
+    source_class: research
+    official_url: https://arxiv.org/pdf/2302.12173.pdf
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct PDF review of abstract, threat model, injection methods, demonstrations, mitigations, appendices, and attribution.
+    locators: ["Abstract", "Section 3 Attack Surface", "Section 3.1 Injection Methods", "Sections 5-6 demonstrations and mitigations"]
+    review_notes: Verified the data/instruction boundary and passive, active, user-driven, hidden, encoded, and multimodal delivery methods.
+    archive: *remote
+
+  - id: SRC-injecagent-acl-2024
+    title: "InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated Large Language Model Agents"
+    publisher: Association for Computational Linguistics
+    authors: [Qiusi Zhan, Zhixiang Liang, Zifan Ying, Daniel Kang]
+    version_or_date: "Findings of ACL 2024, August 2024"
+    source_class: research
+    official_url: https://aclanthology.org/2024.findings-acl.624/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of ACL paper metadata, abstract, methods, results, limitations, and canonical citation.
+    locators: ["Abstract", "pages 10471-10506", "canonical citation"]
+    review_notes: Verified benchmark size, tool coverage, evaluated agents, and the configuration-specific 24 percent result.
+    archive: *remote
+
+  - id: SRC-nist-ai-100-2e2025
+    title: "Adversarial Machine Learning: A Taxonomy and Terminology of Attacks and Mitigations"
+    publisher: National Institute of Standards and Technology
+    authors: [Apostol Vassilev, Alina Oprea, Alie Fordyce, Hyrum Anderson, Xander Davies, Maia Hamin]
+    version_or_date: "NIST AI 100-2e2025, March 2025; corrected 2025-04-01"
+    source_class: protocol_or_standard
+    official_url: https://doi.org/10.6028/NIST.AI.100-2e2025
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the official 127-page PDF, publication record, relevant taxonomy sections, mitigations, agent security section, and author credits.
+    locators: ["Sections 3.4-3.5, pages 50-54", "publication front matter and author contributions"]
+    review_notes: Verified direct/indirect boundary, resource control, CIA outcomes, mitigation limits, and agent tool risk.
+    archive: *remote
+
+  - id: SRC-owasp-llm01-2025
+    title: "LLM01:2025 Prompt Injection"
+    publisher: OWASP Foundation GenAI Security Project
+    authors: [OWASP GenAI Security Project contributors]
+    version_or_date: "2025"
+    source_class: credible_practice
+    official_url: https://genai.owasp.org/llmrisk/llm01-prompt-injection/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review including definitions, scenarios, mitigations, references, license, and trademark footer.
+    locators: ["Types of Prompt Injection Vulnerabilities", "Prevention and Mitigation Strategies", "Example Attack Scenarios"]
+    review_notes: Verified direct and indirect categories, impact conditions, and defense-in-depth guidance; scenarios were treated as illustrative unless independently sourced.
+    archive: *remote
+
+  - id: SRC-cve-2025-32711
+    title: CVE-2025-32711 M365 Copilot Information Disclosure Vulnerability
+    publisher: CVE Program / Microsoft / CISA ADP
+    authors: [Microsoft Security Response Center, CISA Vulnrichment]
+    version_or_date: "published 2025-06-11; updated 2026-02-26"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-32711
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete CVE JSON record and CISA ADP container.
+    locators: ["CNA description and CVSS", "CISA ADP exploitation status"]
+    review_notes: Verified critical hosted-service AI command-injection disclosure and no known exploitation; rejected as a selected MCP example because the reviewed record does not establish an MCP path.
+    archive: *remote
+
+  - id: SRC-cve-2025-53773
+    title: CVE-2025-53773 GitHub Copilot and Visual Studio Remote Code Execution Vulnerability
+    publisher: CVE Program / Microsoft / CISA ADP
+    authors: [Microsoft Security Response Center, CISA Vulnrichment]
+    version_or_date: "published 2025-08-12; updated 2026-02-26"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-53773
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete CVE JSON record and CISA ADP container.
+    locators: ["CNA affected versions, description, CVSS", "CISA ADP exploitation status"]
+    review_notes: Verified Visual Studio 17.14.0 before 17.14.12 and no known exploitation; not selected because MCP was only one optional delivery angle in the underlying research.
+    archive: *remote
+
+  - id: SRC-rehberger-cve-2025-53773
+    title: "GitHub Copilot: Remote Code Execution via Prompt Injection (CVE-2025-53773)"
+    publisher: Embrace The Red
+    authors: [Johann Rehberger]
+    version_or_date: "2025-08-12"
+    source_class: research
+    official_url: https://embracethered.com/blog/posts/2025/github-copilot-remote-code-execution-via-prompt-injection/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of background, exploit chain, reliability limitation, fix, credits, and references.
+    locators: ["Exploit Chain Explained", "Using Invisible Instructions", "Recommendations and Fix", "Responsible Disclosure"]
+    review_notes: Verified prompt injection as the initiating condition and MCP output as one possible delivery vector; rejected as a selected example due to broader non-MCP scope.
+    archive: *remote
+
+  - id: SRC-cve-2025-54135
+    title: CVE-2025-54135 Cursor Agent Prompt Injection via MCP Special Files
+    publisher: CVE Program / GitHub CNA / CISA ADP
+    authors: [GitHub CNA, CISA Vulnrichment]
+    version_or_date: "published 2025-08-05; updated 2025-08-05"
+    source_class: official_advisory
+    official_url: https://cveawg.mitre.org/api/cve/CVE-2025-54135
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete CVE JSON record obtained from the official CVE API.
+    locators: ["CNA title, description, affected versions, CVSS", "CISA ADP exploitation status"]
+    review_notes: The non-GitHub CVE record supplied GHSA-4cxx-hrm3-49rm and its exact canonical URL before the GitHub advisory was opened.
+    archive: *remote
+
+  - id: SRC-ghsa-cursor-4cxx-2025
+    title: Arbitrary code execution from Cursor Agent through a prompt injection via MCP Special Files
+    publisher: Cursor / GitHub Security Advisories
+    authors: [hmwildermuth, hxofir-a, MaccariTA]
+    version_or_date: "GHSA-4cxx-hrm3-49rm, 2025-08-02"
+    source_class: official_advisory
+    official_url: https://github.com/cursor/cursor/security/advisories/GHSA-4cxx-hrm3-49rm
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Exact advisory opened only after its identifier and canonical URL were obtained from the reviewed official CVE record.
+    locators: ["Affected versions", "Patched versions", "Summary", "Impact", "Remediation", "Credits"]
+    review_notes: Provenance is SRC-cve-2025-54135; verified affected and patched states, chained nature, remediation, and reporter credits.
+    archive: *remote
+
+  - id: SRC-anthropic-pi-defenses-2025
+    title: Mitigating the risk of prompt injections in browser use
+    publisher: Anthropic
+    authors: [Anthropic Safeguards and Research teams]
+    version_or_date: "2025-11-24"
+    source_class: implementation_artifact
+    official_url: https://www.anthropic.com/research/prompt-injection-defenses
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of threat description, evaluation method summary, safeguards, residual risk, and publication date.
+    locators: ["What is prompt injection", "Why browser use creates unique prompt injection risks", "Claude's progress on browser use robustness"]
+    review_notes: Verified multi-surface browser risk, layered training and classifier controls, and explicit residual risk at a reported one-percent test result.
+    archive: *remote
+
+  - id: SRC-camel-2025
+    title: Defeating Prompt Injections by Design
+    publisher: arXiv / Google DeepMind and ETH Zurich researchers
+    authors: [Edoardo Debenedetti, Ilia Shumailov, Tianqi Fan, Jamie Hayes, Nicholas Carlini, Daniel Fabian, Christoph Kern, Chongyang Shi, Andreas Terzis, Florian Tramer]
+    version_or_date: "arXiv:2503.18813v2, 2025-06-24"
+    source_class: research
+    official_url: https://arxiv.org/abs/2503.18813
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the paper record, abstract, reported evaluation, version history, and license metadata.
+    locators: ["Abstract", "version 2 submission history"]
+    review_notes: Verified control/data-flow extraction, capability enforcement, and the reported AgentDojo utility/security result.
+    archive: *remote
+
+  - id: SRC-adaptive-pi-defenses-2025
+    title: "The Attacker Moves Second: Stronger Adaptive Attacks Bypass Defenses Against LLM Jailbreaks and Prompt Injections"
+    publisher: arXiv
+    authors: [Milad Nasr, Nicholas Carlini, Chawin Sitawarin, Sander V. Schulhoff, Jamie Hayes, Michael Ilie, Juliette Pluto, Shuang Song, Harsh Chaudhari, Ilia Shumailov, Abhradeep Thakurta, Kai Yuanqing Xiao, Andreas Terzis, Florian Tramer]
+    version_or_date: "arXiv:2510.09023v1, 2025-10-10"
+    source_class: research
+    official_url: https://arxiv.org/abs/2510.09023
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of paper metadata, threat-model argument, abstract results, version history, and license.
+    locators: ["Abstract", "submission history"]
+    review_notes: Verified the adaptive-attacker critique and reported bypass of 12 defenses above 90 percent attack success for most evaluated defenses.
+    archive: *remote
+
+  - id: SRC-ncsc-prompt-injection-2025
+    title: Prompt injection is not SQL injection (it may be worse)
+    publisher: UK National Cyber Security Centre
+    authors: [Dave Chismon]
+    version_or_date: "2025-12-08"
+    source_class: credible_practice
+    official_url: https://www.ncsc.gov.uk/blog-post/prompt-injection-is-not-sql-injection
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review including author, acknowledgment, publication date, detection limits, design, monitoring, and summary.
+    locators: ["No data, no instructions", "Secure design", "Make it harder", "Monitor", "Summary", "Written by"]
+    review_notes: Verified deterministic safeguard and monitoring guidance; Johann Rehberger is acknowledged for discussions.
+    archive: *remote
+
+  - id: SRC-mitre-attack-t1059-2026
+    title: "Command and Scripting Interpreter, Technique T1059"
+    publisher: MITRE ATT&CK
+    authors: [MITRE ATT&CK team]
+    version_or_date: "version 2.7; modified 2026-05-12"
+    source_class: protocol_or_standard
+    official_url: https://attack.mitre.org/techniques/T1059/
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct full-page review of definition, tactics, platforms, version, mappings, mitigations, detections, and references.
+    locators: ["Description", "Tactic", "Version 2.7"]
+    review_notes: Verified that T1059 concerns command and script interpreters; used only as an analogous follow-on mapping.
+    archive: *remote
+
+  - id: SRC-agentdojo-2024
+    title: "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents"
+    publisher: arXiv
+    authors: [Edoardo Debenedetti, Jie Zhang, Mislav Balunovic, Luca Beurer-Kellner, Marc Fischer, Florian Tramer]
+    version_or_date: "arXiv:2406.13352v3, 2024-11-24"
+    source_class: research
+    official_url: https://arxiv.org/abs/2406.13352
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the paper record, abstract, benchmark composition, reported findings, version history, and license link.
+    locators: ["Abstract", "submission history", "license"]
+    review_notes: Verified that the benchmark models tool-returned untrusted data across 97 tasks and 629 security cases; treated as evaluation evidence, not incidence evidence.
+    archive: *remote
+
+  - id: SRC-mcp-doc-index-2026
+    title: Model Context Protocol Documentation Index
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    version_or_date: "accessed 2026-09-01"
+    source_class: protocol_or_standard
+    official_url: https://modelcontextprotocol.io/llms.txt
+    accessed_on: "2026-09-01"
+    reviewed_on: "2026-09-01"
+    review_status: opened_reviewed
+    review_method: Direct review of the complete machine-readable documentation index.
+    locators: ["2026-07-28 documentation entries", "2026-07-28 specification entries"]
+    review_notes: Used only to confirm current versioned MCP documentation routes; it does not independently support a publishable security claim.
+    archive: *remote

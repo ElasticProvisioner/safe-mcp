@@ -1,0 +1,336 @@
+version: 1
+technique_id: SAF-T1204
+claims:
+  - id: SAF-T1204-C001
+    statement: MCP tools are model-controlled, tool results can carry server-produced content, and clients are advised to validate results and log tool use.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: [User Interaction Model lines 79-86, Tool Result lines 235-239, Security Considerations lines 454-465]
+    corroboration: The MCP Resources specification separately establishes server-provided context content.
+    limitations: [MCP does not define an agent memory subsystem or require that tool results be persisted.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C002
+    statement: MCP resources expose server-provided context, and host applications decide whether resources are selected explicitly or included automatically.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-resources-2025-06-18
+        support: direct
+        exact_locators: [Overview lines 72-76, User Interaction Model lines 81-87, Annotations lines 348-372]
+    corroboration: MCP Tools also permits embedded resources and resource links in tool results.
+    limitations: [The specification does not require persistence or assign trust to resource text.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C003
+    statement: A deployed agent implementation can store long-term memory across threads as namespace-and-key JSON records and expose store reads and writes to tools.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-langchain-long-term-memory
+        support: direct
+        exact_locators: [Long-term memory lines 25-31, Usage lines 36-80, Memory storage lines 85-89]
+    corroboration: LangChain production guidance documents cross-thread StoreBackend persistence.
+    limitations: [This is one implementation pattern and is not mandated by MCP.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C004
+    statement: The defining behavior is a durable write of attacker-selected content followed by later retrieval that influences agent reasoning, responses, planning, or action.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-neurips-minja-2025
+        support: direct
+        exact_locators: [Abstract, Section 3 Threat Model, Figure 1, Section 5.1]
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: corroborating
+        exact_locators: [definition lines 32-33, What happens in this scenario lines 34-47]
+    corroboration: MINJA reproduces the chain; Microsoft guidance independently defines the same persistent boundary.
+    limitations: [Demonstration settings do not establish universal success or a production compromise.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF synthesizes the common boundary from the directly demonstrated attack chain and current authoritative definition.
+    status: validated
+  - id: SAF-T1204-C005
+    statement: MINJA demonstrated query-only memory injection across healthcare, web-shopping, and QA agents, averaging 98.2 percent injection success and 76.8 percent attack success in its evaluated settings.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-neurips-minja-2025
+        support: direct
+        exact_locators: [Introduction contribution bullets lines 81-89, Section 5.1, Table 1]
+    corroboration: A later independent project reproduced lower but nonzero success under more realistic memory conditions.
+    limitations: [The study assumes shared memory or feasible identity disguise and evaluates controlled agents and datasets rather than a production breach.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C006
+    statement: AgentPoison demonstrated triggered malicious retrieval and downstream agent behavior in autonomous-driving, QA, and healthcare agents with at least 80 percent average attack success, at most 1 percent benign-performance impact, and under 0.1 percent poisoning rate.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-neurips-agentpoison-2024
+        support: direct
+        exact_locators: [Abstract, Sections 3.1-3.2, main experiment results]
+    corroboration: MINJA cites and distinguishes AgentPoison as a stronger-access memory-poisoning baseline.
+    limitations: [The attacker has partial database access and white-box embedder access in the main threat model; this is not a query-only production incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C007
+    statement: Microsoft observed 50 prompt-based attempts from 31 companies across more than a dozen industries that sought to plant persistent promotional preferences through prefilled AI-assistant links.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: direct
+        exact_locators: [summary lines 56-60, Attack discovery lines 124-132, Common Patterns]
+    corroboration: The report maps the campaign to ATLAS memory context poisoning and provides email and collaboration hunting queries.
+    limitations: [Microsoft states effectiveness and persistence varied; the report establishes real-world attempts, not successful end-to-end implantation in every or any named case.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C008
+    statement: Microsoft red-team engagements against deployed agentic systems found XPIA and memory poisoning at high frequency, with injected instructions seeding persistent memory for later retrieval across sessions.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-redteam-update-2026
+        support: direct
+        exact_locators: [Operational findings lines 70-73]
+    corroboration: Microsoft separately describes delayed influence and memory defenses based on coordinated vulnerability-disclosure cases.
+    limitations: [The public report aggregates red-team engagements and does not identify affected products or isolate which high-impact outcomes resulted from memory poisoning.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C009
+    statement: In a controlled EHR-agent study, pre-existing relevant legitimate memories sharply reduced MINJA attack success, and changing retrieval count changed both injection and attack success.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-memory-defense-2026
+        support: direct
+        exact_locators: [Abstract, Section 5.3, Tables 1 and 2]
+    corroboration: MINJA itself identifies memory settings and defenses as variables requiring evaluation.
+    limitations: [The source is a student research project report on arXiv, uses one EHR-agent setup, and does not validate production effectiveness.]
+    conflicts: [Its lower realistic-setting success narrows but does not negate the controlled MINJA demonstration.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C010
+    statement: Memory defenses should establish intent and provenance before persistence, enforce access boundaries outside the model, reassess memory at retrieval, and retain lifecycle visibility.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: direct
+        exact_locators: [A guiding framework for building safe AI memory]
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: corroborating
+        exact_locators: [Recommended controls, Technologies to consider]
+    corroboration: Two independent Microsoft security publications state overlapping lifecycle controls.
+    limitations: [These are defensive design recommendations, not guarantees against adaptive attacks.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C011
+    statement: Microsoft 365 Copilot exposes MemoryUpdated audit information and recommends joining memory changes to source content and later interactions for investigation.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: direct
+        exact_locators: [Observability, summary capability table]
+    corroboration: Microsoft Zero Trust guidance independently recommends audit trails and monitoring of memory influence and retrieval patterns.
+    limitations: [Field availability depends on product configuration, licensing, and service availability; non-Microsoft systems use different schemas.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C012
+    statement: Shared organization memory that an agent can write creates a prompt-injection path; production guidance recommends user or tenant namespacing and restricting shared policy writes to application code.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-langchain-deepagents-production
+        support: direct
+        exact_locators: [Configuration lines 527-622, Namespace by org_id lines 604-622]
+    corroboration: Microsoft guidance recommends cross-agent isolation and scoped memory by user, task, tenant, agent, and trust domain.
+    limitations: [The exact namespace mechanism is LangChain-specific.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C013
+    statement: Consequences are conditional on retrieved memory influence and reachable agent authority and can include biased or incorrect responses, misrouting, unsafe decisions, disclosure, or risky tool actions.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: direct
+        exact_locators: [definition and outcome lines 32-47]
+      - source_id: SRC-neurips-minja-2025
+        support: corroborating
+        exact_locators: [Section 3 attacker objective, Section 5.1 evaluated agents]
+    corroboration: The academic demonstrations measure incorrect agent outcomes; Microsoft bounds broader operational consequences.
+    limitations: [Memory implantation alone does not prove a particular confidentiality, integrity, or availability consequence.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C014
+    statement: A high-confidence analytic can correlate a risky persistent-memory write with retrieval of the same memory ID in a later session, while content-only keyword matching remains a lower-confidence signal.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: direct
+        exact_locators: [Observability, end-to-end traceability goal]
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: context
+        exact_locators: [Recommendations for security teams, Indicators of compromise]
+      - source_id: SRC-arxiv-memory-defense-2026
+        support: corroborating
+        exact_locators: [Abstract, Sections 6.1-6.2]
+    corroboration: Sources support lifecycle joining and show why simple semantic filtering requires tuning.
+    limitations: [The correlation is an SAF analytic design and requires stable identifiers and trust metadata not universally available.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The analytic combines directly recommended lifecycle logging with observed write indicators and empirically documented filter limits.
+    status: validated
+  - id: SAF-T1204-C015
+    statement: Legitimate cross-session preference updates, administrator-authored shared memory, and approved migrations can resemble suspicious writes and must be tuned by provenance, scope, and approval state.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: direct
+        exact_locators: [What AI memory is, guiding principles on intent and provenance]
+      - source_id: SRC-langchain-long-term-memory
+        support: context
+        exact_locators: [Memory storage]
+    corroboration: The sources establish legitimate persistent-memory use and provenance requirements.
+    limitations: [Specific false-positive rates are environment-dependent and were not measured for this analytic.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Expected legitimate lookalikes follow from normal memory functions and are explicitly represented in synthetic tests.
+    status: validated
+  - id: SAF-T1204-C016
+    statement: As of 2026-09-01, the reviewed authoritative corpus contained no public product vulnerability or production incident that conclusively documented the complete write-persist-later-retrieve-influence chain; it did contain in-the-wild attempts, MSRC-informed cases, red-team demonstrations, and academic demonstrations.
+    class: framework_inference
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: direct
+        exact_locators: [Scope lines 128-132, mitigation status lines 56-60]
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: context
+        exact_locators: [hypothetical scenario qualifier, case-study credits]
+      - source_id: SRC-nvd-cve-2026-44999
+        support: context
+        exact_locators: [Description, References]
+      - source_id: SRC-ghsa-openclaw-57r2
+        support: context
+        exact_locators: [Impact, Fix, CVE ID]
+    corroboration: Separate incident, vulnerability, advisory, and demonstration searches are recorded in source-coverage.yml.
+    limitations: [This is a bounded corpus finding, not a claim that no such incident or vulnerability exists.]
+    conflicts: [The NVD assigns CVE-2026-44999 while the linked upstream GHSA displays No known CVE.]
+    inference:
+      is_inference: true
+      rationale: The absence conclusion is limited to the documented clean-room search corpus and date.
+    status: validated
+  - id: SAF-T1204-C017
+    statement: OpenClaw versions before 2026.4.20 could render webhook-triggered cron awareness output as a trusted System event; the upstream advisory calls this a low-severity trust-label issue and says it does not directly bypass authorization, tool policy, or sandboxing.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ghsa-openclaw-57r2
+        support: direct
+        exact_locators: [Affected versions, Impact, Fix, Release]
+    corroboration: NVD repeats the underlying trust-label description but conflicts on CVE assignment.
+    limitations: [The advisory does not establish durable memory storage or later cross-session retrieval, so it is adjacent rather than direct.]
+    conflicts: [Upstream GHSA states no known CVE while NVD records CVE-2026-44999.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1204-C018
+    statement: The defining persistence boundary maps directly to MITRE ATLAS AML.T0080.000 and only analogously to ATT&CK T1546 because ATT&CK describes operating-system or cloud event mechanisms that trigger code, not retrieved model context.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-recommendation-poisoning-2026
+        support: direct
+        exact_locators: [MITRE ATT&CK techniques observed lines 294-300]
+      - source_id: SRC-mitre-attack-t1546
+        support: direct
+        exact_locators: [Description lines 38-40, Tactics lines 47-51]
+    corroboration: Microsoft maps memory poisoning to AML.T0080.000; ATT&CK T1546 supplies the limited delayed-trigger analogy.
+    limitations: [The ATT&CK mapping is not a behavioral equivalence and must remain Analogous.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: SAF compares the two framework definitions and records the boundary mismatch.
+    status: validated
+  - id: SAF-T1204-C019
+    statement: MCP-originated content is an input channel rather than the persistence mechanism; SAF-T1204 applies only if a host or agent subsequently commits that content to durable context memory.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-06-18
+        support: direct
+        exact_locators: [Tool Result, Security Considerations]
+      - source_id: SRC-mcp-resources-2025-06-18
+        support: direct
+        exact_locators: [User Interaction Model, Reading Resources]
+      - source_id: SRC-langchain-long-term-memory
+        support: corroborating
+        exact_locators: [Long-term memory, Write long-term memory from tools]
+    corroboration: The specifications define context-delivery channels while the implementation documentation defines a separate persistent store.
+    limitations: [Actual hosts may implement memory differently or not at all.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: This scope boundary follows from separating protocol input channels from implementation-level storage.
+    status: validated
+  - id: SAF-T1204-C020
+    statement: Containment and recovery should suspend risky memory writes, preserve lifecycle logs, identify retrieved poisoned entries, remove or roll them back, and revalidate later actions and memory policy.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-zero-trust-memory-2026
+        support: direct
+        exact_locators: [Versioning and Auditing, Memory write governance, rollback and audit trails]
+      - source_id: SRC-ms-guarding-ai-memory-2026
+        support: corroborating
+        exact_locators: [full lifecycle visibility, user control]
+    corroboration: Both sources require lifecycle traceability, control, deletion or rollback.
+    limitations: [Product-specific containment and rollback procedures vary and require local validation.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The response sequence operationalizes directly recommended controls without asserting a universal product workflow.
+    status: validated

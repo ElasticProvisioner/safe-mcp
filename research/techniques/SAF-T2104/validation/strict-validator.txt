@@ -1,0 +1,7 @@
+validator: current canonical scripts/validate-technique-research.py
+mode: strict
+environment: isolated synthetic repository with only generic validator, bundle files, minimal synthetic shared registries, and synthetic neighbor stubs
+command: UV_CACHE_DIR=/private/tmp/saf-all-cleanroom/SAF-T2104/uv-cache uv run --with pyyaml python scripts/validate-technique-research.py SAF-T2104
+exit_code: 0
+result: PASS SAF-T2104
+note: The system Python lacked PyYAML; the identical canonical script passed under an isolated uv-provided PyYAML runtime without changing validator code.

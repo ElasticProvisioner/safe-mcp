@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1304
+name: Credential Relay Chain
+status: ready_for_review
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+  - ATK-TA0004
+adversary_objective: >-
+  Cause a receiving MCP or agent component to authorize a request with a
+  credential that was not independently issued and validated for the current
+  caller and target, thereby obtaining the credential's greater authority.
+scope:
+  security_boundary: >-
+    Resource-audience, caller-principal, or intermediary-to-downstream
+    authorization boundary.
+  in_scope:
+    - Cross-resource replay of a bearer credential obtained through an MCP flow.
+    - Downstream passthrough of an inbound caller credential without valid exchange.
+    - Cross-principal substitution through shared or global credential state.
+  out_of_scope:
+    - Initial theft, phishing, or extraction without cross-boundary authorization.
+    - Legitimate scope enlargement through user consent or policy.
+    - Follow-on actions after the relayed authority has been accepted.
+  affected_components:
+    - MCP client
+    - MCP server
+    - MCP gateway or agent runtime
+    - Authorization middleware and credential cache
+    - External protected resource
+nearest_neighbors:
+  - technique_id: SAF-T1504
+    distinction: >-
+      Token Theft via API Response ends when token material is obtained;
+      SAF-T1304 begins when a credential is propagated or substituted across an
+      authorization boundary.
+  - technique_id: SAF-T1308
+    distinction: >-
+      Token Scope Substitution changes the granted scope; SAF-T1304 uses authority
+      not bound to the current target, principal, or hop.
+required_evidence:
+  - Establish the defining cross-boundary credential use in MCP or an agent system.
+  - Establish prerequisites, immediate objective, and limiting conditions.
+  - Classify end-to-end evidence independently from component evidence.
+  - Search current breaches, advisories, CVEs, demonstrations, and fixes.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - >-
+      MCP authorization events with timestamp, request or session identifier,
+      current and upstream principals, expected resource, token audience,
+      one-way token fingerprint, and validated-exchange flag.
+safe_example_constraints:
+  - Use only reserved invalid domains and non-secret fingerprints.
+  - Do not include live tokens, exploitation commands, or destructive actions.
+completion_evidence:
+  - Every substantive publishable unit is source traced or locally declared.
+  - Every unverified lead is excluded and ledgered.
+  - Two consecutive no-change passes establish research saturation.
+  - Detection tests and strict repository validation pass.
+  - Rights and quality reviews pass without unresolved items.

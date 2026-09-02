@@ -1,0 +1,42 @@
+version: 1
+technique_id: SAF-T1402
+freeze_policy: >-
+  The bundle is authoritative. Integration may add these files and perform only
+  the enumerated mechanical joins; any substantive edit requires a new research
+  review and a new freeze.
+canonical_fragments:
+  source_manifest: source-manifest-fragment.yml
+  framework_model: framework-fragment.yml
+  alignment_ledger: alignment-fragment.yml
+mechanical_joins:
+  - id: JOIN-SOURCE-MANIFEST
+    action: Merge all source records from source-manifest-fragment.yml into the repository source manifest by source ID, reject conflicts, and sort by ID.
+    substantive_change_allowed: false
+  - id: JOIN-FRAMEWORK-MODEL
+    action: Merge the SAF-T1402 record from framework-fragment.yml into the repository framework model and sort by technique ID.
+    substantive_change_allowed: false
+  - id: JOIN-ALIGNMENT-LEDGER
+    action: Merge the two SAF-T1402 issues from alignment-fragment.yml into the repository alignment ledger and sort by issue ID.
+    substantive_change_allowed: false
+  - id: JOIN-NEIGHBOR
+    action: Replace synthetic SAF-T9001 in README.md, technique-contract.yml, framework-model fragment, and alignment fragment with the canonical unconcealed instruction-injection neighbor selected from the repository.
+    substantive_change_allowed: false
+  - id: JOIN-HISTORY
+    action: Replace the synthetic 40-character repository_history value with the integration commit SHA after the files are added.
+    substantive_change_allowed: false
+  - id: JOIN-VALIDATION
+    action: Re-run the detector test and canonical strict technique validator after all joins; update only recorded validation evidence and freeze metadata if required by repository policy.
+    substantive_change_allowed: false
+synthetic_values:
+  - value: SAF-T9001
+    purpose: Isolated nearest-neighbor validation without reading the shared registry before freeze.
+  - value: "1111111111111111111111111111111111111111"
+    purpose: Nonzero isolated repository-history validator join.
+mitigation_joins: []
+prohibited_during_integration:
+  - Do not copy prose, examples, claims, detector logic, or evidence labels from any pre-existing target artifact.
+  - Do not resolve a merge conflict by preferring pre-existing target content.
+  - Do not alter the four selected examples or the explicit production-breach gap without reopening research.
+post_join_validation:
+  - python3 tests/SAF-T1402/test_detection_rule.py
+  - python3 scripts/validate-technique-research.py SAF-T1402

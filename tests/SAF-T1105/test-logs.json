@@ -1,0 +1,52 @@
+[
+  {
+    "name": "allowed read",
+    "expected_alert": false,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "notes/a.txt", "resolved_path": "/srv/agent/allowed/notes/a.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "inside_allowed_root", "approved_override": false}
+  },
+  {
+    "name": "relative traversal resolved outside",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "../outside/sample.txt", "resolved_path": "/srv/agent/outside/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "approved_override": false}
+  },
+  {
+    "name": "prefix collision outside",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "write_file", "requested_path": "/srv/agent/allowed-backup/sample.txt", "resolved_path": "/srv/agent/allowed-backup/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "approved_override": false}
+  },
+  {
+    "name": "link resolves outside",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "/srv/agent/allowed/link/sample.txt", "resolved_path": "/srv/agent/outside/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "approved_override": false}
+  },
+  {
+    "name": "no access mode file URI",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "file:///srv/agent/outside/sample.txt", "resolved_path": "/srv/agent/outside/sample.txt", "allowed_roots": [], "access_mode": "no_access", "path_scope": "no_access_violation", "approved_override": false}
+  },
+  {
+    "name": "blocked outside attempt",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "delete_file", "requested_path": "/srv/agent/outside/sample.txt", "resolved_path": "/srv/agent/outside/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "validation_decision": "blocked", "outcome": "denied", "approved_override": false}
+  },
+  {
+    "name": "approved maintenance override",
+    "expected_alert": false,
+    "event": {"event_type": "mcp_tool_call", "operation": "move_file", "requested_path": "/srv/agent/outside/sample.txt", "resolved_path": "/srv/agent/outside/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "approved_override": true}
+  },
+  {
+    "name": "missing canonical telemetry",
+    "expected_alert": false,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "../outside/sample.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "approved_override": false}
+  },
+  {
+    "name": "allowed write",
+    "expected_alert": false,
+    "event": {"event_type": "mcp_tool_call", "operation": "write_file", "requested_path": "output/result.txt", "resolved_path": "/srv/agent/allowed/output/result.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "inside_allowed_root", "approved_override": false}
+  },
+  {
+    "name": "absolute outside failed lookup",
+    "expected_alert": true,
+    "event": {"event_type": "mcp_tool_call", "operation": "read_file", "requested_path": "/srv/agent/outside/missing.txt", "resolved_path": "/srv/agent/outside/missing.txt", "allowed_roots": ["/srv/agent/allowed"], "access_mode": "scoped", "path_scope": "outside_allowed_root", "outcome": "not_found", "approved_override": false}
+  }
+]

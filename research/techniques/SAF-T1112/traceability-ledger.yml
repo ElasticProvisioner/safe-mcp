@@ -1,0 +1,224 @@
+version: 1
+technique_id: SAF-T1112
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1112/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1112/technique-contract.yml
+  supports: Internal scope, neutral name, tactic assignment, generation mode, and
+    completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1112/quality-review.yml
+  supports: Test and validator commands, dates, reviewer, results, and quality gates.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1112/source-coverage.yml
+  supports: Five research passes, saturation, candidates, evidence gap, and evidence
+    classification.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1112/clean-room-attestation.yml
+  supports: Isolation boundary, permitted inputs, searches, prior-access state, and
+    integrity status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1112/detection-rule.yml
+  supports: Experimental detection analytic and traceability metadata.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1112/test_detection_rule.py
+  supports: Executable detector semantics and deterministic case assertions.
+- id: LOCAL-detection-data
+  path: techniques/SAF-T1112/test-logs.json
+  supports: Positive, negative, boundary, malformed, and legitimate-lookalike test
+    cases.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1112/validation/detection-test.txt
+  supports: Captured isolated and canonical passing detection-test output.
+- id: LOCAL-validator-proof
+  path: research/techniques/SAF-T1112/validation/strict-validator.txt
+  supports: Captured isolated and canonical strict-validator output.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1112/integration/integration-notes.yml
+  supports: Clean-room boundaries and completed post-freeze canonical reconciliation.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1112-X001
+  candidate: Universal assertion that the technique has never occurred.
+  origin: Negative incident and vulnerability search.
+  attempted_searches:
+  - NVD Model Context Protocol, sampling, and sampling/createMessage API queries.
+  - CISA KEV 2026.09.01 deterministic filter.
+  - Crossref and arXiv exact-phrase and mechanism queries.
+  consulted_source_ids:
+  - SRC-arxiv-sampling-query-2026
+  - SRC-cisa-kev-2026-09-01
+  - SRC-crossref-sampling-query-2026
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-sampling-query-2026
+  reason: Absence is supportable only for the reviewed corpus and date.
+  prohibited_publishable_text:
+  - Sampling Request Abuse has never occurred
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X002
+  candidate: Treat the Apress chapter as a verified end-to-end demonstration.
+  origin: Crossref academic-publisher discovery.
+  attempted_searches:
+  - Direct DOI resolution and publisher landing-page review.
+  - Publisher PDF access attempt and access-terms review.
+  consulted_source_ids:
+  - SRC-apress-sampling-abuse-2026
+  - SRC-crossref-sampling-query-2026
+  reason: Chapter body is gated; preview supplies no method, results, or limitations.
+  prohibited_publishable_text:
+  - The Apress chapter demonstrates Sampling Request Abuse
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X003
+  candidate: Treat Park et al.'s malicious-server study as direct sampling abuse.
+  origin: Crossref saturation query.
+  attempted_searches:
+  - Full 23-page MDPI PDF review.
+  - Full-text searches for sampling, createMessage, recursive, nested, and server-initiated.
+  consulted_source_ids:
+  - SRC-mdpi-remote-mcp-2026
+  reason: Tested mechanisms use tool descriptions and tool responses, not sampling/createMessage.
+  prohibited_publishable_text:
+  - Park et al. demonstrated Sampling Request Abuse
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X004
+  candidate: Classify CVE-2026-5323 as a direct sampling vulnerability.
+  origin: NVD server-initiated LLM synonym query.
+  attempted_searches:
+  - Review complete NVD English description and referenced patch identifier.
+  - Compare described SSRF path with the technique contract.
+  consulted_source_ids:
+  - SRC-nvd-sampling-query-2026
+  reason: The weakness is server-side SSRF reached through a tool/caller context,
+    not client-mediated model sampling.
+  prohibited_publishable_text:
+  - CVE-2026-5323 is a Sampling Request Abuse vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X005
+  candidate: Treat a CISA KEV GIGABYTE record as an MCP result.
+  origin: Deterministic substring filter matched memcpy.
+  attempted_searches:
+  - Review matched CISA record vendor, product, and description.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  reason: The letters mcp occurred inside memcpy; the product and weakness are unrelated.
+  prohibited_publishable_text:
+  - CISA lists Sampling Request Abuse in KEV
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X006
+  candidate: Claim OpenTelemetry defines all detector fields used by this analytic.
+  origin: Detection and defense pass.
+  attempted_searches:
+  - Review official moved OpenTelemetry MCP convention page.
+  - Open exact repository URL supplied by the official moved page.
+  consulted_source_ids:
+  - SRC-opentelemetry-genai-repo-2026
+  - SRC-opentelemetry-moved-2026
+  reason: The opened authority pages did not expose stable field-level conventions
+    for approval state or the custom normalized schema.
+  prohibited_publishable_text:
+  - OpenTelemetry standardizes approval_state for MCP sampling
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X007
+  candidate: Claim the experimental burst threshold has measured accuracy.
+  origin: Detection design.
+  attempted_searches:
+  - Scholarly catalog searches for MCP sampling detection and request abuse.
+  - Review MCP security and rate-limit guidance.
+  consulted_source_ids:
+  - SRC-arxiv-sampling-query-2026
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-sampling-2026
+  reason: No evaluation of five requests, five minutes, or 16,384 tokens was found.
+  prohibited_publishable_text:
+  - The detector has a proven low false-positive rate
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X008
+  candidate: Claim active exploitation from CVE publication or public exploit references.
+  origin: Breach and vulnerability pass.
+  attempted_searches:
+  - NVD exploitation wording review.
+  - CISA KEV catalog check.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-fsp-catalog-queries-2026-09-01
+  - SRC-nvd-sampling-query-2026
+  reason: No direct sampling CVE exists in the reviewed corpus and public code does
+    not prove production exploitation.
+  prohibited_publishable_text:
+  - Sampling Request Abuse is actively exploited
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X009
+  candidate: Assert a specific financial loss or automatic provider charge.
+  origin: Impact analysis.
+  attempted_searches:
+  - Review current sampling parameters and scholarly results.
+  consulted_source_ids:
+  - SRC-crossref-sampling-query-2026
+  - SRC-mcp-sampling-2026
+  reason: Protocol sources establish requested token budgets, not billing terms or
+    realized losses.
+  prohibited_publishable_text:
+  - Every abusive sampling request incurs a provider charge
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X010
+  candidate: State that tools declared in a sampling request execute on the client
+    host.
+  origin: Initial mechanism hypothesis.
+  attempted_searches:
+  - Review current Tools in Sampling and Multi-turn Tool Loop sections.
+  consulted_source_ids:
+  - SRC-mcp-sampling-2026
+  - SRC-mcp-2026-schema
+  reason: The specification describes the server executing tool uses in the loop;
+    host-side execution is not established.
+  prohibited_publishable_text:
+  - sampling tools execute on the client
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X011
+  candidate: State that sampling is already removed or will certainly be removed on
+    2027-07-28.
+  origin: Deprecation review.
+  attempted_searches:
+  - Review the current sampling notice and deprecated-feature registry.
+  consulted_source_ids:
+  - SRC-mcp-deprecated-2026
+  - SRC-mcp-sampling-2026
+  reason: The registry supplies an earliest eligible removal date and says actual
+    removal may occur later.
+  prohibited_publishable_text:
+  - Sampling was removed from MCP
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1112-X012
+  candidate: Preserve or replace prior SAF-T1112 author credits.
+  origin: Publication attribution review.
+  attempted_searches:
+  - Clean-room input audit for user-supplied author credit.
+  - Independent source byline and contributor review only.
+  consulted_source_ids:
+  - SRC-mdpi-remote-mcp-2026
+  - SRC-mitre-attack-t1204
+  reason: No prior target artifact or supplied prior author credit was permitted;
+    only independently encountered external authors and this clean-room generator
+    can be credited.
+  prohibited_publishable_text:
+  - Prior SAF-T1112 author credit preserved
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,65 @@
+version: 1
+technique_id: SAF-T1701
+review_status: passed
+reviewed_on: '2026-09-02'
+reviewer: OpenAI Codex clean-room research and validation agent
+authors_and_credit:
+  technique_author: Frank Kautz
+  author_role: SAF Technique Author
+  research_and_drafting: OpenAI Codex
+  detection_engineering: OpenAI Codex
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation lists allowed and prohibited inputs; no prior target artifact or shared registry was accessed.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires result-borne indirect content and a distinct target tool and excludes metadata poisoning, direct prompts, and single-tool flaws.
+  technical_accuracy:
+    status: passed
+    notes: Protocol, empirical, advisory, and framework claims are narrowly paraphrased with stated limitations.
+  claim_traceability:
+    status: passed
+    notes: Thirteen claims have reviewed sources, exact locators, limitations, and same-line hidden README trace comments.
+  source_or_omit:
+    status: passed
+    notes: Substantive prose is claim-linked or local-artifact-linked; nine unsupported or out-of-scope candidates are excluded and prohibited.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by controlled end-to-end examples; no production incident is asserted.
+  research_saturation:
+    status: passed
+    notes: All five passes completed and two distinct follow-up passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Four high-impact examples selected from eight classified candidates; production and KEV gaps are explicit.
+  detection_quality:
+    status: passed
+    notes: Behavioral session correlation is executable and fixtures cover positive, negative, boundary, and malformed cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address source trust, target privilege, approval, validation, isolation, audit, and cross-tool policy.
+  framework_alignment:
+    status: passed
+    notes: Lateral Movement, the T1080 analogy, SAF-T1001 and SAF-T1102 neighbor boundaries, and nine canonical mitigations are reconciled after freeze.
+  publication_rights:
+    status: passed
+    notes: All use is independent paraphrase or reference-only; no protected expression or third-party artifact is reproduced.
+  safe_publication:
+    status: passed
+    notes: Examples are descriptive and inert; no credentials, live payloads, destructive commands, or exploit code are included.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1701
+      result: passed
+      notes: Passed in isolated synthetic mock repository on 2026-09-02.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1701/run_detection_tests.py
+    result: 'PASS: 10 cases, 3 expected alerts, 0 mismatches'
+    waiver: null
+  canonical_repository:
+    detection_proof: research/techniques/SAF-T1701/validation/detector-test.txt
+    strict_proof: research/techniques/SAF-T1701/validation/strict-validator.txt
+    status: passed
+unresolved: []

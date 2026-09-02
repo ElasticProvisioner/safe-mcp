@@ -1,0 +1,142 @@
+version: 1
+technique_id: SAF-T2101
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  inherited_context: false
+target:
+  id: SAF-T2101
+  neutral_name: Data Destruction
+allowed_inputs:
+- Neutral target ID SAF-T2101, neutral name Data Destruction, and neutral tactic identifier
+  ATK-TA0040.
+- The author-saf-technique skill, its routed references, generic templates, and the
+  current canonical validator.
+- Direct authoritative protocol, government, standards, academic, first-party vendor,
+  and named-researcher URLs reached through whitelist-only discovery.
+- Fresh files created under /private/tmp/saf-all-cleanroom/SAF-T2101 and isolated
+  synthetic-validator artifacts.
+prohibited_inputs:
+- Existing techniques/SAF-T2101/README.md and any copy, excerpt, render, or derivative
+  of it.
+- Existing research/techniques/SAF-T2101/ directory and every target-specific research
+  artifact beneath it.
+- Existing techniques/SAF-T2101/detection-rule.yml and existing tests or detection
+  fixtures for the target.
+- Target git history, diff, blame, commit, or tag content.
+- Pull request, issue, review, branch, or discussion content concerning the target.
+- Previous conversation or inherited summary concerning the target technique.
+- Shared framework, source-manifest, alignment, or target registry content before
+  freeze.
+- SAF sites, repositories, forks, mirrors, and unrestricted GitHub discovery.
+independent_research:
+  searches:
+  - Current MCP tool semantics, user confirmation, and annotation trust on modelcontextprotocol.io.
+  - Current production breach and exploitation status on CISA, NVD, AWS, and Microsoft
+    authoritative domains.
+  - Controlled MCP tool-poisoning, agent-action interception, semantic limits, and
+    server-defection research on arxiv.org.
+  - First-party destructive MCP capabilities and controls on learn.microsoft.com and
+    aws.amazon.com.
+  - Detection, impact, mitigation, and boundary analogies on attack.mitre.org.
+  - Two final exact-source whitelist passes after the last material discovery.
+  opened_source_ids:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-elicitation-2026-07-28
+  - SRC-mcp-annotations-2026-03-16
+  - SRC-mcp-release-2026-07-28
+  - SRC-aws-agent-access
+  - SRC-aws-agentic-lens
+  - SRC-ms-sql-mcp
+  - SRC-ms-documentdb-mcp
+  - SRC-nvd-cve-2025-53098
+  - SRC-nvd-cve-2025-64443
+  - SRC-nvd-cve-54377
+  - SRC-arxiv-mcp-threat
+  - SRC-arxiv-agenttrust-v1
+  - SRC-arxiv-agenttrust-v2
+  - SRC-arxiv-trustshift
+  - SRC-mitre-t1485
+  - SRC-cisa-kev-fsp-2026-09-01
+  - SRC-mcp-tools-2025-06-18
+  - SRC-mcp-auth-2025-06-18
+  - SRC-mcp-security-spec-2025-11-25
+  - SRC-owasp-llm-top10-v1
+  - SRC-azure-mcp-tools
+  - SRC-microsoft-tool-poisoning-2026-06-30
+  - SRC-arxiv-mcpsec
+  - SRC-mcp-security-bench-2510.15994
+  - SRC-nvd-cve-49596
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect prior target artifacts until the bundle's FREEZE.sha256 is generated
+  and verified.
+- Integration may map synthetic neighbor and mitigation IDs to canonical shared records
+  but must not silently change scope, claims, evidence label, or examples.
+- Integration must preserve hidden SAF-TRACE comments, named credits, the evidence
+  gap, and exclusion dispositions.
+- Any post-freeze content change invalidates the freeze and requires a new independent
+  review and hash manifest.
+attestation: I generated this bundle from neutral identifiers, generic authoring rules,
+  and independently opened authoritative sources. I did not inspect the existing target
+  documentation, research packet, detector, tests, target history, target discussions,
+  shared registries, SAF sites, or previous conversation.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools: SRC-mcp-tools-2026-07-28
+    SRC-mcp-elicitation: SRC-mcp-elicitation-2026-07-28
+    SRC-mcp-annotations-blog: SRC-mcp-annotations-2026-03-16
+    SRC-mcp-2026-release: SRC-mcp-release-2026-07-28
+    SRC-nvd-cve-53098: SRC-nvd-cve-2025-53098
+    SRC-nvd-cve-64443: SRC-nvd-cve-2025-64443
+    SRC-arxiv-tool-poisoning: SRC-arxiv-mcp-threat
+    SRC-cisa-kev: SRC-cisa-kev-fsp-2026-09-01
+    SRC-mcp-tools-2025: SRC-mcp-tools-2025-06-18
+    SRC-mcp-auth-2025: SRC-mcp-auth-2025-06-18
+    SRC-mcp-security-2025: SRC-mcp-security-spec-2025-11-25
+    SRC-ms-security-acting: SRC-microsoft-tool-poisoning-2026-06-30
+    SRC-arxiv-mcpbench: SRC-mcp-security-bench-2510.15994
+  new_shared_source_records:
+  - SRC-aws-agent-access
+  - SRC-aws-agentic-lens
+  - SRC-ms-sql-mcp
+  - SRC-ms-documentdb-mcp
+  - SRC-nvd-cve-54377
+  - SRC-arxiv-agenttrust-v1
+  - SRC-arxiv-agenttrust-v2
+  - SRC-arxiv-trustshift
+  - SRC-mitre-t1485
+  - SRC-owasp-llm-top10-v1
+  - SRC-azure-mcp-tools
+  - SRC-arxiv-mcpsec
+  - SRC-nvd-cve-49596
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0040
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-29
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  canonical_neighbors:
+  - SAF-T1102
+  - SAF-T2102
+  noncatalog_boundaries:
+  - Data Encryption for Impact remains a traced out-of-scope behavior because no corresponding SAF technique is cataloged.
+  - Protected Backups and Recovery remains a sourced control without a false SAF mitigation identifier because no dedicated catalog entry exists.
+  attack_mapping:
+    id: T1485
+    type: analogous
+  validation_proof:
+  - research/techniques/SAF-T2101/validation/detection-test-result.txt
+  - research/techniques/SAF-T2101/validation/isolated-validator-result.txt
+  - research/techniques/SAF-T2101/validation/canonical-validation.txt
+  status: integrated_and_validated

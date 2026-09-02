@@ -1,0 +1,18 @@
+command: python3 bundle/tests/SAF-T1904/test_detection_rule.py
+working_directory: /private/tmp/saf-all-cleanroom/SAF-T1904
+date: 2026-09-02
+result: PASS
+
+PASS positive_unauthorized_sender: alert=true
+PASS negative_stably_authorized_chatops: alert=false
+PASS negative_wrong_session: alert=false
+PASS negative_wrong_conversation: alert=false
+PASS positive_exact_300_second_boundary: alert=true
+PASS negative_over_300_second_boundary: alert=false
+PASS negative_missing_sender_id: alert=false
+PASS negative_malformed_timestamp: alert=false
+PASS positive_mutable_identity_binding: alert=true
+PASS negative_no_outbound_reply: alert=false
+PASS negative_no_tool_invocation: alert=false
+PASS negative_outbound_wrong_reply_target: alert=false
+SUMMARY passed=12 failed=0 total=12

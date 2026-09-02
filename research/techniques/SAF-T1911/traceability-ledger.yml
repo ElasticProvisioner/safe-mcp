@@ -1,0 +1,137 @@
+version: 1
+technique_id: SAF-T1911
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1911/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1911/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, and completion metadata.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1911/clean-room-attestation.yml
+  supports: Clean-room provenance, allowed inputs, independent searches, integrity
+    status, and integration constraints.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1911/quality-review.yml
+  supports: Validation commands, results, review date, and quality-gate status.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1911/source-coverage.yml
+  supports: Bounded absence statements, five-pass coverage, catalog-access gaps, example
+    classification, and saturation.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1911/detection-rule.yml
+  supports: The repository's explicitly labeled detection analytic.
+- id: LOCAL-detection-events
+  path: tests/SAF-T1911/events.json
+  supports: Representative positive, negative, boundary, malformed, authorized, and
+    expected-lookalike detection cases.
+- id: LOCAL-detection-script
+  path: tests/SAF-T1911/test_detection_rule.py
+  supports: Deterministic evaluation of the detection-rule selections and filter.
+- id: LOCAL-detection-log
+  path: tests/SAF-T1911/test-logs.json
+  supports: Recorded detection command, case counts, and passing result.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1911/integration/integration-notes.yml
+  supports: Mechanical source, framework, mitigation, neighbor, history, and path reconciliation after the independent freeze.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T1911/validation/canonical-validation.txt
+  supports: Passing destination-repository detector and strict-validator results after integration.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1911-X001
+  candidate: A qualifying production incident documents Parameter Exfiltration.
+  origin: Required breach and incident research pass.
+  attempted_searches:
+  - Direct review of original Invariant reports for incident classification.
+  - Direct review of OWASP MCP Top 10 and MCP Security Best Practices for primary
+    incident references.
+  - NVD filtered authority endpoint attempt for Model Context Protocol data exfiltration;
+    retrieval layer rejected the URL.
+  - CISA KEV feed attempt; server returned HTTP 403.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-security-2025-11-25
+  - SRC-owasp-mcp-top10-v0.1
+  reason: The reviewed sources document controlled demonstrations or general guidance,
+    not a production incident, and blocked catalog access prevents a broader absence
+    conclusion.
+  prohibited_publishable_text:
+  - Parameter Exfiltration has never occurred in production.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1911-X002
+  candidate: A disclosed CVE directly proves the defining sensitive-data-in-tool-argument
+    mechanism.
+  origin: Required vulnerability and advisory research pass.
+  attempted_searches:
+  - Direct review of MCP Security Best Practices attack catalogue for product advisories.
+  - NVD filtered authority endpoint attempt; retrieval layer rejected the URL.
+  - CISA KEV feed attempt; server returned HTTP 403.
+  consulted_source_ids:
+  - SRC-mcp-security-2025-11-25
+  - SRC-owasp-mcp-top10-v0.1
+  reason: No accessible reviewed source supplied a stable vulnerability identifier,
+    affected versions, patch state, and direct Parameter Exfiltration attack path.
+  prohibited_publishable_text:
+  - A published CVE directly proves Parameter Exfiltration.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1911-X003
+  candidate: Current versions of the clients named in the April 2025 experiments remain
+    susceptible.
+  origin: Contrary-result and remediation-status challenge.
+  attempted_searches:
+  - Reopened both original Invariant reports for update notices and remediation statements.
+  - Reviewed current MCP 2025-11-25 tools guidance and changelog.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-mcp-tools-2025-11-25
+  reason: The reports establish only their tested environments and dates; no directly
+    reviewed current vendor advisory or retest supports present susceptibility.
+  prohibited_publishable_text:
+  - Current versions of Cursor are vulnerable to Parameter Exfiltration.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1911-X004
+  candidate: Tool-description scanning reliably detects runtime Parameter Exfiltration.
+  origin: Detection and defense research pass.
+  attempted_searches:
+  - Direct review of the MCP-Scan first-party description and data-handling section.
+  - Direct review of the two original controlled demonstrations for detector evaluation
+    results.
+  consulted_source_ids:
+  - SRC-invariant-mcp-scan-2025
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  reason: The scanner page describes tool-description analysis and explicitly excludes
+    tool-call content or result logging; no accuracy evaluation for runtime parameter
+    transmission was found.
+  prohibited_publishable_text:
+  - MCP-Scan reliably detects Parameter Exfiltration.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1911-X005
+  candidate: MCP standardizes sensitive-data lineage and destination-trust fields
+    for tool-call logging.
+  origin: Detection telemetry design.
+  attempted_searches:
+  - Direct review of the complete MCP Tools 2025-11-25 page.
+  - Direct review of MCP Architecture and Security Best Practices.
+  consulted_source_ids:
+  - SRC-mcp-architecture-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  reason: The reviewed specification recommends logging tool use but does not define
+    those enrichment fields; the analytic labels them as deployment-specific.
+  prohibited_publishable_text:
+  - MCP standardizes sensitive-data lineage fields.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

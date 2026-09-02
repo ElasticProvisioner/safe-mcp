@@ -1,0 +1,59 @@
+version: 1
+technique_id: SAF-T1008
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex independent clean-room author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Seed-only boundary held; no prior target, catalog description, shared registry, repository history, prior-agent artifact, or review content was opened.
+  contract_and_scope:
+    status: passed
+    notes: Contract requires foreign descriptor influence on a separately trusted tool and excludes collision, mutation-only, ordinary poisoning, prompt injection, and follow-on exfiltration.
+  technical_accuracy:
+    status: passed
+    notes: Protocol claims use the current dated MCP Tools specification; demonstrations, vulnerabilities, and inferences remain distinctly labeled.
+  claim_traceability:
+    status: passed
+    notes: Sixteen validated claims have exact locators, limitations, support classifications, and visible Evidence Summary entries.
+  source_or_omit:
+    status: passed
+    notes: Publishable prose uses hidden traces or declared local artifacts; five unsupported or misclassified propositions are excluded.
+  evidence_classification:
+    status: passed
+    notes: Direct public and controlled demonstrations support Demonstrated; absence of a qualifying production incident prevents Observed.
+  research_saturation:
+    status: passed
+    notes: All five methodology passes and two consecutive final no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: NVD, CVE, CISA KEV, official advisory, primary research, impact, remediation, and relationship classifications are complete.
+  detection_quality:
+    status: passed
+    notes: Experimental analytic declares enriched telemetry, threshold, allowlist, false positives, blind spots, and eight passing fixtures.
+  mitigation_quality:
+    status: passed
+    notes: Provenance, isolation, pinning, approval-diff, audit, and response controls address the defining cross-server influence mechanism.
+  framework_alignment:
+    status: passed
+    notes: Initial Access and T1195 Analogous mapping are consistent; canonical SAF-T1001, SAF-T1201, and SAF-T1301 boundaries plus nine mitigation joins were reconciled after freeze and passed strict validation.
+  publication_rights:
+    status: passed
+    notes: All cited material is paraphrased or used as factual reference with attribution; no third-party code, figures, or personal-data screenshots are reproduced.
+  safe_publication:
+    status: passed
+    notes: Example uses example.invalid, contains no credentials or exploit code, and stops before execution.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1008
+      result: passed
+      notes: Executed in the isolated mock repository using an environment with PyYAML available.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1008/test_detection_rule.py
+    result: 8 of 8 fixtures passed; 2 positive and 6 negative; 0 mismatches
+    waiver: null
+
+unresolved: []

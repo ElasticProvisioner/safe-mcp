@@ -1,0 +1,287 @@
+version: 1
+technique_id: SAF-T2101
+claims:
+  - id: SAF-T2101-C001
+    statement: An adversary-influenced agent with an authorized destructive tool can use that path to delete stored state.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools: Overview; Security considerations: clients; Calling tools"]
+      - source_id: SRC-aws-agent-access
+        support: direct
+        exact_locators: ["Three security principles for agent access; Security principle 1"]
+      - source_id: SRC-ms-sql-mcp
+        support: direct
+        exact_locators: ["The tools; Tool availability by version; Disabling tools"]
+      - source_id: SRC-ms-documentdb-mcp
+        support: direct
+        exact_locators: ["Tool catalog; Safety guardrails; Deleting databases, collections, or indexes"]
+      - source_id: SRC-arxiv-trustshift
+        support: context
+        exact_locators: ["Abstract; compromised-server temporal threat model and schema-valid manipulation"]
+    corroboration: MCP semantics, two independent first-party tool catalogs, and AWS authority analysis support each component of the inference.
+    limitations: [No reviewed source reports the complete adversarial destruction chain in production or a direct end-to-end demonstration.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The complete chain is assembled from independently supported protocol, capability, and authorization components.}
+    status: validated
+  - id: SAF-T2101-C002
+    statement: MCP guidance treats tools as model-controlled and recommends confirmation and logging for sensitive operations.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tools: Overview", "Security considerations: clients SHOULD implement human-in-the-loop and SHOULD log tool usage"]
+    corroboration: AWS Agentic AI Lens independently recommends authorization, human checkpoints, rate limits, and observability.
+    limitations: [Protocol guidance is not an enforced authorization mechanism.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C003
+    statement: MCP destructive annotations are untrusted metadata and cannot enforce a decision.
+    class: protocol_normative
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-annotations-2026-03-16
+        support: direct
+        exact_locators: ["Core Annotations; Clients MUST treat annotations as untrusted; What Annotations Don't Do"]
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["ToolAnnotations schema; annotations are hints and untrusted unless from trusted servers"]
+    corroboration: Specification and maintainer-authored explanatory guidance agree.
+    limitations: [Individual clients may add enforcement outside the annotation contract.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C004
+    statement: SQL MCP Server exposes delete_record by default with its DML surface and supports disabling it.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-sql-mcp
+        support: direct
+        exact_locators: ["The tools; Tool availability by version; Runtime configuration; Disabling tools; RBAC integration"]
+    corroboration: Azure DocumentDB independently documents deletion-capable MCP tools with separate controls.
+    limitations: [Product documentation does not demonstrate adversarial use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C005
+    statement: Azure DocumentDB MCP Toolkit exposes delete and drop tools with layered guardrails and structured audit fields.
+    class: implementation_fact
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-ms-documentdb-mcp
+        support: direct
+        exact_locators: ["Tool catalog; Safety guardrails; Deleting databases, collections, or indexes; Audit log"]
+    corroboration: SQL MCP Server independently documents deletion capability, RBAC, and tool disabling.
+    limitations: [The toolkit is preview software and the documentation is not an adversarial evaluation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C006
+    statement: AWS states that agents can exercise granted delete permissions and prompt injection can direct unintended deletion.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-agent-access
+        support: direct
+        exact_locators: ["Security principle 1: Assume all granted permissions could be used; S3 DeleteObject example; prompt injection scenario"]
+      - source_id: SRC-aws-agentic-lens
+        support: corroborating
+        exact_locators: ["Capability intent; common issues involving injected prompts and mass tool calls"]
+    corroboration: AWS Agentic AI Lens separately warns that prompt injection and runaway loops can invoke out-of-scope or mass tool actions.
+    limitations: [The documented scenarios are architectural guidance, not reported breaches.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C007
+    statement: Current MCP supports an input-required round trip that can request confirmation before completion.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mcp-release-2026-07-28
+        support: direct
+        exact_locators: ["Multi Round-Trip Requests (MRTR)"]
+      - source_id: SRC-mcp-elicitation-2026-07-28
+        support: direct
+        exact_locators: ["Overview; Elicitation mechanisms; Security: approval"]
+    corroboration: The release explanation and normative elicitation specification describe the same confirmation capability.
+    limitations: [Applications must implement and enforce the returned decision.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C008
+    statement: CVE-2025-53098 enabled prompt-influenced writes to Roo Code MCP configuration under stated prerequisites before 3.20.3.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2025-53098
+        support: direct
+        exact_locators: ["Description; affected versions; remediation version 3.20.3; CISA SSVC"]
+    corroboration: NVD record incorporates CNA description and CISA enrichment.
+    limitations: [The advisory reports an enabling command-execution path, not data destruction.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C009
+    statement: CVE-2025-64443 allowed browser-based manipulation of tools behind certain Docker MCP Gateway transports before 0.28.0.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2025-64443
+        support: direct
+        exact_locators: ["Description; affected versions; default stdio exclusion; remediation version 0.28.0; CISA SSVC"]
+    corroboration: NVD record incorporates CNA description and CISA enrichment.
+    limitations: [The advisory does not report a destructive objective or outcome.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C010
+    statement: CVE-2025-54377 allowed a multiline command-input allow-list bypass in Roo Code before 3.23.19.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-54377
+        support: direct
+        exact_locators: ["Description; affected versions; remediation version 3.23.19; CISA SSVC proof-of-concept status"]
+    corroboration: NVD record incorporates CNA advisory metadata and CISA enrichment.
+    limitations: [The advisory establishes command execution, not a deletion or corruption objective.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C011
+    statement: Controlled MCP studies demonstrate tool poisoning and temporally defecting servers while also showing partial defenses.
+    class: demonstrated_exploit
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-arxiv-mcp-threat
+        support: direct
+        exact_locators: ["Section 4.3 Experiment Setup; Section 5.2 Remote script execution results; Tables 5 and 6"]
+      - source_id: SRC-arxiv-trustshift
+        support: direct
+        exact_locators: ["Abstract; Contributions C1-C4; 69.5% mean attack success and 42.7% with SHIELD"]
+    corroboration: Independent studies exercise distinct client-side and compromised-server paths.
+    limitations: [Neither study establishes the scoped data-destruction objective; both are preprints.]
+    conflicts: [Some clients blocked remote-script execution and SHIELD reduced but did not eliminate TrustShift success.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C012
+    statement: A deterministic analytic can identify explicit destructive verbs and bursts, but semantic intent remains a structural limitation.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1485
+        support: direct
+        exact_locators: ["Detection Strategy DET0146; Analytics AN0411-AN0416; cloud Delete and Terminate patterns"]
+      - source_id: SRC-arxiv-agenttrust-v1
+        support: direct
+        exact_locators: ["Abstract; deobfuscation normalizer; 300 and 630 scenario evaluations; limitations"]
+      - source_id: SRC-arxiv-agenttrust-v2
+        support: direct
+        exact_locators: ["Abstract; Sections 1 and 5.3; Table 3; production-transfer and replay limitations"]
+      - source_id: SRC-aws-agent-access
+        support: context
+        exact_locators: ["CloudTrail logging examples; direct non-MCP path scope boundary"]
+      - source_id: SRC-ms-documentdb-mcp
+        support: context
+        exact_locators: ["Audit log structured fields"]
+    corroboration: ATT&CK supplies platform deletion observables while two research versions expose normalization and semantic limits.
+    limitations: [The bundled rule is a portable illustrative analytic, not a universal product query or production benchmark.]
+    conflicts: [AgentTrust v2 reports that deterministic rules did not improve held-out semantic data/database accuracy.]
+    inference: {is_inference: true, rationale: The analytic adapts platform deletion signals to structured MCP and agent audit fields.}
+    status: validated
+  - id: SAF-T2101-C013
+    statement: Least privilege, tool removal, independent authorization, confirmation, rate limits, and auditable decisions reduce opportunity or blast radius.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-aws-agent-access
+        support: direct
+        exact_locators: ["Three security principles; least privilege; differentiating AI-driven actions; CloudTrail logging"]
+      - source_id: SRC-aws-agentic-lens
+        support: direct
+        exact_locators: ["Capability intent; maturity levels 3-5; common issues"]
+      - source_id: SRC-ms-sql-mcp
+        support: direct
+        exact_locators: ["Disabling tools; RBAC integration"]
+      - source_id: SRC-ms-documentdb-mcp
+        support: direct
+        exact_locators: ["Safety guardrails; Audit log"]
+      - source_id: SRC-mitre-t1485
+        support: context
+        exact_locators: ["Mitigations; protected recovery and cloud deletion controls"]
+    corroboration: Independent AWS and Microsoft sources converge on external enforcement and observability.
+    limitations: [MCP-specific controls do not automatically cover direct shell or API paths.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T2101-C014
+    statement: The reviewed corpus did not identify a qualifying direct production incident or end-to-end destruction demonstration.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-fsp-2026-09-01
+        support: direct
+        exact_locators: ["Full CSV cveID search on 2026-09-02; no rows for CVE-2025-53098, CVE-2025-64443, or CVE-2025-54377"]
+      - source_id: SRC-nvd-cve-2025-53098
+        support: direct
+        exact_locators: ["Description; CISA SSVC exploitation status"]
+      - source_id: SRC-nvd-cve-2025-64443
+        support: direct
+        exact_locators: ["Description; CISA SSVC exploitation none"]
+      - source_id: SRC-nvd-cve-54377
+        support: direct
+        exact_locators: ["Description; CISA SSVC exploitation proof-of-concept"]
+    corroboration: Separate incident, advisory, catalog, controlled-demonstration, and contrary-evidence passes reached the same bounded gap.
+    limitations: [A negative finding cannot prove that no private, unpublished, misclassified, or later incident exists.]
+    conflicts: []
+    inference: {is_inference: true, rationale: This is a bounded conclusion from the documented whitelist-only corpus and search date.}
+    status: validated
+  - id: SAF-T2101-C015
+    statement: ATT&CK T1485 is an analogous mapping for deletion and irrecoverable corruption, including cloud resources and mass-delete analytics.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-mitre-t1485
+        support: direct
+        exact_locators: ["Technique description; cloud environments paragraph; Detection Strategy DET0146; Version 1.4 metadata"]
+    corroboration: First-party MCP implementations independently expose the relevant deletion actions.
+    limitations: [ATT&CK T1485 is platform-oriented and does not establish MCP mediation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is explicitly analogous because MCP is not part of the ATT&CK technique definition.}
+    status: validated
+  - id: SAF-T2101-C016
+    statement: Successful production deletion primarily affects integrity and availability, with severity governed by target criticality and authorized scope.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-aws-agent-access
+        support: direct
+        exact_locators: ["Security principle 1; production deletion and machine-speed blast-radius discussion"]
+      - source_id: SRC-mitre-t1485
+        support: direct
+        exact_locators: ["Technique description; Impact Type Availability; cloud resource deletion"]
+    corroboration: AWS and ATT&CK independently support scope and availability consequences.
+    limitations: [Actual severity is deployment-specific and requires target and recovery context.]
+    conflicts: []
+    inference: {is_inference: true, rationale: CIA and scope ratings apply external impact evidence to the bounded SAF technique.}
+    status: validated

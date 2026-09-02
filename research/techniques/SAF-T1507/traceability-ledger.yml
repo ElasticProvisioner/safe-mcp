@@ -1,0 +1,112 @@
+version: 1
+technique_id: SAF-T1507
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1507/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1507/technique-contract.yml
+  supports: Internal scope, neutral name, assigned tactic, evidence expectations,
+    and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1507/quality-review.yml
+  supports: Quality gates, validation commands, test results, review date, and reviewer
+    identity.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1507/clean-room-attestation.yml
+  supports: Isolation boundary, independent research, mock validation, and pre-integration
+    freeze status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1507/detection-rule.yml
+  supports: Experimental detection logic, required fields, limits, and source-or-omit
+    joins.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1507/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, and expected-false-positive
+    test execution.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1507/test-cases.json
+  supports: Synthetic representative detection cases and expected outcomes.
+- id: LOCAL-detection-results
+  path: research/techniques/SAF-T1507/validation/detection-test-results.txt
+  supports: Frozen passing detection-test output.
+- id: LOCAL-validator-results
+  path: research/techniques/SAF-T1507/validation/strict-validator-results.txt
+  supports: Frozen passing isolated strict-validator output.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1507-X001
+  candidate: A confirmed production MCP breach used authorization-code interception.
+  origin: Required production-incident research pass.
+  attempted_searches:
+  - Official NVD API queries for MCP, authorization code, PKCE, redirect URI, and
+    interception.
+  - CISA KEV exact-ID and catalog review on 2026-09-01.
+  - Direct review of selected CVE records and first-party advisories for exploitation
+    claims.
+  consulted_source_ids:
+  - SRC-nvd-cleanroom-queries
+  - SRC-cisa-kev-authorization-code-2026-09-01
+  - SRC-cve-2025-4143
+  - SRC-cve-2025-4144
+  - SRC-cve-2026-67336
+  reason: The reviewed corpus contains vulnerabilities and control tests but no directly
+    documented production MCP incident.
+  prohibited_publishable_text:
+  - A production MCP breach has been confirmed.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1507-X002
+  candidate: RFC 7636's observed-in-the-wild statement establishes an MCP production
+    incident.
+  origin: RFC 7636 Section 1 mechanism review.
+  attempted_searches:
+  - Reviewed the RFC's scope, attack prerequisites, and absence of an identified MCP
+    environment.
+  - Compared the statement with the current MCP specification and selected MCP CVE
+    records.
+  consulted_source_ids:
+  - SRC-rfc7636
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-cve-2025-4143
+  - SRC-cve-2025-4144
+  - SRC-cve-2026-67336
+  reason: RFC 7636 predates MCP and does not name an MCP system, incident, product,
+    or victim.
+  prohibited_publishable_text:
+  - RFC 7636 proves an MCP breach.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1507-X003
+  candidate: CVE-2026-47250 is a direct authorization-code-interception example.
+  origin: Saturation follow-up query for Model Context Protocol authorization code.
+  attempted_searches:
+  - Reviewed the complete NVD description and its token-capture sequence.
+  - Compared the sequence with the contract's pre-token authorization-code boundary.
+  consulted_source_ids:
+  - SRC-nvd-cleanroom-queries
+  reason: The weakness exfiltrates an already issued Kubernetes bearer token through
+    an MCP tool invocation and does not involve an OAuth authorization code.
+  prohibited_publishable_text:
+  - CVE-2026-47250 is authorization code interception.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1507-X004
+  candidate: Generic non-MCP PKCE CVEs should be presented as current MCP vulnerabilities.
+  origin: NVD PKCE and redirect-URI query results.
+  attempted_searches:
+  - Reviewed 28 PKCE and 23 OAuth redirect-URI NVD result descriptions.
+  - Ranked MCP-specific records above non-MCP libraries and identity providers.
+  consulted_source_ids:
+  - SRC-nvd-cleanroom-queries
+  reason: Shared OAuth mechanics make these useful historical analogies, but their
+    products and trust boundaries are not MCP deployments.
+  prohibited_publishable_text:
+  - Every PKCE CVE is an MCP vulnerability.
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

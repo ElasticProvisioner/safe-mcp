@@ -1,0 +1,82 @@
+version: 1
+technique_id: SAF-T2101
+bundle_status: frozen_clean_room_candidate
+generated_on: "2026-09-02"
+destination_writes_performed: false
+pre_freeze_prohibited_artifact_access: false
+merge_order:
+  - Copy techniques/SAF-T2101, research/techniques/SAF-T2101, and tests/SAF-T2101 into their destination paths.
+  - Merge source-manifest-fragment.yml records by source ID into research/source-manifest.yml without overwriting conflicting records silently.
+  - Merge framework-fragment.yml technique record by technique ID into research/framework-model.yml.
+  - Merge alignment-fragment.yml issues into research/alignment-ledger.yml.
+  - Run the canonical strict validator and detection tests in the destination only after preserving this freeze for comparison.
+synthetic_join_records:
+  - id: SAF-T9001
+    kind: related_technique
+    neutral_name: Instruction Manipulation
+    rationale: Synthetic clean-room neighbor used because the shared framework registry was prohibited before freeze.
+    integration_action: Map to the canonical instruction or prompt-manipulation neighbor, or retain only after framework review.
+  - id: SAF-T9002
+    kind: related_technique
+    neutral_name: Service Exhaustion
+    rationale: Synthetic clean-room neighbor used because the shared framework registry was prohibited before freeze.
+    integration_action: Map to the canonical resource or service-exhaustion neighbor, or retain only after framework review.
+  - id: SAF-T9003
+    kind: related_technique
+    neutral_name: Data Encryption for Impact
+    rationale: Synthetic clean-room neighbor used because the shared framework registry was prohibited before freeze.
+    integration_action: Map to the canonical encryption-for-impact neighbor, or retain only after framework review.
+  - id: SAF-M-901
+    kind: mitigation
+    neutral_name: Least-Privilege Tool Authorization
+    rationale: Synthetic clean-room mitigation used because the shared mitigation registry was prohibited before freeze.
+    integration_action: Map to the canonical least-privilege and tool-authorization mitigation.
+  - id: SAF-M-902
+    kind: mitigation
+    neutral_name: Human Approval for Destructive Actions
+    rationale: Synthetic clean-room mitigation used because the shared mitigation registry was prohibited before freeze.
+    integration_action: Map to the canonical independent-approval mitigation.
+  - id: SAF-M-903
+    kind: mitigation
+    neutral_name: Protected Backups and Recovery
+    rationale: Synthetic clean-room mitigation used because the shared mitigation registry was prohibited before freeze.
+    integration_action: Map to the canonical backup and recovery mitigation.
+evidence_gap:
+  label: research-derived
+  qualifying_direct_examples: 0
+  statement: No reviewed source documented a direct production MCP or agent data-destruction incident, direct scoped vulnerability, or end-to-end controlled destruction demonstration.
+  enabling_advisories_retained: [CVE-2025-53098, CVE-2025-64443, CVE-2025-54377]
+  constraint: Enabling advisories must not be reclassified as direct examples without new source evidence.
+source_acquisition_checks:
+  - artifact: /private/tmp/saf-all-cleanroom/SAF-T2101/acquisition/known_exploited_vulnerabilities.csv
+    purpose: Dated CISA KEV exact-ID cross-check outside the merge bundle.
+    sha256: f1d645966a30b56e82b2130fd7252ee27f7dc2e05f8327ff67da890aae9af566
+  - artifact: /private/tmp/saf-all-cleanroom/SAF-T2101/acquisition/nvd-CVE-2025-53098.json
+    purpose: Direct NVD API acquisition retained outside the merge bundle.
+    sha256: bcdec544b0ebbefb311109dc1ad7a40bf5804cc3914b538f01a69b50a0760d0f
+  - artifact: /private/tmp/saf-all-cleanroom/SAF-T2101/acquisition/nvd-CVE-2025-64443.json
+    purpose: Direct NVD API acquisition retained outside the merge bundle.
+    sha256: ede5873da3e71e0755b60cee840ed75681fd74603802805ee1c1b09ab6475216
+validation_environment:
+  root: /private/tmp/saf-all-cleanroom/SAF-T2101/isolated-validator
+  baseline_commit: 0e80b09c14c8c68aa7eea0ae27ac52234352cc85
+  shared_registry_accessed: false
+unresolved_integration_tasks:
+  - Map six synthetic join records against the canonical framework only after freeze.
+  - Reconcile duplicate source IDs and exact metadata without weakening attribution or locators.
+  - Replace the isolated-validation history record with honest destination integration history if the bundle is merged.
+
+post_freeze_reconciliation:
+  status: integrated_and_validated
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactic: ATK-TA0040
+  canonical_neighbors: [SAF-T1102, SAF-T2102]
+  canonical_mitigations: [SAF-M-12, SAF-M-16, SAF-M-29, SAF-M-69, SAF-M-70, SAF-M-74]
+  noncatalog_boundaries:
+    - Data Encryption for Impact remains traced but is not assigned a false SAF technique identifier.
+    - Protected Backups and Recovery remains sourced but is not assigned a false SAF mitigation identifier.
+  attack_mapping: {id: T1485, type: analogous}
+  validation_proof:
+    - research/techniques/SAF-T2101/validation/detection-test-result.txt
+    - research/techniques/SAF-T2101/validation/isolated-validator-result.txt
+    - research/techniques/SAF-T2101/validation/canonical-validation.txt

@@ -1,0 +1,119 @@
+version: 1
+technique_id: SAF-T1910
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T1910/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1910/technique-contract.yml
+  supports: Internal scope, name, tactic, neighbor placeholders, and completion conditions.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1910/source-coverage.yml
+  supports: Search history, evidence gap, example selection, conflicts, and saturation.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1910/quality-review.yml
+  supports: Validation commands, quality gates, and test results.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1910/detection-rule.yml
+  supports: The experimental correlation analytic and its traceable design choices.
+- id: LOCAL-detection-tests
+  path: techniques/SAF-T1910/test_detection_rule.py
+  supports: Deterministic positive, negative, boundary, malformed, normalization,
+    and false-positive tests.
+- id: LOCAL-test-logs
+  path: techniques/SAF-T1910/test-logs.json
+  supports: Sanitized representative event cases and expected outcomes.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1910/validation/detection-test.txt
+  supports: Isolated and canonical passing result for all nine deterministic detector cases.
+- id: LOCAL-strict-proof
+  path: research/techniques/SAF-T1910/validation/strict-validator.txt
+  supports: Isolated and canonical strict research-validator results.
+- id: LOCAL-integration
+  path: research/techniques/SAF-T1910/integration/integration-notes.yml
+  supports: Mechanical post-freeze tactic, source, history, path, framework, neighbor, mitigation, and validation joins.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1910-X001
+  candidate: The behavior has been observed in a production MCP breach.
+  origin: Required production-incident challenge pass.
+  attempted_searches:
+  - NVD API keywordSearch=Model Context Protocol and exact selected-CVE records.
+  - CISA KEV catalog version 2026.09.01 exact and mechanism checks.
+  - Direct review of primary demonstrations, advisory disclosure, Microsoft CVRF,
+    and academic reports for incident language.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-34072
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-nvd-mcp-keyword-20260902
+  - SRC-radosevich-halloran-mcp-audit-2025
+  reason: The reviewed sources establish demonstrations or vulnerabilities but do
+    not identify a real victim, incident responder, or production compromise.
+  prohibited_publishable_text:
+  - This technique has been observed in production
+  - a confirmed production MCP breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1910-X002
+  candidate: CVE-2025-32711 EchoLeak is a direct MCP example of this technique.
+  origin: Official vulnerability-catalog query for agentic data exfiltration.
+  attempted_searches:
+  - NVD exact CVE API record and all listed references.
+  - Microsoft June 2025 CVRF exact CVE record.
+  - NVD MCP keyword catalog cross-check.
+  consulted_source_ids:
+  - SRC-msrc-2025-june-cvrf
+  - SRC-nvd-cve-2025-32711-api
+  - SRC-nvd-mcp-keyword-20260902
+  reason: The directly reviewed official records establish AI command injection and
+    network disclosure in Microsoft 365 Copilot but not MCP use or the defining covert
+    carrier.
+  prohibited_publishable_text:
+  - EchoLeak is an MCP covert-channel incident
+  - CVE-2025-32711 directly proves SAF-T1910
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1910-X003
+  candidate: Any poisoned description or untrusted tool output deterministically causes
+    exfiltration.
+  origin: Overgeneralization challenge against successful demonstrations.
+  attempted_searches:
+  - Reviewed failed and successful prompts in the MCP Safety Audit.
+  - Reviewed AgentDojo task, attack, and defense outcome rates.
+  - Reviewed confirmation and context-dependence limits in Invariant experiments.
+  consulted_source_ids:
+  - SRC-agentdojo-2406.13352v3
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-invariant-whatsapp-mcp-2025-04-07
+  - SRC-radosevich-halloran-mcp-audit-2025
+  reason: Outcomes vary by model, prompt, context, defense, and approval; universal
+    success is contradicted by the reviewed evaluations.
+  prohibited_publishable_text:
+  - MCP agents always follow covert exfiltration instructions
+  - the attack succeeds deterministically
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1910-X004
+  candidate: The provided fingerprint analytic detects all covert or encrypted exfiltration
+    channels.
+  origin: Detection completeness challenge.
+  attempted_searches:
+  - Reviewed ATT&CK T1048 encrypted and obfuscated channel limitations.
+  - Reviewed Invariant's note about encoded or side-channel transfer.
+  - Tested missing attribution, transformed content, and correlation boundaries.
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mitre-attack-t1048-v1.6
+  reason: Content matching cannot recover unknown encryption, hashing, fragmentation,
+    or events absent from correlated telemetry.
+  prohibited_publishable_text:
+  - detects all covert exfiltration
+  - cannot be evaded by encoding
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

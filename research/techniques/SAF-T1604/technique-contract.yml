@@ -1,0 +1,76 @@
+version: 1
+technique_id: SAF-T1604
+name: Server Version Enumeration
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0007
+adversary_objective: Obtain implementation or protocol-version identifiers from a
+  reachable MCP server or its HTTP serving layer so the adversary can refine later
+  targeting.
+scope:
+  security_boundary: The client-to-server discovery boundary where server-authored
+    implementation metadata, supported protocol versions, or HTTP product identifiers
+    cross to a requesting client.
+  in_scope:
+  - A client uses MCP discovery, version-negotiation errors, or an HTTP response to
+    collect a server implementation name or version.
+  - The immediate outcome is a version-bearing observation associated with a specific
+    reachable server.
+  out_of_scope:
+  - Finding previously unknown server endpoints or merely listing reachable services.
+  - Enumerating tools, resources, prompts, or other capabilities without collecting
+    an implementation or protocol version.
+  - Exploiting a vulnerability selected after enumeration or treating a self-reported
+    version as verified inventory.
+  - Local installed-software enumeration that does not query a server boundary.
+  affected_components:
+  - MCP client or host
+  - MCP server
+  - MCP discovery and version-negotiation messages
+  - HTTP serving layer and response metadata
+nearest_neighbors:
+- technique_id: SAF-T1601
+  distinction: MCP Server Enumeration identifies configured or reachable servers;
+    SAF-T1604 collects version-bearing metadata from a server already reached.
+- technique_id: SAF-T1605
+  distinction: Capability Mapping inventories what an agent or server can do;
+    SAF-T1604 records implementation or supported protocol versions.
+required_evidence:
+- Establish the current MCP fields and operations that can return server identity
+  or supported protocol versions.
+- Establish the analogous HTTP header behavior and the limits of version disclosure
+  as a security signal.
+- Search separately for direct production incidents, disclosed vulnerabilities, demonstrations,
+  exploitation status, and adjacent behavior.
+- Establish testable telemetry for repeated discovery across distinct server identities,
+  including false-positive and boundary cases.
+- Reconcile the behavior with Discovery-oriented ATT&CK techniques while preserving
+  remote-server and local-software distinctions.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP request and response audit events with timestamp, actor_id, server_id, method,
+    result status, and returned serverInfo.version or supportedVersions.
+  - Authorization or workload classification sufficient to identify approved inventory
+    activity.
+safe_example_constraints:
+- Use only inert example identities and version strings.
+- Do not include vulnerability payloads, credentials, destructive commands, or live
+  targets.
+- Treat all returned version data as unverified server assertions.
+completion_evidence:
+- Every substantive publishable unit resolves through hidden SAF-TRACE comments or
+  a declared local artifact.
+- Direct-incident and direct-vulnerability gaps remain explicit, with adjacent and
+  historical examples labeled.
+- Two consecutive no-change saturation passes are recorded after all five research
+  passes.
+- Positive, negative, boundary, malformed, normalization, and expected-false-positive
+  tests pass.
+- Rights, clean-room integrity, framework reconciliation, and strict isolated validation
+  pass with only enumerated mechanical integration joins deferred.

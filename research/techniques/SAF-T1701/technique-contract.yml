@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1701
+name: Cross-Tool Contamination
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Pivot from adversary-influenced output exposed by one tool into
+  a distinct tool's capabilities without matching explicit user intent.
+scope:
+  security_boundary: The trust and capability boundary between a source tool result
+    and a distinct target tool or server sharing an agent execution context.
+  in_scope:
+  - Adversary-controlled content or metadata returned in a source tool result.
+  - A causal, same-session transition from that result to a different tool or server.
+  - Unauthorized access or action enabled at the cross-tool transition.
+  out_of_scope:
+  - Malicious tool descriptions or annotations that act before a tool result exists.
+  - Direct malicious user prompts with no indirect source-tool result.
+  - Single-tool command injection, SSRF, path traversal, or input-validation failures.
+  - Authentication-token passthrough and downstream collection, exfiltration, or execution
+    as separate mechanisms.
+  affected_components:
+  - MCP host or agent runtime
+  - model planning context
+  - source tool and server
+  - target tool and server
+  - approval, authorization, and audit subsystems
+nearest_neighbors:
+- technique_id: SAF-T1001
+  distinction: SAF-T1001 places malicious instruction in a tool definition before
+    invocation; SAF-T1701 begins with adversary-controlled content in a returned
+    tool result.
+- technique_id: SAF-T1102
+  distinction: SAF-T1102 establishes prompt-injection influence; SAF-T1701 requires
+    an indirect source-tool result followed by a call to a distinct target tool.
+required_evidence:
+- Establish that one tool can return adversary-controlled instruction-bearing content
+  to model context.
+- Establish a causal transition from that result to a distinct target tool or server.
+- Establish the immediate unauthorized capability pivot and separate it from downstream
+  impact.
+- Search production incidents, disclosed vulnerabilities, and controlled demonstrations
+  and classify each relationship.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Session or conversation identifier and timestamp.
+  - Tool-result event with event ID, tool ID, server ID, result trust, and result
+    text or digest.
+  - Tool-call event with event ID, source-event linkage when available, tool ID, server
+    ID, arguments or digest, and impact class.
+  - Explicit user-intent and approval records.
+safe_example_constraints:
+- Use inert descriptions and placeholder data rather than executable payloads.
+- Do not reproduce hidden prompt strings beyond generic detection tokens.
+- Identify controlled demonstrations as demonstrations and vulnerabilities as enabling
+  where appropriate.
+completion_evidence:
+- Every substantive publishable unit has a validated claim or a declared local artifact.
+- All consulted sources have exact locators and every omitted lead is ledgered.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Detection fixtures pass without a waiver.
+- Rights, framework, alignment, safe-publication, and clean-room reviews pass.

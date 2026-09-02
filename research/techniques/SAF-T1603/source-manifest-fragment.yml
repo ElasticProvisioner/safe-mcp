@@ -1,0 +1,272 @@
+version: 1
+sources:
+  - id: SRC-mcp-architecture
+    title: Model Context Protocol Architecture
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/architecture
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed host responsibilities, client isolation, and server visibility boundaries.
+    locators: ["Architecture layers: Host; Clients; Servers"]
+    review_status: opened_reviewed
+    archive: &remote_archive
+      status: remote_reviewed_not_archived
+      reason: Public direct authority reviewed in place for clean-room authoring.
+      review_evidence: {reviewed_on: "2026-09-02", method: direct}
+  - id: SRC-mcp-prompts
+    title: Model Context Protocol Prompts
+    publisher: Model Context Protocol
+    authors: [Model Context Protocol maintainers]
+    source_class: protocol_or_standard
+    version_or_date: "2025-11-25"
+    official_url: https://modelcontextprotocol.io/specification/2025-11-25/server/prompts
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed intended prompts/list and prompts/get behavior and security guidance.
+    locators: ["Overview", "Listing Prompts", "Getting a Prompt", "Security Considerations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-owasp-llm07
+    title: LLM07:2025 System Prompt Leakage
+    publisher: OWASP Foundation
+    authors: [OWASP GenAI Security Project contributors]
+    source_class: credible_practice
+    version_or_date: "2025"
+    official_url: https://genai.owasp.org/llmrisk/llm072025-system-prompt-leakage/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed risk definition, examples, and prevention guidance.
+    locators: ["Description", "Common Examples of Risk", "How to Prevent"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-openai-model-spec
+    title: OpenAI Model Spec
+    publisher: OpenAI
+    authors: [OpenAI Model Behavior team]
+    source_class: credible_practice
+    version_or_date: "2025-12-18"
+    official_url: https://model-spec.openai.com/2025-12-18.html
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed confidentiality treatment for system and developer messages and the implementation caveat.
+    locators: ["Do not reveal privileged information", "Production model caveat"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-atlas-2026-08
+    title: MITRE ATLAS 2026.08 Data Release
+    publisher: MITRE
+    authors: [MITRE ATLAS team]
+    source_class: credible_practice
+    version_or_date: "2026.08"
+    official_url: https://atlas.mitre.org/atlas-data/dist/v6/ATLAS-2026.08.yaml
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct first-party data release review
+    review_notes: Reviewed system-prompt discovery/extraction techniques, mitigations, and ClawdBot exercise record.
+    locators: ["AML.T0056", "AML.T0069.002", "AML.CS0048", "relationships for AML.CS0048"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-mitre-attack-t1082-current
+    title: System Information Discovery (T1082)
+    publisher: MITRE ATT&CK
+    authors: [Austin Clark, Maril Vernon, Praetorian]
+    source_class: credible_practice
+    version_or_date: "Version 3.0; modified 2026-05-12"
+    official_url: https://attack.mitre.org/techniques/T1082/
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed definition and Discovery tactic placement for analogy only.
+    locators: ["Description", "Technique ID T1082", "Contributors"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-nvd-audit
+    title: NVD CVE API keyword audit for system prompt disclosure
+    publisher: National Institute of Standards and Technology
+    authors: [National Vulnerability Database team]
+    source_class: official_advisory
+    version_or_date: "queried 2026-09-02"
+    official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=system%20prompt%20leakage
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct official API query series
+    review_notes: Reviewed exact keyword results and narrowed direct CVE records; zero-result follow-ups are recorded in source coverage.
+    locators: ["CVE API 2.0 totalResults and vulnerabilities arrays"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-weknora
+    title: WeKnora malicious MCP server can hijack tool calls and exfiltrate system context
+    publisher: Tencent WeKnora maintainers
+    authors: [lyingbug, aleister1102]
+    source_class: official_advisory
+    version_or_date: "GHSA-67q9-58vj-32qx; 2026-03-06"
+    official_url: https://github.com/Tencent/WeKnora/security/advisories/GHSA-67q9-58vj-32qx
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Exact repository advisory opened from its NVD CVE record
+    review_notes: NVD supplied the exact GitHub advisory URL; reviewed affected versions, impact, proof of concept, patch, and credits.
+    upstream_provenance:
+      authority_source_id: SRC-nvd-audit
+      authority_record: CVE-2026-30856
+      exact_url_disclosed: https://github.com/Tencent/WeKnora/security/advisories/GHSA-67q9-58vj-32qx
+    locators: ["Impact", "Proof of Concept", "Patches", "Credits"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-open-webui
+    title: Open WebUI regular users can retrieve administrator-configured system prompts
+    publisher: Open WebUI maintainers
+    authors: [doge-woof, shahzaibak96, Classic298]
+    source_class: official_advisory
+    version_or_date: "GHSA-jh9g-8jqw-m2qx; 2026-05-09"
+    official_url: https://github.com/open-webui/open-webui/security/advisories/GHSA-jh9g-8jqw-m2qx
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Exact repository advisory opened from its NVD CVE record
+    review_notes: NVD supplied the exact GitHub advisory URL; reviewed authorization boundary, affected versions, impact, patch, and credits.
+    upstream_provenance:
+      authority_source_id: SRC-nvd-audit
+      authority_record: CVE-2026-45351
+      exact_url_disclosed: https://github.com/open-webui/open-webui/security/advisories/GHSA-jh9g-8jqw-m2qx
+    locators: ["Summary", "Details", "Impact", "Patches", "Credits"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-ghsa-praisonai
+    title: PraisonAI insecure defaults expose agent instructions and system prompts
+    publisher: PraisonAI maintainers
+    authors: [MervinPraison, dinhvaren]
+    source_class: official_advisory
+    version_or_date: "GHSA-6wjp-v33h-5cvq; 2026-06-25"
+    official_url: https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-6wjp-v33h-5cvq
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Exact repository advisory opened from its NVD CVE record
+    review_notes: NVD supplied the exact GitHub advisory URL; reviewed runtime confirmation, affected versions, impact, patch, and credit.
+    upstream_provenance:
+      authority_source_id: SRC-nvd-audit
+      authority_record: CVE-2026-61426
+      exact_url_disclosed: https://github.com/MervinPraison/PraisonAI/security/advisories/GHSA-6wjp-v33h-5cvq
+    locators: ["Summary", "Attack Scenario", "Impact", "Patches", "Credits"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-arxiv-justask
+    title: "JustAsk: Extracting System Prompts from Black-box LLMs and Defenses"
+    publisher: arXiv
+    authors: [Xiang Zheng, Yutao Wu, Hanxun Huang, Yige Li, Xingjun Ma, Bo Li, Yu-Gang Jiang, Cong Wang]
+    source_class: research
+    version_or_date: "arXiv:2601.21233v2; ICML 2026"
+    official_url: https://arxiv.org/html/2601.21233
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct full-text review
+    review_notes: Reviewed threat model, black-box evaluation, production-assistant experiment, defenses, and limitations.
+    locators: ["Abstract", "Threat Model", "Evaluations on Production LLM-based Assistants", "Limitations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-arxiv-spe-llm
+    title: "SPE-LLM: A Framework for System Prompt Extraction and Defense"
+    publisher: arXiv
+    authors: [Badhan Chandra Das, M. Hadi Amini, Yanzhao Wu]
+    source_class: research
+    version_or_date: "arXiv:2505.23817; 2025"
+    official_url: https://arxiv.org/html/2505.23817
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct full-text review
+    review_notes: Reviewed output-filtering design, reported results, and prompting-only limitations.
+    locators: ["Threat Model", "Defenses", "Results", "Limitations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-otel-genai-events
+    title: OpenTelemetry Semantic Conventions for Generative AI Events
+    publisher: OpenTelemetry
+    authors: [OpenTelemetry GenAI Semantic Conventions maintainers]
+    source_class: protocol_or_standard
+    version_or_date: "Development status; reviewed 2026-09-02"
+    official_url: https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-events.md
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Exact repository document opened from the first-party OpenTelemetry documentation redirect
+    review_notes: First-party documentation supplied the exact repository; reviewed event fields and sensitive-content cautions.
+    upstream_provenance:
+      authority_url: https://opentelemetry.io/docs/specs/semconv/gen-ai/gen-ai-events/
+      exact_url_disclosed: https://github.com/open-telemetry/semantic-conventions-genai/blob/main/docs/gen-ai/gen-ai-events.md
+    locators: ["Recording user messages and model responses", "gen_ai.input.messages", "gen_ai.output.messages", "gen_ai.system_instructions"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-arxiv-leakagent
+    title: "LeakAgent: RL-based Red-teaming Agent for LLM Privacy Leakage"
+    publisher: arXiv
+    authors: [Yuzhou Nie, Zhun Wang, Ye Yu, Xian Wu, Xuandong Zhao, Nathaniel D. Bastian, Wenbo Guo, Dawn Song]
+    source_class: research
+    version_or_date: "arXiv:2412.05734v2; COLM 2025"
+    official_url: https://arxiv.org/html/2412.05734
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct full-text review
+    review_notes: Reviewed GPT Store evaluation and its stated absence of ground-truth prompts.
+    locators: ["System Prompt Leakage on GPT Store", "Limitations"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-anthropic-system-prompts
+    title: System Prompts
+    publisher: Anthropic
+    authors: [Anthropic documentation team]
+    source_class: implementation_artifact
+    version_or_date: "reviewed 2026-09-02"
+    official_url: https://platform.claude.com/docs/en/release-notes/system-prompts/overview
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct page review
+    review_notes: Reviewed deliberate publication scope and API exclusion.
+    locators: ["System prompts overview"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-nvd-cve-2026-7482
+    title: CVE-2026-7482
+    publisher: National Vulnerability Database
+    authors: [National Vulnerability Database team]
+    source_class: official_advisory
+    version_or_date: "2026"
+    official_url: https://nvd.nist.gov/vuln/detail/CVE-2026-7482
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct NVD API record review
+    review_notes: Reviewed memory-corruption scope and prompt-memory consequence; classified outside the defining boundary.
+    locators: ["CVE description", "References", "CVSS and SSVC fields"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-cisa-kev-2026-09-01
+    title: Known Exploited Vulnerabilities Catalog
+    publisher: Cybersecurity and Infrastructure Security Agency
+    authors: [CISA Vulnerability Management team]
+    source_class: official_advisory
+    version_or_date: "catalogVersion 2026.09.01"
+    official_url: https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct official JSON feed review
+    review_notes: Checked the catalog for system-prompt matches during the production-exploitation challenge; none were present.
+    locators: ["catalogVersion 2026.09.01", "vulnerabilities array"]
+    review_status: opened_reviewed
+    archive: *remote_archive
+  - id: SRC-arxiv-query-audit
+    title: arXiv API system-prompt leakage query audit
+    publisher: arXiv
+    authors: [arXiv API team and returned-paper authors]
+    source_class: research
+    version_or_date: "queried 2026-09-02"
+    official_url: https://export.arxiv.org/api/query?search_query=all:%22system%20prompt%22%20AND%20all:%22prompt%20leakage%22&start=0&max_results=20
+    accessed_on: "2026-09-02"
+    reviewed_on: "2026-09-02"
+    review_method: Direct official API metadata and abstract review
+    review_notes: Reviewed all 12 returned titles and abstracts for challenge and saturation; no higher-impact direct breach example displaced the selected set.
+    locators: ["Atom feed entries, titles, abstracts, identifiers, and dates"]
+    review_status: opened_reviewed
+    archive: *remote_archive

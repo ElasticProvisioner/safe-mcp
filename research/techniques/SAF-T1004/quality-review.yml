@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T1004
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/normalize_saf_t1004
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: The original fresh-agent attestation remains uncontaminated; normalization used only the frozen bundle and generic current schemas and validator.
+  contract_and_scope:
+    status: passed
+    notes: The original start and end boundaries, required elements, in-scope mechanisms, and neighbor exclusions are retained in canonical contract fields.
+  technical_accuracy:
+    status: passed
+    notes: Protocol behavior, prerequisites, direct vulnerability, controlled proof, adjacent evidence, historical analogy, and conditional impact remain bounded to the frozen claims.
+  claim_traceability:
+    status: passed
+    notes: All fourteen original propositions now use full claim IDs, canonical classes and statuses, per-source relationships, exact locators, corroboration, limitations, conflicts, and inference records.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a hidden full-ID SAF-TRACE comment or a declared local-artifact link; all rejected leads remain excluded and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated status rests only on the controlled Registry publish-path proof; no adjacent, enabling, historical, or hypothetical evidence raises the label.
+  research_saturation:
+    status: passed
+    notes: The five passes and two final no-change follow-ups, all exact queries, reviewed sources, conflicts, and limitations remain recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Selected direct, adjacent, and historical examples plus every rejected or enabling candidate preserve exploitation state, impact, remediation, relationship, and limits.
+  detection_quality:
+    status: passed
+    notes: The canonical rule preserves unverified binding, approved-tuple mismatch, and TLS mismatch logic; six deterministic cases cover positives, a negative, a boundary, and an expected false positive.
+  mitigation_quality:
+    status: passed
+    notes: Controls remain tied to authenticated publisher, package, digest, endpoint, TLS identity, approved inventory, and fail-closed verification.
+  framework_alignment:
+    status: passed
+    notes: The isolated framework record matches the contract and README; tactic, mitigation, neighbor, and alignment joins were subsequently registered and validated against the shared framework model without adding research.
+  publication_rights:
+    status: passed
+    notes: Every source has an individual canonical rights record; publication uses factual paraphrase and attribution without copied proof code, quotations, imagery, or datasets.
+  safe_publication:
+    status: passed
+    notes: The example and fixtures are synthetic and inert; no live credentials, exploit payloads, destructive commands, or production targets are included.
+
+validation:
+  commands:
+    - command: python3 techniques/SAF-T1004/test_detection_rule.py --write-results
+      result: passed
+    - command: python3 validate_isolated_bundle.py --validator /Users/fkautz/Documents/ChatGPT/SAF-MCP/scripts/validate-technique-research.py
+      result: passed
+    - command: shasum -a 256 -c FREEZE.sha256
+      result: passed
+    - command: python3 scripts/validate-technique-research.py SAF-T1004
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1004/test_detection_rule.py --write-results
+    result: 6 of 6 cases passed; 3 positive, 1 negative, 1 boundary, and 1 expected false positive.
+    waiver: null
+
+unresolved: []

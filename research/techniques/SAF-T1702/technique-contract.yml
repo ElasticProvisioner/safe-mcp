@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1702
+name: Shared-Memory Poisoning
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0008
+adversary_objective: Cause a later session, principal, or agent to reason or act from
+  an attacker- influenced persistent memory record that crossed a shared retrieval
+  boundary.
+scope:
+  security_boundary: The write-side principal, session, tenant, or agent boundary
+    separating an attacker-reachable memory-ingestion path from a later consumer that
+    retrieves the record as trusted context.
+  in_scope:
+  - A record is inserted into or altered within persistent or retrievable agent memory.
+  - A different session, principal, tenant context, or agent later retrieves the record.
+  - The retrieved record influences reasoning, planning, guidance, or an action decision.
+  out_of_scope:
+  - Hostile text that affects only the current interaction and is not persisted and
+    retrieved across the boundary.
+  - Inter-agent messages that are not stored and later retrieved as memory.
+  - Model-training or fine-tuning data poisoning.
+  - Downstream goal hijacking, tool misuse, disclosure, or disruption considered independently
+    of the memory-poisoning mechanism.
+  affected_components:
+  - Agent memory and retrieval stores
+  - MCP hosts or clients that persist model context
+  - Memory ingestion and trust-promotion services
+  - Retrieval and context-assembly layers
+  - Agents and tools acting on retrieved context
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: SAF-T1102 can affect the current context without requiring durable
+    cross-consumer memory retrieval.
+- technique_id: SAF-T1705
+  distinction: SAF-T1705 exchanges an inter-agent instruction that need not be
+    persisted as later-retrieved memory.
+required_evidence:
+- Direct authority for the persistent shared-memory mechanism and security boundary.
+- Controlled evidence that poisoning can influence a later consumer across sessions,
+  users, or agents.
+- Explicit prerequisites, impact conditions, and counterevidence that limits generalization.
+- Current breach and vulnerability searches with relationship classification and no
+  unsupported prevalence claim.
+- Tested behavioral detection grounded in write, retrieval, identity, provenance,
+  and action telemetry.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Append-only memory-write events with timestamp, memory ID, writer principal and
+    session, tenant, namespace, origin, trust decision, review status, and content
+    hash.
+  - Memory-read events with timestamp, reader principal and session, tenant, namespace,
+    and retrieved memory IDs.
+  - Agent-action events with timestamp, principal and session, risk level, action,
+    and influencing context memory IDs.
+safe_example_constraints:
+- Use only inert identifiers, example.invalid, and non-executable event records.
+- Do not publish weaponized prompts, persistence commands, credentials, or destructive
+  actions.
+- Demonstrate detection behavior rather than exploitation procedure.
+completion_evidence:
+- Every substantive publishable unit has a validated claim or declared local artifact
+  trace.
+- Every cited source was directly opened and reviewed with exact locators.
+- Untraceable, derivative, adjacent, or rights-unclear leads are omitted and ledgered.
+- All five research passes and two consecutive no-change saturation passes are recorded.
+- Deterministic behavioral detection tests pass.
+- Publication-rights, quality, clean-room, and isolated strict-validation gates pass.

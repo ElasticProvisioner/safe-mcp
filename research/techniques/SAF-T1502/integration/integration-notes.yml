@@ -1,0 +1,114 @@
+version: 1
+technique_id: SAF-T1502
+bundle_status: frozen_clean_room_bundle
+generated_on: "2026-09-01"
+
+isolation:
+  prior_target_artifacts_inspected: false
+  shared_registries_inspected: false
+  saf_sites_inspected: false
+  repository_history_inspected: false
+  target_diffs_or_catalog_descriptions_inspected: false
+
+mechanical_path_joins:
+  - from: techniques/SAF-T1502/
+    to: techniques/SAF-T1502/
+    action: Replace or add the complete target directory without diffing against old content.
+  - from: research/techniques/SAF-T1502/
+    to: research/techniques/SAF-T1502/
+    action: Replace or add the complete research packet without opening prior target files.
+  - from: tests/SAF-T1502/
+    to: tests/SAF-T1502/
+    action: Add the isolated detection corpus and runner if the canonical repository keeps tests outside the technique directory.
+  - from: source-manifest-fragment.yml
+    to: research/source-manifest.yml
+    action: Reconcile stable IDs and merge only after the frozen evidence set; do not accept new research leads from the shared manifest.
+  - from: framework-fragment.yml
+    to: research/framework-model.yml
+    action: Merge the target record after replacing synthetic neighbor IDs with verified real joins.
+  - from: alignment-fragment.yml
+    to: research/alignment-ledger.yml
+    action: Merge and resolve the medium mechanical join issue.
+
+synthetic_tactics: []
+tactic_joins:
+  - id: ATK-TA0006
+    provenance: Supplied directly in the clean-room task; not derived from a registry.
+    integration_action: Confirm that the shared tactic registry contains the identifier without changing the independently authored behavior.
+
+synthetic_neighbors:
+  - technique_id: SAF-T9901
+    label: Credential Store Extraction
+    intended_boundary: Protected stores, keychains, memory, OS structures, password managers, and credential APIs rather than ordinary files.
+  - technique_id: SAF-T9902
+    label: Tool-Mediated Data Transfer
+    intended_boundary: Downstream transfer or exfiltration after acquisition.
+  - technique_id: SAF-T9903
+    label: Malicious Tool Capability
+    intended_boundary: Initial acquisition or installation of unsafe tool capability.
+neighbor_integration_action: Replace the synthetic IDs and labels with real catalog joins based only on mechanism and boundary; if no exact neighbor exists, create a separately reviewed alignment issue rather than importing old target wording.
+
+synthetic_mitigations: []
+mitigation_integration_action: The bundle makes authority-backed platform recommendations without inventing SAF mitigation IDs; add canonical mitigation links only through a separate mechanical alignment review.
+
+provisional_source_ids:
+  - SRC-anthropic-gtg1002-2025
+  - SRC-aws-shared-credential-files
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-53109
+  - SRC-cve-2025-53110
+  - SRC-ghsa-7f8r-222p-6f5g
+  - SRC-ghsa-hc55-p739-j48w
+  - SRC-ghsa-q66q-fx2p-7w4m
+  - SRC-google-adc-files
+  - SRC-google-gtig-ai-threat-tracker-2026
+  - SRC-mcp-resources-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2025-11-25
+  - SRC-microsoft-event-4663
+  - SRC-mitre-t1003
+  - SRC-mitre-t1005
+  - SRC-mitre-t1056
+  - SRC-mitre-t1552-001
+  - SRC-mitre-t1555
+  - SRC-nist-sp800-61r3
+  - SRC-rhel9-audit
+source_id_integration_action: Reuse any exact stable shared ID only when its canonical URL and reviewed-source identity match; update every bundle join mechanically and introduce no new source.
+
+synthetic_history_sha:
+  value: "1111111111111111111111111111111111111111"
+  location: research/techniques/SAF-T1502/traceability-ledger.yml
+  integration_action: Replace with an honest repository commit SHA that supports integration provenance without inspecting prior target content.
+
+strict_mock:
+  root: /private/tmp/saf-all-cleanroom/SAF-T1502-retry/mock
+  synthetic_joins:
+    - Minimal README files for SAF-T9901, SAF-T9902, and SAF-T9903.
+    - source-manifest-fragment.yml installed as research/source-manifest.yml.
+    - framework-fragment.yml installed as research/framework-model.yml.
+    - alignment-fragment.yml installed as research/alignment-ledger.yml.
+  validator_dependency: /Users/fkautz/Documents/ChatGPT/SAF-MCP/scripts/validate-technique-research.py
+  dependency_copied_into_bundle: false
+
+prohibited_integration_actions:
+  - Do not compare with, diff, open, or derive changes from the prior SAF-T1502 technique, research packet, tests, history, review, conversation, or quarantined bundle.
+  - Do not use the real shared manifest, catalog, or registries to add evidence, examples, wording, or omissions after freeze.
+  - Do not integrate, commit, push, or open a pull request without separate authorization.
+
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9901: SAF-T1505
+    SAF-T9902: SAF-T1911
+    SAF-T9903: SAF-T1003
+  canonical_mitigations:
+  - SAF-M-9
+  - SAF-M-12
+  - SAF-M-15
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-37
+  - SAF-M-74
+  validation_artifacts:
+  - research/techniques/SAF-T1502/validation/detection-test.txt
+  - research/techniques/SAF-T1502/validation/strict-validator.txt
+  status: integrated_and_validated

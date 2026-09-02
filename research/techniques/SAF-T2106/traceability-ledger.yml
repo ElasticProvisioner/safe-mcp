@@ -1,0 +1,97 @@
+version: 1
+technique_id: SAF-T2106
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-02'
+publishable_artifact: techniques/SAF-T2106/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T2106/technique-contract.yml
+  supports: Internal scope, name, tactic, and completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T2106/quality-review.yml
+  supports: Validation commands, results, review date, and waiver status.
+- id: LOCAL-claim-inventory
+  path: research/techniques/SAF-T2106/claim-inventory.yml
+  supports: Complete validated claim set, source locators, limitations, and evidence classifications.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T2106/detection-rule.yml
+  supports: Detection analytic.
+- id: LOCAL-detection-test
+  path: tests/SAF-T2106/test_detection_rule.py
+  supports: Executable detection test implementation.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T2106/test-cases.json
+  supports: Positive, boundary, negative, benign, and malformed cases.
+- id: LOCAL-detection-log
+  path: research/techniques/SAF-T2106/validation/detection-test.txt
+  supports: Recorded passing detection-test output.
+- id: LOCAL-canonical-validation
+  path: research/techniques/SAF-T2106/validation/canonical-validation.txt
+  supports: Destination detector result and pending canonical-neighbor join.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T2106-X001
+  candidate: A verified production breach caused vector-memory contamination and a
+    downstream model effect.
+  origin: Required breach search and Microsoft incident reporting.
+  attempted_searches:
+  - site:microsoft.com/security/blog vector store memory poisoning breach
+  - site:cisa.gov RAG poisoning vector store
+  - site:nvd.nist.gov vector database poisoning
+  consulted_source_ids:
+  - SRC-ms-recommendation-poisoning-2026
+  - SRC-microsoft-ai-gateway-incident
+  reason: No reviewed primary source established both the defining vector-state write
+    and verified downstream effect in production.
+  prohibited_publishable_text:
+  - confirmed production vector-store poisoning breach
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2106-X002
+  candidate: CVE-2026-26030 is direct evidence of context-memory poisoning.
+  origin: Microsoft security research advisory.
+  attempted_searches:
+  - site:microsoft.com/security/blog CVE-2026-26030 InMemoryVectorStore
+  consulted_source_ids:
+  - SRC-microsoft-semantic-kernel-cves-2026
+  reason: The disclosed mechanism is unsafe deserialization leading to code execution,
+    not persistent attacker-record retrieval influence.
+  prohibited_publishable_text:
+  - CVE-2026-26030 proves vector memory poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2106-X003
+  candidate: CVE-2024-3033 directly demonstrates poisoned content influencing later
+    retrieval.
+  origin: NVD vulnerability search.
+  attempted_searches:
+  - site:nvd.nist.gov CVE-2024-3033 AnythingLLM vector database
+  consulted_source_ids:
+  - SRC-nvd-anythingllm
+  reason: The reviewed description establishes unauthorized reset or deletion, not
+    attacker-controlled replacement and later retrieval.
+  prohibited_publishable_text:
+  - CVE-2024-3033 is a demonstrated RAG poisoning attack
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T2106-X004
+  candidate: Content filtering universally prevents poisoned retrieval.
+  origin: Defense-review pass.
+  attempted_searches:
+  - PoisonedRAG defenses paraphrase perplexity duplicate knowledge expansion
+  - AgentPoison defenses resilience
+  - ReliabilityRAG robust filtering assumptions
+  consulted_source_ids:
+  - SRC-usenix-poisonedrag-2025
+  - SRC-neurips-agentpoison-2024
+  - SRC-reliabilityrag
+  reason: Empirical evidence is mixed and ReliabilityRAG guarantees are assumption-bounded.
+  prohibited_publishable_text:
+  - content filtering prevents vector-store poisoning
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

@@ -1,0 +1,63 @@
+version: 1
+technique_id: SAF-T1005
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/cleanroom_saf_t1005
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records inherited_context false, no prior-artifact access, exact searches, opened sources, isolated strict validation, and no unresolved concern.
+  contract_and_scope:
+    status: passed
+    notes: One endpoint-exposure/access-boundary behavior is bounded and distinguished from SAF-T1004, SAF-T1007, and SAF-T1101.
+  technical_accuracy:
+    status: passed
+    notes: Current 2026-07-28 protocol behavior, backward-compatibility limits, product prerequisites, affected/fixed versions, and conditional impact were directly reviewed.
+  claim_traceability:
+    status: passed
+    notes: All 17 full claim IDs have nonempty source relations, exact locators, limitations, and validated status.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a hidden_html_v1 claim/source trace or a declared local artifact link; excluded leads are ledgered.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated status rests on two end-to-end controlled public evaluations; vulnerabilities are not mislabeled as production incidents.
+  research_saturation:
+    status: passed
+    notes: Material discoveries reset saturation; the final two separate domain-filtered passes produced no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Production incidents, current advisories, exact CVEs, exploitation status, demonstrations, remediation, impact rank, and rejected candidates were reviewed.
+  detection_quality:
+    status: passed
+    notes: The correlation analytic has explicit telemetry, component claims, limitations, tuning, and nine deterministic passing cases.
+  mitigation_quality:
+    status: passed
+    notes: Controls address reachability, Origin/Host/auth boundaries, least privilege, product fixes, monitoring, and response.
+  framework_alignment:
+    status: passed
+    notes: Isolated strict validation confirmed the generated framework record, tactic, neighbors, paths, evidence status, and detection artifacts; the real shared source, framework, mitigation, and history joins also pass after freeze.
+  publication_rights:
+    status: passed
+    notes: All cited sources have attribution and paraphrase-only use records; no quotations, code, images, datasets, or third-party artifacts were reproduced.
+  safe_publication:
+    status: passed
+    notes: The README uses inert example.invalid telemetry and excludes commands, payloads, secrets, live targets, and destructive instructions.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1005
+      result: passed
+      environment: isolated mock repository with synthetic source/framework/alignment/neighbor/history joins only
+    - command: python3 -m py_compile techniques/SAF-T1005/test_detection_rule.py
+      result: passed
+    - command: python3 techniques/SAF-T1005/test_detection_rule.py
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 techniques/SAF-T1005/test_detection_rule.py
+    result: 9 of 9 deterministic cases passed, including positive, negative, inclusive/exclusive time boundaries, malformed input, and expected false positive.
+    waiver: null
+
+unresolved: []

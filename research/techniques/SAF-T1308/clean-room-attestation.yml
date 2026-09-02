@@ -1,0 +1,119 @@
+version: 1
+technique_id: SAF-T1308
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identity: OpenAI Codex (cleanroom_saf_t1308)
+target:
+  id: SAF-T1308
+  neutral_name: Token Scope Substitution
+allowed_inputs:
+- Seed only: SAF-T1308; neutral name Token Scope Substitution; tactic ATK-TA0004 Privilege
+    Escalation.
+- Generic author-saf-technique skill instructions and required generic references.
+- Generic technique and research templates.
+- Current generic scripts/validate-technique-research.py, copied into an isolated
+  synthetic repository.
+- Independently located direct authorities and exact URLs disclosed by those authorities.
+prohibited_inputs:
+- Existing techniques/SAF-T1308/README.md or the existing research/techniques/SAF-T1308/
+  directory.
+- Existing techniques/SAF-T1308/detection-rule.yml.
+- Git history, diff, blame, pull requests, or issues concerning the target.
+- Catalog descriptions, shared registries, SAF pages, previous target artifacts, or
+  conversation content about the target.
+- General web search, general search_query, unrestricted search engines, and GitHub
+  repository search.
+- Any exact GitHub advisory URL before a non-GitHub authority supplied it.
+- Previous conversation content about SAF-T1308.
+independent_research:
+  searches:
+  - DIRECT current MCP Authorization specification 2025-11-25
+  - DIRECT current MCP Security Best Practices 2025-11-25
+  - DIRECT RFC 8707, RFC 9068, and RFC 9700
+  - 'NVD keywordSearch: OAuth access token audience'
+  - 'NVD keywordSearch: JWT audience validation'
+  - 'NVD keywordSearch: OAuth scope validation'
+  - 'NVD keywordSearch: token substitution'
+  - 'NVD keywordSearch: resource indicator authorization grant'
+  - 'NVD keywordSearch: MCP OAuth audience'
+  - 'NVD keywordSearch: OAuth audience confusion'
+  - 'NVD keywordSearch: access token wrong audience'
+  - 'NVD keywordSearch: OAuth token unrelated service audience'
+  - 'NVD keywordSearch: OAuth missing scope claim authorization'
+  - DIRECT first-party Microsoft Storm-0558 incident report
+  - CISA KEV 2026.09.01 exact identifier membership checks
+  opened_source_ids:
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+  - SRC-rfc8707
+  - SRC-rfc9068
+  - SRC-rfc9700
+  - SRC-cve-2026-14541
+  - SRC-cve-2026-67332
+  - SRC-ghsa-p2fr-6hmx-4528
+  - SRC-cve-2026-73208
+  - SRC-oxdc-adv-2026-0003
+  - SRC-microsoft-storm-0558
+  - SRC-mitre-t1550-001
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-token-scope-corpus
+  - SRC-mcp-auth-2025-06-18
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Validate only in /private/tmp/saf-all-cleanroom/SAF-T1308/mock-repo before freeze.
+- Keep synthetic neighbor and mitigation identifiers explicit; do not resolve them
+  against shared registries before freeze.
+- Do not copy into the real target, integrate, commit, push, or open a pull request
+  during this run.
+attestation: The draft was authored from the seed, generic instructions, generic templates,
+  the current generic validator, and independently reviewed direct authorities. No
+  prohibited target material was inspected. The canonical bundle was frozen before
+  any real-repository integration or target lookup.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-rfc8707: SRC-rfc8707
+    SRC-rfc9700: SRC-rfc9700
+    SRC-mitre-t1550-001: SRC-mitre-t1550-001
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-nvd-token-scope-corpus: SRC-nvd-token-scope-corpus
+  new_shared_source_records:
+  - SRC-rfc9068
+  - SRC-cve-2026-14541
+  - SRC-cve-2026-67332
+  - SRC-ghsa-p2fr-6hmx-4528
+  - SRC-cve-2026-73208
+  - SRC-oxdc-adv-2026-0003
+  - SRC-microsoft-storm-0558
+  - SRC-nvd-token-scope-corpus
+  - SRC-mcp-auth-2025-06-18
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0004
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-18
+  - SAF-M-19
+  - SAF-M-20
+  - SAF-M-29
+  - SAF-M-31
+  - SAF-M-37
+  synthetic_neighbor_mapping:
+    SAF-T1997: SAF-T1202
+    SAF-T1998: SAF-T1304
+    SAF-T1999: SAF-T1306
+  synthetic_mitigation_mapping:
+    SAF-M-998: SAF-M-13
+    SAF-M-999: SAF-M-16
+  status: integrated_and_repository_validated

@@ -1,0 +1,197 @@
+version: 1
+technique_id: SAF-T1602
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open of https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+        - Direct open of https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization
+        - Direct open of https://www.jsonrpc.org/specification
+      material_changes:
+        - Replaced superseded 2025-11-25 MCP authorities with the current 2026-07-28 edition.
+        - Bounded enumeration to tools/list and its authorization-filtered, paginated response.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Direct CVE record retrieval for CVE-2025-49596
+        - Direct CVE record retrieval for CVE-2025-6514
+        - Direct CVE record retrieval for CVE-2025-53109
+        - Exact GHSA-7f8r-222p-6f5g URL supplied by the CVE record
+        - Exact GHSA-q66q-fx2p-7w4m URL supplied by the CVE record
+        - Exact JFSA-2025-001290844 URL supplied by the CVE record
+      material_changes:
+        - Classified three high-impact MCP vulnerability families as adjacent rather than direct Tool Enumeration examples.
+        - Preserved the explicit gap that no malicious production use or direct Tool Enumeration vulnerability was found.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open of https://modelcontextprotocol.io/docs/2026-07-28/tools/inspector
+      material_changes:
+        - Established a controlled end-to-end tools/list demonstration and raised the technique evidence label to Demonstrated.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open of https://opentelemetry.io/docs/specs/semconv/rpc/json-rpc/
+        - Direct open of https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices
+      material_changes:
+        - Added method and request-ID telemetry, authorization context, pagination burst logic, and explicit false-positive handling.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open of current MCP server/discover, resources, and prompts specifications
+        - Direct open of https://attack.mitre.org/techniques/T1046/
+        - Reconciliation of CVE-2025-53109 and GHSA-q66q-fx2p-7w4m version statements
+      material_changes:
+        - Separated capability, resource, prompt, and tool-call behaviors from the technique contract.
+        - Reduced ATT&CK T1046 to an analogous mapping and excluded all three vulnerability candidates from publishable examples.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - Re-fetched and hash-compared current MCP Tools, Authorization, Inspector, OpenTelemetry JSON-RPC, and ATT&CK T1046 authorities
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - Independently re-fetched and hash-compared the same five defining authorities after the first no-change pass
+      material_changes: []
+  rationale: >-
+    The defining protocol operation, authorization boundary, safe demonstration,
+    telemetry, nearest neighbors, and framework analogy are covered by current
+    direct authorities. Three current high-impact MCP vulnerability families were
+    challenged against the contract and rejected as adjacent. Two consecutive
+    re-fetch passes produced byte-identical archives and no claim, boundary,
+    example, detection, or mapping change.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 3
+  selected_examples: []
+  no_qualifying_examples_rationale: >-
+    Direct CVE records, their maintainer or CNA advisories, and embedded CISA ADP
+    exploitation assessments were reviewed for three high-impact MCP families.
+    They concern Inspector proxy authentication and command execution,
+    authorization-endpoint command injection, and filesystem symlink boundary
+    bypass—not use or abuse of tools/list. No direct production incident, direct
+    vulnerability, or malicious direct demonstration qualified. The technique
+    therefore retains one controlled Inspector demonstration and states the
+    dated evidence gap instead of borrowing adjacent events.
+  candidates:
+    - source_id: SRC-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none on 2025-06-13
+      impact: Unauthenticated requests to affected MCP Inspector proxy versions could launch commands over stdio, with total technical impact assessed by CISA ADP.
+      remediation: Upgrade MCP Inspector to 0.14.1 or later.
+      selected: false
+      rationale: The flaw crosses the Inspector client-proxy authentication boundary and enables command execution; it neither performs nor depends on tool enumeration.
+    - source_id: SRC-cve-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none on 2025-07-09
+      impact: A crafted authorization_endpoint response URL could produce OS command injection in mcp-remote, with total technical impact assessed by CISA ADP.
+      remediation: Upgrade from affected 0.0.5 through 0.1.15 releases to 0.1.16 or later.
+      selected: false
+      rationale: The issue abuses OAuth endpoint URL handling; it does not enumerate tool definitions.
+    - source_id: SRC-cve-2025-53109
+      identifier: CVE-2025-53109 / GHSA-q66q-fx2p-7w4m
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: CISA ADP recorded exploitation none on 2025-07-02
+      impact: Symlinks inside allowed directories could expose unintended filesystem content, with partial technical impact assessed by CISA ADP.
+      remediation: The later CVE record advises 0.6.4 or 2025.7.01; the maintainer advisory displays an inconsistent earlier boundary, so exact backport status requires separate reconciliation.
+      selected: false
+      rationale: The flaw concerns resource/file boundary enforcement after access, not discovery of callable tool definitions.
+
+sources_consulted:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-jsonrpc-2.0
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-cve-2025-53109
+  - SRC-ghsa-cve-2025-53109
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-lifecycle-2025-11-25
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-security-2025-11-25
+
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-resources-2026
+  - SRC-mcp-prompts-2026
+  - SRC-jsonrpc-2.0
+  - SRC-opentelemetry-jsonrpc-1.44.0
+  - SRC-mitre-attack-t1046-v3.2
+
+sources_rejected:
+  - source_id: SRC-cve-2025-49596
+    reason: High impact but adjacent Inspector proxy authentication/RCE mechanism, not tool enumeration.
+  - source_id: SRC-ghsa-inspector-7f8r
+    reason: Corroborates the same adjacent flaw and fix but does not establish tools/list use.
+  - source_id: SRC-cve-2025-6514
+    reason: High impact but adjacent authorization-endpoint command injection, not tool enumeration.
+  - source_id: SRC-jfsa-2025-6514
+    reason: Corroborates the same adjacent URL-injection issue and affected range.
+  - source_id: SRC-jfsa-2025-6514
+    reason: Technical description was useful for challenge but remained adjacent and unnecessary for publishable claims.
+  - source_id: SRC-cve-2025-53109
+    reason: Filesystem symlink boundary bypass is not discovery of tool definitions.
+  - source_id: SRC-ghsa-cve-2025-53109
+    reason: Adjacent file-access flaw with a version-statement conflict; excluded rather than normalized.
+  - source_id: SRC-mcp-tools-2025-11-25
+    reason: Superseded by the current 2026-07-28 specification.
+  - source_id: SRC-mcp-lifecycle-2025-11-25
+    reason: Superseded and indirect; capability negotiation does not enumerate individual tool definitions.
+  - source_id: SRC-mcp-authorization-2025-11-25
+    reason: Superseded by the current 2026-07-28 specification.
+  - source_id: SRC-mcp-security-2025-11-25
+    reason: Superseded by the current 2026-07-28 guidance.
+
+sources_blocked: []
+
+conflicts:
+  - issue: >-
+      The displayed GHSA-q66q-fx2p-7w4m version language differs from the later
+      CVE-2025-53109 affected and remediation boundary.
+    resolution: >-
+      Preserve the discrepancy in the research packet and exclude the adjacent
+      candidate; no publishable claim depends on its exact fixed version.
+  - issue: A legitimate first-party client and an adversary can emit the same tools/list method.
+    resolution: The analytic is explicitly behavioral and experimental, requiring authorization context or locally abnormal pagination rather than treating the method alone as malicious.
+
+evidence_assessment:
+  overall_status: demonstrated
+  core_claim_ids:
+    - SAF-T1602-C004
+    - SAF-T1602-C016
+  rationale: >-
+    Current normative documentation defines the entire request and response,
+    while the first-party Inspector documents an end-to-end listing workflow.
+    This demonstrates Tool Enumeration but does not establish malicious or
+    production use; the technique states that limitation throughout.
+
+source_archive:
+  manifest: source-manifest-fragment.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

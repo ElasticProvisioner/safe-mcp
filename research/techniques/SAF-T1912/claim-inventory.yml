@@ -1,0 +1,384 @@
+version: 1
+technique_id: SAF-T1912
+claims:
+  - id: SAF-T1912-C001
+    statement: MCP tool results can contain text, image, audio, resource-link, embedded-resource, and structured content, and MCP resources can carry text or base64-encoded binary data.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tool Result, Content Types, Embedded Resources, and Structured Content"]
+      - source_id: SRC-mcp-resources-2026
+        support: direct
+        exact_locators: ["Resource Contents: Text Content and Binary Content"]
+    corroboration: The tools and resources chapters independently cover the relevant result and resource forms.
+    limitations: [The protocol permits these carriers but does not establish malicious steganographic use.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C002
+    statement: MCP places output-validation and output-sanitization responsibilities on implementations, including conformance to declared output schemas.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2026-07-28
+        support: direct
+        exact_locators: ["Tool Result: structured content and output schema", "Security Considerations: server and client responsibilities"]
+      - source_id: SRC-mcp-resources-2026
+        support: corroborating
+        exact_locators: ["Security Considerations"]
+    corroboration: The resource security section separately requires validation, access control, and safe binary handling.
+    limitations: [The specification does not define steganalysis or guarantee that schema validation removes covert capacity.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C003
+    statement: A controlled experiment demonstrated a fine-tuned LLM encoding sensitive in-context information into natural-looking outputs that an external observer could decode.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Abstract", "Section 3 Threat Model, pages 27247-27248", "Section 6 Results, pages 27253-27256"]
+    corroboration: Agent-egress carrier experiments independently demonstrate that application-layer outputs can preserve covert signals.
+    limitations: [The authors tested researcher-controlled fine-tuned models, not a production MCP deployment.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C004
+    statement: The demonstrated response-exfiltration path requires a compromised or adversarially trained generator with secret access, an observable output, and a compatible decoder or codebook.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Section 3 Threat Model, pages 27247-27248"]
+      - source_id: SRC-agent-egress-monitor-2026
+        support: corroborating
+        exact_locators: ["Threat model, Section 2", "Carrier taxonomy, Section 3"]
+    corroboration: Both sources specify a compromised sender, egress observation, and receiver or detector assumptions.
+    limitations: [Other encoders may have different prerequisites; MCP-specific preservation was not tested.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C005
+    statement: TrojanStego reported up to 87.4 percent exact recovery for its best tested 32-bit setting and up to 97 percent after voting across three outputs.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Section 6.3 Results, pages 27254-27255"]
+    corroboration: No independent reproduction was identified.
+    limitations: [Rates are study-specific, use short secrets, and do not generalize to arbitrary models or response transformations.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C006
+    statement: TrojanStego found exact-token decoding vulnerable to paraphrasing and limited its experiments to short secrets and a fixed secret location.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Limitations, pages 27258-27259"]
+    corroboration: Hidden in Plain Text provides contrary evidence that optimized schemes can retain some capacity under paraphrasing.
+    limitations: [The mitigation result applies to the tested exact-token code and should not be generalized to all linguistic channels.]
+    conflicts: [Paraphrasing disrupted TrojanStego but was not fully robust against optimized collusion in a separate study.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C007
+    statement: A controlled agent-egress study implemented text, structured, image, audio, timing, and size covert carriers and evaluated a trusted application-layer reference monitor against them.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-agent-egress-monitor-2026
+        support: direct
+        exact_locators: ["Abstract", "Sections 2-4", "Table 2 and Table 3"]
+    corroboration: MCP's allowed content types establish relevant response surfaces without establishing exploitation.
+    limitations: [The study is a preprint, its encoder suite is finite, and it does not demonstrate a production compromise.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C008
+    statement: The tested agent-egress monitor removed the evaluated lossless carriers under full enforcement, but documented residual channels, media-chokepoint needs, false-positive tradeoffs, and a one-bit send-or-suppress floor.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-agent-egress-monitor-2026
+        support: direct
+        exact_locators: ["Section 7 Results, tables 2-3", "Section 9 Limitations"]
+    corroboration: NIST SC-7(10) recommends multiple boundary controls rather than a single steganography detector.
+    limitations: [Results are limited to the tested policies, encoders, and deployment assumptions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C009
+    statement: Controlled LLM-agent experiments showed steganographic communication emerging under optimization pressure and showed that oversight plus paraphrasing was not fully robust when optimized against.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-hidden-plain-text-2025
+        support: direct
+        exact_locators: ["Abstract", "Sections 3-5", "Conclusion and Limitations, pages 592-593"]
+    corroboration: TrojanStego independently demonstrates learned response encoding but with a deliberately fine-tuned model.
+    limitations: [The candidate-screening and benchmark tasks simplify real deployments and use a limited model set.]
+    conflicts: [Some simple exact-token schemes remain disruptable by paraphrasing.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C010
+    statement: Peer-reviewed generative linguistic-steganography work demonstrates that secret bits can drive token selection while keeping text near a reference language-model distribution.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-od-stega-2026
+        support: direct
+        exact_locators: ["Abstract", "Sections 2.2-5", "Conclusion and Limitations"]
+      - source_id: SRC-llm-covert-channels-2024
+        support: corroborating
+        exact_locators: ["Abstract", "Sections 2-4", "Limitations"]
+    corroboration: Two independent conference papers analyze token-distribution channels.
+    limitations: [These studies address covert communication generally, not protected context in MCP agent responses.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C011
+    statement: OD-Stega experimentally evaluated optimized-distribution text steganography and found a capacity-versus-detectability tradeoff whose imperceptibility threshold is application-dependent.
+    class: research_finding
+    materiality: medium
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-od-stega-2026
+        support: direct
+        exact_locators: ["Section 5 Experimental Results", "Section 7 Limitations, page 835"]
+    corroboration: The finite-precision audit study independently evaluates interval-based generators.
+    limitations: [The study uses KL divergence as a perceptibility surrogate and does not determine a universal threshold.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C012
+    statement: RRNs-HT detected finite-precision artifacts in two interval-based LLM steganography schemes under matched white-box conditions while semantic classifiers remained near chance.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-breaking-provable-security-2026
+        support: direct
+        exact_locators: ["Abstract", "Sections 4-5", "Tables 1-3", "Limitations"]
+    corroboration: OD-Stega documents the underlying distributional design space but not this detector.
+    limitations: [The method requires matched distributions and decoding policy, targets interval-sampling artifacts, and is better suited to offline audit.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C013
+    statement: CVE-2025-32711 documents a fixed Microsoft 365 Copilot cross-prompt-injection disclosure vulnerability, but the reviewed record reports no known exploitation and does not establish response steganography.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: observed
+    sources:
+      - source_id: SRC-cve-2025-32711
+        support: direct
+        exact_locators: ["CNA description, affected, metrics, and CISA ADP exploitation assessment"]
+      - source_id: SRC-microsoft-ai-security-2025
+        support: corroborating
+        exact_locators: ["Cross-prompt injection section describing EchoLeak"]
+    corroboration: Microsoft describes the fixed vulnerability and its multi-stage disclosure path.
+    limitations: [It is adjacent evidence: hidden input induced disclosure through a different output/network path.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C014
+    statement: Microsoft identifies HTML image URLs, links, tool calls, and even one-bit tool-call choices as possible indirect-prompt-injection exfiltration paths and states deterministic injection detection remains open.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-indirect-prompt-injection-2025
+        support: direct
+        exact_locators: ["Exfiltration channels", "Probabilistic and deterministic defenses"]
+    corroboration: Silent Egress demonstrates an output-clean tool-call/network path in a local agent test.
+    limitations: [These paths are adjacent unless protected data is hidden inside the response carrier itself.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C015
+    statement: Controlled agent research demonstrates that sensitive data may leave in a tool-triggered network request while the final response is harmless, a mechanism outside response-embedded steganography.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-silent-egress-2026
+        support: direct
+        exact_locators: ["Abstract", "Attack flow, Section 2", "Methodology and Results, Sections 4-5"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: corroborating
+        exact_locators: ["Attack pattern: MCP tool poisoning in a finance workflow"]
+    corroboration: Microsoft provides a separate MCP tool-poisoning scenario with explicit tool-parameter exfiltration.
+    limitations: [Neither source demonstrates a secret encoded into the agent's outward response.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C016
+    statement: The reviewed sources establish controlled demonstrations and adjacent vulnerabilities but no qualifying production incident for protected data hidden in an agent or MCP response.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Ethical Considerations: researcher-controlled models only"]
+      - source_id: SRC-agent-egress-monitor-2026
+        support: corroborating
+        exact_locators: ["Threat model and Limitations"]
+      - source_id: SRC-cve-2025-32711
+        support: context
+        exact_locators: ["CISA ADP exploitation: none"]
+    corroboration: Independent incident and vulnerability passes returned only adjacent mechanisms.
+    limitations: [Absence in the reviewed evidence is not proof that no unreported incident exists.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The gap statement is the bounded result of the recorded research passes and source set.}
+    status: validated
+  - id: SAF-T1912-C017
+    statement: NIST SC-7(10) calls for preventing and testing exfiltration and lists protocol conformance, traffic profiling, steganography monitoring, and data-loss prevention among boundary techniques.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nist-sp800-53r5.1
+        support: direct
+        exact_locators: ["SC-7(10) Boundary Protection: Prevent Exfiltration, page 307"]
+    corroboration: MCP security requirements independently call for result validation, output sanitization, and logging.
+    limitations: [NIST describes control objectives and examples, not a product-specific LLM response detector.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C018
+    statement: A deterministic response-egress triage analytic can correlate sensitive-context access and an untrusted destination with explicit carrier anomalies or missing media attestation.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agent-egress-monitor-2026
+        support: direct
+        exact_locators: ["Reference-monitor pipeline, carrier taxonomy, and evaluation"]
+      - source_id: SRC-nist-sp800-53r5.1
+        support: corroborating
+        exact_locators: ["SC-7(10), page 307"]
+    corroboration: The sources independently support trusted egress inspection and carrier-aware boundary controls.
+    limitations: [The repository rule tests observable carrier families only and cannot prove that an alert contains a secret.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The analytic operationalizes carrier and boundary evidence using synthetic telemetry fields.}
+    status: validated
+  - id: SAF-T1912-C019
+    statement: Carrier-signature triage cannot detect all fluent vocabulary-choice, novel, one-bit, or out-of-band channels and may alert on legitimate multilingual or encoded content.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-agent-egress-monitor-2026
+        support: direct
+        exact_locators: ["Section 9 Limitations"]
+      - source_id: SRC-hidden-plain-text-2025
+        support: corroborating
+        exact_locators: ["Conclusion and Limitations"]
+    corroboration: The studies identify incomplete carrier coverage and adaptive linguistic channels.
+    limitations: [Actual false-positive rates depend on local content, languages, serializers, and thresholds.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The limitations are applied to the narrower repository triage rule.}
+    status: validated
+  - id: SAF-T1912-C020
+    statement: Statistical auditing of interval-based linguistic steganography is possible under matched white-box conditions but is not a universal real-time detector.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-breaking-provable-security-2026
+        support: direct
+        exact_locators: ["Sections 5.4-5.5 and Limitations"]
+    corroboration: No independent reproduction was identified.
+    limitations: [Requires teacher-forced model access, calibration, and scheme-specific artifacts.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1912-C021
+    statement: Investigation should preserve response and agent telemetry and correlate sensitive access, output destination, tool calls, external endpoints, and downstream activity.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-prompt-abuse-2026
+        support: direct
+        exact_locators: ["Security playbook: detection, investigation, and response"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: corroborating
+        exact_locators: ["Detection and response with Microsoft security tools"]
+    corroboration: Both practitioner sources emphasize correlated audit trails rather than output-only review.
+    limitations: [Product-specific telemetry names vary; correlation does not prove steganographic decoding.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The response actions adapt adjacent agent-investigation guidance to this technique's boundary.}
+    status: validated
+  - id: SAF-T1912-C022
+    statement: The evidence justifies a Demonstrated label and High severity for covert confidentiality loss while retaining an explicit production-observation gap.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-trojanstego-2025
+        support: direct
+        exact_locators: ["Threat Model, Results, Limitations, and Ethical Considerations"]
+      - source_id: SRC-agent-egress-monitor-2026
+        support: corroborating
+        exact_locators: ["Threat model, evaluation, and limitations"]
+      - source_id: SRC-hidden-plain-text-2025
+        support: corroborating
+        exact_locators: ["Abstract, Results, Conclusion, and Limitations"]
+    corroboration: Three nonredundant controlled studies cover secret-bearing outputs, agent egress carriers, and adaptive signaling.
+    limitations: [Severity is a SAF assessment, not a measured production-loss estimate.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The label and severity reconcile direct demonstrations with the absence of an observed qualifying incident.}
+    status: validated
+  - id: SAF-T1912-C023
+    statement: Hidden instructions or prompt injection may enable response exfiltration but are not sufficient unless protected information is encoded into a recoverable response carrier.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-microsoft-indirect-prompt-injection-2025
+        support: direct
+        exact_locators: ["Indirect prompt injection definition and exfiltration discussion"]
+      - source_id: SRC-microsoft-tool-poisoning-2026-06-30
+        support: corroborating
+        exact_locators: ["Attack pattern: phases 1-4"]
+    corroboration: Both sources show injection as an enabling control path with distinct egress mechanisms.
+    limitations: [The distinction is a framework boundary inferred from the contract.]
+    conflicts: []
+    inference: {is_inference: true, rationale: It separates enabling behavior from the required response-carrier outcome.}
+    status: validated
+  - id: SAF-T1912-C024
+    statement: MITRE ATT&CK T1027.003 directly overlaps the hiding mechanism, while T1567 is only an analogous transport mapping when a web service carries the response.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1027-003
+        support: direct
+        exact_locators: ["Technique description and procedure examples"]
+      - source_id: SRC-mitre-t1567
+        support: direct
+        exact_locators: ["Technique description"]
+    corroboration: The two ATT&CK entries independently describe hiding and a possible exfiltration transport.
+    limitations: [Neither ATT&CK entry establishes an AI-agent or MCP response implementation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mappings compare the SAF contract boundary with ATT&CK mechanism and transport definitions.}
+    status: validated

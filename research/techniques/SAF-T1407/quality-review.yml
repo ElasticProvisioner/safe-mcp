@@ -1,0 +1,70 @@
+version: 1
+technique_id: SAF-T1407
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records neutral inputs, prohibited prior artifacts, direct research, and no detected contamination.
+  contract_and_scope:
+    status: passed
+    notes: The identity-and-relay boundary is explicit and three canonical neighboring behaviors are distinguished.
+  technical_accuracy:
+    status: passed
+    notes: MCP transport, tool, protected-resource, resource-indicator, and token statements trace to current protocol authorities.
+  claim_traceability:
+    status: passed
+    notes: Twenty-five validated claims include direct locators, limitations, conflict records, and explicit inference rationales.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a same-line hidden trace or declared local artifact link; four unverified propositions are omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Controlled public demonstrations support Demonstrated; bounded negative searches prevent an Observed label.
+  research_saturation:
+    status: passed
+    notes: Forty-two direct-authority operations concluded with two consecutive no-change synonym passes.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Nine candidates were classified; four highest-impact qualifying examples were selected and the production-incident gap retained.
+  detection_quality:
+    status: passed
+    notes: Nine deterministic cases cover positive, negative, boundary, malformed, and expected-false-positive behavior; all pass.
+  mitigation_quality:
+    status: passed
+    notes: Controls address exact resource identity, TLS, authorization association, audience, token constraints, approval, and correlation.
+  framework_alignment:
+    status: passed
+    notes: Tactic, analogous ATT&CK mappings, canonical neighbors, mitigations, source IDs, history, and detector joins agree in the integrated repository.
+  publication_rights:
+    status: passed
+    notes: Seventeen cited source uses are paraphrase-only, attributed, public, and require no copied code, figures, tables, or protected expression.
+  safe_publication:
+    status: passed
+    notes: The scenario uses reserved invalid domains, a synthetic redacted token, no exploit payload, and no deployable proxy instructions.
+
+validation:
+  commands:
+    - command: python3 tests/SAF-T1407/test_detection_rule.py
+      result: passed
+      evidence: validation/detection-test.txt
+    - command: uv --cache-dir /private/tmp/saf-all-cleanroom/SAF-T1407/uv-cache run --no-project --with PyYAML python scripts/validate-technique-research.py SAF-T1407
+      result: passed
+      evidence: validation/strict-validator.txt
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1407/test_detection_rule.py
+      result: passed
+      evidence: research/techniques/SAF-T1407/validation/detection-test.txt
+      environment: integrated repository
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1407
+      result: passed
+      evidence: research/techniques/SAF-T1407/validation/strict-validator.txt
+      environment: integrated repository
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1407/test_detection_rule.py
+    result: 9/9 cases passed; alerts=4; no_alerts=5
+    waiver: null
+
+unresolved: []

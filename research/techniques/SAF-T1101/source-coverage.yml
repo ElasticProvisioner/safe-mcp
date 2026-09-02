@@ -1,0 +1,271 @@
+version: 1
+technique_id: SAF-T1101
+research_status: saturated
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-01"
+      queries:
+        - Current Model Context Protocol architecture, server tools, Inspector, and security best practices by direct authoritative URL
+        - CWE-78, Python subprocess, Node.js child_process, and OWASP command-injection guidance by direct authoritative URL
+      material_changes:
+        - Bounded the technique to the data-to-command or executable-selection boundary and adopted both CWE-78 variants.
+        - Recorded current MCP validation, confirmation, logging, URL-scheme, and no-shell requirements.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-01"
+      queries:
+        - Current full CISA KEV catalog filtered for command injection, MCP, LiteLLM, and selected CVE identifiers
+        - NVD keyword APIs for Model Context Protocol and MCP command injection
+        - Exact NVD API records and direct vendor or researcher advisories for selected candidates
+      material_changes:
+        - Classified CVE-2026-42271 as a direct known-exploited vulnerability without inferring a named breach.
+        - Selected four diverse high-impact examples and ledgered duplicate, adjacent, disputed, and lower-priority candidates.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-01"
+      queries:
+        - Direct JFrog mcp-remote demonstration and advisory
+        - Direct Oligo MCP Inspector demonstration and project advisory discovered from it
+        - Direct OX Security ecosystem research challenge pass
+      material_changes:
+        - Distinguished public demonstrations from production exploitation.
+        - Preserved Inspector as the full-command-selection variant while noting its primary missing-authorization weakness.
+    - pass: detection_and_defense
+      completed_on: "2026-09-01"
+      queries:
+        - Microsoft Sysmon Event ID 1, Elastic ECS process fields, and ATT&CK T1059 detection guidance
+        - OWASP, CWE-78, Python, Node.js, and MCP prevention guidance
+      material_changes:
+        - Designed a protocol-to-process correlation analytic and a ten-case synthetic test set.
+        - Prioritized no-shell process APIs, separated arguments, allowlists, least privilege, sandboxing, confirmation, and audit logging.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-01"
+      queries:
+        - Reviewed current KEV for victim and campaign detail and tested protocol-root-cause and prompt-injection alternative explanations
+        - Reviewed adjacent localhost access, prompt-config injection, malicious-notebook, and disputed ecosystem cases
+      material_changes:
+        - Limited the observed claim to KEV inclusion because no named victim, campaign, or exploitation telemetry was found in the reviewed record.
+        - Excluded prompt-only, browser-only, intended command execution, and uncorroborated cases from core prose.
+    - pass: saturation_material_change
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword MCP shell injection
+      material_changes:
+        - Added CVE-2026-12940 and the IBM Langflow bulletin, replacing a weaker selected candidate.
+    - pass: saturation_intermediate_no_change
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword Model Context Protocol arbitrary command execution
+      material_changes: []
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword MCP stdio environment variable injection
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-01"
+      queries:
+        - NVD keyword Model Context Protocol OS command injection
+      material_changes: []
+  rationale: >-
+    The corpus covers current protocol duties, the canonical weakness, language-specific process APIs, primary defensive guidance, the current KEV catalog, broad current NVD catalog queries, exact selected records, independent demonstrations, telemetry, and contrary or adjacent cases. The final two independently phrased authoritative NVD queries returned only identifiers already present in the baseline corpus and changed neither scope, examples, claims, detection, nor controls.
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-01"
+  candidate_count: 14
+  selected_examples:
+    - SRC-cisa-kev-2026-09-01
+    - SRC-ibm-2026-12940
+    - SRC-jfrog-cve-2025-6514
+    - SRC-oligo-inspector-cve-2025-49596
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-cisa-kev-2026-09-01
+      identifier: CVE-2026-42271 / GHSA-v4p8-mg3p-g94g
+      relationship: direct_vulnerability
+      exploitation_status: known_exploited_by_CISA_KEV; public victim and campaign not identified
+      impact: An authenticated low-privilege LiteLLM user could cause arbitrary subprocess execution through MCP stdio test endpoints.
+      remediation: Upgrade to 1.83.7 or later and restrict the endpoints to administrators; affected downstream images require vendor-fixed builds.
+      selected: true
+      rationale: Highest evidentiary weight because a current government catalog establishes exploitation and the project advisory directly establishes the MCP process-launch mechanism.
+    - source_id: SRC-ibm-2026-12940
+      identifier: CVE-2026-12940
+      relationship: direct_vulnerability
+      exploitation_status: no production exploitation established in reviewed sources
+      impact: Unauthenticated remote code execution through dangerous environment variables in the Langflow MCP stdio launcher.
+      remediation: Upgrade to Langflow 1.10.2 or later; IBM lists no workaround.
+      selected: true
+      rationale: Current first-party bulletin, direct CWE-78 mechanism, unauthenticated reach, and critical impact add a distinct environment-injection path.
+    - source_id: SRC-jfrog-cve-2025-6514
+      identifier: CVE-2025-6514 / JFSA-2025-001290844
+      relationship: direct_vulnerability
+      exploitation_status: publicly demonstrated; production exploitation not established
+      impact: A malicious remote MCP server could turn an authorization endpoint into command or executable launch as the client user.
+      remediation: Upgrade mcp-remote to 0.1.16 or later; validate URL schemes and avoid shell-based URL launching.
+      selected: true
+      rationale: Direct, independently reviewable end-to-end demonstration of the current MCP security guide's authorization-URL command-injection class.
+    - source_id: SRC-oligo-inspector-cve-2025-49596
+      identifier: CVE-2025-49596 / GHSA-7f8r-222p-6f5g
+      relationship: direct_vulnerability
+      exploitation_status: publicly demonstrated; production exploitation not established
+      impact: A browser-accessible unauthenticated Inspector proxy could launch arbitrary MCP commands over stdio.
+      remediation: Upgrade Inspector to 0.14.1 or later; require session tokens and validate origins.
+      selected: true
+      rationale: Captures CWE-78's full-command-selection variant and the local-proxy boundary; the missing-authorization root cause is explicitly retained as a limitation.
+    - source_id: SRC-vulncheck-2026-75149
+      identifier: CVE-2026-75149
+      relationship: direct_vulnerability
+      exploitation_status: no production exploitation established
+      impact: A crafted notebook could launch a configured MCP subprocess when opened for editing.
+      remediation: Upgrade marimo to 0.23.15 or later.
+      selected: false
+      rationale: Direct command selection, but the advisory maps the weakness to CWE-94 and it does not displace the selected higher-impact, known-exploited, or more independently corroborated examples.
+    - source_id: SRC-nvd-2025-54074
+      identifier: CVE-2025-54074
+      relationship: direct_vulnerability
+      exploitation_status: no production exploitation established
+      impact: A malicious MCP OAuth server could cause command injection in affected Cherry Studio versions.
+      remediation: Upgrade to Cherry Studio 1.5.2 or later.
+      selected: false
+      rationale: Direct but materially duplicates the authorization-URL mechanism already demonstrated and more fully sourced by CVE-2025-6514.
+    - source_id: SRC-nvd-2025-64340
+      identifier: CVE-2025-64340
+      relationship: direct_vulnerability
+      exploitation_status: no production exploitation established
+      impact: Shell metacharacters in a FastMCP server name could reach a Windows launch path.
+      remediation: Upgrade to FastMCP 3.2.0 or later.
+      selected: false
+      rationale: Direct but narrower platform and setup reach than the selected examples.
+    - source_id: SRC-nvd-2026-30615
+      identifier: CVE-2026-30615
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: no production exploitation established
+      impact: Prompt-mediated configuration changes could install and run a malicious MCP server.
+      remediation: Apply the affected vendor's fixed release and require configuration confirmation.
+      selected: false
+      rationale: The defining upstream mechanism is prompt/configuration injection; command execution is downstream rather than an unsafe command-generation boundary.
+    - source_id: SRC-nvd-keyword-baseline-2026
+      identifier: CVE-2026-30861
+      relationship: direct_vulnerability
+      exploitation_status: public exploitability described; production exploitation not established
+      impact: A bypass of command and argument validation in WeKnora MCP stdio configuration could produce arbitrary execution.
+      remediation: Upgrade to 0.2.10 or later.
+      selected: false
+      rationale: Direct but lower independent source depth and no higher evidentiary or impact value than the selected cases.
+    - source_id: SRC-nvd-keyword-baseline-2026
+      identifier: CVE-2026-44995
+      relationship: direct_vulnerability
+      exploitation_status: no production exploitation established
+      impact: Dangerous startup environment variables in OpenClaw MCP stdio configuration could produce code execution.
+      remediation: Upgrade to 2026.4.20 or later.
+      selected: false
+      rationale: Direct but duplicates the selected environment-variable path with weaker first-party detail than IBM's bulletin.
+    - source_id: SRC-nvd-keyword-baseline-2026
+      identifier: CVE-2025-8665
+      relationship: direct_vulnerability
+      exploitation_status: public exploit reported by the record; production exploitation not established
+      impact: Manipulating a command parameter in agno MCPTools could produce OS command injection.
+      remediation: No responsive vendor fix was established in the reviewed catalog record.
+      selected: false
+      rationale: Direct candidate but insufficient primary-vendor corroboration and remediation certainty for publication selection.
+    - source_id: SRC-nvd-keyword-baseline-2026
+      identifier: CVE-2026-6108
+      relationship: direct_vulnerability
+      exploitation_status: public exploit reported by the record; production exploitation not established
+      impact: MaxKB MCP-node command handling could permit remote OS command injection.
+      remediation: Upgrade beyond affected MaxKB 2.6.1 releases using the vendor's fixed version.
+      selected: false
+      rationale: Direct candidate but lower authority and detail than the selected first-party cases.
+    - source_id: SRC-nvd-keyword-baseline-2026
+      identifier: CVE-2026-6130
+      relationship: direct_vulnerability
+      exploitation_status: public exploit reported by the record; production exploitation not established
+      impact: Chatbox MCP stdio argument or environment manipulation could permit OS command injection.
+      remediation: No confirmed responsive vendor fix was established in the reviewed catalog record.
+      selected: false
+      rationale: Direct candidate but unresolved remediation and weaker primary provenance precluded selection.
+    - source_id: SRC-ox-mcp-2026
+      identifier: OX Security multi-product MCP disclosures
+      relationship: rejected
+      exploitation_status: research demonstrations and reported disclosures only
+      impact: Reported paths ranged from config command execution to argument allowlist bypass and prompt-mediated config changes.
+      remediation: Product-specific; several vendors treated behavior as intended or required sandboxing.
+      selected: false
+      rationale: Useful challenge corpus, but heterogeneous disputed cases cannot support a single direct production claim without product-specific primary corroboration.
+sources_consulted:
+  - SRC-mcp-architecture-2026-07-28
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-inspector-2026
+  - SRC-cwe-78-v4.20
+  - SRC-python-subprocess-3.14
+  - SRC-node-child-process-v26
+  - SRC-owasp-command-injection
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-litellm-v4p8
+  - SRC-nvd-2026-42271
+  - SRC-redhat-2026-27784
+  - SRC-ibm-2026-12940
+  - SRC-nvd-2026-12940
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-nvd-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-nvd-2025-49596
+  - SRC-sysmon-15-21
+  - SRC-ecs-process-current
+  - SRC-mitre-t1059-current
+  - SRC-vulncheck-2026-75149
+  - SRC-nvd-2026-75149
+  - SRC-nvd-2025-54074
+  - SRC-nvd-2025-64340
+  - SRC-nvd-2026-30615
+  - SRC-ox-mcp-2026
+  - SRC-oligo-localhost-2025
+  - SRC-nvd-keyword-baseline-2026
+  - SRC-nvd-saturation-followup-1
+  - SRC-nvd-saturation-followup-2
+sources_cited:
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mcp-security-2026-07-28
+  - SRC-cwe-78-v4.20
+  - SRC-python-subprocess-3.14
+  - SRC-node-child-process-v26
+  - SRC-owasp-command-injection
+  - SRC-cisa-kev-2026-09-01
+  - SRC-ghsa-litellm-v4p8
+  - SRC-nvd-2026-42271
+  - SRC-ibm-2026-12940
+  - SRC-nvd-2026-12940
+  - SRC-jfrog-cve-2025-6514
+  - SRC-jfsa-2025-6514
+  - SRC-nvd-2025-6514
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-ghsa-inspector-7f8r
+  - SRC-nvd-2025-49596
+  - SRC-sysmon-15-21
+  - SRC-ecs-process-current
+  - SRC-mitre-t1059-current
+sources_rejected:
+  - source_id: SRC-ox-mcp-2026
+    reason: Heterogeneous research and disputed intended-behavior cases were useful for challenge but omitted from publishable factual claims without product-specific primary corroboration.
+  - source_id: SRC-oligo-localhost-2025
+    reason: Browser access to local services is adjacent transport context and does not establish the MCP command-generation mechanism.
+sources_blocked: []
+conflicts:
+  - issue: Ecosystem research sometimes attributes command execution risk to stdio or MCP itself, while the protocol security guidance treats the unsafe shell, proxy, configuration, or launch implementation as the controllable boundary.
+    resolution: The technique attributes the mechanism to an attacker-influenced implementation launch boundary and does not claim that stdio or MCP is inherently vulnerable.
+  - issue: MCP Inspector's primary advisory classification is missing authorization rather than shell metacharacter injection.
+    resolution: The example is retained only as CWE-78's full-command-selection variant and that limitation is explicit in both claim and candidate records.
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids: [SAF-T1101-C004]
+  rationale: >-
+    CISA's current KEV catalog establishes real-world exploitation of CVE-2026-42271, and the project advisory directly establishes an MCP stdio process-launch boundary controllable by a low-privilege authenticated user. The Observed label is deliberately narrower than a named breach: the reviewed public record supplies no victim, campaign, exploit telemetry, or timeline. Other examples are separately labeled disclosed or demonstrated.
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+rights_review:
+  audit: publication-rights.yml
+  status: passed

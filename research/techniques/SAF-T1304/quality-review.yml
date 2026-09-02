@@ -1,0 +1,30 @@
+version: 1
+technique_id: SAF-T1304
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room reviewer
+gates:
+  clean_room_integrity: {status: passed, notes: Fresh-agent attestation records exact prohibited artifacts, direct-authority research, and pre-integration freeze.}
+  contract_and_scope: {status: passed, notes: Credential-boundary objective is distinct from acquisition, scope escalation, and follow-on activity.}
+  technical_accuracy: {status: passed, notes: Current MCP specification, OAuth RFCs, official advisories, and maintainer fixes support the mechanics.}
+  claim_traceability: {status: passed, notes: Nineteen claims include exact locators, limitations, corroboration, and source records.}
+  source_or_omit: {status: passed, notes: Publishable content uses hidden SAF-TRACE linkage or declared local artifacts; seven exclusions are ledgered.}
+  evidence_classification: {status: passed, notes: A successful FastMCP proof of concept supports Demonstrated; no source supports Observed.}
+  research_saturation: {status: passed, notes: Two differently phrased follow-up passes produced no material change.}
+  breach_and_vulnerability_coverage: {status: passed, notes: Eleven current candidates were classified and four highest-impact qualifying examples selected.}
+  detection_quality: {status: passed, notes: Ten cases cover positives, negatives, malformed data, false positives, exchange, and 600/601-second boundaries.}
+  mitigation_quality: {status: passed, notes: Resource binding, token exchange, request isolation, and replay monitoring address the defining mechanism.}
+  framework_alignment: {status: passed, notes: Privilege Escalation tactic, analogous ATT&CK mapping, canonical SAF-T1504 and SAF-T1308 neighbors, and nine mitigation joins are reconciled.}
+  publication_rights: {status: passed, notes: All uses are independently worded factual paraphrases with sourced attribution and no protected expression; an unsupported frozen project-author attribution was omitted and ledgered.}
+  safe_publication: {status: passed, notes: Example uses reserved invalid domains and non-secret placeholder fingerprints only.}
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1304
+      result: passed
+      environment: Isolated synthetic repository with current validator.
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1304/test_detection_rule.py
+    result: Ten of ten passed; six alerts, four non-alerts, one expected false positive.
+    waiver: null
+unresolved: []

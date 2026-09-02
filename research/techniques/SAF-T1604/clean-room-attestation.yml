@@ -1,0 +1,135 @@
+version: 1
+technique_id: SAF-T1604
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-02'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1604
+  inherited_context: false
+target:
+  id: SAF-T1604
+  neutral_name: Server Version Enumeration
+allowed_inputs:
+- The neutral target ID, name, and tactic supplied in the isolated task.
+- The author-saf-technique skill and all references it directly routed except the
+  prohibited impact-classification examples.
+- Generic repository TEMPLATE.md, research README, blank packet schemas, and current
+  validator.
+- Direct standards-body, government, framework, first-party vendor, project, and researcher
+  authorities independently opened by this agent.
+prohibited_inputs:
+- techniques/SAF-T1604/README.md and every historical form of that target file.
+- research/techniques/SAF-T1604/ and every prior target research or evidence artifact.
+- techniques/SAF-T1604/detection-rule.yml and prior target tests or logs.
+- Shared research/source-manifest.yml, research/framework-model.yml, and research/alignment-ledger.yml
+  before freeze.
+- Git history, diffs, blame, stashes, branches, and commits that could expose prior
+  target content.
+- Any pull request, issue, review, cached SAF page, or SAF website containing prior
+  target content.
+- Any previous conversation, summary, or methodology example containing prior technique
+  content or research leads.
+- SAF-MCP repositories, forks, catalog descriptions, existing neighbors, and impact-classification-examples.md.
+independent_research:
+  searches:
+  - DIRECT OPEN modelcontextprotocol.io fixed revision 2026-07-28 Discovery, Versioning,
+    Schema, and Authorization pages
+  - DIRECT OPEN RFC Editor RFC 9110 Sections 10.2.4 and 17.12
+  - DIRECT OPEN Nmap official version-detection chapter and manual
+  - DIRECT OPEN Apache ServerTokens and current 2.4 advisory page
+  - DIRECT OPEN nginx server_tokens documentation
+  - DIRECT OPEN OWASP Logging Cheat Sheet
+  - DIRECT OPEN MITRE ATT&CK T1046, T1518, and T1592.004
+  - DIRECT OPEN Anthropic report URL obtained from the reviewed MITRE ATT&CK T1046
+    authority
+  - DIRECT DOWNLOAD and exact cveID/keyword filters of CISA KEV catalog version 2026.09.01
+  - DIRECT OPEN NVD detail endpoints for CVE-2021-41773 and CVE-2021-42013; no inspectable
+    content was returned and neither endpoint was used as evidence
+  opened_source_ids:
+  - SRC-mcp-discovery-2026-07-28
+  - SRC-mcp-2026-schema
+  - SRC-mcp-2026-versioning
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-rfc9110-server
+  - SRC-nmap-vscan
+  - SRC-owasp-logging-cheat-sheet
+  - SRC-anthropic-espionage-2025-11
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-cisa-kev-2026-09-01
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  - SRC-mitre-attack-t1046-v3.2
+  - SRC-attack-t1518
+  - SRC-attack-t1592-004
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect old target prose or a revealing diff during mechanical replacement.
+- Reconcile provisional source IDs only for stable collision avoidance; the shared
+  manifest cannot introduce research leads.
+- Replace synthetic neighbor and mitigation roles plus the synthetic history SHA
+  with honest repository joins after freeze.
+- Preserve the evidence status, explicit gaps, claim text, source set, exclusions,
+  and rights conclusions unless new independently researched evidence is commissioned.
+mock_validation:
+  repository: /private/tmp/saf-all-cleanroom/SAF-T1604/mock
+  command: python3 scripts/validate-technique-research.py SAF-T1604
+  result: passed
+  detection_command: python3 techniques/SAF-T1604/test_detection_rule.py
+  detection_result: passed
+  deliberately_deferred_joins:
+  - Real SAF neighbor and mitigation identifiers
+  - Stable shared source-ID collision reconciliation
+  - Honest repository-history integration commit SHA
+  - Real repository framework and alignment registry merge
+attestation: I attest that this bundle was independently derived from the neutral
+  target and directly reviewed external authorities, that no prohibited prior target
+  artifact or shared registry was accessed, and that isolated strict validation preceded
+  freeze and any integration.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-2026-discovery: SRC-mcp-discovery-2026-07-28
+    SRC-mcp-2026-schema: SRC-mcp-2026-schema
+    SRC-mcp-2026-authorization: SRC-mcp-authorization-2026-07-28
+    SRC-owasp-logging: SRC-owasp-logging-cheat-sheet
+    SRC-anthropic-gtg1002: SRC-anthropic-espionage-2025-11
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-attack-t1046: SRC-mitre-attack-t1046-v3.2
+  new_shared_source_records:
+  - SRC-mcp-2026-versioning
+  - SRC-rfc9110-server
+  - SRC-nmap-vscan
+  - SRC-apache-cve-2021-41773
+  - SRC-apache-cve-2021-42013
+  - SRC-apache-servertokens
+  - SRC-nginx-server-tokens
+  - SRC-attack-t1518
+  - SRC-attack-t1592-004
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0007
+  canonical_mitigations:
+  - SAF-M-12
+  - SAF-M-16
+  - SAF-M-20
+  - SAF-M-29
+  canonical_neighbors:
+  - SAF-T1601
+  - SAF-T1605
+  unmatched_mitigation_role:
+  - minimize unnecessary version detail; no exact canonical SAF mitigation exists
+  attack_mappings:
+  - id: T1046
+    type: analogous
+  - id: T1518
+    type: analogous
+  validation_artifacts:
+  - research/techniques/SAF-T1604/validation/detection-test.txt
+  - research/techniques/SAF-T1604/validation/strict-validator.txt
+  acquisition_corpus: omitted_from_repository_under_reference_only_rights
+  status: integrated_and_validated

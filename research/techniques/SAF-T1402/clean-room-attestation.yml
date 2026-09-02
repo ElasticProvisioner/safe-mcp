@@ -1,0 +1,127 @@
+version: 1
+technique_id: SAF-T1402
+generation_mode: clean_room
+status: passed
+generated_on: '2026-09-01'
+generator:
+  type: fresh_agent
+  identity: /root/cleanroom_saf_t1402
+  inherited_context: false
+target:
+  id: SAF-T1402
+  neutral_name: Instruction Steganography
+allowed_inputs:
+- Target ID SAF-T1402, neutral name Instruction Steganography, and tactic ATK-TA0005.
+- Generic author-saf-technique skill instructions, clean-room methodology, templates,
+  and canonical validator.
+- Independently located direct public authorities reviewed during this attempt.
+prohibited_inputs:
+- Existing techniques/SAF-T1402/README.md or any historical target artifact.
+- Existing research/techniques/SAF-T1402/ files or prior target research.
+- Existing techniques/SAF-T1402/detection-rule.yml or prior target tests.
+- Git history, diffs, blame, pull request content, previous conversation context,
+  catalog descriptions, shared registries, SAF site or repository content, forks,
+  and methodology impact examples for the target.
+independent_research:
+  searches:
+  - 'arXiv API direct domain query: all:hidden instruction'
+  - 'arXiv API direct domain query: all:instruction steganography'
+  - 'arXiv API direct domain query: all:invisible prompt injection'
+  - 'arXiv API direct domain query: all:encoded prompt'
+  - 'arxiv.org/search direct domain query: hidden instructions'
+  - 'arxiv.org/search direct domain query: instruction steganography'
+  - 'arxiv.org/search direct domain query: invisible prompt injection'
+  - 'arxiv.org/search direct domain query: encoded prompt'
+  - NVD API keywordSearch=prompt injection, results 0-99
+  - NVD API keywordSearch=prompt injection, results 100-180
+  - NVD API keywordSearch=hidden prompt
+  - NVD API keywordSearch=unicode prompt
+  - CISA Known Exploited Vulnerabilities JSON catalog review
+  opened_source_ids:
+  - SRC-mcp-tools-2025-11-25
+  - SRC-mcp-resources-2025-11-25
+  - SRC-greshake-ipi-2023
+  - SRC-sharelock-2026
+  - SRC-skillcamo-2026
+  - SRC-reasoning-traces-2026
+  - SRC-gitlab-cve-2025-6945
+  - SRC-nvd-cve-2025-6945
+  - SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+  - SRC-nvd-cve-2026-27001
+  - SRC-nvd-cve-2026-29783
+  - SRC-nvd-cve-2024-48142
+  - SRC-cisa-kev-2026-09-01
+  - SRC-microsoft-prompt-shields-2026
+  - SRC-unicode-uts39
+  - SRC-unicode-uts55-v2
+  - SRC-bad-characters-2021
+  - SRC-artprompt-2024
+  - SRC-mitre-t1027.018
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Do not inspect or compare against an existing SAF-T1402 artifact before the frozen
+  checksum inventory is complete.
+- Integrate only by adding the frozen files and performing the mechanical joins enumerated
+  in integration-notes.yml.
+- Replace the synthetic neighbor and repository-history join values without changing
+  substantive prose; revalidate after joining.
+attestation: This packet was authored from the permitted seed and independently reviewed
+  direct authorities. No prohibited target artifact, target history, shared registry,
+  catalog description, prior conversation, SAF site content, fork, or methodology
+  impact example was accessed before the draft was frozen.
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-mcp-tools-2025-11-25: SRC-mcp-tools-2025-11-25
+    SRC-greshake-ipi-2023: SRC-greshake-ipi-2023
+    SRC-nvd-cve-2026-29783: SRC-nvd-cve-2026-29783
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-2026-09-01
+    SRC-unicode-uts39-v17: SRC-unicode-uts39
+  new_shared_source_records:
+  - SRC-mcp-resources-2025-11-25
+  - SRC-sharelock-2026
+  - SRC-skillcamo-2026
+  - SRC-reasoning-traces-2026
+  - SRC-gitlab-cve-2025-6945
+  - SRC-nvd-cve-2025-6945
+  - SRC-openclaw-ghsa-2qj5-gwg2-xwc4
+  - SRC-nvd-cve-2026-27001
+  - SRC-nvd-cve-2024-48142
+  - SRC-microsoft-prompt-shields-2026
+  - SRC-unicode-uts55-v2
+  - SRC-bad-characters-2021
+  - SRC-artprompt-2024
+  - SRC-mitre-t1027.018
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0005
+  canonical_mitigations:
+  - SAF-M-4
+  - SAF-M-5
+  - SAF-M-7
+  - SAF-M-8
+  - SAF-M-10
+  - SAF-M-11
+  - SAF-M-12
+  - SAF-M-21
+  - SAF-M-29
+  - SAF-M-49
+  - SAF-M-50
+  - SAF-M-53
+  - SAF-M-54
+  - SAF-M-69
+  - SAF-M-70
+  - SAF-M-74
+  synthetic_neighbor_mapping:
+    SAF-T9001: SAF-T1102
+  normalization_refreeze:
+    agent: /root/normalize_saf_t1402
+    mode: mechanical_no_research
+    bundle: /private/tmp/saf-all-cleanroom/SAF-T1402-normalized/bundle
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 1cd339589f49af42616d8c4a20e9264a926e86f9a652b9a023f5657817fa1f9c
+    result: passed
+  status: integrated_and_repository_validated

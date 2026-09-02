@@ -1,0 +1,388 @@
+version: 1
+technique_id: SAF-T1306
+claims:
+  - id: SAF-T1306-C001
+    statement: MCP authorization assigns the MCP server the OAuth protected-resource role, the MCP client the OAuth client role, and an authorization server the token-issuing role; protected-resource metadata advertises candidate authorization servers.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Authorization Server Discovery]
+      - source_id: SRC-rfc9728
+        support: corroborating
+        exact_locators: [Section 2 Protected Resource Metadata]
+    corroboration: RFC 9728 independently defines authorization_servers metadata for OAuth protected resources.
+    limitations: [Role definitions and discovery alone do not establish exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C002
+    statement: RFC 9728 does not define how a client securely decides that an advertised authorization server is appropriate; selecting an inappropriate server can enable a man-in-the-middle position.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: [Section 7.6 Authorization Servers]
+    corroboration: MCP's authorization specification adds issuer validation to the protected-resource discovery flow.
+    limitations: [The RFC describes a trust boundary, not an MCP incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C003
+    statement: In a multi-authorization-server MCP flow, an attacker controlling one authorization server can obtain an honest server's authorization code or token if the client fails to bind the authorization response to the issuer and sends the credential to the attacker-controlled endpoint.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-sep-2468
+        support: direct
+        exact_locators: [Motivation, Security Implications]
+      - source_id: SRC-rfc9700
+        support: corroborating
+        exact_locators: [Section 4.4 Authorization Server Mix-Up Mitigation]
+    corroboration: RFC 9700 independently defines the same multi-server mix-up sequence and credential-theft objective for OAuth.
+    limitations: [No reviewed source documents an end-to-end MCP production incident.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The MCP SEP identifies the protocol exposure and RFC 9700 establishes the generic OAuth behavior; their combination supports MCP applicability without claiming an observed incident.
+    status: validated
+  - id: SAF-T1306-C004
+    statement: The 2026-07-28 MCP authorization specification requires a client to record the validated metadata issuer, compare an authorization response issuer when present, reject a missing issuer when support was advertised, and abort on mismatch without normalization.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Authorization Request and Issuer Validation]
+      - source_id: SRC-mcp-sep-2468
+        support: corroborating
+        exact_locators: [Proposed Solution]
+    corroboration: The final SEP specifies the same exact-match and rejection behavior.
+    limitations: [A legacy server that neither advertises nor returns issuer support can still follow the compatibility branch.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C005
+    statement: OAuth metadata issuer identifiers and authorization-response issuer values are compared as exact strings, and a mismatch requires rejection.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc8414
+        support: direct
+        exact_locators: [Section 2 Authorization Server Metadata]
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators: [Section 2.4 Client Validation of the Issuer Identifier]
+    corroboration: RFC 9207 independently requires exact issuer comparison at the authorization response.
+    limitations: [Exact comparison presumes an authentic expected issuer baseline.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C006
+    statement: OAuth authorization-server mix-up requires a client configured for at least two authorization servers including a rogue or compromised server, and its objective is to make the client send an honest server's code or token to the attacker.
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Section 4.4 Authorization Server Mix-Up Mitigation]
+      - source_id: SRC-rfc9207
+        support: corroborating
+        exact_locators: [Section 1 Introduction]
+    corroboration: RFC 9207 describes how a rogue authorization server can receive codes or tokens when issuer association is absent.
+    limitations: [These RFCs describe OAuth generally, not an MCP-specific incident.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C007
+    statement: Formal OAuth research reproduced IdP mix-up behavior against actual OAuth and OpenID Connect implementations and showed a client sending a code to a malicious identity provider; it did not test MCP.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-fett-oauth-analysis
+        support: direct
+        exact_locators: [Section 1.2, Section 3.2 IdP Mix-Up Attacks]
+    corroboration: RFC 9700 later standardized the corresponding authorization-server mix-up mitigation.
+    limitations: [The experiment predates MCP and is a historical demonstration only.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C008
+    statement: The MCP TypeScript SDK exposes a fatal IssuerMismatchError with mismatch kinds for metadata and authorization responses and fields for expected and received issuer values.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-ts-auth-errors
+        support: direct
+        exact_locators: [IssuerMismatchError, IssuerMismatchKind]
+    corroboration: The current MCP specification mandates aborting the same validation failures.
+    limitations: [The API documentation does not guarantee that every deployment logs these fields.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C009
+    statement: The reviewed current MCP, NVD, and CISA sources did not identify a direct production MCP authorization-server mix-up incident.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-release-2026-07-28
+        support: direct
+        exact_locators: [Authorization security]
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: corroborating
+        exact_locators: [catalogVersion 2026.09.01, vulnerabilities array]
+      - source_id: SRC-nvd-cve-2025-10619
+        support: context
+        exact_locators: [CVE description]
+      - source_id: SRC-nvd-cve-2025-4143
+        support: context
+        exact_locators: [CVE description]
+    corroboration: The two current MCP-adjacent CVEs reviewed describe different mechanisms, and the official MCP update describes a protocol hole rather than exploitation.
+    limitations: [This is a corpus-bounded negative finding and does not prove that no private or undisclosed incident exists.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Absence is reported only for the dated authoritative corpus reviewed.
+    status: validated
+  - id: SAF-T1306-C010
+    statement: The July 2026 MCP specification update characterized issuer binding as closing an authorization-server mix-up hole; it did not report exploitation.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-release-2026-07-28
+        support: direct
+        exact_locators: [Authorization security]
+      - source_id: SRC-mcp-sep-2468
+        support: corroborating
+        exact_locators: [Motivation, Security Implications]
+    corroboration: The SEP supplies the threat rationale and prescribed comparison.
+    limitations: [A protocol change is not evidence of an exploited vulnerability.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C011
+    statement: CVE-2025-10619 concerns OS command injection in sequa-mcp OAuth Server Discovery through version 1.0.13, with a public proof of concept and a fix in 1.0.14; it is adjacent because command execution, not issuer confusion, is the defining mechanism.
+    class: disclosed_vulnerability
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-nvd-cve-2025-10619
+        support: direct
+        exact_locators: [CVE description, references, configurations]
+    corroboration: CISA's enrichment records proof-of-concept exploitation status, while the KEV snapshot does not list the identifier.
+    limitations: [The record does not establish authorization-server mix-up or in-the-wild exploitation.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C012
+    statement: A 2025 multi-agency advisory reports state-sponsored actors changing network-device TACACS+ configuration to an actor-controlled server to capture administrator authentication attempts and support further access.
+    class: observed_incident
+    materiality: high
+    evidence_status: observed
+    sources:
+      - source_id: SRC-cisa-aa25-239a
+        support: direct
+        exact_locators: [lines 351-400, lines 469-480 of extracted text]
+    corroboration: The same advisory provides flow and configuration indicators for detecting the change.
+    limitations: [TACACS+ is not OAuth or MCP; the event is a historical authorization-infrastructure analogy.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C013
+    statement: CVE-2025-4143 concerns insufficient redirect URI validation in Cloudflare workers-oauth-provider with conditional credential theft or impersonation potential; it does not describe authorization-server issuer mix-up.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-4143
+        support: direct
+        exact_locators: [CVE description, CISA SSVC enrichment]
+    corroboration: NVD's current record reports no known exploitation in the CISA enrichment.
+    limitations: [The reviewed record has inconsistent version metadata, so no exact fixed-version claim is made.]
+    conflicts: [Version details vary within the reviewed NVD record; omitted from publishable prose.]
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1306-C014
+    statement: Neither CVE-2025-10619 nor CVE-2025-4143 appears in the CISA KEV catalog snapshot version 2026.09.01; non-listing does not establish absence of exploitation.
+    class: implementation_fact
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisa-kev-2026-09-01
+        support: direct
+        exact_locators: [catalogVersion 2026.09.01, vulnerabilities array]
+    corroboration: The NVD records independently provide exploitation-status enrichment for the two identifiers.
+    limitations: [KEV inclusion criteria and reporting lag make absence nondispositive.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The negative result is limited to exact identifier membership in one dated snapshot.}
+    status: validated
+  - id: SAF-T1306-C015
+    statement: Configuration monitoring for unexpected RADIUS or TACACS authorization-server address changes and traffic to unapproved servers is a proven historical detection pattern that can inform, but not substitute for, MCP issuer-validation telemetry.
+    class: historical_analogy
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-cisco-security-warnings
+        support: direct
+        exact_locators: [pages 19-21]
+      - source_id: SRC-cisa-aa25-239a
+        support: corroborating
+        exact_locators: [lines 628-660, lines 986-1057 of extracted text]
+    corroboration: The multi-agency advisory recommends correlating AAA configuration and network flow data.
+    limitations: [Network AAA address changes differ from MCP authorization-response issuer mismatch.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The detection concept is transferred across authorization technologies with the difference stated.}
+    status: validated
+  - id: SAF-T1306-C016
+    statement: ATT&CK T1528 covers stealing application access tokens to access resources and permissions, directly matching the immediate credential-theft objective while using a different tactic taxonomy.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1528
+        support: direct
+        exact_locators: [Technique description]
+    corroboration: RFC 9700 identifies theft of an honest authorization server's token as a mix-up objective.
+    limitations: [T1528 does not specify authorization-server mix-up or MCP discovery.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The mapping is based on the immediate token-theft behavior, not tactic equivalence.}
+    status: validated
+  - id: SAF-T1306-C017
+    statement: ATT&CK T1556 is only analogous because it covers authentication-process modification for credential access or unwarranted access, whereas a rogue authorization server need not modify the local authentication process.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-attack-t1556
+        support: direct
+        exact_locators: [Technique description]
+    corroboration: The technique contract distinguishes issuer association failure from local authentication-process modification.
+    limitations: [The mapping is conceptual and not a direct behavioral match.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The shared trust subversion is narrower than the ATT&CK technique.}
+    status: validated
+  - id: SAF-T1306-C018
+    statement: Successful mix-up can expose an authorization code or access token carrying the victim's delegated privileges, creating high confidentiality and integrity risk when scopes are broad, while availability impact is normally secondary.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Section 4.4 Authorization Server Mix-Up Mitigation]
+      - source_id: SRC-mcp-sep-2468
+        support: corroborating
+        exact_locators: [Security Implications]
+    corroboration: Both sources identify code or token theft and resulting access as the security outcome.
+    limitations: [Actual impact is bounded by token audience, scope, lifetime, sender constraint, and downstream authorization.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Severity is derived from the supported credential outcome and stated deployment conditions.}
+    status: validated
+  - id: SAF-T1306-C019
+    statement: Preventing the defining behavior requires an authentic expected-issuer baseline, exact issuer binding at metadata and authorization-response stages, and rejection before code redemption; authorization-server allowlisting reduces discovery trust risk.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Authorization Request and Issuer Validation]
+      - source_id: SRC-rfc9728
+        support: corroborating
+        exact_locators: [Section 7.6 Authorization Servers]
+    corroboration: RFC 9728 calls for a secure means to determine appropriate authorization servers; the MCP spec supplies issuer binding.
+    limitations: [Allowlisting without protected baseline integrity can preserve a poisoned expectation.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The combined controls close the two trust decisions identified by the standards.}
+    status: validated
+  - id: SAF-T1306-C020
+    statement: After a suspected mismatch, defensible response is to abort the flow, preserve correlated discovery and authorization telemetry, assess whether a credential reached an untrusted endpoint, and revoke or rotate exposed credentials when applicable.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9207
+        support: direct
+        exact_locators: [Section 2.4 Client Validation of the Issuer Identifier]
+      - source_id: SRC-mcp-ts-auth-errors
+        support: corroborating
+        exact_locators: [IssuerMismatchError]
+    corroboration: Both sources treat mismatch as a fatal condition that must not proceed.
+    limitations: [Credential revocation is conditional because a rejected mismatch may occur before exposure.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Preservation and exposure assessment are incident-response consequences of mandatory abort.}
+    status: validated
+  - id: SAF-T1306-C021
+    statement: Legitimate authorization-server migration can change protected-resource metadata, so stale expected-issuer baselines may create benign mismatches that require change-window and approved-issuer context.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9728
+        support: direct
+        exact_locators: [Section 5.2 Protected Resource Metadata Refresh]
+    corroboration: Cisco's historical warning guidance similarly notes that security-relevant configuration changes can be expected administrative activity.
+    limitations: [A legitimate change does not justify bypassing issuer validation; it requires authenticated baseline refresh.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The false-positive condition follows from a permitted metadata change meeting a mismatch analytic.}
+    status: validated
+  - id: SAF-T1306-C022
+    statement: An analytic based on issuer mismatch, advertised-but-missing issuer, and rejected-flow outcomes can detect validation failures, but it cannot detect a poisoned expected-issuer baseline or legacy flows where issuer support is neither advertised nor returned.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Authorization Request and Issuer Validation]
+      - source_id: SRC-mcp-ts-auth-errors
+        support: corroborating
+        exact_locators: [IssuerMismatchError, IssuerMismatchKind]
+    corroboration: The specification's compatibility matrix defines the missing-issuer boundary, and the SDK defines available mismatch fields.
+    limitations: [Field names in the example analytic require local normalization.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Detection coverage and blind spots are derived from the normative validation matrix and implementation telemetry.}
+    status: validated
+  - id: SAF-T1306-C023
+    statement: The technique is distinct from authorization-code interception, token audience confusion, and malicious metadata delivery because its defining failure is the client's incorrect association of an honest authorization response with a rogue authorization server.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rfc9700
+        support: direct
+        exact_locators: [Section 4.4 Authorization Server Mix-Up Mitigation]
+      - source_id: SRC-mcp-sep-2468
+        support: corroborating
+        exact_locators: [Motivation]
+    corroboration: Both sources define issuer association, rather than passive interception or audience acceptance, as the central failure.
+    limitations: [Neighbor identifiers are synthetic pending integration against the shared framework.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Framework boundaries are derived from the defining mechanism.}
+    status: validated
+  - id: SAF-T1306-C024
+    statement: Minimizing requested scopes and enforcing token audience restriction can reduce consequences after credential theft but do not replace issuer binding.
+    class: protocol_normative
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-authorization-2026-07-28
+        support: direct
+        exact_locators: [Scope Selection Strategy, Access Token Usage]
+    corroboration: RFC 9700 treats issuer validation, rather than scope alone, as the mix-up countermeasure.
+    limitations: [Impact reduction does not prevent disclosure of an authorization code or token.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The distinction between prevention and consequence reduction combines independent normative controls.}
+    status: validated

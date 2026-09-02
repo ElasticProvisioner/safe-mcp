@@ -1,0 +1,84 @@
+version: 1
+technique_id: SAF-T1507
+name: Authorization Code Interception
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0006
+adversary_objective: Acquire an access token for an MCP-protected resource by obtaining
+  an OAuth authorization code from the redirect path and redeeming it before, instead
+  of, or through the legitimate MCP client.
+scope:
+  security_boundary: The redirect-to-client boundary between the authorization server,
+    user agent or operating-system URI dispatcher, and the MCP client, followed by
+    the authorization-code-to-token exchange boundary.
+  in_scope:
+  - Interception or attacker-directed receipt of an OAuth authorization code issued
+    for an MCP client.
+  - Redemption or attempted redemption of the intercepted code when PKCE, redirect-URI
+    validation, or code single-use controls are absent, downgraded, bypassed, or defeated.
+  out_of_scope:
+  - Injection of an attacker-owned authorization code into a victim client session
+    without first intercepting a victim code.
+  - Theft of an already issued access or refresh token from storage, logs, memory,
+    transport, or a downstream service.
+  - Phishing or malicious-client consent that obtains a token through a separately
+    registered attacker client.
+  - Authorization-server mix-up, token audience confusion, token passthrough, and
+    downstream use of a stolen token after issuance.
+  affected_components:
+  - MCP client using an HTTP authorization flow
+  - OAuth authorization server serving the MCP deployment
+  - User agent, operating-system URI dispatcher, or loopback redirect listener
+  - MCP protected resource reached with a resulting access token
+nearest_neighbors:
+- technique_id: SAF-T1009
+  distinction: The nearest canonical authorization-flow neighbor covers authorization-server
+    mix-up. SAF-T1507 instead begins when a code issued for the victim or legitimate
+    client reaches an unintended party through the redirect path.
+- technique_id: SAF-T1504
+  distinction: Token Theft via API Response concerns an already issued token crossing
+    a server-to-client response boundary; SAF-T1507 targets the short-lived authorization
+    code before token issuance.
+required_evidence:
+- Establish the authorization-code redirect and exchange boundaries in OAuth and MCP
+  authorization.
+- Establish the conditions under which a party receiving a code can redeem it and
+  how PKCE, exact redirect matching, and single-use enforcement constrain that outcome.
+- Search separately for production incidents, direct vulnerabilities, public advisories,
+  exploitation status, demonstrations, and controlled tests.
+- Establish the end-to-end evidence status without promoting enabling vulnerabilities
+  or component tests to production observation.
+- Establish auditable detection signals and their blind spots from authorization and
+  token-endpoint telemetry.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Authorization endpoint events with timestamp, transaction or code fingerprint,
+    client_id, redirect_uri, redirect_uri_match, code_challenge_method, and PKCE-required
+    state.
+  - Token endpoint events with timestamp, authorization-code fingerprint, client_id,
+    source context, code_verifier result, outcome, error, exchange count, and known-retry
+    classification.
+safe_example_constraints:
+- Use only reserved example domains, opaque synthetic identifiers, and non-operational
+  placeholder values.
+- Do not include a redeemable code, verifier, access token, live callback, exploit
+  payload, or destructive action.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and directly reviewed
+  source, or to a declared local artifact.
+- Unverified candidates and adjacent behaviors are omitted from publishable prose
+  and recorded in traceability-ledger.yml.
+- All five research passes and two final consecutive no-change saturation passes are
+  recorded.
+- Two to four highest-impact qualifying examples are selected, or a documented evidence
+  gap explains a smaller set.
+- Detection positive, negative, boundary, malformed, and expected-false-positive cases
+  pass.
+- Rights, clean-room integrity, framework alignment, safe-publication, and strict
+  isolated-validation gates pass.

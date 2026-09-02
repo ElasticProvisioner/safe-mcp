@@ -1,0 +1,74 @@
+version: 1
+technique_id: SAF-T1204
+name: Context Memory Implant
+status: complete
+created_on: "2026-09-01"
+updated_on: "2026-09-01"
+generation_mode: clean_room
+trace_format: hidden_html_v1
+
+tactics:
+  - ATK-TA0003
+
+adversary_objective: >-
+  Establish durable influence over an agent by causing attacker-selected content
+  to be written into persistent context memory and retrieved in a later session.
+
+scope:
+  security_boundary: >-
+    The boundary between untrusted interaction or retrieved content and a
+    persistent memory store whose entries can be reintroduced as trusted or
+    behavior-shaping context in later agent executions.
+  in_scope:
+    - An attacker causes content to be persisted in agent memory, a cross-thread context store, a durable conversation summary, or an equivalent long-lived context channel.
+    - A later session retrieves the implanted entry and the entry influences reasoning, response selection, planning, or a tool decision.
+    - The write may be direct through an authorized interface or indirect through content processed and summarized by the agent.
+  out_of_scope:
+    - Transient prompt injection that affects only the current turn and does not create durable context state.
+    - Poisoning a static RAG corpus or training data when no agent memory write occurs.
+    - Modification of agent configuration, code, tool metadata, or operating-system persistence mechanisms.
+    - Downstream collection, exfiltration, execution, or impact after the memory has influenced the agent.
+  affected_components:
+    - MCP host or client that incorporates server or external content into agent context
+    - Agent memory writer, summarizer, or memory-management tool
+    - Persistent memory or cross-thread context store
+    - Retrieval and context-assembly pipeline
+    - Model planner or tool-selection loop consuming retrieved memory
+
+nearest_neighbors:
+  - technique_id: SAF-T1102
+    distinction: >-
+      Transient prompt injection ends with influence in the current context,
+      whereas SAF-T1204 requires a durable write and a later retrieval.
+  - technique_id: SAF-T2106
+    distinction: >-
+      Context Memory Poisoning via Vector Store Contamination changes an external
+      retrieval corpus, whereas SAF-T1204 changes persistent agent context or
+      memory through a memory-write path.
+
+required_evidence:
+  - Establish that agent memory can persist across conversations and later be reintroduced into model context.
+  - Establish the complete write, persistence, later retrieval, and influence chain in a controlled or observed agentic system.
+  - Establish attacker prerequisites and distinguish direct memory access from query-only or indirect-content paths.
+  - Search separately for production incidents, in-the-wild attempts, disclosed vulnerabilities, advisories, controlled demonstrations, and exploitation status.
+  - Establish telemetry and limitations for detecting suspicious writes and cross-session retrieval.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Memory-write audit events with memory ID, timestamp, actor, session, namespace, source origin, trust label, approval state, and content or semantic-risk indicator.
+    - Memory-retrieval or context-assembly events with memory IDs, destination session, user or tenant scope, relevance or trust decision, and consuming agent.
+    - Agent action or response events with stable trace identifiers for optional outcome correlation.
+
+safe_example_constraints:
+  - Use inert example.invalid domains, placeholder identities, and non-operational preference text.
+  - Do not reproduce optimized triggers, bypass strings, payloads, credentials, or harmful tool instructions from the cited research.
+  - Represent detection inputs as synthetic audit records rather than executable attack content.
+
+completion_evidence:
+  - Every substantive publishable unit is linked to validated claims and directly reviewed sources or a declared local artifact.
+  - Unverified candidate claims and analogies are omitted and recorded in traceability-ledger.yml.
+  - Five research passes and two consecutive no-change follow-ups are recorded.
+  - Positive, negative, boundary, malformed-field, and expected legitimate-lookalike detection cases pass.
+  - Publication-rights, clean-room integrity, framework alignment, and strict isolated-validator gates pass.

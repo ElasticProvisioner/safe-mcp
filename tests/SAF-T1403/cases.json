@@ -1,0 +1,101 @@
+[
+  {
+    "name": "positive_denied_then_approved",
+    "expected": true,
+    "events": [
+      {"event_time":"2026-09-01T10:00:00Z","event_type":"approval_request","user_id":"u1","session_id":"s1","requester_id":"srv","operation":"calendar.preview","request_fingerprint":"fp1","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T10:02:00Z","event_type":"approval_request","user_id":"u1","session_id":"s2","requester_id":"srv","operation":"calendar.preview","request_fingerprint":"fp1","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T10:04:00Z","event_type":"approval_request","user_id":"u1","session_id":"s3","requester_id":"srv","operation":"calendar.preview","request_fingerprint":"fp1","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T10:06:00Z","event_type":"approval_request","user_id":"u1","session_id":"s4","requester_id":"srv","operation":"calendar.preview","request_fingerprint":"fp1","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "positive_normalized_equivalence",
+    "expected": true,
+    "events": [
+      {"event_time":"2026-09-01T11:00:00Z","event_type":"approval_request","user_id":" U2 ","session_id":"n1","requester_id":"Server.Example","operation":"Calendar.Preview","request_fingerprint":"FP2","decision":"DENIED","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T11:01:00Z","event_type":"approval_request","user_id":"u2","session_id":"n2","requester_id":"server.example","operation":"calendar.preview","request_fingerprint":"fp2","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T11:02:00Z","event_type":"approval_request","user_id":"u2","session_id":"n3","requester_id":"SERVER.EXAMPLE","operation":"CALENDAR.PREVIEW","request_fingerprint":"FP2","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T11:03:00Z","event_type":"approval_request","user_id":"u2","session_id":"n4","requester_id":"server.example","operation":"calendar.preview","request_fingerprint":"fp2","decision":"APPROVED","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "negative_below_threshold",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T12:00:00Z","event_type":"approval_request","user_id":"u3","session_id":"b1","requester_id":"srv","operation":"op","request_fingerprint":"fp3","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T12:01:00Z","event_type":"approval_request","user_id":"u3","session_id":"b2","requester_id":"srv","operation":"op","request_fingerprint":"fp3","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T12:02:00Z","event_type":"approval_request","user_id":"u3","session_id":"b3","requester_id":"srv","operation":"op","request_fingerprint":"fp3","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "negative_no_prior_resistance",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T13:00:00Z","event_type":"approval_request","user_id":"u4","session_id":"r1","requester_id":"srv","operation":"op","request_fingerprint":"fp4","decision":"pending","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T13:01:00Z","event_type":"approval_request","user_id":"u4","session_id":"r2","requester_id":"srv","operation":"op","request_fingerprint":"fp4","decision":"pending","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T13:02:00Z","event_type":"approval_request","user_id":"u4","session_id":"r3","requester_id":"srv","operation":"op","request_fingerprint":"fp4","decision":"pending","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T13:03:00Z","event_type":"approval_request","user_id":"u4","session_id":"r4","requester_id":"srv","operation":"op","request_fingerprint":"fp4","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "boundary_exactly_ten_minutes",
+    "expected": true,
+    "events": [
+      {"event_time":"2026-09-01T14:00:00Z","event_type":"approval_request","user_id":"u5","session_id":"w1","requester_id":"srv","operation":"op","request_fingerprint":"fp5","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T14:03:00Z","event_type":"approval_request","user_id":"u5","session_id":"w2","requester_id":"srv","operation":"op","request_fingerprint":"fp5","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T14:06:00Z","event_type":"approval_request","user_id":"u5","session_id":"w3","requester_id":"srv","operation":"op","request_fingerprint":"fp5","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T14:10:00Z","event_type":"approval_request","user_id":"u5","session_id":"w4","requester_id":"srv","operation":"op","request_fingerprint":"fp5","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "negative_outside_window",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T15:00:00Z","event_type":"approval_request","user_id":"u6","session_id":"o1","requester_id":"srv","operation":"op","request_fingerprint":"fp6","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T15:03:00Z","event_type":"approval_request","user_id":"u6","session_id":"o2","requester_id":"srv","operation":"op","request_fingerprint":"fp6","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T15:06:00Z","event_type":"approval_request","user_id":"u6","session_id":"o3","requester_id":"srv","operation":"op","request_fingerprint":"fp6","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T15:10:01Z","event_type":"approval_request","user_id":"u6","session_id":"o4","requester_id":"srv","operation":"op","request_fingerprint":"fp6","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "expected_user_initiated_lookalike",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T16:00:00Z","event_type":"approval_request","user_id":"u7","session_id":"l1","requester_id":"srv","operation":"op","request_fingerprint":"fp7","decision":"denied","approval_scope":"once","user_initiated":true},
+      {"event_time":"2026-09-01T16:01:00Z","event_type":"approval_request","user_id":"u7","session_id":"l2","requester_id":"srv","operation":"op","request_fingerprint":"fp7","decision":"denied","approval_scope":"once","user_initiated":true},
+      {"event_time":"2026-09-01T16:02:00Z","event_type":"approval_request","user_id":"u7","session_id":"l3","requester_id":"srv","operation":"op","request_fingerprint":"fp7","decision":"cancelled","approval_scope":"once","user_initiated":true},
+      {"event_time":"2026-09-01T16:03:00Z","event_type":"approval_request","user_id":"u7","session_id":"l4","requester_id":"srv","operation":"op","request_fingerprint":"fp7","decision":"approved","approval_scope":"once","user_initiated":true}
+    ]
+  },
+  {
+    "name": "negative_distinct_fingerprints",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T17:00:00Z","event_type":"approval_request","user_id":"u8","session_id":"d1","requester_id":"srv","operation":"op","request_fingerprint":"fp8a","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T17:01:00Z","event_type":"approval_request","user_id":"u8","session_id":"d2","requester_id":"srv","operation":"op","request_fingerprint":"fp8a","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T17:02:00Z","event_type":"approval_request","user_id":"u8","session_id":"d3","requester_id":"srv","operation":"op","request_fingerprint":"fp8b","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T17:03:00Z","event_type":"approval_request","user_id":"u8","session_id":"d4","requester_id":"srv","operation":"op","request_fingerprint":"fp8b","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "malformed_timestamp_ignored",
+    "expected": false,
+    "events": [
+      {"event_time":"not-a-time","event_type":"approval_request","user_id":"u9","session_id":"m1","requester_id":"srv","operation":"op","request_fingerprint":"fp9","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T18:01:00Z","event_type":"approval_request","user_id":"u9","session_id":"m2","requester_id":"srv","operation":"op","request_fingerprint":"fp9","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T18:02:00Z","event_type":"approval_request","user_id":"u9","session_id":"m3","requester_id":"srv","operation":"op","request_fingerprint":"fp9","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T18:03:00Z","event_type":"approval_request","user_id":"u9","session_id":"m4","requester_id":"srv","operation":"op","request_fingerprint":"fp9","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  },
+  {
+    "name": "missing_group_field_ignored",
+    "expected": false,
+    "events": [
+      {"event_time":"2026-09-01T19:00:00Z","event_type":"approval_request","user_id":"u10","session_id":"x1","requester_id":"srv","operation":"op","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T19:01:00Z","event_type":"approval_request","user_id":"u10","session_id":"x2","requester_id":"srv","operation":"op","decision":"denied","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T19:02:00Z","event_type":"approval_request","user_id":"u10","session_id":"x3","requester_id":"srv","operation":"op","decision":"cancelled","approval_scope":"once","user_initiated":false},
+      {"event_time":"2026-09-01T19:03:00Z","event_type":"approval_request","user_id":"u10","session_id":"x4","requester_id":"srv","operation":"op","decision":"approved","approval_scope":"once","user_initiated":false}
+    ]
+  }
+]

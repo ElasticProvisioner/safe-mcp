@@ -1,0 +1,81 @@
+version: 1
+technique_id: SAF-T1507
+bundle_status: integrated_clean_room_handoff
+integration_authorized: true
+
+synthetic_joins:
+  tactics:
+    - id: ATK-TA0006
+      status: user_supplied_real_identifier_synthetically_joined_in_mock
+      action: Confirm the real framework tactic record during integration without using it as a research lead.
+  neighbors:
+    - synthetic_id: SAF-T9001
+      neutral_role: Authorization Code Injection
+      distinction: Attacker-owned code is substituted into a client session rather than a victim-issued code being intercepted.
+      action: Mechanically map to the repository's existing equivalent or reserve a new ID after freeze.
+    - synthetic_id: SAF-T9002
+      neutral_role: Access Token Theft
+      distinction: An already issued token is stolen rather than an authorization code being taken before token issuance.
+      action: Mechanically map to the repository's existing equivalent or reserve a new ID after freeze.
+  mitigations: []
+  source_ids:
+    - SRC-attack-t1528
+    - SRC-better-auth-ghsa-9h47
+    - SRC-cisa-kev-2026-09-01
+    - SRC-cloudflare-pr26
+    - SRC-cloudflare-pr27
+    - SRC-cve-2025-4143
+    - SRC-cve-2025-4144
+    - SRC-cve-2026-67336
+    - SRC-mcp-auth-2025-11-25
+    - SRC-nvd-cleanroom-queries
+    - SRC-rfc6749
+    - SRC-rfc7636
+    - SRC-rfc8252
+    - SRC-rfc9700
+  history_sha:
+    synthetic: "1111111111111111111111111111111111111111"
+    action: Replace with the honest integration commit SHA after integration; no repository history was opened before freeze.
+  paths:
+    - fragment: source-manifest-fragment.yml
+      target: research/source-manifest.yml
+      action: Reconcile stable source IDs only after freeze; the fragment must not introduce research leads.
+    - fragment: framework-fragment.yml
+      target: research/framework-model.yml
+      action: Merge the single technique record and resolve synthetic neighbor IDs.
+    - fragment: alignment-fragment.yml
+      target: research/alignment-ledger.yml
+      action: Merge the single resolved clean-room alignment record.
+
+github_url_provenance:
+  - url: https://github.com/cloudflare/workers-oauth-provider/pull/26
+    supplied_by: SRC-cve-2025-4143
+  - url: https://github.com/cloudflare/workers-oauth-provider/pull/27
+    supplied_by: SRC-cve-2025-4144
+  - url: https://github.com/better-auth/better-auth/security/advisories/GHSA-9h47-pqcx-hjr4
+    supplied_by: SRC-cve-2026-67336
+
+external_source_corpus:
+  retained_outside_bundle: true
+  path: /private/tmp/saf-all-cleanroom/SAF-T1507/work/sources
+  note: Complete downloads and API results are intentionally excluded from the canonical bundle; hashes are recorded in source-manifest-fragment.yml.
+
+completed_real_repository_checks:
+  - Stable source-ID collision reconciliation
+  - Real tactic and nearest-neighbor registry joins
+  - Honest repository-history SHA reconciliation
+  - Full strict repository validation after mechanical integration
+
+post_freeze_reconciliation:
+  canonical_neighbors:
+    SAF-T9001: SAF-T1009
+    SAF-T9002: SAF-T1504
+  canonical_mitigations: [SAF-M-12, SAF-M-13, SAF-M-16, SAF-M-17, SAF-M-18, SAF-M-19, SAF-M-37, SAF-M-38]
+  dedicated_query_corpus: SRC-cisa-kev-authorization-code-2026-09-01
+  validation_artifacts:
+    - research/techniques/SAF-T1507/validation/detection-test-results.txt
+    - research/techniques/SAF-T1507/validation/strict-validator-results.txt
+  status: integrated_and_validated
+
+prohibited_actions_completed: []
+unresolved_research: []

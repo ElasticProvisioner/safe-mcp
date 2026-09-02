@@ -1,0 +1,350 @@
+version: 1
+technique_id: SAF-T1201
+claims:
+  - id: SAF-T1201-C001
+    statement: The MCP tools capability supports tools/list discovery, optional listChanged signaling, and server-supplied tool definitions containing names, descriptions, schemas, and annotations.
+    class: protocol_normative
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: direct
+        exact_locators: [Capabilities lines 95-108; Listing Tools lines 119-168; List Changed Notification lines 209-216; Tool lines 234-254]
+    corroboration: Rashidi Section II-A1 independently exercises tools/list refresh behavior.
+    limitations: [The specification does not define a host approval implementation or require reapproval on changed definitions.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C002
+    statement: A deterministic real-protocol harness changed one tool description after benign approval and delivered the changed metadata without protocol-forced reapproval across three independently developed Python MCP server implementations.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rashidi-2607.05744
+        support: direct
+        exact_locators: [Sections II-A1, III-B T3, III-C, V, VI, VII; Tables V and VI; Figure 2]
+    corroboration: The official MCP specification independently defines refreshed tool listing and list-changed notification behavior.
+    limitations: [The harness measured delivery and reapproval state, not whether a production model acted on the payload or whether a shipping client was compromised.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C003
+    statement: A controlled study listed benign repository references on three MCP aggregation platforms, changed the repositories afterward, and observed unchanged listing status and continued accessibility for seven days.
+    class: demonstrated_exploit
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-song-2506.02040
+        support: direct
+        exact_locators: [Sections 3.2.3, 4.1.2 Test 2, 4.1.3, 4.3.1, and 5.3]
+    corroboration: Microsoft and OWASP guidance independently treat mutable MCP tools and update paths as supply-chain integrity risks.
+    limitations: [The study did not run a separate downstream rug-pull exploitation experiment and evaluated three aggregators during a bounded observation window.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C004
+    statement: No qualifying production MCP rug-pull breach or direct rug-pull CVE was identified in the documented authoritative corpus reviewed through 2026-09-01.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-indirect-injection-2025
+        support: context
+        exact_locators: [Indirect Prompt Injection Attacks lines 27-34]
+      - source_id: SRC-nvd-cve-2025-53098
+        support: context
+        exact_locators: [Description lines 76-80; SSVC exploitation record lines 109-121]
+      - source_id: SRC-rashidi-2607.05744
+        support: context
+        exact_locators: [Section IX Limitations]
+      - source_id: SRC-song-2506.02040
+        support: context
+        exact_locators: [Sections 4.1 and 5.3]
+    corroboration: Separate authority-restricted breach, advisory, CVE, KEV, and exploitation-status searches produced demonstrations and adjacent records but no direct production case.
+    limitations: [This is a bounded search conclusion and cannot prove nonexistence; undisclosed or unindexed incidents may exist.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: The absence statement derives only from the explicitly recorded search corpus and date.
+    status: validated
+  - id: SAF-T1201-C005
+    statement: CVE-2025-53098 is adjacent rather than direct because it concerns prompt-induced writing of Roo Code MCP configuration with auto-approved file writes, not post-approval mutation by a retained provider identity.
+    class: disclosed_vulnerability
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-nvd-cve-2025-53098
+        support: direct
+        exact_locators: [Description lines 76-80; affected versions lines 119-121; SSVC exploitation none lines 109-115]
+    corroboration: OWASP ASI02/ASI04 distinguishes runtime interface manipulation from source compromise.
+    limitations: [The CVE still demonstrates that MCP configuration is security-sensitive, but it does not establish this technique.]
+    conflicts: []
+    inference:
+      is_inference: true
+      rationale: Relationship classification applies the contract boundary to the CVE facts.
+    status: validated
+  - id: SAF-T1201-C006
+    statement: Changed MCP tool metadata can conditionally enable unintended data disclosure or manipulation when the host passes it to a model with sufficient privileges and egress.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-indirect-injection-2025
+        support: direct
+        exact_locators: [Lines 31-34]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: [Tool poisoning and prompt injection lines 71-80; third-party trust lines 81-89]
+    corroboration: Invariant's controlled tool-poisoning experiments show conditional sensitive-data and cross-tool impacts, though not a temporal rug pull.
+    limitations: [The impact depends on privileges, model behavior, approvals, isolation, and egress controls; mutation alone does not prove harm.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Conditional impact combines the demonstrated delivery path with separately demonstrated or documented tool-poisoning effects.}
+    status: validated
+  - id: SAF-T1201-C007
+    statement: The defining prerequisites are an approved benign baseline, later attacker control of the provider or update path, a material change under the same trust identity, and acceptance without approval for the changed state.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rashidi-2607.05744
+        support: direct
+        exact_locators: [Sections II-A, III-A, III-B T3, and VIII-B]
+      - source_id: SRC-song-2506.02040
+        support: corroborating
+        exact_locators: [Sections 3.2.3 and 4.1.2]
+    corroboration: Microsoft defines the same hosted-definition trust reversal in its 2025 MCP guidance.
+    limitations: [Server identity canonicalization and the threshold for material change are implementation-specific.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The contract synthesizes common necessary conditions from two distinct demonstrations.}
+    status: validated
+  - id: SAF-T1201-C008
+    statement: Comparing a canonical hash of an approved tool definition with later observations can detect unauthorized metadata changes.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: [Enhanced Security through Tool Pinning lines 52-54]
+      - source_id: SRC-owasp-third-party-mcp-2025
+        support: corroborating
+        exact_locators: [Page 6 lines 94-107]
+    corroboration: Rashidi Section VIII-B independently recommends approved-metadata hash pinning and re-prompting on change.
+    limitations: [Hashing detects content differences only when canonicalization is stable and both baselines and observations are available.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C009
+    statement: Definition hashing alone cannot establish unchanged backend semantics; hashing a versioned backend contract improves coverage but still requires faithful enforcement and runtime policy.
+    class: research_finding
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-etdi-2506.01333
+        support: direct
+        exact_locators: [Sections III-B, IV-B2, V Defense against Post-Approval Modification, and VI]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: [Lines 76-80 and 92-100]
+    corroboration: Microsoft separately recommends deterministic isolation and monitoring in addition to metadata review.
+    limitations: [ETDI is a proposed extension rather than a universal deployed MCP control.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Limitation follows from the distinction between visible definition content, backend contract, and actual runtime behavior.}
+    status: validated
+  - id: SAF-T1201-C010
+    statement: Visual Studio documents resetting prior tool acceptances or permissions and refetching the list when it receives notifications/tools/list_changed, and prompting again when server capabilities change.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: direct
+        exact_locators: [Tool lifecycle lines 142-150; trust dialog lines 154-186]
+    corroboration: This behavior implements the reapproval control recommended by OWASP and Rashidi.
+    limitations: [The documented behavior is product- and version-specific and can be disabled or bypassed by Always Trust choices.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C011
+    statement: Pinning versions and canonical hashes, treating schema changes as dependency changes, and requiring renewed approval on material changes directly constrain MCP rug pulls.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-third-party-mcp-2025
+        support: direct
+        exact_locators: [Page 6 lines 94-107]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: [Lines 71-89]
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: corroborating
+        exact_locators: [Pages 18-20, especially runtime validation and pinning lines 462-529]
+      - source_id: SRC-invariant-tpa-2025-04-01
+        support: context
+        exact_locators: [Pinning recommendation lines 121-124]
+    corroboration: Invariant MCP-Scan documents tool hashing as an implemented pinning mechanism.
+    limitations: [Controls need stable identity and canonicalization; approval fatigue or policy bypass can weaken them.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C012
+    statement: Least privilege, credential separation, sandboxing, egress restrictions, and correlated runtime logging reduce impact when integrity controls fail.
+    class: implementation_fact
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: direct
+        exact_locators: [Authentication lines 34-43; local hardening lines 60-70; third-party trust lines 81-89; monitoring lines 90-100]
+      - source_id: SRC-owasp-third-party-mcp-2025
+        support: corroborating
+        exact_locators: [Page 6 runtime policy lines 105-107]
+    corroboration: Microsoft MCP protocol guidance requires user control and recommends access controls and logging.
+    limitations: [These controls reduce consequence but do not by themselves detect the definition change.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C013
+    statement: A rug pull is distinguished from initial tool poisoning by its benign approved baseline and later change, from output injection by its pre-use definition or implementation mutation, and from generic supply-chain compromise by its retained MCP trust identity.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-owasp-agentic-top10-2026
+        support: direct
+        exact_locators: [ASI02 lines 301-307; ASI04 pages 18-20]
+      - source_id: SRC-ms-indirect-injection-2025
+        support: corroborating
+        exact_locators: [Lines 27-34]
+      - source_id: SRC-rashidi-2607.05744
+        support: corroborating
+        exact_locators: [Table III and T3 description]
+    corroboration: Song Section 3.2 separates tool poisoning, puppet, rug pull, and external-resource attacks.
+    limitations: [A real event may contain multiple behaviors and require multiple classifications.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Neighbor boundaries reconcile external taxonomies with the narrow SAF contract.}
+    status: validated
+  - id: SAF-T1201-C014
+    statement: MITRE ATT&CK T1195.002 is an analogous mapping because it covers manipulation of application source, updates, distribution, or releases before consumer receipt, while SAF-T1201 requires retained MCP approval and is seeded under Persistence.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-mitre-t1195-002
+        support: direct
+        exact_locators: [Definition lines 16-25; tactic and version lines 27-43]
+    corroboration: Song's package/repository demonstration supplies the MCP-specific update-path analogy.
+    limitations: [ATT&CK assigns T1195.002 to Initial Access and does not define MCP approval semantics.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Analogous mapping compares mechanisms while retaining the tactic mismatch.}
+    status: validated
+  - id: SAF-T1201-C015
+    statement: Confidentiality and integrity consequences can be high and scope can be multi-system, but actual severity depends on host privilege, egress, automation, deployment prevalence, and the changed tool's reachable actions.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-indirect-injection-2025
+        support: direct
+        exact_locators: [Lines 29-34]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: [Lines 31-43 and 71-100]
+      - source_id: SRC-song-2506.02040
+        support: context
+        exact_locators: [Sections 4.1 and 5.3]
+    corroboration: OWASP's third-party MCP guide identifies unauthorized data and filesystem access as bounded potential outcomes.
+    limitations: [No production loss data or rug-pull-specific prevalence measurement was found.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Ratings synthesize conditional impacts and limiting controls rather than report observed production harm.}
+    status: validated
+  - id: SAF-T1201-C016
+    statement: A deterministic analytic can alert when a complete provenance-scoped server/tool record has different approved and observed definition hashes and no approval covers the observed hash.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-invariant-mcp-scan-2025
+        support: direct
+        exact_locators: [Lines 52-54]
+      - source_id: SRC-mcp-tools-2025-11-25
+        support: context
+        exact_locators: [Tools/list and list-changed sections]
+      - source_id: SRC-owasp-third-party-mcp-2025
+        support: corroborating
+        exact_locators: [Page 6 lines 94-107]
+    corroboration: Visual Studio documents a concrete lifecycle response to list changes.
+    limitations: [Requires complete, tamper-resistant baseline and observation telemetry with stable canonicalization.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The repository analytic operationalizes source-recommended hash pinning into explicit event fields and Boolean logic.}
+    status: validated
+  - id: SAF-T1201-C017
+    statement: Legitimate upgrade races, canonicalization changes, and identity aliasing can create lookalikes, while unchanged metadata, compromised approvals, and missing telemetry are blind spots.
+    class: framework_inference
+    materiality: medium
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: context
+        exact_locators: [Tool lifecycle and trust dialog lines 142-186]
+      - source_id: SRC-etdi-2506.01333
+        support: corroborating
+        exact_locators: [Sections IV-B2 and V]
+    corroboration: Microsoft Azure guidance requires broader runtime monitoring and stable endpoint trust.
+    limitations: [False-positive rates are not measured in production; listed cases are reasoned boundary conditions.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Limitations follow from the analytic's required joins and the sources' control boundaries.}
+    status: validated
+  - id: SAF-T1201-C018
+    statement: An inert example can safely represent the technique using a benign tool name, reserved domain, placeholder hashes, and an absent-reapproval flag without carrying attacker instructions.
+    class: framework_inference
+    materiality: low
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-rashidi-2607.05744
+        support: context
+        exact_locators: [Section III-A safe local-recording threat model and T3 structure]
+    corroboration: The clean-room contract forbids operational payloads and requires only the integrity transition.
+    limitations: [The synthetic event illustrates detection state, not an exploit payload or product log schema.]
+    conflicts: []
+    inference: {is_inference: true, rationale: The safe example abstracts the demonstrated state transition while omitting harmful content.}
+    status: validated
+  - id: SAF-T1201-C019
+    statement: "The two selected demonstrations have important limits: Rashidi did not measure downstream model action or audit a shipping product, and Song et al. omitted a separate rug-pull exploitation phase and tested only three aggregators."
+    class: research_finding
+    materiality: high
+    evidence_status: demonstrated
+    sources:
+      - source_id: SRC-rashidi-2607.05744
+        support: direct
+        exact_locators: [Section IX Limitations]
+      - source_id: SRC-song-2506.02040
+        support: direct
+        exact_locators: [Section 4.3.1 and Section 5.3]
+    corroboration: Both papers state their experimental boundaries explicitly.
+    limitations: [Later product changes or independent replications may alter generalizability.]
+    conflicts: []
+    inference: {is_inference: false, rationale: null}
+    status: validated
+  - id: SAF-T1201-C020
+    statement: Defensible response preserves both definitions and approval records, disables the changed tool, scopes possible exposure through correlated logs, restores a pinned reviewed version, and reissues approval for its exact digest.
+    class: framework_inference
+    materiality: high
+    evidence_status: research-derived
+    sources:
+      - source_id: SRC-ms-visual-studio-mcp-2026
+        support: context
+        exact_locators: [Tool lifecycle and trust dialog lines 142-186]
+      - source_id: SRC-ms-azure-mcp-security-2026
+        support: corroborating
+        exact_locators: [Lines 81-100]
+      - source_id: SRC-owasp-third-party-mcp-2025
+        support: corroborating
+        exact_locators: [Page 6 lines 94-107]
+    corroboration: These actions reverse the trusted changed state and preserve the telemetry needed to assess impact.
+    limitations: [Credential rotation should be scoped to plausible exposure; unnecessary rotation can disrupt service.]
+    conflicts: []
+    inference: {is_inference: true, rationale: Response sequence synthesizes lifecycle reset, monitoring, and pinning guidance.}
+    status: validated

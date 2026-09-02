@@ -1,0 +1,72 @@
+version: 1
+technique_id: SAF-T1401
+name: Line Jumping
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an attacker-controlled MCP tool, prompt, or resource to
+  win a host, proxy, or registry resolution decision ahead of the trusted object it
+  shadows, so later selection and review operate on the wrong object.
+scope:
+  security_boundary: The provenance and authorization boundary between MCP servers
+    or registry stores and the host-side resolver that aggregates, ranks, and selects
+    tools, prompts, or resources.
+  in_scope:
+  - Name, URI, normalization, store-order, or ranking-precedence manipulation that
+    makes an attacker-controlled MCP object resolve before a trusted competing object.
+  - Unauthorized creation or mutation of a higher-precedence shared object and collision-based
+    overwrites in an MCP aggregation layer.
+  - Abuse of untrusted priority or recency hints when a host uses those hints to rank
+    context, explicitly limited to research-derived evidence.
+  out_of_scope:
+  - Prompt or descriptor injection that changes model behavior without winning an
+    identity or precedence decision.
+  - Post-approval mutation of the same object when no competing object is displaced.
+  - Session hijacking, server compromise, or sandbox escape unless the resulting act
+    independently manipulates resolver precedence.
+  - Downstream tool effects such as collection, execution, or exfiltration.
+  affected_components:
+  - MCP host resolver and capability catalog
+  - MCP proxy or hub registry
+  - MCP client tool, prompt, and resource aggregation
+  - Server-supplied identity, priority, and modification metadata
+nearest_neighbors:
+- technique_id: SAF-T1001
+  distinction: Tool Poisoning changes descriptor semantics, while Line Jumping requires
+    an attacker-controlled object to win a resolution or rank decision.
+- technique_id: SAF-T1205
+  distinction: Persistent Tool Redefinition changes an already selected object after
+    approval, while Line Jumping displaces a competing trusted object through precedence.
+required_evidence:
+- Establish current MCP identity, collision, priority, and host-aggregation semantics
+  from the current specification and first-party guidance.
+- Establish at least one complete controlled example in which a malicious MCP object
+  wins resolution ahead of a legitimate object.
+- Verify prerequisites, affected and fixed versions, consequence, and exploitation
+  status for selected vulnerability examples.
+- Search separately for production incidents, direct vulnerabilities, demonstrations,
+  enabling vulnerabilities, and adjacent behavior.
+- Establish resolver and registry telemetry sufficient to test a behavioral analytic.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Resolver registration and mutation events with timestamp, actor and role, scope,
+    object type, logical identity, canonical source, collision state, disambiguation
+    decision, approval state, outcome, and definition hash.
+  - Resolver-decision events with winner and competing-source provenance, trust rank,
+    resolution reason, and associated session or request.
+safe_example_constraints:
+- Use inert server identifiers and non-operational object content.
+- Do not reproduce advisory payloads, exfiltration destinations, or commands.
+- Show only the minimum precedence metadata needed to explain detection.
+completion_evidence:
+- Every substantive publishable unit is joined to validated claims and sources.
+- Excluded claims and candidates are absent from publishable prose and ledgered.
+- Two consecutive focused saturation passes add no material evidence.
+- Positive, negative, boundary, malformed, and expected-false-positive tests pass.
+- Publication-rights, framework, clean-room, and safe-publication gates pass.

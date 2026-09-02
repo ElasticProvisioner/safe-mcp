@@ -1,0 +1,122 @@
+version: 1
+technique_id: SAF-T1008
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1008/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1008/technique-contract.yml
+  supports: Internal scope, name, tactic, clean-room mode, neighbor boundary, and
+    completion metadata.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1008/quality-review.yml
+  supports: Validation command, results, test status, review date, and waiver status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1008/detection-rule.yml
+  supports: The explicitly labeled experimental detection analytic.
+- id: LOCAL-detection-fixtures
+  path: tests/SAF-T1008/fixtures/events.json
+  supports: Positive, negative, threshold, allowlist, wrong-event, missing-field,
+    and null-value fixtures.
+- id: LOCAL-detection-test
+  path: tests/SAF-T1008/test_detection_rule.py
+  supports: Executable fixture evaluation logic.
+- id: LOCAL-detection-results
+  path: tests/SAF-T1008/results.json
+  supports: Recorded result showing eight of eight passing cases.
+- id: LOCAL-source-coverage
+  path: research/techniques/SAF-T1008/source-coverage.yml
+  supports: Search passes, saturation, breach candidates, selected examples, conflicts,
+    and evidence classification.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1008-X001
+  candidate: Claim that the defining technique has been exploited in a production
+    incident.
+  origin: Required production-incident and exploited-vulnerability search pass.
+  attempted_searches:
+  - NVD Model Context Protocol corpus and exact shadowing queries
+  - CISA KEV exact identifier and scoped MCP-term checks
+  - Direct authoritative advisory and research-source review
+  consulted_source_ids:
+  - SRC-nvd-cve-2026-25905
+  - SRC-cisa-kev-2026-09-01
+  - SRC-jfrog-jfsa-2026-001653030
+  reason: No direct production incident was documented in the reviewed authoritative
+    corpora; demonstrations cannot be relabeled as breaches.
+  prohibited_publishable_text:
+  - Tool shadowing has been exploited in production
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1008-X002
+  candidate: Define the technique solely as identical-name tool registration or resolution-order
+    abuse.
+  origin: Conflicting CSA-sponsored community taxonomy entry.
+  attempted_searches:
+  - Direct comparison of the Invariant and CSA definitions
+  - Review of current MCP tool-name requirements
+  consulted_source_ids:
+  - SRC-csa-shadowing-2026
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-mcp-tools-2025-11-25
+  reason: The name-collision mechanism lacks the contract's foreign-descriptor influence
+    invariant and is retained only as a terminology conflict.
+  prohibited_publishable_text:
+  - Tool shadowing is an attack where a malicious server registers a tool with the
+    same name
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1008-X003
+  candidate: Classify CVE-2026-25905 as a direct cross-server tool-shadowing vulnerability.
+  origin: JFrog advisory and vulnerability-corpus pass.
+  attempted_searches:
+  - Full JFrog advisory and proof-of-concept review
+  - NVD and CVE Program record review
+  consulted_source_ids:
+  - SRC-jfrog-jfsa-2026-001653030
+  - SRC-nvd-cve-2026-25905
+  - SRC-cve-cve-2026-25905
+  reason: The issue enables takeover and mutation of the affected server's own tool
+    registry; it does not establish one descriptor governing another server's trusted
+    tool.
+  prohibited_publishable_text:
+  - CVE-2026-25905 is a direct tool shadowing vulnerability
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1008-X004
+  candidate: Publish ecosystem prevalence statistics from papers found during discovery
+    but not fully reviewed for this packet.
+  origin: arXiv direct-authority discovery pass.
+  attempted_searches:
+  - arXiv query tool description MCP security
+  - Abstract triage against the exact cross-server descriptor contract
+  consulted_source_ids: []
+  reason: Discovery-only papers were not fully reviewed and their prevalence measures
+    concern adjacent descriptor-code inconsistency or benchmark taxonomies.
+  prohibited_publishable_text:
+  - 13% of MCP servers are vulnerable to tool shadowing
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1008-X005
+  candidate: Raise the evidence label to Observed based on public proofs of concept
+    or controlled evaluations.
+  origin: Evidence-classification review.
+  attempted_searches:
+  - Compared direct demonstrations with incident-report and government exploitation
+    corpora
+  - Reviewed source limitations and exploitation-status wording
+  consulted_source_ids:
+  - SRC-invariant-tpa-2025-04-01
+  - SRC-jamshidi-2026-arxiv-2512-06556
+  - SRC-cisa-kev-2026-09-01
+  reason: Public demonstrations satisfy Demonstrated, while Observed requires a documented
+    real incident.
+  prohibited_publishable_text:
+  - 'Evidence Status: Observed'
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

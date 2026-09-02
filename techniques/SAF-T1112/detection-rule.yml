@@ -1,50 +1,99 @@
-title: MCP Sampling Abuse Detection
-id: 7a9d7b89-78a5-4c5b-a132-2d1bf58245d8
+title: Suspicious MCP Sampling Request Approval or Burst
+id: 5694e155-5faf-45ee-a245-8ad3c3a4d493
 status: experimental
-description: Detects suspicious repeated or high-risk MCP sampling requests that may indicate quota drain, conversation manipulation, or covert downstream actions.
-author: The SAF-MCP Authors
-date: 2026-03-11
+description: >-
+  Detects a server-to-client sampling/createMessage request that lacks explicit
+  approval or is auto-approved, and request bursts that reach five events and
+  16,384 requested tokens for one server and session within five minutes.
 references:
-  - https://github.com/secure-agentic-framework/saf-mcp/tree/main/techniques/SAF-T1112
-  - https://modelcontextprotocol.io/specification/2025-11-25/client/sampling
-  - https://unit42.paloaltonetworks.com/model-context-protocol-attack-vectors/
-logsource:
-  product: mcp
-  service: client_runtime
-detection:
-  selection_sampling:
-    event_type: mcp.request
-    method: sampling/createMessage
-  suspicious_volume:
-    burst_count|gte: 3
-  suspicious_tokens:
-    max_tokens|gte: 4000
-  suspicious_tooling:
-    requested_tools|contains:
-      - read_file
-      - fs.read
-      - http_request
-      - web.fetch
-      - run_shell
-      - execute_command
-  weak_approval:
-    approval_state:
-      - missing
-      - auto_approved
-  suspicious_follow_on:
-    follow_on_action|contains:
-      - read_file
-      - run_shell
-      - http_request
-      - credential_lookup
-  condition: selection_sampling and (suspicious_volume or suspicious_tokens or suspicious_tooling or weak_approval or suspicious_follow_on)
-falsepositives:
-  - Legitimate long-running assistants that intentionally chain approved sampling requests
-  - Approved tool-enabled sampling against low-risk tools
-  - Developer sandbox workflows generating large analyses under explicit review
-level: high
+  - https://modelcontextprotocol.io/specification/2026-07-28/client/sampling
+  - https://modelcontextprotocol.io/specification/2026-07-28/schema
+author: OpenAI Codex clean-room agent
+date: "2026-09-02"
 tags:
-  - attack.execution
-  - attack.t1499.003
-  - attack.t1204
-  - safe.t1112
+  - saf.t1112
+logsource:
+  category: application
+  product: mcp_client
+  service: normalized_sampling_audit
+fields:
+  - timestamp
+  - server_id
+  - session_id
+  - direction
+  - method
+  - requested_max_tokens
+  - approval_state
+  - include_context
+  - tool_choice_mode
+  - result_state
+detection:
+  sampling_request:
+    direction: server_to_client
+    method: sampling/createMessage
+  unsafe_approval:
+    approval_state:
+      - absent
+      - auto_approved
+  burst_window:
+    group_by:
+      - server_id
+      - session_id
+    timeframe_seconds: 300
+    request_count_gte: 5
+    requested_token_sum_gte: 16384
+  condition: sampling_request and (unsafe_approval or burst_window)
+falsepositives:
+  - Explicitly authorized batch workloads that exceed local burst thresholds.
+  - Clients that encode an approved request as absent or auto_approved during normalization.
+  - Retry storms caused by transport or model-provider failures.
+level: high
+traceability:
+  policy: source_or_omit
+  design_claim_ids:
+    - SAF-T1112-C014
+  telemetry_claim_ids:
+    - SAF-T1112-C002
+    - SAF-T1112-C006
+    - SAF-T1112-C013
+  limitation_claim_ids:
+    - SAF-T1112-C015
+  validation_artifacts:
+    - techniques/SAF-T1112/test_detection_rule.py
+    - techniques/SAF-T1112/test-logs.json
+    - research/techniques/SAF-T1112/validation/detection-test.txt
+    - research/techniques/SAF-T1112/validation/strict-validator.txt
+  components:
+    logsource:
+      claim_ids:
+        - SAF-T1112-C013
+      rationale: Normalized client audit telemetry is required because the protocol itself defines no universal production log schema.
+    fields:
+      claim_ids:
+        - SAF-T1112-C002
+        - SAF-T1112-C006
+        - SAF-T1112-C013
+      rationale: Protocol request fields plus normalized identity, time, and approval state support correlation and triage.
+    sampling_request:
+      claim_ids:
+        - SAF-T1112-C002
+      rationale: Direction and exact request method bind the analytic to the sampling boundary.
+    unsafe_approval:
+      claim_ids:
+        - SAF-T1112-C003
+        - SAF-T1112-C014
+      rationale: Missing or automatic approval operationalizes the client-side review control as an experimental alert condition.
+    burst_window:
+      claim_ids:
+        - SAF-T1112-C006
+        - SAF-T1112-C014
+      rationale: The specification recommends rate limits but supplies no values, so the tested thresholds are explicitly experimental.
+    condition:
+      claim_ids:
+        - SAF-T1112-C008
+        - SAF-T1112-C014
+      rationale: The condition joins exact sampling activity to absent approval or an anomalous per-session budget burst.
+    falsepositives:
+      claim_ids:
+        - SAF-T1112-C015
+      rationale: Legitimate batching, telemetry normalization, and retries can resemble the analytic conditions.

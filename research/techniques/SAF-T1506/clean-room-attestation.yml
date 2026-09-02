@@ -1,0 +1,149 @@
+version: 1
+technique_id: SAF-T1506
+generation_mode: clean_room
+generator:
+  type: fresh_agent
+  inherited_context: false
+  identifier: cleanroom_saf_t1506
+target:
+  id: SAF-T1506
+  neutral_name: Infrastructure Token Theft
+  assigned_tactic: ATK-TA0006
+allowed_inputs:
+- Neutral technique identifier, neutral name, and assigned tactic supplied by the
+  coordinator.
+- Generic repository templates, methodology, readable trace instructions, and validator
+  contract.
+- Directly reviewed external authorities reached by exact URL or an authority-provided
+  link.
+prohibited_inputs:
+- techniques/SAF-T1506/README.md
+- techniques/SAF-T1506/detection-rule.yml
+- research/techniques/SAF-T1506/
+- Existing target tests, catalog descriptions, shared registries, SAF sites, and target-specific
+  content.
+- Git history, diffs, blame, logs, branches, or pull request material about the target.
+- Previous conversation or prior target conversation containing target-specific content.
+independent_research:
+  searches:
+  - Direct exact-URL review of current MCP specification, authorization, and security
+    authorities.
+  - Direct exact-URL review of RFC, cloud-provider, Kubernetes, OpenTelemetry, CVE,
+    incident, and ATT&CK authorities.
+  - Authority-linked exact GitHub advisory and patch review only after a non-GitHub
+    authority supplied each URL.
+  - Two final exact-URL recency checks, including the official CISA KEV feed, without
+    search-query discovery.
+  opened_source_ids:
+  - SRC-aqua-trivy-2026
+  - SRC-aqua-trivy-product
+  - SRC-aws-imds
+  - SRC-aws-imds-credentials
+  - SRC-azure-imds
+  - SRC-circleci-alert-2023
+  - SRC-cisa-kev-infrastructure-token-2026-09-01
+  - SRC-cve-2025-1974
+  - SRC-cve-2025-30066
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-6514
+  - SRC-doj-capital-one-2019
+  - SRC-fbi-teampcp-2026
+  - SRC-gcp-metadata
+  - SRC-ghsa-inspector-7f8r
+  - SRC-git-50df0e1
+  - SRC-git-607b226
+  - SRC-google-ai-threats-2026
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-k8s-cve-2025-1974
+  - SRC-k8s-service-account-admin
+  - SRC-k8s-service-accounts
+  - SRC-litellm-incident-2026
+  - SRC-mcp-authorization-2025-11-25
+  - SRC-mcp-authorization-2026-07-28
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-security-2026-07-28
+  - SRC-mcp-spec-2026-07-28
+  - SRC-mitre-t1528
+  - SRC-mitre-t1552.005
+  - SRC-occ-capital-one-2020
+  - SRC-oligo-inspector-cve-2025-49596
+  - SRC-otel-general
+  - SRC-otel-http-spans-1.44.0
+  - SRC-rfc6750
+  - SRC-rfc9700
+  - SRC-unit42-teampcp-2026
+prior_artifact_access:
+  detected: false
+  details: []
+draft_frozen_before_integration: true
+integration_constraints:
+- Validate only against an isolated synthetic framework mock after the independent
+  draft and evidence packet are complete.
+- Do not inspect or merge against product catalogs, shared registries, existing target
+  artifacts, or repository history before freeze.
+- Keep synthetic neighbor joins visibly synthetic and exclude them from proposed product
+  catalog changes.
+attestation: The authoring agent used only the allowed neutral contract, generic methodology
+  and validator materials, and independently reviewed external authorities before
+  freezing this bundle.
+generated_on: 2026-09-01
+status: passed
+unresolved: []
+post_freeze_reconciliation:
+  source_id_mapping:
+    SRC-circleci-2023: SRC-circleci-alert-2023
+    SRC-cisa-kev-2026-09-01: SRC-cisa-kev-infrastructure-token-2026-09-01
+    SRC-cve-2025-49596: SRC-cve-2025-49596
+    SRC-cve-2025-6514: SRC-cve-2025-6514
+    SRC-ghsa-7f8r-222p-6f5g: SRC-ghsa-inspector-7f8r
+    SRC-jfrog-advisory-2025-6514: SRC-jfsa-2025-6514
+    SRC-jfrog-cve-2025-6514: SRC-jfrog-cve-2025-6514
+    SRC-mcp-auth-2025-11-25: SRC-mcp-authorization-2025-11-25
+    SRC-mcp-auth-2026-07-28: SRC-mcp-authorization-2026-07-28
+    SRC-mcp-security-2025-11-25: SRC-mcp-security-2025-11-25
+    SRC-mcp-security-2026-07-28: SRC-mcp-security-2026-07-28
+    SRC-mitre-t1528: SRC-mitre-t1528
+    SRC-oligo-cve-2025-49596: SRC-oligo-inspector-cve-2025-49596
+    SRC-otel-http-semconv: SRC-otel-http-spans-1.44.0
+    SRC-rfc6750: SRC-rfc6750
+    SRC-rfc9700: SRC-rfc9700
+  new_shared_source_records:
+  - SRC-aqua-trivy-2026
+  - SRC-aqua-trivy-product
+  - SRC-aws-imds
+  - SRC-aws-imds-credentials
+  - SRC-azure-imds
+  - SRC-cve-2025-1974
+  - SRC-cve-2025-30066
+  - SRC-doj-capital-one-2019
+  - SRC-fbi-teampcp-2026
+  - SRC-gcp-metadata
+  - SRC-git-50df0e1
+  - SRC-git-607b226
+  - SRC-google-ai-threats-2026
+  - SRC-k8s-cve-2025-1974
+  - SRC-k8s-service-account-admin
+  - SRC-k8s-service-accounts
+  - SRC-litellm-incident-2026
+  - SRC-mcp-spec-2026-07-28
+  - SRC-mitre-t1552.005
+  - SRC-occ-capital-one-2020
+  - SRC-otel-general
+  - SRC-unit42-teampcp-2026
+  repository_history_sha: 26c39823e0b55144bc7891f6345e6030646c16a0
+  canonical_tactics:
+  - ATK-TA0006
+  canonical_mitigations:
+  - SAF-M-13
+  - SAF-M-16
+  - SAF-M-17
+  - SAF-M-24
+  - SAF-M-29
+  - SAF-M-31
+  - SAF-M-37
+  - SAF-M-74
+  status: integrated_and_validated
+  canonical_neighbors:
+  - SAF-T1502
+  - SAF-T1507

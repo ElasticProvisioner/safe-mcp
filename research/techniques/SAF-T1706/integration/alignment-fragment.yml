@@ -1,0 +1,10 @@
+version: 1
+issues:
+  - id: SAF-T1706-A001
+    triggered_by: SAF-T1706
+    affects: [SAF-T1304, SAF-T1308, SAF-T1504, SAF-T1506, SAF-T1706]
+    severity: high
+    status: resolved
+    change: Register adversarial replay of a captured OAuth access token by a different presenter at a protected resource as SAF-T1706.
+    reason: The frozen contract excludes acquisition, ordinary passthrough, non-access-token artifacts, and follow-on activity, and distinguishes replay from grant, scope, or audience substitution alone.
+    resolution: SAF-T1504 and SAF-T1506 cover acquisition paths, SAF-T1304 covers the broader credential-relay boundary, SAF-T1308 covers token scope or audience substitution, four canonical mitigations cover resource binding, sender constraint, usage tracking, and revocation, ATT&CK T1550.001 maps directly, T1528 remains an adjacent prerequisite, and eight detector cases validate the boundary.

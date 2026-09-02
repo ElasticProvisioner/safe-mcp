@@ -1,0 +1,84 @@
+{
+  "cases": [
+    {
+      "name": "positive_untrusted_cross_session",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-001", "session_id": "s-a", "source_trust": "untrusted", "user_approved": false, "semantic_flags": ["memory_instruction"]},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-001", "session_id": "s-b"}
+      ]
+    },
+    {
+      "name": "positive_unknown_provenance",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-08-03T12:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-002", "session_id": "s-c", "source_trust": "unknown", "user_approved": true, "semantic_flags": []},
+        {"timestamp": "2026-08-04T12:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-002", "session_id": "s-d"}
+      ]
+    },
+    {
+      "name": "positive_flagged_even_trusted",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-08-05T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-003", "session_id": "s-e", "source_trust": "trusted", "user_approved": true, "semantic_flags": ["memory_instruction"]},
+        {"timestamp": "2026-08-11T23:59:59Z", "event_type": "memory_retrieval", "memory_id": "m-003", "session_id": "s-f"}
+      ]
+    },
+    {
+      "name": "boundary_exactly_seven_days",
+      "expected_alert": true,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-004", "session_id": "s-g", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-08T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-004", "session_id": "s-h"}
+      ]
+    },
+    {
+      "name": "boundary_after_seven_days",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-005", "session_id": "s-i", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-08T00:00:01Z", "event_type": "memory_retrieval", "memory_id": "m-005", "session_id": "s-j"}
+      ]
+    },
+    {
+      "name": "negative_same_session",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-006", "session_id": "s-k", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-006", "session_id": "s-k"}
+      ]
+    },
+    {
+      "name": "negative_ephemeral_write",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "thread", "memory_id": "m-007", "session_id": "s-l", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-007", "session_id": "s-m"}
+      ]
+    },
+    {
+      "name": "negative_mismatched_memory_id",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-008", "session_id": "s-n", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-other", "session_id": "s-o"}
+      ]
+    },
+    {
+      "name": "expected_legitimate_preference",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "memory_id": "m-009", "session_id": "s-p", "source_trust": "trusted", "user_approved": true, "semantic_flags": []},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "memory_id": "m-009", "session_id": "s-q"}
+      ]
+    },
+    {
+      "name": "malformed_missing_memory_id",
+      "expected_alert": false,
+      "events": [
+        {"timestamp": "2026-08-01T00:00:00Z", "event_type": "memory_write", "memory_scope": "persistent", "session_id": "s-r", "source_trust": "untrusted", "user_approved": false, "semantic_flags": []},
+        {"timestamp": "2026-08-02T00:00:00Z", "event_type": "memory_retrieval", "session_id": "s-s"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+version: 1
+technique_id: SAF-T1408
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: /root/cleanroom_saf_t1408
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Attestation reports no prohibited access, nonempty independent searches, freeze before integration, and no unresolved concern.
+  contract_and_scope:
+    status: passed
+    notes: Scope is limited to attacker-influenced PKCE weakening and excludes issuer, URL, transport, and token-only neighbors.
+  technical_accuracy:
+    status: passed
+    notes: Current MCP and OAuth requirements, prerequisites, flow, effects, fixed versions, and limitations were directly checked.
+  claim_traceability:
+    status: passed
+    notes: Eighteen validated claims use exact locators and directly reviewed sources.
+  source_or_omit:
+    status: passed
+    notes: Every substantive README unit has a hidden claim/source trace or a declared local artifact; eight unpublishable leads remain omitted and ledgered.
+  evidence_classification:
+    status: passed
+    notes: Overall status is Research-Derived because component evidence is strong but no production or complete MCP-specific demonstration was found.
+  research_saturation:
+    status: passed
+    notes: All five passes completed and the final two authority-catalog follow-ups added no material change.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Five fully reviewed candidates yielded one direct and two enabling selected vulnerabilities; no qualifying production breach was found.
+  detection_quality:
+    status: passed
+    notes: Eleven representative cases passed, including positive, negative, boundary, malformed, normalization, and approved-legacy lookalike coverage.
+  mitigation_quality:
+    status: passed
+    notes: Fail-closed capability verification, S256, transaction binding, and response actions address the defining mechanism and limitations.
+  framework_alignment:
+    status: passed
+    notes: Tactic, analogous ATT&CK mapping, canonical neighbors, mitigations, stable source IDs, history, and proof paths are reconciled in the integrated repository.
+  publication_rights:
+    status: passed
+    notes: All fifteen cited sources are paraphrased with authors or teams credited; no quotation, code, image, dataset, or diagram is republished.
+  safe_publication:
+    status: passed
+    notes: The scenario and detector cases use inert identifiers and no code, token, verifier, secret, or deployable interception sequence.
+
+validation:
+  commands:
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1408/test_detection_rule.py
+      result: passed
+      details: 11 of 11 cases passed.
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1408
+      result: passed
+      details: Strict isolated synthetic repository validation passed.
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1408/test_detection_rule.py
+      result: passed
+      details: 11 of 11 cases passed in the integrated repository.
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1408
+      result: passed
+      details: Strict integrated repository validation passed.
+  detection_tests:
+    status: passed
+    command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1408/test_detection_rule.py
+    result: 11 of 11 cases passed.
+    waiver: null
+
+unresolved: []

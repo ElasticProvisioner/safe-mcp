@@ -1,0 +1,77 @@
+version: 1
+technique_id: SAF-T1405
+name: Tool Obfuscation/Renaming
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0005
+adversary_objective: Cause an attacker-controlled or materially changed tool to be
+  mistaken for, preferred over, or reviewed as an expected tool by manipulating its
+  presented name, title, or description.
+scope:
+  security_boundary: Untrusted or mutable tool-definition metadata crosses into MCP
+    discovery, approval, identity, and selection decisions made by a host, model,
+    operator, or name-based policy.
+  in_scope:
+  - Deceptive machine names, titles, or descriptions that cause misidentification,
+    preferential selection, or missed change review.
+  - Cross-server name collision and trusted-looking renaming when origin is not stably
+    disambiguated.
+  - Definition updates whose identity presentation changes without corresponding approval.
+  out_of_scope:
+  - Instructions delivered only through tool results or user content after an accurately
+    identified tool is selected.
+  - Backend behavior mutation with unchanged tool identity metadata.
+  - Registry or package compromise without deceptive tool-identity presentation.
+  - Direct invocation authorization bypass that requires only knowledge of an existing
+    tool name.
+  affected_components:
+  - MCP server and tool provider
+  - MCP client or host and approval interface
+  - Tool registry or multi-server aggregator
+  - Model tool-selection context
+nearest_neighbors:
+- technique_id: SAF-T1001
+  distinction: SAF-T1001 changes instruction-bearing definition semantics; SAF-T1405
+    is defined by deceptive discovery or identity metadata used in review or selection.
+- technique_id: SAF-T1201
+  distinction: SAF-T1201 changes behavior or definition content after approval under
+    a stable identity; SAF-T1405 requires deceptive or unexpected name, title, or
+    descriptor metadata.
+required_evidence:
+- Establish MCP tool naming, discovery, invocation, and cross-server collision behavior
+  from the current protocol authority.
+- Establish direct controlled evidence that name or descriptor manipulation changes
+  tool selection.
+- Bound prerequisites, immediate objective, downstream impact conditions, and defense
+  limitations.
+- Search production incident, vulnerability, controlled-demonstration, defense, contrary-evidence,
+  and saturation corpora independently.
+- Preserve an explicit gap when no direct production incident or direct renaming vulnerability
+  qualifies.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - MCP discovery or registry lifecycle events with stable server and provider identity,
+    tool name, normalized definition hash, approval state, and cross-server collision
+    state.
+  - Invocation events correlated to the definition hash and approval record selected
+    for the call.
+safe_example_constraints:
+- Use synthetic discovery events, inert tenants, and placeholder identities.
+- Do not include live credentials, sensitive records, destructive calls, or instructions
+  for deploying a malicious server.
+- Demonstrate detection of metadata drift rather than harmful tool behavior.
+completion_evidence:
+- Every substantive publishable unit is linked to a validated claim and reviewed source
+  with exact locators, or to a declared local artifact.
+- All unverified or out-of-scope candidates are omitted and recorded in the exclusion
+  ledger.
+- Two consecutive saturation passes record no material change.
+- The deterministic detection analytic passes positive and negative synthetic tests.
+- Rights, quality, clean-room, source-archive, and isolated strict-validator reviews
+  pass without unresolved issues.

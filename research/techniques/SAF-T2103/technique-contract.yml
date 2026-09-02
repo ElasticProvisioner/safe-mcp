@@ -1,0 +1,64 @@
+version: 1
+technique_id: SAF-T2103
+name: Code Sabotage
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0040
+adversary_objective: Deliberately corrupt repository behavior or its verification
+  and delivery safeguards through an agentic coding path.
+scope:
+  security_boundary: The authorization and review boundary between model-selected
+    tool actions and repository state accepted as legitimate.
+  in_scope:
+  - Adversary-directed, behavior-changing edits to source, tests, build logic, or
+    security configuration by an agentic coding system.
+  - Immediate integrity or availability impact on repository-derived software or delivery
+    controls.
+  out_of_scope:
+  - Prompt or goal manipulation without a qualifying repository change.
+  - Generic unauthorized tool use or data theft without the defining code-state outcome.
+  - Overt destructive repository actions that do not covertly alter software behavior
+    or its safeguards.
+  - Accidental defects and ordinary low-quality generated code.
+  affected_components:
+  - Agent host and model
+  - MCP or native file-editing tools
+  - Repository workspace and source-control service
+  - Build, test, and security configuration
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection changes the agent's governing instructions; Code
+    Sabotage requires an adversary-directed repository behavior change.
+- technique_id: SAF-T2101
+  distinction: Data Destruction covers deletion or irreversible corruption of stored
+    state; Code Sabotage covers deliberate behavior-changing source or control edits.
+required_evidence:
+- Establish that an agentic development path can modify repository state.
+- Establish the adversary-directed behavior-changing outcome and prerequisites.
+- Separate controlled demonstrations from production incidents and enabling vulnerabilities.
+- Search production breaches, advisories, exploitation status, controlled demonstrations,
+  detection, defenses, and contrary evidence.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Agent identity, session, action, repository, ref, paths, approval state, and untrusted-context
+    flag.
+  - Normalized change-risk indicators and source-control review, check, merge, and
+    rollback records.
+safe_example_constraints:
+- Use only inert file names, abstract behavior indicators, and placeholder identities.
+- Do not include executable payloads, destructive commands, bypass recipes, credentials,
+  or operational secrets.
+completion_evidence:
+- Every substantive publishable unit has validated claim/source linkage or a declared
+  repository source.
+- Rejected and adjacent candidates are preserved in the traceability and source-coverage
+  ledgers.
+- Two consecutive saturation passes produced no material change.
+- Deterministic detection tests and strict isolated validation pass.
+- Rights and safe-publication reviews pass without unresolved issues.

@@ -1,50 +1,78 @@
-title: MCP Sandbox Escape via Server Exec Detection
-id: 5d559ca7-d75c-4cd0-b0d7-9d2222b62dd3
+title: MCP Server Exec Security-Context Boundary Mismatch
+id: 13031303-1303-4303-8303-130313031303
 status: experimental
-description: Detects potential container sandbox escapes via server exec vulnerabilities (e.g., CVE-2024-21626) by monitoring "runc exec" invocations with path-traversal working directories.
-author: Shekhar Chaudhary
-date: 2025-08-16
-modified: 2025-08-16
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1303
-  - https://nvd.nist.gov/vuln/detail/CVE-2024-21626
-  - https://www.wiz.io/blog/leaky-vessels-container-escape-vulnerabilities
+description: >-
+  Detects a process created by an MCP server-side component when a correlated
+  MCP action expected sandboxed execution, the observed security context
+  differs, and no explicit privileged approval was recorded.
+author: OpenAI Codex clean-room authoring agent
+date: "2026-09-01"
+modified: "2026-09-01"
 logsource:
   category: process_creation
-  product: linux
+  product: cross-platform
+  service: correlated_mcp_and_endpoint_audit
 detection:
-  selection_runtime_process:
-    Image|contains:
-      - 'runc'
-    CommandLine|contains:
-      - ' exec'
-  selection_cwd_traversal_flag:
-    # Focus on runc's actual working directory flag (--cwd) to reduce noise
-    # Handle both space-separated and equals-assignment forms and optional quotes
-    CommandLine|re:
-      - '(^|\s)--cwd(?:=|\s+)["\']?\.\.(?:[/\\])'
-  condition: selection_runtime_process and selection_cwd_traversal_flag
+  selection_mcp:
+    mcp.method: tools/call
+    mcp.sandbox.expected: true
+    mcp.approval.privileged: false
+  selection_process:
+    event.category: process
+    event.type: start
+    process.parent.role: mcp_server
+  selection_join:
+    correlation.request_id|exists: true
+    correlation.delta_seconds|max: 60
+    process.security_context|not_equals_field: mcp.sandbox.expected_context
+  condition: selection_mcp and selection_process and selection_join
+fields:
+  - '@timestamp'
+  - correlation.request_id
+  - correlation.delta_seconds
+  - mcp.actor.id
+  - mcp.method
+  - mcp.tool.name
+  - mcp.approval.privileged
+  - mcp.sandbox.expected_context
+  - process.parent.name
+  - process.executable
+  - process.command_line
+  - process.security_context
 falsepositives:
-  - Legitimate use of relative directories within container boundaries
-  - Developer testing scenarios that intentionally use path traversal in safe environments
+  - Explicitly approved administrative maintenance in which the privileged approval field was not propagated.
+  - A stale or incorrect expected-sandbox inventory.
 level: high
 tags:
-  - attack.privilege_escalation
-  - attack.t1611
-  - safe.t1303
-  - cve.2024.21626
-fields:
-  - Image
-  - CommandLine
-  - CurrentDirectory
-  - ProcessId
-  - ParentImage
-  - ParentCommandLine
-notes: |
-  This rule monitors `runc exec` commands that include path‑traversal sequences such as
-  `../` or `..\\`.  It aims to detect attempts to escape a container sandbox by
-  manipulating the working directory, based on CVE‑2024‑21626 and related research.
-  False positives may occur when developers legitimately use relative paths inside
-  containers or during testing.  Attackers may obfuscate traversal using encoding
-  or alternate container runtimes; therefore, organisations should supplement
-  this rule with behavioural monitoring and anomaly detection.
+  - saf.t1303
+  - attack.t1059
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1303-C008]
+  telemetry_claim_ids: [SAF-T1303-C002, SAF-T1303-C008]
+  limitation_claim_ids: [SAF-T1303-C009]
+  validation_artifacts:
+    - tests/SAF-T1303/test-logs.json
+    - tests/SAF-T1303/test_detection_rule.py
+  components:
+    logsource:
+      claim_ids: [SAF-T1303-C008]
+      rationale: Process-creation telemetry is joined to MCP audit events for boundary attribution.
+    selection_mcp:
+      claim_ids: [SAF-T1303-C002, SAF-T1303-C008]
+      rationale: The MCP side identifies the call, expected sandbox, and approval state.
+    selection_process:
+      claim_ids: [SAF-T1303-C008]
+      rationale: Parent role and process-start fields identify execution by the server-side component.
+    selection_join:
+      claim_ids: [SAF-T1303-C008, SAF-T1303-C009]
+      rationale: A bounded request join and context mismatch distinguish the technique from ordinary child processes.
+    condition:
+      claim_ids: [SAF-T1303-C008, SAF-T1303-C009]
+      rationale: All selections are required to reduce isolated-process false positives.
+    fields:
+      claim_ids: [SAF-T1303-C008]
+      rationale: Output fields support request-to-process investigation and tuning.
+    falsepositives:
+      claim_ids: [SAF-T1303-C009]
+      rationale: Normal approved administration and baseline errors can create the same raw process signal.

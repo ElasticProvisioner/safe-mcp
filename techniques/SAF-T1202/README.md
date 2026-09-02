@@ -1,282 +1,241 @@
 # SAF-T1202: OAuth Token Persistence
 
 ## Overview
-**Tactic**: Persistence (ATK-TA0003)  
-**Technique ID**: SAF-T1202  
-**Severity**: High  
-**First Observed**: 2021 (Academic research documented by Fett et al.)  
-**Last Updated**: 2025-09-06
+
+- **Tactic**: Persistence (ATK-TA0003) <!-- SAF-TRACE: claims=SAF-T1202-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+- **Technique ID**: SAF-T1202
+- **Research Packet**: [research/techniques/SAF-T1202](../../research/techniques/SAF-T1202/)
+- **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1202/traceability-ledger.yml)
+- **Documentation Status**: Under Review
+- **Evidence Status**: Research-Derived
+- **Severity**: High <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+- **Severity Rationale**: A renewed token can preserve the original grant's authorized reach; consequence depends on scope, resource capabilities, and approval controls. <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+- **First Observed**: Not observed end-to-end in an MCP production incident as of 2026-09-01; see the [source-coverage assessment](../../research/techniques/SAF-T1202/source-coverage.yml).
+- **Last Updated**: 2026-09-01
+
+## Scope
+
+This technique covers an adversary using an attacker-controlled OAuth refresh token to obtain replacement access tokens for an MCP protected resource, preserving the existing client, subject, scope, and resource grant across access-token lifetimes. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700,SRC-google-oauth-token-mitigation -->
+
+### In Scope
+
+- Replay or reuse of an already issued refresh token at the authorization server's token endpoint. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C005; sources=SRC-rfc9700,SRC-mcp-authorization-2026-07-28 -->
+- Continued authorized-looking access after an access token expires or the originally compromised endpoint is contained. <!-- SAF-TRACE: claims=SAF-T1202-C005,SAF-T1202-C017; sources=SRC-rfc9700,SRC-google-oauth-token-mitigation -->
+
+### Out of Scope
+
+- Theft, phishing, logging, or exfiltration that initially acquires the token. <!-- SAF-TRACE: claims=SAF-T1202-C014; sources=SRC-mitre-t1550-001 -->
+- Registering or consenting to a malicious OAuth application, which creates or changes an integration. <!-- SAF-TRACE: claims=SAF-T1202-C015; sources=SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
+- Subsequent MCP tool actions, collection, or exfiltration performed with a renewed access token. <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+
+### Distinguishing Characteristics
+
+The defining observable is a refresh grant that renews access under an existing authorization. Token acquisition ends before that exchange, while malicious application persistence changes the integration or consent state; synthetic neighbor joins are documented in the [contract](../../research/techniques/SAF-T1202/technique-contract.yml). <!-- SAF-TRACE: claims=SAF-T1202-C014,SAF-T1202-C015; sources=SRC-mitre-t1550-001,SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
 
 ## Description
-OAuth Token Persistence is a technique where adversaries steal and reuse OAuth access/refresh tokens for persistent access to MCP-connected services, including replay of refresh tokens after legitimate client sessions end. This attack exploits the long-lived nature of OAuth refresh tokens and the trust relationships established between MCP servers and external services.
 
-Unlike traditional session hijacking that typically affects single applications, OAuth token persistence in MCP environments enables adversaries to maintain unauthorized access across multiple interconnected services through the protocol's standardized authentication mechanisms. The attack is particularly concerning in MCP deployments where refresh tokens may have extended validity periods (up to 90 days) and can be used to mint new access tokens without user interaction.
+MCP HTTP authorization places the client, authorization server, and protected MCP resource in separate roles. The client presents an access token to the MCP resource, while refresh-token issuance remains an authorization-server decision. <!-- SAF-TRACE: claims=SAF-T1202-C001,SAF-T1202-C002; sources=SRC-mcp-authorization-2026-07-28 -->
+
+If an attacker can successfully replay an unrevoked refresh token, OAuth permits the attacker to mint replacement access tokens on behalf of the resource owner. Applied to MCP, that renewal can preserve access without repeating the interactive authorization flow, subject to client binding, resource, scope, expiry, and revocation controls. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C005,SAF-T1202-C013; sources=SRC-rfc9700,SRC-mcp-authorization-2026-07-28,SRC-google-oauth-token-mitigation -->
+
+This end-to-end MCP behavior is classified as Research-Derived. A disclosed Better Auth flaw directly affected an MCP plugin, controlled research demonstrated refresh-token injection in a non-MCP SDK, and cloud guidance documents renewal persistence; reviewed production incidents did not expose the full MCP refresh sequence. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C017,SAF-T1202-C020; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-google-oauth-token-mitigation,SRC-usenix-s3kvetter-2018 -->
 
 ## Attack Vectors
-- **Primary Vector**: Theft of OAuth refresh tokens from compromised MCP servers or client applications
-- **Secondary Vectors**: 
-  - Browser-based token extraction from local storage or memory
-  - Man-in-the-middle attacks during OAuth flows
-  - Malware-based credential harvesting (infostealers)
-  - Social engineering attacks targeting OAuth authorization flows
-  - Cross-Site Scripting (XSS) attacks to steal tokens from web applications
-  - Compromise of MCP server infrastructure storing authentication tokens
+
+- **Primary Vector**: Present an attacker-controlled, still-valid refresh token to the authorization server and receive a replacement access token. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C005; sources=SRC-rfc9700,SRC-mcp-authorization-2026-07-28 -->
+- **Secondary Vectors**: Abuse missing confidential-client authentication or an incomplete account-deactivation revocation path. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C007; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-nvd-cve-2026-9571 -->
+- **Affected Components**: MCP client token store, OAuth authorization-server token endpoint and grant records, and MCP resource server. <!-- SAF-TRACE: claims=SAF-T1202-C001,SAF-T1202-C003; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-auth-security-2026-07-28 -->
+- **Trust Boundary Crossed**: The authorization server accepts possession of refresh material, plus any required client proof, as authority to continue the existing grant. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C016; sources=SRC-rfc9700,SRC-rfc9449 -->
 
 ## Technical Details
 
 ### Prerequisites
-- Target MCP server or client application uses OAuth 2.0 for authentication
-- Refresh tokens are stored in accessible locations (browser storage, application memory, or server databases)
-- Tokens have extended validity periods typical in OAuth implementations
-- Insufficient token binding or device attestation mechanisms
+
+- The deployment issued a refresh token and the token remains valid for the original client, subject, scope, and resource. <!-- SAF-TRACE: claims=SAF-T1202-C002,SAF-T1202-C004; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+- The attacker possesses any client authentication or proof material required to redeem it, or the deployment fails to require that proof. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C016; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-rfc9449 -->
+- Expiration, revocation, rotation, or identity-lifecycle controls have not already terminated the grant. <!-- SAF-TRACE: claims=SAF-T1202-C007,SAF-T1202-C016; sources=SRC-nvd-cve-2026-9571,SRC-rfc9700 -->
 
 ### Attack Flow
-1. **Initial Access**: Adversary gains access to OAuth tokens through various vectors (malware, phishing, XSS, or server compromise)
-2. **Token Extraction**: Adversary extracts refresh tokens from browser storage, application memory, or server databases
-3. **Token Validation**: Adversary validates stolen tokens by attempting to refresh access tokens
-4. **Persistence Establishment**: Adversary uses refresh tokens to maintain long-term access to MCP-connected services
-5. **Access Expansion**: Adversary leverages Family of Client IDs (FOCI) or similar mechanisms to access additional services within the same ecosystem
-6. **Post-Exploitation**: Adversary conducts data exfiltration, privilege escalation, or lateral movement using persistent access
+
+1. **Setup**: The adversary obtains control of refresh material through an out-of-scope acquisition path. <!-- SAF-TRACE: claims=SAF-T1202-C014; sources=SRC-mitre-t1550-001 -->
+2. **Renewal**: The adversary submits a refresh grant for the existing client and resource. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C005; sources=SRC-rfc9700,SRC-mcp-authorization-2026-07-28 -->
+3. **Authorization Decision**: The authorization server accepts the grant and issues a new access token, and may rotate the refresh token. <!-- SAF-TRACE: claims=SAF-T1202-C004,SAF-T1202-C010; sources=SRC-rfc9700 -->
+4. **Resource Access**: The adversary presents the access token to the intended MCP resource under the original subject and scope. <!-- SAF-TRACE: claims=SAF-T1202-C001,SAF-T1202-C013; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+5. **Persistence**: The adversary repeats renewal while the token family or grant remains valid. <!-- SAF-TRACE: claims=SAF-T1202-C005,SAF-T1202-C017; sources=SRC-rfc9700,SRC-google-oauth-token-mitigation -->
 
 ### Example Scenario
-```json
-{
-  "attack_type": "oauth_token_persistence",
-  "target": "mcp_gmail_server",
-  "stolen_token": {
-    "refresh_token": "1//04_refresh_token_example",
-    "client_id": "123456789.apps.googleusercontent.com",
-    "scope": "https://www.googleapis.com/auth/gmail.readonly",
-    "expires_in": 7776000
-  },
-  "persistence_duration": "90_days",
-  "impact": "continuous_email_access_without_user_awareness"
-}
-```
 
-### Advanced Attack Techniques (2024-2025 Research)
+An authorization server records a successful refresh for placeholder family `family-example-002` after `subject-example-002` has become deactivated. The event contains no credential value and uses only inert identifiers; it is one of the deterministic cases in [test-logs.json](../../tests/SAF-T1202/test-logs.json). <!-- SAF-TRACE: claims=SAF-T1202-C007,SAF-T1202-C011; sources=SRC-nvd-cve-2026-9571,SRC-rfc9700 -->
 
-According to research from [Secureworks](https://github.com/secureworks/family-of-client-ids-research) and [MITRE ATT&CK T1528](https://attack.mitre.org/techniques/T1528/), attackers have developed sophisticated OAuth token persistence methods:
+## Evidence and Current State
 
-1. **Family of Client IDs (FOCI) Exploitation**: Using undocumented Microsoft Azure AD refresh token behavior where tokens issued to one client in a "family" can be redeemed for access tokens to other clients in the same family ([Secureworks, 2022](https://github.com/secureworks/family-of-client-ids-research))
-2. **Primary Refresh Token (PRT) Theft**: Targeting Windows 10+ devices to steal PRTs that provide SSO access across Microsoft applications ([Microsoft Security, 2024](https://learn.microsoft.com/en-us/entra/identity/devices/concept-primary-refresh-token))
-3. **Device Code Phishing**: Social engineering attacks that trick users into approving OAuth device flows, granting attackers legitimate refresh tokens ([Microsoft Threat Intelligence, 2024](https://www.microsoft.com/en-us/security/blog/2022/01/26/evolved-phishing-device-registration-trick-adds-to-phishers-toolbox-for-victims-without-mfa/))
-4. **Cross-Platform Token Reuse**: Exploiting OAuth implementations that allow tokens to be used across different platforms or applications beyond their intended scope
+### Evidence Summary
 
-### MCP-Specific Attack Evolution (2025)
+| Claim ID | Claim | Evidence Status | Source ID and Source | Limitations |
+| --- | --- | --- | --- | --- |
+| SAF-T1202-C001 | MCP HTTP authorization separates client, authorization server, and protected resource roles. | Research-Derived | SRC-mcp-authorization-2026-07-28: [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Authorization is optional. | <!-- SAF-TRACE: claims=SAF-T1202-C001; sources=SRC-mcp-authorization-2026-07-28 -->
+| SAF-T1202-C002 | Refresh tokens are confidential and issuance is discretionary. | Research-Derived | SRC-mcp-authorization-2026-07-28: [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) | Issuance policy is provider-specific. | <!-- SAF-TRACE: claims=SAF-T1202-C002; sources=SRC-mcp-authorization-2026-07-28 -->
+| SAF-T1202-C003 | Stolen tokens can produce apparently legitimate requests; public clients require rotation. | Research-Derived | SRC-mcp-auth-security-2026-07-28: [MCP Security Considerations](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations) | Contextual telemetry may still distinguish use. | <!-- SAF-TRACE: claims=SAF-T1202-C003; sources=SRC-mcp-auth-security-2026-07-28 -->
+| SAF-T1202-C004 | Successful refresh-token replay mints access tokens for the resource owner's grant. | Research-Derived | SRC-rfc9700: [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700.html) | Access remains bounded by policy and token controls. | <!-- SAF-TRACE: claims=SAF-T1202-C004; sources=SRC-rfc9700 -->
+| SAF-T1202-C005 | Replayable refresh material can preserve MCP access across access-token lifetimes. | Research-Derived | SRC-mcp-authorization-2026-07-28; SRC-rfc9700; SRC-google-oauth-token-mitigation | The end-to-end MCP behavior was not observed in a reviewed production incident. | <!-- SAF-TRACE: claims=SAF-T1202-C005; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700,SRC-google-oauth-token-mitigation -->
+| SAF-T1202-C006 | Better Auth before 1.6.11 omitted confidential-client authentication on affected MCP and OIDC refresh grants. | Demonstrated | SRC-ghsa-pw9m-5jxm-xr6h: [GHSA-pw9m-5jxm-xr6h](https://github.com/better-auth/better-auth/security/advisories/GHSA-pw9m-5jxm-xr6h) | The advisory does not establish production exploitation. | <!-- SAF-TRACE: claims=SAF-T1202-C006; sources=SRC-ghsa-pw9m-5jxm-xr6h -->
+| SAF-T1202-C007 | A Mattermost deactivation flaw left refresh tokens capable of minting access tokens. | Demonstrated | SRC-nvd-cve-2026-9571: [CVE-2026-9571](https://nvd.nist.gov/vuln/detail/CVE-2026-9571) | Non-MCP; production exploitation was not established. | <!-- SAF-TRACE: claims=SAF-T1202-C007; sources=SRC-nvd-cve-2026-9571 -->
+| SAF-T1202-C008 | UNC6395 used compromised Drift-associated OAuth tokens and responders revoked both token types. | Observed | SRC-gtig-drift-2025; SRC-salesloft-drift-2026 | The sources do not identify a refresh exchange. | <!-- SAF-TRACE: claims=SAF-T1202-C008; sources=SRC-gtig-drift-2025,SRC-salesloft-drift-2026 -->
+| SAF-T1202-C009 | Attackers used stolen Heroku and Travis CI OAuth user tokens against GitHub organizations. | Observed | SRC-github-oauth-incident-2022 | The report does not identify MCP or refresh exchange. | <!-- SAF-TRACE: claims=SAF-T1202-C009; sources=SRC-github-oauth-incident-2022 -->
+| SAF-T1202-C010 | Rotation detects competing reuse but cannot identify which party submitted the invalidated token. | Research-Derived | SRC-rfc9700 | Detection requires family state and competing use. | <!-- SAF-TRACE: claims=SAF-T1202-C010; sources=SRC-rfc9700 -->
+| SAF-T1202-C011 | Successful refresh after disablement or with detected family reuse is a high-confidence signal. | Research-Derived | SRC-rfc9700; SRC-nvd-cve-2026-9571; SRC-mitre-t1550-001; SRC-ms-entra-risk-detections-2026 | Lifecycle errors and retries can resemble abuse. | <!-- SAF-TRACE: claims=SAF-T1202-C011; sources=SRC-rfc9700,SRC-nvd-cve-2026-9571,SRC-mitre-t1550-001,SRC-ms-entra-risk-detections-2026 -->
+| SAF-T1202-C012 | Response must revoke affected grants or families and account for residual access-token validity. | Research-Derived | SRC-google-oauth-token-mitigation; SRC-ms-token-tactics-2022; SRC-rfc7009 | Provider behavior varies. | <!-- SAF-TRACE: claims=SAF-T1202-C012; sources=SRC-google-oauth-token-mitigation,SRC-ms-token-tactics-2022,SRC-rfc7009 -->
+| SAF-T1202-C013 | Audience and scope restriction constrain blast radius but do not stop use at the intended resource. | Research-Derived | SRC-mcp-authorization-2026-07-28; SRC-rfc9700 | These controls are not proof of possession. | <!-- SAF-TRACE: claims=SAF-T1202-C013; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+| SAF-T1202-C014 | ATT&CK T1550.001 includes long-term access through OAuth refresh tokens. | Research-Derived | SRC-mitre-t1550-001 | ATT&CK is broader and maps the behavior outside Persistence. | <!-- SAF-TRACE: claims=SAF-T1202-C014; sources=SRC-mitre-t1550-001 -->
+| SAF-T1202-C015 | Creating an OAuth integration is distinct from reusing an existing refresh grant. | Research-Derived | SRC-mitre-ta0003; SRC-ms-app-consent-playbook | The behaviors may co-occur. | <!-- SAF-TRACE: claims=SAF-T1202-C015; sources=SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
+| SAF-T1202-C016 | Sender constraint, rotation, expiry, and revocation reduce replay or duration. | Research-Derived | SRC-rfc9700; SRC-rfc9449 | Rotation needs competing use; sender constraint depends on key protection. | <!-- SAF-TRACE: claims=SAF-T1202-C016; sources=SRC-rfc9700,SRC-rfc9449 -->
+| SAF-T1202-C017 | Google Cloud documents persistence from copied refresh tokens and victim-attributed logging. | Demonstrated | SRC-google-oauth-token-mitigation | Product guidance, not an MCP incident. | <!-- SAF-TRACE: claims=SAF-T1202-C017; sources=SRC-google-oauth-token-mitigation -->
+| SAF-T1202-C018 | An attacker solely controlling the latest token may evade rotation-reuse detection. | Research-Derived | SRC-rfc9700; SRC-rfc10017; SRC-mitre-t1550-001 | Provider risk engines may expose other signals. | <!-- SAF-TRACE: claims=SAF-T1202-C018; sources=SRC-rfc9700,SRC-rfc10017,SRC-mitre-t1550-001 -->
+| SAF-T1202-C019 | Impact is bounded by the renewed token's permissions and available resource actions. | Research-Derived | SRC-rfc9700; SRC-ghsa-pw9m-5jxm-xr6h | Scope and server controls determine consequence. | <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+| SAF-T1202-C020 | Peer-reviewed research demonstrated refresh-token injection and post-expiry renewal. | Demonstrated | SRC-usenix-s3kvetter-2018: [USENIX Security 2018 paper](https://www.usenix.org/conference/usenixsecurity18/presentation/yang) | Non-MCP and dependent on stated identity-provider or acquisition prerequisites. | <!-- SAF-TRACE: claims=SAF-T1202-C020; sources=SRC-usenix-s3kvetter-2018 -->
 
-#### MCP Server Token Centralization
-The Model Context Protocol creates unique risks for OAuth token persistence:
-- **Centralized Token Storage**: MCP servers often store multiple OAuth tokens for different services, creating high-value targets
-- **Cross-Service Token Access**: Compromised MCP servers can provide access to tokens for multiple connected services simultaneously
-- **Long-Lived Sessions**: MCP implementations may use extended token lifetimes to reduce authentication friction
+### Current State
 
-#### Tool-to-Tool Token Propagation
-Attackers can exploit MCP's tool chaining capabilities:
-1. **Initial Compromise**: Gain access to one MCP tool's OAuth tokens
-2. **Lateral Movement**: Use MCP's inter-tool communication to access tokens for other connected services
-3. **Privilege Escalation**: Leverage higher-privileged service tokens accessed through the MCP server
+- **Affected Environments**: MCP deployments that issue bearer refresh tokens and authorization systems with replayable, insufficiently bound, or incompletely revoked grants. <!-- SAF-TRACE: claims=SAF-T1202-C002,SAF-T1202-C006,SAF-T1202-C007; sources=SRC-mcp-authorization-2026-07-28,SRC-ghsa-pw9m-5jxm-xr6h,SRC-nvd-cve-2026-9571 -->
+- **Known Exploitation**: Controlled and vulnerability evidence establishes renewal behavior; reviewed production incidents establish adjacent token abuse but not the complete MCP renewal sequence. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C008,SAF-T1202-C020; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-gtig-drift-2025,SRC-usenix-s3kvetter-2018 -->
+- **Available Protections**: Sender constraint, rotation, bounded lifetime, revocation, and resource/scope restriction. <!-- SAF-TRACE: claims=SAF-T1202-C013,SAF-T1202-C016; sources=SRC-rfc9700,SRC-rfc9449 -->
+- **Residual Risk**: Rotation may not alert when the legitimate client never presents an older family member. <!-- SAF-TRACE: claims=SAF-T1202-C018; sources=SRC-rfc9700,SRC-rfc10017 -->
+
+### Known Breaches and Vulnerabilities
+
+| Event or Identifier | Date and Environment | Impact and Remediation | Relationship to This Technique | Evidence Limitation |
+| --- | --- | --- | --- | --- |
+| GHSA-pw9m-5jxm-xr6h / CVE-2026-53512 | 2026; Better Auth before 1.6.11, including the legacy MCP plugin | Valid refresh material could mint access and rotated refresh tokens; fixed in 1.6.11. | Direct vulnerability | No production exploitation reported by the reviewed advisory. | <!-- SAF-TRACE: claims=SAF-T1202-C006; sources=SRC-ghsa-pw9m-5jxm-xr6h -->
+| CVE-2026-9571 | 2026; affected Mattermost releases | Deactivated users retained renewal capability; fixed versions begin at 10.11.20, 11.6.5, 11.7.3, and 11.8.0. | Direct vulnerability | Non-MCP and no production exploitation established. | <!-- SAF-TRACE: claims=SAF-T1202-C007; sources=SRC-nvd-cve-2026-9571 -->
+| Refresh-token injection study | 2018; evaluated SSO SDK | Injected refresh material renewed access after expiry under stated prerequisites. | Direct demonstration | Non-MCP controlled research. | <!-- SAF-TRACE: claims=SAF-T1202-C020; sources=SRC-usenix-s3kvetter-2018 -->
+| UNC6395 Drift compromise | August 2025; Salesforce and Google Workspace integrations | Stolen OAuth tokens enabled data access; responders revoked access and refresh tokens. | Adjacent production incident | No refresh exchange identified. | <!-- SAF-TRACE: claims=SAF-T1202-C008; sources=SRC-gtig-drift-2025,SRC-salesloft-drift-2026 -->
+
+### Research and Incident Attribution
+
+- Clean-room technique author and analytic implementer: OpenAI Codex research agent, recorded in the [quality review](../../research/techniques/SAF-T1202/quality-review.yml).
+- Refresh-token injection research: Ronghai Yang, Wing Cheong Lau, Jiongyi Chen, and Kehuan Zhang. <!-- SAF-TRACE: claims=SAF-T1202-C020; sources=SRC-usenix-s3kvetter-2018 -->
+- UNC6395 reporting: Google Threat Intelligence Group and Mandiant authors Austin Larsen, Matt Lin, Tyler McLellan, and Omar ElAhdan, corroborated by Salesloft's incident team. <!-- SAF-TRACE: claims=SAF-T1202-C008; sources=SRC-gtig-drift-2025,SRC-salesloft-drift-2026 -->
+- Better Auth advisory credit: Gustavo Valverde, with discovery reported by subhanUmer. <!-- SAF-TRACE: claims=SAF-T1202-C006; sources=SRC-ghsa-pw9m-5jxm-xr6h -->
 
 ## Impact Assessment
-- **Confidentiality**: High - Unauthorized access to user data across multiple services
-- **Integrity**: Medium - Potential for data modification through persistent access
-- **Availability**: Low - Primarily focused on unauthorized access rather than service disruption
-- **Scope**: Network-wide - Can affect multiple services connected through MCP infrastructure
 
-### Current Status (2025)
-According to security researchers and industry reports, organizations are implementing various mitigations:
-- Microsoft has introduced token binding and Conditional Access policies to limit token reuse ([Microsoft Security, 2024](https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-token-protection))
-- Google has implemented device-bound session credentials to prevent token theft ([Google Security Blog, 2024](https://security.googleblog.com/2024/05/upgrading-google-session-security-with.html))
-- OAuth 2.1 specification mandates PKCE and restricts implicit flows to reduce token exposure ([IETF OAuth 2.1, 2024](https://datatracker.ietf.org/doc/draft-ietf-oauth-v2-1/))
-- Industry adoption of phishing-resistant authentication methods like FIDO2/WebAuthn is increasing
+| Dimension | Rating | Rationale and Conditions |
+| --- | --- | --- |
+| Confidentiality | High | Renewed access can expose data reachable within the existing token's scope. | <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+| Integrity | High | Renewed access can alter state only where the grant and MCP resource authorize write actions. | <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+| Availability | Medium | Disruption requires an authorized destructive or resource-intensive action. | <!-- SAF-TRACE: claims=SAF-T1202-C019; sources=SRC-rfc9700,SRC-ghsa-pw9m-5jxm-xr6h -->
+| Scope | Adjacent | Audience, resource, and scope binding limit reach to the intended grant and resource. | <!-- SAF-TRACE: claims=SAF-T1202-C013,SAF-T1202-C019; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
 
-However, legacy OAuth implementations and the complexity of MCP environments continue to present challenges for comprehensive token security.
+### Severity Conditions
+
+- **Severity increases when** broad scopes, sensitive MCP resources, long refresh lifetimes, weak sender binding, and incomplete lifecycle revocation coincide. <!-- SAF-TRACE: claims=SAF-T1202-C016,SAF-T1202-C019; sources=SRC-rfc9700,SRC-rfc9449 -->
+- **Severity decreases when** scopes and audiences are narrow, refresh tokens are sender-constrained and short-lived, and grants are revoked on security events. <!-- SAF-TRACE: claims=SAF-T1202-C013,SAF-T1202-C016; sources=SRC-rfc9700,SRC-rfc9449 -->
 
 ## Detection Methods
 
-**Note**: OAuth token persistence attacks can be challenging to detect as they often appear as legitimate API usage. Organizations should implement multi-layered detection approaches combining behavioral analysis, anomaly detection, and token validation mechanisms.
+### Required Telemetry
+
+| Source | Events or Actions | Required Fields | Collection Notes |
+| --- | --- | --- | --- |
+| OAuth authorization server | Token refresh and family-reuse decision | timestamp, action, outcome, grant type, client ID, subject ID, token-family ID, reuse flag | Preserve family state and normalized success/failure results. | <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C011; sources=SRC-rfc9700,SRC-mitre-t1550-001 -->
+| Identity lifecycle system | Disable, deactivate, revoke, and restore | subject ID, account status, effective time, grant status | Correlate status as it existed when the refresh was evaluated. | <!-- SAF-TRACE: claims=SAF-T1202-C007,SAF-T1202-C011; sources=SRC-nvd-cve-2026-9571,SRC-ms-entra-risk-detections-2026 -->
 
 ### Indicators of Compromise (IoCs)
-- Unusual API access patterns from previously authenticated sessions
-- Token usage from unexpected geographic locations or IP addresses
-- Access token refresh attempts after user logout or password changes
-- Multiple concurrent sessions using the same refresh token
-- API calls outside normal business hours or usage patterns
-- Attempts to access services not typically used by the account holder
 
-### Detection Rules
-
-**Important**: The following rule is written in Sigma format and contains example patterns only. OAuth token persistence attacks often leverage legitimate authentication mechanisms, making detection complex. Organizations should:
-- Implement behavioral analysis to identify unusual token usage patterns
-- Monitor for impossible travel scenarios in token usage
-- Track token lifetime and refresh patterns for anomalies
-- Correlate authentication events with user behavior baselines
-
-```yaml
-# EXAMPLE SIGMA RULE - Not comprehensive
-title: Suspicious OAuth Token Usage Pattern
-id: a7d4c8e2-3f1b-4d5e-9a8c-7b6f5e4d3c2a
-status: experimental
-description: Detects potential OAuth token persistence through unusual token usage patterns
-author: SAF-MCP Team <saf-mcp@example.com>
-date: 2025-09-06
-references:
-  - https://github.com/saf-mcp/techniques/SAF-T1202
-logsource:
-  product: oauth
-  service: token_validation
-detection:
-  selection_concurrent_usage:
-    event_type: 'token_refresh'
-    token_type: 'refresh_token'
-  selection_geographic_anomaly:
-    event_type: 'api_access'
-    geographic_distance: '>1000'  # Miles from previous access
-    time_delta: '<3600'  # Within 1 hour
-  selection_post_logout:
-    event_type: 'token_usage'
-    user_session_status: 'logged_out'
-    time_since_logout: '>300'  # More than 5 minutes after logout
-  condition: any of selection_*
-falsepositives:
-  - Legitimate users accessing services from multiple locations
-  - Mobile applications with background refresh mechanisms
-  - Shared accounts or service accounts with multiple access points
-  - Users traveling across time zones
-level: high
-tags:
-  - attack.persistence
-  - attack.t1528
-  - safe.t1202
-```
+- No universal durable artifact identifies this behavior; provider-specific token-family identifiers are sensitive correlation keys rather than portable indicators. <!-- SAF-TRACE: claims=SAF-T1202-C003,SAF-T1202-C011; sources=SRC-mcp-auth-security-2026-07-28,SRC-ms-entra-risk-detections-2026 -->
 
 ### Behavioral Indicators
-- API access patterns that deviate from established user baselines
-- Token refresh activities occurring outside normal user active hours
-- Simultaneous access from multiple geographic locations (impossible travel)
-- Continued service access after user-initiated logout or password changes
-- Access to services or data not previously accessed by the user account
-- Unusual volume or frequency of API calls using refresh tokens
+
+- A successful refresh grant after the subject or grant became disabled or revoked. <!-- SAF-TRACE: claims=SAF-T1202-C007,SAF-T1202-C011; sources=SRC-nvd-cve-2026-9571,SRC-rfc9700 -->
+- Server-detected use of an invalidated member of a refresh-token family, correlated with a successful renewal event. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C011; sources=SRC-rfc9700,SRC-mitre-t1550-001 -->
+
+### Detection Analytic
+
+The standalone example analytic is maintained in [detection-rule.yml](detection-rule.yml).
+
+- **Analytic Goal**: Alert on successful OAuth renewal after identity disablement or with detected family reuse. <!-- SAF-TRACE: claims=SAF-T1202-C011; sources=SRC-rfc9700,SRC-nvd-cve-2026-9571 -->
+- **Rule Status**: Experimental; see [detection-rule.yml](detection-rule.yml).
+- **Detection Logic**: Require a successful refresh grant and either disabled/deactivated subject state or a true reuse signal. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C011; sources=SRC-rfc9700,SRC-nvd-cve-2026-9571 -->
+- **Correlation Window**: Evaluate identity state and family state at the authorization decision time. <!-- SAF-TRACE: claims=SAF-T1202-C011; sources=SRC-rfc9700,SRC-ms-entra-risk-detections-2026 -->
+- **Known False Positives**: Lifecycle synchronization lag, recovery testing, or concurrency misclassified as reuse. <!-- SAF-TRACE: claims=SAF-T1202-C011; sources=SRC-rfc9700,SRC-ms-entra-risk-detections-2026 -->
+- **Known Limitations**: The analytic misses sole use of a still-valid latest refresh token without lifecycle or contextual evidence. <!-- SAF-TRACE: claims=SAF-T1202-C018; sources=SRC-rfc9700,SRC-rfc10017,SRC-mitre-t1550-001 -->
+- **Tuning Guidance**: Suppress documented test clients only after validating lifecycle synchronization; keep family-reuse alerts high priority. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C011; sources=SRC-rfc9700,SRC-ms-entra-risk-detections-2026 -->
+
+### Validation
+
+- **Test Data**: [test-logs.json](../../tests/SAF-T1202/test-logs.json)
+- **Validation Script**: [test_detection_rule.py](../../tests/SAF-T1202/test_detection_rule.py)
+- **Expected Result**: Eight deterministic cases pass, with three expected alerts and five expected non-alerts; see the [quality review](../../research/techniques/SAF-T1202/quality-review.yml).
+- **Last Validated**: 2026-09-01; see the [quality review](../../research/techniques/SAF-T1202/quality-review.yml).
+- **Feasibility Waiver**: None; see the [quality review](../../research/techniques/SAF-T1202/quality-review.yml).
 
 ## Mitigation Strategies
 
 ### Preventive Controls
-1. **[SAF-M-1: Architectural Defense - Token Binding](../../mitigations/SAF-M-1/README.md)**: Implement cryptographic token binding to tie OAuth tokens to specific devices or sessions, preventing token reuse on unauthorized systems
-2. **[SAF-M-2: Cryptographic Integrity](../../mitigations/SAF-M-2/README.md)**: Use proof-of-possession (PoP) tokens and device attestation to ensure tokens can only be used by legitimate clients
-3. **[SAF-M-3: AI-Powered Content Analysis](../../mitigations/SAF-M-3/README.md)**: Deploy machine learning systems to analyze token usage patterns and detect anomalous behavior indicative of token theft
-4. **[SAF-M-4: OAuth Security Best Practices](../../mitigations/SAF-M-4/README.md)**: Implement OAuth 2.1 recommendations including:
-   - Mandatory PKCE for all OAuth flows
-   - Short-lived access tokens (1 hour maximum)
-   - Refresh token rotation to invalidate stolen tokens
-   - Restricted redirect URIs and client authentication
-5. **[SAF-M-5: Secure Token Storage](../../mitigations/SAF-M-5/README.md)**: Store OAuth tokens using secure mechanisms:
-   - HTTP-only, secure cookies for web applications
-   - Encrypted storage with hardware security modules (HSMs)
-   - Avoid localStorage or sessionStorage for sensitive tokens
-6. **[SAF-M-6: Conditional Access Policies](../../mitigations/SAF-M-6/README.md)**: Implement dynamic access controls that evaluate:
-   - Device trust and compliance status
-   - Geographic location and impossible travel detection
-   - Risk-based authentication requirements
-7. **[SAF-M-7: Phishing-Resistant Authentication](../../mitigations/SAF-M-7/README.md)**: Deploy FIDO2/WebAuthn and hardware-backed authentication methods to prevent initial token compromise
-8. **[SAF-M-8: Network Security Controls](../../mitigations/SAF-M-8/README.md)**: Implement network-level protections including:
-   - Zero Trust Network Access (ZTNA)
-   - Mutual TLS (mTLS) for API communications
-   - Network segmentation for MCP infrastructure
+
+1. **Sender-constrain or rotate refresh tokens**: Bind tokens to a client key where feasible; otherwise rotate while retaining family state for replay detection. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C016; sources=SRC-rfc9700,SRC-rfc9449 -->
+2. **Bound grants**: Restrict scope, audience, resource, inactivity, and maximum lifetime. <!-- SAF-TRACE: claims=SAF-T1202-C013,SAF-T1202-C016; sources=SRC-mcp-authorization-2026-07-28,SRC-rfc9700 -->
+3. **Synchronize lifecycle revocation**: Terminate refresh grants when subjects are disabled and after security events. <!-- SAF-TRACE: claims=SAF-T1202-C007,SAF-T1202-C012,SAF-T1202-C016; sources=SRC-nvd-cve-2026-9571,SRC-rfc9700,SRC-rfc7009 -->
 
 ### Detective Controls
-1. **[SAF-M-10: Behavioral Analytics](../../mitigations/SAF-M-10/README.md)**: Deploy User and Entity Behavior Analytics (UEBA) to detect:
-   - Unusual token usage patterns
-   - Geographic anomalies in access patterns
-   - Impossible travel scenarios
-   - Access to previously unused services or data
-2. **[SAF-M-11: Token Lifecycle Monitoring](../../mitigations/SAF-M-11/README.md)**: Monitor OAuth token lifecycle events:
-   - Token issuance, refresh, and revocation events
-   - Concurrent token usage from multiple locations
-   - Token usage after user logout or password changes
-3. **[SAF-M-12: Comprehensive Audit Logging](../../mitigations/SAF-M-12/README.md)**: Implement detailed logging of:
-   - All OAuth token operations and API calls
-   - Device and location information for token usage
-   - Correlation with user authentication events
+
+1. **Retain token-family state**: Preserve invalidated-family reuse decisions and correlate them with refresh outcomes. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C011; sources=SRC-rfc9700,SRC-mitre-t1550-001 -->
+2. **Correlate identity context**: Compare refresh events with effective subject status and provider risk signals. <!-- SAF-TRACE: claims=SAF-T1202-C011; sources=SRC-nvd-cve-2026-9571,SRC-ms-entra-risk-detections-2026 -->
 
 ### Response Procedures
-1. **Immediate Actions**:
-   - Revoke all OAuth tokens associated with compromised accounts
-   - Force user reauthentication across all services
-   - Disable account access pending investigation
-   - Preserve forensic evidence from affected systems
-2. **Investigation Steps**:
-   - Analyze token usage logs for unauthorized access patterns
-   - Correlate access patterns with known threat intelligence
-   - Identify the initial compromise vector (malware, phishing, etc.)
-   - Assess the scope of data accessed using stolen tokens
-3. **Remediation**:
-   - Update OAuth implementations to current security standards
-   - Implement additional token binding and device attestation
-   - Enhance monitoring and alerting for token usage anomalies
-   - Conduct security awareness training on OAuth security risks
 
-## Real-World Incidents (2022-2025)
+#### Immediate Actions
 
-### Microsoft 365 OAuth Token Theft Campaign (2022)
-[Microsoft Security reported](https://www.microsoft.com/en-us/security/blog/2022/01/26/evolved-phishing-device-registration-trick-adds-to-phishers-toolbox-for-victims-without-mfa/) a sophisticated campaign where attackers used device code phishing to:
-- **Attack Vector**: Social engineering via Microsoft Teams messages
-- **Impact**: Persistent access to Microsoft 365 services without triggering MFA
-- **Technique**: Legitimate OAuth device flows exploited to gain refresh tokens
-- **Duration**: Attacks maintained access for weeks before detection
+- Revoke the affected grant or complete token family, and invalidate or wait out still-valid access tokens according to provider behavior. <!-- SAF-TRACE: claims=SAF-T1202-C012; sources=SRC-google-oauth-token-mitigation,SRC-ms-token-tactics-2022,SRC-rfc7009 -->
+- Disable the affected client or integration when its authentication material may also be compromised. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C012; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-google-oauth-token-mitigation -->
 
-### Cryptocurrency Exchange OAuth Compromise (2023)
-Security researchers documented cases where:
-- **Attack Vector**: Browser-based malware extracting OAuth tokens from local storage
-- **Impact**: Unauthorized access to cryptocurrency exchange APIs
-- **Technique**: Infostealers targeting saved authentication tokens
-- **Scope**: Multiple exchanges affected through common OAuth implementations
+#### Investigation Steps
 
-### Enterprise SaaS Token Persistence (2024)
-Recent incidents have shown:
-- **Attack Vector**: Compromised MCP servers exposing stored OAuth tokens
-- **Impact**: Cross-platform access to enterprise SaaS applications
-- **Technique**: Lateral movement through MCP tool chains
-- **Detection**: Often discovered weeks after initial compromise
+- Correlate token endpoint, identity lifecycle, MCP resource access, and follow-on activity by subject, client, resource, and family identifier. <!-- SAF-TRACE: claims=SAF-T1202-C011,SAF-T1202-C019; sources=SRC-mitre-t1550-001,SRC-ms-entra-risk-detections-2026 -->
+- Determine whether the attacker controlled the newest rotated token and whether the legitimate client ever caused a reuse signal. <!-- SAF-TRACE: claims=SAF-T1202-C010,SAF-T1202-C018; sources=SRC-rfc9700,SRC-rfc10017 -->
 
-### Google Workspace Family Token Exploitation (2024)
-Based on [Secureworks research](https://github.com/secureworks/family-of-client-ids-research):
-- **Attack Vector**: Exploitation of undocumented Family of Client IDs behavior
-- **Impact**: Single stolen refresh token provided access to multiple Google services
-- **Technique**: Token reuse across applications within the same "family"
-- **Mitigation**: Google has since implemented additional token validation
+#### Remediation
+
+- Patch the authorization component, correct lifecycle revocation, and require confidential-client authentication or proof of possession as applicable. <!-- SAF-TRACE: claims=SAF-T1202-C006,SAF-T1202-C007,SAF-T1202-C016; sources=SRC-ghsa-pw9m-5jxm-xr6h,SRC-nvd-cve-2026-9571,SRC-rfc9449 -->
+- Re-authorize only after the affected token family and client credentials are invalidated, then verify renewal and revocation regression tests. <!-- SAF-TRACE: claims=SAF-T1202-C012,SAF-T1202-C016; sources=SRC-rfc7009,SRC-rfc9700 -->
 
 ## Related Techniques
-- [SAF-T1001](../SAF-T1001/README.md): Tool Poisoning Attack - Can be combined with OAuth token theft for enhanced persistence
-- [SAF-T1007](../SAF-T1007/README.md): OAuth Authorization Phishing - Common initial access vector for token theft
-- [SAF-T1102](../SAF-T1102/README.md): Prompt Injection - May be used to manipulate MCP servers into exposing tokens
-- [SAF-T1601](../SAF-T1601/README.md): MCP Server Enumeration - Reconnaissance technique for identifying OAuth-enabled services
 
-## References
-- [Model Context Protocol Specification](https://modelcontextprotocol.io/specification)
-- [OWASP Top 10 for LLM Applications](https://owasp.org/www-project-top-10-for-large-language-model-applications/)
-- [OAuth 2.0 Security Best Current Practice - IETF RFC](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-security-topics)
-- [Family of Client IDs Research - Secureworks](https://github.com/secureworks/family-of-client-ids-research)
-- [MITRE ATT&CK T1528: Steal Application Access Token](https://attack.mitre.org/techniques/T1528/)
-- [Understanding Primary Refresh Tokens - Microsoft](https://learn.microsoft.com/en-us/entra/identity/devices/concept-primary-refresh-token)
-- [OAuth 2.0 Threat Model and Security Considerations - IETF RFC 6819](https://datatracker.ietf.org/doc/html/rfc6819)
-- [Session Token Theft: A Growing Threat to Modern Authentication - Halock Security](https://www.halock.com/session-token-theft-a-growing-threat-to-modern-authentication/)
-- [Securing the Gatekeeper: Addressing Vulnerabilities in OAuth Implementations - IJGIS 2024](https://ijgis.pubpub.org/pub/jkavqi25/release/1)
-- [The devil is in the (implementation) details: an empirical analysis of OAuth SSO systems - Sun & Beznosov, 2012](https://passwordresearch.com/papers/paper267.html)
-- [Machine learning approach to vulnerability detection in OAuth 2.0 - Munonye & Martinek, 2021](https://link.springer.com/content/pdf/10.1007/s10207-021-00551-w.pdf)
-- [OAuth 2.0 Redirect URI Validation Falls Short, Literally - Innocenti et al., 2023](https://innotommy.com/Wrong_redirect_uri_validation_in_OAuth-4.pdf)
-- [Why avoiding LocalStorage for tokens is the wrong solution - Pragmatic Web Security](https://pragmaticwebsecurity.com/articles/oauthoidc/localstorage-xss.html)
-- [Broken OAuth Vulnerability - SecureFlag](https://knowledge-base.secureflag.com/vulnerabilities/broken_authentication/broken_oauth_vulnerability.html)
-- [Common Security Issues in Implementing OAuth 2.0 - PullRequest](https://www.pullrequest.com/blog/common-security-issues-in-implementing-oauth-2-0-and-how-to-mitigate-them/)
-- [Understanding Token Theft - Triskele Labs](https://www.triskelelabs.com/understanding-token-theft)
-- [Primary Refresh Tokens Aren't Your Parent's Browser Token - KnowBe4](https://blog.knowbe4.com/primary-refresh-tokens-arent-your-parents-browser-token)
-- [Understanding Tokens in Entra ID: A Comprehensive Guide - Xintra](https://www.xintra.org/blog/tokens-in-entra-id-guide)
+| Technique | Relationship | Distinction |
+| --- | --- | --- |
+| [SAF-T1504: Token Theft via API Response](../SAF-T1504/README.md) | Prerequisite | Acquisition of token material through an API response ends at possession; this technique starts when a refresh token renews access. | <!-- SAF-TRACE: claims=SAF-T1202-C014; sources=SRC-mitre-t1550-001 -->
+
+Malicious OAuth application registration or consent is outside this technique, but no exact SAF catalog neighbor currently represents that boundary. <!-- SAF-TRACE: claims=SAF-T1202-C015; sources=SRC-mitre-ta0003,SRC-ms-app-consent-playbook -->
 
 ## MITRE ATT&CK Mapping
-- [T1528 - Steal Application Access Token](https://attack.mitre.org/techniques/T1528/)
-- [T1539 - Steal Web Session Cookie](https://attack.mitre.org/techniques/T1539/)
-- [T1556 - Modify Authentication Process](https://attack.mitre.org/techniques/T1556/)
+
+| ATT&CK ID | Technique | Mapping Type | Rationale |
+| --- | --- | --- | --- |
+| [T1550.001](https://attack.mitre.org/techniques/T1550/001/) | Use Alternate Authentication Material: Application Access Token | Analogous | It covers stolen application tokens and notes long-term access through refresh tokens, but it is broader than MCP and is assigned to Lateral Movement. | <!-- SAF-TRACE: claims=SAF-T1202-C014; sources=SRC-mitre-t1550-001 -->
+
+## References
+
+1. **SRC-mcp-authorization-2026-07-28**: [MCP Authorization specification](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) — roles, resource binding, token use, and refresh guidance.
+2. **SRC-mcp-auth-security-2026-07-28**: [MCP Authorization Security Considerations](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization/security-considerations) — token theft and rotation requirements.
+3. **SRC-rfc9700**: [RFC 9700: Best Current Practice for OAuth 2.0 Security](https://www.rfc-editor.org/rfc/rfc9700.html) — refresh replay consequences and protections.
+4. **SRC-rfc7009**: [RFC 7009: OAuth 2.0 Token Revocation](https://www.rfc-editor.org/rfc/rfc7009.html) — revocation semantics.
+5. **SRC-rfc9449**: [RFC 9449: OAuth 2.0 Demonstrating Proof of Possession](https://www.rfc-editor.org/rfc/rfc9449.html) — sender-constrained tokens.
+6. **SRC-rfc10017**: [RFC 10017: OAuth 2.0 for Browser-Based Applications](https://www.rfc-editor.org/rfc/rfc10017.html) — persistent token theft and rotation blind spots.
+7. **SRC-google-oauth-token-mitigation**: [Google Cloud best practices for mitigating compromised OAuth tokens](https://docs.cloud.google.com/architecture/bps-for-mitigating-gcloud-oauth-tokens) — persistence and remediation.
+8. **SRC-ghsa-pw9m-5jxm-xr6h**: [Better Auth advisory GHSA-pw9m-5jxm-xr6h](https://github.com/better-auth/better-auth/security/advisories/GHSA-pw9m-5jxm-xr6h) — affected MCP refresh-grant behavior and patch.
+9. **SRC-nvd-cve-2026-9571**: [NVD CVE-2026-9571](https://nvd.nist.gov/vuln/detail/CVE-2026-9571) — account deactivation and refresh-token invalidation flaw.
+10. **SRC-gtig-drift-2025**: [Google Threat Intelligence: UNC6395 Drift compromise](https://cloud.google.com/blog/topics/threat-intelligence/data-theft-salesforce-instances-via-salesloft-drift) — production token abuse and response.
+11. **SRC-salesloft-drift-2026**: [Salesloft incident updates](https://trust.salesloft.com/?uid=Update+on+Mandiant+Drift+and+Salesloft+Application+Investigations) — corroborating incident and revocation details.
+12. **SRC-github-oauth-incident-2022**: [GitHub security alert: stolen OAuth user tokens](https://github.blog/news-insights/company-news/security-alert-stolen-oauth-user-tokens/) — adjacent production token abuse.
+13. **SRC-ms-token-tactics-2022**: [Microsoft: token tactics](https://www.microsoft.com/en-us/security/blog/2022/11/22/token-tactics-how-to-prevent-detect-and-respond-to-cloud-token-theft/) — investigation and response.
+14. **SRC-ms-app-consent-playbook**: [Microsoft Learn: application consent grant investigation](https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-app-consent) — malicious integration boundary.
+15. **SRC-ms-entra-risk-detections-2026**: [Microsoft Entra ID Protection risk detections](https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-risks) — token anomaly context and false-positive cautions.
+16. **SRC-mitre-t1550-001**: [MITRE ATT&CK T1550.001](https://attack.mitre.org/techniques/T1550/001/) — application access-token behavior and detection.
+17. **SRC-mitre-ta0003**: [MITRE ATT&CK Persistence tactic](https://attack.mitre.org/tactics/TA0003/) — cloud application integration boundary.
+18. **SRC-usenix-s3kvetter-2018**: [Vetting Single Sign-On SDK Implementations via Symbolic Reasoning](https://www.usenix.org/conference/usenixsecurity18/presentation/yang) — controlled refresh-token injection research.
 
 ## Version History
+
 | Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.0 | 2025-09-06 | Initial documentation of OAuth Token Persistence technique based on comprehensive research of OAuth 2.0 security vulnerabilities, MCP-specific risks, token theft methodologies, and real-world incidents. Includes detailed technical analysis, detection methods, and mitigation strategies. | Smaran Dhungana <smarandhg@gmail.com> |
+| --- | --- | --- | --- |
+| 0.1 | 2026-09-01 | Independent clean-room draft, evidence packet, and tested analytic. | OpenAI Codex research agent |

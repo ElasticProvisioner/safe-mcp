@@ -1,0 +1,102 @@
+title: MCP File Collection Outside Approved Boundaries or at Burst Scale
+id: 849d28b0-3ee5-4a61-a73e-2acd6dc53283
+status: experimental
+description: >-
+  Detects successful MCP file-content retrieval when the resolved path is outside
+  approved roots, a sensitive file is returned without approval, or four distinct
+  files are returned by one actor-session-server tuple within five minutes. This
+  normalized analytic requires implementation-specific path and approval enrichment.
+author: OpenAI Codex clean-room agent for SAF-MCP
+date: "2026-09-02"
+references:
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/resources
+  - https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+  - https://attack.mitre.org/techniques/T1005/
+traceability:
+  policy: source_or_omit
+  design_claim_ids: [SAF-T1802-C016]
+  telemetry_claim_ids: [SAF-T1802-C002, SAF-T1802-C003, SAF-T1802-C015]
+  limitation_claim_ids: [SAF-T1802-C017]
+  validation_artifacts:
+    - techniques/SAF-T1802/detection-rule.yml
+    - tests/SAF-T1802/detect_file_collection.py
+    - tests/SAF-T1802/test_detection_rule.py
+    - tests/SAF-T1802/fixtures.jsonl
+    - research/techniques/SAF-T1802/validation/detection-test.txt
+    - research/techniques/SAF-T1802/validation/isolated-strict-validation.txt
+    - research/techniques/SAF-T1802/validation/source-corpus.sha256
+    - research/techniques/SAF-T1802/validation/canonical-validation.txt
+  components:
+    selection_successful_file_read:
+      claim_ids: [SAF-T1802-C002, SAF-T1802-C003, SAF-T1802-C015]
+      rationale: Successful resource reads and file-reading tool calls are the content-retrieval events; a positive byte count excludes listings and denied attempts.
+    selection_boundary_escape:
+      claim_ids: [SAF-T1802-C005, SAF-T1802-C006, SAF-T1802-C016]
+      rationale: Comparing the resolved path with approved normalized roots surfaces traversal, prefix, and link-resolution escapes.
+    selection_sensitive_unapproved:
+      claim_ids: [SAF-T1802-C003, SAF-T1802-C016]
+      rationale: A successful sensitive-file return without an approval decision crosses the documented human-control context.
+    selection_burst:
+      claim_ids: [SAF-T1802-C016]
+      rationale: Four distinct file returns by one actor-session-server tuple in five minutes is a transparent illustrative collection threshold.
+    filter_allowlisted_burst:
+      claim_ids: [SAF-T1802-C016, SAF-T1802-C017]
+      rationale: Explicitly approved and known bulk workloads are expected legitimate lookalikes for the volume branch only.
+    condition:
+      claim_ids: [SAF-T1802-C016]
+      rationale: A successful retrieval must combine with a boundary, approval, or non-allowlisted burst condition before alerting.
+    logsource:
+      claim_ids: [SAF-T1802-C015]
+      rationale: Normalized MCP audit events joined with host path-policy and approval context contain the required operation and boundary evidence.
+    falsepositives:
+      claim_ids: [SAF-T1802-C017]
+      rationale: Authorized file conversion, backup, indexing, and analyst review can resemble collection and require workload baselines.
+    fields:
+      claim_ids: [SAF-T1802-C015]
+      rationale: The listed fields support actor-session correlation, content-return confirmation, path-boundary comparison, and triage.
+logsource:
+  product: mcp
+  service: normalized_host_server_audit
+detection:
+  selection_successful_file_read:
+    method: [resources/read, tools/call]
+    result_status: success
+    bytes_read|gte: 1
+  selection_boundary_escape:
+    boundary_status: outside_approved_roots
+  selection_sensitive_unapproved:
+    sensitive: true
+    approval_state|not: approved
+  selection_burst:
+    distinct_resolved_paths_5m|gte: 4
+  filter_allowlisted_burst:
+    allowlisted_workload: true
+  condition: >-
+    selection_successful_file_read and
+    (selection_boundary_escape or selection_sensitive_unapproved or
+    (selection_burst and not filter_allowlisted_burst))
+fields:
+  - timestamp
+  - actor_id
+  - session_id
+  - server_id
+  - method
+  - tool_action
+  - requested_path
+  - resolved_path
+  - approved_roots
+  - boundary_status
+  - result_status
+  - bytes_read
+  - sensitive
+  - approval_state
+  - allowlisted_workload
+falsepositives:
+  - Authorized backup, indexing, migration, document conversion, and incident-response collection.
+  - Legitimate sensitive-file access with approval state lost during telemetry normalization.
+  - Approved-root configuration lag or platform-specific path-normalization mismatch.
+level: high
+tags:
+  - saf.t1802
+  - attack.collection
+  - attack.t1005

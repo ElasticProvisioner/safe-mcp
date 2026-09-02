@@ -1,0 +1,72 @@
+version: 1
+technique_id: SAF-T1106
+name: Autonomous Loop Exploit
+status: complete
+created_on: '2026-09-01'
+updated_on: '2026-09-01'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0002
+adversary_objective: Keep attacker-influenced autonomous execution running beyond
+  task-normal work by causing an agent feedback path to re-enter model, tool, agent,
+  or workflow execution without an effective independent bound.
+scope:
+  security_boundary: The boundary where untrusted or attacker-influenced inputs, retrieved
+    content, tool results, or tool-facing messages affect an autonomous continuation
+    decision.
+  in_scope:
+  - Repeated model, tool, agent-handoff, or workflow execution controlled through
+    an autonomous feedback path.
+  - Missing, ineffective, reset, or attacker-defeated iteration, time, token, cost,
+    retry, depth, progress, or completion bounds.
+  out_of_scope:
+  - A single expensive generation or request with no autonomous re-entry.
+  - Direct network or API flooding where the attacker supplies each repeated request.
+  - Deterministic parser recursion, implementation loops, or explicitly user-composed
+    workflow loops.
+  - Unauthorized tool action whose defining objective is the action rather than continued
+    repetition.
+  - Benign bounded iteration with task-appropriate progress and completion.
+  affected_components:
+  - Agent orchestrator
+  - Model context and continuation logic
+  - MCP client and tool interface
+  - Tool servers and downstream services
+  - Agent memory, progress, and completion state
+nearest_neighbors:
+- technique_id: SAF-T1102
+  distinction: Prompt Injection is defined by an unauthorized change in model or
+    tool behavior; Autonomous Loop Exploit is defined by attacker-driven re-entry
+    and repetition.
+- technique_id: SAF-T2102
+  distinction: Service Disruption submits load or a pathological request directly;
+    Autonomous Loop Exploit uses an agent's own continuation decisions to multiply
+    execution.
+required_evidence:
+- Establish an attacker-influenced autonomous feedback path that repeatedly reaches
+  costly or state-changing execution.
+- Establish the absence, ineffectiveness, or defeat of an independent termination
+  or resource bound.
+- Establish immediate resource, availability, or repeated-effect consequences.
+- Search current production incidents and disclosures and distinguish direct demonstrations
+  from adjacent implementation loops.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Per-run timestamp, session identifier, event type, tool or step name, normalized
+    argument hash, progress fingerprint, completion state, approval state, cumulative
+    tokens, elapsed time, and cost.
+safe_example_constraints:
+- Use inert domains and fixtures, no live endpoints, credentials, destructive commands,
+  or uncontrolled recursion.
+- Bound all demonstrations and explain only the state transition needed for detection
+  validation.
+completion_evidence:
+- Every substantive README unit has hidden SAF-TRACE linkage to a validated claim.
+- Unselected and adjacent disclosures remain in the research packet and exclusion
+  ledger.
+- All five research passes and two consecutive no-change passes are recorded.
+- The deterministic detection test passes eight synthetic cases.
+- Rights, quality, clean-room, framework, and strict validation gates pass.

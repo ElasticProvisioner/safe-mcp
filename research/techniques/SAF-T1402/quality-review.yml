@@ -1,0 +1,62 @@
+version: 1
+technique_id: SAF-T1402
+review_status: passed
+reviewed_on: "2026-09-01"
+reviewer: OpenAI Codex clean-room author
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records the permitted seed, prohibited inputs, independent searches, opened sources, freeze, and integration constraints.
+  contract_and_scope:
+    status: passed
+    notes: Scope requires concealment, agent recovery, and an untrusted content-to-instruction boundary; adjacent shell obfuscation and plaintext injection are excluded.
+  technical_accuracy:
+    status: passed
+    notes: Carrier, recovery, prerequisites, outcomes, product versions, metrics, and limitations reconcile to direct locators.
+  claim_traceability:
+    status: passed
+    notes: All substantive README units carry same-line hidden traces or links to declared local artifacts.
+  source_or_omit:
+    status: passed
+    notes: Seventeen validated claims and six resolved exclusions account for publishable and omitted propositions.
+  evidence_classification:
+    status: passed
+    notes: Demonstrated is supported by two end-to-end controlled studies; no Observed production claim is made.
+  research_saturation:
+    status: passed
+    notes: All five passes plus two consecutive no-change passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Complete NVD keyword, selected vendor, and CISA KEV review produced four ranked selections and an explicit production-breach gap.
+  detection_quality:
+    status: passed
+    notes: Provenance-rich sequence analytic has positive, negative, approval, allowlist, boundary, and malformed-input tests.
+  mitigation_quality:
+    status: passed
+    notes: Controls address carrier visibility, state binding, package review, privilege, approval, monitoring, and response stages.
+  framework_alignment:
+    status: passed
+    notes: Tactic, canonical SAF-T1102 neighbor join, mitigations, and analogous ATT&CK mapping are reconciled in the integrated framework model and alignment ledger.
+  publication_rights:
+    status: passed
+    notes: All cited sources are paraphrased with attribution; no quotations, code, images, or third-party artifacts are reproduced.
+  safe_publication:
+    status: passed
+    notes: Scenario uses an inert marker, sandbox path, disabled networking, and placeholder credentials.
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T1402
+      result: passed
+      details: isolated synthetic repository on 2026-09-01
+    - command: /Users/fkautz/anaconda3/bin/python3 tests/SAF-T1402/test_detection_rule.py
+      result: passed
+      details: integrated repository on 2026-09-01
+    - command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1402
+      result: passed
+      details: integrated repository on 2026-09-01
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T1402/test_detection_rule.py
+    result: "PASS: 8/8 cases; alerts=3; suppressed=5"
+    waiver: null
+unresolved: []

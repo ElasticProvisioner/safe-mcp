@@ -1,0 +1,78 @@
+version: 1
+technique_id: SAF-T1915
+name: Cross-Chain Laundering via Bridges/DEXs
+status: complete
+created_on: '2026-09-02'
+updated_on: '2026-09-02'
+generation_mode: clean_room
+trace_format: hidden_html_v1
+tactics:
+- ATK-TA0010
+adversary_objective: Obscure the provenance and destination of illicit virtual assets
+  by using an authorized agent or transaction toolchain to execute a correlated sequence
+  of cross-chain transfers and decentralized asset swaps.
+scope:
+  security_boundary: The authorization boundary between an agentic planner and blockchain
+    transaction execution, followed by the evidentiary boundary between source-chain,
+    destination-chain, and off-chain service records.
+  in_scope:
+  - An adversary causes or directs an agent with transaction authority to move illicit
+    proceeds through at least two blockchains using a bridge or cross-ledger service
+    and one or more DEX or automated swap operations.
+  - The immediate outcome is layering that complicates provenance tracing; theft,
+    fiat conversion, and ultimate spending are separate objectives.
+  out_of_scope:
+  - Theft or compromise that creates the illicit proceeds.
+  - Bridge exploitation whose immediate objective is unauthorized minting or withdrawal.
+  - Mixer-only laundering that does not cross a blockchain boundary.
+  - Legitimate treasury rebalancing, arbitrage, or user-directed cross-chain swaps.
+  - Fiat off-ramping, sanctions evasion, or concealment through shell companies after
+    the cross-chain sequence.
+  affected_components:
+  - Agentic planner or MCP-compatible financial tool client
+  - Wallet, signer, or smart-account authorization layer
+  - DEX router or automated market maker
+  - Cross-chain bridge, relayer, or cross-ledger exchange service
+  - Source-chain and destination-chain transaction telemetry
+nearest_neighbors:
+- technique_id: SAF-T2104
+  distinction: Fraudulent Transactions covers unauthorized digital-asset transfer
+    or theft; SAF-T1915 begins after proceeds are controlled and concerns layering.
+required_evidence:
+- Establish how bridges, cross-ledger services, and DEXs move assets and what records
+  they expose.
+- Establish directly observed production laundering sequences that used bridges or
+  DEXs.
+- Establish whether an agentic system can plan and submit DeFi transactions under
+  delegated authority.
+- Search separately for production incidents, vulnerabilities, advisories, exploitation
+  status, controlled demonstrations, detection, defense, and contrary evidence.
+- Justify the end-to-end agentic evidence label without upgrading it from non-agentic
+  incidents or component-only demonstrations.
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+  - Normalized source- and destination-chain transaction events with subject identifier,
+    timestamp, chain, transaction hash, event type, asset, amount, USD value, service
+    or contract identifier, destination, and bridge join key when available.
+  - Provenance or risk labels that identify stolen-fund, sanctions, fraud, or ransomware
+    exposure, plus agent intent, policy decision, signer, and approval records when
+    available.
+safe_example_constraints:
+- Use only synthetic wallet identifiers, inert assets, and fictitious transaction
+  hashes.
+- Do not include private keys, executable exploit code, real laundering routes, or
+  bypass instructions.
+- Describe incidents at the level needed for defensive tracing and classification.
+completion_evidence:
+- Every substantive publishable unit is linked to validated claims and reviewed sources
+  or a declared repository artifact.
+- All five research passes and the separately requested incident, vulnerability, demonstration,
+  detection, defense, and contrary-evidence passes are recorded.
+- Two consecutive no-material-change saturation passes are recorded.
+- Two to four high-impact examples are selected or an explicit evidence gap is preserved.
+- Detection tests cover positive, negative, boundary, malformed, expected false-positive,
+  and normalization or evasion cases.
+- Rights, framework, source-or-omit, safe-publication, and clean-room gates pass in
+  isolated validation.

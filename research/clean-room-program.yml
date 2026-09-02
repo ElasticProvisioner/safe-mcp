@@ -1,0 +1,1769 @@
+version: 1
+program_id: SAF-CLEANROOM-ALL-2026-09-01
+status: complete
+started_on: '2026-09-01'
+completed_on: '2026-09-02'
+scope:
+  registry: README.md technique ID and Technique Name columns only
+  technique_count: 86
+  existing_technique_directories_at_start: 73
+  cataloged_missing_directories_at_start: 13
+  already_complete_at_start: 1
+  remaining_at_start: 85
+policy:
+  unit_of_work: exactly_one_technique_per_clean_room_run
+  source_or_omit: true
+  original_technique_content_before_freeze: prohibited
+  existing_technique_research_before_freeze: prohibited
+  shared_registry_before_freeze: prohibited
+  search_mode: direct_authority_only_no_general_or_github_discovery
+  contamination_response: discard_run_and_restart_with_fresh_agent
+  integration: serial_after_verified_freeze
+  trace_format: hidden_html_v1
+source_registry_endpoint_exceptions:
+- official_url: https://services.nvd.nist.gov/rest/json/cves/2.0
+  source_ids: [SRC-nvd-t1103-corpus, SRC-nvd-token-scope-corpus]
+  reason: Distinct direct NVD keyword-query corpora with different recorded query sets, locators, and external checksum manifests share the API root endpoint; merging them would erase acquisition scope.
+- official_url: https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=Model%20Context%20Protocol
+  source_ids: [SRC-nvd-mcp-catalog-2026-09-01, SRC-nvd-fsp-catalog-queries-2026-09-01]
+  reason: One record captures the complete MCP catalog review and the other records a two-query full-schema-poisoning saturation corpus; their review scopes and locators are intentionally distinct.
+counts:
+  queued: 0
+  researching: 0
+  needs_refreeze: 0
+  frozen: 0
+  integrated_pending_catalog_neighbor: 0
+  integrated_and_validated: 86
+  contaminated_attempts: 10
+  blocked: 0
+final_validation:
+  executed_on: '2026-09-02'
+  strict_research_validation:
+    command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-Txxxx
+    technique_count: 86
+    passed: 86
+    failed: 0
+  registered_detector_validation:
+    source: research/framework-model.yml detection.test_artifacts
+    registered_test_count: 86
+    passed: 86
+    failed: 0
+    invocation_note: SAF-T1703 requires its registered tests/SAF-T1703/test-logs.json fixture argument; all other registered Python tests run directly.
+  repository_integrity:
+    framework_technique_count: 86
+    research_packet_count: 86
+    source_count: 1077
+    source_ids_unique: true
+    shared_endpoint_exceptions: 2
+    alignment_issue_count: 97
+    unresolved_alignment_issues: 0
+    yaml_files_parsed: 1019
+    synthetic_publishable_ids: 0
+    publishable_safe_mcp_branding_matches: 0
+    git_diff_check: passed
+techniques:
+- technique_id: SAF-T1001
+  neutral_name: Tool Poisoning Attack (TPA)
+  status: integrated_and_validated
+  clean_room_attestation: research/techniques/SAF-T1001/clean-room-attestation.yml
+  notes:
+  - Completed before this framework-wide program; strict validator passes.
+- technique_id: SAF-T1002
+  neutral_name: Supply Chain Compromise
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1002
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 53
+    reviewed_source_count: 22
+    frozen_entry_count: 19
+    freeze_manifest_sha256: d79d3c52c4079c22efc7f7ee04f30b295c6c9bffe0d0147a43a8dae5483ee51d
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1002
+  clean_room_attestation: research/techniques/SAF-T1002/clean-room-attestation.yml
+  notes:
+  - Strict canonical validator and six deterministic detection cases pass after post-freeze source and framework reconciliation.
+- technique_id: SAF-T1003
+  neutral_name: Malicious MCP-Server Distribution
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1003
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 17
+    reviewed_source_count: 13
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 980776c3c04a6323a2f3c2c78cbc68a99a9d6adcac2b1fec610ff16d8f45cb1e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1003
+  clean_room_attestation: research/techniques/SAF-T1003/clean-room-attestation.yml
+  notes:
+  - Post-freeze source, tactic, mitigation, and framework joins are complete; strict validation passes after independent clean-room authoring of cataloged neighbor SAF-T1207.
+- technique_id: SAF-T1004
+  neutral_name: Server Impersonation / Name-Collision
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1004
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 64
+    reviewed_source_count: 22
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 0a9cf188a0842a08c5a48ed7b744c1efc0e1b55b64758cf7c847d48a50e16f7e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1004
+  clean_room_attestation: research/techniques/SAF-T1004/clean-room-attestation.yml
+  notes:
+  - Initial evidence bundle preserved clean-room integrity but predated the strict isolated canonical-schema freeze gate.
+  - A separate normalization agent preserved all 14 claims and all 30 source records, passed the strict isolated validator and six detection cases, and re-froze 18 files.
+  - 'Replacement freeze manifest SHA-256: 7aa6ec71ced7a6b38db1406b4659746aac928ce643027bd697911af44d27ffd6'
+  - Post-freeze source, tactic, mitigation, neighbor, and repository-path joins are complete; strict repository validation and all six detection cases pass.
+- technique_id: SAF-T1005
+  neutral_name: Exposed Endpoint Exploit
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1005
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 64
+    reviewed_source_count: 20
+    frozen_entry_count: 15
+    freeze_manifest_sha256: 65a851869a6b91e07db8c1faad47252035bbed49739e86614c7fdfeb1df5969d
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1005
+  clean_room_attestation: research/techniques/SAF-T1005/clean-room-attestation.yml
+  notes:
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source and framework reconciliation.
+- technique_id: SAF-T1006
+  neutral_name: User-Social-Engineering Install
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1006
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: A restricted search returned a prohibited SAF repository snippet exposing prior target content.
+    artifacts_discarded: true
+  - agent: cleanroom_saf_t1006_retry2
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: A GitHub-domain search returned the prohibited SAF repository and exposed prior target content.
+    artifacts_discarded: true
+  - agent: cleanroom_saf_t1006_retry3
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 25
+    reviewed_source_count: 16
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e8b65e998d269a2af790d4d6789c6875fa05612b7a8af1636baba32c91c664ea
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1006-retry3/bundle
+  clean_room_attestation: research/techniques/SAF-T1006/clean-room-attestation.yml
+  notes:
+  - Restarted again with general web search and GitHub discovery completely prohibited; direct authoritative URLs only.
+  - Strict canonical validator and seven deterministic detection cases pass after post-freeze source, tactic, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1007
+  neutral_name: OAuth Authorization Phishing
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1007
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: A GitHub-scoped discovery query violated the strengthened clean-room rule.
+    artifacts_discarded: true
+  - agent: cleanroom_saf_t1007_retry2
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 22
+    reviewed_source_count: 15
+    frozen_entry_count: 14
+    freeze_manifest_sha256: 6755cebdd9bdd0fa5bc9f62e26f2f2d11a0f0a9fa8e50659d36580b10c104b20
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1007-retry2/freeze/bundle
+  clean_room_attestation: research/techniques/SAF-T1007/clean-room-attestation.yml
+  notes:
+  - Restarted with general web search and GitHub discovery prohibited; direct authoritative URLs only.
+  - Strict canonical validator and six deterministic detection cases pass after post-freeze source, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1008
+  neutral_name: Tool Shadowing Attack
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1008
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 19
+    reviewed_source_count: 13
+    frozen_entry_count: 135
+    freeze_manifest_sha256: f92e8531f3081acbcaa27d8e8a72bb22c8f9c3961d1fd5ac91bb059281df6f82
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1008
+  clean_room_attestation: research/techniques/SAF-T1008/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1006 integration.
+  - Strict canonical validator, eight deterministic detection cases, and 26 source-archive checks pass after post-freeze source, neighbor, mitigation, framework, and repository-test-path reconciliation.
+- technique_id: SAF-T1009
+  neutral_name: Authorization Server Mix-up
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1009
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 22
+    reviewed_source_count: 25
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 5e52dcfcc7f265146db23902b792ae57723035bfd0da9bda1a816fc5aecbb8ef
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1009/bundle
+  clean_room_attestation: research/techniques/SAF-T1009/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1007 integration.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1101
+  neutral_name: Command Injection
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1101
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 20
+    reviewed_source_count: 33
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 4f7c54f6b05af481a0188a5d48c352eb1d148890f1c0e261d972da3399512d89
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1101/bundle
+  clean_room_attestation: research/techniques/SAF-T1101/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1207 freeze.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1102
+  neutral_name: Prompt Injection (Multiple Vectors)
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1102
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 31
+    reviewed_source_count: 23
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 8d0804d2bc1e0173c0db58ccfcdb20329af1302009fdd6c14cfdd93b7a16fac1
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1102/bundle
+  clean_room_attestation: research/techniques/SAF-T1102/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1008 freeze.
+  - Strict canonical validator and seven deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1103
+  neutral_name: Fake Tool Invocation (Function Spoofing)
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1103
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 40
+    reviewed_source_count: 23
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 835dc02a36e7953f007bf6c2941178def9e632b8e9a5fda4fbaf6cbcce565347
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1103/bundle
+  clean_room_attestation: research/techniques/SAF-T1103/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1101 freeze.
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1104
+  neutral_name: Over-Privileged Tool Abuse
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1104
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 25
+    reviewed_source_count: 23
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e6d27ca86c69f718ed51e81de4779ffbecff782e6c21da1e9471e6f155f6629d
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1104/bundle
+  clean_room_attestation: research/techniques/SAF-T1104/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1009 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1105
+  neutral_name: Path Traversal via File Tool
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1105
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: needs_refreeze
+    query_count: 17
+    reviewed_source_count: 17
+    frozen_entry_count: 17
+    freeze_manifest_sha256: b848387eb17bce8cd9d1396c981ae92928e442dc4b532186214580737cb8f7c2
+  - agent: normalize_saf_t1105
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 74046e13add68d01611e178053ffa13c028fac89f007eb9d77a9a796627c1a85
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1105-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1105/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1102 freeze.
+  - Evidence, detection, and isolated strict validation passed, but the frozen registry fragments use a noncanonical subdirectory and require separate no-research normalization and refreeze before integration.
+  - A separate no-research agent moved only the three registry fragments to canonical root paths, revalidated, and refroze the byte-identical semantic artifacts before successful integration.
+- technique_id: SAF-T1106
+  neutral_name: Autonomous Loop Exploit
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1106
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 19
+    reviewed_source_count: 19
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 637c0f2eff895ad5ccff98e2d684d8de5c207050ff6440b9d53cffb07b781892
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1106/bundle
+  clean_room_attestation: research/techniques/SAF-T1106/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1104 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1109
+  neutral_name: Debugging Tool Exploitation
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1109
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 6
+    reviewed_source_count: 14
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 5b22cf7e8bab1dde90646e8ac80e6442f6a7fd4642ba520d243ef7ad5868ffc0
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1109/bundle
+  clean_room_attestation: research/techniques/SAF-T1109/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1105 freeze-format rejection.
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source, neighbor, mitigation, and framework reconciliation.
+- technique_id: SAF-T1110
+  neutral_name: Multimodal Prompt Injection via Images/Audio
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1110
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 4
+    reviewed_source_count: 22
+    frozen_entry_count: 17
+    freeze_manifest_sha256: fcb768e7e68edaa8e13af0657b27576a610b58101afb8d7ade5ca623914c8df9
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1110/bundle
+  clean_room_attestation: research/techniques/SAF-T1110/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1105 normalization.
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1111
+  neutral_name: AI Agent CLI Weaponization
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1111
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 32
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 5d35ed217ef958e0d454fb686395f89e274bed20f444f8d12ed84be4bb65397e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1111/bundle
+  clean_room_attestation: research/techniques/SAF-T1111/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1106 freeze.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1112
+  neutral_name: Sampling Request Abuse
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1112
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 20
+    candidate_count: 6
+    selected_example_count: 0
+    exclusion_count: 12
+    frozen_entry_count: 17
+    freeze_manifest_sha256: d4e19a7beaadd8f7f3ce00aeb813016b013b746283c2a92fa5e892887ee5a076
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1112/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1702 evidence freeze.
+  - Research-Derived packet found no qualifying direct incident, CVE, or public end-to-end demonstration; it retained twelve exclusions and passed thirteen detector cases plus isolated strict validation.
+  - Strict canonical validation and all thirteen detector cases pass after post-freeze source-ID, three-neighbor, four-mitigation, conditional ATT&CK, history, external-corpus, and validation-path reconciliation.
+- technique_id: SAF-T1201
+  neutral_name: MCP Rug Pull Attack
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1201
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 21
+    reviewed_source_count: 13
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e8a2e21802dd33eb369b67d2d0dc7fbf3f0891ea0bc5311869735eb7c96d445c
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1201/bundle
+  clean_room_attestation: research/techniques/SAF-T1201/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1109 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1202
+  neutral_name: OAuth Token Persistence
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1202
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 23
+    reviewed_source_count: 18
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 8d6249d0642336c331fdbc5762d5891c50b93bf40388b577df9c7e93859dee52
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1202/bundle
+  clean_room_attestation: research/techniques/SAF-T1202/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1111 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1203
+  neutral_name: Backdoored Server Binary
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1203
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 14
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: f90d6074acd69587fde808d3b05ea6b252eba3bc8df7337d08265729e0f727a9
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1203/bundle
+  clean_room_attestation: research/techniques/SAF-T1203/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1110 freeze.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1204
+  neutral_name: Context Memory Implant
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1204
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 19
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: c5f417950235d829e392cb6e47ece0e597ebe52f06f50618f7a2a826a0f5a940
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1204/bundle
+  clean_room_attestation: research/techniques/SAF-T1204/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1201 freeze.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1205
+  neutral_name: Persistent Tool Redefinition
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1205
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 11
+    reviewed_source_count: 13
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 74ab63113d362858032fea39871fb350606c11171b36dd227f02da1d68dd143f
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1205/bundle
+  clean_room_attestation: research/techniques/SAF-T1205/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1202 freeze.
+  - Strict canonical validator and seven deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1301
+  neutral_name: Cross-Server Tool Shadowing
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1301
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 6
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: a53a185b06262821fbcbd17c875aac74a530f9bdbdcbb8773259b896906ed859
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1301/bundle
+  clean_room_attestation: research/techniques/SAF-T1301/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1204 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1302
+  neutral_name: High-Privilege Tool Abuse
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1302
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 15
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: dc3249e2c29eff1fe7ec86cb8da4510e39e34f1704003dcfc649a6781f82f78c
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1302/bundle
+  clean_room_attestation: research/techniques/SAF-T1302/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1205 freeze.
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1303
+  neutral_name: Sandbox Escape via Server Exec
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1303
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: A prohibited GitHub-scoped discovery query was issued before drafting; the scratch directory was deleted and no bundle remains.
+  - agent: cleanroom_saf_t1303_retry
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 26
+    reviewed_source_count: 19
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 4c6582a71904ef8413d64813452275e1a902459da837b30cf847ad324c19c220
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1303/bundle
+  clean_room_attestation: research/techniques/SAF-T1303/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1301 freeze.
+  - First attempt self-reported contamination and was discarded before drafting.
+  - Fresh direct-authority-only replacement run started with the neutral seed only.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1304
+  neutral_name: Credential Relay Chain
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1304
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: A prohibited GitHub-scoped discovery query was issued before freeze; no artifacts were created.
+  - agent: cleanroom_saf_t1304_retry
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 8
+    reviewed_source_count: 22
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 909ecd522de201677273290bb941330e636a1c61cefaa0f0d13a016db95ba6ff
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1304/bundle
+  clean_room_attestation: research/techniques/SAF-T1304/clean-room-attestation.yml
+  notes:
+  - First attempt self-reported contamination and was discarded before artifact creation.
+  - Fresh direct-authority-only replacement run started with the neutral seed only.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and attribution reconciliation.
+- technique_id: SAF-T1305
+  neutral_name: Host OS Priv-Esc (RCE)
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1305
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 30
+    reviewed_source_count: 11
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e8ef25871123d62ef79ca2cba0d06115d1bbd0a67dd643a6dad2025b5d063acf
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1305/bundle
+  clean_room_attestation: research/techniques/SAF-T1305/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1302 freeze.
+  - Strict canonical validator and seven deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and attribution reconciliation.
+- technique_id: SAF-T1306
+  neutral_name: Rogue Authorization Server
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1306
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 7
+    reviewed_source_count: 18
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 23aa87f01c851139c0cf7b537384b5536c116a58b9a199fa6e3a2f83f207f40f
+  - agent: normalize_saf_t1306
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_no_research_normalization
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 21ba075e50b566556a98a29c56364e44f46f806180a7bd1392fda3a457d9b00e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1306-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1306/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1304 freeze.
+  - Research and isolated validation passed, but tests were frozen under the research packet rather than canonical tests/SAF-T1306; a separate no-research normalization and refreeze is required before integration.
+  - Separate no-research normalization moved the tests to canonical paths and refroze the unchanged evidence packet.
+  - SAF-T1406 is independently authored and integrated; the alignment issue is resolved and strict repository validation now passes.
+- technique_id: SAF-T1307
+  neutral_name: Confused Deputy Attack
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1307
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 27
+    reviewed_source_count: 14
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 0e4fe2a0359928d24ccce44c6c581846e27d51b10a5c97edbfa7812a87ca8cea
+  - agent: normalize_saf_t1307
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_no_research_normalization
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 18
+    freeze_manifest_sha256: c869cf69e74a09360ccfd7408d5c0fa99532bdc94d52c2c4bf4e683760ca353a
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1307-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1307/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1303 freeze.
+  - Research and isolated validation passed, but tests were frozen under techniques/SAF-T1307 rather than canonical tests/SAF-T1307; a separate no-research normalization and refreeze is required before integration.
+  - Separate no-research normalization moved the tests to canonical paths and refroze the unchanged evidence packet.
+  - A post-freeze integration audit query accidentally exposed prior target text; none was used and the previously frozen bundle remained the sole replacement input.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and test-runner path reconciliation.
+- technique_id: SAF-T1308
+  neutral_name: Token Scope Substitution
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1308
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 31
+    reviewed_source_count: 15
+    frozen_entry_count: 18
+    freeze_manifest_sha256: ca1d537d0e82e1cce4d582bd1f51f508bcefd7e801537b9e07eecd06eba52286
+  - agent: normalize_saf_t1308
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_no_research_normalization
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 3bd8a0906de68b4313a25f90f030403907c3b2a119135b11c81bc6b64321eb11
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1308-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1308/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1305 freeze.
+  - Research and isolated validation passed, but tests were frozen under techniques/SAF-T1308 rather than canonical tests/SAF-T1308; a separate no-research normalization and refreeze is required before integration.
+  - Separate no-research normalization moved the tests to canonical paths and refroze the unchanged evidence packet.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and test-runner reconciliation.
+- technique_id: SAF-T1309
+  neutral_name: Privileged Tool Invocation via Prompt Manipulation
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1309
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: Two unrestricted exact-CVE search queries exposed third-party search snippets before drafting; no bundle or target artifact was created.
+    artifacts_discarded: true
+  - agent: cleanroom_saf_t1309_retry
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 8
+    reviewed_source_count: 16
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 9deeb5e6229f08f461c6f937bde4a38c3e05c3e251c2bfa0487ed0f6d05b52c2
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1309-retry/bundle
+  clean_room_attestation: research/techniques/SAF-T1309/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1306 freeze.
+  - First attempt self-reported unrestricted-search contamination and was discarded before drafting.
+  - Fresh replacement run started with the neutral seed only and search_query fully prohibited.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and test-runner reconciliation.
+- technique_id: SAF-T1401
+  neutral_name: Line Jumping
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1401
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 7
+    reviewed_source_count: 14
+    frozen_entry_count: 20
+    freeze_manifest_sha256: 7635b9a36fcc59fc6597a021d3b6e1c1ca340be17381e3cf7f24a292dd6b7244
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1401/bundle
+  clean_room_attestation: research/techniques/SAF-T1401/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1307 canonical refreeze.
+  - Strict canonical validator and nine deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and collision-safe source-ID reconciliation.
+- technique_id: SAF-T1402
+  neutral_name: Instruction Steganography
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1402
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 13
+    reviewed_source_count: 19
+    frozen_entry_count: 18
+    freeze_manifest_sha256: e044c5706c0fafa0af5bf21dab5da79dc4eaf5a47d7adb3356ba2a11dcba820a
+  - agent: normalize_saf_t1402
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_mechanical_normalization_refreeze
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 1cd339589f49af42616d8c4a20e9264a926e86f9a652b9a023f5657817fa1f9c
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1402-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1402/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1308 canonical refreeze.
+  - The first freeze used alternate fragment and proof directories; a fresh no-research agent mechanically normalized the layout and produced a new exhaustive freeze before integration.
+  - Strict canonical validation and eight deterministic detector cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and collision-safe source-ID reconciliation.
+- technique_id: SAF-T1403
+  neutral_name: Consent-Fatigue Exploit
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1403
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 34
+    reviewed_source_count: 19
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 9b9c1c2665f0e01deef67fb8796b70bfcddea396f4839dd2388879873df5f4f3
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1403/bundle
+  clean_room_attestation: research/techniques/SAF-T1403/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1406 canonical refreeze.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1404
+  neutral_name: Response Tampering
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1404
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 24
+    reviewed_source_count: 22
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 6fe4b34443461ea68861896fc3a24ea5b15403acd190e17dbedfb15158b715b5
+  - agent: normalize_saf_t1404
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_mechanical_normalization_refreeze
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 18
+    freeze_manifest_sha256: f22d73dcabcdc4b2f09360dd2412970137c4cc436b2152d964f8e4c40fcb5156
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1404-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1404/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1401 integration.
+  - The first freeze used alternate fragment, test, and proof directories; a fresh no-research agent mechanically normalized the layout and produced a new exhaustive freeze before integration.
+  - Strict canonical validation and five deterministic detector cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and collision-safe source-ID reconciliation.
+- technique_id: SAF-T1407
+  neutral_name: Server Proxy Masquerade
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1407
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 42
+    reviewed_source_count: 27
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 22e20baebdd9510173f98e2734c85194d86bec6f02d5105ef456420f5e574952
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1407/bundle
+  clean_room_attestation: research/techniques/SAF-T1407/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1402 canonical refreeze.
+  - Strict canonical validation and nine deterministic detector cases pass after post-freeze source, neighbor, mitigation, framework, history, validation-path, and dedicated NVD-corpus reconciliation.
+- technique_id: SAF-T1408
+  neutral_name: OAuth Protocol Downgrade
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1408
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 14
+    reviewed_source_count: 23
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 8a1540b7d9ec18cab0e0be573ce8e4ec3c6b37915845679d36650166b2bc75e2
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1408/bundle
+  clean_room_attestation: research/techniques/SAF-T1408/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1404 freeze review.
+  - Strict canonical validation and eleven deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1501
+  neutral_name: Full-Schema Poisoning (FSP)
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1501
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 12
+    reviewed_source_count: 17
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 9057a51eb2c733642b27544f9e9b485e929f40d712105bfa7ba0f87a42f6511e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1501/bundle
+  clean_room_attestation: research/techniques/SAF-T1501/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1405 canonical refreeze.
+  - Strict canonical validation and nine deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1502
+  neutral_name: File-Based Credential Harvest
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1502
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    query_count: 19
+    reviewed_source_count: 41
+    contamination: A broad repository-root dependency search could have traversed prohibited target paths; no target content appeared, but the attempt was rejected under the zero-contamination rule.
+    quarantined_bundle: /private/tmp/saf-all-cleanroom/SAF-T1502-contaminated-rg-scope-20260901
+  - agent: cleanroom_saf_t1502_retry
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    reviewed_source_count: 21
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 2db4b1fee9d8547665327285be9d742f62ec2f84a7cab2ab56cd1847c0845fa6
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1502-retry/bundle
+  clean_room_attestation: research/techniques/SAF-T1502/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1408 evidence freeze.
+  - The first attempt was quarantined and discarded after a possible procedural traversal; a genuinely fresh agent restarted from the neutral seed without access to that attempt.
+  - The retry passed all clean-room gates, nine detector cases, and isolated strict validation.
+  - Strict canonical validation and nine deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1503
+  neutral_name: Env-Var Scraping
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1503
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 47
+    reviewed_source_count: 22
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 61968d6faeb8496e48887b25c3e77d6909fc0b6ec930b83fab3fd4f5cbe3a10f
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1503/bundle
+  clean_room_attestation: research/techniques/SAF-T1503/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1407 evidence freeze.
+  - Strict canonical validation and nine deterministic detector cases pass after post-freeze source, duplicate-neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1504
+  neutral_name: Token Theft via API Response
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1504
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 13
+    reviewed_source_count: 16
+    frozen_entry_count: 17
+    freeze_manifest_sha256: ba24be8b6944cf71cd8b2d976269d1fe49beb3cbebcbc65ac803cc94f7720d38
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1504/bundle
+  clean_room_attestation: research/techniques/SAF-T1504/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1503 evidence freeze.
+  - Demonstrated packet selected two examples and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and ten deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1505
+  neutral_name: In-Memory Secret Extraction
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1505
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 17
+    reviewed_source_count: 19
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e3937384577e04db071484d13422f98f0e663e0ed5707f24e315ccc4d6c9bb01
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1505/bundle
+  clean_room_attestation: research/techniques/SAF-T1505/clean-room-attestation.yml
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1501 evidence freeze.
+  - The frozen packet selected four examples and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and eight deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1507
+  neutral_name: Authorization Code Interception
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1507
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    search_pass_count: 9
+    reviewed_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 9d2a2738c70b5195844dc487651cb647ed0051d2d22f7fbedd357bff9c8f01e2
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1507/bundle
+  notes:
+  - Fresh direct-authority-only research run started after the clean SAF-T1502 retry freeze.
+  - Research-Derived packet selected three vulnerability examples and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and ten deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1601
+  neutral_name: MCP Server Enumeration
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1601
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 16
+    cited_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: a718c04c65fff8910a517e1be18f8c2802903e279c82ccc295765f2f0192175b
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1601/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1505 evidence freeze.
+  - Research-Derived packet selected one direct demonstration, two enabling vulnerabilities, and one adjacent incident and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and ten deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, ATT&CK, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1602
+  neutral_name: Tool Enumeration
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1602
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: Read line counts only from three prohibited shared registries before reading the clean-room procedure; no target artifact was created or inspected.
+  - agent: fresh_cleanroom_saf_t1602
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 21
+    archived_source_count: 16
+    frozen_entry_count: 53
+    freeze_manifest_sha256: 9cdf9ad217bb10c62bb32be976f68e168e79f778e63186c0f2e798c6147901d1
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1602-retry/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1507 evidence freeze.
+  - The first run was discarded under the zero-contamination policy and restarted with a fresh no-history agent in a new bundle path.
+  - The clean retry found no qualifying direct breach or vulnerability, rejected three adjacent vulnerability candidates, and passed nine detector cases plus isolated strict validation.
+  - Strict canonical validation and all nine deterministic detector cases pass after post-freeze source-ID, server-neighbor, mitigation, ATT&CK, validation-path, and rights-exclusion reconciliation; external source archives remain outside the repository under reference-only rights.
+- technique_id: SAF-T1603
+  neutral_name: System Prompt Disclosure
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1603
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 18
+    cited_source_count: 13
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 76f60aeda02b16f14bf28d439ec9a5d66764711e6f1e5f6ca2aeb9b90165235e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1603/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1506 evidence freeze.
+  - The clean-room packet selected four examples, found no qualifying malicious production breach, recorded seven exclusions, and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight deterministic detector cases pass after post-freeze source-ID, prompt-injection neighbor, mitigation, ATT&CK, ATLAS, history, and validation-path reconciliation.
+- technique_id: SAF-T1604
+  neutral_name: Server Version Enumeration
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1604
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 16
+    cited_source_count: 15
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 17d8a53b896f5759e658db20ae4b621d190905e6a43eabfe8c934b5da9c371c4
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1604/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1601 evidence freeze.
+  - Research-Derived packet selected three contextual examples, found no qualifying direct incident, vulnerability, or malicious demonstration, and passed seven detector cases plus isolated strict validation.
+  - Strict canonical validation and all seven detector cases pass after post-freeze source-ID, endpoint/capability-neighbor, mitigation, ATT&CK, history, rights-exclusion, and validation-path reconciliation; banner minimization remains an explicit canonical mitigation gap.
+- technique_id: SAF-T1605
+  neutral_name: Capability Mapping
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1605
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 21
+    cited_source_count: 21
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 85aa6021078d4e03bdec64d107fd1572ff53923c911369c6e3ed12934934d48f
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1605/bundle
+  notes:
+  - Fresh direct-authority-only research run started after the clean SAF-T1602 retry freeze.
+  - Research-Derived packet selected four high-impact boundary examples, found no qualifying direct malicious production incident, vulnerability, or demonstration, recorded four exclusions, and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and all ten detector cases pass after post-freeze source-ID, four-neighbor, six-mitigation, ATT&CK, history, rights-exclusion, and validation-path reconciliation.
+- technique_id: SAF-T1606
+  neutral_name: Directory Listing via File Tool
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1606
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 23
+    cited_source_count: 15
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 9a568d005a21e58fe164329367f70eca154a0afbcf722b704ba143d1d25186eb
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1606/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1604 evidence freeze.
+  - The packet selected two enabling vulnerabilities and one adjacent production incident, found no qualifying direct breach or end-to-end demonstration, preserved a remediation-version conflict and detection-study gap, recorded five exclusions, and passed eleven detector cases plus isolated strict validation.
+  - Strict canonical validation and all eleven detector cases pass after post-freeze source-ID, two-neighbor, six-mitigation, ATT&CK, history, and validation-path reconciliation.
+- technique_id: SAF-T1701
+  neutral_name: Cross-Tool Contamination
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1701
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 22
+    cited_source_count: 15
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 0ad911d6f7ed737d421c7bc641f704bdb58baa9341261fbc3d0a567269e5295a
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1701/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1603 evidence freeze.
+  - Demonstrated packet selected three direct controlled demonstrations and one enabling vulnerability, found no qualifying production incident, recorded nine exclusions plus a blocked KEV gap, credited Frank Kautz as SAF Technique Author, and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and all ten detector cases pass after post-freeze source-ID, two-neighbor, nine-mitigation, ATT&CK, history, and validation-path reconciliation.
+- technique_id: SAF-T1702
+  neutral_name: Shared-Memory Poisoning
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1702
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 18
+    cited_source_count: 18
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 846eaf8235a4f42d2b226692b01270e0473c34ef27798f3912f7daa4f0b2e7e7
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1702/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1605 evidence freeze.
+  - Demonstrated packet selected three controlled shared-memory poisoning examples, found no qualifying production breach or mechanism-specific NVD/KEV record, recorded eight exclusions, and passed nine detector cases plus isolated strict validation.
+  - Strict canonical validation and all nine detector cases pass after post-freeze source-ID, two-neighbor, seven-mitigation, ATT&CK, history, and validation-path reconciliation.
+- technique_id: SAF-T1703
+  neutral_name: Tool-Chaining Pivot
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1703
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 29
+    cited_source_count: 14
+    frozen_entry_count: 17
+    freeze_manifest_sha256: e330b6ac9636bea05f77e8afa46fbc36987f76a65f5f8bd879d1a574c6b40447
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1703/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1606 evidence freeze.
+  - Demonstrated packet selected four high-impact examples, found no contract-exact external-adversary production incident with an auditable cross-tool sequence, recorded thirteen exclusions, and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, three-neighbor, nine-mitigation, ATT&CK, history, overlap, and validation-path reconciliation.
+- technique_id: SAF-T1704
+  neutral_name: Compromised-Server Pivot
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1704
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 22
+    cited_source_count: 17
+    frozen_entry_count: 17
+    freeze_manifest_sha256: b7c978c9e29cf009b00673751c98c470fcecf5854b19767ad1757fd9815fa53d
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1704/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1701 evidence freeze.
+  - Demonstrated packet selected three high-impact examples, found no qualifying production incident, recorded eight exclusions and detector telemetry limitations, and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, three-neighbor, ten-mitigation, ATT&CK, history, and validation-path reconciliation.
+- technique_id: SAF-T1705
+  neutral_name: Cross-Agent Instruction Injection
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1705
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 22
+    cited_source_count: 10
+    candidate_count: 12
+    selected_example_count: 3
+    exclusion_count: 12
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 6e304b55394220b17035fae7e69195107e887ed325bb1aef41b4978a1ccbfef3
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1705/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1704 evidence freeze.
+  - Demonstrated packet retained three controlled studies, found no qualifying production incident or direct CVE, recorded twelve exclusions, and passed seven detector cases plus isolated strict validation.
+  - Strict canonical validation and all seven detector cases pass after post-freeze source-ID, three-neighbor, ten-mitigation, ATT&CK, history, source-corpus, and validation-path reconciliation; no ATLAS mapping was added.
+- technique_id: SAF-T1706
+  neutral_name: OAuth Token Pivot Replay
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1706
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 24
+    candidate_count: 20
+    selected_example_count: 4
+    exclusion_count: 14
+    frozen_entry_count: 64
+    freeze_manifest_sha256: 1aaa4546154211a95fa529a321d85a972ff2a475e1275e425bcc92b2a57f3486
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1706/bundle
+  notes:
+  - Fresh direct-authority-only research run started after SAF-T1703 evidence freeze.
+  - Research-Derived packet found no direct production OAuth-MCP incident or end-to-end public OAuth-MCP demonstration; it retained four bounded direct or analogous examples, fourteen exclusions, and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, four-neighbor, four-mitigation, ATT&CK, history, source-archive, and validation-path reconciliation.
+- technique_id: SAF-T1707
+  neutral_name: CSRF Token Relay
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1707
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 31
+    cited_source_count: 20
+    claim_count: 19
+    candidate_count: 10
+    selected_example_count: 4
+    exclusion_count: 5
+    frozen_entry_count: 17
+    freeze_manifest_sha256: c08ba08aeb82bc00e666d4a52c5900adebad46b574f602078c80e07fae0e9c21
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1707/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1706 evidence freeze.
+  - Research-Derived packet retained one formal OAuth state-leak result and three direct vulnerabilities, found no qualifying production MCP or agentic incident, recorded five exclusions, and passed seven detector cases plus isolated strict validation.
+  - A temporary untracked provenance fixture was immediately removed after a path-resolution error; no target artifact was accessed and the procedural note remains outside the repository.
+  - Strict canonical validation and all seven detector cases pass after post-freeze source-ID, three-neighbor, four-mitigation, ATT&CK, history, external-source-corpus, and validation-path reconciliation.
+- technique_id: SAF-T1801
+  neutral_name: Automated Data Harvesting
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1801
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 24
+    cited_source_count: 19
+    candidate_count: 12
+    selected_example_count: 4
+    exclusion_count: 5
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 4ea9124f7029bc88d592b4914c6cbc4b67746156bf9e7bb4cedcd4c5894c83d8
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1801/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1112 evidence freeze.
+  - Observed packet retained one production campaign, two controlled demonstrations, and one direct vulnerability example; it recorded five exclusions and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, four-neighbor, seven-mitigation, ATT&CK, history, external-source-corpus, and validation-path reconciliation.
+- technique_id: SAF-T1803
+  neutral_name: Database Dump
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1803
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 20
+    candidate_count: 8
+    selected_example_count: 4
+    exclusion_count: 5
+    frozen_entry_count: 17
+    freeze_manifest_sha256: c692224a6f0192e80d8870bad8608b5692a92c9c9a1ebea4eed11c8476932fdc
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1803/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1705 evidence freeze.
+  - Observed packet retained one production campaign, two direct vulnerability examples, and one nonredundant database-theft incident; it recorded five exclusions and passed ten detector cases plus isolated strict validation.
+  - Strict canonical validation and all ten detector cases pass after post-freeze source-ID, two-neighbor, six-mitigation, ATT&CK, history, and validation-path reconciliation.
+- technique_id: SAF-T1804
+  neutral_name: API Data Harvest
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1804
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 14
+    reviewed_source_count: 21
+    cited_source_count: 14
+    candidate_count: 9
+    selected_example_count: 4
+    exclusion_count: 5
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 0fc55d56827a90e9e27b40cdf44c92832edc6f399a6dfcbcde5213278247a6de
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1804/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1801 evidence freeze.
+  - Demonstrated packet retained two direct MCP data-server advisories and one controlled MCP-SQL evaluation, found no qualifying production MCP incident, recorded five exclusions, and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, four-neighbor, eight-mitigation, ATT&CK, history, source-archive, and validation-path reconciliation.
+- technique_id: SAF-T1904
+  neutral_name: Chat-Based Backchannel
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1904
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 17
+    reviewed_source_count: 25
+    cited_source_count: 15
+    selected_example_count: 4
+    exclusion_count: 10
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 646fd926ddbd23bfa9f93875667e3bd0bd196c21b18bab09e634c6ec9edb547f
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1904/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1803 evidence freeze.
+  - Research-Derived packet selected four direct CVEs and retained the explicit absence of a qualifying production incident or complete adversarial chat-to-tool-to-chat demonstration.
+  - The frozen bundle passes the isolated strict validator and all twelve deterministic detector cases.
+  - After independent clean-room authoring and integration of SAF-T1903, destination strict validation and all twelve detector cases pass.
+- technique_id: SAF-T1910
+  neutral_name: Covert Channel Exfiltration
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1910
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 20
+    reviewed_source_count: 16
+    cited_source_count: 14
+    selected_example_count: 4
+    exclusion_count: 4
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 4b8bdad0521bb6417028189ba577a1c2628294888cf7adc09af09fe8623aba93
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1910/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1707 evidence freeze.
+  - Demonstrated packet retained four nonredundant examples, found no qualifying production incident, recorded four exclusions, and passed nine detector cases plus isolated strict validation.
+  - The pre-freeze supplied tactic ATK-TA0011 conflicted with the destination catalog and was mechanically corrected after freeze to canonical exfiltration tactic ATK-TA0010.
+  - Strict canonical validation and all nine detector cases pass after post-freeze source-ID, tactic, three-neighbor, eight-mitigation, ATT&CK, history, external-source-corpus, and validation-path reconciliation.
+- technique_id: SAF-T1911
+  neutral_name: Parameter Exfiltration
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1911
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    reviewed_source_count: 8
+    frozen_entry_count: 19
+    freeze_manifest_sha256: beeca4823ecae57f78bfdbe0b94fefe0362a99bad33115a4871ad5a2f22569e2
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1911/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1804 evidence freeze.
+  - Demonstrated classification is supported by two controlled demonstrations; no qualifying production incident or direct CVE was identified in the accessible corpus.
+  - The frozen bundle passes the isolated strict validator and all ten deterministic detector cases.
+  - Strict canonical validation and all ten detector cases pass after post-freeze source-ID, two-neighbor, eight-mitigation, ATT&CK, history, authority-gap, and validation-proof reconciliation.
+- technique_id: SAF-T1912
+  neutral_name: Stego Response Exfil
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1912
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 24
+    reviewed_source_count: 18
+    selected_example_count: 3
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 0020fd787aed31787bb937c6deb1d091fa6e326cd68b06ff371d74b6fdfb96b3
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1912/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1910 evidence freeze.
+  - Demonstrated bundle retained three selected examples and the explicit absence of a qualifying production incident or direct vulnerability.
+  - The frozen bundle passes eight detector cases, strict isolated validation, YAML validation, publication-rights review, and clean-room attestation.
+  - Strict canonical validation and all eight detector cases pass after post-freeze source-ID, two-neighbor, ten-mitigation, ATT&CK, history, and validation-proof reconciliation.
+- technique_id: SAF-T1915
+  neutral_name: Cross-Chain Laundering via Bridges/DEXs
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1915
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 20
+    reviewed_source_count: 16
+    selected_example_count: 3
+    exclusion_count: 5
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 35b10955f1ca4bcbd2f35c3a75b0176e323aa12874667a2eeae70aae061746bf
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1915/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1911 evidence freeze.
+  - Research-Derived packet retained three non-agentic production examples and explicit gaps for agent-mediated incidents, end-to-end demonstrations, and direct CVE or KEV evidence.
+  - The frozen bundle passes the isolated strict validator and all twelve deterministic detector cases.
+  - After independent clean-room authoring and integration of SAF-T2104, destination strict validation and all twelve detector cases pass; mixer laundering remains a traced noncatalog boundary.
+- technique_id: SAF-T2101
+  neutral_name: Data Destruction
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2101
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 16
+    reviewed_source_count: 26
+    cited_source_count: 17
+    selected_example_count: 3
+    exclusion_count: 8
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 562a621ea6c970017fcc51fb1174ed42ad21b6e64e2fec3ddb9b11a4745f9088
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2101/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1904 evidence freeze.
+  - Research-Derived packet retained three enabling advisories and explicit gaps for direct production, scoped vulnerability, and end-to-end destruction evidence.
+  - The frozen bundle passes the isolated strict validator and all six deterministic detector cases.
+  - Strict canonical validation and all six detector tests pass after post-freeze source-ID, two-neighbor, six-mitigation, ATT&CK, history, noncatalog-boundary, and validation-path reconciliation.
+- technique_id: SAF-T2102
+  neutral_name: Service Disruption
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2102
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 13
+    reviewed_source_count: 21
+    cited_source_count: 12
+    selected_example_count: 3
+    exclusion_count: 7
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 58c27546e2a47cbd9d4ff38ce1b0591e806d0b0841abd1042149257c9a31bf57
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2102/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1915 evidence freeze.
+  - Demonstrated packet retained three selected examples and explicit gaps for adversarial production observation, exploitation status, deployment tuning, and distributed or missing-telemetry evasion.
+  - Strict canonical validation and all thirteen detector cases pass after post-freeze source-ID, two-neighbor, seven-mitigation, ATT&CK, history, framework, and validation-path reconciliation.
+- technique_id: SAF-T2103
+  neutral_name: Code Sabotage
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2103
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 19
+    reviewed_source_count: 23
+    selected_example_count: 4
+    exclusion_count: 9
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 04c1e47b0cdae92737201995b6207527b8a1df8d16ae9d4cc9988612c0925afe
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2103/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T1903 evidence freeze.
+  - Demonstrated packet retained four controlled examples and explicit gaps for verified production observation, direct rather than enabling advisories, and observable attacker intent.
+  - Strict canonical validation and all ten detector cases pass after post-freeze source-ID, two-neighbor, seven-mitigation, ATT&CK, history, framework, and validation-proof reconciliation.
+- technique_id: SAF-T2105
+  neutral_name: Disinformation Output
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2105
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 12
+    reviewed_source_count: 10
+    cited_source_count: 8
+    selected_example_count: 4
+    exclusion_count: 4
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 56cd3d142ee20a7d5ba17c8be18f15ab7262e89a5d6767399faa443a73e489f6
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2105/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T2102 evidence freeze.
+  - Observed packet retained four selected examples and explicit gaps for a direct qualifying CVE or advisory, a verified production RAG-poisoning compromise, and detection without ground-truth or upstream integrity telemetry.
+  - Destination detector and strict canonical validation pass after independent clean-room replacement of cataloged neighbor SAF-T2106.
+- technique_id: SAF-T2106
+  neutral_name: Context Memory Poisoning via Vector Store Contamination
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2106
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 14
+    reviewed_source_count: 18
+    cited_source_count: 15
+    selected_example_count: 4
+    exclusion_count: 4
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 0cb6a6ac83bf01b82fe0d1af70007cce277b552eecbf802633152621233c7063
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2106/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T2104 evidence freeze.
+  - Demonstrated packet retained four highest-value examples and explicit production-breach and source-saturation gaps.
+  - Destination detector and strict canonical validation pass after independent clean-room replacement of neighbor SAF-T2107.
+- technique_id: SAF-T2107
+  neutral_name: AI Model Poisoning via MCP Tool Training Data Contamination
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2107
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 15
+    reviewed_source_count: 15
+    cited_source_count: 11
+    selected_example_count: 0
+    exclusion_count: 5
+    frozen_entry_count: 20
+    freeze_manifest_sha256: 7571f5a9d1413f35642fd76693aba007cd403bf070f66252653a40b40ab9bda9
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2107/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T2105 evidence freeze.
+  - Research-Derived packet found no direct end-to-end MCP training-poisoning demonstration, production incident, or direct vulnerability and retained those gaps explicitly.
+  - Strict canonical validation and all six detector cases pass after post-freeze source-ID, three-neighbor, five-mitigation, ATT&CK, history, framework, alignment, canonical-label, and validation-proof reconciliation.
+- technique_id: SAF-T3001
+  neutral_name: RAG Backdoor Attack
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t3001
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 12
+    reviewed_source_count: 13
+    cited_source_count: 9
+    selected_example_count: 4
+    exclusion_count: 6
+    frozen_entry_count: 18
+    freeze_manifest_sha256: f1c34a4c029c78a2c6352f08a7e8bae51b92da0103d8ed8e44e9739b05bb587e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T3001/bundle
+  notes:
+  - Fresh direct-authority-only clean-room run started after SAF-T2103 evidence freeze.
+  - Demonstrated packet retained four controlled examples and explicit gaps for an exact production incident and direct vulnerability.
+  - Strict canonical validation and all seven detector fixtures pass after post-freeze source-ID, two-neighbor, eight-mitigation, ATT&CK, history, framework, alignment, and validation-proof reconciliation.
+- technique_id: SAF-T1206
+  neutral_name: Credential Implant in Config
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1206
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 15
+    reviewed_source_count: 22
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 2cedb4379e45b0631fc9f8e7dcb704a35c66942b8cf0d68fbdc5a5a7b1a679a8
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1206/bundle
+  clean_room_attestation: research/techniques/SAF-T1206/clean-room-attestation.yml
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only research run started after SAF-T1203 freeze.
+  - Strict canonical validator and eight deterministic detection cases pass after post-freeze source, neighbor, mitigation, framework, and validation-path reconciliation.
+- technique_id: SAF-T1207
+  neutral_name: Hijack Update Mechanism
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1207
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: contaminated_discarded
+    contamination: Catalog metadata extraction exposed the prohibited pre-existing description column; no target artifact was created.
+  - agent: cleanroom_saf_t1207_retry
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    query_count: 70
+    reviewed_source_count: 24
+    frozen_entry_count: 22
+    freeze_manifest_sha256: d3c9fb365c1444c9b2ca3daefe956f7b95b2bbd09e5d057a760817cabb0503ab
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1207-retry/bundle
+  clean_room_attestation: research/techniques/SAF-T1207/clean-room-attestation.yml
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Priority target because its absence is the only remaining strict-validation blocker for integrated SAF-T1003.
+  - Strict canonical validator and ten deterministic detection cases pass after post-freeze source, tactic, neighbor, mitigation, framework, and repository-test-path reconciliation.
+- technique_id: SAF-T1405
+  neutral_name: Tool Obfuscation/Renaming
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1405
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    query_count: 21
+    reviewed_source_count: 13
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 6d3a3d06f03a9a0adcdfcc3b0cb9c01cfa0802f50839e5b5b9421a319b5bd9f0
+  - agent: normalize_saf_t1405
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_mechanical_normalization_refreeze
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 6d71220d9419a827ff1493880e22a96e525f1e431f2dbc3349c5d7400f16f803
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1405-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1405/clean-room-attestation.yml
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only research run started after SAF-T1402 evidence freeze.
+  - The first freeze used alternate fragment names and paths; a fresh no-research agent mechanically normalized the layout and produced a new exhaustive freeze before integration.
+  - Strict canonical validation and six deterministic detector cases pass after post-freeze source, neighbor, mitigation, framework, validation-path, and dedicated NVD-corpus reconciliation.
+- technique_id: SAF-T1406
+  neutral_name: Metadata Manipulation
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1406
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: frozen_noncanonical_needs_normalization
+    reviewed_source_count: 19
+    frozen_entry_count: 20
+    freeze_manifest_sha256: 5f2d606375aaf0eec4538a02484f245aa5132220804847ac5a56f9fabedc0fe1
+  - agent: normalize_saf_t1406
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed_no_research_normalization
+    query_count: 0
+    reviewed_source_count: 0
+    frozen_entry_count: 19
+    freeze_manifest_sha256: 081e7c86ac95f2a145c873d24b7f9e8fbcf15706192aa6648cb153e521a2d1d4
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1406-normalized/bundle
+  clean_room_attestation: research/techniques/SAF-T1406/clean-room-attestation.yml
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Prioritized to resolve SAF-T1306's strict-validation dependency on this cataloged missing neighbor.
+  - Research and isolated validation passed, but the bundle used noncanonical fragment filenames and included a validator dependency; a separate no-research normalization and refreeze is required before integration.
+  - Separate no-research normalization canonicalized fragment names and structured integration notes, removed the bundled validator dependency, and refroze the unchanged evidence packet.
+  - Strict canonical validator and three unittest methods over seven inert fixtures pass after post-freeze source, neighbor, mitigation, framework, validation-path, and normalization reconciliation.
+- technique_id: SAF-T1506
+  neutral_name: Infrastructure Token Theft
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1506
+    inherited_context: false
+    started_on: '2026-09-01'
+    result: passed
+    search_pass_count: 7
+    reviewed_source_count: 38
+    cited_source_count: 19
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 16221115ce6a85508a8280c7229b2153d415c8c84bfa678b3344343fd22014bd
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1506/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only research run started after SAF-T1504 evidence freeze.
+  - Observed packet selected two production incidents and two direct vulnerabilities and passed eight detector cases plus isolated strict validation.
+  - Strict canonical validation and eight deterministic detector cases pass after post-freeze source, neighbor-role, mitigation, ATT&CK, framework, history, and validation-path reconciliation.
+- technique_id: SAF-T1802
+  neutral_name: File Collection
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1802
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: interrupted_abandoned
+    interruption: Host interrupted two turns without a contamination report or evidence freeze; the incomplete run was abandoned.
+  - agent: cleanroom_saf_t1802_r2
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 20
+    reviewed_source_count: 32
+    cited_source_count: 23
+    assessed_example_count: 11
+    selected_example_count: 4
+    exclusion_count: 5
+    frozen_entry_count: 19
+    freeze_manifest_sha256: d3a07eca800ee2abc05b41e22722342eef8b47b97860c566c77f79914eb96799
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1802-r2/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run started after SAF-T2106 evidence freeze.
+  - The first run was abandoned after repeated host interruption; a fresh replacement context and directory were started without prior-run access.
+  - Demonstrated packet retained four selected examples and explicit gaps for a qualifying file-specific production incident, official MCP Filesystem patch-metadata conflict, and production detector evaluation.
+  - Detector passes with three expected alerts and zero unexpected alerts; canonical strict validation passes after independently authored SAF-T1913 resolved the follow-on transfer boundary.
+- technique_id: SAF-T1805
+  neutral_name: Context Snapshot Capture
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1805
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 20
+    reviewed_source_count: 24
+    cited_source_count: 19
+    selected_example_count: 3
+    candidate_count: 7
+    exclusion_count: 8
+    frozen_entry_count: 19
+    freeze_manifest_sha256: b060ea17389c62b2914a731607205d6bfb8f16823a4ee1af7712efa72e20b6e1
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1805/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run started after SAF-T3001 evidence freeze.
+  - Demonstrated packet retained three ranked examples and explicit gaps for a qualifying production breach, established exploitation, and production detector precision and recall.
+  - Strict canonical validation and all four detector tests pass after post-freeze source-ID, four-neighbor, eight-mitigation, ATT&CK, history, framework, alignment, canonical-label, and validation-proof reconciliation.
+- technique_id: SAF-T1901
+  neutral_name: Outbound Webhook C2
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1901
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: contaminated_discarded
+    contamination: A line-count command opened prohibited shared registries; no prose or target-specific content was displayed and no bundle was frozen.
+  - agent: cleanroom_saf_t1901_r2
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 18
+    reviewed_source_count: 14
+    cited_source_count: 12
+    selected_example_count: 4
+    candidate_count: 10
+    exclusion_count: 4
+    frozen_entry_count: 18
+    freeze_manifest_sha256: 245ab59532055ccf665292ba2831d3f20f4c3e7c807d07c39965a3b80ec2319e
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1901-r2/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - First run was discarded immediately after self-reported registry access; a fresh replacement context and directory were started.
+  - Research-Derived packet retained four ranked enabling examples and explicitly found no direct production incident or end-to-end public MCP or agent webhook-C2 demonstration.
+  - Detector passes all ten cases; canonical strict validation passes after independently authored SAF-T1913 resolved the data-only HTTP POST boundary.
+- technique_id: SAF-T1902
+  neutral_name: Covert Channel in Responses
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1902
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 22
+    reviewed_source_count: 35
+    cited_source_count: 15
+    selected_example_count: 4
+    exclusion_count: 7
+    frozen_entry_count: 18
+    freeze_manifest_sha256: efa3681b96fdb9f13bc26b0ec6dddd14a31b3117cb6576cbd9b7d76520ca99ae
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1902/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run started after SAF-T1901 evidence freeze.
+  - Demonstrated packet retains four controlled demonstrations or a disclosed vulnerability and explicitly found no qualifying production breach.
+  - Detector passes four tests across three alerting and five non-alerting cases; canonical strict validation passes after mechanical source, neighbor, mitigation, ATT&CK, and proof-path reconciliation.
+- technique_id: SAF-T1903
+  neutral_name: Malicious Server Control Channel
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1903
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 15
+    reviewed_source_count: 19
+    cited_source_count: 13
+    selected_example_count: 4
+    exclusion_count: 8
+    frozen_entry_count: 18
+    freeze_manifest_sha256: f613a906766493864c28e838c5e6366ae27a751cc4b1c114c1e760d0c08cd83c
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1903/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run prioritized after SAF-T1912 evidence freeze to resolve SAF-T1904's exact catalog dependency.
+  - Observed packet retained four selected examples and explicit gaps for a named victim, browser-RAT MCP conformance, CVE-2025-61260 version conflict, and blocked CISA KEV feed access.
+  - The frozen bundle passes the isolated strict validator and all eight deterministic detector cases.
+  - Post-freeze source, tactic, canonical-neighbor, mitigation, ATT&CK, framework, and validation-proof reconciliation is complete; destination strict validation and all eight detector cases pass.
+- technique_id: SAF-T1913
+  neutral_name: HTTP POST Exfil
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1913
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 20
+    reviewed_source_count: 30
+    cited_source_count: 16
+    assessed_example_count: 8
+    selected_example_count: 3
+    exclusion_count: 8
+    frozen_entry_count: 18
+    freeze_manifest_sha256: a45c266c60e56c64654892d3c78fc591dac991f8c543be256b3b488e84272fa0
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1913/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run started after SAF-T1805 evidence freeze to resolve SAF-T1901's catalog dependency.
+  - Research-Derived packet retained three selected examples and explicit gaps for an exact production incident, direct vulnerability, transport-explicit end-to-end demonstration, and production detector evaluation.
+  - Detector passes five tests over 11 fixtures with five expected alerts and zero mismatches; canonical strict validation passes after source, neighbor, mitigation, ATT&CK, history, framework, alignment, and proof-path reconciliation.
+- technique_id: SAF-T1914
+  neutral_name: Tool-to-Tool Exfil
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t1914
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 18
+    reviewed_source_count: 27
+    candidate_count: 19
+    selected_example_count: 4
+    exclusion_count: 10
+    frozen_entry_count: 18
+    freeze_manifest_sha256: c2b21d5e866ad3145311dc83002b36ed0e6e4a332c45710b9de27db56bf70198
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T1914/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run started after SAF-T1802 evidence freeze.
+  - Demonstrated packet retained four selected examples from 19 candidates and explicitly found no verified production incident or stable authoritative standardized telemetry fields.
+  - Detector passes nine fixture classes plus window tuning; canonical strict validation passes after source-ID, two-neighbor, twelve-mitigation, history, framework, alignment, readability, and proof-path reconciliation.
+- technique_id: SAF-T2104
+  neutral_name: Fraudulent Transactions
+  status: integrated_and_validated
+  attempts:
+  - agent: cleanroom_saf_t2104
+    inherited_context: false
+    started_on: '2026-09-02'
+    result: passed
+    claim_count: 15
+    reviewed_source_count: 16
+    selected_example_count: 2
+    candidate_count: 9
+    exclusion_count: 8
+    frozen_entry_count: 17
+    freeze_manifest_sha256: 14b0b1c16edc4d61621a3de9fd17724d375a952e8f97a98c6530918c3cfa5ba3
+  bundle: /private/tmp/saf-all-cleanroom/SAF-T2104/bundle
+  notes:
+  - Cataloged in README.md but its technique directory was absent at program start; clean-room authoring will create it.
+  - Fresh direct-authority-only clean-room run prioritized after SAF-T2101 evidence freeze to resolve SAF-T1915's exact catalog dependency.
+  - Demonstrated packet retained two controlled end-to-end examples and explicit gaps for a qualifying production incident, in-the-wild CVE exploitation, and blocked direct CISA KEV review.
+  - Strict canonical validation and all eleven detector fixtures pass after post-freeze source-ID, three-neighbor, six-mitigation, ATT&CK, history, framework, and validation-path reconciliation.
+unresolved: []

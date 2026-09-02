@@ -1,0 +1,52 @@
+[
+  {
+    "name": "unapproved export at exact threshold",
+    "event": {"mcp.method": "tools/call", "database.operation": "export", "result.bytes": 10485760, "approval.state": "not_requested", "actor.is_approved_backup": false},
+    "expected": true
+  },
+  {
+    "name": "uppercase dump normalization",
+    "event": {"mcp.method": "tools/call", "database.operation": "DUMP", "result.bytes": 16777216, "approval.state": "denied", "actor.is_approved_backup": false},
+    "expected": true
+  },
+  {
+    "name": "bulk read without approval",
+    "event": {"mcp.method": "tools/call", "database.operation": "bulk_read", "result.bytes": 52428800, "approval.state": "unknown", "actor.is_approved_backup": false},
+    "expected": true
+  },
+  {
+    "name": "approved migration export",
+    "event": {"mcp.method": "tools/call", "database.operation": "export", "result.bytes": 52428800, "approval.state": "approved", "actor.is_approved_backup": false},
+    "expected": false
+  },
+  {
+    "name": "allowlisted scheduled backup",
+    "event": {"mcp.method": "tools/call", "database.operation": "dump", "result.bytes": 104857600, "approval.state": "not_requested", "actor.is_approved_backup": true},
+    "expected": false
+  },
+  {
+    "name": "large ordinary query",
+    "event": {"mcp.method": "tools/call", "database.operation": "query", "result.bytes": 52428800, "approval.state": "not_requested", "actor.is_approved_backup": false},
+    "expected": false
+  },
+  {
+    "name": "one byte below threshold",
+    "event": {"mcp.method": "tools/call", "database.operation": "export", "result.bytes": 10485759, "approval.state": "not_requested", "actor.is_approved_backup": false},
+    "expected": false
+  },
+  {
+    "name": "missing result bytes",
+    "event": {"mcp.method": "tools/call", "database.operation": "export", "approval.state": "not_requested", "actor.is_approved_backup": false},
+    "expected": false
+  },
+  {
+    "name": "wrong protocol method",
+    "event": {"mcp.method": "resources/read", "database.operation": "dump", "result.bytes": 52428800, "approval.state": "not_requested", "actor.is_approved_backup": false},
+    "expected": false
+  },
+  {
+    "name": "approved incident response acquisition",
+    "event": {"mcp.method": "tools/call", "database.operation": "bulk_read", "result.bytes": 83886080, "approval.state": "approved", "actor.is_approved_backup": false},
+    "expected": false
+  }
+]

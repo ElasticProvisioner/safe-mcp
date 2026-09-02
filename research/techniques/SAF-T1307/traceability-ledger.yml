@@ -1,0 +1,130 @@
+version: 1
+technique_id: SAF-T1307
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1307/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1307/technique-contract.yml
+  supports: Internal scope, tactic, name, completion conditions, and detection requirements.
+- id: LOCAL-clean-room-attestation
+  path: research/techniques/SAF-T1307/clean-room-attestation.yml
+  supports: Clean-room isolation, independent search record, and validation provenance.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1307/quality-review.yml
+  supports: Review gates, commands, test result, and validation date.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1307/detection-rule.yml
+  supports: The repository's explicitly labeled experimental detection analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1307/test_detection_rule.py
+  supports: Deterministic detection evaluator and assertions.
+- id: LOCAL-test-data
+  path: tests/SAF-T1307/test-logs.json
+  supports: Positive, negative, boundary, and legitimate-lookalike detection cases.
+- id: LOCAL-integration-notes
+  path: research/techniques/SAF-T1307/integration/integration-notes.yml
+  supports: Synthetic join inventory and mechanical post-freeze integration constraints.
+- id: LOCAL-detection-validation
+  path: research/techniques/SAF-T1307/validation/detection-test.txt
+  supports: Captured passing output for the deterministic detection fixtures.
+- id: LOCAL-strict-validation
+  path: research/techniques/SAF-T1307/validation/strict-validator.txt
+  supports: Captured passing output for the isolated strict validator.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1307-X001
+  candidate: The selected vulnerabilities were exploited in real production environments.
+  origin: Candidate incident and exploitation-status assessment.
+  attempted_searches:
+  - Exact CISA KEV cveID filter for all four candidate CVEs on snapshot 2026.09.01
+  - CVE CNA and CISA ADP exploitation-field review for CVE-2025-6514, CVE-2025-49596,
+    CVE-2025-32711, and CVE-2025-53109
+  - First-party advisory review for CVE-2025-6514 and CVE-2025-49596
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2025-6514
+  - SRC-cve-2025-49596
+  - SRC-cve-2025-32711
+  - SRC-cve-2025-53109
+  reason: The current KEV snapshot returned no exact matches, every reviewed CISA
+    ADP record marked exploitation none, and no directly reviewed incident report
+    established production use. Only a bounded absence statement is publishable.
+  prohibited_publishable_text:
+  - was exploited in production
+  - this technique has never occurred
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1307-X002
+  candidate: EchoLeak CVE-2025-32711 directly proves a confused-deputy initiator-binding
+    failure.
+  origin: High-impact agentic vulnerability candidate.
+  attempted_searches:
+  - Exact CVE API GET CVE-2025-32711
+  - Direct Microsoft vendor-advisory URL from the CNA record
+  - Direct AIM researcher URL from the CVE Program container
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  reason: The accessible official record establishes AI command injection and information
+    disclosure but does not establish the initiator, deputy, target, or delegation-binding
+    failure required by the contract. The researcher URL redirected to a generic acquired-company
+    page and could not support additional detail.
+  prohibited_publishable_text:
+  - EchoLeak is a direct confused-deputy vulnerability
+  - EchoLeak proves the deputy-binding mechanism
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1307-X003
+  candidate: CVE-2025-53109 is a direct example of this confused-deputy technique.
+  origin: MCP filesystem vulnerability candidate.
+  attempted_searches:
+  - Exact CVE API GET CVE-2025-53109
+  - Contract comparison of symlink/path validation with initiator-authority preservation
+  consulted_source_ids:
+  - SRC-cve-2025-53109
+  reason: The official record identifies CWE-59 link following and path validation;
+    it does not establish loss of initiating identity or delegated authority.
+  prohibited_publishable_text:
+  - CVE-2025-53109 is a confused deputy attack
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1307-X004
+  candidate: Detailed EchoLeak exploit-chain and researcher-attribution claims from
+    the historical AIM researcher page.
+  origin: CVE-2025-32711 CVE Program reference URL.
+  attempted_searches:
+  - Direct GET https://www.aim.security/lp/aim-labs-echoleak-m365
+  - Direct GET https://www.catonetworks.com/ai-and-security/security-research/ after
+    redirect
+  consulted_source_ids:
+  - SRC-cve-2025-32711
+  reason: The exact source URL redirected to a generic Cato Networks page that did
+    not expose the historical article. Names and detailed attack-chain claims could
+    not be directly reviewed and were omitted.
+  prohibited_publishable_text:
+  - Aim researchers demonstrated the full EchoLeak attack chain
+  - EchoLeak researcher attribution confirmed
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1307-X005
+  candidate: Quantified deployment prevalence or user counts for affected MCP tools.
+  origin: Impact-ranking and blast-radius assessment.
+  attempted_searches:
+  - First-party JFrog advisory and technical report review
+  - Exact maintainer Inspector advisory review
+  consulted_source_ids:
+  - SRC-jfsa-2025-6514
+  - SRC-jfrog-cve-2025-6514
+  - SRC-ghsa-inspector-7f8r
+  reason: The reviewed sources describe adoption or severity but do not provide a
+    current, auditable install-base or affected-user count.
+  prohibited_publishable_text:
+  - millions of users
+  - ecosystem-wide deployment prevalence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []

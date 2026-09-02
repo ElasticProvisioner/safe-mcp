@@ -1,0 +1,232 @@
+version: 1
+technique_id: SAF-T1803
+research_status: saturated
+
+saturation:
+  reached: true
+  consecutive_no_change_passes: 2
+  passes:
+    - pass: protocol_and_authority
+      completed_on: "2026-09-02"
+      queries:
+        - Direct open of https://modelcontextprotocol.io/specification/ and redirected current version 2026-07-28
+        - Direct open of https://modelcontextprotocol.io/specification/2026-07-28/server/tools
+        - Direct open of versioned MCP Security Best Practices
+        - Direct open of PostgreSQL 18 pg_dump and pg_stat_activity documentation
+        - Direct open of MITRE ATT&CK T1213.006
+      material_changes:
+        - Bounded the technique to model-controlled logical export or bulk read across the MCP-to-database intent boundary.
+        - Established canonical MCP call fields, human-confirmation guidance, database dump behavior, privilege limits, and collection mapping.
+    - pass: known_breaches_and_vulnerabilities
+      completed_on: "2026-09-02"
+      queries:
+        - Direct MITRE ATT&CK T1213.006 procedure references followed only to first-party authorities.
+        - Direct NVD API keywordSearch=database dump with all 89 English descriptions reviewed.
+        - Direct NVD API keywordSearch=model context protocol database with all three records reviewed.
+        - Direct NVD API keywordSearch=MCP database dump and agentic database extraction; both returned zero.
+        - Exact CVE API review for CVE-2026-33980, CVE-2026-75133, and CVE-2026-33478.
+        - Exact CISA KEV feed checks for the three candidate CVEs.
+        - Exact GitHub advisory and commit URLs opened only after official CVE records supplied them.
+      material_changes:
+        - Added the direct Anthropic production incident and direct CVE-2026-33980 MCP vulnerability.
+        - Selected UNC5537 and CVE-2026-75133 as bounded high-impact historical analogies.
+        - Recorded conflicting CVE-2026-33980 affected-version data and excluded a contradicted AVideo credential claim.
+    - pass: demonstration_and_empirical_research
+      completed_on: "2026-09-02"
+      queries:
+        - Complete Anthropic 2025 incident-report review, including pages 5 and 10-11.
+        - Complete GHSA-vphc-468g-8rfp review and exact patch commit review.
+        - Complete AVideo GHSA and patch review as a challenge candidate.
+        - PostgreSQL pg_dump implementation behavior and limitations review.
+      material_changes:
+        - Confirmed an observed agentic extraction sequence and a controlled MCP KQL-injection demonstration.
+        - Narrowed the direct vulnerability claim because the PoC retrieves selected data rather than a complete database dump.
+    - pass: detection_and_defense
+      completed_on: "2026-09-02"
+      queries:
+        - Complete Mandiant Snowflake Threat Hunting Guide review.
+        - MITRE ATT&CK AN0676-AN0680 database dump analytics review.
+        - PostgreSQL pg_stat_activity fields and limitations review.
+        - MCP Tools Security Considerations and Security Best Practices review.
+      material_changes:
+        - Designed a cross-layer normalized analytic using MCP method, database operation, result volume, approval state, and backup allowlist.
+        - Added explicit backup-noise, missing-field, fragmentation, and transient-telemetry limitations.
+    - pass: gap_and_challenge
+      completed_on: "2026-09-02"
+      queries:
+        - PyPI adx-mcp-server latest release and full release-history review.
+        - CVE, GHSA, patch, and PyPI cross-check for CVE-2026-33980 affected and fixed versions.
+        - CVE, GHSA, and patch cross-check for CVE-2026-33478 credential and remediation claims.
+        - WordPress Keep Backup Daily changelog and credits cross-check for CVE-2026-75133.
+        - CISA KEV catalog version 2026.09.01 exact-ID checks.
+      material_changes:
+        - Preserved the CVE-2026-33980 version conflict and absence of a published fixed release as an unresolved source conflict disclosed in the technique.
+        - Rejected the AVideo advisory's simple-MD5 cracking proposition after the maintainer patch contradicted it.
+        - Limited exploitation statements to PoC, CISA enrichment, and bounded KEV-listing status.
+    - pass: saturation_follow_up_1
+      completed_on: "2026-09-02"
+      queries:
+        - NVD authority-only query Model Context Protocol database export - zero results.
+        - NVD authority-only query MCP data dump - zero results.
+        - NVD authority-only query agentic database dump - zero results.
+        - Reopened current MCP Tools 2026-07-28, MITRE T1213.006, and PostgreSQL 18 pg_dump authorities.
+      material_changes: []
+    - pass: saturation_follow_up_2
+      completed_on: "2026-09-02"
+      queries:
+        - NVD authority-only query database extraction Model Context Protocol - zero results.
+        - NVD authority-only query database dump MCP - zero results.
+        - NVD authority-only query KQL injection MCP database - only known CVE-2026-33980.
+        - CISA KEV 2026.09.01 exact-ID recheck for CVE-2026-33980, CVE-2026-75133, and CVE-2026-33478 - no entries.
+      material_changes: []
+  rationale: >-
+    The corpus covers current MCP authority, first-party database behavior and
+    telemetry, one directly observed agentic campaign, one direct MCP database
+    vulnerability and patch, two high-impact analogies, current official CVE and
+    KEV records, detection guidance, contrary evidence, and remediation conflicts.
+    Two consecutive authority-only passes added no controlling requirement,
+    direct example, high-impact candidate, material fact, detection constraint,
+    mitigation limit, source, or neighbor distinction.
+
+breach_and_vulnerability_assessment:
+  searched_on: "2026-09-02"
+  candidate_count: 8
+  selected_examples:
+    - SRC-anthropic-espionage-2025-11
+    - SRC-cve-2026-33980
+    - SRC-mandiant-unc5537-2024
+    - SRC-cve-2026-75133
+  no_qualifying_examples_rationale: null
+  candidates:
+    - source_id: SRC-anthropic-espionage-2025-11
+      identifier: GTG-1002 AI-orchestrated cyber espionage campaign
+      relationship: direct_production_incident
+      exploitation_status: Observed in live operations; Anthropic reports a handful of validated successful intrusions.
+      impact: Database account details, hashes, configurations, proprietary information, and complete local results were collected and analyzed.
+      remediation: Anthropic banned accounts, notified affected entities and authorities, and expanded detection and safeguards.
+      selected: true
+      rationale: Highest relevance because it directly documents agentic database extraction in an MCP-based attack framework.
+    - source_id: SRC-cve-2026-33980
+      identifier: CVE-2026-33980 / GHSA-vphc-468g-8rfp
+      relationship: direct_vulnerability
+      exploitation_status: Controlled PoC according to the advisory and CISA enrichment; no production exploitation identified.
+      impact: Arbitrary KQL queries through three apparently narrow MCP metadata tools can expose database contents and alter data within the configured identity's rights.
+      remediation: Patch commit 0abe0ee adds identifier validation and tests; no fixed package release was identified and version records conflict.
+      selected: true
+      rationale: Highest direct vulnerability relevance because the affected component is an MCP database server and the trust boundary bypass permits unauthorized reads.
+    - source_id: SRC-mandiant-unc5537-2024
+      identifier: UNC5537 Snowflake customer-instance data theft campaign
+      relationship: historical_analogy
+      exploitation_status: Observed production campaign attributed by Mandiant to stolen customer credentials.
+      impact: Significant-volume customer data export, victim extortion, and about 165 potentially exposed organizations notified.
+      remediation: Snowflake and Mandiant issued detection and hardening guidance; customer credential, MFA, and network-control remediation was required.
+      selected: true
+      rationale: High-impact production analogy with unusually strong incident-response and detection evidence, clearly labeled non-agentic.
+    - source_id: SRC-cve-2026-75133
+      identifier: CVE-2026-75133
+      relationship: historical_analogy
+      exploitation_status: CISA ADP marked exploitation none; not listed in CISA KEV 2026.09.01; these facts do not prove no exploitation.
+      impact: An unauthenticated request could trigger a full MySQL dump and enable retrieval of the generated backup.
+      remediation: Fixed before Keep Backup Daily 2.1.4; the changelog records hardened file handling and unpredictable names.
+      selected: true
+      rationale: Recent, mechanism-specific analogy showing why dump authorization and output handling both matter.
+    - source_id: SRC-cve-2026-33478
+      identifier: CVE-2026-33478 / GHSA-687q-32c6-8x68
+      relationship: historical_analogy
+      exploitation_status: Public PoC according to CISA enrichment; no KEV entry or production exploitation identified.
+      impact: A disclosed clone-key chain could trigger a full database dump and expose application data before follow-on compromise.
+      remediation: Commit c85d076 adds clone-key access control and input sanitization, but the advisory lists no patched version.
+      selected: false
+      rationale: Lower selection priority because the advisory's credential-cracking claim is contradicted by maintainer code commentary and release remediation is unclear.
+    - source_id: SRC-nvd-mcp-database-search
+      identifier: CVE-2026-32625
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Vulnerability record reviewed; production exploitation not established by the reviewed NVD summary.
+      impact: MCP URL placeholder resolution could expose process secrets and database connection credentials.
+      remediation: NVD summary identifies 0.8.4-rc1 as patched.
+      selected: false
+      rationale: It exposes database credentials rather than causing a database dump and belongs to a credential-exposure neighbor.
+    - source_id: SRC-nvd-mcp-database-search
+      identifier: CVE-2026-67531
+      relationship: adjacent_incident_or_vulnerability
+      exploitation_status: Vulnerability record reviewed; production exploitation not established by the reviewed NVD summary.
+      impact: An MCP code-execution sandbox escape could expose server secrets and database credentials.
+      remediation: NVD summary identifies version 1.5.7 as fixed.
+      selected: false
+      rationale: It provides server code execution and credential access, not the defining logical database-collection behavior.
+    - source_id: SRC-nvd-db-dump-search
+      identifier: NVD database dump keyword corpus - 89 records
+      relationship: rejected
+      exploitation_status: Mixed; individual exploitation was not inferred from descriptions or scores.
+      impact: Results ranged from keyword collisions and memory dumps to SQL injection, backup exposure, and dump-trigger vulnerabilities.
+      remediation: Varied by record; current high-relevance records were promoted to individual candidates for direct review.
+      selected: false
+      rationale: The grouped discovery corpus is not a publishable example and cannot substitute for direct record review.
+
+sources_consulted:
+  - SRC-adx-patch-0abe0ee
+  - SRC-anthropic-espionage-2025-11
+  - SRC-avideo-patch-c85d076
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-33478
+  - SRC-cve-2026-33980
+  - SRC-cve-2026-75133
+  - SRC-ghsa-687q-32c6-8x68
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-mandiant-snowflake-hunting-2024
+  - SRC-mandiant-unc5537-2024
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-attack-t1213-006
+  - SRC-nvd-db-dump-search
+  - SRC-nvd-mcp-database-search
+  - SRC-postgresql-pg-stat-activity-18
+  - SRC-postgresql-pgdump-18
+  - SRC-pypi-adx-mcp-server
+  - SRC-wordpress-keep-backup-daily
+sources_cited:
+  - SRC-adx-patch-0abe0ee
+  - SRC-anthropic-espionage-2025-11
+  - SRC-cisa-kev-2026-09-01
+  - SRC-cve-2026-33980
+  - SRC-cve-2026-75133
+  - SRC-ghsa-vphc-468g-8rfp
+  - SRC-mandiant-snowflake-hunting-2024
+  - SRC-mandiant-unc5537-2024
+  - SRC-mcp-security-2025-11-25
+  - SRC-mcp-tools-2026-07-28
+  - SRC-mitre-attack-t1213-006
+  - SRC-nvd-mcp-database-search
+  - SRC-postgresql-pg-stat-activity-18
+  - SRC-postgresql-pgdump-18
+  - SRC-pypi-adx-mcp-server
+  - SRC-wordpress-keep-backup-daily
+sources_rejected:
+  - source_id: SRC-nvd-db-dump-search
+    reason: Discovery corpus contains mixed relationships; it is not cited without direct record validation.
+sources_blocked: []
+
+conflicts:
+  - issue: CVE-2026-33980 affected versions differ among the GHSA, CNA narrative, CNA affected array, and current PyPI release history.
+    resolution: Disclose the conflict, identify the patch commit, and state that no patched package release was found instead of asserting a fixed version.
+  - issue: GHSA-687q-32c6-8x68 calls all AVideo password hashes simple MD5, while maintainer patch commentary says current accounts use a layered scheme and only legacy accounts may retain plain MD5.
+    resolution: Exclude the simple-MD5 cracking claim and do not select the advisory as a top publishable example.
+
+evidence_assessment:
+  overall_status: observed
+  core_claim_ids:
+    - SAF-T1803-C003
+  rationale: >-
+    Anthropic's directly reviewed primary incident report documents an MCP-based
+    agentic attack framework performing a live database extraction operation and
+    downloading complete results in a successful intrusion. The report omits the
+    exact database tool and byte count, so those specifics are not claimed, but the
+    defining agentic database-collection behavior is observed rather than inferred.
+
+source_archive:
+  manifest: ../../source-manifest.yml
+  validation_status: passed
+
+rights_review:
+  audit: publication-rights.yml
+  status: passed

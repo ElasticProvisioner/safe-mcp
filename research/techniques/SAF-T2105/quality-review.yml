@@ -1,0 +1,63 @@
+version: 1
+technique_id: SAF-T2105
+review_status: passed
+reviewed_on: "2026-09-02"
+reviewer: independent clean-room author
+
+gates:
+  clean_room_integrity:
+    status: passed
+    notes: Fresh-agent attestation records allowed and prohibited inputs, independent searches, no prior-artifact access, and the pre-integration freeze boundary.
+  contract_and_scope:
+    status: passed
+    notes: Deliberate deceptive output is distinguished from accidental confabulation and from delivery-only prompt or context manipulation.
+  technical_accuracy:
+    status: passed
+    notes: Production, protocol, empirical, and contrary evidence are stated with bounded prerequisites and outcomes.
+  claim_traceability:
+    status: passed
+    notes: Twelve retained claims map to directly reviewed sources with exact locators and explicit limitations.
+  source_or_omit:
+    status: passed
+    notes: All substantive README units are traced and four excluded propositions are ledgered and absent.
+  evidence_classification:
+    status: passed
+    notes: Observed is justified by first-party production incident evidence; laboratory mechanisms are separately labeled demonstrated.
+  research_saturation:
+    status: passed
+    notes: Five required passes and two final no-change follow-up passes are recorded.
+  breach_and_vulnerability_coverage:
+    status: passed
+    notes: Six candidates were classified, four selected, and the absence of a direct qualifying CVE or advisory is recorded.
+  detection_quality:
+    status: passed
+    notes: Experimental rule has declared telemetry, positive, negative, boundary, and malformed-event tests, false positives, and evidence-linked limitations.
+  mitigation_quality:
+    status: passed
+    notes: Layered ground-truth, provenance, monitoring, and human-review controls address the output-integrity mechanism without claiming completeness.
+  framework_alignment:
+    status: passed
+    notes: Tactic ATK-TA0040, independently authored neighbors SAF-T2106 and SAF-T1102, eight mitigations, and analogous ATT&CK T1565 mapping are reconciled.
+  publication_rights:
+    status: passed
+    notes: All cited sources are paraphrased with attribution; no protected text, figures, code, or datasets are reproduced.
+  safe_publication:
+    status: passed
+    notes: The technique contains no credentials, destructive commands, exploit payloads, or operational evasion instructions.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py SAF-T2105
+      result: passed
+  detection_tests:
+    status: passed
+    command: python3 tests/SAF-T2105/test_detection_rule.py
+    result: "PASS: 6 detection cases; captured in validation/detection-test.txt"
+    waiver: null
+  canonical_repository:
+    status: passed
+    detector_result: PASS 6 detection cases
+    validator_result: PASS SAF-T2105
+    proof: research/techniques/SAF-T2105/validation/canonical-validation.txt
+
+unresolved: []

@@ -1,0 +1,66 @@
+version: 1
+technique_id: SAF-T1008
+frozen_on: "2026-09-01"
+generation_mode: clean_room
+status: frozen
+
+scope:
+  root: /private/tmp/saf-all-cleanroom/SAF-T1008
+  canonical_file_count: 135
+  digest_input: validation/canonical-file-sha256.txt
+  digest_input_bytes: 16068
+  excluded_from_digest:
+    - freeze-manifest.yml
+    - validation/canonical-file-sha256.txt
+  exclusion_reason: The manifest records the digest, and the digest-input file cannot recursively list its own final hash.
+
+freeze:
+  algorithm: sha256
+  canonical_digest: f92e8531f3081acbcaa27d8e8a72bb22c8f9c3961d1fd5ac91bb059281df6f82
+  construction: >-
+    SHA-256 of validation/canonical-file-sha256.txt, whose 135 sorted lines each
+    contain the SHA-256 and relative path of every other file in the bundle,
+    including the isolated mock repository and validation proof.
+
+research_counts:
+  methodology_passes: 7
+  consecutive_no_change_passes: 2
+  recorded_searches: 19
+  opened_reviewed_sources: 13
+  consulted_sources: 13
+  cited_sources: 10
+  validated_claims: 16
+  breach_vulnerability_candidates: 6
+  selected_examples: 3
+  excluded_items: 5
+
+validation:
+  strict_validator:
+    command: /Users/fkautz/anaconda3/bin/python3 scripts/validate-technique-research.py SAF-T1008
+    environment: validation/mock-repository
+    result: PASS SAF-T1008
+    proof: validation/strict-validator-output.txt
+  detection_tests:
+    command: python3 tests/SAF-T1008/test_detection_rule.py
+    total: 8
+    positive: 2
+    negative: 6
+    passed: 8
+    failed: 0
+    proof: validation/detection-test-output.json
+  source_archive_integrity:
+    source_records: 13
+    archive_extraction_checks: 26
+    result: passed
+
+integration:
+  repository_integrated: false
+  committed: false
+  pushed: false
+  shared_registries_opened: false
+  deferred:
+    - Resolve source-ID collisions against the shared source registry.
+    - Reconcile synthetic neighbor and mitigation IDs against repository framework records.
+    - Replace the isolated synthetic repository-history token with an honest integration commit only after authorization.
+
+clean_room_attestation: research/techniques/SAF-T1008/clean-room-attestation.yml

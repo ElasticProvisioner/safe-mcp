@@ -1,0 +1,158 @@
+version: 1
+technique_id: SAF-T1408
+policy: source_or_omit
+review_status: passed
+reviewed_on: '2026-09-01'
+publishable_artifact: techniques/SAF-T1408/README.md
+coverage: all_substantive_publishable_content
+repository_sources:
+- id: LOCAL-contract
+  path: research/techniques/SAF-T1408/technique-contract.yml
+  supports: Internal scope, neutral name, tactic, completion conditions, and generation
+    mode.
+- id: LOCAL-quality-review
+  path: research/techniques/SAF-T1408/quality-review.yml
+  supports: Validation commands, test results, review date, and gate status.
+- id: LOCAL-detection-rule
+  path: techniques/SAF-T1408/detection-rule.yml
+  supports: The standalone experimental detection analytic.
+- id: LOCAL-detection-tests
+  path: tests/SAF-T1408/test_detection_rule.py
+  supports: Deterministic analytic implementation and assertions.
+- id: LOCAL-detection-cases
+  path: tests/SAF-T1408/test-cases.json
+  supports: Positive, negative, boundary, malformed, normalization, and expected-lookalike
+    cases.
+- id: LOCAL-neighbor-mixup
+  path: techniques/SAF-T1009/README.md
+  supports: Canonical post-freeze Authorization Server Mix-up neighbor join.
+- id: LOCAL-neighbor-metadata
+  path: techniques/SAF-T1306/README.md
+  supports: Canonical post-freeze Rogue Authorization Server neighbor join.
+- id: LOCAL-detection-proof
+  path: research/techniques/SAF-T1408/validation/detection-test.txt
+  supports: Isolated and integrated deterministic detector results.
+- id: LOCAL-strict-validator-proof
+  path: research/techniques/SAF-T1408/validation/strict-validator.txt
+  supports: Isolated and integrated strict-validator results.
+repository_history:
+- commit: 26c39823e0b55144bc7891f6345e6030646c16a0
+  supports: Repository baseline used for post-freeze source, framework, and path reconciliation.
+excluded_items:
+- id: SAF-T1408-X001
+  candidate: A public production MCP breach used OAuth PKCE downgrade.
+  origin: Required known-breach pass.
+  attempted_searches:
+  - CISA KEV catalog OAuth, PKCE, MCP, and selected-CVE scans on 2026-09-01.
+  - NVD MCP OAuth and PKCE downgrade keyword passes on 2026-09-01.
+  - First-party advisory exploitation statements and MCP documentation index scan.
+  consulted_source_ids:
+  - SRC-cisa-kev-2026-09-01
+  - SRC-nvd-2026-67336
+  - SRC-ghsa-9h47-pqcx-hjr4
+  reason: No directly reviewed authority documented the complete behavior in a production
+    MCP incident.
+  prohibited_publishable_text:
+  - OAuth downgrade has been observed in production MCP incidents
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X002
+  candidate: CVE-2026-26247 is an attacker-induced MCP protocol downgrade.
+  origin: NVD PKCE keyword catalog pass.
+  attempted_searches:
+  - Exact CVE List, NVD API, and Gitea 1.25.5 release review.
+  consulted_source_ids:
+  - SRC-cve-2026-26247
+  - SRC-nvd-2026-26247
+  - SRC-gitea-1.25.5
+  reason: The sources establish lost S256 state in Gitea but neither attacker-driven
+    negotiation nor MCP use.
+  prohibited_publishable_text:
+  - Gitea proves exploitation of MCP OAuth downgrade
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X003
+  candidate: CVE-2023-48228 is a distinct highest-impact selected example.
+  origin: NVD PKCE keyword catalog pass.
+  attempted_searches:
+  - Exact NVD API record review and comparison with selected authentik downgrade evidence.
+  consulted_source_ids:
+  - SRC-nvd-2023-48228
+  - SRC-cve-2024-23647
+  - SRC-ghsa-mrx3-gxjx-hjqj
+  reason: It is a redundant inverse-stage enforcement failure and adds less mechanism
+    clarity than CVE-2024-23647.
+  prohibited_publishable_text:
+  - CVE-2023-48228 is a selected OAuth downgrade example
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X004
+  candidate: Cryptomator plaintext Hub endpoint support is the same technique.
+  origin: NVD OAuth downgrade discovery response, CVE-2026-32309 lead.
+  attempted_searches:
+  - NVD API keywordSearch=OAuth downgrade.
+  - Scope comparison against MCP authorization-code binding requirements.
+  consulted_source_ids: []
+  reason: The lead concerns transport endpoint downgrade, not PKCE method or challenge
+    removal, and was not promoted from discovery to evidence.
+  prohibited_publishable_text:
+  - plaintext Hub endpoints are PKCE downgrade
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X005
+  candidate: OAuth 1.0a fallback to OAuth 1.0 is an MCP example.
+  origin: NVD OAuth downgrade discovery response, CVE-2026-72887 lead.
+  attempted_searches:
+  - NVD API keywordSearch=OAuth downgrade.
+  - Protocol-version comparison with the MCP OAuth 2.1 authorization profile.
+  consulted_source_ids:
+  - SRC-mcp-authorization-2025-11-25
+  reason: The lead concerns OAuth 1.0 protocol fallback outside the MCP OAuth 2.1
+    boundary and was not promoted to evidence.
+  prohibited_publishable_text:
+  - OAuth 1.0a fallback is direct MCP evidence
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X006
+  candidate: Recovery of a PKCE verifier through a padding oracle is protocol downgrade.
+  origin: NVD PKCE plain discovery response, CVE-2026-47775 lead.
+  attempted_searches:
+  - NVD API keywordSearch=PKCE plain.
+  - Mechanism comparison against S256-to-plain and PKCE-to-absent transitions.
+  consulted_source_ids:
+  - SRC-rfc7636
+  reason: The lead concerns verifier confidentiality after encryption failure, not
+    selection of a weaker OAuth protection mode.
+  prohibited_publishable_text:
+  - padding-oracle verifier recovery is OAuth protocol downgrade
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X007
+  candidate: OAuth metadata SSRF in an MCP security library is protocol downgrade.
+  origin: NVD MCP OAuth discovery response, CVE-2026-45609 lead.
+  attempted_searches:
+  - NVD API keywordSearch=Model Context Protocol OAuth.
+  - Current MCP Security Best Practices SSRF review.
+  consulted_source_ids:
+  - SRC-mcp-security-2025-11-25
+  reason: The lead crosses an outbound network boundary through untrusted URLs; it
+    does not weaken PKCE negotiation.
+  prohibited_publishable_text:
+  - OAuth metadata SSRF is PKCE downgrade
+  disposition: omitted_from_publishable_technique
+  status: excluded
+- id: SAF-T1408-X008
+  candidate: Signed-request parameter substitution in Apache CXF is the same technique.
+  origin: NVD code_challenge_method discovery response, CVE-2026-63687 lead.
+  attempted_searches:
+  - NVD API keywordSearch=code_challenge_method.
+  - Mechanism comparison against attacker-triggered fallback to plain or absent PKCE.
+  consulted_source_ids:
+  - SRC-rfc9700
+  reason: The lead requires a client able to sign a request and substitutes protected
+    parameters; it is adjacent input precedence, not a documented downgrade fallback.
+  prohibited_publishable_text:
+  - signed request parameter substitution is the selected downgrade mechanism
+  disposition: omitted_from_publishable_technique
+  status: excluded
+unresolved: []
