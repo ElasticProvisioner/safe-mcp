@@ -97,7 +97,7 @@ We welcome various types of contributions:
 
 - **New Techniques**: Follow the [research protocol](research/README.md), [template](techniques/TEMPLATE.md), and [completion checklist](techniques/TEMPLATE-CHECKLIST.md)
 - **Mitigations**: Add or improve mitigation strategies
-- **Detection Rules**: Contribute Sigma rules or other detection mechanisms
+- **Detection Rules**: Contribute native analytics or externally maintained rule mappings through the [detection registry contract](detections/README.md)
 - **Documentation**: Improve existing documentation or add examples
 - **Code**: Scripts, tools, or automation for the framework
 - **Bug Reports**: Report issues or inaccuracies

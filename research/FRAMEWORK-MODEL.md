@@ -81,3 +81,10 @@ Detection maturity is recorded independently of evidence maturity:
 
 Passing synthetic positive, negative, boundary, and false-positive fixtures is
 `fixture_tested`; it must not be represented as production effectiveness.
+
+The [`detections/registry.yml`](../detections/registry.yml) operational
+projection adds normalized observation modalities and a bounded semantic
+relationship for each native analytic. The generated
+[`detections/COVERAGE.md`](../detections/COVERAGE.md) matrix also distinguishes
+SAF-owned analytics from externally maintained rules. Mapping presence and
+validation maturity remain separate from production effectiveness.
