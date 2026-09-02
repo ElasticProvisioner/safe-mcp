@@ -1,0 +1,54 @@
+version: 1
+technique_id: __TECHNIQUE_ID__
+name: __TECHNIQUE_NAME__
+status: draft
+created_on: "__DATE__"
+updated_on: "__DATE__"
+
+tactics:
+  - ATK-TAXXXX
+
+adversary_objective: >-
+  State the immediate adversary objective without describing a mitigation or
+  generic impact.
+
+scope:
+  security_boundary: >-
+    Name the trust boundary crossed or abused.
+  in_scope:
+    - Define the mechanism and outcome included in this technique.
+  out_of_scope:
+    - Identify similar behavior that uses a different mechanism or boundary.
+  affected_components:
+    - MCP host, client, server, transport, tool, resource, prompt, model, memory,
+      registry, or external service
+
+nearest_neighbors:
+  - technique_id: SAF-TXXXX
+    distinction: >-
+      Explain the mechanism, boundary, objective, or observables that prevent a
+      duplicate classification.
+
+required_evidence:
+  - Establish that the defining mechanism is possible in the stated MCP or
+    agentic-system boundary.
+  - Establish the prerequisites and immediate outcome.
+  - Establish whether the end-to-end behavior is observed, demonstrated,
+    research-derived, or hypothesized.
+
+detection:
+  expectation: required
+  waiver_rationale: null
+  required_telemetry:
+    - Name the event source and fields needed to evaluate the analytic.
+
+safe_example_constraints:
+  - Use inert domains, placeholder credentials, and non-destructive commands.
+  - Include only the detail needed to explain and validate the behavior.
+
+completion_evidence:
+  - All material claims are validated and linked to reviewed sources with exact
+    locators.
+  - Research saturation is recorded after two consecutive no-change passes.
+  - Detection tests pass, or a specific feasibility waiver is approved.
+  - Rights and quality reviews pass with no unresolved blocking issue.

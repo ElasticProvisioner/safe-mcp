@@ -1,140 +1,138 @@
-# ID Migration Map: SAFE → SAF
+# SAF Identifier Map
 
-As part of the rename from "Security Analysis Framework for Evaluation" to **Secure Agentic Framework (SAF)**, all identifiers changed prefix from `SAFE-` to `SAF-`.
+The **Secure Agentic Framework (SAF)** uses the `SAF-` prefix for all framework identifiers.
 
-**Rule:** `SAFE-T<id>` → `SAF-T<id>`, `SAFE-M-<id>` → `SAF-M-<id>`. The numeric portion is unchanged.
-
-GitHub redirects old *org/repo* URLs automatically, but repository *paths* (e.g. `techniques/SAFE-T1001/`) do **not** redirect — update any external links using the table below.
+**Rules:** Technique IDs use `SAF-T<id>`, and mitigation IDs use `SAF-M-<id>`.
 
 ## Techniques
 
-| Old ID | New ID |
-| ------ | ------ |
-| SAFE-T1001 | SAF-T1001 |
-| SAFE-T1002 | SAF-T1002 |
-| SAFE-T1003 | SAF-T1003 |
-| SAFE-T1004 | SAF-T1004 |
-| SAFE-T1005 | SAF-T1005 |
-| SAFE-T1006 | SAF-T1006 |
-| SAFE-T1007 | SAF-T1007 |
-| SAFE-T1008 | SAF-T1008 |
-| SAFE-T1009 | SAF-T1009 |
-| SAFE-T1101 | SAF-T1101 |
-| SAFE-T1102 | SAF-T1102 |
-| SAFE-T1103 | SAF-T1103 |
-| SAFE-T1104 | SAF-T1104 |
-| SAFE-T1105 | SAF-T1105 |
-| SAFE-T1106 | SAF-T1106 |
-| SAFE-T1109 | SAF-T1109 |
-| SAFE-T1110 | SAF-T1110 |
-| SAFE-T1111 | SAF-T1111 |
-| SAFE-T1112 | SAF-T1112 |
-| SAFE-T1201 | SAF-T1201 |
-| SAFE-T1202 | SAF-T1202 |
-| SAFE-T1203 | SAF-T1203 |
-| SAFE-T1204 | SAF-T1204 |
-| SAFE-T1205 | SAF-T1205 |
-| SAFE-T1301 | SAF-T1301 |
-| SAFE-T1302 | SAF-T1302 |
-| SAFE-T1303 | SAF-T1303 |
-| SAFE-T1304 | SAF-T1304 |
-| SAFE-T1305 | SAF-T1305 |
-| SAFE-T1306 | SAF-T1306 |
-| SAFE-T1307 | SAF-T1307 |
-| SAFE-T1308 | SAF-T1308 |
-| SAFE-T1309 | SAF-T1309 |
-| SAFE-T1401 | SAF-T1401 |
-| SAFE-T1402 | SAF-T1402 |
-| SAFE-T1403 | SAF-T1403 |
-| SAFE-T1404 | SAF-T1404 |
-| SAFE-T1407 | SAF-T1407 |
-| SAFE-T1408 | SAF-T1408 |
-| SAFE-T1501 | SAF-T1501 |
-| SAFE-T1502 | SAF-T1502 |
-| SAFE-T1503 | SAF-T1503 |
-| SAFE-T1504 | SAF-T1504 |
-| SAFE-T1505 | SAF-T1505 |
-| SAFE-T1507 | SAF-T1507 |
-| SAFE-T1601 | SAF-T1601 |
-| SAFE-T1602 | SAF-T1602 |
-| SAFE-T1603 | SAF-T1603 |
-| SAFE-T1604 | SAF-T1604 |
-| SAFE-T1605 | SAF-T1605 |
-| SAFE-T1606 | SAF-T1606 |
-| SAFE-T1701 | SAF-T1701 |
-| SAFE-T1702 | SAF-T1702 |
-| SAFE-T1703 | SAF-T1703 |
-| SAFE-T1704 | SAF-T1704 |
-| SAFE-T1705 | SAF-T1705 |
-| SAFE-T1706 | SAF-T1706 |
-| SAFE-T1707 | SAF-T1707 |
-| SAFE-T1801 | SAF-T1801 |
-| SAFE-T1803 | SAF-T1803 |
-| SAFE-T1804 | SAF-T1804 |
-| SAFE-T1904 | SAF-T1904 |
-| SAFE-T1910 | SAF-T1910 |
-| SAFE-T1911 | SAF-T1911 |
-| SAFE-T1912 | SAF-T1912 |
-| SAFE-T1915 | SAF-T1915 |
-| SAFE-T2101 | SAF-T2101 |
-| SAFE-T2102 | SAF-T2102 |
-| SAFE-T2103 | SAF-T2103 |
-| SAFE-T2105 | SAF-T2105 |
-| SAFE-T2106 | SAF-T2106 |
-| SAFE-T2107 | SAF-T2107 |
-| SAFE-T3001 | SAF-T3001 |
+| Technique ID |
+| ------------ |
+| SAF-T1001 |
+| SAF-T1002 |
+| SAF-T1003 |
+| SAF-T1004 |
+| SAF-T1005 |
+| SAF-T1006 |
+| SAF-T1007 |
+| SAF-T1008 |
+| SAF-T1009 |
+| SAF-T1101 |
+| SAF-T1102 |
+| SAF-T1103 |
+| SAF-T1104 |
+| SAF-T1105 |
+| SAF-T1106 |
+| SAF-T1109 |
+| SAF-T1110 |
+| SAF-T1111 |
+| SAF-T1112 |
+| SAF-T1201 |
+| SAF-T1202 |
+| SAF-T1203 |
+| SAF-T1204 |
+| SAF-T1205 |
+| SAF-T1301 |
+| SAF-T1302 |
+| SAF-T1303 |
+| SAF-T1304 |
+| SAF-T1305 |
+| SAF-T1306 |
+| SAF-T1307 |
+| SAF-T1308 |
+| SAF-T1309 |
+| SAF-T1401 |
+| SAF-T1402 |
+| SAF-T1403 |
+| SAF-T1404 |
+| SAF-T1407 |
+| SAF-T1408 |
+| SAF-T1501 |
+| SAF-T1502 |
+| SAF-T1503 |
+| SAF-T1504 |
+| SAF-T1505 |
+| SAF-T1507 |
+| SAF-T1601 |
+| SAF-T1602 |
+| SAF-T1603 |
+| SAF-T1604 |
+| SAF-T1605 |
+| SAF-T1606 |
+| SAF-T1701 |
+| SAF-T1702 |
+| SAF-T1703 |
+| SAF-T1704 |
+| SAF-T1705 |
+| SAF-T1706 |
+| SAF-T1707 |
+| SAF-T1801 |
+| SAF-T1803 |
+| SAF-T1804 |
+| SAF-T1904 |
+| SAF-T1910 |
+| SAF-T1911 |
+| SAF-T1912 |
+| SAF-T1915 |
+| SAF-T2101 |
+| SAF-T2102 |
+| SAF-T2103 |
+| SAF-T2105 |
+| SAF-T2106 |
+| SAF-T2107 |
+| SAF-T3001 |
 
 ## Mitigations
 
-| Old ID | New ID |
-| ------ | ------ |
-| SAFE-M-1 | SAF-M-1 |
-| SAFE-M-2 | SAF-M-2 |
-| SAFE-M-3 | SAF-M-3 |
-| SAFE-M-4 | SAF-M-4 |
-| SAFE-M-5 | SAF-M-5 |
-| SAFE-M-6 | SAF-M-6 |
-| SAFE-M-7 | SAF-M-7 |
-| SAFE-M-8 | SAF-M-8 |
-| SAFE-M-9 | SAF-M-9 |
-| SAFE-M-10 | SAF-M-10 |
-| SAFE-M-11 | SAF-M-11 |
-| SAFE-M-12 | SAF-M-12 |
-| SAFE-M-13 | SAF-M-13 |
-| SAFE-M-14 | SAF-M-14 |
-| SAFE-M-15 | SAF-M-15 |
-| SAFE-M-16 | SAF-M-16 |
-| SAFE-M-17 | SAF-M-17 |
-| SAFE-M-18 | SAF-M-18 |
-| SAFE-M-19 | SAF-M-19 |
-| SAFE-M-20 | SAF-M-20 |
-| SAFE-M-21 | SAF-M-21 |
-| SAFE-M-22 | SAF-M-22 |
-| SAFE-M-23 | SAF-M-23 |
-| SAFE-M-24 | SAF-M-24 |
-| SAFE-M-29 | SAF-M-29 |
-| SAFE-M-30 | SAF-M-30 |
-| SAFE-M-31 | SAF-M-31 |
-| SAFE-M-32 | SAF-M-32 |
-| SAFE-M-33 | SAF-M-33 |
-| SAFE-M-34 | SAF-M-34 |
-| SAFE-M-35 | SAF-M-35 |
-| SAFE-M-36 | SAF-M-36 |
-| SAFE-M-37 | SAF-M-37 |
-| SAFE-M-38 | SAF-M-38 |
-| SAFE-M-45 | SAF-M-45 |
-| SAFE-M-46 | SAF-M-46 |
-| SAFE-M-47 | SAF-M-47 |
-| SAFE-M-48 | SAF-M-48 |
-| SAFE-M-49 | SAF-M-49 |
-| SAFE-M-50 | SAF-M-50 |
-| SAFE-M-51 | SAF-M-51 |
-| SAFE-M-52 | SAF-M-52 |
-| SAFE-M-53 | SAF-M-53 |
-| SAFE-M-54 | SAF-M-54 |
-| SAFE-M-63 | SAF-M-63 |
-| SAFE-M-69 | SAF-M-69 |
-| SAFE-M-70 | SAF-M-70 |
-| SAFE-M-71 | SAF-M-71 |
-| SAFE-M-72 | SAF-M-72 |
-| SAFE-M-73 | SAF-M-73 |
+| Mitigation ID |
+| ------------- |
+| SAF-M-1 |
+| SAF-M-2 |
+| SAF-M-3 |
+| SAF-M-4 |
+| SAF-M-5 |
+| SAF-M-6 |
+| SAF-M-7 |
+| SAF-M-8 |
+| SAF-M-9 |
+| SAF-M-10 |
+| SAF-M-11 |
+| SAF-M-12 |
+| SAF-M-13 |
+| SAF-M-14 |
+| SAF-M-15 |
+| SAF-M-16 |
+| SAF-M-17 |
+| SAF-M-18 |
+| SAF-M-19 |
+| SAF-M-20 |
+| SAF-M-21 |
+| SAF-M-22 |
+| SAF-M-23 |
+| SAF-M-24 |
+| SAF-M-29 |
+| SAF-M-30 |
+| SAF-M-31 |
+| SAF-M-32 |
+| SAF-M-33 |
+| SAF-M-34 |
+| SAF-M-35 |
+| SAF-M-36 |
+| SAF-M-37 |
+| SAF-M-38 |
+| SAF-M-45 |
+| SAF-M-46 |
+| SAF-M-47 |
+| SAF-M-48 |
+| SAF-M-49 |
+| SAF-M-50 |
+| SAF-M-51 |
+| SAF-M-52 |
+| SAF-M-53 |
+| SAF-M-54 |
+| SAF-M-63 |
+| SAF-M-69 |
+| SAF-M-70 |
+| SAF-M-71 |
+| SAF-M-72 |
+| SAF-M-73 |

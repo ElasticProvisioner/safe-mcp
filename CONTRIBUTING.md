@@ -95,7 +95,7 @@ By making a contribution to this project, I certify that:
 
 We welcome various types of contributions:
 
-- **New Techniques**: Document new attack techniques following the [template](techniques/TEMPLATE.md)
+- **New Techniques**: Follow the [research protocol](research/README.md), [template](techniques/TEMPLATE.md), and [completion checklist](techniques/TEMPLATE-CHECKLIST.md)
 - **Mitigations**: Add or improve mitigation strategies
 - **Detection Rules**: Contribute Sigma rules or other detection mechanisms
 - **Documentation**: Improve existing documentation or add examples

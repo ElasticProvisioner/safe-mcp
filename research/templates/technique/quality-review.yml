@@ -1,0 +1,49 @@
+version: 1
+technique_id: __TECHNIQUE_ID__
+review_status: incomplete
+reviewed_on: null
+reviewer: null
+
+gates:
+  contract_and_scope:
+    status: pending
+    notes: Confirm the draft satisfies the contract and excludes neighboring behavior.
+  technical_accuracy:
+    status: pending
+    notes: Confirm protocol behavior, prerequisites, attack flow, and impact conditions.
+  claim_traceability:
+    status: pending
+    notes: Confirm every material claim maps to reviewed evidence with exact locators.
+  evidence_classification:
+    status: pending
+    notes: Confirm the overall label is justified for the end-to-end technique.
+  research_saturation:
+    status: pending
+    notes: Confirm two consecutive passes produced no material change.
+  detection_quality:
+    status: pending
+    notes: Confirm telemetry, tests or waiver, false positives, limits, and tuning.
+  mitigation_quality:
+    status: pending
+    notes: Confirm controls address the defining mechanism and link to valid mitigations.
+  framework_alignment:
+    status: pending
+    notes: Confirm tactics, neighbors, mappings, and relationships are consistent.
+  publication_rights:
+    status: pending
+    notes: Confirm source use, quotations, code, diagrams, datasets, and marks are cleared.
+  safe_publication:
+    status: pending
+    notes: Confirm examples are inert and do not expose credentials or destructive detail.
+
+validation:
+  commands:
+    - command: python3 scripts/validate-technique-research.py __TECHNIQUE_ID__
+      result: pending
+  detection_tests:
+    status: pending
+    command: null
+    result: null
+    waiver: null
+
+unresolved: []
