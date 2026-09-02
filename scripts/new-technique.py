@@ -67,6 +67,16 @@ def main() -> int:
         "- **Technique ID**: SAF-T[XXXX]", f"- **Technique ID**: {technique_id}", 1
     )
     readme = readme.replace(
+        "- **Framework Profiles**: [SAF Core / MCP / Code-Agent / RAG and Memory / Financial-Agent / Model-Lifecycle]",
+        "- **Framework Profiles**: MCP (reconcile before review)",
+        1,
+    )
+    readme = readme.replace(
+        "- **Lifecycle Status**: [Active / Deprecated]",
+        "- **Lifecycle Status**: Active",
+        1,
+    )
+    readme = readme.replace(
         "[research/techniques/SAF-TXXXX](../../research/techniques/SAF-TXXXX/)",
         f"[research/techniques/{technique_id}]"
         f"(../../research/techniques/{technique_id}/)",
@@ -111,17 +121,21 @@ def main() -> int:
         {
             "technique_id": technique_id,
             "name": name,
+            "lifecycle_status": "active",
             "documentation_status": "draft",
             "evidence_status": "hypothesized",
+            "profiles": ["mcp"],
             "tactics": ["ATK-TAXXXX"],
+            "summary": "TODO: replace with the bounded atomic behavior before review.",
             "technique_path": f"techniques/{technique_id}/README.md",
             "research_packet": f"research/techniques/{technique_id}",
-            "related_techniques": [],
+            "relationships": [],
             "mitigations": [],
             "detection": {
                 "rule": f"techniques/{technique_id}/detection-rule.yml",
                 "test_status": "pending",
                 "test_artifacts": [],
+                "validation_level": "proposed",
             },
         }
     )
@@ -132,7 +146,7 @@ def main() -> int:
     print(f"Created {technique_dir.relative_to(root)}")
     print(f"Created {packet_dir.relative_to(root)}")
     print(f"Registered {technique_id} in research/framework-model.yml")
-    print("Next: write the contract and claim inventory before drafting the README.")
+    print("Next: write the contract and claim inventory, then reconcile profiles, tactics, and typed relationships.")
     return 0
 
 

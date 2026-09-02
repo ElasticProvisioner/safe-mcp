@@ -11,7 +11,10 @@ technique contribution.
 - [ ] The adversary objective and crossed or abused trust boundary are explicit.
 - [ ] In-scope and out-of-scope behavior is testable rather than aspirational.
 - [ ] The closest existing SAF techniques were reviewed and distinguished.
-- [ ] The proposed ID is unused and its tactic assignment is justified.
+- [ ] The candidate passes the admission rule: atomic behavior, agentic dependency or explicit profile, distinct boundary, and operational value.
+- [ ] The proposed ID is unused, opaque, permanent, and its tactic assignment is justified.
+- [ ] SAF Core and applicable domain profiles are assigned explicitly.
+- [ ] Relationships use canonical types and have the required inverse records.
 - [ ] The entry is present and consistent in `research/framework-model.yml`.
 
 ## Claims and Evidence
@@ -29,6 +32,7 @@ technique contribution.
 ## Technique Document
 
 - [ ] **Overview** includes tactic, ID, research packet, documentation status, evidence status, severity rationale, observation status, and dates.
+- [ ] **Overview** includes lifecycle status and applicable framework profiles.
 - [ ] **Scope** defines the boundary, inclusions, exclusions, and distinguishing characteristics.
 - [ ] **Description** states the objective, MCP-specific mechanism, boundary, and uncertainty.
 - [ ] **Attack Vectors** identify delivery paths, affected components, and the boundary crossed.
@@ -48,6 +52,7 @@ technique contribution.
 - [ ] The README does not duplicate the complete detection rule.
 - [ ] The analytic uses only telemetry and fields named in the technique.
 - [ ] Positive, negative, boundary, and expected false-positive cases are tested when feasible.
+- [ ] Detection maturity is recorded without treating syntax validity as evidence of effectiveness.
 - [ ] Test commands and outcomes are recorded in `quality-review.yml`.
 - [ ] If testing is infeasible, the contract and README contain a specific, reviewer-approved waiver.
 - [ ] Detection limitations do not claim prevention or comprehensive coverage.
@@ -61,6 +66,8 @@ technique contribution.
 - [ ] No unresolved high-severity alignment or publication-rights issue remains.
 - [ ] `quality-review.yml` records a passing result for every gate.
 - [ ] `python3 scripts/validate-technique-research.py SAF-TXXXX` passes.
+- [ ] `python3 scripts/validate-framework-model.py` passes the evidence, taxonomy, and operational release gates.
+- [ ] `python3 scripts/generate-technique-catalog.py --check` confirms that the public catalog is current.
 
 ## Directory Structure
 

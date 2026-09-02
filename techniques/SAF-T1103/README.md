@@ -212,7 +212,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Alternative | The model emits a genuine registered call; this technique forges provenance or binding. <!-- SAF-TRACE: claims=SAF-T1103-C002; sources=SRC-mcp-tools-2026-07-28, SRC-aegis-2603.12621 --> |
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) | Possible prerequisite | It manipulates how a genuine tool is described or selected; this technique causes an invalid call representation or callable identity to execute. <!-- SAF-TRACE: claims=SAF-T1103-C001, SAF-T1103-C002; sources=SRC-mcp-tools-2026-07-28, SRC-cwe-470 --> |
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Possible prerequisite | It manipulates how a genuine tool is described or selected; this technique causes an invalid call representation or callable identity to execute. <!-- SAF-TRACE: claims=SAF-T1103-C001, SAF-T1103-C002; sources=SRC-mcp-tools-2026-07-28, SRC-cwe-470 --> |
 
 ## MITRE ATT&CK Mapping
 

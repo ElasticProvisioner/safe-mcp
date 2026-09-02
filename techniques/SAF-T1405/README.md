@@ -177,7 +177,7 @@ The standalone analytic is maintained in [detection-rule.yml](detection-rule.yml
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Alternative or co-occurring | It changes instruction-bearing definition semantics; this technique changes the presented tool identity or descriptor used for selection. <!-- SAF-TRACE: claims=SAF-T1405-C002; sources=SRC-mpma-2025,SRC-mcp-security-bench-2510.15994 --> |
-| [SAF-T1201: MCP Rug Pull Attack](../SAF-T1201/README.md) | Alternative or follow-on | It changes behavior or definition content after approval under a stable identity; this technique is defined by deceptive name or descriptor metadata. <!-- SAF-TRACE: claims=SAF-T1405-C002,SAF-T1405-C007; sources=SRC-etdi-2025,SRC-mpma-2025 --> |
+| [SAF-T1201: Post-Approval Tool Mutation](../SAF-T1201/README.md) | Alternative or follow-on | It changes behavior or definition content after approval under a stable identity; this technique is defined by deceptive name or descriptor metadata. <!-- SAF-TRACE: claims=SAF-T1405-C002,SAF-T1405-C007; sources=SRC-etdi-2025,SRC-mpma-2025 --> |
 
 ## MITRE ATT&CK Mapping
 

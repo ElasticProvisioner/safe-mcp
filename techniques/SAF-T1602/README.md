@@ -176,20 +176,20 @@ The standalone experimental analytic is maintained in [detection-rule.yml](detec
 
 ### Preventive Controls
 
-1. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13.md)**: Validate token audience and validity before returning a catalog; reject invalid tokens. [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
-2. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29.md)**: Return only tools permitted by the authorization presented on the request. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C009; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28 -->
-3. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16.md)**: Start with baseline scopes and elevate only for the current operation; avoid publishing an entire scope catalog. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#scope-minimization) <!-- SAF-TRACE: claims=SAF-T1602-C009; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28 -->
+1. **[SAF-M-13: OAuth Flow Verification](../../mitigations/SAF-M-13/README.md)**: Validate token audience and validity before returning a catalog; reject invalid tokens. [MCP Authorization](https://modelcontextprotocol.io/specification/2026-07-28/basic/authorization) <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
+2. **[SAF-M-29: Explicit Privilege Boundaries](../../mitigations/SAF-M-29/README.md)**: Return only tools permitted by the authorization presented on the request. <!-- SAF-TRACE: claims=SAF-T1602-C001,SAF-T1602-C009; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28 -->
+3. **[SAF-M-16: Token Scope Limiting](../../mitigations/SAF-M-16/README.md)**: Start with baseline scopes and elevate only for the current operation; avoid publishing an entire scope catalog. [MCP Security Best Practices](https://modelcontextprotocol.io/docs/2026-07-28/tutorials/security/security_best_practices#scope-minimization) <!-- SAF-TRACE: claims=SAF-T1602-C009; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-security-2026-07-28,SRC-mcp-tools-2026-07-28 -->
 
 ### Detective Controls
 
-1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12.md)**: Record the JSON-RPC method and request ID together with actor, server, authorization decision, cursor, and result count. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
-2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20.md)**: Allowlist approved inventory jobs and alert on denied principals or unusual pagination bursts. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-opentelemetry-jsonrpc-1.44.0 -->
+1. **[SAF-M-12: Audit Logging](../../mitigations/SAF-M-12/README.md)**: Record the JSON-RPC method and request ID together with actor, server, authorization decision, cursor, and result count. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C011; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026 -->
+2. **[SAF-M-20: Anomaly Detection](../../mitigations/SAF-M-20/README.md)**: Allowlist approved inventory jobs and alert on denied principals or unusual pagination bursts. <!-- SAF-TRACE: claims=SAF-T1602-C011,SAF-T1602-C012; sources=SRC-mcp-tools-2026-07-28,SRC-mcp-inspector-2026,SRC-opentelemetry-jsonrpc-1.44.0 -->
 
 ### Response Procedures
 
 #### Immediate Actions
 
-- Verify the principal, target server, token audience, scopes, and authorization decision; block access and apply **[SAF-M-37: Token Rotation and Invalidation](../../mitigations/SAF-M-37.md)** when local evidence shows it is unauthorized. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
+- Verify the principal, target server, token audience, scopes, and authorization decision; block access and apply **[SAF-M-37: Token Rotation and Invalidation](../../mitigations/SAF-M-37/README.md)** when local evidence shows it is unauthorized. <!-- SAF-TRACE: claims=SAF-T1602-C008,SAF-T1602-C015; sources=SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28,SRC-jsonrpc-2.0 -->
 - Preserve correlated list requests and responses before changing catalog or access policy. <!-- SAF-TRACE: claims=SAF-T1602-C010,SAF-T1602-C015; sources=SRC-jsonrpc-2.0,SRC-opentelemetry-jsonrpc-1.44.0,SRC-mcp-authorization-2026-07-28,SRC-mcp-tools-2026-07-28 -->
 
 #### Investigation Steps

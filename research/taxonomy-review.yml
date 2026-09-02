@@ -1,0 +1,221 @@
+version: 1
+review_id: SAF-TAXONOMY-2026-09-02
+status: implemented
+reviewed_on: '2026-09-02'
+scope:
+  framework_model: research/framework-model.yml
+  technique_count_reviewed: 86
+  method: >-
+    Compare frozen technique contracts by mechanism, trust boundary, initiating
+    principal, immediate outcome, observables, tactic, and profile after the
+    clean-room evidence sets are complete.
+principles:
+- id: SAF-PRINCIPLE-ATOMIC
+  rule: A technique represents one atomic adversary behavior rather than a product, weakness, impact, or complete attack chain.
+- id: SAF-PRINCIPLE-AGENTIC
+  rule: Core techniques materially depend on an agentic property; protocol- or domain-specific behavior belongs in a profile.
+- id: SAF-PRINCIPLE-MULTITACTIC
+  rule: An unchanged mechanism may map to multiple tactics rather than receive duplicate technique IDs.
+- id: SAF-PRINCIPLE-PERMANENT-ID
+  rule: Technique IDs are opaque and permanent; superseded IDs remain as deprecated compatibility records.
+- id: SAF-PRINCIPLE-TYPED-RELATION
+  rule: Framework relationships state their semantics and required inverse.
+decisions:
+- id: SAF-TAX-001
+  type: consolidation
+  canonical: SAF-T1008
+  canonical_name: Cross-Server Tool Shadowing
+  deprecated:
+  - SAF-T1301
+  tactics:
+  - ATK-TA0001
+  - ATK-TA0004
+  evidence_inputs:
+  - research/techniques/SAF-T1008/technique-contract.yml
+  - research/techniques/SAF-T1301/technique-contract.yml
+  rationale: >-
+    Both contracts require a descriptor from one server to influence invocation
+    of a distinct server's tool. Privilege escalation is a second tactic for the
+    same mechanism, not an independently classifiable behavior.
+  status: implemented
+- id: SAF-TAX-002
+  type: consolidation
+  canonical: SAF-T1201
+  canonical_name: Post-Approval Tool Mutation
+  deprecated:
+  - SAF-T1205
+  specializations:
+  - SAF-T1203
+  - SAF-T1207
+  evidence_inputs:
+  - research/techniques/SAF-T1201/technique-contract.yml
+  - research/techniques/SAF-T1203/technique-contract.yml
+  - research/techniques/SAF-T1205/technique-contract.yml
+  - research/techniques/SAF-T1207/technique-contract.yml
+  rationale: >-
+    SAF-T1201 and SAF-T1205 share the same benign-baseline, retained-identity,
+    later-mutation, and missing-reapproval sequence. Binary replacement and
+    updater compromise remain narrower specializations.
+  status: implemented
+- id: SAF-TAX-003
+  type: chain_normalization
+  canonical: SAF-T1302
+  canonical_name: Agentic Confused Deputy
+  deprecated:
+  - SAF-T1104
+  - SAF-T1309
+  enabling_technique: SAF-T1102
+  evidence_inputs:
+  - research/techniques/SAF-T1102/technique-contract.yml
+  - research/techniques/SAF-T1104/technique-contract.yml
+  - research/techniques/SAF-T1302/technique-contract.yml
+  - research/techniques/SAF-T1309/technique-contract.yml
+  rationale: >-
+    Excessive authority is a precondition, prompt manipulation is an enabling
+    technique, and exercise of authority unavailable to the initiating
+    principal is the atomic boundary-crossing behavior.
+  status: implemented
+- id: SAF-TAX-004
+  type: consolidation_and_family
+  canonical: SAF-T1902
+  canonical_name: Response-Borne Covert Channel
+  deprecated:
+  - SAF-T1912
+  parent: SAF-T1910
+  sibling_specializations:
+  - SAF-T1911
+  - SAF-T1913
+  - SAF-T1914
+  tactics:
+  - ATK-TA0011
+  - ATK-TA0010
+  evidence_inputs:
+  - research/techniques/SAF-T1902/technique-contract.yml
+  - research/techniques/SAF-T1910/technique-contract.yml
+  - research/techniques/SAF-T1911/technique-contract.yml
+  - research/techniques/SAF-T1912/technique-contract.yml
+  - research/techniques/SAF-T1913/technique-contract.yml
+  - research/techniques/SAF-T1914/technique-contract.yml
+  rationale: >-
+    Hidden control data and hidden exfiltrated data use the same response-borne
+    carrier. C2 and Exfiltration are tactic mappings; carrier differences are
+    modeled as specializations of covert exfiltration.
+  status: implemented
+- id: SAF-TAX-005
+  type: boundary_family
+  members:
+  - SAF-T1002
+  - SAF-T1003
+  - SAF-T1203
+  - SAF-T1207
+  evidence_inputs:
+  - research/techniques/SAF-T1002/technique-contract.yml
+  - research/techniques/SAF-T1003/technique-contract.yml
+  - research/techniques/SAF-T1203/technique-contract.yml
+  - research/techniques/SAF-T1207/technique-contract.yml
+  rationale: >-
+    The family retains separate boundaries for trusted-upstream compromise,
+    attacker-originated initial distribution, local post-deployment binary
+    replacement, and trusted updater compromise.
+  status: implemented
+- id: SAF-TAX-006
+  type: procedure_reclassification
+  deprecated:
+  - SAF-T1109
+  replaced_by:
+  - SAF-T1005
+  - SAF-T1101
+  evidence_inputs:
+  - research/techniques/SAF-T1109/technique-contract.yml
+  - research/techniques/SAF-T1005/technique-contract.yml
+  - research/techniques/SAF-T1101/technique-contract.yml
+  rationale: >-
+    Exploitation of a named debugging product is a procedure combining endpoint
+    exposure and command injection rather than a durable mechanism class.
+  status: implemented
+- id: SAF-TAX-007
+  type: profile_placement
+  technique: SAF-T1915
+  profiles:
+  - financial-agent
+  evidence_inputs:
+  - research/techniques/SAF-T1915/technique-contract.yml
+  rationale: >-
+    The bridge-and-DEX sequence is specific to delegated financial authority
+    and is not a general MCP or SAF Core mechanism.
+  status: implemented
+- id: SAF-TAX-008
+  type: retain
+  technique: SAF-T1111
+  profiles:
+  - core
+  - code-agent
+  evidence_inputs:
+  - research/techniques/SAF-T1111/technique-contract.yml
+  rationale: >-
+    The adversary intentionally uses a model-mediated CLI as the decision and
+    execution intermediary, which is an agentic mechanism rather than merely a
+    product-specific vulnerability.
+  status: implemented
+- id: SAF-TAX-009
+  type: profile_placement
+  technique: SAF-T1305
+  profiles:
+  - mcp
+  - code-agent
+  evidence_inputs:
+  - research/techniques/SAF-T1305/technique-contract.yml
+  rationale: >-
+    The retained contract is specific to exploitation of an MCP-connected host
+    component. It maps to ATT&CK for the generic privilege-escalation behavior
+    and is not classified as SAF Core.
+  status: implemented
+- id: SAF-TAX-010
+  type: evidence_reconciliation
+  technique: SAF-T1001
+  evidence_status: demonstrated
+  evidence_inputs:
+  - research/techniques/SAF-T1001/source-coverage.yml
+  - research/techniques/SAF-T1001/claim-inventory.yml
+  rationale: >-
+    The clean-room evidence assessment records controlled demonstrations but no
+    attributable production incident satisfying the complete contract. The
+    earlier alignment instruction to promote the technique to Observed is
+    superseded.
+  status: implemented
+- id: SAF-TAX-011
+  type: hierarchy
+  parent: SAF-T1307
+  specialization: SAF-T1302
+  evidence_inputs:
+  - research/techniques/SAF-T1302/technique-contract.yml
+  - research/techniques/SAF-T1307/technique-contract.yml
+  rationale: >-
+    SAF-T1307 retains the general initiator-to-deputy authorization failure
+    across OAuth, proxy, process, and tool intermediaries. SAF-T1302 is the
+    narrower agentic-tool specialization with action-bound approval and
+    requestor-to-tool telemetry.
+  status: implemented
+- id: SAF-TAX-012
+  type: profile_reconciliation
+  scope: all_active_techniques
+  saf_core_count: 32
+  mcp_profile_count: 78
+  evidence_inputs:
+  - research/framework-model.yml
+  - research/techniques/*/technique-contract.yml
+  rationale: >-
+    SAF Core is limited to mechanisms that materially require model-mediated
+    decisions, autonomous continuation, agent memory, coordination, or delegated
+    agent action. Generic protocol, OAuth, endpoint, package, parser, binary, and
+    transport behaviors remain admitted through their explicit domain profiles
+    without being mislabeled as core agentic mechanisms.
+  status: implemented
+research_backlog:
+- id: SAF-RESEARCH-RECON-001
+  topic: External discovery of public agent or MCP endpoints, registries, capability metadata, and trust relationships.
+  required_action: Run a separate clean-room admission and literature review before proposing a Reconnaissance technique.
+- id: SAF-RESEARCH-RESOURCE-001
+  topic: Development of rogue servers, authorization infrastructure, staged poison content, and agent-specific control infrastructure.
+  required_action: Run separate clean-room admission reviews and reject candidates that duplicate Initial Access or Command and Control.
+unresolved: []

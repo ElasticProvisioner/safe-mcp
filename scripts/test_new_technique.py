@@ -77,6 +77,12 @@ class NewTechniqueTests(unittest.TestCase):
                 if record["technique_id"] == "SAF-T9998"
             )
             self.assertEqual(generated_record["name"], "Test Technique")
+            self.assertEqual(generated_record["lifecycle_status"], "active")
+            self.assertEqual(generated_record["profiles"], ["mcp"])
+            self.assertEqual(generated_record["relationships"], [])
+            self.assertEqual(
+                generated_record["detection"]["validation_level"], "proposed"
+            )
 
             original = generated_readme
             second = subprocess.run(

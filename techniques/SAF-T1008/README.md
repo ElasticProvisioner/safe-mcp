@@ -1,8 +1,10 @@
-# SAF-T1008: Tool Shadowing Attack
+# SAF-T1008: Cross-Server Tool Shadowing
 
 ## Overview
 
-- **Tactic**: Initial Access (ATK-TA0001)
+- **Tactic**: Initial Access (ATK-TA0001); Privilege Escalation (ATK-TA0004)
+- **Framework Profiles**: SAF Core; MCP. [Framework Model v2](../../research/framework-model.yml)
+- **Lifecycle Status**: Active. [Framework Model v2](../../research/framework-model.yml)
 - **Technique ID**: SAF-T1008
 - **Research Packet**: [research/techniques/SAF-T1008](../../research/techniques/SAF-T1008/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1008/traceability-ledger.yml)
@@ -11,7 +13,7 @@
 - **Severity**: High
 - **Severity Rationale**: An attacker-controlled server can steer a model's use of a separately trusted tool, so integrity impact is high and confidentiality impact becomes high when the trusted tool handles sensitive data or a follow-on path can export it. <!-- SAF-TRACE: claims=SAF-T1008-C005,SAF-T1008-C012; sources=SRC-invariant-tpa-2025-04-01,SRC-croce-south-2025-arxiv-2507-19880 -->
 - **First Observed**: Not observed in production; publicly demonstrated on 2025-04-01. <!-- SAF-TRACE: claims=SAF-T1008-C004,SAF-T1008-C010; sources=SRC-invariant-tpa-2025-04-01,SRC-cisa-kev-2026-09-01,SRC-nvd-cve-2026-25905 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
 
 ## Scope
 
@@ -205,7 +207,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Overlapping prerequisite | Malicious text changes only the attacker's own tool behavior; it does not govern a separately trusted tool. | <!-- SAF-TRACE: claims=SAF-T1008-C004; sources=SRC-invariant-tpa-2025-04-01 -->
-| [SAF-T1201: MCP Rug Pull Attack](../SAF-T1201/README.md) | Alternative lifecycle | The descriptor becomes malicious after approval rather than arriving with cross-server instructions. | <!-- SAF-TRACE: claims=SAF-T1008-C003; sources=SRC-invariant-tpa-2025-04-01 -->
+| [SAF-T1201: Post-Approval Tool Mutation](../SAF-T1201/README.md) | Alternative lifecycle | The descriptor becomes malicious after approval rather than arriving with cross-server instructions. | <!-- SAF-TRACE: claims=SAF-T1008-C003; sources=SRC-invariant-tpa-2025-04-01 -->
 | [SAF-T1301: Cross-Server Tool Shadowing](../SAF-T1301/README.md) | Alternative resolution mechanism | The host resolves or overrides colliding tool calls; foreign descriptor instructions are not required. | <!-- SAF-TRACE: claims=SAF-T1008-C015; sources=SRC-csa-shadowing-2026,SRC-invariant-tpa-2025-04-01 -->
 
 ## MITRE ATT&CK Mapping

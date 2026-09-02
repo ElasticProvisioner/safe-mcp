@@ -3,10 +3,13 @@
 - **Technique ID**: SAF-T1912
 - **Tactic**: ATK-TA0010
 - **Evidence Status**: Demonstrated
-- **Documentation Status**: Draft
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Severity**: High
 - **Research Packet**: [research/techniques/SAF-T1912](../../research/techniques/SAF-T1912/)
 - **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1912 is consolidated into [SAF-T1902: Response-Borne Covert Channel](../SAF-T1902/README.md). This page and its evidence packet remain available for provenance; use SAF-T1902 for new mappings. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Overview
 

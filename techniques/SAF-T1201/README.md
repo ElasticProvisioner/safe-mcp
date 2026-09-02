@@ -1,8 +1,10 @@
-# SAF-T1201: MCP Rug Pull Attack
+# SAF-T1201: Post-Approval Tool Mutation
 
 ## Overview
 
 - **Tactic**: Persistence (ATK-TA0003)
+- **Framework Profiles**: SAF Core; MCP. [Framework Model v2](../../research/framework-model.yml)
+- **Lifecycle Status**: Active. [Framework Model v2](../../research/framework-model.yml)
 - **Technique ID**: SAF-T1201
 - **Research Packet**: [research/techniques/SAF-T1201](../../research/techniques/SAF-T1201/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1201/traceability-ledger.yml)
@@ -11,7 +13,7 @@
 - **Severity**: High
 - **Severity Rationale**: An attacker who retains control of an approved MCP server or its update path can replace previously reviewed tool metadata with attacker-directed behavior; impact depends on the host's permissions and approval controls. [Microsoft MCP guidance](https://developer.microsoft.com/blog/protecting-against-indirect-injection-attacks-mcp/) <!-- SAF-TRACE: claims=SAF-T1201-C006,SAF-T1201-C015; sources=SRC-ms-indirect-injection-2025 -->
 - **First Observed**: Not observed in production; controlled demonstrations were published in 2025 and 2026. [Song et al.](https://arxiv.org/html/2506.02040) [Rashidi](https://arxiv.org/html/2607.05744) <!-- SAF-TRACE: claims=SAF-T1201-C002,SAF-T1201-C003,SAF-T1201-C004; sources=SRC-song-2506.02040,SRC-rashidi-2607.05744 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
 
 ## Scope
 
@@ -203,7 +205,7 @@ The standalone deterministic analytic is maintained in [detection-rule.yml](dete
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1001: Tool Poisoning Attack (TPA)](../SAF-T1001/README.md) | Prerequisite or alternative | Poisoning is already present at first discovery; a rug pull requires a previously approved benign baseline and later material change. <!-- SAF-TRACE: claims=SAF-T1201-C013; sources=SRC-owasp-agentic-top10-2026 --> |
+| [SAF-T1001: Tool Poisoning Attack](../SAF-T1001/README.md) | Prerequisite or alternative | Poisoning is already present at first discovery; a rug pull requires a previously approved benign baseline and later material change. <!-- SAF-TRACE: claims=SAF-T1201-C013; sources=SRC-owasp-agentic-top10-2026 --> |
 | [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Follow-on or alternative | Tool-output injection arrives in results after a call; a rug pull changes the trusted definition or delivered implementation before later use. <!-- SAF-TRACE: claims=SAF-T1201-C013; sources=SRC-ms-indirect-injection-2025 --> |
 
 ## MITRE ATT&CK Mapping

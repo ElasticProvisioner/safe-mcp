@@ -25,7 +25,7 @@ Prompt Injection (Multiple Vectors) covers attacker-controlled natural-language 
 ### Out of Scope
 
 - Training-time data poisoning, covered by [SAF-T2107](../SAF-T2107/README.md); this technique begins when attacker-controlled content is processed at inference time. <!-- SAF-TRACE: claims=SAF-T1102-C005; sources=SRC-nist-ai-100-2e2025,SRC-owasp-llm01-2025 -->
-- Malicious server or tool code that performs harmful actions without redirecting model behavior, including software introduced through [SAF-T1006](../SAF-T1006/README.md). <!-- SAF-TRACE: claims=SAF-T1102-C001; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+- Malicious server or tool code that performs harmful actions without redirecting model behavior, including software introduced through [SAF-T1003](../SAF-T1003/README.md). <!-- SAF-TRACE: claims=SAF-T1102-C001; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 - Downstream collection, exfiltration, persistence, or command execution as separate behaviors; those outcomes are follow-on activity unless the injection itself is the behavior under analysis. <!-- SAF-TRACE: claims=SAF-T1102-C011,SAF-T1102-C017; sources=SRC-nist-ai-100-2e2025,SRC-mitre-t1059-current -->
 - Safety-only jailbreaks that alter content policy compliance but do not cross an application authority or tool boundary. <!-- SAF-TRACE: claims=SAF-T1102-C005,SAF-T1102-C011; sources=SRC-nist-ai-100-2e2025,SRC-owasp-llm01-2025 -->
 
@@ -213,7 +213,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T2107: AI Model Poisoning via MCP Tool Training Data Contamination](../SAF-T2107/README.md) | Alternative | Changes learned behavior before inference; SAF-T1102 manipulates inference-time context. | <!-- SAF-TRACE: claims=SAF-T1102-C005; sources=SRC-nist-ai-100-2e2025,SRC-owasp-llm01-2025 -->
-| [SAF-T1006: Malicious MCP-Server Installation](../SAF-T1006/README.md) | Co-occurring | Harm originates in installed server or tool code without requiring model redirection; SAF-T1102 requires instruction-authority manipulation. | <!-- SAF-TRACE: claims=SAF-T1102-C001; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
+| [SAF-T1003: Malicious MCP-Server Distribution](../SAF-T1003/README.md) | Co-occurring | Harm originates in installed server or tool code without requiring model redirection; SAF-T1102 requires instruction-authority manipulation. | <!-- SAF-TRACE: claims=SAF-T1102-C001; sources=SRC-invariant-tpa-2025-04-01,SRC-invariant-whatsapp-mcp-2025-04-07 -->
 
 ## MITRE ATT&CK Mapping
 

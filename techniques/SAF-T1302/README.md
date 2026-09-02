@@ -1,8 +1,10 @@
-# SAF-T1302: High-Privilege Tool Abuse
+# SAF-T1302: Agentic Confused Deputy
 
 ## Overview
 
 - **Tactic**: Privilege Escalation (ATK-TA0004)
+- **Framework Profiles**: SAF Core; MCP. [Framework Model v2](../../research/framework-model.yml)
+- **Lifecycle Status**: Active. [Framework Model v2](../../research/framework-model.yml)
 - **Technique ID**: SAF-T1302
 - **Research Packet**: [research/techniques/SAF-T1302](../../research/techniques/SAF-T1302/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1302/traceability-ledger.yml)
@@ -11,11 +13,11 @@
 - **Severity**: High
 - **Severity Rationale**: A low-trust principal can obtain the confidentiality, integrity, or availability reach of an elevated tool or process when requestor authorization or action-bound approval fails. <!-- SAF-TRACE: claims=SAF-T1302-C013; sources=SRC-invariant-github-mcp-2025,SRC-ghsa-codewhale-g29h,SRC-nvd-cve-2026-41378 -->
 - **First Observed**: Not observed in production; the defining behavior is supported by controlled demonstrations and disclosed vulnerabilities. [Research coverage](../../research/techniques/SAF-T1302/source-coverage.yml)
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
 
 ## Scope
 
-High-Privilege Tool Abuse covers a low-trust requestor or untrusted input causing an agent to exercise a legitimate tool, service identity, or approved process with authority unavailable to that principal because requestor authorization, scope binding, or action-bound approval is absent or ineffective. <!-- SAF-TRACE: claims=SAF-T1302-C004; sources=SRC-invariant-github-mcp-2025,SRC-ghsa-codewhale-g29h,SRC-elastic-esa-2026-83 -->
+Agentic Confused Deputy covers a low-trust requestor or untrusted input causing an agent to exercise a legitimate tool, service identity, or approved process with authority unavailable to that principal because requestor authorization, scope binding, or action-bound approval is absent or ineffective. <!-- SAF-TRACE: claims=SAF-T1302-C004; sources=SRC-invariant-github-mcp-2025,SRC-ghsa-codewhale-g29h,SRC-elastic-esa-2026-83 -->
 
 ### In Scope
 

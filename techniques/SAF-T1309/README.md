@@ -6,12 +6,15 @@
 - **Technique ID**: SAF-T1309
 - **Research Packet**: [research/techniques/SAF-T1309](../../research/techniques/SAF-T1309/)
 - **Traceability Ledger**: [traceability-ledger.yml](../../research/techniques/SAF-T1309/traceability-ledger.yml)
-- **Documentation Status**: Draft
+- **Lifecycle Status**: Deprecated. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
+- **Documentation Status**: Deprecated
 - **Evidence Status**: Demonstrated
 - **Severity**: High
 - **Severity Rationale**: Prompt manipulation can turn an agent's delegated identity and high-risk tools into a path to unauthorized state change or code execution when approval and least-privilege controls fail. <!-- SAF-TRACE: claims=SAF-T1309-C013; sources=SRC-agentdojo-2406.13352v3,SRC-ghsa-cursor-4cxx-2025,SRC-cve-2025-53773 -->
 - **First Observed**: Not observed in production in the reviewed direct-authority corpus; controlled agentic demonstrations were published by 2024-06-19. <!-- SAF-TRACE: claims=SAF-T1309-C004,SAF-T1309-C008; sources=SRC-agentdojo-2406.13352v3,SRC-cisa-kev-2026-09-01 -->
-- **Last Updated**: 2026-09-01
+- **Last Updated**: 2026-09-02
+
+> **Deprecated compatibility ID:** SAF-T1309 is normalized into [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) as the enabling manipulation and [SAF-T1302: Agentic Confused Deputy](../SAF-T1302/README.md) as the authority-crossing effect. This page and its evidence packet remain available for provenance. [Framework Model v2 taxonomy review](../../research/taxonomy-review.yml)
 
 ## Scope
 
@@ -202,7 +205,7 @@ The standalone example analytic is maintained in [detection-rule.yml](detection-
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
 | [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Overlapping | SAF-T1102 covers prompt manipulation that affects text or planning but does not reach a privileged tool or approval-changing action. <!-- SAF-TRACE: claims=SAF-T1309-C004,SAF-T1309-C015; sources=SRC-agentdojo-2406.13352v3,SRC-mcp-security-2026-07-28 --> |
-| [SAF-T1302: High-Privilege Tool Abuse](../SAF-T1302/README.md) | Alternative | SAF-T1302 covers unauthorized or direct privileged tool use caused by an authority or policy failure without prompt-derived model control. <!-- SAF-TRACE: claims=SAF-T1309-C013,SAF-T1309-C015; sources=SRC-agentdojo-2406.13352v3,SRC-mcp-security-2026-07-28 --> |
+| [SAF-T1302: Agentic Confused Deputy](../SAF-T1302/README.md) | Alternative | SAF-T1302 covers unauthorized or direct privileged tool use caused by an authority or policy failure without prompt-derived model control. <!-- SAF-TRACE: claims=SAF-T1309-C013,SAF-T1309-C015; sources=SRC-agentdojo-2406.13352v3,SRC-mcp-security-2026-07-28 --> |
 
 ## MITRE ATT&CK Mapping
 

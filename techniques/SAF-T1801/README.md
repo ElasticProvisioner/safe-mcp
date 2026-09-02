@@ -210,7 +210,7 @@ The standalone experimental analytic is maintained in [detection-rule.yml](detec
 
 | Technique | Relationship | Distinction |
 | --- | --- | --- |
-| [SAF-T1102: Prompt Injection](../SAF-T1102/README.md) | Prerequisite | Delivers control or changes behavior; SAF-T1801 begins with systematic data acquisition. <!-- SAF-TRACE: claims=SAF-T1801-C018; sources=SRC-owasp-llm01-2025,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
+| [SAF-T1102: Prompt Injection (Multiple Vectors)](../SAF-T1102/README.md) | Prerequisite | Delivers control or changes behavior; SAF-T1801 begins with systematic data acquisition. <!-- SAF-TRACE: claims=SAF-T1801-C018; sources=SRC-owasp-llm01-2025,SRC-invariant-whatsapp-mcp-2025-04-07 --> |
 | [SAF-T1803: Database Dump](../SAF-T1803/README.md) | Specialization | Covers database-focused bulk collection; SAF-T1801 spans repositories, messages, filesystems, databases, and APIs. <!-- SAF-TRACE: claims=SAF-T1801-C005,SAF-T1801-C016; sources=SRC-anthropic-espionage-2025-11,SRC-mitre-t1213-v3.4,SRC-mcp-tools-2025-06-18 --> |
 | [SAF-T1804: API Data Harvest](../SAF-T1804/README.md) | Specialization | Covers API-focused collection; SAF-T1801 is source-agnostic and requires automated breadth, repetition, or systematic enumeration. <!-- SAF-TRACE: claims=SAF-T1801-C005; sources=SRC-anthropic-espionage-2025-11,SRC-mitre-t1119-v1.4,SRC-mcp-tools-2025-06-18 --> |
 | [SAF-T1910: Covert Channel Exfiltration](../SAF-T1910/README.md) | Possible follow-on | Moves collected material across an external boundary through a covert channel; SAF-T1801 ends at acquisition or aggregation. <!-- SAF-TRACE: claims=SAF-T1801-C017; sources=SRC-anthropic-espionage-2025-11,SRC-invariant-whatsapp-mcp-2025-04-07,SRC-invariant-github-mcp-2025 --> |
